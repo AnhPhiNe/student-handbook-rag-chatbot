@@ -39,7 +39,7 @@
 > HCMUE AI is an independent student project—not an official HCMUE application. Verify cited sources or contact the responsible university office before making important academic decisions.
 
 > [!NOTE]
-> The current local candidate uses corpus **v33**, pipeline **v73**, normalizer **v27**, and Composer **Gemini 3.1 Flash-Lite / prompt v3.24**. Retrieval uses dense + BM25 RRF without a reranker. Official-v1 measures the earlier v26 normalizer; current fixes have targeted regression coverage, not a new full evaluation. Production-60 was not run, and the public deployment has not been verified against this candidate.
+> The current local candidate uses corpus **v33**, pipeline **v74**, normalizer **v27**, and Composer **Gemini 3.1 Flash-Lite / prompt v3.24**. Narrative retrieval now applies Cohere `rerank-v4.0-fast` to the top 16 RRF child candidates before parent grouping; it fails open to the original RRF list when reranking is unavailable. Official-v1 measured the earlier v73/v26 RRF-only runtime, so its metrics remain a historical measurement rather than a score for this candidate. Production-60 was not run, and the public deployment has not been verified against this candidate.
 
 ## 🧭 Contents
 
@@ -63,7 +63,7 @@
 The assistant combines two paths:
 
 1. **Structured lookup** handles grade/scoring rules, foreign-language equivalency, office/faculty/program directories, cohort/category facts, and formula rules. A validated resolver returns records from reviewed JSON catalogs; the Composer is instructed to preserve returned structured values, but this is not a guarantee.
-2. **Narrative retrieval** searches embedded child chunks, fuses dense and BM25 rankings with RRF, expands selected hits to full parent articles, and gives the composer a bounded evidence packet.
+2. **Narrative retrieval** searches embedded child chunks, fuses dense and BM25 rankings with RRF, reranks a bounded child prefix with Cohere Fast, expands selected hits to full parent articles, and gives the composer a bounded evidence packet. A Cohere limit or failure falls back to the unchanged RRF ordering.
 
 The system can ask for a missing cohort or category, return low confidence or out-of-domain status, and refuse unsupported completion. An answer-shaped sentence is not proof that the requested scope was selected correctly.
 
@@ -83,18 +83,18 @@ The hosted demo may differ from the local candidate documented below. See [Deplo
 
 ### 📌 At a glance
 
-| Deterministic contract | Retrieval Hit@5 | Mean Judge correctness | Corpus |
-|:---:|:---:|:---:|:---:|
-| **124/135 · 91.85%** | **141/155 · 90.97%** | **0.9305 / 1 · 150 cases** | **462 parents · 3,121 children** |
+| Deterministic contract | Cohere retrieval Hit@5 | MRR | nDCG@5 | Mean Judge correctness |
+|:---:|:---:|:---:|:---:|:---:|
+| **124/135 · 91.85%** | **153/157 · 97.45%** | **0.9397** | **0.9447** | **0.9599 / 1 · 150 cases** |
 
-<p align="center"><sub>Separate official-v1 local measurements—not an overall accuracy score. Retrieval's content-type gate failed; see the evaluation section.</sub></p>
+<p align="center"><sub>Latest available result per suite: the retained deterministic contract run plus the newer Cohere Fast-16 retrieval and Generate + Judge experiment. Different denominators are not combined into one score.</sub></p>
 
 - **Users:** students asking about regulations, procedures, schedules, requirements, and handbook facts.
 - **Knowledge scope:** three merged handbook cohorts: K48-K49, K50, and K51.
 - **Practical questions:** grade/scoring tables, foreign-language equivalency, office/faculty/program directories, cohort-specific regulations, and narrative procedures.
 - **Answer modes:** structured lookup, narrative retrieval, and explicit clarification or low-confidence outcomes when the request is not answerable from authorized handbook context.
 - **Runtime:** FastAPI backend, React/Vite frontend, Qdrant dense retrieval, MongoDB parent documents, optional Redis caches, a Qwen planner, and Gemini composition.
-- **Current identity:** pipeline `v73-planner-owned-structured-inputs`, query-plan normalizer `v27-task-local-cohort-fallback`, router prompt v41, answer prompt v3.24, and artifact build `build-934f1caf384f99ad96e9`.
+- **Current identity:** pipeline `v74-cohere-rerank-fail-open`, query-plan normalizer `v27-task-local-cohort-fallback`, router prompt v41, answer prompt v3.24, and artifact build `build-934f1caf384f99ad96e9`.
 
 The checked-in state is a reproducible local release candidate. A public URL in frontend configuration is a deployment target, not evidence that the corresponding service is currently healthy or promoted.
 
@@ -127,7 +127,7 @@ It does not claim to:
 | API | FastAPI, Pydantic | Request validation, admission controls, JSON/SSE delivery |
 | Planner | Qwen on Groq | Typed tasks, lookup intent, slots, and cohort scope |
 | Composer | Gemini | Answer generation from the prepared evidence packet |
-| Retrieval | BGE-M3, BM25, RRF | Semantic and lexical child search, parent selection |
+| Retrieval | BGE-M3, BM25, RRF, Cohere Fast | Semantic/lexical child search, bounded child reranking, parent selection |
 | Knowledge stores | Qdrant, MongoDB, JSON catalogs | Child vectors, full articles, structured facts |
 | Operations | Redis, LangSmith, HF Spaces, Vercel | Optional shared response cache, tracing, hosting targets |
 
@@ -143,15 +143,15 @@ It does not claim to:
 | Plan normalizer | `v27-task-local-cohort-fallback` | `src/retrieval/core/query_plan.py` |
 | Composer | `gemini-3.1-flash-lite`; temperature 0 | `configs/answer_generation.yaml` |
 | Answer prompt | `student-handbook-answer-v3.24-grounded-table-context` | `src/generation/prompt_builder.py` |
-| Pipeline | `v73-planner-owned-structured-inputs` | `src/generation/answer_pipeline.py` |
+| Pipeline | `v74-cohere-rerank-fail-open` | `src/generation/answer_pipeline.py` |
 | Embeddings | `BAAI/bge-m3`, 1,024 dimensions, normalized | `configs/retrieval.yaml` and v33 manifest |
 | Corpus/artifact snapshot | v33, identified by the manifest build below | `data/processed/metadata/build_manifest.json` |
-| Retrieval default | `vector_primary_graph_supplement` with dense + BM25 RRF; reranker off | `src/retrieval/core/retrieval_mode.py` |
+| Retrieval default | `vector_primary_graph_supplement`: dense + BM25 RRF → Cohere Fast top-16 child rerank → parent grouping; fail-open to RRF | `configs/retrieval.yaml`, `src/retrieval/core/hybrid_pipeline.py` |
 | Qdrant target | `student_handbook_semantic_v33` | `data/processed/metadata/build_manifest.json` |
 | MongoDB target | `parent_docs_v33` in database `chatbotHCMUE` | `data/processed/metadata/build_manifest.json` |
 | Local artifact build | `build-934f1caf384f99ad96e9` | `data/processed/metadata/build_manifest.json` |
 
-Experimental reranker A/B comparisons are not the official-v1 headline and do not replace the RRF deployment path. The `BAAI/bge-m3` value above is the embedding model, not an enabled reranker. Experimental comparison documents are intentionally not linked from this main-branch README.
+The reranker decision was informed by a [separate candidate experiment](docs/COHERE_FAST_RERANK_EXPERIMENT.md), but official-v1 remains the published RRF-only measurement. The `BAAI/bge-m3` value above is the embedding model; Cohere `rerank-v4.0-fast` is the distinct cross-encoder reranking stage. A current-runtime metric must be produced by a new frozen run rather than relabeling the earlier scores.
 
 <a id="system-architecture"></a>
 
@@ -169,7 +169,7 @@ flowchart TD
     Pipeline -->|question and context| Planner["AI Router + Normalizer<br/>Qwen plan / validation<br/>Local router cache"]
     Planner -->|validated tasks and cohorts| Execute["Task execution inside AnswerPipeline"]
     Execute -->|structured task| Structured["Structured dispatcher<br/>Look up JSON tables,<br/>directories and formula rules"]
-    Execute -->|RAG task| Retriever["ChildParentHybridRetriever<br/>Qdrant dense + local BM25 + RRF<br/>Load full parents from MongoDB"]
+    Execute -->|RAG task| Retriever["ChildParentHybridRetriever<br/>Qdrant dense + local BM25 + RRF<br/>Cohere Fast top-16 child rerank<br/>Load full parents from MongoDB"]
     Structured -->|tables, records, optional fact locks| Merge["Merge task results<br/>Preserve task and cohort scope"]
     Retriever -->|primary parent evidence| Merge
     Merge --> Packet["Guards + prompt builder<br/>Bounded evidence and citations"]
@@ -204,7 +204,7 @@ This overview shows the answerable/cache-miss path. The runtime diagram below in
 | Planner | Interprets requests into typed tasks, slots, constraints, and output shape. | `src/retrieval/core/ai_router.py` |
 | Normalizer | Canonicalizes and validates planner output; it is not a second semantic planner. | `src/retrieval/core/query_plan.py` |
 | Structured resolver | Executes a validated lookup against reviewed catalogs and exception rules. | `src/retrieval/core/structured_dispatcher.py`, `formula_lookup.py` |
-| Retriever | Searches narrative children with dense/BM25 RRF, then expands to parent context. | `src/retrieval/core/hybrid_pipeline.py` |
+| Retriever | Searches narrative children with dense/BM25 RRF, reranks a bounded child prefix, then expands to parent context. | `src/retrieval/core/hybrid_pipeline.py`, `cohere_reranker.py` |
 | Evidence packet | Applies authorized scope, citations, context limits, and prompt guards. | `src/generation/answer_pipeline.py`, `prompt_builder.py` |
 | Composer | Generates an answer from the packet without performing retrieval; instructed to ground claims in supplied evidence. | `src/generation/answer_pipeline.py` |
 | Graph UI | Uses related-source/graph information for navigation or display; graph-derived sources are not Composer evidence. | `frontend/`, retrieval metadata |
@@ -224,7 +224,7 @@ flowchart TD
     Planner --> Normalize["Post-Planner QueryPlan normalization<br/>Tasks, slots, cohorts, validation"]
     Normalize --> Execute["execute_task<br/>Dispatch each task and cohort"]
     Execute --> Structured["Structured task<br/>JSON lookup + optional fact lock"]
-    Execute --> RAG["RAG task<br/>Retrieve parent evidence"]
+    Execute --> RAG["RAG task<br/>Dense + BM25 → RRF children<br/>Cohere Fast top-16 → parent evidence"]
     Execute --> Clarify["Clarify task<br/>Missing-information question"]
     Structured --> Merge["Merge task results<br/>Evidence, coverage, source identity"]
     RAG --> Merge
@@ -246,7 +246,7 @@ flowchart TD
 
 1. **Receive:** the API accepts the question, selected cohort, and optional conversation history.
 2. **Plan:** Planner identifies what the student wants and separates multiple requests. Normalizer validates and canonicalizes that plan before execution.
-3. **Find evidence:** structured tasks look up reviewed JSON tables or directory records. RAG tasks search narrative children with dense + BM25 RRF, then load the corresponding parent articles from MongoDB.
+3. **Find evidence:** structured tasks look up reviewed JSON tables or directory records. RAG tasks search narrative children with dense + BM25, fuse up to 24 candidates with RRF, rerank the first 16 children with Cohere Fast, and then load the corresponding parent articles from MongoDB. If Cohere is unavailable, the unchanged RRF list continues to parent grouping.
 4. **Prepare context:** merge the task results without losing their cohort boundaries, check whether they can support an answer, and build a context-limited evidence packet. Structured evidence can include the selected table plus an exact lookup result; parent articles can include reviewed tables.
 5. **Compose:** Gemini uses the packet to answer the covered requests. It does not perform another retrieval step.
 6. **Deliver:** return the answer, citations, and status through JSON or SSE. Streaming delivers text incrementally before final metadata.
@@ -319,7 +319,8 @@ flowchart TD
     Task --> Sparse["In-process BM25<br/>Sparse regulation search"]
     Dense --> Fusion["Union child IDs + Reciprocal Rank Fusion<br/>k = 60; retain up to 24 by default"]
     Sparse --> Fusion
-    Fusion --> Group["Group ranked children by parent ID<br/>Load and validate parent scope"]
+    Fusion --> Rerank["Cohere rerank-v4.0-fast<br/>Rerank top 16 children<br/>Fail open to original RRF list"]
+    Rerank --> Group["Group ranked children by parent ID<br/>Load and validate parent scope"]
     Mongo[("MongoDB parent_docs_v33<br/>Full articles + reviewed tables")] -. parent records .-> Group
     Group --> Primary["Primary results<br/>Up to 5 parents per default call<br/>Focused child references + full parent text"]
     Primary --> Merge["Return to request-level merge<br/>Combine task evidence; preserve cohorts"]
@@ -336,7 +337,7 @@ flowchart TD
 **How to read this retrieval pipeline:**
 
 1. **Candidate search:** the retriever sends the task query to dense search and local BM25 with cohort/content filters. Both rank narrative children, not complete MongoDB articles.
-2. **Fusion → parent lookup:** RRF combines child rankings; the retriever groups hits by `parent_section_id` and loads the corresponding full parent records from MongoDB. The selected parent evidence returns to the request's merged evidence packet, then Composer.
+2. **Fusion → child rerank → parent lookup:** RRF combines child rankings and retains up to 24 candidates. Cohere Fast reranks the first 16 children before any parent is chosen. The retriever then groups those results by `parent_section_id` and loads the corresponding full parent records from MongoDB. On a limit, timeout, invalid response, or missing key, this stage fails open to the original full RRF list.
 3. **Offline graph source:** [graph_extractor.py](src/ingestion/graph_extractor.py) reads the full parent docstore during the [build pipeline](#build-pipeline). It extracts explicit references between articles/documents, validates their IDs, and writes [document_edges.json](data/processed/graphs/document_edges.json). This file is a local JSON edge list, not a graph database, embedding index, or extra model.
 4. **Online graph use:** selected parent IDs seed traversal over that saved edge list. Scope checks and parent lookups produce `related_references` for UI navigation. This branch ends at the UI; it does **not** feed the Composer packet or add answer evidence.
 
@@ -344,11 +345,11 @@ flowchart TD
 
 Dense and BM25 searches use cohort/content filters. The default search limit is 24 per ranking source and the fused list is capped at 24 before parent grouping. BM25 is initialized from Qdrant child payloads into an in-process index; it is not a second remote database. The implementation is vector-primary: an empty valid dense seed set returns no results before sparse fusion. The diagram shows data dependencies, not parallel search scheduling.
 
-The default `ChildParentHybridRetriever` fuses dense and BM25 rankings with RRF (`k=60`). A retrieval call uses up to five final parent articles after candidate searches; compound plans may make multiple task-level calls and aggregate results. “Top five” means per retrieval call, not five for every compound question.
+The default `ChildParentHybridRetriever` fuses dense and BM25 rankings with RRF (`k=60`) and asks Cohere to return a complete reranking of the first 16 child candidates. Only a complete, valid permutation is accepted; otherwise the original RRF candidates continue unchanged. A retrieval call uses up to five final parent articles after candidate ranking; compound plans may make multiple task-level calls and aggregate results. “Top five” means per retrieval call, not five for every compound question.
 
 A child hit expands to its full parent article, including reviewed table content, subject to task/cohort scope and context budget. Focused child text locates the article; it is not a substitute for the parent record.
 
-Graph neighbors are context-only related sources for navigation and display. They do not become Composer evidence. The default mode is `vector_primary_graph_supplement`; full/no-graph modes are explicit ablations. The deployment path has no enabled reranker.
+Graph neighbors are context-only related sources for navigation and display. They do not become Composer evidence. The default mode is `vector_primary_graph_supplement`; full/no-graph modes are explicit ablations. Reranking changes child order before parent grouping; it does not alter structured lookup, graph traversal, or Composer behavior.
 
 <a id="runtime-behavior"></a>
 
@@ -362,6 +363,7 @@ At request time, `AnswerService` lazily shares one `AnswerPipeline` for both API
 | Response cache | Caches a completed answer after retrieval and evidence selection, keyed with question, selected citations, evidence/context fingerprint, cohort, pipeline version, and prompt version. |
 | Terminal versus partial clarification | When the whole plan needs clarification, `prepare_answer` returns a terminal clarification without Composer. In a mixed plan, covered units can coexist with a `needs_clarification` unit; the evidence packet lets Composer answer covered units and ask only for the missing unit's clarification. |
 | Provider retry | Key rotation/HTTP retry belongs to provider calls; it does not create multiple composition stages in one successful response. |
+| Cohere rate limits | `COHERE_API_KEYS` is a comma-separated process-local pool. The retriever rotates immediately on HTTP 429 and proactively caps requests per key in a rolling minute; it never sleeps in the request path and falls back to RRF when no key is available. |
 | Sync/stream delivery | Both paths share preparation, retrieval, guards, and evidence construction; JSON and SSE use separate delivery adapters afterward. |
 
 The official-v1 evaluation disabled quality caches. The normal local configuration can enable caches; that is not the evaluation configuration.
@@ -446,7 +448,7 @@ Follow one ordinary question first, then explore structured and RAG branches sep
 | 5. Answer generation | [prompt_builder.py](src/generation/prompt_builder.py), [gemini_client.py](src/generation/gemini_client.py) | Evidence packet, instructions, provider retries and streaming |
 | 6. Build and reproduce | [build_multi_cohort.py](scripts/build_multi_cohort.py), [parent/child contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) | How source material becomes the runtime artifacts |
 
-Read the matching tests after each component to see expected behavior and edge cases. For metrics, start with [official-v1 results](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md), then follow its provenance rather than assuming the newest local report is the published measurement.
+Read the matching tests after each component to see expected behavior and edge cases. For the latest measured candidate, start with the [Cohere Fast experiment](docs/COHERE_FAST_RERANK_EXPERIMENT.md); use the older official-v1 report only when reproducing the historical RRF-only baseline.
 
 ### v33 artifact snapshot
 
@@ -518,42 +520,38 @@ There is no automatic OCR-coverage claim. Image-based or malformed tables requir
 
 ## 📊 Evaluation
 
-The authoritative current report is [official-v1 results and limitations](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md), with machine-readable identities and hashes in [official-v1 provenance](data/eval/official_v1/RESULTS_PROVENANCE.json).
+This section reports the **latest available result for each suite**. The deterministic contract result is retained because Cohere does not participate in structured execution. Retrieval and Generate + Judge use the newer [Cohere Fast-16 candidate experiment](docs/COHERE_FAST_RERANK_EXPERIMENT.md). Older RRF-only retrieval/answer tables remain available through [official-v1 provenance](data/eval/official_v1/RESULTS_PROVENANCE.json) and Git history, but are not presented as current candidate metrics.
 
-The report covers three local quality suites: structured contract/execution, end-to-end retrieval (including routing and structured evidence), and Generate + Judge. Judge uses `openai/gpt-oss-120b`, distinct from the Gemini Composer. Their denominators and limitations are kept separate below.
+> [!NOTE]
+> These suites were not all executed at one commit. Deterministic is the latest retained structured contract run. The Cohere experiment ran at base commit `8a172ebd` through an evaluation-only seam equivalent to the successful v74 rerank path; subsequent v74 changes added fail-open validation and key rotation. These are therefore latest-available development results, not a newly frozen full v74 evaluation or a production SLA.
 
-### 🪪 Evaluation identity and reading guide
+### 🪪 Measured candidate
 
-These numbers describe the local evaluation identity documented by the official report. They are not production certification, independent holdout accuracy, or a current HF/Vercel performance claim.
-
-The official runs used normalizer `v26-planner-owned-semantics`. The current checkout adds the v27 cohort-fallback fixes, cohort metadata/stream call-status corrections, and removal of the disabled PhoRanker integration. These changes have targeted regression coverage, not a new full official evaluation; the recorded metrics below are unchanged measurements of the report's version.
-
-| Item | Measured identity |
+| Component | Measured identity |
 |---|---|
-| Runtime HEAD recorded by the runs | `2a293721ff7998ba5ace0d81ca194d10f67581f3` |
-| Pipeline / normalizer | `v73-planner-owned-structured-inputs` / `v26-planner-owned-semantics` |
-| Planner / Composer prompts | v41 / v3.24 |
-| Composer / Judge | `gemini-3.1-flash-lite` / `openai/gpt-oss-120b` |
+| Datasets | 135 deterministic cases; 155 retrieval cases expanded into 157 retrieval events; 150 Generate + Judge cases |
 | Corpus | v33; `build-934f1caf384f99ad96e9` |
-| Retrieval | `vector_primary_graph_supplement`; no reranker |
-| Quality caches | Router and response caches disabled |
-
-Dataset and report hashes are recorded separately in provenance: the commit alone does not identify worktree gold revisions. This is a development evaluation, not an independent holdout. **Pass rates, retrieval ranks, Judge rubric means, and serving outcomes measure different things and are not combined into a single score.**
+| Deterministic run | official-v1 Planner/structured contract result; normalizer v26 |
+| Cohere experiment | base commit `8a172ebd`; Qwen prompt v41 / normalizer v27 |
+| Composer / prompt | `gemini-3.1-flash-lite` / v3.24 |
+| Judge | `openai/gpt-oss-120b` |
+| Retrieval change | RRF candidates → Cohere `rerank-v4.0-fast` top 16 children → parent grouping |
+| Quality caches | Disabled for the quality run |
 
 ### 1. 🧭 Deterministic contract and execution — 135 cases
 
-**Purpose:** test task interpretation, route/capability selection, cohort/applicability, structured execution, and applicable result assertions. Composer output is not the criterion for passing this suite.
+**Purpose:** test task interpretation, route/capability selection, cohort/applicability, structured execution, and applicable result assertions. Composer and Cohere output are not criteria for this suite.
 
 | Metric | Result | Meaning |
 |---|---:|---|
-| Case contract pass | **124/135 · 91.85%** | Cases satisfying their applicable assertions; 11 cases fail at least one assertion. |
-| `resolved_result` assertion | **44/50 · 88.00%** | Exact lookup-result assertions, only on the 50 eligible cases. |
-| Planner fallback | **0/135** | No recorded safe-fallback plan in this run; does not imply every plan was correct. |
-| API errors | **0/135** | No recorded provider/API failure; separate from semantic correctness. |
+| Case contract pass | **124/135 · 91.85%** | Cases satisfying every applicable assertion; 11 cases failed at least one assertion. |
+| `resolved_result` assertion | **44/50 · 88.00%** | Exact lookup-result assertions over the 50 fact-lock-eligible cases. |
+| Planner fallback | **0/135** | No safe-fallback plan was recorded; this does not mean every plan was correct. |
+| API errors | **0/135** | No provider/API failure was recorded; separate from semantic correctness. |
 
-Non-applicable assertions are **N/A**, not automatic passes. A correct fact lock for a selected table does not establish that the table's scope was the intended one.
+Non-applicable assertions are **N/A**, not automatic passes. A fact lock is required only when the structured contract has grounded inputs, valid scope, and one uniquely applicable result.
 
-#### Breakdown by cohort and question difficulty
+#### Breakdown by cohort and difficulty
 
 | Dimension | Group | Passed / cases | Pass rate |
 |---|---|---:|---:|
@@ -563,7 +561,7 @@ Non-applicable assertions are **N/A**, not automatic passes. A correct fact lock
 | Difficulty | Realistic | 102/108 | 94.44% |
 | Difficulty | Stress | 22/27 | 81.48% |
 
-#### Breakdown by capability / case group
+#### Breakdown by capability
 
 | Group | Passed / cases | Pass rate |
 |---|---:|---:|
@@ -582,128 +580,62 @@ Non-applicable assertions are **N/A**, not automatic passes. A correct fact lock
 | Student service | 9/9 | 100.00% |
 | Study duration | 8/8 | 100.00% |
 
-**Interpretation:** compound questions are weaker than single-purpose groups in this sample. Audited failure classes include wrong operation/route, omitted explicit inputs, slot/span schema mismatch, unit-type confusion, and task dependencies. These are not all Resolver bugs; a deterministic route failure can still yield a useful final answer through RAG. Small groups with 100% results do not establish perfect capability coverage.
+Compound questions were the weakest group in this sample. Audited failures included route selection, omitted explicit inputs, slot/schema mismatch, unit confusion, and task dependencies; they were not all Resolver failures. Since normalizer v27 was introduced later, this table is retained as the latest deterministic measurement rather than presented as a fresh v74 score.
 
-### 2. 🔎 End-to-end retrieval — 155 cases
+### 2. 🔎 Retrieval-layer comparison — 157 events
 
-**Purpose:** measure whether the pipeline returns the expected sources and ranks them usefully. Routing and structured evidence affect this suite; it is not an isolated dense-retriever benchmark.
+This paired comparison reused the same saved RRF child candidates for both arms. It isolates child reranking from Planner, Composer, and provider variation.
 
-| Metric | Result | Meaning |
-|---|---:|---|
-| Hit@1 | 120/155 · 77.42% | An accepted relevant source is present at rank 1. |
-| Hit@3 | 139/155 · 89.68% | An accepted relevant source appears within the first 3 results. |
-| Hit@5 | **141/155 · 90.97%** | An accepted relevant source appears within the first 5 results. |
-| MRR | **0.8333** | Mean reciprocal rank of the first relevant result; rewards earlier hits. |
-| nDCG@5 | **0.8443** | Normalized relevance ranking quality across the first 5 results. |
-| Required-source recall@5 | **0.9011** | Mean per-case coverage of required sources; one hit need not cover all requested evidence. |
-| Recorded cohort leakage | **0/155** | No leakage flagged under this suite's checks; not a universal guarantee. |
-| Content-type match | **148/155 · 95.48%** | Agreement with the expected evidence type. |
-
-> [!WARNING]
-> The retrieval evaluator's overall gate is **FAIL**: content-type match is below its **98%** threshold. Passing 90% Hit@5 does not mean every gate passed.
-
-#### Breakdown by cohort
-
-| Cohort group | Cases | MRR | nDCG@5 |
+| Metric | RRF | Cohere Fast-16 | Delta |
 |---|---:|---:|---:|
-| K48–K49 | 52 | 0.7965 | 0.8144 |
-| K50 | 51 | 0.8301 | 0.8366 |
-| K51 | 50 | 0.8683 | 0.8770 |
-| General | 2 | 1.0000 | 1.0000 |
+| Hit@5 | 0.9490 | **0.9745 · 153/157** | +0.0255 |
+| MRR | 0.8737 | **0.9397** | +0.0660 |
+| nDCG@5 | 0.8904 | **0.9447** | +0.0543 |
+| Required-source recall@5 | 0.9469 | **0.9724** | +0.0255 |
 
-| Difficulty | Hit@5 / cases | Hit@5 rate |
-|---|---:|---:|
-| Realistic | 112/124 | 90.32% |
-| Stress | 29/31 | 93.55% |
-
-**Interpretation:** Hit@5 exceeds Hit@1 by 21 cases, so ranking position matters. Stress happens to score higher here; this does not establish that harder questions are easier in general. The audit covers **17 cases**: 14 top-5 misses and 3 cases missing required sources from the top 5 despite a source at rank 6. Causes include routing, ranking, and gold requiring regulation evidence where directory data can answer the same request—not automatically a need for reranking.
-
-The legacy field `synthetic_leak_rate` is a content-type mismatch proxy, not proof that tables leaked into embeddings. Six empty retrieved-item lists do not necessarily mean no evidence: structured evidence is recorded separately. Diagnostic runs do not replace the official scores.
+Paired nDCG@5 improved on 23 events, regressed on 5, and was unchanged on 129. The saved-candidate run does not measure routing, generation, or production latency.
 
 ### 3. ✍️ Generate + Judge — 150 cases
 
-**Purpose:** evaluate complete pipeline answers against the fixed, source-grounded Judge rubric. There are 150 recorded outputs and 150 valid Judge rows, including the original serving-error outcomes. All quality values below are **means on a 0–1 rubric**, not percentages of fully correct answers.
+All 150 answers were generated and judged. Seventy-seven cases entered retrieval and issued 80 Cohere calls; structured-only, clarification, and out-of-domain cases did not call the reranker.
 
-#### Answer and evidence quality
-
-| Metric | Mean, n = 150 | Meaning |
+| Metric | Latest mean | Meaning |
 |---|---:|---|
-| Answer correctness | **0.9305** | Correctness and coverage relative to the expected answer. |
-| Faithfulness | **0.9591** | Whether answer claims are supported by supplied evidence. |
-| Answer relevancy | **0.9543** | Whether the response addresses the question. |
-| Citation correctness | **0.9355** | Whether cited sources support the associated answer content. |
-| Context precision | **0.5815** | Relevance of supplied context to the question under the rubric. |
-| Context recall | **0.8845** | Coverage of evidence needed for the expected answer. |
+| Answer correctness | **0.9599** | Correctness and requested-answer coverage under the fixed Judge rubric. |
+| Faithfulness | **0.9745** | Support for answer claims in the evidence supplied to Composer. |
+| Answer relevancy | **0.9796** | Focus on the user's question. |
+| Citation correctness | **0.9657** | Support provided by cited sources. |
+| Context recall | **0.8896** | Coverage of evidence needed for the expected answer. |
+| Context precision | **0.5493** | Relevance of the complete context packet; lower than the other quality dimensions. |
+| Hallucination rate | **0.0533** | Fraction flagged by the Judge rubric; not an independently verified error rate. |
 
-**Interpretation:** high average faithfulness does not rule out individual unsupported claims. Context precision is substantially lower than answer metrics, suggesting excess or irrelevant evidence under the Judge rubric; it is not a factual-error rate. Context recall and answer correctness also leave room for missing evidence or omitted answer parts.
-
-#### Breakdown by difficulty and expected route
-
-| Dimension | Group | Cases | Mean correctness |
-|---|---|---:|---:|
-| Difficulty | Realistic | 120 | 0.9544 |
-| Difficulty | Stress | 30 | 0.8350 |
-| Expected route | Regulation RAG | 77 | 0.9523 |
-| Expected route | Structured | 65 | 0.9077 |
-| Expected route | Mixed | 3 | 0.8000 |
-| Expected route | Clarification | 3 | 0.9500 |
-| Expected route | Out of domain | 2 | 1.0000 |
-
-These are separate breakdown dimensions, not additional cases. Expected route is the dataset label, not proof the Planner selected that route. Mixed/clarification/OOD groups are too small to establish stable capability-wide rates.
-
-#### Breakdown by run allocation cohort
-
-| `allocation_cohort` | Cases | Mean correctness |
-|---|---:|---:|
-| K48–K49 | 50 | 0.9624 |
-| K50 | 50 | 0.9166 |
-| K51 | 50 | 0.9126 |
-
-These are run-allocation groups: general questions may be assigned to a group. They are not identical to the original cohort labels of every question.
-
-#### Serving outcomes and local latency
-
-| Outcome | Cases / 150 |
+| Serving outcome | Cases / 150 |
 |---|---:|
-| `answered` | 141 |
+| `answered` | 144 |
 | `low_confidence` | 2 |
-| `api_error` | 3 |
 | `needs_clarification` | 2 |
 | `out_of_domain` | 2 |
-| Without API error | 147 |
+| API failures | 0 |
 
-`answered` is not a correctness score; clarification and OOD can be correct outcomes. The 3 original API errors remain in the report even though a separate quota-recovery check later succeeded on all 3. Those replacement answers were not merged into the 150-case metric.
-
-| Local pipeline latency | Seconds |
+| Local complete-pipeline latency | Seconds |
 |---|---:|
-| Mean | 4.68 |
-| p50 | 3.97 |
-| p95 | 8.11 |
-| Maximum | 23.92 |
+| Mean | 7.508 |
+| p50 | 7.348 |
+| p95 | 10.475 |
+| Maximum | 24.410 |
 
-These are local pipeline timings, not HF streaming TTFT, concurrent-load results, or an SLA. Composer token usage and cost are **N/A** in the available artifact.
+The 80 successful Cohere calls averaged 0.690 seconds. These timings are local sequential observations, not HF streaming TTFT, concurrent-load measurements, or an SLA.
 
-#### ⚖️ AI-assisted answer audit
+### Interpretation and limitations
 
-| Audit item | Recorded result |
-|---|---:|
-| Judge unsupported-claim flags | 13/150 |
-| Judge critical flags | 2/150 |
-| Automatic-failure cases reviewed | 22 |
-| Stratified sample reviewed | 40; seed `20260906` |
-| Overlap between failure set and sample | 4 |
-| Unique answers audited | **58** |
+- Retrieval ranking improved materially in the paired saved-candidate comparison; answer-level gains were smaller.
+- Confidence intervals for the main Judge metrics overlap the historical RRF run, so the end-to-end difference is directional rather than a statistically established causal gain.
+- Context precision decreased even while correctness, recall, faithfulness, and citations improved.
+- Historical RRF/BGE answers and Cohere answers were not generated from the same runtime commit; Judge and model generation are stochastic.
+- No Production-60 run or current HF load test was performed. The public deployment is not inferred from these local results.
+- The current v74 implementation treats Cohere as optional: a missing key, quota limit, timeout, HTTP failure, or invalid response preserves the original RRF list.
 
-Flags can overlap and are not independent confirmed-error counts. The audit is **AI-assisted**, not independent human review. Offline reconstruction found supporting evidence for eight unsupported-flag cases; original Judge scores were retained. Within the 36 sample-only answers, 32 had no substantial issue identified and 4 had omissions, wording issues, or gold-scope differences. Do not extrapolate an overall pass rate from this risk-enriched audit set.
-
-Known answer-level limitations include omitted conditions or requested parts, unsupported interpretation, and scope selection errors upstream of Composer. Full-table evidence plus a fact lock does not guarantee the correct applicability or eliminate hallucination. Detailed case findings and retry provenance remain in the linked report.
-
-### What is not claimed
-
-- No Production-60 run was executed, so there is no current production metric here.
-- No current public deployment or remote-store health is inferred from configuration, a URL, or a local dry run.
-- Historical V9.1 and earlier measurements remain in the [historical release evaluation](docs/FINAL_RELEASE_EVALUATION.md); they are not current runtime metrics.
-- Experimental reranker comparisons are not official-v1 metrics and do not change the RRF default.
+The raw experiment artifacts are excluded from the runtime package; their SHA-256 identities and the complete interpretation are recorded in the linked experiment report. A future paper should run a frozen same-commit comparison with independent review before presenting the improvement as a research claim.
 
 <a id="local-setup"></a>
 
@@ -745,9 +677,14 @@ MONGODB_URL=<your-mongodb-url>
 MONGODB_DB_NAME=chatbotHCMUE
 GEMINI_API_KEYS=<comma-separated-keys>
 GROQ_API_KEYS=<comma-separated-keys>
+COHERE_API_KEYS=<comma-separated-keys>
+STUDENT_RAG_COHERE_RERANKER_ENABLED=true
+STUDENT_RAG_COHERE_RPM_LIMIT_PER_KEY=10
 ~~~
 
 `STUDENT_RAG_HYBRID_COLLECTION` is a compatibility override with precedence over `QDRANT_COLLECTION_NAME`. Keep both aligned, or leave the override unset; an old v32 override would otherwise select the wrong collection.
+
+`COHERE_API_KEYS` accepts one or more authorized keys. The default `10` requests/minute/key is conservative for trial-key research; set the limit to the allowance of the key tier actually deployed. Rotation is process-local and matches the one-worker Docker runtime. It is a resilience mechanism, not permission to bypass account-level provider limits.
 
 Optional settings include Redis response caching, LangSmith telemetry, and router/provider overrides. `STUDENT_RAG_REQUIRE_REDIS=true` requires Redis; `STUDENT_RAG_DISABLE_REDIS` disables Redis use. Keep evaluation cache settings separate from normal development.
 

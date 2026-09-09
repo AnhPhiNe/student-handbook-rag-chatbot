@@ -157,7 +157,7 @@ Experimental reranker A/B comparisons are not the official-v1 headline and do no
 
 ## 🏗️ System architecture
 
-The component map below shows ownership and dependencies, not execution order. Read the runtime flow next for the order of processing.
+The map below connects the main components through the data they exchange. `AnswerService` owns the shared `AnswerPipeline`; the downstream boxes are modules called by that pipeline, not independent services. The next diagram expands the execution order and alternate outcomes.
 
 **Diagram key:** solid arrows show the main call/data path; dotted arrows show supporting reads, optional services, or publication. Arrow labels specify what crosses the boundary. Stores do not call one another.
 
@@ -166,13 +166,16 @@ The component map below shows ownership and dependencies, not execution order. R
 flowchart TD
     UI["React / Vite<br/>Chat, citations, source drawers"] -->|HTTP / SSE| API["FastAPI routes<br/>Schemas, capacity, rate limits"]
     API --> Pipeline["AnswerService / AnswerPipeline<br/>Shared lifecycle + orchestration"]
-    Pipeline --> Planner["AI Router + Normalizer<br/>Qwen plan / validation<br/>Local router cache"]
-    Pipeline --> Structured["Structured dispatcher<br/>Domain lookup functions"]
-    Pipeline --> Retriever["ChildParentHybridRetriever<br/>Dense + BM25 + RRF"]
-    Structured -. reads .-> Catalogs[("JSON catalogs<br/>Tables, directories, formulas")]
-    Retriever -. searches / loads .-> RetrievalStores[("Qdrant children<br/>In-process BM25<br/>MongoDB parents")]
-    Pipeline --> Packet["Prompt builder<br/>Task/cohort evidence + citations"]
-    Packet --> Composer["Gemini client<br/>Answer generation / streaming"]
+    Pipeline -->|question and context| Planner["AI Router + Normalizer<br/>Qwen plan / validation<br/>Local router cache"]
+    Planner -->|validated tasks and cohorts| Execute["Task execution inside AnswerPipeline"]
+    Execute -->|structured task| Structured["Structured dispatcher<br/>Look up JSON tables,<br/>directories and formula rules"]
+    Execute -->|RAG task| Retriever["ChildParentHybridRetriever<br/>Qdrant dense + local BM25 + RRF<br/>Load full parents from MongoDB"]
+    Structured -->|tables, records, optional fact locks| Merge["Merge task results<br/>Preserve task and cohort scope"]
+    Retriever -->|primary parent evidence| Merge
+    Merge --> Packet["Guards + prompt builder<br/>Bounded evidence and citations"]
+    Packet -->|answerable and cache miss| Composer["Gemini client<br/>Answer generation / streaming"]
+    Composer --> Delivery["Pipeline and API delivery<br/>Answer, citations, status"]
+    Delivery --> Display["React / Vite<br/>Render answer and source drawers"]
 ~~~
 
 | Supporting component | Connection and purpose |
@@ -182,7 +185,14 @@ flowchart TD
 | LangSmith | API-side tracing and feedback use bounded background submission; optional, outside the answer evidence path. |
 | Health/readiness | Separate API routes check required configuration and artifact identities. |
 
-The pipeline collects results from the planner, lookups, and retriever; the diagram's outgoing component arrows denote calls, not concurrent execution. Gemini output returns through the pipeline/API to the client. Health/readiness checks verify required configuration and artifact contracts separately from chat. Graph-related references follow a separate UI-only path shown in the retrieval diagram.
+**How to read this map:**
+
+1. **Client → API → pipeline:** the API validates/admit requests; the service provides the shared pipeline instance.
+2. **Planner → task execution:** the normalized plan determines which lookup/retrieval modules are called, with task-local inputs and cohort scope. These are alternative or combined branches, not a claim of parallel scheduling.
+3. **Lookups/retrieval → merge:** structured results and primary parent evidence return to the same orchestration layer. Stores provide data to those modules; they do not call each other.
+4. **Merge → packet → Composer → client:** guards and context limits select what can be composed; on a cache miss Gemini generates the answer, which returns through the API. `Display` is the same frontend as the input node, drawn twice to keep the flow readable.
+
+This overview shows the answerable/cache-miss path. The runtime diagram below includes early outcomes and cache hits. Health/readiness are separate API checks; graph-related references use the separate UI-only path in the retrieval diagram.
 
 ### Layers and ownership
 
@@ -220,11 +230,18 @@ flowchart TD
     RAG --> Merge
     Clarify --> Merge
     Merge --> Guard["Request-level guards<br/>Stop if no answer can be composed"]
+    Guard -->|terminal outcome| Terminal["Clarification / out of scope / insufficient evidence / error<br/>No Composer call"]
     Guard -->|answerable / partly answerable| Packet["Select citations + build bounded packet<br/>Preserve task/cohort associations"]
     Packet --> Cache["Check evidence-bound response cache"]
     Cache -->|miss| Compose["Gemini Composer<br/>Sync generate or streaming chunks"]
-    Compose --> Final["Format answer + citations + status<br/>Cache successful result"]
-    Final --> Output["JSON response / SSE final metadata"]
+    Cache -->|hit| Reuse["Reuse saved answer<br/>Skip Composer"]
+    Compose -->|success| Final["Finalize answer + citations + status<br/>Cache successful result"]
+    Compose -->|failure| Failure["Error outcome<br/>Do not cache as success"]
+    Compose -. incremental text for SSE .-> Output["API delivery<br/>JSON or SSE tokens / metadata / done"]
+    Final --> Output
+    Terminal --> Output
+    Reuse --> Output
+    Failure --> Output
 ~~~
 
 1. **Receive:** the API accepts the question, selected cohort, and optional conversation history.
@@ -256,19 +273,27 @@ This is the structured branch inside task execution. Catalogs define data and ap
 flowchart TD
     Task["Validated structured task<br/>lookup_type, operation, slots, cohorts"] --> Scope["Execute within task cohort<br/>Keep task-local query and inputs"]
     Scope --> Dispatch["structured_dispatcher<br/>Choose lookup implementation"]
-    Dispatch --> Tables["Table lookups<br/>Scoring, conduct, language<br/>Scholarship, study duration"]
-    Dispatch --> Directory["Catalog matching<br/>Office, faculty, program, service"]
-    Dispatch --> Formula["Formula lookup<br/>Formula + variables, no calculation"]
-    Tables -. reads .-> Registry[("Structured table registry<br/>Reviewed rows + applicability")]
-    Directory -. reads .-> Profiles[("Directory profiles<br/>Names, aliases, contact fields")]
+    Dispatch --> Tables["Table lookups<br/>Select applicable reviewed tables<br/>Optionally resolve a grounded value"]
+    Dispatch --> Directory["Catalog matching<br/>Match names / aliases in profiles<br/>Return relevant records and fields"]
+    Dispatch --> Formula["Formula lookup<br/>Read formula_rules.json<br/>Formula + variables, no calculation"]
     Tables --> Resolution["StructuredResolution<br/>Result + source identity"]
     Directory --> Resolution
     Formula --> Resolution
     Resolution --> Covered["Evidence available<br/>Full selected table / matching records<br/>Optional resolved_result"]
     Resolution --> Missing["Missing required information<br/>Clarification / uncovered task"]
-    Covered --> Packet["Task result → merged evidence packet<br/>Composer receives structured evidence"]
-    Missing --> Packet
+    Missing --> Merge["Merge task coverage and clarification<br/>Request-level guards"]
+    Covered --> Merge
+    Merge -->|fully or partly answerable| Packet["Merged task/cohort evidence packet<br/>Composer receives structured evidence"]
+    Merge -->|nothing answerable| Terminal["Terminal clarification / insufficient evidence<br/>No Composer call"]
 ~~~
+
+**How to read this branch:** dispatch selects a lookup implementation, which reads its catalog and returns evidence plus provenance. A supported, grounded lookup may add `resolved_result`; it does not replace the selected table. Coverage and missing inputs then rejoin the request-level merge. A partial request can continue to Composer, while a wholly unanswerable request stops at a terminal outcome. The packet shown here is the same packet used by the runtime flow, not a second Composer stage.
+
+| Lookup branch | Local data read | Evidence returned |
+|---|---|---|
+| Tables: scoring, conduct, language, scholarship, study duration | Structured table registry and reviewed table JSON; cohort/applicability metadata | Full selected table representation, source identity, and optional `resolved_result` |
+| Directory: office, faculty, program, student service | Directory profiles/catalogs with unit names, aliases and contact/service fields | Matching records and provenance; no numeric conversion |
+| Formula | `data/processed/tables/formula_rules.json` | Formula definition, variables and source rule; no computed personal result |
 
 `resolved_result` is added only when the lookup can determine the result under its validated-input contract. Evidence-only results do not automatically fail: whole-table requests and non-unique results can still be useful. Missing information that prevents a safe lookup is represented separately; it must not be turned into a guessed fact lock.
 
@@ -286,18 +311,36 @@ flowchart TD
 ~~~mermaid
 %%{init: {"flowchart": {"wrappingWidth": 180, "nodeSpacing": 20, "rankSpacing": 25, "padding": 8}}}%%
 flowchart TD
-    Task["RAG task query + cohort"] --> Dense["BGE-M3 query embedding<br/>Qdrant dense search"]
+    subgraph Offline["OFFLINE BUILD"]
+        Docstore["Full parent docstore<br/>all_docstore_items.json"] --> Extract["graph_extractor<br/>Extract explicit article/document references<br/>Validate source and target IDs"]
+        Extract --> Edges[("document_edges.json<br/>Validated reference edges")]
+    end
+    Task["Online RAG task<br/>Query + cohort"] --> Dense["BGE-M3 query embedding<br/>Qdrant dense search"]
     Task --> Sparse["In-process BM25<br/>Sparse regulation search"]
     Dense --> Fusion["Union child IDs + Reciprocal Rank Fusion<br/>k = 60; retain up to 24 by default"]
     Sparse --> Fusion
     Fusion --> Group["Group ranked children by parent ID<br/>Load and validate parent scope"]
     Mongo[("MongoDB parent_docs_v33<br/>Full articles + reviewed tables")] -. parent records .-> Group
     Group --> Primary["Primary results<br/>Up to 5 parents per default call<br/>Focused child references + full parent text"]
-    Primary --> Packet["Task/cohort evidence packet<br/>Context budget → Composer"]
+    Primary --> Merge["Return to request-level merge<br/>Combine task evidence; preserve cohorts"]
+    Merge --> Packet["Guards + bounded evidence packet<br/>Select context and citations"]
+    Packet -->|answerable and response-cache miss| Composer["Gemini Composer<br/>Shared request-level answer generation"]
+    Composer --> Answer["API → UI<br/>Answer text + citations"]
     Primary -. seed parent IDs .-> Graph["Graph traversal + scope filters<br/>Related-source supplement"]
-    Edges[("Local document_edges.json")] -. reads .-> Graph
+    Mongo -. related parent records .-> Graph
     Graph --> Related["related_references<br/>UI navigation only; not Composer evidence"]
+    Related --> Navigation["API → UI<br/>Related-source navigation"]
+    Edges -. loaded reference edges .-> Graph
 ~~~
+
+**How to read this retrieval pipeline:**
+
+1. **Candidate search:** the retriever sends the task query to dense search and local BM25 with cohort/content filters. Both rank narrative children, not complete MongoDB articles.
+2. **Fusion → parent lookup:** RRF combines child rankings; the retriever groups hits by `parent_section_id` and loads the corresponding full parent records from MongoDB. The selected parent evidence returns to the request's merged evidence packet, then Composer.
+3. **Offline graph source:** [graph_extractor.py](src/ingestion/graph_extractor.py) reads the full parent docstore during the [build pipeline](#build-pipeline). It extracts explicit references between articles/documents, validates their IDs, and writes [document_edges.json](data/processed/graphs/document_edges.json). This file is a local JSON edge list, not a graph database, embedding index, or extra model.
+4. **Online graph use:** selected parent IDs seed traversal over that saved edge list. Scope checks and parent lookups produce `related_references` for UI navigation. This branch ends at the UI; it does **not** feed the Composer packet or add answer evidence.
+
+**One shared composition stage:** the Composer node is the same request-level stage shown in the runtime diagram, not an extra model call inside each retrieval task. Other task results, including structured evidence in a mixed question, join at the request-level merge. The diagram shows the answerable/cache-miss continuation; cache hits and terminal outcomes follow the runtime flow above. Answer display and related-source navigation are two roles of the same frontend, not separate applications.
 
 Dense and BM25 searches use cohort/content filters. The default search limit is 24 per ranking source and the fused list is capped at 24 before parent grouping. BM25 is initialized from Qdrant child payloads into an in-process index; it is not a second remote database. The implementation is vector-primary: an empty valid dense seed set returns no results before sparse fusion. The diagram shows data dependencies, not parallel search scheduling.
 
@@ -433,6 +476,8 @@ The cohort labels and counts above are the manifest's source-of-truth labels. Th
 
 <a id="data-build-pipeline"></a>
 
+<a id="build-pipeline"></a>
+
 ### 🔨 Build pipeline
 
 Source transformation is separate from publication and runtime promotion.
@@ -448,7 +493,7 @@ flowchart TD
     Reviews -. exact region / source checks .-> Split
     Split --> Parents["all_docstore_items.json<br/>Full parent articles with reviewed tables"]
     Split --> Children["child_parent_chunks.json<br/>Narrative children + parent links"]
-    Parents --> Graph["Graph extraction<br/>document_edges.json"]
+    Parents --> Graph["graph_extractor<br/>Extract and validate explicit references<br/>Write document_edges.json"]
     Children --> Audit["Build manifest + integrity audits<br/>Counts, hashes, parent-child links"]
     Graph --> Audit
     Structured -. catalog artifacts .-> Audit
@@ -463,7 +508,7 @@ The detailed sequence is:
 2. Extract structured records and create initial chunks.
 3. Merge cohort artifacts and namespace source references; build and validate the structured table layer, registry, and directory profiles.
 4. Build the reviewed parent/child representations and their links: retain reviewed table material in full parents and structured JSON, and create narrative children without the separated table regions.
-5. Build graph relationships from the stable IDs and separated representations.
+5. Extract explicit article/document references from the full parent docstore, validate their stable source/target IDs, and save `data/processed/graphs/document_edges.json`. Runtime loads this local artifact for related-source UI navigation; it does not rebuild the graph per request.
 6. Write the manifest and integrity/audit files before optional remote upload.
 7. Optionally preflight empty/versioned Qdrant and MongoDB targets, upload, and verify. Remote writes are opt-in and separate from runtime promotion.
 

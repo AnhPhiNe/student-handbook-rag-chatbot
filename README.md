@@ -3,16 +3,14 @@
   <h1>HCMUE AI</h1>
   <p><strong>Student Handbook RAG Assistant</strong></p>
   <p>
-    A cohort-aware assistant for the HCMUE student handbooks: K48–K49, K50, and K51.<br>
-    Multi-request planning, deterministic structured lookup, hybrid RAG, citations, and a React interface.
+    A cohort-aware assistant for the Ho Chi Minh City University of Education handbooks: K48–K49, K50, and K51.<br>
+    Multi-request planning, structured lookup, hybrid RAG, citations, and a React interface.
   </p>
-
   <p>
-    <a href="https://www.hcmuebot.id.vn"><img src="https://img.shields.io/badge/Demo_Link-hcmuebot.id.vn-2563EB?style=for-the-badge" alt="Demo link; deployment status is not verified here"></a>
-    <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"><img src="https://img.shields.io/badge/Backend_Link-Hugging_Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="Backend link; deployment status is not verified here"></a>
-    <a href="#evaluation-results"><img src="https://img.shields.io/badge/Evaluation-official--v1-7C3AED?style=for-the-badge" alt="Official v1 local evaluation"></a>
+    <a href="https://www.hcmuebot.id.vn"><img src="https://img.shields.io/badge/Demo_Link-hcmuebot.id.vn-2563EB?style=for-the-badge" alt="Demo link; current deployment revision not verified"></a>
+    <a href="https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api"><img src="https://img.shields.io/badge/Backend-Hugging_Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="Hugging Face backend link"></a>
+    <a href="#evaluation"><img src="https://img.shields.io/badge/Evaluation-official--v1-7C3AED?style=for-the-badge" alt="Official-v1 local evaluation"></a>
   </p>
-
   <p>
     <img src="https://img.shields.io/badge/Python-3.11-3670A0?style=flat-square&logo=python&logoColor=white" alt="Python 3.11">
     <img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
@@ -21,43 +19,67 @@
     <img src="https://img.shields.io/badge/MongoDB-Parent_Docs-4EA94B?style=flat-square&logo=mongodb&logoColor=white" alt="MongoDB">
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-0F172A?style=flat-square" alt="MIT License"></a>
   </p>
-
   <p>
     <a href="#project-overview">Overview</a> ·
     <a href="#system-architecture">Architecture</a> ·
+    <a href="#runtime-flow">Runtime Flow</a> ·
     <a href="#data-and-repository-structure">Data &amp; Repository</a> ·
-    <a href="#runtime-design">Runtime</a> ·
-    <a href="#evaluation-results">Evaluation</a> ·
-    <a href="#local-development">Run Locally</a> ·
-    <a href="#deployment">Deployment</a>
+    <a href="#evaluation">Evaluation</a> ·
+    <a href="#local-setup">Run Locally</a> ·
+    <a href="#build-and-deployment-status">Deployment</a>
   </p>
 </div>
 
 <p align="center">
   <img src="./frontend/public/chat_ui_screenshot.png" width="100%" alt="HCMUE AI chat interface">
 </p>
-<p align="center"><sub>Grounded answers, cohort-aware citations, structured lookup cards, and source navigation.</sub></p>
+<p align="center"><sub>Cohort-aware answers, cited sources, structured data, and handbook navigation.</sub></p>
 
 > [!IMPORTANT]
-> HCMUE AI is an independent, non-commercial student project—not an official HCMUE application. Verify cited sources or contact the responsible university office before making important academic decisions.
+> HCMUE AI is an independent student project—not an official HCMUE application. Verify cited sources or contact the responsible university office before making important academic decisions.
 
 > [!NOTE]
-> The current local runtime is the **v33 candidate**, using Composer **Gemini 3.1 Flash-Lite**, prompt **v3.24**, pipeline **v73**, and build `build-934f1caf384f99ad96e9`. The three official-v1 quality suites have completed locally; see [results and limitations](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md) and [provenance](data/eval/official_v1/RESULTS_PROVENANCE.json). Production60 was **not run** for this scope, so there is no current production metric or production certification. The public deployment has not been verified against this local version.
+> The current local candidate uses corpus **v33**, pipeline **v73**, normalizer **v27**, and Composer **Gemini 3.1 Flash-Lite / prompt v3.24**. Retrieval uses dense + BM25 RRF without a reranker. Official-v1 measures the earlier v26 normalizer; current fixes have targeted regression coverage, not a new full evaluation. Production-60 was not run, and the public deployment has not been verified against this candidate.
+
+## 🧭 Contents
+
+1. [Project overview](#project-overview)
+   - [Demo & Hosting](#demo-and-hosting)
+   - [At a glance](#at-a-glance) · [Capabilities](#capabilities-and-boundaries) · [Current identity](#current-release-identity)
+2. [System architecture and runtime](#system-architecture)
+   - [Runtime flow](#runtime-flow) · [Structured execution](#structured-execution) · [Retrieval](#retrieval-contract) · [Cache and delivery](#runtime-behavior)
+3. [Data and Repository Structure](#data-and-repository-structure)
+   - [Repository layout](#repository-layout) · [Source-reading guide](#source-reading-guide) · [Build pipeline](#data-build-pipeline)
+4. [Evaluation](#evaluation)
+5. [Local setup and checks](#local-setup)
+   - [Rebuilding artifacts locally](#rebuilding-locally)
+6. [Build and deployment status](#build-and-deployment-status)
+7. [License](#license)
 
 <a id="project-overview"></a>
 
-## ✨ Project Overview
+## ✨ Project overview
 
-HCMUE AI answers questions from three student-handbook groups: **K48–K49, K50, and K51**. The backend separates deterministic table lookup from regulation retrieval because a grade conversion and a policy explanation require different evidence contracts.
+The assistant combines two paths:
 
-The project demonstrates:
+1. **Structured lookup** handles grade/scoring rules, foreign-language equivalency, office/faculty/program directories, cohort/category facts, and formula rules. A validated resolver returns records from reviewed JSON catalogs; the Composer is instructed to preserve returned structured values, but this is not a guarantee.
+2. **Narrative retrieval** searches embedded child chunks, fuses dense and BM25 rankings with RRF, expands selected hits to full parent articles, and gives the composer a bounded evidence packet.
 
-- **Multi-request planning:** Qwen 3.8 27B creates a typed `QueryPlan` with at most three independent tasks.
-- **Deterministic structured lookup:** cohort-aware catalogs cover grade scales, scholarships, study duration, foreign-language equivalency, formulas, programs, faculties, offices, and student services.
-- **Hybrid regulation RAG:** BGE-M3 dense search and BM25 are fused with Reciprocal Rank Fusion (RRF), then mapped from child chunks to complete parent articles.
-- **Evidence-bound generation:** the Gemini composer receives only evidence authorized for the corresponding task and cohort. A unique, grounded table row may also be supplied as a fact lock through `resolved_result`.
-- **Delivery surfaces:** FastAPI supports synchronous and SSE streaming responses; React renders citations and structured data in dedicated source drawers.
-- **Reproducible evaluation:** planning, retrieval, and answer quality are reported separately with explicit denominators and provenance; source-grounded review is AI-assisted.
+The system can ask for a missing cohort or category, return low confidence or out-of-domain status, and refuse unsupported completion. An answer-shaped sentence is not proof that the requested scope was selected correctly.
+
+<a id="demo-and-hosting"></a>
+
+### 🌐 Demo & Hosting
+
+| Surface | Hosting | Link |
+|---|---|---|
+| Student-facing chatbot | Vercel with a custom domain | [Open HCMUE AI](https://hcmuebot.id.vn) |
+| Backend API documentation | Hugging Face Spaces · FastAPI Swagger UI | [Explore the API](https://anhfeee-hcmue-handbook-rag-api.hf.space/docs) |
+| Backend project page | Hugging Face Spaces | [View the Space](https://huggingface.co/spaces/AnhFeee/hcmue-handbook-rag-api) |
+
+The hosted demo may differ from the local candidate documented below. See [Deployment](#build-and-deployment-status) for packaging and release checks.
+
+<a id="at-a-glance"></a>
 
 ### 📌 At a glance
 
@@ -65,421 +87,726 @@ The project demonstrates:
 |:---:|:---:|:---:|:---:|
 | **124/135 · 91.85%** | **141/155 · 90.97%** | **0.9305 / 1 · 150 cases** | **462 parents · 3,121 children** |
 
-These are separate official-v1 local measurements, not one overall accuracy score.
-Retrieval's content-type gate did not pass; see [evaluation details](#evaluation-results).
+<p align="center"><sub>Separate official-v1 local measurements—not an overall accuracy score. Retrieval's content-type gate failed; see the evaluation section.</sub></p>
+
+- **Users:** students asking about regulations, procedures, schedules, requirements, and handbook facts.
+- **Knowledge scope:** three merged handbook cohorts: K48-K49, K50, and K51.
+- **Practical questions:** grade/scoring tables, foreign-language equivalency, office/faculty/program directories, cohort-specific regulations, and narrative procedures.
+- **Answer modes:** structured lookup, narrative retrieval, and explicit clarification or low-confidence outcomes when the request is not answerable from authorized handbook context.
+- **Runtime:** FastAPI backend, React/Vite frontend, Qdrant dense retrieval, MongoDB parent documents, optional Redis caches, a Qwen planner, and Gemini composition.
+- **Current identity:** pipeline `v73-planner-owned-structured-inputs`, query-plan normalizer `v27-task-local-cohort-fallback`, router prompt v41, answer prompt v3.24, and artifact build `build-934f1caf384f99ad96e9`.
+
+The checked-in state is a reproducible local release candidate. A public URL in frontend configuration is a deployment target, not evidence that the corresponding service is currently healthy or promoted.
+
+<a id="capabilities-and-boundaries"></a>
+
+### 🛡️ Capabilities and boundaries
+
+The assistant is designed to:
+
+- preserve cohort and category constraints through planning, normalization, retrieval, and composition;
+- use reviewed structured tables for exact catalog-style facts;
+- cite the handbook parent article supporting a narrative response;
+- expose clarification, out-of-domain, low-confidence, and error outcomes;
+- serve the same prepared answer through JSON and server-sent events (SSE).
+
+It does not claim to:
+
+- calculate a new value when the handbook only provides a formula;
+- use arbitrary outside knowledge to complete an answer;
+- guarantee that a unique fact lock selected the requested scope;
+- OCR every image or guarantee coverage for malformed or unreviewed tables;
+- provide an independent human audit or production load, latency, or SLA result;
+- prove that a configured Hugging Face, Vercel, Qdrant, or MongoDB target is currently deployed and healthy.
 
 ### 🧰 Technology stack
 
-| Layer | Technology | Responsibility |
+| Layer | Technology | Role |
 |---|---|---|
-| Web client | React, TypeScript, Vite | Chat UX, SSE rendering, citations, and structured source drawers |
-| API | FastAPI, Pydantic | Request contracts, orchestration, readiness, and streaming |
-| Planner | Qwen 3.8 27B on Groq | Typed multi-request `QueryPlan` with native JSON Schema |
-| Composer | Gemini 3.1 Flash-Lite | Evidence-bound Vietnamese answer generation |
-| Retrieval | BGE-M3, BM25, RRF, Qdrant | Cohort-filtered regulation search |
-| Knowledge stores | MongoDB, versioned JSON, local graph | Parent articles, structured catalogs, and UI references |
-| Operations | Redis, LangSmith, Hugging Face, Vercel | Cache, tracing, backend hosting, and frontend delivery |
+| Web client | React, TypeScript, Vite | Chat, incremental answers, citations, source drawers |
+| API | FastAPI, Pydantic | Request validation, admission controls, JSON/SSE delivery |
+| Planner | Qwen on Groq | Typed tasks, lookup intent, slots, and cohort scope |
+| Composer | Gemini | Answer generation from the prepared evidence packet |
+| Retrieval | BGE-M3, BM25, RRF | Semantic and lexical child search, parent selection |
+| Knowledge stores | Qdrant, MongoDB, JSON catalogs | Child vectors, full articles, structured facts |
+| Operations | Redis, LangSmith, HF Spaces, Vercel | Optional shared response cache, tracing, hosting targets |
+
+<a id="current-release-identity"></a>
+
+### 🪪 Current release identity
+
+| Component | Current repository value | Source |
+|---|---|---|
+| Python runtime | 3.11.9 | `runtime.txt` |
+| Planner | `qwen/qwen3.8-27b` through Groq; typed JSON plan | `configs/ai_router.yaml` |
+| Planner prompt | `structured-regulation-v41-explicit-request-count` | `src/retrieval/core/ai_router.py` |
+| Plan normalizer | `v27-task-local-cohort-fallback` | `src/retrieval/core/query_plan.py` |
+| Composer | `gemini-3.1-flash-lite`; temperature 0 | `configs/answer_generation.yaml` |
+| Answer prompt | `student-handbook-answer-v3.24-grounded-table-context` | `src/generation/prompt_builder.py` |
+| Pipeline | `v73-planner-owned-structured-inputs` | `src/generation/answer_pipeline.py` |
+| Embeddings | `BAAI/bge-m3`, 1,024 dimensions, normalized | `configs/retrieval.yaml` and v33 manifest |
+| Corpus/artifact snapshot | v33, identified by the manifest build below | `data/processed/metadata/build_manifest.json` |
+| Retrieval default | `vector_primary_graph_supplement` with dense + BM25 RRF; reranker off | `src/retrieval/core/retrieval_mode.py` |
+| Qdrant target | `student_handbook_semantic_v33` | `data/processed/metadata/build_manifest.json` |
+| MongoDB target | `parent_docs_v33` in database `chatbotHCMUE` | `data/processed/metadata/build_manifest.json` |
+| Local artifact build | `build-934f1caf384f99ad96e9` | `data/processed/metadata/build_manifest.json` |
+
+Experimental reranker A/B comparisons are not the official-v1 headline and do not replace the RRF deployment path. The `BAAI/bge-m3` value above is the embedding model, not an enabled reranker. Experimental comparison documents are intentionally not linked from this main-branch README.
 
 <a id="system-architecture"></a>
 
-## 🏗️ System Architecture
+## 🏗️ System architecture
 
-The API delegates to the answer service/pipeline; storage systems do not call one another. The retrieval component resolves child IDs to parent articles.
+The component map below shows ownership and dependencies, not execution order. Read the runtime flow next for the order of processing.
 
-```mermaid
-flowchart LR
-    UI["React + Vite"] -->|"POST /chat or /chat/stream"| API["FastAPI routes"]
-    API --> Service["AnswerService / AnswerPipeline"]
-    Service --> Router["AI Router<br/>Qwen Planner + plan validation"]
-    Service --> Lookup["Structured execution"]
-    Lookup --> JSON["Versioned JSON catalogs"]
-    Service --> Retrieval["Hybrid retrieval<br/>BGE-M3 + BM25 + RRF"]
-    Retrieval --> Qdrant[("Qdrant: narrative children")]
-    Retrieval --> BM25["In-process BM25 index"]
-    Retrieval --> Mongo[("MongoDB: full parents")]
-    Service --> Packet["Task/cohort evidence packet"]
-    Packet --> Composer["Gemini 3.1 Flash-Lite"]
-    Service --> Cache["Response cache<br/>Redis or local JSON"]
-    Service --> Graph["Article graph: UI references"]
-    Composer --> Service
-    Service --> API
-    API --> UI
-```
+**Diagram key:** solid arrows show the main call/data path; dotted arrows show supporting reads, optional services, or publication. Arrow labels specify what crosses the boundary. Stores do not call one another.
 
-Current local artifacts use build ID `build-934f1caf384f99ad96e9`, Qdrant `student_handbook_semantic_v33`, and MongoDB `parent_docs_v33`. Build/upload validation and readiness checks enforce declared artifact and collection identities; a matching collection name alone is not proof of remote content equality. Hosting targets are HF Spaces and Vercel; the diagram does not certify the currently deployed revision.
-
-### 🔄 Runtime flow
-
-```mermaid
+~~~mermaid
+%%{init: {"flowchart": {"wrappingWidth": 180, "nodeSpacing": 20, "rankSpacing": 25, "padding": 8}}}%%
 flowchart TD
-    Request["Query + selected cohort + history"] --> Input["Input/cohort normalization"]
-    Input --> Router["Router normalization + plan cache<br/>Qwen Planner on cache miss"]
-    Router --> Validate["Canonicalize and validate QueryPlan"]
-    Validate --> Tasks["Execute each task and requested cohort"]
-    Tasks --> S["Structured catalog lookup<br/>optional grounded resolved_result"]
-    Tasks --> R["Regulation retrieval"]
-    Tasks --> C["Clarification / OOD / uncovered task"]
-    R --> Search["Cohort-filtered dense + BM25"]
-    Search --> RRF["RRF: up to 24 fused children"]
-    RRF --> Parents["Group children; resolve up to 5 parents<br/>per retrieval call"]
-    Parents --> Merge["Aggregate task results + coverage"]
-    S --> Merge
-    C --> Merge
-    Merge --> Gate{"Request-level guardrails"}
-    Gate -->|"Terminal outcome"| Safe["Clarify / abstain / error / OOD<br/>without Composer"]
-    Gate -->|"Answerable evidence"| Packet["Build bounded task/cohort packet"]
-    Packet --> Cache{"Evidence-bound response cache"}
-    Cache -->|"Hit"| Cached["Reuse answer; skip Composer"]
-    Cache -->|"Miss"| Compose["One composition stage<br/>Gemini sync or streaming"]
-    Compose --> Final["Format answer, citations and status<br/>cache successful result"]
-    Merge -.-> Graph["Related references for UI only"]
-    Final --> Response["JSON or SSE response"]
-    Safe --> Response
-    Cached --> Response
-    Graph --> Response
-```
+    UI["React / Vite<br/>Chat, citations, source drawers"] -->|HTTP / SSE| API["FastAPI routes<br/>Schemas, capacity, rate limits"]
+    API --> Pipeline["AnswerService / AnswerPipeline<br/>Shared lifecycle + orchestration"]
+    Pipeline --> Planner["AI Router + Normalizer<br/>Qwen plan / validation<br/>Local router cache"]
+    Pipeline --> Structured["Structured dispatcher<br/>Domain lookup functions"]
+    Pipeline --> Retriever["ChildParentHybridRetriever<br/>Dense + BM25 + RRF"]
+    Structured -. reads .-> Catalogs[("JSON catalogs<br/>Tables, directories, formulas")]
+    Retriever -. searches / loads .-> RetrievalStores[("Qdrant children<br/>In-process BM25<br/>MongoDB parents")]
+    Pipeline --> Packet["Prompt builder<br/>Task/cohort evidence + citations"]
+    Packet --> Composer["Gemini client<br/>Answer generation / streaming"]
+~~~
 
-- Sync and streaming share `prepare_answer`; their generation/delivery adapters remain separate.
-- Response-cache lookup happens **after planning/retrieval and evidence construction**. Its key includes evidence and version identity; it is not a shortcut around all retrieval.
-- Mixed questions can preserve answerable tasks alongside a clarification need. Task-level missing information does not necessarily terminate the entire request.
-- “One composition stage” means one composed answer across tasks, not a guarantee of one provider HTTP attempt: retries/key rotation can occur.
-- RRF and parent selection operate per retrieval call; aggregation can contain sources from multiple tasks/cohorts before context limits are applied.
+| Supporting component | Connection and purpose |
+|---|---|
+| Router cache | AI Router reads/writes local cached plans before a provider call. |
+| Response cache | AnswerPipeline reads completed answers after evidence preparation; Redis or local JSON. |
+| LangSmith | API-side tracing and feedback use bounded background submission; optional, outside the answer evidence path. |
+| Health/readiness | Separate API routes check required configuration and artifact identities. |
 
-### 🛡️ Core contracts
+The pipeline collects results from the planner, lookups, and retriever; the diagram's outgoing component arrows denote calls, not concurrent execution. Gemini output returns through the pipeline/API to the client. Health/readiness checks verify required configuration and artifact contracts separately from chat. Graph-related references follow a separate UI-only path shown in the retrieval diagram.
 
-- Each planned task owns its question, mode, cohorts, and structured capability when applicable.
-- Multiple cohorts are executed inside one logical task instead of multiplying task count.
-- Structured lookup always exposes the applicable small catalog or matching records. `resolved_result` is added only when grounded input, applicability, table selection, and a unique row are all deterministic.
-- Regulation evidence is filtered by cohort before top-k selection and remains bound to its task.
-- Graph traversal supplies related-reference navigation to the UI; graph results are not Composer evidence.
-- Planner failure safely falls back to one regulation-RAG task using the original query and is recorded in telemetry.
+### Layers and ownership
 
+| Layer | Responsibility | Representative code |
+|---|---|---|
+| Presentation | Collects a question, shows citations/status, and renders related-source or graph UI. | `frontend/`, `frontend/src/` |
+| API | Exposes `/chat`, `/chat/stream`, health/readiness/artifact checks, and feedback. | `src/api/routes/`, `src/api/main.py` |
+| Service | Lazily owns one shared answer pipeline for synchronous and streaming requests. | `src/services/answer_service.py` |
+| Planner | Interprets requests into typed tasks, slots, constraints, and output shape. | `src/retrieval/core/ai_router.py` |
+| Normalizer | Canonicalizes and validates planner output; it is not a second semantic planner. | `src/retrieval/core/query_plan.py` |
+| Structured resolver | Executes a validated lookup against reviewed catalogs and exception rules. | `src/retrieval/core/structured_dispatcher.py`, `formula_lookup.py` |
+| Retriever | Searches narrative children with dense/BM25 RRF, then expands to parent context. | `src/retrieval/core/hybrid_pipeline.py` |
+| Evidence packet | Applies authorized scope, citations, context limits, and prompt guards. | `src/generation/answer_pipeline.py`, `prompt_builder.py` |
+| Composer | Generates an answer from the packet without performing retrieval; instructed to ground claims in supplied evidence. | `src/generation/answer_pipeline.py` |
+| Graph UI | Uses related-source/graph information for navigation or display; graph-derived sources are not Composer evidence. | `frontend/`, retrieval metadata |
+
+<a id="runtime-flow"></a>
+
+### 🔄 Runtime flow: from question to answer
+
+For an answerable request with no response-cache hit, the backend follows this main path. A question can use structured lookup, regulation retrieval, or both.
+
+~~~mermaid
+%%{init: {"flowchart": {"wrappingWidth": 180, "nodeSpacing": 20, "rankSpacing": 25, "padding": 8}}}%%
+flowchart TD
+    Input["Question + selected cohort + history"] --> API["API validation + admission controls"]
+    API --> Prepare["AnswerPipeline.prepare_answer<br/>Input/cohort normalization"]
+    Prepare --> Planner["AI Router<br/>Pre-Planner slang normalization<br/>Router cache or Qwen call"]
+    Planner --> Normalize["Post-Planner QueryPlan normalization<br/>Tasks, slots, cohorts, validation"]
+    Normalize --> Execute["execute_task<br/>Dispatch each task and cohort"]
+    Execute --> Structured["Structured task<br/>JSON lookup + optional fact lock"]
+    Execute --> RAG["RAG task<br/>Retrieve parent evidence"]
+    Execute --> Clarify["Clarify task<br/>Missing-information question"]
+    Structured --> Merge["Merge task results<br/>Evidence, coverage, source identity"]
+    RAG --> Merge
+    Clarify --> Merge
+    Merge --> Guard["Request-level guards<br/>Stop if no answer can be composed"]
+    Guard -->|answerable / partly answerable| Packet["Select citations + build bounded packet<br/>Preserve task/cohort associations"]
+    Packet --> Cache["Check evidence-bound response cache"]
+    Cache -->|miss| Compose["Gemini Composer<br/>Sync generate or streaming chunks"]
+    Compose --> Final["Format answer + citations + status<br/>Cache successful result"]
+    Final --> Output["JSON response / SSE final metadata"]
+~~~
+
+1. **Receive:** the API accepts the question, selected cohort, and optional conversation history.
+2. **Plan:** Planner identifies what the student wants and separates multiple requests. Normalizer validates and canonicalizes that plan before execution.
+3. **Find evidence:** structured tasks look up reviewed JSON tables or directory records. RAG tasks search narrative children with dense + BM25 RRF, then load the corresponding parent articles from MongoDB.
+4. **Prepare context:** merge the task results without losing their cohort boundaries, check whether they can support an answer, and build a context-limited evidence packet. Structured evidence can include the selected table plus an exact lookup result; parent articles can include reviewed tables.
+5. **Compose:** Gemini uses the packet to answer the covered requests. It does not perform another retrieval step.
+6. **Deliver:** return the answer, citations, and status through JSON or SSE. Streaming delivers text incrementally before final metadata.
+
+**Shortcuts and failures are separate from the main path:**
+
+| Situation | What happens |
+|---|---|
+| The whole request needs clarification, is out of scope, or has insufficient evidence | Return an explicit outcome without calling Composer. Retrieval errors also stop before composition. |
+| Only part of a multi-request question needs clarification | Composer can answer the covered parts and ask for the missing information. |
+| Response cache hit | After retrieval, guards, and packet preparation, reuse the saved answer instead of calling Composer. |
+| Composer/provider failure | Return an error/fallback outcome; do not cache it as a successful answer. |
+
+Provider retries do not represent extra reasoning stages. These steps describe logical processing, not every individual SSE event.
+
+<a id="structured-execution"></a>
+
+### 🧩 Structured execution
+
+This is the structured branch inside task execution. Catalogs define data and applicability; domain lookup functions perform the supported operations. A directory search is not a numeric table conversion.
+
+~~~mermaid
+%%{init: {"flowchart": {"wrappingWidth": 180, "nodeSpacing": 20, "rankSpacing": 25, "padding": 8}}}%%
+flowchart TD
+    Task["Validated structured task<br/>lookup_type, operation, slots, cohorts"] --> Scope["Execute within task cohort<br/>Keep task-local query and inputs"]
+    Scope --> Dispatch["structured_dispatcher<br/>Choose lookup implementation"]
+    Dispatch --> Tables["Table lookups<br/>Scoring, conduct, language<br/>Scholarship, study duration"]
+    Dispatch --> Directory["Catalog matching<br/>Office, faculty, program, service"]
+    Dispatch --> Formula["Formula lookup<br/>Formula + variables, no calculation"]
+    Tables -. reads .-> Registry[("Structured table registry<br/>Reviewed rows + applicability")]
+    Directory -. reads .-> Profiles[("Directory profiles<br/>Names, aliases, contact fields")]
+    Tables --> Resolution["StructuredResolution<br/>Result + source identity"]
+    Directory --> Resolution
+    Formula --> Resolution
+    Resolution --> Covered["Evidence available<br/>Full selected table / matching records<br/>Optional resolved_result"]
+    Resolution --> Missing["Missing required information<br/>Clarification / uncovered task"]
+    Covered --> Packet["Task result → merged evidence packet<br/>Composer receives structured evidence"]
+    Missing --> Packet
+~~~
+
+`resolved_result` is added only when the lookup can determine the result under its validated-input contract. Evidence-only results do not automatically fail: whole-table requests and non-unique results can still be useful. Missing information that prevents a safe lookup is represented separately; it must not be turned into a guessed fact lock.
+
+- **Planner:** interprets the request and owns semantic task decomposition. Plans contain bounded tasks and context.
+- **Normalizer:** canonicalizes aliases, validates enums and required fields, rejects malformed plans, and applies deterministic defaults. It does not reinterpret the request as a new semantic planner.
+- **Resolver:** executes the validated structured lookup against the appropriate catalog. `formula_lookup.py` returns formula, variables, and source rule; it does not calculate a result absent from the handbook.
+- **Fact locks:** a unique structured match is passed as a fact-lock/resolved result and the prompt instructs Composer not to rewrite it, but neither is a guarantee that the intended cohort, category, or other scope was selected.
+- **Structured evidence:** the current path keeps the full selected table or matching directory records alongside any fact lock. It does not replace the table with a reduced row-only packet or bypass Composer. Mixed structured/RAG tasks are composed together, with task/cohort boundaries retained.
+- **Composer:** receives authorized evidence and a prompt guard. The prompt instructs it to preserve structured results, but the official audit records known omissions, unsupported additions, and contradictions; exact preservation is not guaranteed.
+
+<a id="retrieval-contract"></a>
+
+### 🔎 Retrieval contract
+
+~~~mermaid
+%%{init: {"flowchart": {"wrappingWidth": 180, "nodeSpacing": 20, "rankSpacing": 25, "padding": 8}}}%%
+flowchart TD
+    Task["RAG task query + cohort"] --> Dense["BGE-M3 query embedding<br/>Qdrant dense search"]
+    Task --> Sparse["In-process BM25<br/>Sparse regulation search"]
+    Dense --> Fusion["Union child IDs + Reciprocal Rank Fusion<br/>k = 60; retain up to 24 by default"]
+    Sparse --> Fusion
+    Fusion --> Group["Group ranked children by parent ID<br/>Load and validate parent scope"]
+    Mongo[("MongoDB parent_docs_v33<br/>Full articles + reviewed tables")] -. parent records .-> Group
+    Group --> Primary["Primary results<br/>Up to 5 parents per default call<br/>Focused child references + full parent text"]
+    Primary --> Packet["Task/cohort evidence packet<br/>Context budget → Composer"]
+    Primary -. seed parent IDs .-> Graph["Graph traversal + scope filters<br/>Related-source supplement"]
+    Edges[("Local document_edges.json")] -. reads .-> Graph
+    Graph --> Related["related_references<br/>UI navigation only; not Composer evidence"]
+~~~
+
+Dense and BM25 searches use cohort/content filters. The default search limit is 24 per ranking source and the fused list is capped at 24 before parent grouping. BM25 is initialized from Qdrant child payloads into an in-process index; it is not a second remote database. The implementation is vector-primary: an empty valid dense seed set returns no results before sparse fusion. The diagram shows data dependencies, not parallel search scheduling.
+
+The default `ChildParentHybridRetriever` fuses dense and BM25 rankings with RRF (`k=60`). A retrieval call uses up to five final parent articles after candidate searches; compound plans may make multiple task-level calls and aggregate results. “Top five” means per retrieval call, not five for every compound question.
+
+A child hit expands to its full parent article, including reviewed table content, subject to task/cohort scope and context budget. Focused child text locates the article; it is not a substitute for the parent record.
+
+Graph neighbors are context-only related sources for navigation and display. They do not become Composer evidence. The default mode is `vector_primary_graph_supplement`; full/no-graph modes are explicit ablations. The deployment path has no enabled reranker.
+
+<a id="runtime-behavior"></a>
+
+### ⚙️ Cache, delivery and failure behavior
+
+At request time, `AnswerService` lazily shares one `AnswerPipeline` for both API delivery modes. `prepare_answer` performs planning, task execution, retrieval or structured resolution, scope guards, citation selection, and evidence-packet construction before the JSON or SSE adapter delivers the result. The API surface is `POST /chat`, `POST /chat/stream`, the health/readiness/artifact checks, and feedback.
+
+| Concern | Contract |
+|---|---|
+| Router cache | Caches Qwen planner decisions; controlled by `configs/ai_router.yaml` and `STUDENT_RAG_DISABLE_ROUTER_CACHE`. |
+| Response cache | Caches a completed answer after retrieval and evidence selection, keyed with question, selected citations, evidence/context fingerprint, cohort, pipeline version, and prompt version. |
+| Terminal versus partial clarification | When the whole plan needs clarification, `prepare_answer` returns a terminal clarification without Composer. In a mixed plan, covered units can coexist with a `needs_clarification` unit; the evidence packet lets Composer answer covered units and ask only for the missing unit's clarification. |
+| Provider retry | Key rotation/HTTP retry belongs to provider calls; it does not create multiple composition stages in one successful response. |
+| Sync/stream delivery | Both paths share preparation, retrieval, guards, and evidence construction; JSON and SSE use separate delivery adapters afterward. |
+
+The official-v1 evaluation disabled quality caches. The normal local configuration can enable caches; that is not the evaluation configuration.
+
+<a id="data-and-preprocessing"></a>
 <a id="data-and-repository-structure"></a>
 
 ## 🗂️ Data and Repository Structure
 
-### 📚 Current data snapshot
+The repository separates **online answer handling**, **offline data preparation**, and **evaluation**. Start with the layout below, then use the source-reading guide to follow one request through the backend.
 
-| Artifact | Count | Purpose |
-|---|---:|---|
-| Parent articles | 462 | Complete context for answers and citations |
-| Child chunks | 3,121 | Fine-grained dense and BM25 retrieval |
-| Structured table catalogs | 35 | Deterministic cohort-aware lookup |
-| Article graph edges | 78 | Related-reference navigation in the UI |
-| Embedding | BAAI/bge-m3, 1,024 dimensions | Semantic dense retrieval |
-
-Supported regulation tables remain available in versioned JSON and full MongoDB parent articles. Reviewed physical table regions are removed from the narrative view used for child embedding; policy prose containing numbers is retained. Directory catalogs stay on their structured path. See the [parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md).
+<a id="repository-layout"></a>
 
 ### 🧭 Repository layout
 
-```text
+This is a selected map of the current checkout, not an exhaustive listing. Cache folders and local outputs may not exist in a fresh clone.
+
+~~~text
 student_handbook_rag/
-├── configs/                         # Planner, generation, retrieval, and structured contracts
+├── configs/                     # Model settings, aliases, lookup and retrieval contracts
 ├── data/
-│   ├── raw/                         # Source handbooks (not deployed)
-│   ├── processed/                   # Tables, parents, chunks, graph, and build manifest
-│   └── eval/
-│       └── official_v1/             # Current system evaluation, results, and provenance
-├── docs/                            # Architecture and historical evaluation reports
-├── frontend/                        # React + TypeScript + Vite application
-├── scripts/                         # Build, audit, evaluation, publishing, and deployment tools
+│   ├── raw/                     # Source handbook PDFs; offline build inputs
+│   ├── curated/                 # Reviewed corrections, aliases and table-region metadata
+│   ├── processed/               # Generated, versioned knowledge artifacts
+│   │   ├── tables/              # Structured tables, registry and formula rules
+│   │   ├── directories/         # Office/faculty/service profiles and program catalogs
+│   │   ├── chunks/              # Full parents, narrative view and searchable children
+│   │   ├── graphs/              # Related-article edges for UI navigation
+│   │   ├── amendments/          # Amendment artifacts
+│   │   └── metadata/            # Build manifest, identities and audit metadata
+│   ├── eval/
+│   │   ├── official_v1/         # Current evaluation dataset, results and provenance
+│   │   └── reports/             # Local run outputs; not necessarily tracked in Git
+│   └── cache/                   # Runtime caches and provider key-pool state
 ├── src/
-│   ├── api/                         # FastAPI routes and health checks
-│   ├── extraction/                  # Structured tables and directories
-│   ├── generation/                  # Evidence packets, prompts, composer, and citations
-│   ├── ingestion/                   # PDF, vector, parent-document, and graph ingestion
-│   ├── preprocessing/               # Handbook structure and applicability processing
-│   ├── retrieval/                   # Planner, structured lookup, and hybrid RAG
-│   └── services/                    # Application-facing orchestration services
-└── tests/                           # Unit, integration, and regression tests
-```
+│   ├── api/                     # HTTP/SSE routes, schemas, admission and health checks
+│   ├── services/                # Application-facing shared pipeline lifecycle
+│   ├── generation/              # Answer orchestration, evidence prompts and Composer
+│   ├── retrieval/
+│   │   ├── core/                # Planner, validation, structured lookup and hybrid RAG
+│   │   └── vectorstore/         # Storage adapters, including MongoDB parent access
+│   ├── common/                  # Shared cohort, source-identity and configuration helpers
+│   ├── preprocessing/           # Handbook structure and source preparation
+│   ├── extraction/              # Structured-data extraction
+│   ├── chunking/                # Chunk construction
+│   ├── ingestion/               # PDF loading, embeddings and graph ingestion
+│   └── evaluation/              # Evaluation suites and supporting logic
+├── frontend/                    # React + TypeScript + Vite application
+├── scripts/                     # Build, audit, evaluation, upload and deploy entrypoints
+├── tests/                       # Unit, integration and regression coverage
+├── docs/                        # Contracts, maintenance boundaries and historical reports
+├── work/                        # Ignored local experiments and review outputs
+├── Dockerfile                   # Backend container definition
+├── .dockerignore                # Direct Docker-build exclusions
+├── requirements*.txt            # Runtime, development and evaluation dependencies
+└── constraints-runtime.txt      # Runtime dependency constraints
+~~~
 
-The current runtime/build boundary and intentionally deferred cleanup work are
-documented in [Technical Debt and Maintenance Boundary](./docs/TECHNICAL_DEBT.md).
+| Boundary | What belongs here | What it is not |
+|---|---|---|
+| Online runtime | API/service, planning, lookup, retrieval, composition and storage clients | A per-request PDF parser or corpus rebuild |
+| Offline build | Source PDFs, curated reviews, extraction, chunking and build scripts | A live-answer fallback mechanism |
+| Knowledge artifacts | Versioned JSON, parents, children, graph and manifest | Interchangeable copies: each representation has a different role |
+| Evaluation | Dataset, evaluator, run outputs and provenance | Runtime evidence or a guarantee of deployment health |
+| Local working state | Cache and `work/` outputs | Authoritative source data or files to deploy wholesale |
 
-### 🔨 Preprocessing and data build pipeline
+Deploy packaging uses an explicit allowlist, not this entire tree. Generated artifacts can still be required runtime inputs; raw directory artifacts may also be required for rebuilding. Do not delete files merely because chat does not read them directly. See [Technical Debt and Maintenance Boundary](docs/TECHNICAL_DEBT.md).
 
-The build is source-driven and cohort-specific, with curated section boundaries, catalog metadata, and reviewed table regions. It is not an unrestricted automatic OCR/table-understanding pipeline.
+<a id="source-reading-guide"></a>
 
-```mermaid
+### 📖 Suggested source-reading order
+
+Follow one ordinary question first, then explore structured and RAG branches separately. These links identify entrypoints; they are not a claim that each module is a separate service.
+
+| Step | Start here | What to look for |
+|---|---|---|
+| 1. Request contract | [schemas.py](src/api/schemas.py), [chat.py](src/api/routes/chat.py), [chat_stream.py](src/api/routes/chat_stream.py) | Accepted inputs, validation, sync/SSE delivery and error boundaries |
+| 2. Lifecycle and orchestration | [answer_service.py](src/services/answer_service.py), [answer_pipeline.py](src/generation/answer_pipeline.py) | Shared initialization, `prepare_answer`, task execution and final output |
+| 3. Interpretation and validation | [ai_router.py](src/retrieval/core/ai_router.py), [query_plan.py](src/retrieval/core/query_plan.py) | Planner schema/prompt, tasks, cohorts and normalization |
+| 4a. Structured branch | [structured_dispatcher.py](src/retrieval/core/structured_dispatcher.py), [lookup registry](configs/structured_lookup_registry.yaml) | Capability dispatch, applicability, evidence-only results and fact locks |
+| 4b. RAG branch | [hybrid_pipeline.py](src/retrieval/core/hybrid_pipeline.py) | Dense/BM25 fusion, parent lookup and separate related references |
+| 5. Answer generation | [prompt_builder.py](src/generation/prompt_builder.py), [gemini_client.py](src/generation/gemini_client.py) | Evidence packet, instructions, provider retries and streaming |
+| 6. Build and reproduce | [build_multi_cohort.py](scripts/build_multi_cohort.py), [parent/child contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) | How source material becomes the runtime artifacts |
+
+Read the matching tests after each component to see expected behavior and edge cases. For metrics, start with [official-v1 results](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md), then follow its provenance rather than assuming the newest local report is the published measurement.
+
+### v33 artifact snapshot
+
+| Artifact | Count or value | Runtime role |
+|---|---:|---|
+| Full parent articles | 462 | Parent context and MongoDB documents |
+| Narrative child chunks | 3,121 | Qdrant embedding/search input |
+| Reviewed structured tables | 35 | Deterministic lookup; not Qdrant vectors |
+| Graph edges | 78 | Related-source/navigation context |
+| Cohorts | K48-K49: 123 parents / 877 children; K50: 166 / 1,082; K51: 173 / 1,162 | Manifest build partition |
+| Embedding | `BAAI/bge-m3`, 1,024 dimensions, normalized | Dense child retrieval |
+| Storage targets | Qdrant `student_handbook_semantic_v33`; MongoDB `parent_docs_v33` | Versioned promotion targets |
+| Build ID | `build-934f1caf384f99ad96e9` | Cross-store identity |
+
+The cohort labels and counts above are the manifest's source-of-truth labels. The manifest/provenance files retain the reconstruction hashes. The [parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) defines the separation invariant used by the local artifacts.
+
+### Representations and separation
+
+| Representation | Purpose | Separation |
+|---|---|---|
+| `data/processed/chunks/all_docstore_items.json` | Full parent articles, including reviewed table material. | Parent context and MongoDB; not child embedding input. |
+| `data/processed/chunks/narrative_docstore_items.json` | Narrative parent view without separated reviewed table regions. | Narrative retrieval artifacts. |
+| `data/processed/chunks/child_parent_chunks.json` | Searchable narrative children linked to parent IDs. | Embedded in Qdrant; child hits expand to parents. |
+| `data/processed/tables/structured_tables_registry.json` and reviewed JSON | Exact catalog rows and formula rules. | Resolver input; not Qdrant vectors. |
+| `data/processed/graphs/document_edges.json` | Related-source edges. | UI/context navigation, never Composer evidence. |
+| `data/processed/metadata/build_manifest.json` | Counts, hashes, targets, embedding contract, and build ID. | Audit and promotion identity. |
+
+<a id="data-build-pipeline"></a>
+
+### 🔨 Build pipeline
+
+Source transformation is separate from publication and runtime promotion.
+
+~~~mermaid
+%%{init: {"flowchart": {"wrappingWidth": 180, "nodeSpacing": 20, "rankSpacing": 25, "padding": 8}}}%%
 flowchart TD
-    PDF["Handbook PDFs + cohort-specific section config"] --> Pages["Extract page text"]
-    Pages --> Sections["Parse selected document / chapter / article sections"]
-    Sections --> Extract["Extract structured records + initial chunks/docstore"]
-    Extract --> Merge["Merge cohorts; namespace IDs and parent references<br/>validate metadata and program-directory mapping"]
-    Merge --> Catalog["Build structured table layer and directory profiles"]
-    Catalog --> Review["Validate curated table regions<br/>source hashes + exact spans + JSON projections"]
-    Review --> Full["Full parent articles<br/>prose + reviewed readable tables"]
-    Review --> Narrative["Narrative view<br/>remove reviewed physical table regions only"]
-    Narrative --> Child["Build narrative child chunks + parent links"]
-    Full --> Graph["Extract article-reference graph"]
-    Full --> Audit["Separation audit + manifest/build ID<br/>table quality + deploy-artifact checks"]
-    Child --> Audit
-    Catalog --> Audit
+    Sources["Handbook PDFs + cohort section config"] --> Parse["Extract PDF pages → parse sections<br/>Extract records → initial chunks"]
+    Parse --> Merge["Merge three cohorts<br/>Namespace IDs and source references"]
+    Merge --> Structured["build_structured_table_layer<br/>Tables, registry, directory profiles"]
+    Reviews["Curated JSON + table-region reviews"] -. reviewed inputs .-> Structured
+    Structured --> Split["build_parent_child_artifacts<br/>Apply reviewed table separation"]
+    Reviews -. exact region / source checks .-> Split
+    Split --> Parents["all_docstore_items.json<br/>Full parent articles with reviewed tables"]
+    Split --> Children["child_parent_chunks.json<br/>Narrative children + parent links"]
+    Parents --> Graph["Graph extraction<br/>document_edges.json"]
+    Children --> Audit["Build manifest + integrity audits<br/>Counts, hashes, parent-child links"]
     Graph --> Audit
-    Audit --> Ready["Validated local artifacts"]
-    Ready --> Publish{"PUSH_REMOTE enabled?"}
-    Publish -->|"No"| Local["Local build only"]
-    Publish -->|"Yes"| Preflight["Remote preflight"]
-    Preflight --> Vector["Embed narrative children with BGE-M3<br/>upload Qdrant"]
-    Vector --> ParentUpload["Upload full parents to MongoDB"]
-    ParentUpload --> Verify["Verify remote build and parent-child links"]
-```
+    Structured -. catalog artifacts .-> Audit
+    Audit -. PUSH_REMOTE=1 .-> Preflight["Remote target preflight"]
+    Preflight --> Upload["push_to_qdrant: embed children<br/>push_to_mongo: upload full parents"]
+    Upload --> Verify["verify_remote_build<br/>Verify paired collections before promotion"]
+~~~
 
-| Stage | Entry point / contract | Output or responsibility |
-|---|---|---|
-| Per-PDF extraction | `scripts.extract_pdf_pages`, `scripts.parse_structure` | Page text and selected structured sections using each cohort's config |
-| Initial extraction/chunking | `scripts.extract_structured_data`, `scripts.build_chunks` | Source records, initial chunks and parent docstore |
-| Multi-cohort consolidation | `scripts.build_multi_cohort` | Cohort-qualified IDs, source-parent references, directory enrichment and validation |
-| Structured artifacts | `scripts.build_structured_table_layer` | Lookup tables, registry and runtime directory profiles |
-| Parent/child separation | `scripts.build_parent_child_artifacts --publish-artifacts` | Final local parents, narrative children and separation audit; this flag does **not** upload |
-| Graph and identity | `src.ingestion.graph_extractor`, `scripts.build_artifact_manifest` | Related-reference edges, file hashes and shared build identity |
-| Publication | `scripts.push_to_qdrant`, `scripts.push_to_mongo`, `scripts.verify_remote_build` | Validated versioned remote stores; no automatic runtime promotion |
+The detailed sequence is:
 
-**Three representations, three purposes:**
+1. Parse selected handbook sections from source PDFs and cohort configuration.
+2. Extract structured records and create initial chunks.
+3. Merge cohort artifacts and namespace source references; build and validate the structured table layer, registry, and directory profiles.
+4. Build the reviewed parent/child representations and their links: retain reviewed table material in full parents and structured JSON, and create narrative children without the separated table regions.
+5. Build graph relationships from the stable IDs and separated representations.
+6. Write the manifest and integrity/audit files before optional remote upload.
+7. Optionally preflight empty/versioned Qdrant and MongoDB targets, upload, and verify. Remote writes are opt-in and separate from runtime promotion.
 
-- `all_docstore_items.json` → MongoDB: complete supported articles, including reviewed tables.
-- `child_parent_chunks.json` → Qdrant and local lexical retrieval: narrative children, not full tables or table-summary fallback chunks.
-- Structured JSON tables/directories → deterministic lookup: authoritative rows, fields, source binding and applicability.
+There is no automatic OCR-coverage claim. Image-based or malformed tables require reviewed JSON/regions. Tables are not silently converted into fallback narrative chunks, and policy prose/numbers are retained as source material.
 
-`narrative_docstore_items.json` is a build intermediate, **not** the MongoDB upload input. Numeric policy prose stays in narrative text; only explicitly reviewed physical table regions are removed. Image-based or malformed tables are not assumed to be recovered automatically: supported table projections depend on reviewed source/JSON metadata. Source or registry drift fails validation instead of guessing new boundaries.
+<a id="evaluation"></a>
 
-The manifest is built **before uploads**. Publication is not a cross-database transaction: if either store fails, do not switch the application to the partial pair. Keep the previous version until both stores are verified. See the [full build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) and [publishing commands](#data-build-and-publishing).
+## 📊 Evaluation
 
-<a id="runtime-design"></a>
+The authoritative current report is [official-v1 results and limitations](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md), with machine-readable identities and hashes in [official-v1 provenance](data/eval/official_v1/RESULTS_PROVENANCE.json).
 
-## ⚙️ Runtime Design
+The report covers three local quality suites: structured contract/execution, end-to-end retrieval (including routing and structured evidence), and Generate + Judge. Judge uses `openai/gpt-oss-120b`, distinct from the Gemini Composer. Their denominators and limitations are kept separate below.
 
-### 🧠 Planning and structured lookup
+### 🪪 Evaluation identity and reading guide
 
-The Planner distinguishes a table value from the policy governing that value. Native JSON Schema constrains the plan structure; the normalizer canonicalizes and validates the plan before execution. Schema-valid slots do not guarantee that the Planner interpreted the question correctly.
+These numbers describe the local evaluation identity documented by the official report. They are not production certification, independent holdout accuracy, or a current HF/Vercel performance claim.
 
-For structured tasks, runtime—not the Planner—selects the applicable catalog and resolves data:
+The official runs used normalizer `v26-planner-owned-semantics`. The current checkout adds the v27 cohort-fallback fixes, cohort metadata/stream call-status corrections, and removal of the disabled PhoRanker integration. These changes have targeted regression coverage, not a new full official evaluation; the recorded metrics below are unchanged measurements of the report's version.
 
-1. validate the task inputs, cohort, and applicability;
-2. select the declared structured capability;
-3. expose the applicable table or records to the UI and Composer;
-4. create `resolved_result` only for a uniquely resolved, evidence-grounded row;
-5. otherwise retain the available catalog or request clarification instead of guessing.
+| Item | Measured identity |
+|---|---|
+| Runtime HEAD recorded by the runs | `2a293721ff7998ba5ace0d81ca194d10f67581f3` |
+| Pipeline / normalizer | `v73-planner-owned-structured-inputs` / `v26-planner-owned-semantics` |
+| Planner / Composer prompts | v41 / v3.24 |
+| Composer / Judge | `gemini-3.1-flash-lite` / `openai/gpt-oss-120b` |
+| Corpus | v33; `build-934f1caf384f99ad96e9` |
+| Retrieval | `vector_primary_graph_supplement`; no reranker |
+| Quality caches | Router and response caches disabled |
 
-### 🔎 Retrieval and grounding
+Dataset and report hashes are recorded separately in provenance: the commit alone does not identify worktree gold revisions. This is a development evaluation, not an independent holdout. **Pass rates, retrieval ranks, Judge rubric means, and serving outcomes measure different things and are not combined into a single score.**
 
-The default retrieval path uses `vector_primary_graph_supplement`:
+### 1. 🧭 Deterministic contract and execution — 135 cases
 
-1. Qdrant and BM25 apply cohort filters before top-k selection.
-2. Each branch returns at most 24 child candidates.
-3. RRF retains up to 24 fused child candidates.
-4. Children are grouped into at most five primary parent articles.
-5. The evidence packet applies task/cohort/source guards, deduplication, and bounded context allocation.
-6. The Composer cannot retrieve additional sources or promote UI-only graph references into answer evidence.
+**Purpose:** test task interpretation, route/capability selection, cohort/applicability, structured execution, and applicable result assertions. Composer output is not the criterion for passing this suite.
 
-**No reranker is enabled in the default runtime or the official-v1 evaluation.** RRF is the release path; experimental reranker results are not official headline metrics.
+| Metric | Result | Meaning |
+|---|---:|---|
+| Case contract pass | **124/135 · 91.85%** | Cases satisfying their applicable assertions; 11 cases fail at least one assertion. |
+| `resolved_result` assertion | **44/50 · 88.00%** | Exact lookup-result assertions, only on the 50 eligible cases. |
+| Planner fallback | **0/135** | No recorded safe-fallback plan in this run; does not imply every plan was correct. |
+| API errors | **0/135** | No recorded provider/API failure; separate from semantic correctness. |
 
-<a id="api"></a>
+Non-applicable assertions are **N/A**, not automatic passes. A correct fact lock for a selected table does not establish that the table's scope was the intended one.
 
-## 🔌 API
+#### Breakdown by cohort and question difficulty
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| `GET` | `/health` | Liveness and container status |
-| `GET` | `/health/readiness` | Artifact, dependency, and collection-identity checks |
-| `GET` | `/health/artifacts` | Admin-only artifact details |
-| `POST` | `/chat` | Synchronous response |
-| `POST` | `/chat/stream` | SSE response through the shared preparation core |
-| `POST` | `/chat/feedback` | Product feedback without intentionally collecting sensitive data |
+| Dimension | Group | Passed / cases | Pass rate |
+|---|---|---:|---:|
+| Cohort | K48–K49 | 44/45 | 97.78% |
+| Cohort | K50 | 41/45 | 91.11% |
+| Cohort | K51 | 39/45 | 86.67% |
+| Difficulty | Realistic | 102/108 | 94.44% |
+| Difficulty | Stress | 22/27 | 81.48% |
 
-QueryPlan, task results, and evidence diagnostics are returned only when `include_debug=true`.
+#### Breakdown by capability / case group
 
-<a id="evaluation-results"></a>
-
-## 📊 Evaluation Results
-
-### Official v1 local evaluation
-
-The current official-v1 report covers three local quality suites. These are development measurements, not an independent holdout or production certification; the evaluated runtime identity and input/report hashes are recorded in the [provenance manifest](./data/eval/official_v1/RESULTS_PROVENANCE.json).
-
-| Suite | Sample | Current result |
+| Group | Passed / cases | Pass rate |
 |---|---:|---:|
-| Deterministic | 135 | **124/135 (91.85%)** contract pass; not final-answer accuracy |
-| Retrieval | 155 | **141/155 (90.97%)** Hit@5; MRR **0.8333**; content-type **148/155 (95.48%)** vs 98% gate |
-| Generate + Judge | 150 | Mean Judge correctness **0.9305**; a 0–1 rubric mean, not exact-answer accuracy or pass rate |
-| Production60 | 60 authored cases | **Not run** in this scope; no current production metric |
+| Compound | 10/15 | 66.67% |
+| Conduct classification | 9/9 | 100.00% |
+| Faculty | 5/6 | 83.33% |
+| Foreign language | 10/11 | 90.91% |
+| Formula lookup (not calculation) | 6/6 | 100.00% |
+| Missing input | 6/6 | 100.00% |
+| Office | 9/9 | 100.00% |
+| Out of domain | 6/6 | 100.00% |
+| Regulation/policy | 12/12 | 100.00% |
+| Program | 9/9 | 100.00% |
+| Scholarship | 9/12 | 75.00% |
+| Scoring/classification | 16/17 | 94.12% |
+| Student service | 9/9 | 100.00% |
+| Study duration | 8/8 | 100.00% |
 
-See the full [official-v1 results and limitations](./data/eval/official_v1/RESULTS_AND_LIMITATIONS.md) for denominators, status counts, and local latency (mean 4.68 s; p50 3.97 s; p95 8.11 s).
+**Interpretation:** compound questions are weaker than single-purpose groups in this sample. Audited failure classes include wrong operation/route, omitted explicit inputs, slot/span schema mismatch, unit-type confusion, and task dependencies. These are not all Resolver bugs; a deterministic route failure can still yield a useful final answer through RAG. Small groups with 100% results do not establish perfect capability coverage.
 
-### 🔎 Retrieval quality
+### 2. 🔎 End-to-end retrieval — 155 cases
 
-| Metric | Result |
+**Purpose:** measure whether the pipeline returns the expected sources and ranks them usefully. Routing and structured evidence affect this suite; it is not an isolated dense-retriever benchmark.
+
+| Metric | Result | Meaning |
+|---|---:|---|
+| Hit@1 | 120/155 · 77.42% | An accepted relevant source is present at rank 1. |
+| Hit@3 | 139/155 · 89.68% | An accepted relevant source appears within the first 3 results. |
+| Hit@5 | **141/155 · 90.97%** | An accepted relevant source appears within the first 5 results. |
+| MRR | **0.8333** | Mean reciprocal rank of the first relevant result; rewards earlier hits. |
+| nDCG@5 | **0.8443** | Normalized relevance ranking quality across the first 5 results. |
+| Required-source recall@5 | **0.9011** | Mean per-case coverage of required sources; one hit need not cover all requested evidence. |
+| Recorded cohort leakage | **0/155** | No leakage flagged under this suite's checks; not a universal guarantee. |
+| Content-type match | **148/155 · 95.48%** | Agreement with the expected evidence type. |
+
+> [!WARNING]
+> The retrieval evaluator's overall gate is **FAIL**: content-type match is below its **98%** threshold. Passing 90% Hit@5 does not mean every gate passed.
+
+#### Breakdown by cohort
+
+| Cohort group | Cases | MRR | nDCG@5 |
+|---|---:|---:|---:|
+| K48–K49 | 52 | 0.7965 | 0.8144 |
+| K50 | 51 | 0.8301 | 0.8366 |
+| K51 | 50 | 0.8683 | 0.8770 |
+| General | 2 | 1.0000 | 1.0000 |
+
+| Difficulty | Hit@5 / cases | Hit@5 rate |
+|---|---:|---:|
+| Realistic | 112/124 | 90.32% |
+| Stress | 29/31 | 93.55% |
+
+**Interpretation:** Hit@5 exceeds Hit@1 by 21 cases, so ranking position matters. Stress happens to score higher here; this does not establish that harder questions are easier in general. The audit covers **17 cases**: 14 top-5 misses and 3 cases missing required sources from the top 5 despite a source at rank 6. Causes include routing, ranking, and gold requiring regulation evidence where directory data can answer the same request—not automatically a need for reranking.
+
+The legacy field `synthetic_leak_rate` is a content-type mismatch proxy, not proof that tables leaked into embeddings. Six empty retrieved-item lists do not necessarily mean no evidence: structured evidence is recorded separately. Diagnostic runs do not replace the official scores.
+
+### 3. ✍️ Generate + Judge — 150 cases
+
+**Purpose:** evaluate complete pipeline answers against the fixed, source-grounded Judge rubric. There are 150 recorded outputs and 150 valid Judge rows, including the original serving-error outcomes. All quality values below are **means on a 0–1 rubric**, not percentages of fully correct answers.
+
+#### Answer and evidence quality
+
+| Metric | Mean, n = 150 | Meaning |
+|---|---:|---|
+| Answer correctness | **0.9305** | Correctness and coverage relative to the expected answer. |
+| Faithfulness | **0.9591** | Whether answer claims are supported by supplied evidence. |
+| Answer relevancy | **0.9543** | Whether the response addresses the question. |
+| Citation correctness | **0.9355** | Whether cited sources support the associated answer content. |
+| Context precision | **0.5815** | Relevance of supplied context to the question under the rubric. |
+| Context recall | **0.8845** | Coverage of evidence needed for the expected answer. |
+
+**Interpretation:** high average faithfulness does not rule out individual unsupported claims. Context precision is substantially lower than answer metrics, suggesting excess or irrelevant evidence under the Judge rubric; it is not a factual-error rate. Context recall and answer correctness also leave room for missing evidence or omitted answer parts.
+
+#### Breakdown by difficulty and expected route
+
+| Dimension | Group | Cases | Mean correctness |
+|---|---|---:|---:|
+| Difficulty | Realistic | 120 | 0.9544 |
+| Difficulty | Stress | 30 | 0.8350 |
+| Expected route | Regulation RAG | 77 | 0.9523 |
+| Expected route | Structured | 65 | 0.9077 |
+| Expected route | Mixed | 3 | 0.8000 |
+| Expected route | Clarification | 3 | 0.9500 |
+| Expected route | Out of domain | 2 | 1.0000 |
+
+These are separate breakdown dimensions, not additional cases. Expected route is the dataset label, not proof the Planner selected that route. Mixed/clarification/OOD groups are too small to establish stable capability-wide rates.
+
+#### Breakdown by run allocation cohort
+
+| `allocation_cohort` | Cases | Mean correctness |
+|---|---:|---:|
+| K48–K49 | 50 | 0.9624 |
+| K50 | 50 | 0.9166 |
+| K51 | 50 | 0.9126 |
+
+These are run-allocation groups: general questions may be assigned to a group. They are not identical to the original cohort labels of every question.
+
+#### Serving outcomes and local latency
+
+| Outcome | Cases / 150 |
 |---|---:|
-| Hit@1 / Hit@3 / Hit@5 | 120/155 · 139/155 · 141/155 |
-| MRR / nDCG@5 | 0.8333 / 0.8443 |
-| Required-source recall@5 (case mean) | 0.9011 |
-| Observed cohort leakage | 0/155 |
-| Content-type match | 148/155 · 95.48% |
+| `answered` | 141 |
+| `low_confidence` | 2 |
+| `api_error` | 3 |
+| `needs_clarification` | 2 |
+| `out_of_domain` | 2 |
+| Without API error | 147 |
 
-This is end-to-end retrieval, including routing effects—not an isolated dense-search benchmark. The evaluator's overall retrieval gate is **FAIL** because content-type match is below 98%. Zero observed leakage is not a guarantee for unseen questions.
+`answered` is not a correctness score; clarification and OOD can be correct outcomes. The 3 original API errors remain in the report even though a separate quota-recovery check later succeeded on all 3. Those replacement answers were not merged into the 150-case metric.
 
-### ✍️ Answer quality and operational outcomes
-
-| Judge dimension | Mean, n = 150 |
+| Local pipeline latency | Seconds |
 |---|---:|
-| Answer correctness | 0.9305 |
-| Faithfulness | 0.9591 |
-| Answer relevancy | 0.9543 |
-| Citation correctness | 0.9355 |
-| Context precision | 0.5815 |
-| Context recall | 0.8845 |
+| Mean | 4.68 |
+| p50 | 3.97 |
+| p95 | 8.11 |
+| Maximum | 23.92 |
 
-The Judge is `openai/gpt-oss-120b`, using the project's fixed rubric. These are 0–1 rubric means, not percentages of fully correct answers.
+These are local pipeline timings, not HF streaming TTFT, concurrent-load results, or an SLA. Composer token usage and cost are **N/A** in the available artifact.
 
-- Generation statuses: **141 answered**, 2 low-confidence, 3 API errors, 2 clarification requests, and 2 out-of-domain responses.
-- Local pipeline latency: mean **4.68 s**, p50 **3.97 s**, p95 **8.11 s**. These are not HF load measurements or streaming TTFT.
-- All 22 automatically flagged cases and 40 stratified samples were reviewed, with four overlapping cases: **58 unique answers**, using AI-assisted review—not independent human adjudication.
-- Judge flags included 13 unsupported-claim and 2 critical flags. Packet checks found false positives; flags are not confirmed error counts. Original scores were not replaced with audit scores.
-- A separate retry answered the three API-error cases successfully; those retries were not substituted into the official 150-case metrics.
+#### ⚖️ AI-assisted answer audit
 
-### 📝 Limitations and interpretation
+| Audit item | Recorded result |
+|---|---:|
+| Judge unsupported-claim flags | 13/150 |
+| Judge critical flags | 2/150 |
+| Automatic-failure cases reviewed | 22 |
+| Stratified sample reviewed | 40; seed `20260906` |
+| Overlap between failure set and sample | 4 |
+| Unique answers audited | **58** |
 
-- The benchmark was used during development and is **not an independent holdout**. Runtime identity, dataset hashes, and report hashes are recorded separately.
-- Deterministic contract checks passed 124/135; applicable fact-lock assertions passed **44/50**. A failed routing assertion does not by itself prove a wrong final answer.
-- Planner omissions, scope selection, multi-task dependencies, and multi-cohort requests remain limitations. A correct lookup on the selected table does not prove that table applies to the question.
-- Retrieval can miss required sources or include excess context. Structured directory evidence and regulation-source assertions must not be conflated.
-- The Composer can omit conditions or add unsupported interpretations even with full tables and fact locks.
-- Provider throttling and tail latency remain operational risks. Production60 was not run; no current HF load, TTFT, SLA, or scaling metric is claimed.
-- Research claims require additional baselines, ablations, independent review, and a prospective or external test set.
+Flags can overlap and are not independent confirmed-error counts. The audit is **AI-assisted**, not independent human review. Offline reconstruction found supporting evidence for eight unsupported-flag cases; original Judge scores were retained. Within the 36 sample-only answers, 32 had no substantial issue identified and 4 had omissions, wording issues, or gold-scope differences. Do not extrapolate an overall pass rate from this risk-enriched audit set.
 
-For complete breakdowns, case-level limitations and provenance, see the [official report](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md). Earlier measurements remain in the [historical evaluation report](docs/FINAL_RELEASE_EVALUATION.md), not in the current metric tables.
+Known answer-level limitations include omitted conditions or requested parts, unsupported interpretation, and scope selection errors upstream of Composer. Full-table evidence plus a fact lock does not guarantee the correct applicability or eliminate hallucination. Detailed case findings and retry provenance remain in the linked report.
 
-<a id="local-development"></a>
+### What is not claimed
 
-## 💻 Local Development
+- No Production-60 run was executed, so there is no current production metric here.
+- No current public deployment or remote-store health is inferred from configuration, a URL, or a local dry run.
+- Historical V9.1 and earlier measurements remain in the [historical release evaluation](docs/FINAL_RELEASE_EVALUATION.md); they are not current runtime metrics.
+- Experimental reranker comparisons are not official-v1 metrics and do not change the RRF default.
 
-### Requirements
+<a id="local-setup"></a>
 
-- Python 3.11
-- Node.js 20+
-- Qdrant and MongoDB collections from the same build manifest
-- Groq and Gemini API keys
-- Redis is optional locally and recommended for deployed traffic
+## 💻 Local setup
 
 ### Backend
 
-```bash
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-pip install -c constraints-runtime.txt -r requirements.txt
-copy .env.example .env
-python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000
-```
+Python 3.11.9 is recorded in `runtime.txt`.
 
-Required environment variables:
+**Windows PowerShell**
 
-```dotenv
-QDRANT_URL=https://your-cluster.qdrant.io
-QDRANT_API_KEY=...
+~~~powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements-dev.txt
+Copy-Item .env.example .env
+~~~
+
+**macOS/Linux**
+
+~~~bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+cp .env.example .env
+~~~
+
+`requirements.txt` is the runtime set. `requirements-dev.txt` adds development constraints and test/lint tooling; `requirements-eval.txt` layers on the same development set for evaluation work. Do not commit secrets from `.env`.
+
+The template `.env.example` contains v32 collection placeholders for older local setups. For the current v33 manifest, set:
+
+~~~dotenv
 QDRANT_COLLECTION_NAME=student_handbook_semantic_v33
-MONGODB_URL=mongodb+srv://...
-MONGODB_DB_NAME=chatbotHCMUE
+STUDENT_RAG_HYBRID_COLLECTION=student_handbook_semantic_v33
 MONGODB_PARENT_COLLECTION=parent_docs_v33
-STUDENT_RAG_RETRIEVAL_MODE=vector_primary_graph_supplement
-GROQ_API_KEYS=...
-GEMINI_API_KEYS=...
-```
+QDRANT_URL=<your-qdrant-url>
+QDRANT_API_KEY=<your-qdrant-key>
+MONGODB_URL=<your-mongodb-url>
+MONGODB_DB_NAME=chatbotHCMUE
+GEMINI_API_KEYS=<comma-separated-keys>
+GROQ_API_KEYS=<comma-separated-keys>
+~~~
 
-Current beta boundary:
+`STUDENT_RAG_HYBRID_COLLECTION` is a compatibility override with precedence over `QDRANT_COLLECTION_NAME`. Keep both aligned, or leave the override unset; an old v32 override would otherwise select the wrong collection.
 
-- Run one replica with one Uvicorn worker. Each process owns one in-memory BM25 index and local admission queue.
-- Set `REDIS_URL`; deployed multi-user environments should also set `STUDENT_RAG_REQUIRE_REDIS=true`. Redis mode never writes the local JSON response cache.
-- Keep `configs/retrieval.yaml` as the retrieval runtime source of truth. `STUDENT_RAG_RETRIEVAL_CONFIG` may point to another explicit file for a deployment.
-- Scale trigger: sustained p95 latency or memory growth, corpus above roughly 20k chunks, or need for multiple replicas. At that point move lexical retrieval and rate-limit state to shared services; do not add them before measured need.
+Optional settings include Redis response caching, LangSmith telemetry, and router/provider overrides. `STUDENT_RAG_REQUIRE_REDIS=true` requires Redis; `STUDENT_RAG_DISABLE_REDIS` disables Redis use. Keep evaluation cache settings separate from normal development.
+
+Start the backend locally:
+
+~~~bash
+python -m uvicorn src.api.main:app --reload
+~~~
+
+Principal routes are `POST /chat`, `POST /chat/stream`, `GET /health`, `GET /health/readiness`, `GET /health/artifacts`, and `POST /chat/feedback`.
 
 ### Frontend
 
-```bash
-cd frontend
+Node 20 is used by CI. From `frontend/`:
+
+~~~bash
 npm ci
-copy .env.example .env.local
 npm run dev
-```
+~~~
 
-### Quality checks
+For a production build check:
 
-```bash
-python -m pytest
-python -m ruff check src tests scripts
-cd frontend
+~~~bash
 npm run lint
 npm run build
-```
+~~~
 
-<a id="data-build-and-publishing"></a>
+`frontend/.env.example` contains a deployment-target API URL. Configure `VITE_API_BASE_URL` for the backend intended for use; the template value is not a deployment-health assertion.
 
-## 🧱 Data Build and Publishing
+### Checks
 
-The build pipeline writes versioned artifacts and does not overwrite a live production collection in place.
+CI performs:
 
-```bash
-python -m scripts.build_multi_cohort
-python -m scripts.check_deploy_artifacts
-python -m scripts.verify_remote_build
-```
+~~~bash
+python -m pip check
+python scripts/check_deploy_artifacts.py
+python -m ruff check src tests scripts/check_deploy_artifacts.py scripts/evaluate_system.py --select E,F --ignore E402,E501
+python -m pytest tests
+~~~
 
-Safe publishing sequence:
+Frontend CI uses Node 20 with `npm ci`, `npm run lint`, and `npm run build`. Evaluation scripts can contact model or vector-store providers and are not required for a documentation-only change.
 
-1. Build and audit local artifacts.
-2. Create versioned Qdrant and MongoDB collections.
-3. Publish both with the same `build_id`.
-4. Verify counts and child-to-parent links.
-5. Switch both collection variables in one release.
-6. Retain the previous build until canary checks pass.
+<a id="rebuilding-locally"></a>
 
-<a id="observability"></a>
+### Rebuilding locally
 
-## 🔭 Observability
+The official full-source sequence is the multi-cohort entrypoint. Run it in an isolated worktree or disposable copy because it overwrites generated files under `data/processed/` and cleans generated legacy artifacts.
 
-LangSmith tracing uses the current QueryPlan contract for both `/chat` and `/chat/stream`. Root traces record interface, status, latency, TTFT, cache behavior, task/coverage summaries, evidence identity, collection identity, and Planner/Composer usage when available.
+| Operation | Entrypoint |
+|---|---|
+| Three-cohort local rebuild | [`scripts/build_multi_cohort.py`](scripts/build_multi_cohort.py) |
+| Manifest generation | [`scripts/build_artifact_manifest.py`](scripts/build_artifact_manifest.py) |
+| Optional isolated parent/child contract check | [`scripts/build_parent_child_artifacts.py`](scripts/build_parent_child_artifacts.py) |
+| Read-only remote verification | [`scripts/verify_remote_build.py`](scripts/verify_remote_build.py) |
 
-Raw chat history, full source bodies, retrieval scores, API keys, and database URLs are excluded from trace metadata. The current query and final answer remain trace input/output for product debugging.
+**Windows PowerShell**
 
-```dotenv
-LANGSMITH_TRACING=true
-LANGSMITH_API_KEY=lsv2_pt_...
-LANGSMITH_PROJECT=hcmue-student-handbook-rag
-```
+~~~powershell
+$env:PUSH_REMOTE = "0"
+.\.venv\Scripts\python.exe -m scripts.build_multi_cohort --qdrant-collection student_handbook_semantic_v33_candidate --mongo-collection parent_docs_v33_candidate
+~~~
 
-Legacy `LANGCHAIN_API_KEY` and `LANGCHAIN_PROJECT` variables remain supported for existing deployments.
+**macOS/Linux**
 
-<a id="deployment"></a>
+~~~bash
+PUSH_REMOTE=0 .venv/bin/python -m scripts.build_multi_cohort --qdrant-collection student_handbook_semantic_v33_candidate --mongo-collection parent_docs_v33_candidate
+~~~
 
-## 🚀 Deployment
+The multi-cohort command invokes the structured table layer, parent/child separation, graph extraction, manifest generation, and local integrity audits in that order. The candidate collection names identify the intended remote targets in the manifest; with `PUSH_REMOTE=0`, no remote write or remote preflight occurs.
 
-### Backend — Hugging Face Spaces
+For an optional isolated parent/child contract inspection, use the [parent/child builder](scripts/build_parent_child_artifacts.py) with a new directory under `work/`. This CLI assumes its docstore, registry, and review inputs are already the correct source snapshot; it is not a substitute for the full source-build sequence and is not a publishing step.
 
-The deployment script uses an explicit allow-list and excludes `.env`, secrets, caches, evaluation reports, and raw PDFs.
+**Optional Windows PowerShell contract check**
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy_hf_backend.ps1 -DryRun -QdrantCollection student_handbook_semantic_v33 -MongoCollection parent_docs_v33
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy_hf_backend.ps1 -QdrantCollection student_handbook_semantic_v33 -MongoCollection parent_docs_v33
-```
+~~~powershell
+.\.venv\Scripts\python.exe -m scripts.build_parent_child_artifacts --output-dir work\candidate-YYYYMMDD
+~~~
 
-Before publishing this candidate, the packaged manifest and both HF runtime variables must target Qdrant `student_handbook_semantic_v33` and MongoDB `parent_docs_v33`. Pass both script parameters explicitly; the script's legacy defaults are v32 and will reject this manifest. Keep the v32 pair for rollback. After deployment, verify `/health`, `/health/readiness`, and representative structured, regulation, compound, clarification, sync, and streaming requests.
+**Optional macOS/Linux contract check**
 
-### Frontend — Vercel
+~~~bash
+.venv/bin/python -m scripts.build_parent_child_artifacts --output-dir work/candidate-YYYYMMDD
+~~~
 
-The Vite frontend reads `VITE_API_BASE_URL`. This repository documents the frontend deployment configuration; the current public deployment is not verified by the local official-v1 evaluation.
+`scripts/verify_remote_build.py` is read-only but contacts configured services and requires credentials. A successful local build is not a completed remote promotion.
 
-<a id="evaluation-governance-and-release-policy"></a>
+<a id="build-and-deployment-status"></a>
 
-## 🧪 Evaluation Governance and Release Policy
+## 🚀 Build and deployment status
 
-- Dataset files, evaluator code, runtime identity, model configuration, storage collections, and output hashes are recorded separately.
-- Non-applicable assertions are reported as `N/A`, never as automatic passes.
-- A run may be repeated only when an infrastructure or evaluator defect is documented; low scores alone are not a reason to rerun a frozen holdout.
-- Failures become regression evidence for a later version rather than question-specific runtime patches.
-- The project favors general correctness invariants over benchmark keyword exceptions and does not optimize for 100% stress-case performance.
+Deployment helpers do not prove that a live service exists.
+
+For local packaging validation with current targets, use the dry-run path:
+
+**Windows PowerShell**
+
+~~~powershell
+.\scripts\deploy_hf_backend.ps1 -DryRun -QdrantCollection student_handbook_semantic_v33 -MongoCollection parent_docs_v33
+~~~
+
+This checks the package and manifest contract without modifying a remote space. A real deployment requires explicit operator approval, credentials, and a post-deploy health/readiness check; this README does not claim those steps are complete. The script's historical defaults are v32, so pass the v33 collection names explicitly.
 
 <a id="license"></a>
 
 ## 📄 License
 
-The source code is released under the [MIT License](./LICENSE). Student-handbook content and university regulations remain the property of their respective publishers.
+The source code is released under the [MIT License](LICENSE). Student-handbook content and university regulations remain the property of their respective publishers.

@@ -2,9 +2,9 @@ param(
     [switch]$DryRun,
     [string]$CommitMessage = "",
     [ValidateNotNullOrEmpty()]
-    [string]$QdrantCollection = "student_handbook_semantic_v32",
+    [string]$QdrantCollection = "student_handbook_semantic_v33",
     [ValidateNotNullOrEmpty()]
-    [string]$MongoCollection = "parent_docs_v32"
+    [string]$MongoCollection = "parent_docs_v33"
 )
 
 $ErrorActionPreference = "Stop"
@@ -191,7 +191,7 @@ license: mit
 
 Backend-only deployment for the HCMUE AI student handbook assistant.
 
-Runtime: FastAPI, Qwen Router, BGE-M3, Qdrant, BM25, MongoDB, and Gemini 3.1 Flash-Lite.
+Runtime: FastAPI, Qwen Router, BGE-M3, Qdrant, BM25, optional fail-open Cohere Fast reranking, MongoDB, and Gemini 3.1 Flash-Lite.
 
 Source repository: https://github.com/AnhPhiNe/student-handbook-rag-chatbot
 "@ | Set-Content -LiteralPath (Join-Path $TempDir "README.md") -Encoding utf8

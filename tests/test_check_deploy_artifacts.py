@@ -1,5 +1,6 @@
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from scripts.check_deploy_artifacts import validate_artifact, validate_build_manifest
@@ -17,6 +18,52 @@ def test_hf_deploy_checks_explicit_targets_and_packages_declared_audit() -> None
         'Copy-RequiredJsonArtifact "data\\processed\\metadata\\structured_table_embedding_audit.json" '
         '"data\\processed\\metadata\\structured_table_embedding_audit.json"' in script
     )
+
+
+def test_deploy_examples_and_defaults_match_the_current_build_manifest() -> None:
+    script = (ROOT / "scripts" / "deploy_hf_backend.ps1").read_text(
+        encoding="utf-8"
+    )
+    env_example = dict(
+        line.split("=", 1)
+        for line in (ROOT / ".env.example").read_text(encoding="utf-8").splitlines()
+        if line and not line.startswith("#") and "=" in line
+    )
+    manifest = json.loads(
+        (ROOT / "data/processed/metadata/build_manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    qdrant_match = re.search(
+        r'\[string\]\$QdrantCollection = "([^"]+)"', script
+    )
+    mongo_match = re.search(
+        r'\[string\]\$MongoCollection = "([^"]+)"', script
+    )
+
+    assert qdrant_match is not None
+    assert mongo_match is not None
+    assert qdrant_match.group(1) == manifest["storage_targets"]["qdrant_collection"]
+    assert (
+        mongo_match.group(1)
+        == manifest["storage_targets"]["mongo_parent_collection"]
+    )
+    assert (
+        env_example["QDRANT_COLLECTION_NAME"]
+        == manifest["storage_targets"]["qdrant_collection"]
+    )
+    assert (
+        env_example["MONGODB_PARENT_COLLECTION"]
+        == manifest["storage_targets"]["mongo_parent_collection"]
+    )
+
+
+def test_hf_deploy_readme_describes_the_optional_fail_open_reranker() -> None:
+    script = (ROOT / "scripts" / "deploy_hf_backend.ps1").read_text(
+        encoding="utf-8"
+    )
+
+    assert "optional fail-open Cohere Fast reranking" in script
 
 
 def test_docker_context_keeps_the_manifest_declared_table_audit() -> None:

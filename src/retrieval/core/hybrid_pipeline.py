@@ -338,9 +338,9 @@ class ChildParentHybridRetriever:
     ) -> list[dict[str, Any]]:
         """Retrieve parent-bound regulation sources using child/table chunks.
 
-        Production ranks parents using hybrid retrieval (BM25 + dense) combined with
-        RRF, then attaches outbound graph neighbors as context-only related sources.
-        Retrieval modes only control graph scope; ranking always uses RRF.
+        Production fuses BM25 and dense child candidates with RRF, optionally applies
+        fail-open Cohere reranking, then ranks parents and attaches outbound graph
+        neighbors as context-only related sources. Retrieval modes control graph scope.
         """
         eval_mode = resolve_retrieval_mode()
         if eval_mode in {"no_graph", "vector_only"}:

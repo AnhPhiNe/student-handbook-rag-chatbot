@@ -18,8 +18,10 @@ inputs, or evaluation-only capabilities for dead production code.
   embedding/build contract loaded by `src/retrieval/runtime_config.py` and must
   remain in readiness and deployment packaging.
 - The PhoRanker loader and its runtime ranking branch have been removed.
-  Retrieval uses RRF; historical evaluator fields and reports are retained for
-  compatibility, not as evidence that the model can still be enabled.
+  Retrieval now uses dense and BM25 candidate search, RRF fusion, and optional
+  fail-open Cohere Fast child reranking. Historical PhoRanker evaluator fields
+  and reports are retained for compatibility, not as evidence that the model
+  can still be enabled.
 - FastAPI route handlers and dependencies, plus executor callbacks used by
   LangSmith telemetry, may have no ordinary static caller. Framework or
   callback registration invokes them at runtime, so they must not be removed

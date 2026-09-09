@@ -2746,9 +2746,8 @@ def generate_answers(
     previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
     os.environ.pop("STUDENT_RAG_OFFLINE_EVAL", None)
     os.environ["STUDENT_RAG_QUALITY_EVAL"] = "1"
-    # Answer-quality evaluation must exercise the production retrieval contract.
-    # PhoRanker is reserved for explicit retrieval-ablation suites and must not
-    # silently enter the 150-case generate/judge result through ambient env.
+    # Answer-quality evaluation must exercise the configured production retrieval
+    # contract instead of inheriting an ablation mode from the ambient environment.
     os.environ["STUDENT_RAG_RETRIEVAL_MODE"] = DEFAULT_RETRIEVAL_MODE
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = DEFAULT_RETRIEVAL_MODE
     os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"

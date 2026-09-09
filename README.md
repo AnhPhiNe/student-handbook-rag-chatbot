@@ -688,7 +688,7 @@ cp .env.example .env
 
 `requirements.txt` is the runtime set. `requirements-dev.txt` adds development constraints and test/lint tooling; `requirements-eval.txt` layers on the same development set for evaluation work. Do not commit secrets from `.env`.
 
-The template `.env.example` contains v32 collection placeholders for older local setups. For the current v33 manifest, set:
+The `.env.example` template follows the current v33 storage targets. Set the service URLs and credentials for your environment:
 
 ~~~dotenv
 QDRANT_COLLECTION_NAME=student_handbook_semantic_v33

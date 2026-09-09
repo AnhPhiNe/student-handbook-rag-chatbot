@@ -110,15 +110,14 @@ now applies that same idempotent prefix, covered by a synthetic regression test.
 The rebuild also emits cohort-qualified program IDs/provenance; all 129
 cohort/program identities and their substantive content remain unchanged.
 
-Final local test run: **683 passed**. Historical V5/V7 bundle tests allow and
-report expected corpus-hash drift rather than claiming the new corpus matches
-their frozen identity. The evaluator itself and frozen datasets are unchanged.
-The evaluator-only identity unit test now mocks the corpus hash for that
-scenario. Production pair validation replaces the legacy row-matcher test when
-the manifest declares reviewed table separation.
+The release-time local test run recorded **683 passed**. The V5/V7 bundle tests
+used for that historical check have since been removed from the current branch;
+their datasets and results remain recoverable from Git history. Production pair
+validation replaces the legacy row-matcher test when the manifest declares
+reviewed table separation.
 
-HF packaging now accepts explicit expected collection names (v32 defaults remain
-for compatibility), checks them against the packaged manifest, and includes the
+HF packaging accepts explicit expected collection names, defaults to the current
+v33 pair, checks both against the packaged manifest, and includes the
 manifest-declared table audit. Dry-run package artifact/hash validation passed.
 HF environment variables still have to be switched to the verified new pair;
 these parameters alone do not change the running Space.

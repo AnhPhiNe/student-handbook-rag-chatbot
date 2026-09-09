@@ -226,7 +226,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--cases",
         type=Path,
-        default=Path("data/eval/final_holdout/generated_answer_cases.json"),
+        default=Path("data/eval/official_v1/generated_answer_cases.json"),
     )
     parser.add_argument(
         "--answers",

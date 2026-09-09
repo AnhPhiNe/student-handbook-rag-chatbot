@@ -28,7 +28,7 @@ deployment workflow.
 | Answer generation | Query orchestration, citations, cache, Gemini | `src/generation/answer_pipeline.py` |
 | Retrieval | Query plan, vector search, BM25, evidence assembly | `src/retrieval/core/hybrid_pipeline.py` |
 | Frontend | Chat UX, citations, feedback, status display | `frontend/src/` |
-| Evaluation | Frozen benchmark selection and regression gates | `scripts/evaluate_system.py`, `tests/` |
+| Evaluation | Official-v1 casebooks, manifest-based diagnostics and regression gates | `data/eval/official_v1/`, `scripts/evaluate_system.py`, `tests/` |
 
 ## 3. Key Runtime Decisions
 
@@ -112,7 +112,8 @@ deployment workflow.
 
 ### Quality and deployment
 
-- `scripts/evaluate_system.py`: default V9.1 corrected benchmark selection.
+- `scripts/evaluate_system.py`: manifest-based evaluation runner; callers must
+  select a dataset explicitly instead of inheriting a historical default.
 - `tests/test_product_regression.py`: user-facing regression contract.
 - `tests/test_evaluation.py`: benchmark and evaluation contract tests.
 - `tests/test_response_cache.py`: cache TTL, prune, eviction, and legacy tests.

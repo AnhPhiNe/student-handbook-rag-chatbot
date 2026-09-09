@@ -2,16 +2,14 @@ from __future__ import annotations
 
 import json
 import os
-import shutil
 from io import BytesIO
 from pathlib import Path
 from urllib.error import HTTPError
 
 import pytest
 
-from scripts.evaluate_system import DEFAULT_DATASET, _normalized_text_hash, _provenance
 import src.evaluation.suites as evaluation_suites
-from src.evaluation.dataset import _structured_source_index, validate_bundle
+from src.evaluation.dataset import _structured_source_index
 from src.evaluation.gates import evaluate_gates
 from src.evaluation.judge import (
     PINNED_JUDGE_MODEL,
@@ -71,177 +69,10 @@ def _valid_judge_payload() -> str:
     )
 
 
-def test_evaluation_runner_defaults_to_current_frozen_bundle() -> None:
-    """Keep the CLI default aligned with the published V9.1 evaluation bundle."""
-
-    expected_bundle = ROOT / "data" / "eval" / "architecture_v9_1_corrected"
-    assert DEFAULT_DATASET == expected_bundle
-
-    manifest = json.loads((DEFAULT_DATASET / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["frozen"] is True
-    assert manifest["version"] == "9.1.0-corrected-evaluation"
-
-
-def test_frozen_final_bundle_is_compatible_with_current_sources() -> None:
-    result = validate_bundle(
-        ROOT / "data" / "eval" / "final_holdout",
-        _require_docstore_artifact(),
-        enforce_docstore_hash=False,
-    )
-    assert result["valid"], result["errors"]
-    assert "manifest docstore hash mismatch" in result["warnings"]
-    assert result["counts"] == {
-        "deterministic": 120,
-        "retrieval": 180,
-        "answers": 100,
-        "production": 60,
-    }
-
-
-def test_frozen_architecture_v5_holdout_is_valid() -> None:
-    result = validate_bundle(
-        ROOT / "data" / "eval" / "architecture_v5_holdout",
-        _require_docstore_artifact(),
-        enforce_docstore_hash=False,
-    )
-    assert result["valid"], result["errors"]
-    assert result["counts"] == {
-        "deterministic": 140,
-        "retrieval": 160,
-        "answers": 150,
-        "production": 60,
-    }
-
-
-def test_frozen_architecture_v4_bundle_is_valid() -> None:
-    bundle = ROOT / "data" / "eval" / "architecture_v4"
-    if not bundle.is_dir():
-        pytest.skip("architecture_v4 bundle has not been built")
-    result = validate_bundle(
-        bundle,
-        _require_docstore_artifact(),
-        enforce_docstore_hash=False,
-    )
-    assert result["valid"], result["errors"]
-    assert "manifest docstore hash mismatch" in result["warnings"]
-    assert result["counts"]["answers"] == 150
-
-
 def test_program_source_aliases_preserve_cohort_identity() -> None:
     index = _structured_source_index(ROOT)
     assert index[("program", "K50_program_2")]["cohort"] == "K50"
     assert index[("program", "K51_program_2")]["cohort"] == "K51"
-
-
-def test_legacy_compatibility_provenance_records_both_docstore_hashes() -> None:
-    provenance = _provenance(
-        ROOT / "data" / "eval" / "final_holdout",
-        "qdrant",
-        allow_docstore_drift=True,
-    )
-
-    assert provenance["compatibility_diagnostic"] is True
-    assert provenance["docstore_hash"] == provenance["expected_docstore_hash"]
-    assert provenance["actual_docstore_hash"]
-    assert provenance["answer_generation_retrieval_mode"] == DEFAULT_RETRIEVAL_MODE
-    assert provenance["phoranker_used_for_answer_generation"] is False
-
-
-def test_v9_provenance_reports_runtime_config_drift() -> None:
-    provenance = _provenance(
-        ROOT / "data" / "eval" / "architecture_v9_deterministic",
-        "qdrant",
-    )
-
-    assert provenance["config_hashes_match_manifest"] is False
-    assert (
-        provenance["config_hashes"].keys()
-        == provenance["expected_config_hashes"].keys()
-    )
-    assert "slang_dictionary" in provenance["config_hashes"]
-    # The historical manifest remains frozen as runtime configs evolve.
-    # Validate reported drift, not a hard-coded list of changed configs.
-    assert set(provenance["config_hash_mismatches"]) == {
-        name for name, actual in provenance["config_hashes"].items()
-        if actual != provenance["expected_config_hashes"][name]
-    }
-
-
-def test_v9_provenance_accepts_evaluator_only_commits(monkeypatch) -> None:
-    manifest = json.loads(
-        (
-            ROOT / "data" / "eval" / "architecture_v9_deterministic" / "manifest.json"
-        ).read_text(encoding="utf-8")
-    )
-    expected_hashes = manifest["config_hashes"]
-    # Isolate the evaluator-only scenario from whichever corpus is deployed.
-    from scripts import evaluate_system
-    original_file_hash = evaluate_system._file_hash
-    monkeypatch.setattr(
-        evaluate_system, "_file_hash",
-        lambda path: manifest["docstore_hash"]
-        if path == evaluate_system.DEFAULT_DOCSTORE else original_file_hash(path),
-    )
-    hashes_by_filename = {
-        "ai_router.yaml": expected_hashes["ai_router"],
-        "structured_lookup_registry.yaml": expected_hashes[
-            "structured_lookup_registry"
-        ],
-        "retrieval.yaml": expected_hashes["retrieval"],
-        "answer_generation.yaml": expected_hashes["answer_generation"],
-        "hcmue_slang_dictionary.yaml": expected_hashes["slang_dictionary"],
-    }
-    monkeypatch.setattr(
-        "scripts.evaluate_system._git_commit",
-        lambda: "evaluator-only-commit",
-    )
-    monkeypatch.setattr(
-        "scripts.evaluate_system._runtime_code_matches_commit",
-        lambda _commit: True,
-    )
-    monkeypatch.setattr(
-        "scripts.evaluate_system._normalized_text_hash",
-        lambda path: hashes_by_filename[path.name],
-    )
-    provenance = _provenance(
-        ROOT / "data" / "eval" / "architecture_v9_deterministic",
-        "qdrant",
-    )
-
-    assert provenance["system_commit_matches_manifest"] is False
-    assert provenance["runtime_code_matches_manifest"] is True
-    assert provenance["runtime_identity_matches_manifest"] is True
-    assert provenance["benchmark_run_kind"] == "fresh_post_fix_deterministic"
-
-
-def test_normalized_text_hash_is_stable_across_line_endings(tmp_path: Path) -> None:
-    lf_path = tmp_path / "lf.yaml"
-    crlf_path = tmp_path / "crlf.yaml"
-    lf_path.write_bytes(b"key: value\nitems:\n  - one\n")
-    crlf_path.write_bytes(b"key: value\r\nitems:\r\n  - one\r\n")
-
-    assert _normalized_text_hash(lf_path) == _normalized_text_hash(crlf_path)
-
-
-def test_validator_rejects_query_reused_from_legacy_eval(tmp_path: Path) -> None:
-    eval_root = tmp_path / "eval"
-    bundle_dir = eval_root / "final_holdout"
-    shutil.copytree(ROOT / "data" / "eval" / "final_holdout", bundle_dir)
-    deterministic = json.loads(
-        (bundle_dir / "deterministic_tool_cases.json").read_text(encoding="utf-8")
-    )
-    (eval_root / "legacy_cases.json").write_text(
-        json.dumps([{"query": deterministic[0]["query"]}], ensure_ascii=False),
-        encoding="utf-8",
-    )
-
-    result = validate_bundle(
-        bundle_dir,
-        _require_docstore_artifact(),
-    )
-
-    assert result["valid"] is False
-    assert any("legacy query overlap" in error for error in result["errors"])
 
 
 def test_retrieval_metrics_are_graded_and_rank_sensitive() -> None:

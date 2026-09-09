@@ -58,7 +58,11 @@ def compare(baseline, candidate, cases):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate-dir", type=Path, required=True)
-    parser.add_argument("--cases", type=Path, default=ROOT / "data/eval/architecture_v9_1_corrected/retrieval_cases.json")
+    parser.add_argument(
+        "--cases",
+        type=Path,
+        default=ROOT / "data/eval/official_v1/retrieval_cases.json",
+    )
     args = parser.parse_args()
     directory = args.candidate_dir.resolve()
     if not directory.is_relative_to((ROOT / "work").resolve()):

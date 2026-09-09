@@ -37,8 +37,6 @@ from src.generation.answer_pipeline import PIPELINE_VERSION
 from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
 
 
-# Keep the CLI default aligned with the current frozen, headline-eligible bundle.
-DEFAULT_DATASET = ROOT / "data" / "eval" / "architecture_v9_1_corrected"
 DEFAULT_OUTPUT = ROOT / "data" / "eval" / "reports" / "release_candidate"
 DEFAULT_DOCSTORE = ROOT / "data" / "processed" / "chunks" / "all_docstore_items.json"
 AI_ROUTER_CONFIG = ROOT / "configs" / "ai_router.yaml"
@@ -518,7 +516,12 @@ def main() -> None:
             "pure is retained only for retriever-only diagnostics"
         ),
     )
-    parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
+    parser.add_argument(
+        "--dataset",
+        type=Path,
+        required=True,
+        help="Manifest-based evaluation bundle to run; no historical bundle is selected implicitly.",
+    )
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--base-url", default="http://127.0.0.1:8000")
     parser.add_argument("--human-audit", type=Path, default=None)

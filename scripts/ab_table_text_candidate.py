@@ -234,14 +234,14 @@ def main():
                     'src/retrieval/core/hybrid_pipeline.py', 'src/generation/answer_pipeline.py',
                     'src/generation/prompt_builder.py', 'configs/answer_generation.yaml']},
                 "case_sha256": {str(p): sha(ROOT / p) for p in [
-                    'data/eval/architecture_v9_1_corrected/retrieval_cases.json',
+                    'data/eval/official_v1/retrieval_cases.json',
                     'tests/fixtures/table_text_candidate_queries.json',
                     'tests/fixtures/table_text_source_review_queries.json']}}
     write(directory / f'ab_identity_{args.stage}.json', identity)
     diagnostics = read(ROOT / 'tests/fixtures/table_text_candidate_queries.json')
     if args.stage == 'retrieval':
         retrieval(directory, indexes, diagnostics, 'diagnostics')
-        retrieval(directory, indexes, read(ROOT / 'data/eval/architecture_v9_1_corrected/retrieval_cases.json'), 'v9_1')
+        retrieval(directory, indexes, read(ROOT / 'data/eval/official_v1/retrieval_cases.json'), 'official_v1')
     else:
         review_cases = read(ROOT / 'tests/fixtures/table_text_source_review_queries.json')
         if not (directory / 'hybrid_source_review.json').exists():

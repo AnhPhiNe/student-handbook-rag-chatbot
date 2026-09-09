@@ -756,53 +756,6 @@ def test_mutable_dataset_report_is_never_headline_eligible() -> None:
     assert errors == []
 
 
-def test_architecture_v7_release_bundle_is_valid_and_frozen() -> None:
-    project_root = Path(__file__).resolve().parents[1]
-    bundle_dir = project_root / "data" / "eval" / "architecture_v7"
-    docstore_path = (
-        project_root
-        / "data"
-        / "processed"
-        / "chunks"
-        / "all_docstore_items.json"
-    )
-
-    draft_report = dataset.validate_bundle(
-        bundle_dir,
-        docstore_path,
-        require_frozen=False,
-        enforce_docstore_hash=False,
-    )
-    assert draft_report["valid"] is True
-    assert draft_report["errors"] == []
-    assert all(w == "manifest docstore hash mismatch" for w in draft_report["warnings"])
-    assert draft_report["counts"] == {
-        "deterministic": 140,
-        "retrieval": 160,
-        "answers": 150,
-        "production": 60,
-    }
-
-    manifest = json.loads((bundle_dir / "manifest.json").read_text(encoding="utf-8"))
-    overlap = json.loads(
-        (bundle_dir / "overlap_audit.json").read_text(encoding="utf-8")
-    )
-    assert manifest["frozen"] is True
-    assert manifest["system_executed_on_dataset"] is True
-    assert manifest["user_review_approved"] is True
-    assert overlap["exact_historical_match_count"] == 0
-    assert overlap["high_similarity_review_count"] == 0
-
-    frozen_report = dataset.validate_bundle(
-        bundle_dir,
-        docstore_path,
-        require_frozen=True,
-        enforce_docstore_hash=False,
-    )
-    assert frozen_report["valid"] is True
-    assert frozen_report["errors"] == []
-
-
 def test_deterministic_v2_reports_non_applicable_assertions_as_na() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):

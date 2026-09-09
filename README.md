@@ -419,6 +419,10 @@ student_handbook_rag/
 │   │   └── metadata/            # Build manifest, identities and audit metadata
 │   ├── eval/
 │   │   ├── official_v1/         # Current evaluation dataset, results and provenance
+│   │   ├── product_regression/  # Small user-facing regression fixture
+│   │   ├── product_acceptance/  # Reviewable acceptance fixture; not a headline suite
+│   │   ├── composer_development/ # Focused Composer development fixture
+│   │   ├── release_v33_smoke/   # Retained v33 release-verification evidence
 │   │   └── reports/             # Local run outputs; not necessarily tracked in Git
 │   └── cache/                   # Runtime caches and provider key-pool state
 ├── src/
@@ -808,7 +812,7 @@ For local packaging validation with current targets, use the dry-run path:
 .\scripts\deploy_hf_backend.ps1 -DryRun -QdrantCollection student_handbook_semantic_v33 -MongoCollection parent_docs_v33
 ~~~
 
-This checks the package and manifest contract without modifying a remote space. A real deployment requires explicit operator approval, credentials, and a post-deploy health/readiness check; this README does not claim those steps are complete. The script's historical defaults are v32, so pass the v33 collection names explicitly.
+This checks the package and manifest contract without modifying a remote space. A real deployment requires explicit operator approval, credentials, and a post-deploy health/readiness check; this README does not claim those steps are complete. The script defaults already match v33; the explicit collection arguments above make the intended deployment targets visible to the operator.
 
 <a id="license"></a>
 

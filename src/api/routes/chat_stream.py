@@ -93,10 +93,11 @@ def chat_stream(
                     elif chunk_type == "done":
                         events.prepare_done(chunk)
                         done_latency = events.latency_ms
+                        trace_cohort = events.trace_metadata.get("cohort") or request.cohort
                         trace_metadata = build_trace_metadata(
                             events.trace_metadata,
                             query=query,
-                            cohort=request.cohort,
+                            cohort=trace_cohort,
                             chat_history=request.chat_history,
                             latency_ms=done_latency,
                             ttft_ms=events.ttft_ms,
@@ -105,7 +106,7 @@ def chat_stream(
                         submit_trace_to_langsmith(
                             request_id,
                             "Chat (Stream)",
-                            request.cohort,
+                            trace_cohort,
                             query,
                             events.full_text,
                             metadata=trace_metadata,

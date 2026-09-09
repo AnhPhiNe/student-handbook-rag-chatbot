@@ -20,7 +20,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v26-planner-owned-semantics"
+QUERY_PLAN_NORMALIZER_VERSION = "v27-task-local-cohort-fallback"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -270,7 +270,11 @@ def safe_rag_fallback_plan(
     reason: str = "safe_rag",
 ) -> dict[str, Any]:
     """Return one bounded RAG task when planning cannot be trusted."""
+    explicit_cohorts = extract_cohorts_from_query(query)
     normalized_cohort = normalize_cohort(cohort)
+    fallback_cohorts = explicit_cohorts or (
+        [normalized_cohort] if normalized_cohort else []
+    )
     return {
         "schema_version": QUERY_PLAN_SCHEMA_VERSION,
         "context_mode": "standalone",
@@ -287,7 +291,7 @@ def safe_rag_fallback_plan(
                 "lookup_type": None,
                 "slots": {},
                 "slot_spans": {},
-                "cohorts": [normalized_cohort] if normalized_cohort else [],
+                "cohorts": fallback_cohorts,
                 "clarification_question": None,
                 "validation_errors": [],
             }
@@ -310,6 +314,12 @@ def normalize_query_plan(
     registry = registry or load_lookup_registry()
     query_cohorts = extract_cohorts_from_query(query)
     default_cohort = query_cohorts[0] if len(query_cohorts) == 1 else selected_cohort
+    supported_cohorts = set(valid_cohorts())
+    fallback_cohorts = [
+        normalized
+        for value in (query_cohorts or [selected_cohort])
+        if (normalized := normalize_cohort(value)) in supported_cohorts
+    ]
     if conflict := _cohort_admission_year_conflict(query, selected_cohort):
         cohort, year = conflict
         expected_years = ", ".join(
@@ -423,6 +433,7 @@ def normalize_query_plan(
             grounding_context=grounding_context,
             registry=registry,
             service_source_query=service_source_query,
+            fallback_cohorts=fallback_cohorts,
         )
         tasks.append(task)
         errors.extend(f"{task['id']}:{error}" for error in task_errors)
@@ -480,6 +491,7 @@ def _normalize_task(
     grounding_context: str,
     registry: dict[str, Any],
     service_source_query: str | None = None,
+    fallback_cohorts: list[str] | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
     """Normalize and validate one planner task without invalidating siblings.
 
@@ -511,8 +523,21 @@ def _normalize_task(
     fallback_cohort = normalize_cohort(selected_cohort)
     if fallback_cohort not in supported_cohorts:
         fallback_cohort = None
-    if not cohorts and fallback_cohort:
-        cohorts = [fallback_cohort]
+    task_question_cohorts = [
+        normalized
+        for value in extract_cohorts_from_query(question)
+        if (normalized := normalize_cohort(value)) in supported_cohorts
+    ]
+    if fallback_cohorts is None:
+        fallback_cohorts = [fallback_cohort] if fallback_cohort else []
+    else:
+        fallback_cohorts = [
+            cohort for cohort in fallback_cohorts if cohort in supported_cohorts
+        ]
+    if not cohorts:
+        task_fallback_cohorts = task_question_cohorts or fallback_cohorts
+        if task_fallback_cohorts:
+            cohorts = list(dict.fromkeys(task_fallback_cohorts))
 
     lookup_type = raw_task.get("lookup_type")
     lookup_type = str(lookup_type).strip().lower() if lookup_type else None

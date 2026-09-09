@@ -735,7 +735,10 @@ class AnswerPipeline:
             "type": "metadata",
             "run_id": run_id,
             "cohort": (
-                res.get("cohort") or (router_decision or {}).get("cohort") or "default"
+                res.get("cohort")
+                or (router_decision or {}).get("cohort")
+                or res.get("selected_cohort")
+                or "default"
             ),
             "status": status,
             "intent": res.get("intent") or router_decision.get("intent"),
@@ -861,13 +864,14 @@ class AnswerPipeline:
             return
 
         yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}
+        llm_called = False
         yield self._build_stream_metadata(
             retrieval_result,
             status="streaming",
             effective_query=effective_query,
             citations_used=public_retrieval_citations,
             related_references=related_references,
-            llm_called=True,
+            llm_called=llm_called,
             run_id=run_id,
         )
 
@@ -883,6 +887,7 @@ class AnswerPipeline:
             stream_prefix_emitted = False
             suppress_source_tail = False
             stream_result: dict[str, Any] = {}
+            llm_called = True
             llm_stream = iter(llm_client.generate_stream(prompt))
             while True:
                 try:
@@ -967,7 +972,7 @@ class AnswerPipeline:
             error_type=terminal_error_type,
             citations_used=final_citations,
             related_references=related_references,
-            llm_called=True,
+            llm_called=llm_called,
             run_id=run_id,
         )
 
@@ -1072,6 +1077,7 @@ class AnswerPipeline:
             ),
             "effective_query": effective_query,
             "raw_query": query,
+            "cohort": cohort,
             "selected_cohort": cohort,
             "query_handling": query_handling,
             "query_plan": plan,
@@ -1752,6 +1758,7 @@ class AnswerPipeline:
             or query,
             "cohort": retrieval_result.get("cohort")
             or (router_decision or {}).get("cohort")
+            or retrieval_result.get("selected_cohort")
             or "default",
             "query_handling": query_handling,
             "router_decision": router_decision,

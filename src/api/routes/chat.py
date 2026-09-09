@@ -130,17 +130,18 @@ def chat(
                 trace_id=request_id,
             )
             sync_latency = round((time.perf_counter() - started_at) * 1000, 2)
+            trace_cohort = result.get("cohort") or request.cohort
             trace_metadata = build_trace_metadata(
                 result,
                 query=query,
-                cohort=request.cohort,
+                cohort=trace_cohort,
                 chat_history=request.chat_history,
                 latency_ms=sync_latency,
             )
             submit_trace_to_langsmith(
                 request_id,
                 "Chat (Sync)",
-                request.cohort,
+                trace_cohort,
                 query,
                 str(result.get("answer") or ""),
                 metadata=trace_metadata,

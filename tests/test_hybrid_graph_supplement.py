@@ -236,7 +236,7 @@ def test_default_retrieval_groups_twenty_four_vector_chunks_before_graph() -> No
             return_value=hits,
         ),
     ):
-        result = ChildParentHybridRetriever.retrieve(
+        ChildParentHybridRetriever.retrieve(
             retriever,
             "dieu kien hoc bong",
             top_k_vector=12,
@@ -258,6 +258,52 @@ def test_default_retrieval_groups_twenty_four_vector_chunks_before_graph() -> No
     assert "phoranker_candidate_chunks" not in telemetry
     assert "phoranker_candidate_parents" not in telemetry
     retriever._graph_related_parent_results.assert_called_once()
+
+
+def test_retrieval_reranks_children_before_grouping_by_parent() -> None:
+    hits = _vector_hits()
+    retriever = _retriever_stub()
+    reranked = [
+        (float(index), {"chunk_id": f"r{index}", "content": f"reranked {index}"})
+        for index in range(16)
+    ]
+    retriever.cohere_reranker = Mock()
+    retriever.cohere_reranker.rerank.return_value = (
+        reranked,
+        {
+            "ranking_method": "cohere_rerank_v4_fast",
+            "cohere_reranker_applied": True,
+        },
+    )
+
+    with (
+        patch.dict(
+            os.environ,
+            {"STUDENT_RAG_EVAL_RETRIEVAL_MODE": DEFAULT_RETRIEVAL_MODE},
+        ),
+        patch(
+            "src.retrieval.core.hybrid_pipeline._query_points_with_retry",
+            return_value=hits,
+        ),
+    ):
+        result = ChildParentHybridRetriever.retrieve(
+            retriever,
+            "dieu kien hoc bong",
+            top_k_vector=12,
+            top_k_final=5,
+            graph_depth=2,
+            cohort="K50",
+        )
+
+    retriever.cohere_reranker.rerank.assert_called_once()
+    assert (
+        retriever._group_parent_results.call_args.kwargs["scored_chunks"] == reranked
+    )
+    telemetry = retriever._group_parent_results.call_args.kwargs[
+        "retrieval_telemetry"
+    ]
+    assert telemetry["ranking_method"] == "cohere_rerank_v4_fast"
+    assert telemetry["cohere_reranker_applied"] is True
     assert result == retriever._group_parent_results.return_value
 
 

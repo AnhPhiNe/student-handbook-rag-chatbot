@@ -12,6 +12,7 @@ from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.legal_reference import normalize_article_label
 from src.common.source_identity import canonical_article_source_id
 from src.common.storage_config import require_qdrant_collection_name
+from src.retrieval.core.cohere_reranker import CohereReranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
@@ -178,6 +179,7 @@ class ChildParentHybridRetriever:
         self.embed_model = load_embedding_model(str(embedding["model_name"]))
         self.normalize_embeddings = bool(embedding.get("normalize_embeddings", True))
         self.graph = NetworkXGraphTraverser()
+        self.cohere_reranker = CohereReranker.from_runtime_config(self.runtime_config)
 
         # Full parent content comes from MongoDB.
         self.mongo_store = get_mongo_store()
@@ -467,6 +469,12 @@ class ChildParentHybridRetriever:
             "qdrant_seed_parents": len(seed_parent_ids),
             "ranking_method": "rrf",
         }
+        cohere_reranker = getattr(self, "cohere_reranker", None)
+        if cohere_reranker is not None:
+            primary_scored, reranker_telemetry = cohere_reranker.rerank(
+                query, primary_scored
+            )
+            retrieval_telemetry.update(reranker_telemetry)
         primary_results = self._group_parent_results(
             query=query,
             scored_chunks=primary_scored,

@@ -169,9 +169,12 @@ flowchart TD
     Pipeline -->|question and context| Planner["AI Router + Normalizer<br/>Qwen plan / validation<br/>Local router cache"]
     Planner -->|validated tasks and cohorts| Execute["Task execution inside AnswerPipeline"]
     Execute -->|structured task| Structured["Structured dispatcher<br/>Look up JSON tables,<br/>directories and formula rules"]
-    Execute -->|RAG task| Retriever["ChildParentHybridRetriever<br/>Qdrant dense + local BM25 + RRF<br/>Cohere Fast top-16 child rerank<br/>Load full parents from MongoDB"]
+    Execute -->|RAG task| CandidateSearch["Candidate retrieval<br/>Qdrant dense + local BM25<br/>RRF fallback pool: up to 24 children"]
+    CandidateSearch -->|query + first 16 RRF children| Reranker["Cohere Fast reranker<br/>rerank-v4.0-fast<br/>Optional fail-open stage"]
+    Reranker -->|valid child ordering| ParentLoad["Parent expansion<br/>Group children by parent ID<br/>Load full articles from MongoDB"]
+    Reranker -.->|unavailable or invalid: original RRF ordering| ParentLoad
     Structured -->|tables, records, optional fact locks| Merge["Merge task results<br/>Preserve task and cohort scope"]
-    Retriever -->|primary parent evidence| Merge
+    ParentLoad -->|primary parent evidence| Merge
     Merge --> Packet["Guards + prompt builder<br/>Bounded evidence and citations"]
     Packet -->|answerable and cache miss| Composer["Gemini client<br/>Answer generation / streaming"]
     Composer --> Delivery["Pipeline and API delivery<br/>Answer, citations, status"]
@@ -189,8 +192,9 @@ flowchart TD
 
 1. **Client → API → pipeline:** the API validates/admit requests; the service provides the shared pipeline instance.
 2. **Planner → task execution:** the normalized plan determines which lookup/retrieval modules are called, with task-local inputs and cohort scope. These are alternative or combined branches, not a claim of parallel scheduling.
-3. **Lookups/retrieval → merge:** structured results and primary parent evidence return to the same orchestration layer. Stores provide data to those modules; they do not call each other.
-4. **Merge → packet → Composer → client:** guards and context limits select what can be composed; on a cache miss Gemini generates the answer, which returns through the API. `Display` is the same frontend as the input node, drawn twice to keep the flow readable.
+3. **RAG candidate search → reranker → parent expansion:** dense and BM25 rankings are fused first. Cohere may reorder only the bounded child prefix; it neither searches Qdrant nor loads MongoDB. A failed or unavailable rerank passes the original RRF ordering to parent expansion.
+4. **Lookups/retrieval → merge:** structured results and primary parent evidence return to the same orchestration layer. Stores provide data to those modules; they do not call each other.
+5. **Merge → packet → Composer → client:** guards and context limits select what can be composed; on a cache miss Gemini generates the answer, which returns through the API. `Display` is the same frontend as the input node, drawn twice to keep the flow readable.
 
 This overview shows the answerable/cache-miss path. The runtime diagram below includes early outcomes and cache hits. Health/readiness are separate API checks; graph-related references use the separate UI-only path in the retrieval diagram.
 
@@ -204,7 +208,9 @@ This overview shows the answerable/cache-miss path. The runtime diagram below in
 | Planner | Interprets requests into typed tasks, slots, constraints, and output shape. | `src/retrieval/core/ai_router.py` |
 | Normalizer | Canonicalizes and validates planner output; it is not a second semantic planner. | `src/retrieval/core/query_plan.py` |
 | Structured resolver | Executes a validated lookup against reviewed catalogs and exception rules. | `src/retrieval/core/structured_dispatcher.py`, `formula_lookup.py` |
-| Retriever | Searches narrative children with dense/BM25 RRF, reranks a bounded child prefix, then expands to parent context. | `src/retrieval/core/hybrid_pipeline.py`, `cohere_reranker.py` |
+| Candidate retriever | Searches narrative children and fuses dense/BM25 rankings with RRF. | `src/retrieval/core/hybrid_pipeline.py` |
+| Reranker | Optionally reorders the first 16 RRF children; validates a complete result and fails open without changing the original candidates. | `src/retrieval/core/cohere_reranker.py` |
+| Parent expansion | Groups ranked children by parent ID, validates scope, and loads full parent articles from MongoDB. | `src/retrieval/core/hybrid_pipeline.py` |
 | Evidence packet | Applies authorized scope, citations, context limits, and prompt guards. | `src/generation/answer_pipeline.py`, `prompt_builder.py` |
 | Composer | Generates an answer from the packet without performing retrieval; instructed to ground claims in supplied evidence. | `src/generation/answer_pipeline.py` |
 | Graph UI | Uses related-source/graph information for navigation or display; graph-derived sources are not Composer evidence. | `frontend/`, retrieval metadata |
@@ -224,10 +230,13 @@ flowchart TD
     Planner --> Normalize["Post-Planner QueryPlan normalization<br/>Tasks, slots, cohorts, validation"]
     Normalize --> Execute["execute_task<br/>Dispatch each task and cohort"]
     Execute --> Structured["Structured task<br/>JSON lookup + optional fact lock"]
-    Execute --> RAG["RAG task<br/>Dense + BM25 → RRF children<br/>Cohere Fast top-16 → parent evidence"]
+    Execute --> Search["RAG candidate search<br/>Dense + BM25 → RRF<br/>Build fallback pool of up to 24 children"]
+    Search --> Rerank["Cohere Fast reranker<br/>Reorder first 16 children"]
+    Rerank -->|valid complete ranking| Parent["Parent expansion<br/>Group by parent ID + load MongoDB articles"]
+    Rerank -.->|missing key, limit, timeout or invalid result<br/>use original RRF ordering| Parent
     Execute --> Clarify["Clarify task<br/>Missing-information question"]
     Structured --> Merge["Merge task results<br/>Evidence, coverage, source identity"]
-    RAG --> Merge
+    Parent --> Merge
     Clarify --> Merge
     Merge --> Guard["Request-level guards<br/>Stop if no answer can be composed"]
     Guard -->|terminal outcome| Terminal["Clarification / out of scope / insufficient evidence / error<br/>No Composer call"]
@@ -246,10 +255,11 @@ flowchart TD
 
 1. **Receive:** the API accepts the question, selected cohort, and optional conversation history.
 2. **Plan:** Planner identifies what the student wants and separates multiple requests. Normalizer validates and canonicalizes that plan before execution.
-3. **Find evidence:** structured tasks look up reviewed JSON tables or directory records. RAG tasks search narrative children with dense + BM25, fuse up to 24 candidates with RRF, rerank the first 16 children with Cohere Fast, and then load the corresponding parent articles from MongoDB. If Cohere is unavailable, the unchanged RRF list continues to parent grouping.
-4. **Prepare context:** merge the task results without losing their cohort boundaries, check whether they can support an answer, and build a context-limited evidence packet. Structured evidence can include the selected table plus an exact lookup result; parent articles can include reviewed tables.
-5. **Compose:** Gemini uses the packet to answer the covered requests. It does not perform another retrieval step.
-6. **Deliver:** return the answer, citations, and status through JSON or SSE. Streaming delivers text incrementally before final metadata.
+3. **Find candidates:** structured tasks look up reviewed JSON tables or directory records. RAG tasks search narrative children with dense + BM25 and build an RRF fallback pool of up to 24 candidates.
+4. **Rerank and expand:** Cohere Fast receives the task query and at most the first 16 RRF children. On success, those reranked children continue to parent grouping and the unused RRF tail is discarded. On failure, the original RRF pool of up to 24 continues unchanged. The resulting children are then expanded into full MongoDB parent articles.
+5. **Prepare context:** merge the task results without losing their cohort boundaries, check whether they can support an answer, and build a context-limited evidence packet. Structured evidence can include the selected table plus an exact lookup result; parent articles can include reviewed tables.
+6. **Compose:** Gemini uses the packet to answer the covered requests. It does not perform another retrieval step.
+7. **Deliver:** return the answer, citations, and status through JSON or SSE. Streaming delivers text incrementally before final metadata.
 
 **Shortcuts and failures are separate from the main path:**
 
@@ -317,10 +327,11 @@ flowchart TD
     end
     Task["Online RAG task<br/>Query + cohort"] --> Dense["BGE-M3 query embedding<br/>Qdrant dense search"]
     Task --> Sparse["In-process BM25<br/>Sparse regulation search"]
-    Dense --> Fusion["Union child IDs + Reciprocal Rank Fusion<br/>k = 60; retain up to 24 by default"]
+    Dense --> Fusion["Union child IDs + Reciprocal Rank Fusion<br/>k = 60; fallback pool up to 24"]
     Sparse --> Fusion
-    Fusion --> Rerank["Cohere rerank-v4.0-fast<br/>Rerank top 16 children<br/>Fail open to original RRF list"]
-    Rerank --> Group["Group ranked children by parent ID<br/>Load and validate parent scope"]
+    Fusion -->|first 16 children| Rerank["Cohere rerank-v4.0-fast<br/>Return a complete ordering<br/>Optional fail-open stage"]
+    Rerank -->|success: reranked set, up to 16| Group["Group ranked children by parent ID<br/>Load and validate parent scope"]
+    Rerank -.->|failure: original RRF pool, up to 24| Group
     Mongo[("MongoDB parent_docs_v33<br/>Full articles + reviewed tables")] -. parent records .-> Group
     Group --> Primary["Primary results<br/>Up to 5 parents per default call<br/>Focused child references + full parent text"]
     Primary --> Merge["Return to request-level merge<br/>Combine task evidence; preserve cohorts"]
@@ -337,15 +348,27 @@ flowchart TD
 **How to read this retrieval pipeline:**
 
 1. **Candidate search:** the retriever sends the task query to dense search and local BM25 with cohort/content filters. Both rank narrative children, not complete MongoDB articles.
-2. **Fusion → child rerank → parent lookup:** RRF combines child rankings and retains up to 24 candidates. Cohere Fast reranks the first 16 children before any parent is chosen. The retriever then groups those results by `parent_section_id` and loads the corresponding full parent records from MongoDB. On a limit, timeout, invalid response, or missing key, this stage fails open to the original full RRF list.
+2. **Fusion → child rerank → parent lookup:** RRF combines child rankings into a fallback pool of up to 24 candidates. Cohere Fast receives at most the first 16 children before any parent is chosen. A successful call passes that reranked set onward and discards the unused tail; a limit, timeout, invalid response, or missing key passes the original pool of up to 24 onward. The retriever then groups the resulting children by `parent_section_id` and loads the corresponding full parent records from MongoDB.
 3. **Offline graph source:** [graph_extractor.py](src/ingestion/graph_extractor.py) reads the full parent docstore during the [build pipeline](#build-pipeline). It extracts explicit references between articles/documents, validates their IDs, and writes [document_edges.json](data/processed/graphs/document_edges.json). This file is a local JSON edge list, not a graph database, embedding index, or extra model.
 4. **Online graph use:** selected parent IDs seed traversal over that saved edge list. Scope checks and parent lookups produce `related_references` for UI navigation. This branch ends at the UI; it does **not** feed the Composer packet or add answer evidence.
 
+**Reranker contract:**
+
+| Boundary | Contract |
+|---|---|
+| Position | After dense/BM25 RRF and before grouping children into parents. It is used only by the narrative RAG branch. |
+| Input | One task-local query plus at most the first 16 items from the ordered RRF child list. Any remaining candidates are retained only for the fail-open path. |
+| Accepted output | A complete, valid permutation of the submitted child IDs with finite normalized relevance scores. |
+| Effect | Reorders child candidates only. It does not select a structured table, change cohort scope, fetch parent documents, traverse graph edges, or compose the answer. |
+| Success behavior | Parent grouping receives the complete Cohere ordering of at most 16 submitted children; an unused RRF tail does not continue on this path. |
+| Failure behavior | Missing/exhausted keys, timeout, HTTP/provider failure, malformed output, or incomplete ordering returns the original RRF pool of up to 24 immediately; the request does not wait for a key cooldown. |
+| Downstream consumer | Parent grouping uses either the accepted Cohere set (up to 16) or the unchanged fail-open RRF pool (up to 24), then loads up to five scoped parent articles from MongoDB. |
+
 **One shared composition stage:** the Composer node is the same request-level stage shown in the runtime diagram, not an extra model call inside each retrieval task. Other task results, including structured evidence in a mixed question, join at the request-level merge. The diagram shows the answerable/cache-miss continuation; cache hits and terminal outcomes follow the runtime flow above. Answer display and related-source navigation are two roles of the same frontend, not separate applications.
 
-Dense and BM25 searches use cohort/content filters. The default search limit is 24 per ranking source and the fused list is capped at 24 before parent grouping. BM25 is initialized from Qdrant child payloads into an in-process index; it is not a second remote database. The implementation is vector-primary: an empty valid dense seed set returns no results before sparse fusion. The diagram shows data dependencies, not parallel search scheduling.
+Dense and BM25 searches use cohort/content filters. The default search limit is 24 per ranking source and RRF forms a fallback pool capped at 24. A successful Cohere call replaces that pool with its complete ordering of the submitted prefix of at most 16; a fail-open call preserves the full RRF pool. BM25 is initialized from Qdrant child payloads into an in-process index; it is not a second remote database. The implementation is vector-primary: an empty valid dense seed set returns no results before sparse fusion. The diagram shows data dependencies, not parallel search scheduling.
 
-The default `ChildParentHybridRetriever` fuses dense and BM25 rankings with RRF (`k=60`) and asks Cohere to return a complete reranking of the first 16 child candidates. Only a complete, valid permutation is accepted; otherwise the original RRF candidates continue unchanged. A retrieval call uses up to five final parent articles after candidate ranking; compound plans may make multiple task-level calls and aggregate results. “Top five” means per retrieval call, not five for every compound question.
+The default `ChildParentHybridRetriever` fuses dense and BM25 rankings with RRF (`k=60`) and asks Cohere to return a complete reranking of the first 16 child candidates. Only a complete, valid permutation is accepted. Success passes those at-most-16 children to parent grouping; failure passes the original at-most-24 RRF pool unchanged. A retrieval call uses up to five final parent articles after candidate ranking; compound plans may make multiple task-level calls and aggregate results. “Top five” means per retrieval call, not five for every compound question.
 
 A child hit expands to its full parent article, including reviewed table content, subject to task/cohort scope and context budget. Focused child text locates the article; it is not a substitute for the parent record.
 

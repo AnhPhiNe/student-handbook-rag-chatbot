@@ -6996,6 +6996,47 @@ input:checked + .slider:before { transform: translateX(20px); }
   background: rgba(30, 41, 59, 0.7);
 }
 
+.course-target-summary-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.15rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  top: 1.5rem;
+}
+
+[data-theme='dark'] .course-target-summary-card {
+  background: rgba(30, 41, 59, 0.7);
+}
+
+.course-target-ref-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.course-target-ref-icon-btn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: rgba(var(--primary-rgb), 0.08);
+}
+
 /* Preset Chips Bar (Single line, horizontal scroll) */
 .course-target-presets-bar {
   display: flex;
@@ -7410,42 +7451,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   font-weight: 600;
 }
 
-/* Sleek Minimal Footer Reference Links */
-.course-target-footer-links {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  padding-top: 0.65rem;
-  margin-top: 0.25rem;
-  border-top: 1px solid var(--border-color);
-}
 
-.course-target-link-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: transparent;
-  border: none;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.course-target-link-btn:hover {
-  color: var(--primary);
-  background: rgba(var(--primary-rgb), 0.08);
-}
-
-.course-target-link-dot {
-  color: var(--border-color);
-  font-size: 0.7rem;
-  user-select: none;
-}
 
 @media (max-width: 640px) {
   .course-target-table th,

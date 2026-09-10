@@ -6,7 +6,6 @@ import {
   RotateCcw,
   Sparkles,
   Info,
-  GraduationCap,
 } from 'lucide-react';
 import {
   getCourseGroupOptions,
@@ -440,116 +439,102 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
         </section>
 
         {/* Right Column: Sticky Summary & Target Result Card */}
-        <aside className="gpa-summary-card sticky-card">
-          <div className="gpa-card-inner">
-            {/* Header: Title & Remaining Weight Pill */}
-            <div className="gpa-result-top">
-              <div className="gpa-result-tag-wrap">
-                <span className="gpa-live-dot" />
-                <span className="gpa-result-tag">MỤC TIÊU CUỐI KỲ</span>
-              </div>
+        <aside className="course-target-summary-card">
+          {/* Header: Title & Remaining Weight Pill */}
+          <div className="gpa-result-top">
+            <div className="gpa-result-tag-wrap">
+              <span className="gpa-live-dot" />
+              <span className="gpa-result-tag">MỤC TIÊU CUỐI KỲ</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               <span className="gpa-cohort-pill">
                 {result.isError && result.totalWeight > 100 ? 'Lỗi trọng số' : `Thi: ${result.remainingWeight}%`}
               </span>
-            </div>
-
-            {/* Summary Stats Grid (2 Equal Symmetrical Cards) */}
-            <div className="course-target-stats-grid">
-              <div className="gpa-stat-box">
-                <span className="gpa-stat-label">Điểm tích lũy</span>
-                <strong className="gpa-stat-val">
-                  {result.accumulatedScore > 0 ? result.accumulatedScore.toFixed(2) : '--'}
-                </strong>
-              </div>
-              <div className="gpa-stat-box">
-                <span className="gpa-stat-label">Qua môn ({result.lowestPassingLetter})</span>
-                <strong
-                  className="gpa-stat-val"
-                  style={{
-                    color:
-                      result.passTarget?.status === 'achieved'
-                        ? '#10b981'
-                        : result.passTarget?.status === 'impossible'
-                        ? '#ef4444'
-                        : undefined,
-                  }}
-                >
-                  {result.isError
-                    ? '--'
-                    : result.passTarget
-                    ? result.passTarget.status === 'achieved'
-                      ? 'Đã đạt'
-                      : result.passTarget.status === 'impossible'
-                      ? '> 10'
-                      : result.passTarget.requiredScore !== null
-                      ? result.passTarget.requiredScore.toFixed(2)
-                      : '--'
-                    : '--'}
-                </strong>
-              </div>
-            </div>
-
-            {/* Compact Target Matrix Table */}
-            <div className="course-target-compact-table">
-              <div className="course-target-table-header-row">
-                <span>MỨC ĐIỂM</span>
-                <span>ĐIỂM THI CẦN ĐẠT</span>
-              </div>
-              {result.targets.map((target) => (
-                <div key={target.letter} className="course-target-compact-row">
-                  <div className="course-target-row-left">
-                    <span
-                      className="course-target-row-badge"
-                      style={{ backgroundColor: target.color }}
-                    >
-                      {target.letter}
-                    </span>
-                    <span className="course-target-row-label">
-                      {target.name} <span className="course-target-min10">(≥ {target.min10.toFixed(1)})</span>
-                    </span>
-                  </div>
-
-                  <div className="course-target-row-right">
-                    {target.status === 'fail' ? (
-                      <span className="course-target-row-score fail">Không đạt (rớt)</span>
-                    ) : target.status === 'impossible' ? (
-                      <span className="course-target-row-score impossible">Bất khả thi</span>
-                    ) : target.status === 'achieved' ? (
-                      <span className="course-target-row-score achieved">Đã đạt 🎉</span>
-                    ) : target.requiredScore !== null ? (
-                      <span className="course-target-row-score score-val">
-                        {target.requiredScore.toFixed(2)}
-                      </span>
-                    ) : (
-                      <span className="course-target-row-score">--</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Minimal Inline Reference Links */}
-            <div className="course-target-footer-links">
               <button
                 type="button"
-                className="course-target-link-btn"
-                onClick={() => setReferenceModalTab('rules')}
-                title="Xem quy chế tính điểm học phần"
-              >
-                <Info size={13} />
-                <span>Quy chế điểm</span>
-              </button>
-              <span className="course-target-link-dot">•</span>
-              <button
-                type="button"
-                className="course-target-link-btn"
+                className="course-target-ref-icon-btn"
                 onClick={() => setReferenceModalTab('scale')}
-                title={`Tra cứu bảng quy đổi điểm (${cohort})`}
+                title="Tra cứu bảng quy đổi điểm & quy chế"
+                aria-label="Tra cứu bảng quy đổi điểm & quy chế"
               >
-                <GraduationCap size={13} />
-                <span>Bảng quy đổi điểm</span>
+                <Info size={14} />
               </button>
             </div>
+          </div>
+
+          {/* Summary Stats Grid (2 Equal Symmetrical Cards) */}
+          <div className="course-target-stats-grid">
+            <div className="gpa-stat-box">
+              <span className="gpa-stat-label">Điểm tích lũy</span>
+              <strong className="gpa-stat-val">
+                {result.accumulatedScore > 0 ? result.accumulatedScore.toFixed(2) : '--'}
+              </strong>
+            </div>
+            <div className="gpa-stat-box">
+              <span className="gpa-stat-label">Qua môn ({result.lowestPassingLetter})</span>
+              <strong
+                className="gpa-stat-val"
+                style={{
+                  color:
+                    result.passTarget?.status === 'achieved'
+                      ? '#10b981'
+                      : result.passTarget?.status === 'impossible'
+                      ? '#ef4444'
+                      : undefined,
+                }}
+              >
+                {result.isError
+                  ? '--'
+                  : result.passTarget
+                  ? result.passTarget.status === 'achieved'
+                    ? 'Đạt 🎉'
+                    : result.passTarget.status === 'impossible'
+                    ? '> 10'
+                    : result.passTarget.requiredScore !== null
+                    ? result.passTarget.requiredScore.toFixed(2)
+                    : '--'
+                  : '--'}
+              </strong>
+            </div>
+          </div>
+
+          {/* Compact Target Matrix Table */}
+          <div className="course-target-compact-table">
+            <div className="course-target-table-header-row">
+              <span>MỨC ĐIỂM</span>
+              <span>ĐIỂM THI CẦN ĐẠT</span>
+            </div>
+            {result.targets.map((target) => (
+              <div key={target.letter} className="course-target-compact-row">
+                <div className="course-target-row-left">
+                  <span
+                    className="course-target-row-badge"
+                    style={{ backgroundColor: target.color }}
+                  >
+                    {target.letter}
+                  </span>
+                  <span className="course-target-row-label">
+                    {target.name} <span className="course-target-min10">(≥ {target.min10.toFixed(1)})</span>
+                  </span>
+                </div>
+
+                <div className="course-target-row-right">
+                  {target.status === 'fail' ? (
+                    <span className="course-target-row-score fail">Không đạt (rớt)</span>
+                  ) : target.status === 'impossible' ? (
+                    <span className="course-target-row-score impossible">Bất khả thi</span>
+                  ) : target.status === 'achieved' ? (
+                    <span className="course-target-row-score achieved">Đã đạt 🎉</span>
+                  ) : target.requiredScore !== null ? (
+                    <span className="course-target-row-score score-val">
+                      {target.requiredScore.toFixed(2)}
+                    </span>
+                  ) : (
+                    <span className="course-target-row-score">--</span>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </aside>
       </div>

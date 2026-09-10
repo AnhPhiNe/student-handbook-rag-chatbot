@@ -481,6 +481,12 @@
 
 .page-header.center { text-align: center; margin: 0 auto 3rem; }
 
+@media (max-width: 640px) {
+  .tool-page > .page-header .page-context-badges {
+    display: none;
+  }
+}
+
 /* Category Grid */
 .category-grid {
   display: grid;

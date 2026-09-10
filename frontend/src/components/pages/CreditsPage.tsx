@@ -5,10 +5,10 @@ import {
   ShieldCheck,
   RotateCcw,
   BookOpen,
-  Info,
 } from 'lucide-react';
 import { calculateCreditThreshold } from '../../utils/creditThreshold';
 import { PageContextBadges } from '../PageContextBadges';
+import { InfoPopover } from '../InfoPopover';
 
 export function CreditsPage() {
   const [totalCredits, setTotalCredits] = useState('130');
@@ -80,16 +80,18 @@ export function CreditsPage() {
           <div className="scholarship-inputs-grid">
             {/* Tổng tín chỉ */}
             <div className="scholarship-input-group">
-              <label className="scholarship-input-label">
-                <span>Tổng tín chỉ toàn khóa</span>
-                <span
-                  title="Thường từ 120 - 150 tín chỉ tùy chương trình đào tạo"
-                  className="course-target-ref-icon-btn"
-                  style={{ cursor: 'help' }}
-                >
-                  <Info size={13} />
-                </span>
-              </label>
+              <div className="scholarship-input-label">
+                <label htmlFor="credits-total-input">Tổng tín chỉ toàn khóa</label>
+                <InfoPopover
+                  title="Tổng tín chỉ toàn khóa"
+                  content={
+                    <>
+                      Thường từ <strong>120 – 150 tín chỉ</strong> tùy ngành đào tạo theo quy định của trường.
+                    </>
+                  }
+                  align="right"
+                />
+              </div>
               <div className="number-input-group" style={{ height: '38px' }}>
                 <button
                   type="button"
@@ -100,6 +102,7 @@ export function CreditsPage() {
                   <Minus size={14} />
                 </button>
                 <input
+                  id="credits-total-input"
                   type="number"
                   min="1"
                   step="1"
@@ -121,16 +124,18 @@ export function CreditsPage() {
 
             {/* Số tín chỉ rớt */}
             <div className="scholarship-input-group">
-              <label className="scholarship-input-label">
-                <span>Số tín chỉ đã rớt / học lại</span>
-                <span
-                  title="Chỉ tính số tín chỉ của các học phần bị điểm F phải đăng ký học lại"
-                  className="course-target-ref-icon-btn"
-                  style={{ cursor: 'help' }}
-                >
-                  <Info size={13} />
-                </span>
-              </label>
+              <div className="scholarship-input-label">
+                <label htmlFor="credits-failed-input">Số tín chỉ đã rớt / học lại</label>
+                <InfoPopover
+                  title="Tín chỉ học lại tính hạ bằng"
+                  content={
+                    <>
+                      Chỉ tính tín chỉ các học phần bị <strong>điểm F</strong> phải học lại. Điểm D cải thiện không bị tính vào đây.
+                    </>
+                  }
+                  align="right"
+                />
+              </div>
               <div className="number-input-group" style={{ height: '38px' }}>
                 <button
                   type="button"
@@ -141,6 +146,7 @@ export function CreditsPage() {
                   <Minus size={14} />
                 </button>
                 <input
+                  id="credits-failed-input"
                   type="number"
                   min="0"
                   step="1"

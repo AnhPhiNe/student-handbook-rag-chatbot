@@ -220,10 +220,10 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
           <div className="gpa-mobile-stats-chips">
             <span className="gpa-stat-chip">
-              <strong>{calculation.isComplete ? calculation.totalCreds : '--'}</strong> TC sau kỳ
+              <strong>{calculation.isComplete ? calculation.totalCreds : '--'}</strong> Tổng TC
             </span>
             <span className="gpa-stat-chip">
-              <strong>{calculation.isComplete ? `${calculation.deltaGpa >= 0 ? '+' : ''}${calculation.deltaGpa.toFixed(2)}` : '--'}</strong> GPA
+              <strong>{calculation.isComplete ? `${calculation.deltaGpa >= 0 ? '+' : ''}${calculation.deltaGpa.toFixed(2)}` : '--'}</strong> Chênh lệch
             </span>
             <span className="gpa-stat-chip">
               <strong>{futureCredits || '--'}</strong> TC kỳ tới
@@ -256,25 +256,12 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       <div className="gpa-split-layout target-gpa-split-layout">
         {/* Left Column: Input Sections & Guidance */}
         <section className="gpa-main-column target-gpa-main-column">
-          {/* Controls Bar: Preset pills & actions */}
+          {/* Controls Bar: Single clean row */}
           <div className="gpa-toolbar target-gpa-toolbar">
-            <div className="target-gpa-presets-bar">
-              <span className="gpa-mode-label">Mục tiêu nhanh:</span>
-              <div className="target-gpa-preset-chips" role="group" aria-label="Chọn nhanh mức GPA mục tiêu">
-                {TARGET_PRESETS.map((p) => {
-                  const isActive = targetGpa === p.targetGpa;
-                  return (
-                    <button
-                      key={p.targetGpa}
-                      type="button"
-                      className={`target-gpa-preset-btn ${isActive ? 'active' : ''}`}
-                      onClick={() => setTargetGpa(p.targetGpa)}
-                    >
-                      <span>{p.icon}</span>
-                      <span>{p.label}</span>
-                    </button>
-                  );
-                })}
+            <div className="gpa-mode-control">
+              <span className="gpa-mode-label">Mục tiêu:</span>
+              <div className="gpa-mode-pills">
+                <span className="gpa-mode-btn active">Dự tính điểm học kỳ cần đạt</span>
               </div>
             </div>
 
@@ -300,160 +287,191 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
             </div>
           </div>
 
-          {/* Form Cards Grid */}
+          {/* Unified Input Card */}
           <div className="target-gpa-cards-stack">
-            {/* Card 1: Hiện tại của bạn */}
-            <div className="target-gpa-input-card">
-              <div className="target-gpa-card-header">
-                <div className="target-gpa-card-title-wrap">
-                  <span className="target-gpa-card-badge">1</span>
-                  <h3>Điểm & Tín chỉ hiện tại</h3>
+            <div className="target-gpa-form-card">
+              {/* Section 1: Tích lũy hiện tại */}
+              <div className="target-gpa-section">
+                <div className="target-gpa-section-header">
+                  <div className="target-gpa-sec-title">
+                    <span className="target-gpa-sec-badge current">1</span>
+                    <h3>Tích lũy hiện tại</h3>
+                  </div>
+                  <span className="target-gpa-sec-hint">Tính đến hết học kỳ trước</span>
                 </div>
-                <span className="target-gpa-card-hint">Tính đến hết học kỳ trước</span>
+
+                <div className="target-gpa-grid-2col">
+                  <div className="target-gpa-field-group">
+                    <label htmlFor="target-curr-gpa" className="target-gpa-label">
+                      GPA tích lũy hiện tại (Thang 4)
+                    </label>
+                    <div className="target-gpa-input-wrap">
+                      <input
+                        id="target-curr-gpa"
+                        type="text"
+                        inputMode="decimal"
+                        className={`target-gpa-input ${calculation.isCGpaInvalid ? 'input-error' : ''}`}
+                        value={currentGpa}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '' || /^[0-9.,]*$/.test(val)) setCurrentGpa(val);
+                        }}
+                        placeholder="VD: 2.85"
+                      />
+                      <span className="target-gpa-affix">/ 4.00</span>
+                    </div>
+                    {calculation.isCGpaInvalid && (
+                      <span className="target-gpa-field-error">GPA phải từ 0.00 đến 4.00</span>
+                    )}
+                  </div>
+
+                  <div className="target-gpa-field-group">
+                    <label htmlFor="target-curr-creds" className="target-gpa-label">
+                      Số tín chỉ đã tích lũy
+                    </label>
+                    <div className="target-gpa-input-wrap">
+                      <input
+                        id="target-curr-creds"
+                        type="text"
+                        inputMode="decimal"
+                        className={`target-gpa-input ${calculation.isCCredsInvalid ? 'input-error' : ''}`}
+                        value={currentCredits}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '' || /^[0-9.,]*$/.test(val)) setCurrentCredits(val);
+                        }}
+                        placeholder="VD: 60"
+                      />
+                      <span className="target-gpa-affix">Tín chỉ</span>
+                    </div>
+                    {calculation.isCCredsInvalid && (
+                      <span className="target-gpa-field-error">Số tín chỉ phải &gt; 0</span>
+                    )}
+                  </div>
+                </div>
               </div>
 
-              <div className="target-gpa-grid-2col">
-                <div className="target-gpa-field-group">
-                  <label htmlFor="target-curr-gpa" className="target-gpa-label">
-                    GPA tích lũy hiện tại (Thang 4)
-                  </label>
-                  <div className="target-gpa-input-wrap">
-                    <input
-                      id="target-curr-gpa"
-                      type="text"
-                      inputMode="decimal"
-                      className={`target-gpa-input ${calculation.isCGpaInvalid ? 'input-error' : ''}`}
-                      value={currentGpa}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === '' || /^[0-9.,]*$/.test(val)) setCurrentGpa(val);
-                      }}
-                      placeholder="VD: 2.85"
-                    />
-                    <span className="target-gpa-affix">/ 4.00</span>
+              {/* Elegant Divider */}
+              <div className="target-gpa-form-divider" />
+
+              {/* Section 2: Kế hoạch học kỳ tới */}
+              <div className="target-gpa-section">
+                <div className="target-gpa-section-header">
+                  <div className="target-gpa-sec-title">
+                    <span className="target-gpa-sec-badge target">2</span>
+                    <h3>Kế hoạch học kỳ tới</h3>
                   </div>
-                  {calculation.isCGpaInvalid && (
-                    <span className="target-gpa-field-error">GPA phải từ 0.00 đến 4.00</span>
-                  )}
+                  <span className="target-gpa-sec-hint">Mục tiêu GPA & tín chỉ đăng ký</span>
                 </div>
 
-                <div className="target-gpa-field-group">
-                  <label htmlFor="target-curr-creds" className="target-gpa-label">
-                    Số tín chỉ đã tích lũy
-                  </label>
-                  <div className="target-gpa-input-wrap">
-                    <input
-                      id="target-curr-creds"
-                      type="text"
-                      inputMode="decimal"
-                      className={`target-gpa-input ${calculation.isCCredsInvalid ? 'input-error' : ''}`}
-                      value={currentCredits}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === '' || /^[0-9.,]*$/.test(val)) setCurrentCredits(val);
-                      }}
-                      placeholder="VD: 60"
-                    />
-                    <span className="target-gpa-affix">Tín chỉ</span>
+                <div className="target-gpa-grid-2col">
+                  <div className="target-gpa-field-group">
+                    <label htmlFor="target-goal-gpa" className="target-gpa-label">
+                      GPA mục tiêu muốn đạt (Thang 4)
+                    </label>
+                    <div className="target-gpa-input-wrap">
+                      <input
+                        id="target-goal-gpa"
+                        type="text"
+                        inputMode="decimal"
+                        className={`target-gpa-input ${calculation.isTGpaInvalid ? 'input-error' : ''}`}
+                        value={targetGpa}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '' || /^[0-9.,]*$/.test(val)) setTargetGpa(val);
+                        }}
+                        placeholder="VD: 3.20"
+                      />
+                      <span className="target-gpa-affix">/ 4.00</span>
+                    </div>
+                    {calculation.isTGpaInvalid && (
+                      <span className="target-gpa-field-error">Mục tiêu phải từ 0.00 đến 4.00</span>
+                    )}
+
+                    {/* Quick target presets right under the target input */}
+                    <div className="target-gpa-quick-chips">
+                      {TARGET_PRESETS.map((p) => (
+                        <button
+                          key={p.targetGpa}
+                          type="button"
+                          className={`target-gpa-tc-chip ${targetGpa === p.targetGpa ? 'active' : ''}`}
+                          onClick={() => setTargetGpa(p.targetGpa)}
+                        >
+                          <span>{p.icon}</span>
+                          <span>{p.label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  {calculation.isCCredsInvalid && (
-                    <span className="target-gpa-field-error">Số tín chỉ phải &gt; 0</span>
-                  )}
+
+                  <div className="target-gpa-field-group">
+                    <label htmlFor="target-future-creds" className="target-gpa-label">
+                      Số tín chỉ dự kiến học kỳ tới
+                    </label>
+                    <div className="target-gpa-input-wrap">
+                      <input
+                        id="target-future-creds"
+                        type="text"
+                        inputMode="decimal"
+                        className={`target-gpa-input ${calculation.isFCredsInvalid ? 'input-error' : ''}`}
+                        value={futureCredits}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '' || /^[0-9.,]*$/.test(val)) setFutureCredits(val);
+                        }}
+                        placeholder="VD: 15"
+                      />
+                      <span className="target-gpa-affix">Tín chỉ</span>
+                    </div>
+                    {calculation.isFCredsInvalid && (
+                      <span className="target-gpa-field-error">Tín chỉ học kỳ phải &gt; 0</span>
+                    )}
+
+                    {/* Quick credit chips */}
+                    <div className="target-gpa-quick-chips">
+                      {CREDIT_PRESETS.map((tc) => (
+                        <button
+                          key={tc}
+                          type="button"
+                          className={`target-gpa-tc-chip ${futureCredits === tc ? 'active' : ''}`}
+                          onClick={() => setFutureCredits(tc)}
+                        >
+                          {tc} TC
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Card 2: Mục tiêu kỳ sắp tới */}
-            <div className="target-gpa-input-card">
-              <div className="target-gpa-card-header">
-                <div className="target-gpa-card-title-wrap">
-                  <span className="target-gpa-card-badge">2</span>
-                  <h3>Kế hoạch học kỳ tới</h3>
-                </div>
-                <span className="target-gpa-card-hint">Kỳ vọng và số môn dự kiến</span>
-              </div>
-
-              <div className="target-gpa-grid-2col">
-                <div className="target-gpa-field-group">
-                  <label htmlFor="target-goal-gpa" className="target-gpa-label">
-                    GPA mục tiêu muốn đạt (Thang 4)
-                  </label>
-                  <div className="target-gpa-input-wrap">
-                    <input
-                      id="target-goal-gpa"
-                      type="text"
-                      inputMode="decimal"
-                      className={`target-gpa-input ${calculation.isTGpaInvalid ? 'input-error' : ''}`}
-                      value={targetGpa}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === '' || /^[0-9.,]*$/.test(val)) setTargetGpa(val);
-                      }}
-                      placeholder="VD: 3.20"
-                    />
-                    <span className="target-gpa-affix">/ 4.00</span>
-                  </div>
-                  {calculation.isTGpaInvalid && (
-                    <span className="target-gpa-field-error">Mục tiêu phải từ 0.00 đến 4.00</span>
-                  )}
-                </div>
-
-                <div className="target-gpa-field-group">
-                  <label htmlFor="target-future-creds" className="target-gpa-label">
-                    Số tín chỉ dự kiến học kỳ tới
-                  </label>
-                  <div className="target-gpa-input-wrap">
-                    <input
-                      id="target-future-creds"
-                      type="text"
-                      inputMode="decimal"
-                      className={`target-gpa-input ${calculation.isFCredsInvalid ? 'input-error' : ''}`}
-                      value={futureCredits}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === '' || /^[0-9.,]*$/.test(val)) setFutureCredits(val);
-                      }}
-                      placeholder="VD: 15"
-                    />
-                    <span className="target-gpa-affix">Tín chỉ</span>
-                  </div>
-                  {calculation.isFCredsInvalid && (
-                    <span className="target-gpa-field-error">Tín chỉ học kỳ phải &gt; 0</span>
-                  )}
-
-                  {/* Quick credit chips */}
-                  <div className="target-gpa-quick-chips">
-                    {CREDIT_PRESETS.map((tc) => (
-                      <button
-                        key={tc}
-                        type="button"
-                        className={`target-gpa-tc-chip ${futureCredits === tc ? 'active' : ''}`}
-                        onClick={() => setFutureCredits(tc)}
-                      >
-                        {tc} TC
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3: Formula & Guidance */}
+            {/* Formula & Guidance Card */}
             <div className="target-gpa-formula-card">
               <div className="target-gpa-formula-header">
                 <BookOpen size={16} />
                 <h4>Công thức tính điểm kỳ tới</h4>
               </div>
-              <p className="target-gpa-formula-desc">
-                Điểm GPA tích lũy được tính theo bình quân gia quyền theo số tín chỉ:
-              </p>
-              <div className="target-gpa-math-box">
-                <code>GPA cần đạt = [(GPA mục tiêu × Tổng TC sau kỳ) - (GPA hiện tại × TC hiện tại)] / TC kỳ tới</code>
+              <div className="target-gpa-formula-display">
+                <div className="target-gpa-formula-lhs">
+                  <span>Điểm kỳ tới</span>
+                  <strong>=</strong>
+                </div>
+                <div className="target-gpa-fraction">
+                  <div className="target-gpa-numerator">
+                    <span>(GPA mục tiêu × Tổng TC sau kỳ)</span>
+                    <span className="target-gpa-minus">−</span>
+                    <span>(GPA hiện tại × TC hiện tại)</span>
+                  </div>
+                  <div className="target-gpa-fraction-line" />
+                  <div className="target-gpa-denominator">
+                    <span>Số tín chỉ học kỳ tới</span>
+                  </div>
+                </div>
               </div>
               <div className="target-gpa-formula-tip">
                 <HelpCircle size={14} />
                 <span>
-                  <strong>Mẹo:</strong> Nếu số điểm cần đạt quá cao, bạn có thể <strong>tăng số tín chỉ dự kiến</strong> học kỳ tới để giảm áp lực điểm trung bình cần đạt.
+                  <strong>Mẹo:</strong> Nếu điểm yêu cầu quá cao, bạn có thể <strong>tăng số tín chỉ kỳ tới</strong> để dàn trải và giảm áp lực điểm trung bình cần đạt.
                 </span>
               </div>
             </div>
@@ -504,13 +522,13 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
               {/* Summary Stats Grid (3 Equal, Symmetrical Cards) */}
               <div className="gpa-stats-grid">
                 <div className="gpa-stat-box">
-                  <span className="gpa-stat-label">Tổng TC sau kỳ</span>
+                  <span className="gpa-stat-label">Tổng TC</span>
                   <strong className="gpa-stat-val">
                     {calculation.isComplete ? calculation.totalCreds : '--'}
                   </strong>
                 </div>
                 <div className="gpa-stat-box">
-                  <span className="gpa-stat-label">Mức chênh lệch</span>
+                  <span className="gpa-stat-label">Chênh lệch</span>
                   <strong className="gpa-stat-val">
                     {calculation.isComplete
                       ? `${calculation.deltaGpa >= 0 ? '+' : ''}${calculation.deltaGpa.toFixed(2)}`
@@ -518,7 +536,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                   </strong>
                 </div>
                 <div className="gpa-stat-box">
-                  <span className="gpa-stat-label">Tín chỉ kỳ tới</span>
+                  <span className="gpa-stat-label">TC kỳ tới</span>
                   <strong className="gpa-stat-val">
                     {futureCredits || '--'}
                   </strong>

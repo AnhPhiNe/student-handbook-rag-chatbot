@@ -7032,6 +7032,36 @@ input:checked + .slider:before { transform: translateX(20px); }
   background: rgba(30, 41, 59, 0.7);
 }
 
+.course-target-desktop-only-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.course-target-mobile-hero {
+  margin-bottom: 0.85rem;
+}
+
+.course-target-mobile-details-header {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .course-target-mobile-hero {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.65rem !important;
+  }
+  .course-target-desktop-only-result {
+    display: none !important;
+  }
+  .course-target-mobile-details-header {
+    display: flex;
+    align-items: center;
+    padding-bottom: 0.15rem;
+  }
+}
+
 .course-target-ref-icon-btn {
   display: inline-flex;
   align-items: center;

@@ -231,6 +231,96 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
         <PageContextBadges cohort={cohort} source="Thang điểm áp dụng theo khóa" advisory />
       </div>
 
+      {/* Top Mobile Hero Card (Pinned to top on mobile <= 960px, instant live feedback) */}
+      <section
+        className="gpa-mobile-hero-card course-target-mobile-hero"
+        aria-label="Kết quả mục tiêu môn học"
+      >
+        <div className="gpa-mobile-hero-top">
+          <div className="gpa-result-tag-wrap">
+            <span className="gpa-live-dot" aria-hidden="true" />
+            <span className="gpa-hero-tag">MỤC TIÊU CUỐI KỲ • {cohort}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            {result.isError && result.totalWeight > 100 ? (
+              <span className="gpa-tier-pill tier-weak">Lỗi trọng số</span>
+            ) : result.passTarget?.status === 'achieved' ? (
+              <span className="gpa-tier-pill tier-excellent">🎉 Đã đủ qua môn</span>
+            ) : result.passTarget?.status === 'impossible' ? (
+              <span className="gpa-tier-pill tier-weak">⚠️ Khó qua môn</span>
+            ) : result.passTarget?.requiredScore != null ? (
+              <span className="gpa-tier-pill tier-good">
+                Cần thi ≥ {result.passTarget.requiredScore.toFixed(2)}
+              </span>
+            ) : (
+              <span className="gpa-cohort-pill">Thi: {result.remainingWeight}%</span>
+            )}
+            <button
+              type="button"
+              className="course-target-ref-icon-btn"
+              onClick={() => setReferenceModalTab('scale')}
+              title="Tra cứu bảng quy đổi điểm & quy chế"
+              aria-label="Tra cứu bảng quy đổi điểm & quy chế"
+            >
+              <Info size={13} />
+            </button>
+          </div>
+        </div>
+
+        <div className="gpa-mobile-hero-middle">
+          <div className="gpa-hero-score">
+            <span className="gpa-score-num text-gradient">
+              {result.isError
+                ? '--'
+                : result.passTarget
+                ? result.passTarget.status === 'achieved'
+                  ? 'Đạt'
+                  : result.passTarget.status === 'impossible'
+                  ? '> 10'
+                  : result.passTarget.requiredScore !== null
+                  ? result.passTarget.requiredScore.toFixed(2)
+                  : '--'
+                : '--'}
+            </span>
+            <span className="gpa-score-den">
+              {result.passTarget?.status === 'achieved'
+                ? 'qua môn'
+                : `/ 10 thi (${result.lowestPassingLetter})`}
+            </span>
+          </div>
+
+          <div className="gpa-mobile-stats-chips">
+            <span className="gpa-stat-chip">
+              Tích lũy <strong>{result.accumulatedScore > 0 ? `${result.accumulatedScore.toFixed(2)} đ` : '--'}</strong>
+            </span>
+            <span className="gpa-stat-chip">
+              Đã có <strong>{result.totalWeight}%</strong>
+            </span>
+            <span className="gpa-stat-chip">
+              Thi cuối <strong>{result.totalWeight > 100 ? '0%' : `${result.remainingWeight}%`}</strong>
+            </span>
+          </div>
+        </div>
+
+        {/* Mini progress bar: visual progress of accumulated points towards 10.0 scale */}
+        <div className="gpa-progress-track">
+          <div
+            className={`gpa-progress-fill ${
+              result.totalWeight > 100
+                ? 'tier-weak'
+                : result.passTarget?.status === 'achieved'
+                ? 'tier-excellent'
+                : result.accumulatedScore > 0
+                ? 'tier-good'
+                : ''
+            }`}
+            style={{
+              width: `${Math.min(100, Math.max(0, (result.accumulatedScore / 10) * 100))}%`,
+            }}
+          />
+        </div>
+      </section>
+
       {/* Main 2-Column Split Layout */}
       <div className="course-target-split-layout">
         {/* Left Column: Input Form */}
@@ -439,63 +529,72 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
         </section>
 
         {/* Right Column: Sticky Summary & Target Result Card */}
+        {/* Right Column: Sticky Summary & Target Result Card */}
         <aside className="course-target-summary-card">
-          {/* Header: Title & Remaining Weight Pill */}
-          <div className="gpa-result-top">
-            <div className="gpa-result-tag-wrap">
-              <span className="gpa-live-dot" />
-              <span className="gpa-result-tag">MỤC TIÊU CUỐI KỲ</span>
+          {/* Desktop Only: Header & Symmetrical Stat Grid (Shown in Top Hero Card on mobile) */}
+          <div className="course-target-desktop-only-result">
+            {/* Header: Title & Remaining Weight Pill */}
+            <div className="gpa-result-top">
+              <div className="gpa-result-tag-wrap">
+                <span className="gpa-live-dot" />
+                <span className="gpa-result-tag">MỤC TIÊU CUỐI KỲ</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span className="gpa-cohort-pill">
+                  {result.isError && result.totalWeight > 100 ? 'Lỗi trọng số' : `Thi: ${result.remainingWeight}%`}
+                </span>
+                <button
+                  type="button"
+                  className="course-target-ref-icon-btn"
+                  onClick={() => setReferenceModalTab('scale')}
+                  title="Tra cứu bảng quy đổi điểm & quy chế"
+                  aria-label="Tra cứu bảng quy đổi điểm & quy chế"
+                >
+                  <Info size={14} />
+                </button>
+              </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <span className="gpa-cohort-pill">
-                {result.isError && result.totalWeight > 100 ? 'Lỗi trọng số' : `Thi: ${result.remainingWeight}%`}
-              </span>
-              <button
-                type="button"
-                className="course-target-ref-icon-btn"
-                onClick={() => setReferenceModalTab('scale')}
-                title="Tra cứu bảng quy đổi điểm & quy chế"
-                aria-label="Tra cứu bảng quy đổi điểm & quy chế"
-              >
-                <Info size={14} />
-              </button>
+
+            {/* Summary Stats Grid (2 Equal Symmetrical Cards) */}
+            <div className="course-target-stats-grid">
+              <div className="gpa-stat-box">
+                <span className="gpa-stat-label">Điểm tích lũy</span>
+                <strong className="gpa-stat-val">
+                  {result.accumulatedScore > 0 ? result.accumulatedScore.toFixed(2) : '--'}
+                </strong>
+              </div>
+              <div className="gpa-stat-box">
+                <span className="gpa-stat-label">Qua môn ({result.lowestPassingLetter})</span>
+                <strong
+                  className="gpa-stat-val"
+                  style={{
+                    color:
+                      result.passTarget?.status === 'achieved'
+                        ? '#10b981'
+                        : result.passTarget?.status === 'impossible'
+                        ? '#ef4444'
+                        : undefined,
+                  }}
+                >
+                  {result.isError
+                    ? '--'
+                    : result.passTarget
+                    ? result.passTarget.status === 'achieved'
+                      ? 'Đạt 🎉'
+                      : result.passTarget.status === 'impossible'
+                      ? '> 10'
+                      : result.passTarget.requiredScore !== null
+                      ? result.passTarget.requiredScore.toFixed(2)
+                      : '--'
+                    : '--'}
+                </strong>
+              </div>
             </div>
           </div>
 
-          {/* Summary Stats Grid (2 Equal Symmetrical Cards) */}
-          <div className="course-target-stats-grid">
-            <div className="gpa-stat-box">
-              <span className="gpa-stat-label">Điểm tích lũy</span>
-              <strong className="gpa-stat-val">
-                {result.accumulatedScore > 0 ? result.accumulatedScore.toFixed(2) : '--'}
-              </strong>
-            </div>
-            <div className="gpa-stat-box">
-              <span className="gpa-stat-label">Qua môn ({result.lowestPassingLetter})</span>
-              <strong
-                className="gpa-stat-val"
-                style={{
-                  color:
-                    result.passTarget?.status === 'achieved'
-                      ? '#10b981'
-                      : result.passTarget?.status === 'impossible'
-                      ? '#ef4444'
-                      : undefined,
-                }}
-              >
-                {result.isError
-                  ? '--'
-                  : result.passTarget
-                  ? result.passTarget.status === 'achieved'
-                    ? 'Đạt 🎉'
-                    : result.passTarget.status === 'impossible'
-                    ? '> 10'
-                    : result.passTarget.requiredScore !== null
-                    ? result.passTarget.requiredScore.toFixed(2)
-                    : '--'
-                  : '--'}
-              </strong>
-            </div>
+          {/* Mobile Only: Section Header for Detailed Target Table */}
+          <div className="course-target-mobile-details-header">
+            <span className="gpa-hero-tag">CHI TIẾT ĐIỂM THI TỪNG MỨC</span>
           </div>
 
           {/* Compact Target Matrix Table */}

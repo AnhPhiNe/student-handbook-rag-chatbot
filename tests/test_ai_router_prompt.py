@@ -611,6 +611,106 @@ def test_from_config_accepts_model_environment_override(
     assert router.max_output_tokens == 1024
 
 
+def test_from_config_selects_command_a_plus_without_reusing_qwen_identity(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setenv("COHERE_ROUTER_API_KEYS", "test-cohere-router-key")
+    monkeypatch.setenv("STUDENT_RAG_ROUTER_PROVIDER", "cohere")
+    monkeypatch.delenv("STUDENT_RAG_ROUTER_MODEL", raising=False)
+    config_path = tmp_path / "router.yaml"
+    config_path.write_text(
+        "\n".join(
+            (
+                "provider: groq",
+                "model_name: qwen/qwen3.8-27b",
+                "cache_enabled: false",
+                "key_pool:",
+                f"  state_path: {json.dumps(str(tmp_path / 'qwen-state.json'))}",
+                "cohere_key_pool:",
+                f"  state_path: {json.dumps(str(tmp_path / 'cohere-state.json'))}",
+            )
+        ),
+        encoding="utf-8",
+    )
+
+    router = AIRouter.from_config(config_path)
+
+    assert router.provider == "cohere"
+    assert router.model_name == "command-a-plus-05-2026"
+    assert router.key_pool.config.rpm_limit_per_key == 20
+    assert router.key_pool.config.track_token_quotas is False
+    assert router._resolved_reasoning_effort() == "none"
+    assert router._plan_response_format_payload() == {}
+
+
+def test_command_a_plus_uses_chat_v2_and_normalizes_the_same_plan_contract(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    payload = {
+        "schema_version": "v1",
+        "context_mode": "standalone",
+        "normalized_query": None,
+        "standalone_query": None,
+        "referenced_turns": [],
+        "out_of_domain": False,
+        "tasks": [_valid_plan_task()],
+    }
+    calls: list[dict] = []
+
+    class _FakeResponse:
+        ok = True
+        status_code = 200
+        headers: dict[str, str] = {}
+        text = ""
+
+        @staticmethod
+        def raise_for_status() -> None:
+            return None
+
+        @staticmethod
+        def json() -> dict:
+            return {
+                "message": {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": json.dumps(payload, ensure_ascii=False),
+                        }
+                    ]
+                },
+                "usage": {
+                    "tokens": {"input_tokens": 100, "output_tokens": 40}
+                },
+            }
+
+    def _post(*args, **kwargs):
+        calls.append({"args": args, "kwargs": kwargs})
+        return _FakeResponse()
+
+    monkeypatch.setenv("COHERE_ROUTER_API_KEYS", "test-cohere-router-key")
+    monkeypatch.setattr(ai_router_module.requests, "post", _post)
+    router = AIRouter(
+        provider="cohere",
+        model_name="command-a-plus-05-2026",
+        cache_enabled=False,
+        key_pool_config={"state_path": str(tmp_path / "cohere-state.json")},
+    )
+
+    decision = router.plan("IELTS 6.0 tương đương bậc mấy?", cohort="K51")
+
+    assert decision["router_provider"] == "cohere"
+    assert decision["model_used"] == "command-a-plus-05-2026"
+    assert decision["usage"] == {"input": 100, "output": 40, "total": 140}
+    assert decision["tasks"][0]["lookup_type"] == "foreign_language"
+    request = calls[0]["kwargs"]
+    assert calls[0]["args"] == (ai_router_module.COHERE_CHAT_URL,)
+    assert "response_format" not in request["json"]
+    assert request["json"]["thinking"] == {"token_budget": 256}
+    assert request["timeout"] == 5.0
+
+
 def test_router_normalization_does_not_infer_missing_jlpt_level_slot() -> None:
     query = "K50 JLPT N3 tương đương bậc mấy?"
     decision = normalize_router_decision(

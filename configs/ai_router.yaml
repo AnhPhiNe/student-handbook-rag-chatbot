@@ -19,3 +19,11 @@ key_pool:
   cooldown_seconds: 65
   state_path: data/cache/qwen_router_key_state.json
   wait_when_limited: false
+
+# Used only when STUDENT_RAG_ROUTER_PROVIDER=cohere. Command A+ trial Chat
+# limits are request-based; provider 429 responses remain the quota authority.
+cohere_key_pool:
+  rpm_limit_per_key: 20
+  cooldown_seconds: 65
+  state_path: data/cache/cohere_command_a_plus_router_key_state.json
+  wait_when_limited: false

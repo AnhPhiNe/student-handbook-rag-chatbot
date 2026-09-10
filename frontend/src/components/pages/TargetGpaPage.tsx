@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import {
   TrendingUp,
   RotateCcw,
-  Sparkles,
   Info,
   GraduationCap,
 } from 'lucide-react';
@@ -129,14 +128,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     setCurrentGpa('');
     setCurrentCredits('');
     setTargetGpa('');
-    setFutureCredits('15');
-  };
-
-  // Fill sample data
-  const handleSample = () => {
-    setCurrentGpa('2.85');
-    setCurrentCredits('60');
-    setTargetGpa('3.20');
     setFutureCredits('15');
   };
 
@@ -269,15 +260,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
               >
                 <RotateCcw size={14} />
                 <span>Làm mới</span>
-              </button>
-              <button
-                type="button"
-                className="tool-btn primary gpa-btn-sm gpa-btn-highlight"
-                onClick={handleSample}
-                title="Điền dữ liệu mẫu để thử tính toán"
-              >
-                <Sparkles size={14} />
-                <span>Dữ liệu mẫu</span>
               </button>
             </div>
           </div>

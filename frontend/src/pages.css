@@ -7753,6 +7753,120 @@ input:checked + .slider:before { transform: translateX(20px); }
   border-color: rgba(245, 158, 11, 0.4);
 }
 
+.scholarship-label-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.scholarship-info-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+}
+
+/* Scholarship Rules Modal Specifics */
+.scholarship-rules-modal {
+  max-width: 680px;
+}
+
+.scholarship-modal-subbox {
+  margin-top: 0.65rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.scholarship-modal-subbox .subbox-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.scholarship-rules-tags-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+@media (max-width: 540px) {
+  .scholarship-rules-tags-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.scholarship-rule-tag {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.scholarship-rule-tag .rule-tag-icon {
+  flex-shrink: 0;
+  margin-top: 0.12rem;
+}
+
+.scholarship-rule-tag.excluded {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+[data-theme='dark'] .scholarship-rule-tag.excluded {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #f87171;
+}
+
+.scholarship-rule-tag.excluded strong {
+  display: block;
+  color: #b91c1c;
+  font-size: 0.76rem;
+}
+
+[data-theme='dark'] .scholarship-rule-tag.excluded strong {
+  color: #fca5a5;
+}
+
+.scholarship-rule-tag.excluded span {
+  font-size: 0.71rem;
+  color: var(--text-secondary);
+}
+
+.scholarship-rule-tag.included {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: #059669;
+}
+
+[data-theme='dark'] .scholarship-rule-tag.included {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+
+.scholarship-rule-tag.included strong {
+  display: block;
+  color: #047857;
+  font-size: 0.76rem;
+}
+
+[data-theme='dark'] .scholarship-rule-tag.included strong {
+  color: #6ee7b7;
+}
+
+.scholarship-rule-tag.included span {
+  font-size: 0.71rem;
+  color: var(--text-secondary);
+}
+
 /* Search Autocomplete Box */
 .scholarship-search-box {
   position: relative;

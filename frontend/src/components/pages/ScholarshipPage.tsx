@@ -6,6 +6,7 @@ import {
   X,
   Check,
   AlertTriangle,
+  Info,
 } from 'lucide-react';
 import {
   calculateScholarshipScore,
@@ -18,11 +19,13 @@ import {
   type TuitionProgram,
 } from '../../data/tuitionRates';
 import { PageContextBadges } from '../PageContextBadges';
+import { ScholarshipRulesModal } from '../ScholarshipRulesModal';
 
 export function ScholarshipPage() {
   const [academicScore, setAcademicScore] = useState('');
   const [conductScore, setConductScore] = useState('');
   const [credits, setCredits] = useState('15');
+  const [showRulesModal, setShowRulesModal] = useState(false);
 
   const [query, setQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<TuitionProgram | null>(null);
@@ -350,9 +353,20 @@ export function ScholarshipPage() {
                 <div className="scholarship-input-group">
                   <label className="scholarship-input-label">
                     <span>Số tín chỉ học kỳ</span>
-                    <span className="scholarship-highlight-badge">
-                      ≥ 15 TC
-                    </span>
+                    <div className="scholarship-label-badges">
+                      <span className="scholarship-highlight-badge">
+                        ≥ 15 TC
+                      </span>
+                      <button
+                        type="button"
+                        className="course-target-ref-icon-btn scholarship-info-btn"
+                        onClick={() => setShowRulesModal(true)}
+                        title="Xem chi tiết quy định tín chỉ & điều kiện học bổng"
+                        aria-label="Xem chi tiết quy định tín chỉ & điều kiện học bổng"
+                      >
+                        <Info size={13} />
+                      </button>
+                    </div>
                   </label>
                   <div className="course-target-input-wrap">
                     <input
@@ -370,16 +384,11 @@ export function ScholarshipPage() {
                 </div>
               </div>
 
-              {/* Full-width Credit Rule Note (No vertical imbalance!) */}
-              {isCreditsBelowMinimum ? (
+              {/* Dynamic Warning Only when below minimum */}
+              {isCreditsBelowMinimum && (
                 <div className="scholarship-credits-rule-note warning">
                   <AlertTriangle size={14} />
                   <span>Dưới 15 tín chỉ: Không đủ điều kiện xét học bổng (trừ HK tốt nghiệp tối thiểu 6 TC).</span>
-                </div>
-              ) : (
-                <div className="scholarship-credits-rule-note">
-                  <span className="credits-rule-dot">•</span>
-                  <span>Đăng ký tối thiểu 15 TC/kỳ (HK cuối: 6 TC) & không có môn điểm F.</span>
                 </div>
               )}
 
@@ -406,13 +415,24 @@ export function ScholarshipPage() {
               <span className="gpa-live-dot" />
               <span className="gpa-result-tag">KẾT QUẢ XÉT HỌC BỔNG</span>
             </div>
-            <span
-              className={`gpa-cohort-pill ${
-                result?.classification ? 'scholarship-badge-active' : ''
-              }`}
-            >
-              {result?.multiplier ? `Hệ số: ${result.multiplier}x` : 'Chưa xếp loại'}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <span
+                className={`gpa-cohort-pill ${
+                  result?.classification ? 'scholarship-badge-active' : ''
+                }`}
+              >
+                {result?.multiplier ? `Hệ số: ${result.multiplier}x` : 'Chưa xếp loại'}
+              </span>
+              <button
+                type="button"
+                className="course-target-ref-icon-btn"
+                onClick={() => setShowRulesModal(true)}
+                title="Xem quy chế & điều kiện xét học bổng"
+                aria-label="Xem quy chế & điều kiện xét học bổng"
+              >
+                <Info size={14} />
+              </button>
+            </div>
           </div>
 
           {/* Symmetrical Stat Grid */}
@@ -560,6 +580,12 @@ export function ScholarshipPage() {
           )}
         </aside>
       </div>
+
+      {/* Rules & Credit Regulations Modal */}
+      <ScholarshipRulesModal
+        isOpen={showRulesModal}
+        onClose={() => setShowRulesModal(false)}
+      />
     </div>
   );
 }

@@ -417,8 +417,6 @@ def _unique_reference_resolution(
     if len(selected_tables) != 1:
         return None
     if _has_multiple_result_choices(lookup_type, slots):
-        # A list represents several explicit choices.  Keep the complete table
-        # evidence, but do not collapse those choices into one fact lock.
         return None
 
     if lookup_type == "scoring":
@@ -480,12 +478,7 @@ def _has_multiple_result_choices(
     lookup_type: str,
     slots: dict[str, Any] | None,
 ) -> bool:
-    """Return whether result-affecting slots contain distinct choices.
-
-    Reading-intent fields (for example scholarship ``aspect`` or program
-    ``scope``) are deliberately excluded.  This is an eligibility guard for a
-    fact lock, not a second schema validator.
-    """
+    """Return whether result-affecting slots contain distinct inputs."""
 
     if not isinstance(slots, dict):
         return False
@@ -501,6 +494,15 @@ def _has_multiple_result_choices(
             for item in value
             if item is not None and normalize_text(item).strip()
         }
+        if (
+            lookup_type == "foreign_language"
+            and slot_name == "score_or_level"
+            and choices
+            and choices <= {"bac 3", "bac 4"}
+        ):
+            # These are requested output columns from one certificate row, not
+            # multiple personal scores to evaluate.
+            continue
         if len(choices) > 1:
             return True
     return False

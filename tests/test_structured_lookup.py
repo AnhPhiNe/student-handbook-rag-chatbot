@@ -1003,6 +1003,122 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertFalse(resolution.result.get("needs_clarification", False))
         self.assertIn("resolved_result", resolution.result)
 
+    def test_foreign_language_output_column_list_keeps_single_row_fact_lock(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        foreign_language_tables = json.loads(
+            Path("data/processed/tables/foreign_language_equivalency_table.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "foreign_language",
+                "intent": "direct_value",
+                "slots": {
+                    "certificate_or_language": "TOEFL iBT",
+                    "score_or_level": ["bậc 3", "bậc 4"],
+                },
+                "slot_spans": {
+                    "certificate_or_language": "TOEFL iBT",
+                    "score_or_level": ["bậc 3", "bậc 4"],
+                },
+            },
+            query="TOEFL iBT cần bao nhiêu điểm để tương đương bậc 3, bậc 4?",
+            cohort="K50",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=foreign_language_tables,
+            structured_tables_registry=registry,
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(resolution)
+        resolved = resolution.result["resolved_result"]["result"]
+        self.assertEqual(resolved["certificate"], "TOEFL iBT")
+        self.assertEqual(resolved["equivalent_level_3"], "30 - 45")
+        self.assertEqual(resolved["equivalent_level_4"], "46 - 93")
+
+    def test_scoring_numeric_operand_accepts_grounded_scale_suffix(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "scoring",
+                "intent": "direct_value",
+                "slots": {
+                    "operation": "pass_threshold",
+                    "course_scope": "remaining",
+                    "score_or_grade": "3,6/10",
+                },
+                "slot_spans": {
+                    "course_scope": "Môn tính GPA",
+                    "score_or_grade": "3,6/10",
+                },
+            },
+            query="Môn tính GPA em được 3,6/10 thì có qua không?",
+            cohort="K48-K49",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=[],
+            structured_tables_registry=registry,
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(resolution)
+        resolved = resolution.result["resolved_result"]["result"]
+        self.assertEqual(len(resolved), 1)
+        self.assertEqual(resolved[0]["row"]["status"], "Không đạt")
+        self.assertEqual(resolved[0]["row"]["letter_grade"], "F+")
+
+    def test_scoring_numeric_operand_rejects_multiple_scores(self) -> None:
+        from src.retrieval.core.structured_lookup import structured_lookup_from_slots
+
+        result = structured_lookup_from_slots(
+            {
+                "operation": "pass_threshold",
+                "score_or_grade": "3,6 và 4,0",
+            },
+            [
+                {
+                    "table_id": "grade_10_to_letter",
+                    "lookup_group": "grade_10_to_letter",
+                    "cohort": "K50",
+                    "rows": [
+                        {
+                            "status": "Không đạt",
+                            "score_10_range": "3,0 - 3,9",
+                            "letter_grade": "F+",
+                        }
+                    ],
+                }
+            ],
+            cohort="K50",
+        )
+
+        self.assertIsNotNone(result)
+        self.assertNotIn("items", result)
+
     def test_study_duration_does_not_infer_missing_program_from_query(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
             resolve_structured_decision,
@@ -1242,6 +1358,90 @@ class StructuredLookupTest(unittest.TestCase):
             student_service_directory=[],
             student_faculty_profiles=[],
             foreign_language_tables=[],
+            structured_tables_registry=registry,
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertNotIn("resolved_result", resolution.result)
+
+    def test_reference_fact_lock_is_absent_for_multiple_foreign_rows(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        foreign_language_tables = json.loads(
+            Path("data/processed/tables/foreign_language_equivalency_table.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "foreign_language",
+                "intent": "direct_value",
+                "slots": {
+                    "certificate_or_language": ["IELTS", "TOEFL iBT"],
+                },
+                "slot_spans": {
+                    "certificate_or_language": ["IELTS", "TOEFL iBT"],
+                },
+            },
+            query="IELTS và TOEFL iBT tương đương bậc nào?",
+            cohort="K50",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=foreign_language_tables,
+            structured_tables_registry=registry,
+            program_directory=[],
+        )
+
+        self.assertIsNotNone(resolution)
+        self.assertNotIn("resolved_result", resolution.result)
+
+    def test_reference_fact_lock_is_absent_for_multiple_foreign_scores(self) -> None:
+        from src.retrieval.core.structured_dispatcher import (
+            resolve_structured_decision,
+        )
+
+        registry = json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        foreign_language_tables = json.loads(
+            Path("data/processed/tables/foreign_language_equivalency_table.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        resolution = resolve_structured_decision(
+            {
+                "lookup_type": "foreign_language",
+                "intent": "direct_value",
+                "slots": {
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": [4.5, 6.0],
+                },
+                "slot_spans": {
+                    "certificate_or_language": "IELTS",
+                    "score_or_level": ["4.5", "6.0"],
+                },
+            },
+            query="IELTS 4.5 và 6.0 tương đương bậc nào?",
+            cohort="K50",
+            scoring_tables=[],
+            formula_rules=[],
+            office_directory=[],
+            student_service_directory=[],
+            student_faculty_profiles=[],
+            foreign_language_tables=foreign_language_tables,
             structured_tables_registry=registry,
             program_directory=[],
         )

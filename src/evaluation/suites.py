@@ -1272,6 +1272,14 @@ def _evaluate_v7_outcome_case(
                         for cohort in task["cohorts"])
                 for execution in task_results)
     }
+    has_clarification_question = bool(executed_clarifications) or any(
+        str(value or "").strip()
+        for value in (
+            result.get("clarification_question"),
+            plan.get("clarification_question"),
+            *(task.get("clarification_question") for task in tasks),
+        )
+    )
     tasks = [{**task, "mode": "clarify"} if task.get("id") in executed_clarifications else task
              for task in tasks]
     actual_modes = [str(task.get("mode") or "") for task in tasks]
@@ -1392,6 +1400,11 @@ def _evaluate_v7_outcome_case(
             "structured_source": combined_check("source"),
             "structured_row": combined_check("evidence_fields"),
             "resolved_result": combined_check("resolved_result"),
+            "clarification_question": (
+                has_clarification_question
+                if outcome.get("clarification_question_required")
+                else None
+            ),
         }
         evaluations.append(
             {

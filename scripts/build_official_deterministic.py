@@ -294,6 +294,23 @@ def build():
                 "K51, 4.6 without course type: ask for course type or retain all applicable tables "
                 "for a conditional answer. Do not require one resolved_result or invent course scope."
             )
+        if definition.get("allow_safe_clarification"):
+            primary_task = tasks[0]
+            case["accepted_outcomes"].append({
+                "name": "safe-clarification",
+                "state": "clarify",
+                "allowed_modes": ["clarify", "structured"],
+                "task_count": {"min": 1, "max": 1},
+                "clarification_question_required": True,
+                # The answer may safely abstain, but the Planner must still
+                # identify the intended capability and cohort.
+                "required_tasks": [{
+                    "mode": "clarify",
+                    "lookup_type": primary_task.get("lookup_type"),
+                    "cohorts": primary_task["cohorts"],
+                    "fact_lock_applicable": False,
+                }],
+            })
         for variant_index, specs in enumerate(definition.get("alternative_tasks", []), 1):
             alternative_tasks = []
             for spec in specs:

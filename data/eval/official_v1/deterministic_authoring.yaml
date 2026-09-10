@@ -241,6 +241,9 @@ cases:
     category: scholarship
     stress: true
     scholarship: [both, all]
+    alternative_tasks:
+      - - scholarship: [scholarship_classification, all]
+        - scholarship: [scholarship_amount, all]
   # Formula lookup, not calculator: 6
   - query: "GPA tính theo tín chỉ thế nào?"
     category: formula
@@ -342,6 +345,7 @@ cases:
   - query: "Tài khoản đăng ký môn bị lỗi thì liên hệ phòng nào?"
     category: student_service
     service: [Hỗ trợ về tài khoản sinh viên, unit_name]
+    allow_safe_clarification: true
   - query: "Xin giấy chứng nhận điểm ở phòng nào?"
     category: student_service
     service: [Cấp các loại giấy chứng nhận điểm, unit_name]

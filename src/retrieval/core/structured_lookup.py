@@ -21,6 +21,22 @@ def extract_numbers_from_text(text: str) -> list[float]:
     return [float(match.group(0).replace(",", ".")) for match in matches]
 
 
+def _parse_scoring_operand(value: Any) -> float | None:
+    """Parse one score, optionally followed by an explicit numeric scale."""
+
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int | float):
+        return float(value)
+    match = re.fullmatch(
+        r"\s*([-+]?\d+(?:[,.]\d+)?)\s*(?:/\s*10(?:[,.]0+)?)?\s*",
+        str(value or ""),
+    )
+    if not match:
+        return None
+    return float(match.group(1).replace(",", "."))
+
+
 def find_table(tables: list[dict[str, Any]], table_id: str) -> Optional[dict[str, Any]]:
     """Find a normalized table by its identifier."""
 
@@ -441,20 +457,17 @@ def structured_lookup_from_slots(
 
     # Map ten-point grades to letter grades.
     if canonical == "grade_10_to_letter":
-        try:
-            score = float(value_text.replace(",", "."))
-        except ValueError:
+        score = _parse_scoring_operand(value)
+        if score is None:
             return lookup_grade_10_to_letter(value_text, tables)
-
         return _lookup_grade_10_value(score, tables)
 
     # Resolve course pass/fail threshold questions only when the planner
     # supplied that operation explicitly.  The operand may still be numeric
     # or a grade label; its meaning is not inferred from its text.
     if canonical == "pass_threshold":
-        try:
-            score = float(value_text.replace(",", "."))
-        except ValueError:
+        score = _parse_scoring_operand(value)
+        if score is None:
             return lookup_grade_10_to_letter(value_text, tables)
         return _lookup_grade_10_value(score, tables)
 

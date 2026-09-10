@@ -39,7 +39,7 @@
 > HCMUE AI is an independent student project—not an official HCMUE application. Verify cited sources or contact the responsible university office before making important academic decisions.
 
 > [!NOTE]
-> The current local candidate uses corpus **v33**, pipeline **v75**, normalizer **v28**, and Composer **Gemini 3.1 Flash-Lite / prompt v3.24**. Narrative retrieval applies Cohere `rerank-v4.0-fast` to the top 16 RRF child candidates before parent grouping; it fails open to the original RRF list when reranking is unavailable. Official-v1 and the Cohere experiment measured earlier runtime commits, so their metrics remain historical development measurements rather than scores for this candidate. Production-60 was not run, and the public deployment has not been verified against this candidate.
+> The current local candidate uses corpus **v33**, pipeline **v76**, normalizer **v28**, and Composer **Gemini 3.1 Flash-Lite / prompt v3.24**. Narrative retrieval applies Cohere `rerank-v4.0-fast` to the top 16 RRF child candidates before parent grouping; it fails open to the original RRF list when reranking is unavailable. Official-v1 and the Cohere experiment measured earlier runtime commits, so their metrics remain historical development measurements rather than scores for this candidate. Production-60 was not run, and the public deployment has not been verified against this candidate.
 
 ## 🧭 Contents
 
@@ -94,7 +94,7 @@ The hosted demo may differ from the local candidate documented below. See [Deplo
 - **Practical questions:** grade/scoring tables, foreign-language equivalency, office/faculty/program directories, cohort-specific regulations, and narrative procedures.
 - **Answer modes:** structured lookup, narrative retrieval, and explicit clarification or low-confidence outcomes when the request is not answerable from authorized handbook context.
 - **Runtime:** FastAPI backend, React/Vite frontend, Qdrant dense retrieval, MongoDB parent documents, optional Redis caches, a Qwen planner, and Gemini composition.
-- **Current identity:** pipeline `v75-structured-contract-cleanup`, query-plan normalizer `v28-resolver-owned-directory-fallback`, router prompt v41, answer prompt v3.24, and artifact build `build-934f1caf384f99ad96e9`.
+- **Current identity:** pipeline `v76-structured-resolution-contract`, query-plan normalizer `v28-resolver-owned-directory-fallback`, router prompt v41, answer prompt v3.24, and artifact build `build-934f1caf384f99ad96e9`.
 
 The checked-in state is a reproducible local release candidate. A public URL in frontend configuration is a deployment target, not evidence that the corresponding service is currently healthy or promoted.
 
@@ -143,7 +143,7 @@ It does not claim to:
 | Plan normalizer | `v28-resolver-owned-directory-fallback` | `src/retrieval/core/query_plan.py` |
 | Composer | `gemini-3.1-flash-lite`; temperature 0 | `configs/answer_generation.yaml` |
 | Answer prompt | `student-handbook-answer-v3.24-grounded-table-context` | `src/generation/prompt_builder.py` |
-| Pipeline | `v75-structured-contract-cleanup` | `src/generation/answer_pipeline.py` |
+| Pipeline | `v76-structured-resolution-contract` | `src/generation/answer_pipeline.py` |
 | Embeddings | `BAAI/bge-m3`, 1,024 dimensions, normalized | `configs/retrieval.yaml` and v33 manifest |
 | Corpus/artifact snapshot | v33, identified by the manifest build below | `data/processed/metadata/build_manifest.json` |
 | Retrieval default | `vector_primary_graph_supplement`: dense + BM25 RRF → Cohere Fast top-16 child rerank → parent grouping; fail-open to RRF | `configs/retrieval.yaml`, `src/retrieval/core/hybrid_pipeline.py` |
@@ -550,7 +550,7 @@ There is no automatic OCR-coverage claim. Image-based or malformed tables requir
 This section reports the **latest available result for each suite**. The deterministic contract result is retained because Cohere does not participate in structured execution. Retrieval and Generate + Judge use the newer [Cohere Fast-16 candidate experiment](docs/COHERE_FAST_RERANK_EXPERIMENT.md). Older RRF-only retrieval/answer tables remain available through [official-v1 provenance](data/eval/official_v1/RESULTS_PROVENANCE.json) and Git history, but are not presented as current candidate metrics.
 
 > [!NOTE]
-> These suites were not all executed at one commit. Deterministic is the latest retained structured contract run. The Cohere experiment ran at base commit `8a172ebd` through an evaluation-only seam equivalent to the successful v74 rerank path; subsequent v74 changes added fail-open validation and key rotation. These are therefore latest-available development results, not a newly frozen full v75 evaluation or a production SLA.
+> These suites were not all executed at one commit. Deterministic is the latest retained structured contract run. The Cohere experiment ran at base commit `8a172ebd` through an evaluation-only seam equivalent to the successful v74 rerank path; subsequent v74 changes added fail-open validation and key rotation. These are therefore latest-available development results, not a newly frozen full v76 evaluation or a production SLA.
 
 ### 🪪 Measured candidate
 
@@ -607,7 +607,7 @@ Non-applicable assertions are **N/A**, not automatic passes. A fact lock is requ
 | Student service | 9/9 | 100.00% |
 | Study duration | 8/8 | 100.00% |
 
-Compound questions were the weakest group in this sample. Audited failures included route selection, omitted explicit inputs, slot/schema mismatch, unit confusion, and task dependencies; they were not all Resolver failures. Since normalizers v27 and v28 were introduced later, this table is retained as the latest deterministic measurement rather than presented as a fresh v75 score.
+Compound questions were the weakest group in this sample. Audited failures included route selection, omitted explicit inputs, slot/schema mismatch, unit confusion, and task dependencies; they were not all Resolver failures. Since normalizers v27 and v28 were introduced later, this table is retained as the latest deterministic measurement rather than presented as a fresh v76 score.
 
 ### 2. 🔎 Retrieval-layer comparison — 157 events
 
@@ -660,7 +660,7 @@ The 80 successful Cohere calls averaged 0.690 seconds. These timings are local s
 - Context precision decreased even while correctness, recall, faithfulness, and citations improved.
 - Historical RRF/BGE answers and Cohere answers were not generated from the same runtime commit; Judge and model generation are stochastic.
 - No Production-60 run or current HF load test was performed. The public deployment is not inferred from these local results.
-- The current v75 implementation treats Cohere as optional: a missing key, quota limit, timeout, HTTP failure, or invalid response preserves the original RRF list.
+- The current v76 implementation treats Cohere as optional: a missing key, quota limit, timeout, HTTP failure, or invalid response preserves the original RRF list.
 
 The raw experiment artifacts are excluded from the runtime package; their SHA-256 identities and the complete interpretation are recorded in the linked experiment report. A future paper should run a frozen same-commit comparison with independent review before presenting the improvement as a research claim.
 

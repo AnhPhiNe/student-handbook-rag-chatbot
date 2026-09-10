@@ -10115,6 +10115,112 @@
           }
         ],
         "structured_evidence": "required"
+      },
+      {
+        "name": "equivalent-decomposition-1",
+        "state": "answer",
+        "allowed_modes": [
+          "structured"
+        ],
+        "task_count": {
+          "min": 2,
+          "max": 2
+        },
+        "required_tasks": [
+          {
+            "mode": "structured",
+            "cohorts": [
+              "K51"
+            ],
+            "fact_lock_applicable": false,
+            "lookup_type": "scholarship_classification",
+            "slot_value_alternatives": {
+              "aspect": [
+                "classification"
+              ]
+            },
+            "expected_source_ids": [
+              "scholarship_classification"
+            ],
+            "fact_lock_reason": "N/A: whole table, multiple rows, or multiple applicable tables requested.",
+            "expected_evidence_rows": [
+              {
+                "scholarship_level": "Xuất sắc",
+                "academic_classification": "Xuất sắc",
+                "conduct_classification_condition": "Xuất sắc"
+              },
+              {
+                "scholarship_level": "Giỏi",
+                "academic_classification": "Xuất sắc",
+                "conduct_classification_condition": "Tốt"
+              },
+              {
+                "scholarship_level": "Giỏi",
+                "academic_classification": "Giỏi",
+                "conduct_classification_condition": "Tốt trở lên"
+              },
+              {
+                "scholarship_level": "Khá",
+                "academic_classification": "Xuất sắc",
+                "conduct_classification_condition": "Khá"
+              },
+              {
+                "scholarship_level": "Khá",
+                "academic_classification": "Giỏi",
+                "conduct_classification_condition": "Khá"
+              },
+              {
+                "scholarship_level": "Khá",
+                "academic_classification": "Khá",
+                "conduct_classification_condition": "Khá trở lên"
+              }
+            ],
+            "expected_evidence_fields": {
+              "table_id": "scholarship_classification"
+            }
+          },
+          {
+            "mode": "structured",
+            "cohorts": [
+              "K51"
+            ],
+            "fact_lock_applicable": false,
+            "lookup_type": "scholarship_classification",
+            "slot_value_alternatives": {
+              "aspect": [
+                "amount"
+              ]
+            },
+            "expected_source_ids": [
+              "scholarship_amount"
+            ],
+            "fact_lock_reason": "N/A: whole table, multiple rows, or multiple applicable tables requested.",
+            "expected_evidence_rows": [
+              {
+                "scholarship_level": "Khá",
+                "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,0",
+                "multiplier": 1.0,
+                "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+              },
+              {
+                "scholarship_level": "Giỏi",
+                "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,25",
+                "multiplier": 1.25,
+                "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+              },
+              {
+                "scholarship_level": "Xuất sắc",
+                "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,5",
+                "multiplier": 1.5,
+                "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+              }
+            ],
+            "expected_evidence_fields": {
+              "table_id": "scholarship_amount"
+            }
+          }
+        ],
+        "structured_evidence": "required"
       }
     ],
     "bind_execution_to_plan": true,
@@ -10316,6 +10422,158 @@
             "scholarship_level": "Khá",
             "academic_classification": "Khá",
             "conduct_classification_condition": "Khá trở lên"
+          }
+        ]
+      },
+      {
+        "catalog": "tables",
+        "table": {
+          "table_id": "scholarship_classification",
+          "data_category": "regulation_table",
+          "table_type": "scholarship",
+          "table_subtype": "scholarship_classification",
+          "table_name": "Xếp loại học bổng khuyến khích học tập",
+          "cohort": "K51",
+          "document_id": "so_tay_sinh_vien_khoa_51",
+          "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+          "source_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+          "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "columns": [],
+          "rows": [
+            {
+              "scholarship_level": "Xuất sắc",
+              "academic_classification": "Xuất sắc",
+              "conduct_classification_condition": "Xuất sắc"
+            },
+            {
+              "scholarship_level": "Giỏi",
+              "academic_classification": "Xuất sắc",
+              "conduct_classification_condition": "Tốt"
+            },
+            {
+              "scholarship_level": "Giỏi",
+              "academic_classification": "Giỏi",
+              "conduct_classification_condition": "Tốt trở lên"
+            },
+            {
+              "scholarship_level": "Khá",
+              "academic_classification": "Xuất sắc",
+              "conduct_classification_condition": "Khá"
+            },
+            {
+              "scholarship_level": "Khá",
+              "academic_classification": "Giỏi",
+              "conduct_classification_condition": "Khá"
+            },
+            {
+              "scholarship_level": "Khá",
+              "academic_classification": "Khá",
+              "conduct_classification_condition": "Khá trở lên"
+            }
+          ],
+          "source_pages": [
+            70,
+            71,
+            72
+          ],
+          "quality_status": "approved",
+          "derived_from": null,
+          "used_by_runtime": true
+        },
+        "selected_rows": [
+          {
+            "scholarship_level": "Xuất sắc",
+            "academic_classification": "Xuất sắc",
+            "conduct_classification_condition": "Xuất sắc"
+          },
+          {
+            "scholarship_level": "Giỏi",
+            "academic_classification": "Xuất sắc",
+            "conduct_classification_condition": "Tốt"
+          },
+          {
+            "scholarship_level": "Giỏi",
+            "academic_classification": "Giỏi",
+            "conduct_classification_condition": "Tốt trở lên"
+          },
+          {
+            "scholarship_level": "Khá",
+            "academic_classification": "Xuất sắc",
+            "conduct_classification_condition": "Khá"
+          },
+          {
+            "scholarship_level": "Khá",
+            "academic_classification": "Giỏi",
+            "conduct_classification_condition": "Khá"
+          },
+          {
+            "scholarship_level": "Khá",
+            "academic_classification": "Khá",
+            "conduct_classification_condition": "Khá trở lên"
+          }
+        ]
+      },
+      {
+        "catalog": "tables",
+        "table": {
+          "table_id": "scholarship_amount",
+          "data_category": "regulation_table",
+          "table_type": "scholarship",
+          "table_subtype": "scholarship_amount",
+          "table_name": "Mức học bổng khuyến khích học tập",
+          "cohort": "K51",
+          "document_id": "so_tay_sinh_vien_khoa_51",
+          "source_parent_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+          "source_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+          "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
+          "columns": [],
+          "rows": [
+            {
+              "scholarship_level": "Khá",
+              "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,0",
+              "multiplier": 1.0,
+              "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+            },
+            {
+              "scholarship_level": "Giỏi",
+              "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,25",
+              "multiplier": 1.25,
+              "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+            },
+            {
+              "scholarship_level": "Xuất sắc",
+              "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,5",
+              "multiplier": 1.5,
+              "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+            }
+          ],
+          "source_pages": [
+            70,
+            71,
+            72
+          ],
+          "quality_status": "approved",
+          "derived_from": null,
+          "used_by_runtime": true
+        },
+        "selected_rows": [
+          {
+            "scholarship_level": "Khá",
+            "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,0",
+            "multiplier": 1.0,
+            "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+          },
+          {
+            "scholarship_level": "Giỏi",
+            "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,25",
+            "multiplier": 1.25,
+            "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
+          },
+          {
+            "scholarship_level": "Xuất sắc",
+            "formula": "Số tín chỉ x định mức học phí 01 tín chỉ x 1,5",
+            "multiplier": 1.5,
+            "tuition_basis": "định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học"
           }
         ]
       }
@@ -14306,6 +14564,29 @@
           }
         ],
         "structured_evidence": "required"
+      },
+      {
+        "name": "safe-clarification",
+        "state": "clarify",
+        "allowed_modes": [
+          "clarify",
+          "structured"
+        ],
+        "task_count": {
+          "min": 1,
+          "max": 1
+        },
+        "clarification_question_required": true,
+        "required_tasks": [
+          {
+            "mode": "clarify",
+            "lookup_type": "student_service",
+            "cohorts": [
+              "K50"
+            ],
+            "fact_lock_applicable": false
+          }
+        ]
       }
     ],
     "bind_execution_to_plan": true,

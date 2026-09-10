@@ -26,6 +26,8 @@ def fixture_result(case):
         results.append({**task, "task_id": task["id"], "coverage": "covered", "evidence": [evidence]})
     if outcome["state"] == "clarify" and not tasks:
         tasks = [{"mode": "clarify", "cohorts": [case["cohort"]]}]
+    if outcome.get("clarification_question_required") and tasks:
+        tasks[0]["clarification_question"] = "Bạn cần hỗ trợ cụ thể về mảng nào?"
     return {"query_plan": {"tasks": tasks, "out_of_domain": outcome["state"] == "out_of_domain"},
             "task_results": results, "needs_clarification": outcome["state"] == "clarify"}
 
@@ -147,6 +149,39 @@ def test_underspecified_course_does_not_force_one_fact_lock():
     assert case["accepted_outcomes"][0]["required_tasks"][0]["fact_lock_applicable"] is False
     result = {"query_plan": {"tasks": [{"mode": "clarify"}]}, "needs_clarification": True}
     assert _evaluate_v7_outcome_case(case, result, started=time.perf_counter())["passed"]
+
+
+def test_scholarship_overview_accepts_one_task_or_two_aspect_tasks():
+    case = build()[59]
+    assert len(case["accepted_outcomes"]) == 2
+    assert case["accepted_outcomes"][0]["task_count"] == {"min": 1, "max": 1}
+    assert case["accepted_outcomes"][1]["task_count"] == {"min": 2, "max": 2}
+    for outcome in case["accepted_outcomes"]:
+        fixture_case = copy.deepcopy(case)
+        fixture_case["accepted_outcomes"] = [outcome]
+        result = fixture_result(fixture_case)
+        assert _evaluate_v7_outcome_case(
+            case, result, started=time.perf_counter()
+        )["passed"]
+
+
+def test_ambiguous_service_request_accepts_safe_clarification():
+    case = build()[91]
+    clarification = next(
+        outcome
+        for outcome in case["accepted_outcomes"]
+        if outcome["name"] == "safe-clarification"
+    )
+    fixture_case = copy.deepcopy(case)
+    fixture_case["accepted_outcomes"] = [clarification]
+    result = fixture_result(fixture_case)
+    assert _evaluate_v7_outcome_case(
+        case, result, started=time.perf_counter()
+    )["passed"]
+    result["query_plan"]["tasks"][0].pop("clarification_question")
+    assert not _evaluate_v7_outcome_case(
+        case, result, started=time.perf_counter()
+    )["passed"]
 
 
 def test_queries_do_not_leak_table_storage_instructions():

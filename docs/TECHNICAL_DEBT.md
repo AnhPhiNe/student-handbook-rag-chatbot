@@ -32,7 +32,7 @@ inputs, or evaluation-only capabilities for dead production code.
 | Area | Current decision | Safe condition for later work |
 |---|---|---|
 | Directory matching | Keep the existing office/service/faculty matcher | Refactor only with characterization tests covering exact aliases, ambiguity, cohort applicability, and cross-entity isolation |
-| Structured slot repair | Keep grounded, domain-specific repairs | Move a repair to registry metadata only after equivalent behavior is tested; remove it only with activation/error evidence |
+| Structured span grounding | Keep same-value span grounding for planner-supplied slots | Change it only after equivalent schema, negation, and literal-grounding behavior is tested |
 | Text normalization | Keep domain-local implementations | Consolidate only after tests lock Unicode, punctuation, numeric range, acronym, and identifier behavior for every caller |
 | Evaluation compatibility | Keep explicit compatibility aliases and historical evaluators outside the deployed image | Remove only when no maintained evaluation bundle or script depends on them |
 | Cache compatibility | Keep legacy-entry readers | Remove after the supported cache migration window is explicitly closed |

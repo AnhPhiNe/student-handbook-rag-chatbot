@@ -10,7 +10,7 @@ from src.retrieval.core.hybrid_pipeline import (
     build_related_references,
     _chunk_matches_regulation_scope,
     _is_supplemental_regulation_metadata,
-    _v7_query_filter,
+    _regulation_query_filter,
     select_graph_related_parent_candidates,
 )
 from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
@@ -43,7 +43,7 @@ def test_regulation_scope_accepts_source_declared_for_target_cohort() -> None:
 
 
 def test_qdrant_scope_filter_matches_direct_or_applicable_cohort() -> None:
-    query_filter = _v7_query_filter("K51")
+    query_filter = _regulation_query_filter("K51")
 
     assert query_filter.should is not None
     keys = {condition.key for condition in query_filter.should}

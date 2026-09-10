@@ -111,7 +111,7 @@ def prepare_vectors(directory, corpora, model):
 
 
 def retrieval(directory, indexes, cases, name):
-    from src.retrieval.core.hybrid_pipeline import _v7_query_filter
+    from src.retrieval.core.hybrid_pipeline import _regulation_query_filter
     output = directory / f"hybrid_{name}.json"
     if output.exists():
         raise ValueError(f"Do not overwrite {output}")
@@ -124,7 +124,7 @@ def retrieval(directory, indexes, cases, name):
             for label, index in zip(("baseline", "candidate"), indexes):
                 docs = index.retrieve(case['query'], cohort=cohort)
                 dense = index.qdrant_client.query_points("ab_local", query=index.embed_model.encode(case['query'], normalize_embeddings=True).tolist(),
-                    query_filter=_v7_query_filter(cohort), limit=24).points
+                    query_filter=_regulation_query_filter(cohort), limit=24).points
                 unit[label] = {"parents": [d['chunk_id'] for d in docs], "documents": docs,
                     "dense_parents": list(dict.fromkeys(p.payload['parent_section_id'] for p in dense))[:5]}
             units.append(unit)

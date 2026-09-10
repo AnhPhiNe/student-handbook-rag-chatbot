@@ -1,7 +1,9 @@
 # V33 release status
 
 Updated 2026-09-09. This page retains the historical v64 upload-verified
-candidate record. The current local v33 runtime uses pipeline `v73`; the three
+candidate record. References below to a "current local" runtime describe the
+v73 candidate at the time of that record, not the repository's later v75
+candidate. The three
 official-v1 quality-suite results are recorded in [RESULTS_AND_LIMITATIONS.md](../data/eval/official_v1/RESULTS_AND_LIMITATIONS.md)
 with hashes and run identity in [RESULTS_PROVENANCE.json](../data/eval/official_v1/RESULTS_PROVENANCE.json).
 This is not a production certification or a claim that the public deployment

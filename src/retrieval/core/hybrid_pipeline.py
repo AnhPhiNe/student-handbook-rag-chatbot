@@ -214,7 +214,7 @@ class ChildParentHybridRetriever:
         while True:
             records, scroll_offset = self.qdrant_client.scroll(
                 collection_name=self.collection_name,
-                scroll_filter=_v7_query_filter(None),
+                scroll_filter=_regulation_query_filter(None),
                 limit=1000,
                 offset=scroll_offset,
                 with_payload=True,
@@ -352,7 +352,7 @@ class ChildParentHybridRetriever:
             query,
             normalize_embeddings=getattr(self, "normalize_embeddings", True),
         ).tolist()
-        query_filter = _v7_query_filter(cohort)
+        query_filter = _regulation_query_filter(cohort)
         search_limit = max(top_k_vector * 2, 24)
         search_results = _query_points_with_retry(
             self.qdrant_client,
@@ -675,7 +675,7 @@ class ChildParentHybridRetriever:
                 "parent_source": "mongodb",
                 "child_source": "qdrant",
                 "retrieval_telemetry": retrieval_telemetry or {},
-                "v7_matched_chunks": [
+                "matched_child_chunks": [
                     {
                         "chunk_id": chunk.get("_id") or chunk.get("chunk_id"),
                         "chunk_granularity": (chunk.get("metadata") or {}).get(
@@ -703,7 +703,9 @@ class ChildParentHybridRetriever:
         return sorted(scored_group, key=lambda pair: pair[0], reverse=True)[:12]
 
 
-def _v7_query_filter(cohort: str | None) -> Filter:
+def _regulation_query_filter(cohort: str | None) -> Filter:
+    """Restrict narrative retrieval to regulation text applicable to a cohort."""
+
     conditions = [
         FieldCondition(key="content_type", match=MatchValue(value="regulation_text")),
     ]

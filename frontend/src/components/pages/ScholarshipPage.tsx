@@ -5,11 +5,7 @@ import {
   Search,
   X,
   Check,
-  Info,
   Sparkles,
-  ChevronDown,
-  ChevronUp,
-  AlertCircle,
 } from 'lucide-react';
 import {
   calculateScholarshipScore,
@@ -38,7 +34,6 @@ export function ScholarshipPage() {
   const [selectedProgram, setSelectedProgram] = useState<TuitionProgram | null>(null);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [schoolYear, setSchoolYear] = useState<SchoolYear | ''>('2024-2025');
-  const [showImportantNotes, setShowImportantNotes] = useState(false);
 
   const suggestions = useMemo(() => searchTuitionPrograms(query), [query]);
 
@@ -291,14 +286,11 @@ export function ScholarshipPage() {
           <div className="scholarship-form-card">
             <div className="scholarship-card-title-row">
               <span className="scholarship-step-num">2</span>
-              <h2 className="scholarship-card-title">Ước tính số tiền học bổng</h2>
-            </div>
-
-            {/* Condition Notice Banner */}
-            <div className="scholarship-condition-callout">
-              <AlertCircle size={16} className="condition-callout-icon" />
-              <div className="condition-callout-text">
-                <strong>Điều kiện bắt buộc:</strong> Đăng ký và hoàn thành <strong>tối thiểu 15 tín chỉ</strong> trong học kỳ xét (học kỳ cuối: tối thiểu 6 TC) và <strong>không có môn bị điểm F</strong>.
+              <div>
+                <h2 className="scholarship-card-title">Ước tính số tiền học bổng</h2>
+                <p className="scholarship-card-subtitle">
+                  Học bổng = Đơn giá tín chỉ × Số tín chỉ × Hệ số mức thưởng
+                </p>
               </div>
             </div>
 
@@ -394,9 +386,13 @@ export function ScholarshipPage() {
                   />
                   <span className="course-target-affix">TC</span>
                 </div>
-                {isCreditsBelowMinimum && (
+                {isCreditsBelowMinimum ? (
                   <span className="scholarship-field-warning">
                     ⚠️ Dưới 15 tín chỉ: Không đủ điều kiện xét học bổng (trừ HK tốt nghiệp tối thiểu 6 TC).
+                  </span>
+                ) : (
+                  <span className="scholarship-field-hint-text">
+                    Đăng ký tối thiểu 15 TC/kỳ (HK cuối: 6 TC) & không có môn điểm F.
                   </span>
                 )}
               </div>
@@ -411,43 +407,6 @@ export function ScholarshipPage() {
                     tuitionFee
                   )}
                 </strong>
-              </div>
-            )}
-          </div>
-
-          {/* Important Notes Collapsible */}
-          <div className="scholarship-notes-accordion">
-            <button
-              type="button"
-              className="scholarship-notes-header"
-              onClick={() => setShowImportantNotes(!showImportantNotes)}
-            >
-              <div className="notes-header-left">
-                <Info size={15} />
-                <span>Quy định tín chỉ & lưu ý xét học bổng</span>
-              </div>
-              {showImportantNotes ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
-            {showImportantNotes && (
-              <div className="scholarship-notes-content">
-                <ul>
-                  <li>
-                    <strong>Quy định tín chỉ:</strong> Tối thiểu <strong>15 tín chỉ/kỳ</strong> (học
-                    kỳ cuối tốt nghiệp tối thiểu <strong>6 tín chỉ</strong>).
-                  </li>
-                  <li>
-                    <strong>Các môn không tính:</strong> Không bao gồm Giáo dục Thể chất, Giáo dục
-                    Quốc phòng - An ninh, học cải thiện, học lại...
-                  </li>
-                  <li>
-                    <strong>Kỷ luật:</strong> Sinh viên không bị kỷ luật từ mức khiển trách trở lên
-                    trong học kỳ xét học bổng.
-                  </li>
-                  <li>
-                    <strong>Công thức số tiền:</strong> Số tiền = (Số tín chỉ) × (Học phí 1 tín chỉ)
-                    × (Hệ số loại học bổng).
-                  </li>
-                </ul>
               </div>
             )}
           </div>

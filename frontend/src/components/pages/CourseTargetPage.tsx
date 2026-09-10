@@ -68,17 +68,17 @@ const SYLLABUS_PRESETS: SyllabusPreset[] = [
 
 const GRADE_META: Record<
   LetterGrade,
-  { name: string; color: string; badgeClass: string; icon: string }
+  { name: string; color: string }
 > = {
-  A: { name: 'Xuất sắc', color: '#ec4899', badgeClass: 'tier-excellent', icon: '⭐' },
-  'B+': { name: 'Giỏi', color: '#8b5cf6', badgeClass: 'tier-good', icon: '🏆' },
-  B: { name: 'Khá', color: '#3b82f6', badgeClass: 'tier-fair', icon: '📈' },
-  'C+': { name: 'Trung bình Khá', color: '#10b981', badgeClass: 'tier-average', icon: '✨' },
-  C: { name: 'Trung bình', color: '#f59e0b', badgeClass: 'tier-average', icon: '📘' },
-  'D+': { name: 'Trung bình Yếu', color: '#f97316', badgeClass: 'tier-weak', icon: '⚠️' },
-  D: { name: 'Qua môn', color: '#ef4444', badgeClass: 'tier-weak', icon: '🎯' },
-  'F+': { name: 'Không đạt', color: '#94a3b8', badgeClass: 'tier-weak', icon: '❌' },
-  F: { name: 'Không đạt', color: '#64748b', badgeClass: 'tier-weak', icon: '❌' },
+  A: { name: 'Xuất sắc', color: '#ec4899' },
+  'B+': { name: 'Giỏi', color: '#8b5cf6' },
+  B: { name: 'Khá', color: '#3b82f6' },
+  'C+': { name: 'Trung bình Khá', color: '#10b981' },
+  C: { name: 'Trung bình', color: '#f59e0b' },
+  'D+': { name: 'Trung bình Yếu', color: '#f97316' },
+  D: { name: 'Qua môn', color: '#ef4444' },
+  'F+': { name: 'Không đạt', color: '#94a3b8' },
+  F: { name: 'Không đạt', color: '#64748b' },
 };
 
 export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
@@ -87,7 +87,6 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
     { id: 'comp-1', name: 'Quá trình', weight: '20', score: '' },
     { id: 'comp-2', name: 'Giữa kỳ', weight: '20', score: '' },
   ]);
-  const [selectedTargetGrade, setSelectedTargetGrade] = useState<LetterGrade>('B');
   const [referenceModalTab, setReferenceModalTab] = useState<'scale' | 'rules' | null>(null);
 
   const activeGroup = isSplitGradeCohort(cohort) ? courseGroup : getDefaultCourseGroup(cohort);
@@ -133,7 +132,6 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
       { id: 'comp-1', name: 'Quá trình', weight: '20', score: '' },
       { id: 'comp-2', name: 'Giữa kỳ', weight: '20', score: '' },
     ]);
-    setSelectedTargetGrade('B');
   };
 
   const result = useMemo(() => {
@@ -207,18 +205,6 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
         };
       });
 
-    const activeTarget =
-      targets.find((t) => t.letter === selectedTargetGrade) ||
-      targets[0] || {
-        letter: selectedTargetGrade,
-        name: 'Mục tiêu',
-        requiredScore: null,
-        status: 'possible' as TargetStatus,
-        badgeClass: 'tier-good',
-        icon: '🎯',
-        min10: 7.0,
-      };
-
     const passingRows = scale.rows.filter((r) => r.status === 'Đạt');
     const lowestPassingRow = passingRows[passingRows.length - 1];
     const passTarget = lowestPassingRow ? targets.find((t) => t.letter === lowestPassingRow.letter) : null;
@@ -229,11 +215,10 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
       accumulatedScore,
       isError,
       targets,
-      activeTarget,
       passTarget,
       lowestPassingLetter: lowestPassingRow?.letter ?? 'D',
     };
-  }, [components, scale, selectedTargetGrade]);
+  }, [components, scale]);
 
   return (
     <div className="page-container tool-page">
@@ -249,7 +234,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
 
       {/* Main 2-Column Split Layout */}
       <div className="course-target-split-layout">
-        {/* Left Column: Input Form & Weight Bar */}
+        {/* Left Column: Input Form */}
         <section className="gpa-main-column">
           {/* Toolbar: Group Selector & Action Buttons */}
           <div className="gpa-toolbar">
@@ -301,10 +286,10 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
 
           {/* Form Card */}
           <div className="course-target-form-card">
-            {/* Quick Presets Bar */}
+            {/* Quick Presets Bar (Single line, horizontal scroll) */}
             <div className="course-target-presets-bar">
               <span className="course-target-presets-label">
-                <Sparkles size={13} /> Mẫu trọng số:
+                <Sparkles size={13} /> Mẫu:
               </span>
               {SYLLABUS_PRESETS.map((preset) => (
                 <button
@@ -324,10 +309,10 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               <table className="course-target-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '38%' }}>TÊN THÀNH PHẦN</th>
+                    <th style={{ width: '35%' }}>THÀNH PHẦN</th>
                     <th style={{ width: '28%' }}>TRỌNG SỐ (%)</th>
-                    <th style={{ width: '28%' }}>ĐIỂM ĐẠT (10)</th>
-                    <th style={{ width: '6%', textAlign: 'center' }}></th>
+                    <th style={{ width: '28%' }}>ĐIỂM (10)</th>
+                    <th style={{ width: '9%', textAlign: 'center' }}></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -413,7 +398,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                 <div className="course-target-weight-stat">
                   <span className="course-target-dot entered" />
                   <span>
-                    Đã nhập: <strong>{result.totalWeight}%</strong>
+                    Đã có: <strong>{result.totalWeight}%</strong>
                   </span>
                   {result.accumulatedScore > 0 && (
                     <span className="course-target-subscore">
@@ -451,17 +436,6 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                 </div>
               )}
             </div>
-
-            {/* Bottom Add Component Button */}
-            <button
-              type="button"
-              className="course-target-add-btn"
-              onClick={addComponent}
-              disabled={result.totalWeight >= 100}
-            >
-              <Plus size={16} />
-              <span>Thêm cột điểm thành phần</span>
-            </button>
           </div>
         </section>
 
@@ -479,79 +453,8 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               </span>
             </div>
 
-            {/* Target Grade Selector Chips */}
-            <div className="course-target-grade-selector">
-              <span className="course-target-selector-label">Xem mức:</span>
-              <div className="course-target-selector-pills">
-                {result.targets.map((t) => (
-                  <button
-                    key={t.letter}
-                    type="button"
-                    className={`course-target-grade-btn ${selectedTargetGrade === t.letter ? 'active' : ''} ${
-                      t.status === 'impossible' || t.status === 'fail' ? 'is-impossible' : ''
-                    }`}
-                    onClick={() => setSelectedTargetGrade(t.letter)}
-                    title={`Mục tiêu Điểm ${t.letter} (${t.name})`}
-                  >
-                    {t.letter}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Dedicated Tier Row */}
-            <div className="target-gpa-tier-row">
-              <span className={`gpa-tier-pill ${result.activeTarget.badgeClass}`}>
-                {result.activeTarget.icon} Mục tiêu Điểm {result.activeTarget.letter} · {result.activeTarget.name} (≥ {result.activeTarget.min10.toFixed(1)})
-              </span>
-            </div>
-
-            {/* Hero Required Score Display */}
-            <div className="gpa-hero-score">
-              <span className="gpa-score-num text-gradient">
-                {result.isError
-                  ? 'Lỗi'
-                  : result.activeTarget.status === 'fail'
-                  ? 'Rớt'
-                  : result.activeTarget.status === 'achieved'
-                  ? 'Đạt'
-                  : result.activeTarget.status === 'impossible'
-                  ? '> 10.0'
-                  : result.activeTarget.requiredScore !== null
-                  ? result.activeTarget.requiredScore.toFixed(2)
-                  : '--'}
-              </span>
-              <span className="gpa-score-den">/ 10.0</span>
-            </div>
-
-            {/* Progress Bar (0 to 10.0) */}
-            <div className="gpa-progress-track">
-              <div
-                className={`gpa-progress-fill ${result.activeTarget.badgeClass}`}
-                style={{
-                  width: `${
-                    result.isError || result.activeTarget.status === 'fail'
-                      ? 0
-                      : result.activeTarget.status === 'achieved'
-                      ? 100
-                      : result.activeTarget.status === 'impossible'
-                      ? 100
-                      : result.activeTarget.requiredScore !== null
-                      ? Math.min(100, Math.max(0, (result.activeTarget.requiredScore / 10) * 100))
-                      : 0
-                  }%`,
-                }}
-              />
-            </div>
-
-            {/* Summary Stats Grid (3 Equal, Symmetrical Cards) */}
-            <div className="gpa-stats-grid">
-              <div className="gpa-stat-box">
-                <span className="gpa-stat-label">Trọng số thi</span>
-                <strong className="gpa-stat-val">
-                  {result.totalWeight > 100 ? '0%' : `${result.remainingWeight}%`}
-                </strong>
-              </div>
+            {/* Summary Stats Grid (2 Equal Symmetrical Cards) */}
+            <div className="course-target-stats-grid">
               <div className="gpa-stat-box">
                 <span className="gpa-stat-label">Điểm tích lũy</span>
                 <strong className="gpa-stat-val">
@@ -560,7 +463,17 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               </div>
               <div className="gpa-stat-box">
                 <span className="gpa-stat-label">Qua môn ({result.lowestPassingLetter})</span>
-                <strong className="gpa-stat-val">
+                <strong
+                  className="gpa-stat-val"
+                  style={{
+                    color:
+                      result.passTarget?.status === 'achieved'
+                        ? '#10b981'
+                        : result.passTarget?.status === 'impossible'
+                        ? '#ef4444'
+                        : undefined,
+                  }}
+                >
                   {result.isError
                     ? '--'
                     : result.passTarget
@@ -568,94 +481,64 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                       ? 'Đã đạt'
                       : result.passTarget.status === 'impossible'
                       ? '> 10'
-                      : result.passTarget.requiredScore?.toFixed(2) ?? '--'
+                      : result.passTarget.requiredScore !== null
+                      ? result.passTarget.requiredScore.toFixed(2)
+                      : '--'
                     : '--'}
                 </strong>
               </div>
             </div>
 
-            {/* Compact Target Matrix Table (Replaces 7 Bloated Cards) */}
+            {/* Compact Target Matrix Table */}
             <div className="course-target-compact-table">
-              {result.targets.map((target) => {
-                const isSelected = target.letter === selectedTargetGrade;
-                return (
-                  <div
-                    key={target.letter}
-                    className={`course-target-compact-row ${isSelected ? 'active' : ''}`}
-                    onClick={() => setSelectedTargetGrade(target.letter)}
-                    title={`Bấm để xem chi tiết mục tiêu Điểm ${target.letter}`}
-                  >
-                    <div className="course-target-row-left">
-                      <span
-                        className="course-target-row-badge"
-                        style={{ backgroundColor: target.color }}
-                      >
-                        {target.letter}
-                      </span>
-                      <span className="course-target-row-label">
-                        {target.name} · ≥ {target.min10.toFixed(1)}
-                      </span>
-                    </div>
-
-                    <div className="course-target-row-right">
-                      {target.status === 'fail' ? (
-                        <span className="course-target-row-score impossible">Không đạt (rớt)</span>
-                      ) : target.status === 'impossible' ? (
-                        <span className="course-target-row-score impossible">Bất khả thi</span>
-                      ) : target.status === 'achieved' ? (
-                        <span className="course-target-row-score achieved">Đã đạt 🎉</span>
-                      ) : target.requiredScore !== null ? (
-                        <span className="course-target-row-score">
-                          {target.requiredScore.toFixed(2)}
-                        </span>
-                      ) : (
-                        <span className="course-target-row-score">--</span>
-                      )}
-                    </div>
+              <div className="course-target-table-header-row">
+                <span>MỨC ĐIỂM</span>
+                <span>ĐIỂM THI CẦN ĐẠT</span>
+              </div>
+              {result.targets.map((target) => (
+                <div key={target.letter} className="course-target-compact-row">
+                  <div className="course-target-row-left">
+                    <span
+                      className="course-target-row-badge"
+                      style={{ backgroundColor: target.color }}
+                    >
+                      {target.letter}
+                    </span>
+                    <span className="course-target-row-label">
+                      {target.name} <span className="course-target-min10">(≥ {target.min10.toFixed(1)})</span>
+                    </span>
                   </div>
-                );
-              })}
+
+                  <div className="course-target-row-right">
+                    {target.status === 'fail' ? (
+                      <span className="course-target-row-score fail">Không đạt (rớt)</span>
+                    ) : target.status === 'impossible' ? (
+                      <span className="course-target-row-score impossible">Bất khả thi</span>
+                    ) : target.status === 'achieved' ? (
+                      <span className="course-target-row-score achieved">Đã đạt 🎉</span>
+                    ) : target.requiredScore !== null ? (
+                      <span className="course-target-row-score score-val">
+                        {target.requiredScore.toFixed(2)}
+                      </span>
+                    ) : (
+                      <span className="course-target-row-score">--</span>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
 
-            {/* Actionable Strategic Advice Notice */}
-            {!result.isError && (
-              <div className="course-target-advice-wrap" style={{ marginTop: '0.65rem' }}>
-                {result.activeTarget.status === 'fail' ? (
-                  <div className="gpa-notice-card tier-weak">
-                    <span className="gpa-notice-icon">⚠️</span>
-                    <div className="gpa-notice-text">
-                      <strong>Lưu ý:</strong> Theo quy chế đào tạo, Điểm {result.activeTarget.letter} thuộc mức <strong>Không đạt (rớt môn)</strong> cho nhóm học phần này. Bạn cần thi đạt từ {result.passTarget?.requiredScore ? result.passTarget.requiredScore.toFixed(2) : scale.passThreshold.toFixed(1)} điểm để đạt mức qua môn ({result.lowestPassingLetter})!
-                    </div>
-                  </div>
-                ) : result.activeTarget.status === 'achieved' ? (
-                  <div className="gpa-notice-card tier-excellent">
-                    <span className="gpa-notice-icon">🎉</span>
-                    <div className="gpa-notice-text">
-                      <strong>Chúc mừng!</strong> Dựa trên các cột điểm hiện có, bạn đã chắc chắn đạt <strong>Điểm {result.activeTarget.letter}</strong> mà không cần lo điểm thi cuối kỳ.
-                    </div>
-                  </div>
-                ) : result.activeTarget.status === 'possible' ? (
-                  <div className={`gpa-notice-card ${result.activeTarget.badgeClass}`}>
-                    <span className="gpa-notice-icon">🎯</span>
-                    <div className="gpa-notice-text">
-                      Bạn cần thi cuối kỳ đạt tối thiểu <strong>{result.activeTarget.requiredScore?.toFixed(2)}</strong> để hoàn thành mục tiêu <strong>Điểm {result.activeTarget.letter}</strong> ({result.activeTarget.name}).
-                      {result.passTarget && result.activeTarget.letter !== result.lowestPassingLetter && result.passTarget.requiredScore !== null && (
-                        <div style={{ marginTop: '0.3rem', fontSize: '0.73rem', opacity: 0.9 }}>
-                          💡 <em>Ngưỡng tối thiểu để qua môn (Điểm {result.lowestPassingLetter}): {result.passTarget.requiredScore.toFixed(2)} điểm.</em>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="gpa-notice-card tier-weak">
-                    <span className="gpa-notice-icon">⚠️</span>
-                    <div className="gpa-notice-text">
-                      <strong>Mục tiêu bất khả thi!</strong> Để đạt Điểm {result.activeTarget.letter}, điểm thi cần tới <strong>{result.activeTarget.requiredScore?.toFixed(2)}</strong> (vượt quá 10.0). Hãy chọn mức điểm khác vừa sức hơn!
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Quick Actionable Tip Box */}
+            <div className="course-target-tip-box">
+              <span className="course-target-tip-icon">💡</span>
+              <span className="course-target-tip-text">
+                {result.passTarget?.status === 'achieved'
+                  ? 'Bạn đã tích lũy đủ điểm để qua môn học phần này!'
+                  : result.passTarget?.requiredScore !== null && result.passTarget?.status === 'possible'
+                  ? `Cần thi đạt tối thiểu ${result.passTarget.requiredScore.toFixed(2)} điểm để qua môn (${result.lowestPassingLetter}).`
+                  : 'Nhập điểm quá trình để tính toán điểm thi cần đạt.'}
+              </span>
+            </div>
 
             {/* Footer Reference Modal Buttons */}
             <div className="gpa-card-footer">

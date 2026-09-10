@@ -6570,3 +6570,300 @@ input:checked + .slider:before { transform: translateX(20px); }
     font-size: 0.84rem;
   }
 }
+
+/* ==========================================================================
+   Target GPA Page (Mục tiêu GPA - Overhaul)
+   ========================================================================== */
+
+.target-gpa-page-wrapper {
+  animation: fadeIn 0.25s ease-out;
+}
+
+.target-gpa-presets-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.target-gpa-preset-chips {
+  display: inline-flex;
+  background: var(--bg-secondary);
+  padding: 3px;
+  border-radius: 9px;
+  border: 1px solid var(--border-color);
+  gap: 3px;
+}
+
+.target-gpa-preset-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+.target-gpa-preset-btn:hover:not(.active) {
+  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='dark'] .target-gpa-preset-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.target-gpa-preset-btn.active {
+  background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.35);
+}
+
+.target-gpa-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.target-gpa-input-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+[data-theme='dark'] .target-gpa-input-card {
+  background: rgba(30, 41, 59, 0.7);
+}
+
+.target-gpa-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.65rem;
+}
+
+.target-gpa-card-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.target-gpa-card-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.target-gpa-card-title-wrap h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.target-gpa-card-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.target-gpa-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .target-gpa-grid-2col {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+}
+
+.target-gpa-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.target-gpa-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.target-gpa-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.target-gpa-input {
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
+  padding: 0 4.5rem 0 0.85rem;
+  border-radius: 9px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.target-gpa-input:hover {
+  border-color: color-mix(in srgb, var(--primary) 35%, var(--input-border));
+}
+
+.target-gpa-input:focus {
+  background: var(--card-bg, #ffffff);
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.15);
+}
+
+.target-gpa-input.input-error {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.07) !important;
+  color: #dc2626 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25) !important;
+}
+
+.target-gpa-affix {
+  position: absolute;
+  right: 0.65rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  pointer-events: none;
+  user-select: none;
+}
+
+.target-gpa-field-error {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.target-gpa-quick-chips {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+
+.target-gpa-tc-chip {
+  padding: 0.22rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.target-gpa-tc-chip:hover:not(.active) {
+  background: rgba(var(--primary-rgb), 0.08);
+  color: var(--primary);
+  border-color: rgba(var(--primary-rgb), 0.25);
+}
+
+.target-gpa-tc-chip.active {
+  background: rgba(var(--primary-rgb), 0.12);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.target-gpa-formula-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px dashed var(--border-color);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+[data-theme='dark'] .target-gpa-formula-card {
+  background: rgba(30, 41, 59, 0.45);
+}
+
+.target-gpa-formula-header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--primary);
+}
+
+.target-gpa-formula-header h4 {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.target-gpa-formula-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.target-gpa-math-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  overflow-x: auto;
+}
+
+.target-gpa-math-box code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.target-gpa-formula-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-top: 0.15rem;
+}
+
+.target-gpa-formula-tip svg {
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}

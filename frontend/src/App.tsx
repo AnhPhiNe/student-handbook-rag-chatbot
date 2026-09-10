@@ -159,7 +159,7 @@ function App() {
               {activeTab === 'bieu-mau' && <FormPage />}
               {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} />}
               {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} />}
-              {activeTab === 'target-gpa' && <TargetGpaPage />}
+              {activeTab === 'target-gpa' && <TargetGpaPage key={cohort} cohort={cohort} />}
               {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
               {activeTab === 'scholarship' && <ScholarshipPage />}
               {activeTab === 'tuition' && <TuitionPage />}
@@ -172,7 +172,7 @@ function App() {
               <MobileScrollAffordance
                 activeKey={activeTab}
                 containerRef={contentAreaRef}
-                disabled={activeTab === 'chat' || activeTab === 'gpa'}
+                disabled={activeTab === 'chat' || activeTab === 'gpa' || activeTab === 'target-gpa'}
               />
             )}
           </div>

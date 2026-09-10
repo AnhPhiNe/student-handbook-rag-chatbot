@@ -318,8 +318,12 @@ def _explicit_ranked_entities(
     if not span_matches:
         return distinct_items, 0
     top_span = span_matches[0]
-    tied_span_count = sum(
-        match[1] == top_span[1] and match[2] == top_span[2] for match in span_matches
+    tied_span_count = len(
+        {
+            _entity_key(match[4]["record"])
+            for match in span_matches
+            if match[1] == top_span[1] and match[2] == top_span[2]
+        }
     )
     return distinct_items, tied_span_count
 
@@ -366,7 +370,6 @@ def _clarification_response(
 
 def _select_confident_candidates(
     *,
-    query: str,
     candidate_text: str,
     ranked: list[dict[str, Any]],
     require_confident_match: bool,
@@ -385,13 +388,10 @@ def _select_confident_candidates(
         return None, None, 0
 
     normalized_candidate = normalize_text(candidate_text)
-    normalized_query = normalize_text(query)
-    search_text = (
-        normalized_query
-        if len(normalized_query) > len(normalized_candidate)
-        else normalized_candidate
+    explicit_entities, tied_span_count = _explicit_ranked_entities(
+        normalized_candidate,
+        ranked,
     )
-    explicit_entities, tied_span_count = _explicit_ranked_entities(search_text, ranked)
     if len(explicit_entities) > 1:
         return explicit_entities, None, len(explicit_entities)
     if len(explicit_entities) == 1 and tied_span_count <= 1:
@@ -414,26 +414,18 @@ def _select_confident_candidates(
 def office_lookup(
     query: str,
     office_directory: list[dict[str, Any]],
+    *,
+    candidate_text: str,
     cohort: str | None = None,
-    routing: dict[str, Any] | None = None,
     top_k: int = 3,
-    candidate_text: str | None = None,
     require_confident_match: bool = False,
     model: Any | None = None,
     min_confidence: float = DEFAULT_MIN_CONFIDENCE,
     ambiguity_margin: float = DEFAULT_AMBIGUITY_MARGIN,
 ) -> dict[str, Any] | None:
-    """Resolve an office or student service from the production catalog."""
-    routing = routing or {}
-    target_types = set(routing.get("target_chunk_types") or [])
-    routed_to_office = (
-        routing.get("intent") == "office_query"
-        or routing.get("content_type") == "office_directory"
-        or "office_directory" in target_types
-    )
-    typed_candidate = bool(candidate_text and candidate_text.strip())
-
-    if not typed_candidate and not routed_to_office:
+    """Match a dispatcher-authorized directory candidate against the catalog."""
+    candidate_text = candidate_text.strip()
+    if not candidate_text:
         return None
 
     normalized_cohort = normalize_cohort(cohort)
@@ -445,13 +437,12 @@ def office_lookup(
             if is_validated_source_applicable(item, normalized_cohort)
         ]
 
-    ranked = _rank_candidates(candidate_text or query, candidates, model)
+    ranked = _rank_candidates(candidate_text, candidates, model)
     match_score = ranked[0]["confidence"] if ranked else 0.0
     runner_up_score = ranked[1]["confidence"] if len(ranked) > 1 else 0.0
     score_margin = match_score - runner_up_score
     ranked, ambiguity, explicit_entity_count = _select_confident_candidates(
-        query=query,
-        candidate_text=candidate_text or query,
+        candidate_text=candidate_text,
         ranked=ranked,
         require_confident_match=require_confident_match,
         min_confidence=min_confidence,

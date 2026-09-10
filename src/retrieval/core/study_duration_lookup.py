@@ -5,7 +5,6 @@ from typing import Any
 from src.common.cohort import (
     is_cohort_applicable,
     normalize_cohort,
-    resolve_cohort_from_query,
 )
 
 
@@ -32,49 +31,6 @@ def _filter_by_cohort(
     return [
         table for table in candidates if is_cohort_applicable(table, normalized_cohort)
     ]
-
-
-def _is_study_duration_query(query_norm: str) -> bool:
-    negative_terms = [
-        "co bi",
-        "bi buoc",
-        "buoc thoi hoc",
-        "canh bao",
-        "thu tuc",
-        "can lam",
-        "lam thu tuc",
-        "gia han",
-        "xin",
-        "neu",
-        "thi co",
-    ]
-    if any(term in query_norm for term in negative_terms):
-        return False
-    signals = [
-        "thoi gian hoc tap",
-        "thoi gian hoc",
-        "thoi gian dao tao",
-        "thoi gian toi da",
-        "thoi gian chuan",
-        "hoc toi da",
-        "hoc trong bao lau",
-        "bao nhieu nam hoc",
-        "bao nhieu nam",
-        "may nam hoc",
-        "may nam",
-        "chuong trinh dao tao",
-    ]
-    return any(signal in query_norm for signal in signals) and any(
-        term in query_norm for term in ["toi da", "chuan", "nam hoc", "nam", "bao lau"]
-    )
-
-
-def _wanted_training_mode(query_norm: str) -> str | None:
-    if any(term in query_norm for term in ["vua lam vua hoc", "vlvh"]):
-        return "vua_lam_vua_hoc"
-    if any(term in query_norm for term in ["chinh quy", "dai hoc chinh quy"]):
-        return "chinh_quy"
-    return None
 
 
 def _slot_values(value: Any) -> list[Any]:
@@ -153,25 +109,15 @@ def study_duration_lookup(
     query: str,
     tables: list[dict[str, Any]],
     cohort: str | None = None,
-    slots: dict[str, Any] | None = None,
+    *,
+    slots: dict[str, Any],
 ) -> dict[str, Any] | None:
-    """Resolve program duration rules from normalized tables."""
+    """Resolve program duration rules from validated structured slots."""
 
-    if slots is not None:
-        # Runtime execution consumes only validated selectors.  An empty slot
-        # mapping intentionally yields complete table evidence; the query may
-        # not supply a missing mode or program type.
-        program_values = _slot_values(slots.get("program_type"))
-        query_norm = normalize_text(" ".join(str(value) for value in program_values))
-        wanted_modes = _wanted_training_modes(slots.get("training_mode"))
-        effective_cohort = normalize_cohort(cohort)
-    else:
-        query_norm = normalize_text(query)
-        if not _is_study_duration_query(query_norm):
-            return None
-        wanted_mode = _wanted_training_mode(query_norm)
-        wanted_modes = {wanted_mode} if wanted_mode else set()
-        effective_cohort = normalize_cohort(cohort) or resolve_cohort_from_query(query)
+    program_values = _slot_values(slots.get("program_type"))
+    query_norm = normalize_text(" ".join(str(value) for value in program_values))
+    wanted_modes = _wanted_training_modes(slots.get("training_mode"))
+    effective_cohort = normalize_cohort(cohort)
 
     candidates = _filter_by_cohort(tables, effective_cohort)
     if not candidates:

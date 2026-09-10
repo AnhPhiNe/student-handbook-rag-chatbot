@@ -35,7 +35,7 @@ def test_component_guard_distinguishes_requested_fields_from_scores(certificate,
         },
     }]}]
     result = _reference_input_clarification(
-        "foreign_language", query="Tra cứu", candidates=candidates, cohort="K50",
+        "foreign_language", candidates=candidates, cohort="K50",
         slots={"certificate_or_language": certificate, **slots},
     )
     if missing is None:
@@ -47,7 +47,7 @@ def test_component_guard_distinguishes_requested_fields_from_scores(certificate,
 
 def test_scalar_certificate_has_no_component_requirement():
     assert _reference_input_clarification(
-        "foreign_language", query="IELTS 6.0", candidates=[{"rows": [{"certificate": "IELTS"}]}],
+        "foreign_language", candidates=[{"rows": [{"certificate": "IELTS"}]}],
         cohort="K50", slots={"certificate_or_language": "IELTS", "score_or_level": 6.0},
     ) is None
 

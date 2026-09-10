@@ -6,9 +6,14 @@ from copy import deepcopy
 
 from src.retrieval.core.foreign_language_lookup import foreign_language_lookup
 from src.retrieval.core.formula_lookup import formula_lookup
+from src.retrieval.core.office_lookup import office_lookup
+from src.retrieval.core.program_lookup import program_lookup
 from src.retrieval.core.scholarship_lookup import scholarship_table_lookup
 from src.retrieval.core.study_duration_lookup import study_duration_lookup
-from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+from src.retrieval.core.structured_dispatcher import (
+    StructuredResolution,
+    resolve_structured_decision,
+)
 from src.retrieval.core.structured_lookup import structured_lookup_from_slots
 
 
@@ -93,36 +98,79 @@ def _without_input_value(result: dict) -> dict:
     return copied
 
 
+def _resolve_student_service(
+    query: str,
+    cohort: str,
+    directory: list[dict],
+) -> StructuredResolution | None:
+    return resolve_structured_decision(
+        {
+            "lookup_type": "student_service",
+            "intent": "contact",
+            "slots": {"requested_field": "unit"},
+            "slot_spans": {"requested_field": "đơn vị"},
+        },
+        query=query,
+        cohort=cohort,
+        scoring_tables=[],
+        formula_rules=[],
+        office_directory=[],
+        student_service_directory=directory,
+        student_faculty_profiles=[],
+        foreign_language_tables=[],
+        structured_tables_registry=[],
+        program_directory=[],
+    )
+
+
 def test_supplied_slots_make_each_leaf_invariant_to_irrelevant_query() -> None:
     foreign_slots = {
         "certificate_or_language": "IELTS",
         "score_or_level": "6.0",
     }
     first = foreign_language_lookup(
-        "IELTS 6.0 tương đương bậc mấy?", _foreign_tables(), "K51", foreign_slots
+        "IELTS 6.0 tương đương bậc mấy?",
+        _foreign_tables(),
+        "K51",
+        slots=foreign_slots,
     )
     second = foreign_language_lookup(
-        "TOEFL 46 tương đương bậc mấy?", _foreign_tables(), "K51", foreign_slots
+        "TOEFL 46 tương đương bậc mấy?",
+        _foreign_tables(),
+        "K51",
+        slots=foreign_slots,
     )
     assert first and second
     assert _without_input_value(first) == _without_input_value(second)
 
     duration_slots = {"training_mode": "chinh_quy", "program_type": "first_degree"}
     first = study_duration_lookup(
-        "chính quy bằng thứ nhất", _duration_tables(), "K51", duration_slots
+        "chính quy bằng thứ nhất",
+        _duration_tables(),
+        "K51",
+        slots=duration_slots,
     )
     second = study_duration_lookup(
-        "VLVH liên thông", _duration_tables(), "K51", duration_slots
+        "VLVH liên thông",
+        _duration_tables(),
+        "K51",
+        slots=duration_slots,
     )
     assert first and second
     assert _without_input_value(first) == _without_input_value(second)
 
     scholarship_slots = {"score_or_label": "Giỏi"}
     first = scholarship_table_lookup(
-        "Học bổng loại Giỏi", _scholarship_tables(), "K51", scholarship_slots
+        "Học bổng loại Giỏi",
+        _scholarship_tables(),
+        "K51",
+        slots=scholarship_slots,
     )
     second = scholarship_table_lookup(
-        "Học bổng loại Khá", _scholarship_tables(), "K51", scholarship_slots
+        "Học bổng loại Khá",
+        _scholarship_tables(),
+        "K51",
+        slots=scholarship_slots,
     )
     assert first and second
     assert _without_input_value(first) == _without_input_value(second)
@@ -168,6 +216,43 @@ def test_empty_slots_do_not_infer_leaf_selectors_from_query() -> None:
         )
         is None
     )
+
+    assert (
+        program_lookup(
+            [{"program_name": "Sư phạm Toán", "cohort": "K51"}],
+            candidate_text="Trường có những ngành nào?",
+            cohort="K51",
+            action="",
+            scope="",
+        )
+        is None
+    )
+
+
+def test_directory_selection_uses_only_validated_candidate_text() -> None:
+    result = office_lookup(
+        "Phòng Đào tạo và Phòng Công tác sinh viên",
+        [
+            {
+                "record_id": "training-office",
+                "unit_name": "Phòng Đào tạo",
+                "aliases": ["phòng đào tạo"],
+                "cohort": "shared",
+            },
+            {
+                "record_id": "student-affairs-office",
+                "unit_name": "Phòng Công tác sinh viên",
+                "aliases": ["phòng công tác sinh viên"],
+                "cohort": "shared",
+            },
+        ],
+        candidate_text="Phòng Đào tạo",
+        cohort="K51",
+        require_confident_match=True,
+    )
+
+    assert result is not None
+    assert [item["unit_name"] for item in result["items"]] == ["Phòng Đào tạo"]
 
 
 def test_multiple_explicit_entities_preserve_union_rows() -> None:
@@ -247,14 +332,75 @@ def test_distinct_score_list_keeps_evidence_without_false_fact_lock() -> None:
     assert "resolved_result" not in resolution.result
 
 
-def test_legacy_leaf_calls_still_use_query_when_slots_are_omitted() -> None:
-    assert foreign_language_lookup(
-        "IELTS 6.0 tương đương bậc mấy?", _foreign_tables(), "K51"
+def test_student_service_query_fallback_is_task_local_and_cohort_scoped() -> None:
+    directory = [
+        {
+            "service_id": "print-k50",
+            "service": "In giáo trình",
+            "aliases": ["in giáo trình"],
+            "unit": "Nhà xuất bản K50",
+            "cohort": "K50",
+            "content_type": "student_service_directory",
+        },
+        {
+            "service_id": "print-k51",
+            "service": "In giáo trình",
+            "aliases": ["in giáo trình"],
+            "unit": "Nhà xuất bản K51",
+            "cohort": "K51",
+            "content_type": "student_service_directory",
+        },
+        {
+            "service_id": "certificate-k50",
+            "service": "Cấp giấy chứng nhận điểm",
+            "aliases": ["giấy chứng nhận điểm"],
+            "unit": "Phòng Khảo thí K50",
+            "cohort": "K50",
+            "content_type": "student_service_directory",
+        },
+    ]
+
+    resolution = _resolve_student_service(
+        "Muốn in giáo trình thì liên hệ đơn vị nào?",
+        "K50",
+        directory,
     )
-    assert study_duration_lookup(
-        "chính quy bằng thứ nhất học tối đa bao lâu?", _duration_tables(), "K51"
+
+    assert resolution is not None
+    assert resolution.result["cohort"] == "K50"
+    assert resolution.result["result"][0]["unit_name"] == "Nhà xuất bản K50"
+    assert all(
+        item["cohort"] == "K50" for item in resolution.result["result"]
     )
-    assert scholarship_table_lookup(
-        "Học bổng loại Giỏi", _scholarship_tables(), "K51"
+
+
+def test_student_service_query_fallback_preserves_ambiguity_clarification() -> None:
+    directory = [
+        {
+            "service_id": "score-certificate",
+            "service": "Cấp giấy chứng nhận điểm",
+            "aliases": ["giấy chứng nhận điểm"],
+            "unit": "Phòng Khảo thí",
+            "cohort": "K51",
+            "content_type": "student_service_directory",
+        },
+        {
+            "service_id": "student-certificate",
+            "service": "Cấp giấy chứng nhận sinh viên",
+            "aliases": ["giấy chứng nhận sinh viên"],
+            "unit": "Phòng Công tác sinh viên",
+            "cohort": "K51",
+            "content_type": "student_service_directory",
+        },
+    ]
+
+    resolution = _resolve_student_service(
+        "Xin giấy chứng nhận thì liên hệ đơn vị nào?",
+        "K51",
+        directory,
     )
-    assert formula_lookup("công thức GPA", _formula_rules())
+
+    assert resolution is not None
+    assert resolution.resolution_status == "needs_clarification"
+    assert resolution.result["resolution_status"] == "ambiguous"
+    assert len(resolution.result["clarification_options"]) == 2

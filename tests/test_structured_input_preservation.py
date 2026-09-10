@@ -18,14 +18,14 @@ def test_distinct_values_operations_and_entities_are_not_erased():
                   "intent": "direct_value", "cohorts": ["K51"], "slots": slot}
                  for i, slot in enumerate(slots)]
         original = copy.deepcopy(tasks)
-        assert _merge_compatible_structured_tasks(tasks, original_query="compound", registry={}) == original
+        assert _merge_compatible_structured_tasks(tasks) == original
 
 
 def test_identical_slots_deduplicate_but_never_across_cohorts():
     first = {"id": "t1", "mode": "structured", "lookup_type": "scoring",
              "intent": "direct_value", "cohorts": ["K51"], "slots": {"score_or_grade": 3}}
     tasks = [first, {**first, "id": "t2"}, {**first, "id": "t3", "cohorts": ["K50"]}]
-    assert len(_merge_compatible_structured_tasks(tasks, original_query="", registry={})) == 2
+    assert len(_merge_compatible_structured_tasks(tasks)) == 2
 
 
 def test_resolution_status_does_not_claim_whole_table_is_a_resolved_value():

@@ -1,4 +1,4 @@
-version: 6
+version: 7
 
 tools:
   foreign_language:
@@ -199,8 +199,8 @@ tools:
     intents: [direct_value, contact]
     default_intent: contact
     required_slots:
-      direct_value: [service, requested_field]
-      contact: [service, requested_field]
+      direct_value: [requested_field]
+      contact: [requested_field]
     slot_schema:
       service:
         type: string

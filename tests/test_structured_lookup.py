@@ -133,14 +133,11 @@ class StructuredLookupTest(unittest.TestCase):
         ]
 
         result = program_lookup(
-            "cac nganh su pham do khoa nao quan ly",
             programs,
+            candidate_text="cac nganh su pham do khoa nao quan ly",
             cohort="K50",
-            routing={
-                "content_type": "program_directory",
-                "action": "list",
-                "scope": "faculty",
-            },
+            action="list",
+            scope="faculty",
         )
 
         self.assertIsNotNone(result)
@@ -162,14 +159,11 @@ class StructuredLookupTest(unittest.TestCase):
         ]
 
         result = program_lookup(
-            "nganh cong nghe thong tin o khoa nao",
             programs,
+            candidate_text="nganh cong nghe thong tin o khoa nao",
             cohort="K51",
-            routing={
-                "content_type": "program_directory",
-                "action": "resolve_faculty",
-                "scope": "school",
-            },
+            action="resolve_faculty",
+            scope="school",
         )
 
         self.assertIsNotNone(result)
@@ -208,7 +202,12 @@ class StructuredLookupTest(unittest.TestCase):
 
         # Test lookup for K51 and K48-K49 queries
         for cohort in ["K48-K49", "K50", "K51"]:
-            res = foreign_language_lookup("IELTS 6.0 quy đổi bậc mấy", [table], cohort=cohort)
+            res = foreign_language_lookup(
+                "IELTS 6.0 quy đổi bậc mấy",
+                [table],
+                cohort=cohort,
+                slots={"certificate_or_language": "IELTS", "score_or_level": 6.0},
+            )
             self.assertIsNotNone(res, f"Expected match for cohort {cohort}")
             self.assertEqual(res["result"]["matched_level"], "bac_4")
             self.assertEqual(res["cohort"], cohort)
@@ -1431,10 +1430,11 @@ class StructuredLookupTest(unittest.TestCase):
         ]
 
         res_k49 = program_lookup(
-            "Khoa Công nghệ Thông tin",
             programs,
+            candidate_text="Khoa Công nghệ Thông tin",
             cohort="K48-K49",
-            routing={"content_type": "program_directory", "action": "list", "scope": "faculty"},
+            action="list",
+            scope="faculty",
         )
         self.assertIsNotNone(res_k49)
         self.assertEqual(res_k49["program_count"], 2)
@@ -1442,10 +1442,11 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertEqual(names_k49, {"Công nghệ Thông tin", "Sư phạm Tin học"})
 
         res_k51 = program_lookup(
-            "Khoa Công nghệ Thông tin",
             programs,
+            candidate_text="Khoa Công nghệ Thông tin",
             cohort="K51",
-            routing={"content_type": "program_directory", "action": "list", "scope": "faculty"},
+            action="list",
+            scope="faculty",
         )
         self.assertIsNotNone(res_k51)
         self.assertEqual(res_k51["program_count"], 3)
@@ -1462,10 +1463,11 @@ class StructuredLookupTest(unittest.TestCase):
 
         query = "cơ hội việc làm của ngành Công nghệ Giáo dục, Công nghệ Thông tin, Sư phạm Tin học"
         res = program_lookup(
-            query,
             programs,
+            candidate_text=query,
             cohort="K51",
-            routing={"content_type": "program_directory", "action": "resolve_faculty", "scope": "school"},
+            action="resolve_faculty",
+            scope="school",
         )
         self.assertIsNotNone(res)
         self.assertEqual(res["program_count"], 3)
@@ -1479,10 +1481,11 @@ class StructuredLookupTest(unittest.TestCase):
         ]
         query = "ngành Sư phạm Tin học"
         res = program_lookup(
-            query,
             programs,
+            candidate_text=query,
             cohort="K51",
-            routing={"content_type": "program_directory", "action": "resolve_faculty", "scope": "school"},
+            action="resolve_faculty",
+            scope="school",
         )
         self.assertIsNotNone(res)
     def test_multi_entity_office_and_faculty_lookup_all_matched(self):
@@ -1625,6 +1628,7 @@ class StructuredLookupTest(unittest.TestCase):
             query,
             tables,
             cohort="K51",
+            slots={"score_or_label": ["Khá", "Giỏi"]},
             table_id="scholarship_classification",
         )
         self.assertIsNotNone(res)

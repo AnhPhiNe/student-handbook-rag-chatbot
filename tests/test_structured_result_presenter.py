@@ -234,7 +234,6 @@ def test_manual_program_faculty_mapping_has_field_level_provenance() -> None:
 
 def test_program_lookup_preserves_mapping_provenance_for_the_presenter() -> None:
     lookup = program_lookup(
-        "Công nghệ Thông tin thuộc khoa nào?",
         [
             {
                 "program_name": "Công nghệ Thông tin",
@@ -246,12 +245,10 @@ def test_program_lookup_preserves_mapping_provenance_for_the_presenter() -> None
                 "source_pages": [178, 179],
             }
         ],
+        candidate_text="Công nghệ Thông tin thuộc khoa nào?",
         cohort="K51",
-        routing={
-            "content_type": "program_directory",
-            "action": "resolve_faculty",
-            "scope": "school",
-        },
+        action="resolve_faculty",
+        scope="school",
     )
 
     assert lookup is not None
@@ -399,20 +396,16 @@ def test_current_structured_assets_project_across_supported_domains() -> None:
             slots={"training_mode": "chính quy", "program_type": "đại học"},
         ),
         program_lookup(
-            "Công nghệ Thông tin thuộc khoa nào?",
             programs,
+            candidate_text="Công nghệ Thông tin thuộc khoa nào?",
             cohort="K51",
-            routing={
-                "content_type": "program_directory",
-                "action": "resolve_faculty",
-                "scope": "school",
-            },
+            action="resolve_faculty",
+            scope="school",
         ),
         office_lookup(
             "Phòng Đào tạo",
             offices,
             cohort="K51",
-            routing={"intent": "office_query", "content_type": "office_directory"},
             candidate_text="Phòng Đào tạo",
             require_confident_match=True,
         ),

@@ -16,35 +16,6 @@ def normalize_text(text: Any) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
-def _is_fallback_program_list_query(query: str) -> bool:
-    text = normalize_text(query)
-    if "nganh" not in text:
-        return False
-
-    list_cues = (
-        "danh sach nganh",
-        "liet ke nganh",
-        "cac nganh nao",
-        "nganh nao",
-    )
-    return any(cue in text for cue in list_cues)
-
-
-def _asks_school_programs(query: str) -> bool:
-    text = normalize_text(query)
-    school_cues = (
-        "truong",
-        "hcmue",
-        "dai hoc su pham",
-        "dai hoc su pham tp hcm",
-        "dai hoc su pham thanh pho ho chi minh",
-        "hien truong",
-    )
-    return _is_fallback_program_list_query(query) and any(
-        cue in text for cue in school_cues
-    )
-
-
 def _normalize_faculty_name(value: Any) -> str:
     text = normalize_text(value)
     text = re.sub(r"^\d+\s+", "", text)
@@ -374,55 +345,42 @@ def _group_counts(records: list[dict[str, Any]]) -> dict[str, int]:
 
 
 def program_lookup(
-    query: str,
     program_directory: list[dict[str, Any]],
+    *,
+    candidate_text: str,
     cohort: str | None = None,
-    routing: dict[str, Any] | None = None,
+    action: str,
+    scope: str,
 ) -> dict[str, Any] | None:
-    """Tra cuu nganh tu structured data theo quyet dinh cua router."""
-    routing = routing or {}
-    action = str(routing.get("action") or "").strip()
-    routed_to_program = routing.get(
-        "content_type"
-    ) == "program_directory" and action in {
-        "list",
-        "resolve_faculty",
-        "exists",
-    }
-    routed_to_program_list = routed_to_program and action == "list"
-    routed_to_program_faculty = routed_to_program and action == "resolve_faculty"
-    routed_to_program_exists = routed_to_program and action == "exists"
-    if (
-        not routed_to_program_list
-        and not routed_to_program_faculty
-        and not routed_to_program_exists
-        and not _is_fallback_program_list_query(query)
-    ):
+    """Execute a validated program-directory action within one scope."""
+
+    action = str(action or "").strip()
+    scope = str(scope or "").strip()
+    if action not in {"list", "resolve_faculty", "exists"}:
         return None
 
-    scope = str(routing.get("scope") or "").strip()
-    asks_school_programs = scope == "school" or (
-        not routed_to_program_list and _asks_school_programs(query)
-    )
+    resolves_faculty = action == "resolve_faculty"
+    checks_exists = action == "exists"
+    asks_school_programs = scope == "school"
     asks_faculty_programs = scope == "faculty"
 
     if (
         not asks_school_programs
         and not asks_faculty_programs
-        and not routed_to_program_faculty
-        and not routed_to_program_exists
+        and not resolves_faculty
+        and not checks_exists
     ):
         return None
 
     candidates = _filter_by_cohort(program_directory, cohort)
     normalized_cohort = normalize_cohort(cohort)
     topic_filtered_for_faculty = False
-    if routed_to_program_exists:
+    if checks_exists:
         if not normalized_cohort or not candidates:
             return None
         cohort_catalog = _sort_programs(_dedupe_programs(candidates))
         matched = _sort_programs(
-            _dedupe_programs(_filter_by_program_name(cohort_catalog, query))
+            _dedupe_programs(_filter_by_program_name(cohort_catalog, candidate_text))
         )
         result = [_program_summary(record) for record in matched]
         document_ids = {
@@ -433,8 +391,8 @@ def program_lookup(
         return {
             "lookup_type": "program_directory",
             "lookup_scope": "program_exists",
-            "input_value": query,
-            "searched_program": query,
+            "input_value": candidate_text,
+            "searched_program": candidate_text,
             "exists": bool(result),
             "result": result,
             "program_count": len(result),
@@ -450,18 +408,22 @@ def program_lookup(
 
     inferred_faculty_names: set[str] = set()
     if scope == "faculty":
-        inferred_faculty_names = _infer_faculty_names_from_query(candidates, query)
+        inferred_faculty_names = _infer_faculty_names_from_query(
+            candidates,
+            candidate_text,
+        )
         if not inferred_faculty_names:
-            topic_matches = _filter_by_program_topic(candidates, query)
+            topic_matches = _filter_by_program_topic(candidates, candidate_text)
             if not topic_matches:
                 return None
             candidates = topic_matches
             topic_filtered_for_faculty = True
     lookup_scope = "school"
-    if routed_to_program_faculty:
+    if resolves_faculty:
         candidates = _filter_by_program_name(
-            candidates, query
-        ) or _filter_by_program_topic(candidates, query)
+            candidates,
+            candidate_text,
+        ) or _filter_by_program_topic(candidates, candidate_text)
         lookup_scope = "program"
         if not candidates:
             return None
@@ -469,7 +431,7 @@ def program_lookup(
     if (
         asks_faculty_programs
         and not asks_school_programs
-        and not routed_to_program_faculty
+        and not resolves_faculty
         and not topic_filtered_for_faculty
     ):
         candidates = _filter_by_faculty_names(candidates, inferred_faculty_names)
@@ -492,7 +454,7 @@ def program_lookup(
         "source_lookup_type": (
             "faculty" if lookup_scope == "program_topic_faculty" else None
         ),
-        "input_value": query,
+        "input_value": candidate_text,
         "result": result,
         "program_count": len(result),
         "faculty_counts": _group_counts(result),

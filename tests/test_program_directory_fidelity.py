@@ -81,14 +81,11 @@ def test_faculty_alias_lists_all_programs_for_that_faculty() -> None:
     ]
 
     result = program_lookup(
-        "Khoa Toán có những ngành nào?",
         programs,
+        candidate_text="Khoa Toán có những ngành nào?",
         cohort="K51",
-        routing={
-            "content_type": "program_directory",
-            "action": "list",
-            "scope": "faculty",
-        },
+        action="list",
+        scope="faculty",
     )
 
     assert result is not None
@@ -146,14 +143,11 @@ def test_faculty_lookup_prefers_long_alias_over_overlapping_short_alias() -> Non
     ]
 
     result = program_lookup(
-        "Khoa Địa lý có những ngành nào?",
         programs,
+        candidate_text="Khoa Địa lý có những ngành nào?",
         cohort="K51",
-        routing={
-            "content_type": "program_directory",
-            "action": "list",
-            "scope": "faculty",
-        },
+        action="list",
+        scope="faculty",
     )
 
     assert result is not None

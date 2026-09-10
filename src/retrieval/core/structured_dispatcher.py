@@ -155,10 +155,9 @@ def _bind_formula_source(
 def _reference_input_clarification(
     lookup_type: str,
     *,
-    query: str,
     candidates: list[dict[str, Any]],
     cohort: str | None,
-    slots: dict[str, Any] | None,
+    slots: dict[str, Any],
 ) -> dict[str, Any] | None:
     """Validate conditional table inputs declared by the selected data row.
 
@@ -170,16 +169,13 @@ def _reference_input_clarification(
     if lookup_type != "foreign_language":
         return None
 
-    if slots is None:
-        entity_text = query
+    entity_values = slots.get("certificate_or_language")
+    if isinstance(entity_values, list):
+        entity_text = " ".join(
+            str(value).strip() for value in entity_values if str(value).strip()
+        )
     else:
-        entity_values = slots.get("certificate_or_language")
-        if isinstance(entity_values, list):
-            entity_text = " ".join(
-                str(value).strip() for value in entity_values if str(value).strip()
-            )
-        else:
-            entity_text = str(entity_values or "")
+        entity_text = str(entity_values or "")
     entity_norm = normalize_text(entity_text)
     input_rows: list[dict[str, Any]] = []
     for table in candidates:
@@ -223,7 +219,7 @@ def _reference_input_clarification(
             normalize_text(str(value).replace(",", ".")) if value is not None else "",
         ))
 
-    runtime_slots = slots or {}
+    runtime_slots = slots
     if not has_score(runtime_slots.get("score_or_level")) and not any(
         has_score(runtime_slots.get(name)) for name in required_slots.values()
     ):
@@ -327,7 +323,6 @@ def _reference_table_lookup(
 
     clarification = _reference_input_clarification(
         lookup_type,
-        query=query,
         candidates=candidates,
         cohort=effective_cohort,
         slots=slots,
@@ -533,9 +528,8 @@ def _resolve_single_lookup(
     ambiguous directory matches instead return an explicit clarification result.
     """
 
-    # The dispatcher executes the normalized runtime payload.  Missing and
-    # explicitly empty mappings are both authoritative; leaf helpers retain
-    # their ``slots=None`` legacy mode for direct callers only.
+    # The dispatcher executes only the normalized runtime payload. Missing and
+    # explicitly empty mappings are both authoritative.
     slots = decision.get("slots") or {}
     if not isinstance(slots, dict):
         slots = {}
@@ -629,16 +623,10 @@ def _resolve_single_lookup(
         else:
             directory = student_faculty_profiles or []
 
-        routing = {
-            "intent": "office_query",
-            "content_type": "office_directory",
-            "target_chunk_types": ["office_directory"],
-        }
         result = office_lookup(
             query,
             directory,
             cohort=effective_cohort,
-            routing=routing,
             candidate_text=candidate_text,
             require_confident_match=True,
             model=model if lookup_type == "student_service" else None,
@@ -698,14 +686,11 @@ def _resolve_single_lookup(
         else:
             action = "resolve_faculty"
         result = program_lookup(
-            candidate_text,
             program_directory,
+            candidate_text=candidate_text,
             cohort=effective_cohort,
-            routing={
-                "content_type": "program_directory",
-                "action": action,
-                "scope": scope,
-            },
+            action=action,
+            scope=scope,
         )
         return _resolution(lookup_type, "program_lookup", result)
 

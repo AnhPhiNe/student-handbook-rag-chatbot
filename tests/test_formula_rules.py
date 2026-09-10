@@ -79,6 +79,9 @@ def test_combined_formula_request_returns_every_named_formula() -> None:
         "K48-K49: cac cong thuc GPA va diem hoc bong duoc trinh bay the nao?",
         rules,
         cohort="K48-K49",
+        slots={
+            "formula_type": ["gpa_weighted_average", "scholarship_score"]
+        },
     )
 
     assert result is not None
@@ -98,6 +101,7 @@ def test_single_formula_request_is_not_expanded_by_incidental_scholarship_phrase
         "Công thức GPA dùng để xét học bổng là gì?",
         rules,
         cohort="K48-K49",
+        slots={"formula_type": "gpa_weighted_average"},
     )
 
     assert result is not None

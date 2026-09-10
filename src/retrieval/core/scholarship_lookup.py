@@ -5,7 +5,6 @@ from typing import Any
 from src.common.cohort import (
     is_cohort_applicable,
     normalize_cohort,
-    resolve_cohort_from_query,
 )
 from src.retrieval.core.structured_lookup import in_range
 
@@ -41,46 +40,6 @@ def _strip_cohort_numbers(query_norm: str) -> str:
     query_norm = re.sub(r"\bk\s*\d{2}\b", " ", query_norm)
     query_norm = re.sub(r"\bkhoa\s*\d{2}\b", " ", query_norm)
     return query_norm
-
-
-def _is_scholarship_lookup_query(query_norm: str) -> bool:
-    if "hoc bong" not in query_norm:
-        return False
-    if "tinh" in query_norm and any(
-        term in query_norm for term in ["gpa", "ren luyen"]
-    ):
-        return False
-    policy_terms = [
-        "dieu kien",
-        "thu tuc",
-        "ho so",
-        "quy trinh",
-        "nop",
-        "bao gio",
-        "khi nao",
-        "tin chi",
-        "ky luat",
-        "no hoc phi",
-        "co duoc",
-        "duoc nhan",
-        "nhan khong",
-        "nhung",
-        "truong hop",
-    ]
-    if any(term in query_norm for term in policy_terms):
-        return False
-    lookup_terms = [
-        "xep loai",
-        "loai",
-        "kha",
-        "gioi",
-        "xuat sac",
-        "bao nhieu diem",
-        "may diem",
-        "diem hoc bong",
-        "thang diem",
-    ]
-    return any(term in query_norm for term in lookup_terms)
 
 
 def _filter_tables(
@@ -180,33 +139,21 @@ def scholarship_table_lookup(
     query: str,
     tables: list[dict[str, Any]],
     cohort: str | None = None,
-    slots: dict[str, Any] | None = None,
     *,
+    slots: dict[str, Any],
     table_id: str = "scholarship_classification",
 ) -> dict[str, Any] | None:
-    """Resolve scholarship thresholds from normalized tables."""
+    """Resolve scholarship thresholds from validated structured slots."""
 
-    if slots is not None:
-        score_or_label = slots.get("score_or_label")
-        query_norm = normalize_text(
-            " ".join(str(value) for value in _slot_values(score_or_label))
-        )
-        effective_cohort = normalize_cohort(cohort)
-    else:
-        query_norm = normalize_text(query)
-        if not _is_scholarship_lookup_query(query_norm):
-            return None
-        effective_cohort = normalize_cohort(cohort) or resolve_cohort_from_query(query)
+    score_or_label = slots.get("score_or_label")
+    effective_cohort = normalize_cohort(cohort)
 
     candidates = _filter_tables(tables, effective_cohort, table_id=table_id)
     if not candidates:
         return None
 
     table = candidates[0]
-    if slots is not None:
-        rows, score = _rows_for_slots(slots.get("score_or_label"), table)
-    else:
-        rows, score = _rows_for_query(query_norm, table)
+    rows, score = _rows_for_slots(score_or_label, table)
     if not rows:
         return None
 

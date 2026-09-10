@@ -41,10 +41,14 @@ inputs use the existing clarification policy. Ambiguous/multiple result inputs
 must not be collapsed into a single fact lock. No response-quality improvement
 is implied merely by having a cleaner execution contract.
 
-Legacy direct lookup callers may explicitly omit `slots` (`None`) to retain
-query-based compatibility. The dispatcher supplies a mapping on the runtime
-reference/formula path. Directory lookups retain task-local catalog search;
-they are not required to become numeric-style slot-only resolvers.
+Reference-table and formula lookup interfaces require `slots`; they never
+reconstruct missing selectors from the query. Directory lookups retain
+task-local catalog search because free-form catalog matching is their execution
+work, not numeric-style slot resolution. An ungrounded optional directory hint
+is discarded rather than rewritten; the Resolver then matches only the
+task-local question within the selected cohort. Program lookup likewise
+requires an explicit validated action and scope from the Dispatcher; it has no
+route-less query fallback and does not revalidate the selected content type.
 
 ## Verification
 

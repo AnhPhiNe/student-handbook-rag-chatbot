@@ -711,7 +711,7 @@ def test_router_normalization_does_not_infer_program_list_scope() -> None:
     assert "scope" not in decision["slots"]
 
 
-def test_router_normalization_grounds_student_service_in_full_query() -> None:
+def test_router_normalization_does_not_rewrite_student_service_from_query() -> None:
     query = "Tài khoản sinh viên bị lỗi thì đơn vị nào hỗ trợ?"
     decision = normalize_router_decision(
         {
@@ -729,14 +729,14 @@ def test_router_normalization_grounds_student_service_in_full_query() -> None:
         selected_cohort="K48-K49",
     )
 
-    assert decision["slots"]["service"] == query
-    assert decision["slot_spans"]["service"] == query
+    assert decision["slots"]["service"] == "hỗ trợ lỗi tài khoản"
+    assert decision["slot_spans"]["service"] == "hỗ trợ lỗi tài khoản"
     assert decision["slots"]["requested_field"] == "unit"
     assert validate_router_decision(
         decision,
         query=query,
         selected_cohort="K51",
-    ) == []
+    ) == ["ungrounded_slot:service"]
 
 
 def test_router_normalization_preserves_grounded_student_service_span() -> None:

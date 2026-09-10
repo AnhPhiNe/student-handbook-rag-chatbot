@@ -20,7 +20,7 @@ from .structured_routing import (
 
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v27-task-local-cohort-fallback"
+QUERY_PLAN_NORMALIZER_VERSION = "v28-resolver-owned-directory-fallback"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -420,7 +420,6 @@ def normalize_query_plan(
 
     errors: list[str] = []
     tasks: list[dict[str, Any]] = []
-    service_source_query = query if len(raw_tasks) == 1 else None
     for index, raw_task in enumerate(raw_tasks, start=1):
         if not isinstance(raw_task, dict):
             errors.append(f"task_{index}:invalid_object")
@@ -432,17 +431,12 @@ def normalize_query_plan(
             selected_cohort=default_cohort,
             grounding_context=grounding_context,
             registry=registry,
-            service_source_query=service_source_query,
             fallback_cohorts=fallback_cohorts,
         )
         tasks.append(task)
         errors.extend(f"{task['id']}:{error}" for error in task_errors)
 
-    tasks = _merge_compatible_structured_tasks(
-        tasks,
-        original_query=query,
-        registry=registry,
-    )
+    tasks = _merge_compatible_structured_tasks(tasks)
     tasks = _merge_cohort_variant_tasks(tasks)
     if (
         context_mode == "standalone"
@@ -490,7 +484,6 @@ def _normalize_task(
     selected_cohort: str | None,
     grounding_context: str,
     registry: dict[str, Any],
-    service_source_query: str | None = None,
     fallback_cohorts: list[str] | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
     """Normalize and validate one planner task without invalidating siblings.
@@ -631,7 +624,6 @@ def _normalize_task(
         query=question,
         selected_cohort=cohorts[0] if cohorts else selected_cohort,
         registry=registry,
-        source_query=service_source_query,
     )
     validation_errors = validate_router_decision(
         decision,
@@ -644,52 +636,61 @@ def _normalize_task(
     required_slots = set(
         (spec.get("required_slots") or {}).get(decision.get("intent"), [])
     )
-    if spec.get("selection_mode") == "table_first":
-        optional_invalid = {
-            error.partition(":")[2]
-            for error in validation_errors
-            if error.startswith(
-                (
-                    "missing_slot_span:",
-                    "ungrounded_slot:",
-                    "misgrounded_slot:",
-                    "invalid_slot_type:",
-                    "invalid_slot_value:",
-                    "slot_span_mismatch:",
-                    "unknown_slot:",
-                    "unknown_slot_span:",
+    slot_schema = spec.get("slot_schema") or {}
+    optional_invalid = {
+        error.partition(":")[2]
+        for error in validation_errors
+        if error.startswith(
+            (
+                "missing_slot_span:",
+                "ungrounded_slot:",
+                "misgrounded_slot:",
+                "invalid_slot_type:",
+                "invalid_slot_value:",
+                "slot_span_mismatch:",
+                "unknown_slot:",
+                "unknown_slot_span:",
+            )
+        )
+        and error.partition(":")[2] not in required_slots
+        and (
+            spec.get("selection_mode") == "table_first"
+            or str(
+                (slot_schema.get(error.partition(":")[2]) or {}).get(
+                    "verification_role"
                 )
             )
-            and error.partition(":")[2] not in required_slots
+            == "directory_entity"
+        )
+    }
+    if optional_invalid:
+        normalization_warnings = list(
+            dict.fromkeys(
+                error
+                for error in validation_errors
+                if error.partition(":")[2] in optional_invalid
+            )
+        )
+        # Invalid optional hints cannot determine execution. Table-first tasks
+        # keep their complete table; directory tasks let the catalog matcher
+        # consume the trusted task-local question.
+        decision["slots"] = {
+            key: value
+            for key, value in (decision.get("slots") or {}).items()
+            if key not in optional_invalid
         }
-        if optional_invalid:
-            normalization_warnings = list(
-                dict.fromkeys(
-                    error
-                    for error in validation_errors
-                    if error.partition(":")[2] in optional_invalid
-                )
-            )
-            # Optional row hints must never discard an otherwise valid small
-            # reference table. Drop invalid or ungrounded hints and let the
-            # composer select from the complete applicable table.
-            decision["slots"] = {
-                key: value
-                for key, value in (decision.get("slots") or {}).items()
-                if key not in optional_invalid
-            }
-            decision["slot_spans"] = {
-                key: value
-                for key, value in (decision.get("slot_spans") or {}).items()
-                if key not in optional_invalid
-            }
-            validation_errors = validate_router_decision(
-                decision,
-                query=original_query,
-                selected_cohort=cohorts[0] if cohorts else selected_cohort,
-                grounding_context=grounding_context,
-                registry=registry,
-            )
+        decision["slot_spans"] = {
+            key: value
+            for key, value in (decision.get("slot_spans") or {}).items()
+            if key not in optional_invalid
+        }
+        validation_errors = validate_router_decision(
+            decision,
+            query=original_query,
+            selected_cohort=cohorts[0] if cohorts else selected_cohort,
+            grounding_context=grounding_context,
+            registry=registry,
+        )
     if validation_errors:
         errors.extend(validation_errors)
         clarification_errors = {
@@ -854,11 +855,8 @@ def _normalize_span_value(value: Any, source_text: str) -> Any:
 
 def _merge_compatible_structured_tasks(
     tasks: list[dict[str, Any]],
-    *,
-    original_query: str,
-    registry: dict[str, Any],
 ) -> list[dict[str, Any]]:
-    """Deduplicate identical lookups without discarding distinct input slots."""
+    """Deduplicate identical lookups without discarding distinct task text."""
     merged: list[dict[str, Any]] = []
     index_by_key: dict[tuple[Any, ...], int] = {}
     for task in tasks:
@@ -869,6 +867,7 @@ def _merge_compatible_structured_tasks(
             task.get("lookup_type"),
             task.get("intent"),
             tuple(task.get("cohorts") or []),
+            " ".join(str(task.get("question") or "").casefold().split()),
         )
         existing_index = index_by_key.get(key)
         if existing_index is None:

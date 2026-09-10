@@ -61,7 +61,7 @@ def _normalize(tasks: list[dict[str, Any]], query: str) -> dict[str, Any]:
 def test_registry_declares_slot_verification_roles_without_name_allowlist() -> None:
     registry = load_lookup_registry()
 
-    assert registry["version"] == 6
+    assert registry["version"] == 7
     assert registry["tools"]["scholarship_classification"]["slot_schema"]["aspect"][
         "verification_role"
     ] == "reading_intent"
@@ -271,7 +271,7 @@ def test_negated_selector_in_sibling_query_does_not_leak_into_task() -> None:
     assert "aspect" not in plan["tasks"][0]["slots"]
 
 
-def test_single_rewritten_service_task_uses_original_source_for_fallback() -> None:
+def test_single_rewritten_service_task_defers_missing_entity_to_resolver() -> None:
     query = "Chưa biết sử dụng thư viện thì nhờ ai hướng dẫn?"
     task = _structured(
         "t1",
@@ -291,8 +291,10 @@ def test_single_rewritten_service_task_uses_original_source_for_fallback() -> No
     assert errors == []
     normalized = plan["tasks"][0]
     assert normalized["mode"] == "structured"
-    assert normalized["slots"]["service"] == query
-    assert normalized["slot_spans"]["service"] == query
+    assert normalized["question"] == query
+    assert "service" not in normalized["slots"]
+    assert "service" not in normalized["slot_spans"]
+    assert "missing_slot_span:service" in normalized["normalization_warnings"]
     assert normalized["slots"]["requested_field"] == "unit"
 
 
@@ -313,7 +315,7 @@ def test_single_rewritten_service_task_uses_original_source_for_fallback() -> No
         ),
     ],
 )
-def test_single_rewritten_service_paraphrase_span_is_checked_against_original(
+def test_single_rewritten_service_paraphrase_is_not_promoted_to_entity(
     query: str,
     task_question: str,
     service: str,
@@ -334,8 +336,10 @@ def test_single_rewritten_service_paraphrase_span_is_checked_against_original(
     assert errors == []
     normalized = plan["tasks"][0]
     assert normalized["mode"] == "structured"
-    assert normalized["slots"]["service"] == query
-    assert normalized["slot_spans"]["service"] == query
+    assert normalized["question"] == query
+    assert "service" not in normalized["slots"]
+    assert "service" not in normalized["slot_spans"]
+    assert "ungrounded_slot:service" in normalized["normalization_warnings"]
 
 
 def test_single_rewritten_service_keeps_faithful_original_phrase_absent_from_task() -> None:
@@ -359,7 +363,7 @@ def test_single_rewritten_service_keeps_faithful_original_phrase_absent_from_tas
     assert normalized["slot_spans"]["service"] == "mượn phòng học"
 
 
-def test_single_rewritten_service_hallucinated_span_falls_back_to_original() -> None:
+def test_single_rewritten_service_hallucinated_span_is_removed() -> None:
     query = "Mình muốn mượn phòng học, xin hỏi đơn vị nào hỗ trợ?"
     task = _structured(
         "t1",
@@ -376,8 +380,10 @@ def test_single_rewritten_service_hallucinated_span_falls_back_to_original() -> 
     assert errors == []
     normalized = plan["tasks"][0]
     assert normalized["mode"] == "structured"
-    assert normalized["slots"]["service"] == query
-    assert normalized["slot_spans"]["service"] == query
+    assert normalized["question"] == query
+    assert "service" not in normalized["slots"]
+    assert "service" not in normalized["slot_spans"]
+    assert "ungrounded_slot:service" in normalized["normalization_warnings"]
 
 
 def test_compound_rewritten_service_task_does_not_receive_whole_query() -> None:
@@ -412,14 +418,20 @@ def test_compound_rewritten_service_task_does_not_receive_whole_query() -> None:
 
     plan, errors = normalize_query_plan(_plan([first, second]), query=query)
 
-    assert len(errors) == 1
-    assert "t1:ungrounded_slot:service" in errors
-    assert [task["mode"] for task in plan["tasks"]] == ["clarify", "structured"]
-    assert plan["tasks"][1]["slots"]["service"] == second["question"]
-    assert plan["tasks"][1]["slots"]["service"] != query
+    assert errors == []
+    assert [task["mode"] for task in plan["tasks"]] == ["structured", "structured"]
+    assert [task["question"] for task in plan["tasks"]] == [
+        first["question"],
+        second["question"],
+    ]
+    assert all("service" not in task["slots"] for task in plan["tasks"])
+    assert all(
+        any(warning.endswith(":service") for warning in task["normalization_warnings"])
+        for task in plan["tasks"]
+    )
 
 
-def test_multi_cohort_service_fallback_keeps_source_and_cohorts() -> None:
+def test_multi_cohort_service_fallback_keeps_task_query_and_cohorts() -> None:
     query = "K50 và K51 muốn mượn phòng học thì hỏi đơn vị nào?"
     task = _structured(
         "t1",
@@ -437,7 +449,8 @@ def test_multi_cohort_service_fallback_keeps_source_and_cohorts() -> None:
     normalized = plan["tasks"][0]
     assert normalized["mode"] == "structured"
     assert normalized["cohorts"] == ["K50", "K51"]
-    assert normalized["slots"]["service"] == query
+    assert normalized["question"] == query
+    assert "service" not in normalized["slots"]
 
 
 def test_unsupported_directory_entity_still_requires_grounded_source() -> None:

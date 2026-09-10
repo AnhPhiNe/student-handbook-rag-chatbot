@@ -137,31 +137,21 @@ def _ground_declared_literal_slots(
                 spans[slot_name] = max(same_value_matches, key=len)
             continue
 
-        # Missing values are not inferred from query aliases.  The planner
-        # owns the meaning of every slot; only the service-specific fallback
-        # below may use a trusted source query for a directory identity.
+        # Missing values are not inferred from query aliases. The planner owns
+        # the meaning of every slot; directory identity matching belongs to the
+        # selected resolver rather than this normalizer.
 
 
 def _prepare_structured_slots(
     query: str,
     *,
-    lookup_type: str | None,
     intent: str | None,
     spec: dict[str, Any] | None,
     slots: dict[str, Any],
     spans: dict[str, Any],
-    source_query: str | None = None,
 ) -> None:
-    """Prepare supplied slot spans while keeping planner tasks isolated.
+    """Ground spans for supplied values without inventing missing slots."""
 
-    ``source_query`` is an optional trusted source for the student-service
-    fallback.  Callers should provide it only when the source belongs to this
-    task; a compound query must not be copied into every task's service slot.
-    """
-
-    raw_query = str(query or "")
-    trusted_source_query = str(source_query or "").strip()
-    service_grounding_query = trusted_source_query or raw_query
     _ground_declared_literal_slots(
         query,
         intent=intent,
@@ -169,27 +159,6 @@ def _prepare_structured_slots(
         slots=slots,
         spans=spans,
     )
-
-    if lookup_type == "student_service":
-        # Preserve a compact service phrase only when the planner copied it
-        # faithfully from the trusted source. When a single-task caller has
-        # supplied the original user query, the planner's task question may be
-        # a paraphrase and cannot be the grounding authority. Otherwise use
-        # the complete trusted source instead of accepting an invented
-        # paraphrase as the retrieval identity.
-        service = slots.get("service")
-        service_span = spans.get("service")
-        grounded_service = (
-            isinstance(service, str)
-            and isinstance(service_span, str)
-            and bool(_normalize_text(service))
-            and _normalize_text(service) == _normalize_text(service_span)
-            and _normalize_text(service_span) in _normalize_text(service_grounding_query)
-        )
-        if not grounded_service:
-            fallback_query = trusted_source_query or raw_query
-            slots["service"] = fallback_query
-            spans["service"] = fallback_query
 
 
 @lru_cache(maxsize=4)
@@ -248,14 +217,12 @@ def normalize_router_decision(
     query: str,
     selected_cohort: str | None = None,
     registry: dict[str, Any] | None = None,
-    source_query: str | None = None,
 ) -> dict[str, Any]:
     """Normalize a raw router decision to the stable contract.
 
-    ``query`` remains the task-local text used for selector/entity inference.
-    ``source_query`` is reserved for a caller that can prove the original
-    source belongs to this task and is used only by the student-service
-    fallback.
+    ``query`` is the task-local text used to ground values supplied by the
+    planner. Missing semantic values remain missing for the resolver to handle
+    according to the selected lookup contract.
     """
 
     raw_route = str(payload.get("route") or "rag").strip().lower()
@@ -387,12 +354,10 @@ def normalize_router_decision(
 
     _prepare_structured_slots(
         query,
-        lookup_type=lookup_type,
         intent=intent,
         spec=spec,
         slots=slots,
         spans=spans,
-        source_query=source_query,
     )
 
     return {

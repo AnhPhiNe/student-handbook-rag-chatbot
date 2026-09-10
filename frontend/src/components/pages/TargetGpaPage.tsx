@@ -256,13 +256,11 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       <div className="gpa-split-layout target-gpa-split-layout">
         {/* Left Column: Input Sections & Guidance */}
         <section className="gpa-main-column target-gpa-main-column">
-          {/* Controls Bar: Single clean row */}
+          {/* Controls Bar: Clean title & action buttons */}
           <div className="gpa-toolbar target-gpa-toolbar">
-            <div className="gpa-mode-control">
-              <span className="gpa-mode-label">Mục tiêu:</span>
-              <div className="gpa-mode-pills">
-                <span className="gpa-mode-btn active">Dự tính điểm học kỳ cần đạt</span>
-              </div>
+            <div className="target-gpa-toolbar-heading">
+              <span className="target-gpa-toolbar-title">Thiết lập mục tiêu</span>
+              <span className="target-gpa-toolbar-sub">Dự tính điểm trung bình học kỳ cần đạt</span>
             </div>
 
             <div className="gpa-action-buttons">
@@ -287,17 +285,17 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
             </div>
           </div>
 
-          {/* Unified Input Card */}
+          {/* Form Card with Distinct Styled Panels */}
           <div className="target-gpa-cards-stack">
             <div className="target-gpa-form-card">
-              {/* Section 1: Tích lũy hiện tại */}
-              <div className="target-gpa-section">
-                <div className="target-gpa-section-header">
-                  <div className="target-gpa-sec-title">
-                    <span className="target-gpa-sec-badge current">1</span>
-                    <h3>Tích lũy hiện tại</h3>
+              {/* Panel 1: Tích lũy hiện tại */}
+              <div className="target-gpa-panel current-panel">
+                <div className="target-gpa-panel-header">
+                  <div className="target-gpa-panel-title">
+                    <span className="target-gpa-panel-num current">1</span>
+                    <h3>Kết quả tích lũy hiện tại</h3>
                   </div>
-                  <span className="target-gpa-sec-hint">Tính đến hết học kỳ trước</span>
+                  <span className="target-gpa-panel-hint">Tính đến hết học kỳ gần nhất</span>
                 </div>
 
                 <div className="target-gpa-grid-2col">
@@ -351,17 +349,14 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 </div>
               </div>
 
-              {/* Elegant Divider */}
-              <div className="target-gpa-form-divider" />
-
-              {/* Section 2: Kế hoạch học kỳ tới */}
-              <div className="target-gpa-section">
-                <div className="target-gpa-section-header">
-                  <div className="target-gpa-sec-title">
-                    <span className="target-gpa-sec-badge target">2</span>
+              {/* Panel 2: Kế hoạch học kỳ tới */}
+              <div className="target-gpa-panel target-panel">
+                <div className="target-gpa-panel-header">
+                  <div className="target-gpa-panel-title">
+                    <span className="target-gpa-panel-num target">2</span>
                     <h3>Kế hoạch học kỳ tới</h3>
                   </div>
-                  <span className="target-gpa-sec-hint">Mục tiêu GPA & tín chỉ đăng ký</span>
+                  <span className="target-gpa-panel-hint">Mục tiêu phấn đấu & tín chỉ đăng ký</span>
                 </div>
 
                 <div className="target-gpa-grid-2col">
@@ -445,36 +440,41 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
               </div>
             </div>
 
-            {/* Formula & Guidance Card */}
-            <div className="target-gpa-formula-card">
-              <div className="target-gpa-formula-header">
-                <BookOpen size={16} />
-                <h4>Công thức tính điểm kỳ tới</h4>
-              </div>
-              <div className="target-gpa-formula-display">
-                <div className="target-gpa-formula-lhs">
-                  <span>Điểm kỳ tới</span>
-                  <strong>=</strong>
+            {/* Collapsible Formula & Guidance Card */}
+            <details className="target-gpa-formula-details">
+              <summary className="target-gpa-formula-summary">
+                <div className="target-gpa-formula-sum-left">
+                  <BookOpen size={16} />
+                  <span>Xem công thức tính điểm & mẹo tối ưu kế hoạch</span>
                 </div>
-                <div className="target-gpa-fraction">
-                  <div className="target-gpa-numerator">
-                    <span>(GPA mục tiêu × Tổng TC sau kỳ)</span>
-                    <span className="target-gpa-minus">−</span>
-                    <span>(GPA hiện tại × TC hiện tại)</span>
+                <span className="target-gpa-formula-sum-toggle">Chi tiết ▾</span>
+              </summary>
+              <div className="target-gpa-formula-body">
+                <div className="target-gpa-formula-display">
+                  <div className="target-gpa-formula-lhs">
+                    <span>Điểm kỳ tới</span>
+                    <strong>=</strong>
                   </div>
-                  <div className="target-gpa-fraction-line" />
-                  <div className="target-gpa-denominator">
-                    <span>Số tín chỉ học kỳ tới</span>
+                  <div className="target-gpa-fraction">
+                    <div className="target-gpa-numerator">
+                      <span>(GPA mục tiêu × Tổng TC sau kỳ)</span>
+                      <span className="target-gpa-minus">−</span>
+                      <span>(GPA hiện tại × TC hiện tại)</span>
+                    </div>
+                    <div className="target-gpa-fraction-line" />
+                    <div className="target-gpa-denominator">
+                      <span>Số tín chỉ học kỳ tới</span>
+                    </div>
                   </div>
                 </div>
+                <div className="target-gpa-formula-tip">
+                  <HelpCircle size={14} />
+                  <span>
+                    <strong>Mẹo:</strong> Nếu điểm yêu cầu quá cao, bạn có thể <strong>tăng số tín chỉ kỳ tới</strong> để dàn trải và giảm áp lực điểm trung bình cần đạt.
+                  </span>
+                </div>
               </div>
-              <div className="target-gpa-formula-tip">
-                <HelpCircle size={14} />
-                <span>
-                  <strong>Mẹo:</strong> Nếu điểm yêu cầu quá cao, bạn có thể <strong>tăng số tín chỉ kỳ tới</strong> để dàn trải và giảm áp lực điểm trung bình cần đạt.
-                </span>
-              </div>
-            </div>
+            </details>
           </div>
         </section>
 
@@ -486,16 +486,19 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
               <div className="gpa-result-top">
                 <div className="gpa-result-tag-wrap">
                   <span className="gpa-live-dot" aria-hidden="true" />
-                  <span className="gpa-result-tag">MỤC TIÊU GPA • {cohort}</span>
+                  <span className="gpa-result-tag">MỤC TIÊU GPA</span>
                 </div>
-                {tierInfo ? (
+                <span className="gpa-cohort-pill">{cohort}</span>
+              </div>
+
+              {/* Dedicated Tier Row (Prevents text wrapping and header cramming) */}
+              {tierInfo && (
+                <div className="target-gpa-tier-row">
                   <span className={`gpa-tier-pill ${tierInfo.badgeClass}`}>
                     {tierInfo.icon} {tierInfo.label}
                   </span>
-                ) : (
-                  <span className="gpa-cohort-pill">{cohort}</span>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Hero GPA Score Display */}
               <div className="gpa-hero-score">

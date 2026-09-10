@@ -5,7 +5,6 @@ import {
   Search,
   X,
   Check,
-  Sparkles,
 } from 'lucide-react';
 import {
   calculateScholarshipScore,
@@ -18,12 +17,6 @@ import {
   type TuitionProgram,
 } from '../../data/tuitionRates';
 import { PageContextBadges } from '../PageContextBadges';
-
-const PRESETS: Array<{ label: string; academic: string; conduct: string }> = [
-  { label: 'Xuất sắc (3.70 / 92)', academic: '3.70', conduct: '92' },
-  { label: 'Giỏi (3.35 / 85)', academic: '3.35', conduct: '85' },
-  { label: 'Khá (2.85 / 75)', academic: '2.85', conduct: '75' },
-];
 
 export function ScholarshipPage() {
   const [academicScore, setAcademicScore] = useState('');
@@ -123,11 +116,6 @@ export function ScholarshipPage() {
     setQuery('');
   };
 
-  const applyPreset = (academic: string, conduct: string) => {
-    setAcademicScore(academic);
-    setConductScore(conduct);
-  };
-
   // Smart suggestion for next tier
   const nextTierAdvice = useMemo(() => {
     if (!result) return null;
@@ -185,23 +173,10 @@ export function ScholarshipPage() {
       <div className="scholarship-split-layout">
         {/* Left Column: Input Form */}
         <section className="scholarship-main-column">
-          {/* Top Toolbar */}
-          <div className="gpa-toolbar">
+          {/* Controls Bar: Mode label & action buttons */}
+          <div className="gpa-toolbar scholarship-toolbar">
             <div className="gpa-mode-control">
-              <span className="gpa-mode-label">Thông tin xét tuyển:</span>
-              <div className="scholarship-preset-chips">
-                <span className="scholarship-preset-icon"><Sparkles size={13} /> Mẫu:</span>
-                {PRESETS.map((p) => (
-                  <button
-                    key={p.label}
-                    type="button"
-                    className="scholarship-preset-chip"
-                    onClick={() => applyPreset(p.academic, p.conduct)}
-                  >
-                    {p.label}
-                  </button>
-                ))}
-              </div>
+              <span className="gpa-mode-label">Thông số xét học bổng:</span>
             </div>
 
             <div className="gpa-action-buttons">

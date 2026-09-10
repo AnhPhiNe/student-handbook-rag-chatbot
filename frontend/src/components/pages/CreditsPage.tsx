@@ -5,6 +5,7 @@ import {
   ShieldCheck,
   RotateCcw,
   BookOpen,
+  Info,
 } from 'lucide-react';
 import { calculateCreditThreshold } from '../../utils/creditThreshold';
 import { PageContextBadges } from '../PageContextBadges';
@@ -79,7 +80,16 @@ export function CreditsPage() {
           <div className="scholarship-inputs-grid">
             {/* Tổng tín chỉ */}
             <div className="scholarship-input-group">
-              <label className="scholarship-input-label">Tổng tín chỉ toàn khóa</label>
+              <label className="scholarship-input-label">
+                <span>Tổng tín chỉ toàn khóa</span>
+                <span
+                  title="Thường từ 120 - 150 tín chỉ tùy chương trình đào tạo"
+                  className="course-target-ref-icon-btn"
+                  style={{ cursor: 'help' }}
+                >
+                  <Info size={13} />
+                </span>
+              </label>
               <div className="number-input-group" style={{ height: '38px' }}>
                 <button
                   type="button"
@@ -107,12 +117,20 @@ export function CreditsPage() {
                   <Plus size={14} />
                 </button>
               </div>
-              <span className="scholarship-input-hint">Thường từ 120 - 150 tín chỉ tùy ngành</span>
             </div>
 
             {/* Số tín chỉ rớt */}
             <div className="scholarship-input-group">
-              <label className="scholarship-input-label">Số tín chỉ đã rớt / học lại</label>
+              <label className="scholarship-input-label">
+                <span>Số tín chỉ đã rớt / học lại</span>
+                <span
+                  title="Chỉ tính số tín chỉ của các học phần bị điểm F phải đăng ký học lại"
+                  className="course-target-ref-icon-btn"
+                  style={{ cursor: 'help' }}
+                >
+                  <Info size={13} />
+                </span>
+              </label>
               <div className="number-input-group" style={{ height: '38px' }}>
                 <button
                   type="button"
@@ -140,7 +158,6 @@ export function CreditsPage() {
                   <Plus size={14} />
                 </button>
               </div>
-              <span className="scholarship-input-hint">Chỉ tính tín chỉ các môn điểm F phải học lại</span>
             </div>
           </div>
 
@@ -274,26 +291,26 @@ export function CreditsPage() {
             <BookOpen size={16} style={{ color: 'var(--primary)' }} />
             <span>Quy định hạ bậc tốt nghiệp (Khoản 3 Điều 15)</span>
           </div>
-          <ul className="credits-rule-list">
-            <li>
-              <span style={{ color: '#ef4444', fontWeight: 'bold' }}>⚠️</span>
-              <div>
+          <div className="credits-rule-list">
+            <div className="credits-rule-item warning">
+              <span className="credits-rule-icon" aria-hidden="true">⚠️</span>
+              <div className="credits-rule-content">
                 <strong>Điều kiện bị giảm 1 mức xếp loại:</strong> Sinh viên thuộc một trong hai trường hợp: (1) Khối lượng tín chỉ học lại vượt quá <strong>5% tổng số tín chỉ</strong> toàn khóa; hoặc (2) Bị kỷ luật từ mức <strong>cảnh cáo</strong> trở lên trong thời gian học.
               </div>
-            </li>
-            <li>
-              <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>🎯</span>
-              <div>
+            </div>
+            <div className="credits-rule-item scope">
+              <span className="credits-rule-icon" aria-hidden="true">🎯</span>
+              <div className="credits-rule-content">
                 <strong>Phạm vi áp dụng:</strong> Chỉ áp dụng đối với hạng <strong>Xuất sắc</strong> (hạ xuống Giỏi) và hạng <strong>Giỏi</strong> (hạ xuống Khá).
               </div>
-            </li>
-            <li>
-              <span style={{ color: '#10b981', fontWeight: 'bold' }}>✅</span>
-              <div>
+            </div>
+            <div className="credits-rule-item safe">
+              <span className="credits-rule-icon" aria-hidden="true">✅</span>
+              <div className="credits-rule-content">
                 <strong>Ngoại lệ an toàn:</strong> Nếu điểm tốt nghiệp xếp loại <strong>Khá, Trung bình hoặc Yếu</strong> thì sẽ <strong>không bao giờ bị hạ bậc</strong> dù vượt quá 5% số tín chỉ học lại.
               </div>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>

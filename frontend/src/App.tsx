@@ -172,7 +172,15 @@ function App() {
               <MobileScrollAffordance
                 activeKey={activeTab}
                 containerRef={contentAreaRef}
-                disabled={activeTab === 'chat' || activeTab === 'gpa' || activeTab === 'target-gpa' || activeTab === 'course-target'}
+                disabled={
+                  activeTab === 'chat' ||
+                  activeTab === 'gpa' ||
+                  activeTab === 'target-gpa' ||
+                  activeTab === 'course-target' ||
+                  activeTab === 'credits' ||
+                  activeTab === 'tuition' ||
+                  activeTab === 'scholarship'
+                }
               />
             )}
           </div>

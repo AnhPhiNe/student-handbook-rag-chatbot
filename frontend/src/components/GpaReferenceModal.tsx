@@ -191,6 +191,10 @@ export function GpaReferenceModal({
                     Điểm trung bình hệ 4 được làm tròn theo quy định chuẩn đến{' '}
                     <strong>2 chữ số thập phân</strong>.
                   </li>
+                  <li>
+                    <strong>Công thức tính mục tiêu GPA kỳ tới:</strong>{' '}
+                    <code>Điểm cần đạt = [(GPA mục tiêu × Tổng TC sau kỳ) − (GPA hiện tại × TC hiện tại)] / TC kỳ tới</code>.
+                  </li>
                 </ul>
               </div>
 

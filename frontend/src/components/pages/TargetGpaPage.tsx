@@ -5,8 +5,6 @@ import {
   Sparkles,
   Info,
   GraduationCap,
-  HelpCircle,
-  BookOpen,
 } from 'lucide-react';
 import { type Cohort } from '../../utils/gradeScale';
 import { PageContextBadges } from '../PageContextBadges';
@@ -256,11 +254,10 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       <div className="gpa-split-layout target-gpa-split-layout">
         {/* Left Column: Input Sections & Guidance */}
         <section className="gpa-main-column target-gpa-main-column">
-          {/* Controls Bar: Clean title & action buttons */}
+          {/* Controls Bar: Mode label & action buttons */}
           <div className="gpa-toolbar target-gpa-toolbar">
-            <div className="target-gpa-toolbar-heading">
-              <span className="target-gpa-toolbar-title">Thiết lập mục tiêu</span>
-              <span className="target-gpa-toolbar-sub">Dự tính điểm trung bình học kỳ cần đạt</span>
+            <div className="gpa-mode-control">
+              <span className="gpa-mode-label">Thông số tính toán:</span>
             </div>
 
             <div className="gpa-action-buttons">
@@ -293,9 +290,8 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 <div className="target-gpa-panel-header">
                   <div className="target-gpa-panel-title">
                     <span className="target-gpa-panel-num current">1</span>
-                    <h3>Kết quả tích lũy hiện tại</h3>
+                    <h3>Điểm & Tín chỉ hiện tại</h3>
                   </div>
-                  <span className="target-gpa-panel-hint">Tính đến hết học kỳ gần nhất</span>
                 </div>
 
                 <div className="target-gpa-grid-2col">
@@ -356,7 +352,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     <span className="target-gpa-panel-num target">2</span>
                     <h3>Kế hoạch học kỳ tới</h3>
                   </div>
-                  <span className="target-gpa-panel-hint">Mục tiêu phấn đấu & tín chỉ đăng ký</span>
                 </div>
 
                 <div className="target-gpa-grid-2col">
@@ -439,42 +434,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 </div>
               </div>
             </div>
-
-            {/* Collapsible Formula & Guidance Card */}
-            <details className="target-gpa-formula-details">
-              <summary className="target-gpa-formula-summary">
-                <div className="target-gpa-formula-sum-left">
-                  <BookOpen size={16} />
-                  <span>Xem công thức tính điểm & mẹo tối ưu kế hoạch</span>
-                </div>
-                <span className="target-gpa-formula-sum-toggle">Chi tiết ▾</span>
-              </summary>
-              <div className="target-gpa-formula-body">
-                <div className="target-gpa-formula-display">
-                  <div className="target-gpa-formula-lhs">
-                    <span>Điểm kỳ tới</span>
-                    <strong>=</strong>
-                  </div>
-                  <div className="target-gpa-fraction">
-                    <div className="target-gpa-numerator">
-                      <span>(GPA mục tiêu × Tổng TC sau kỳ)</span>
-                      <span className="target-gpa-minus">−</span>
-                      <span>(GPA hiện tại × TC hiện tại)</span>
-                    </div>
-                    <div className="target-gpa-fraction-line" />
-                    <div className="target-gpa-denominator">
-                      <span>Số tín chỉ học kỳ tới</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="target-gpa-formula-tip">
-                  <HelpCircle size={14} />
-                  <span>
-                    <strong>Mẹo:</strong> Nếu điểm yêu cầu quá cao, bạn có thể <strong>tăng số tín chỉ kỳ tới</strong> để dàn trải và giảm áp lực điểm trung bình cần đạt.
-                  </span>
-                </div>
-              </div>
-            </details>
           </div>
         </section>
 

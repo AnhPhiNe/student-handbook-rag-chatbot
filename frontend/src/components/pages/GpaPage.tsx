@@ -5,6 +5,7 @@ import {
   RotateCcw,
   Trash2,
   Info,
+  Zap,
 } from 'lucide-react';
 import {
   calculateGpa,
@@ -335,15 +336,14 @@ export function GpaPage({ cohort }: GpaPageProps) {
           {/* Desktop Single-Row Table */}
           <div className="gpa-desktop-table-container">
             <div className={`gpa-table-header-row ${showCourseGroup ? 'has-group' : ''}`}>
-              <span className="th-col th-idx">STT</span>
-              <span className="th-col th-name">Tên Học Phần</span>
+              <span className="th-col th-course">Học phần</span>
               {showCourseGroup && <span className="th-col th-group">Nhóm môn</span>}
               <span className="th-col th-creds">Tín chỉ</span>
               <span className={`th-col th-score ${globalInputType === 'score10' ? 'mode-score10' : 'mode-letter'}`}>
                 {globalInputType === 'score10' ? 'Điểm 10' : 'Điểm chữ'}
               </span>
-              <span className="th-col th-grade">
-                {globalInputType === 'score10' ? 'Quy đổi' : 'Hệ 4'}
+              <span className="th-col th-grade" title="Điểm hệ 4 quy đổi tự động sau khi nhập điểm">
+                {globalInputType === 'score10' ? 'Quy đổi (Tự động)' : 'Hệ 4 (Tự động)'}
               </span>
               <span className="th-col th-del"></span>
             </div>
@@ -361,17 +361,10 @@ export function GpaPage({ cohort }: GpaPageProps) {
                     key={course.id}
                     className={`gpa-table-row ${showCourseGroup ? 'has-group' : ''} ${isFailed ? 'row-failed' : ''}`}
                   >
-                    <span className="td-col td-idx">
+                    <div className="td-col td-course">
                       <span className="gpa-row-badge">#{index + 1}</span>
-                    </span>
-
-                    <input
-                      className="gpa-row-name-input"
-                      value={course.name}
-                      onChange={(e) => updateCourse(course.id, { name: e.target.value })}
-                      placeholder="Tên học phần..."
-                      aria-label={`Tên môn học ${index + 1}`}
-                    />
+                      <span className="gpa-course-fixed-title">Môn học {index + 1}</span>
+                    </div>
 
                     {showCourseGroup && (
                       <select
@@ -476,9 +469,10 @@ export function GpaPage({ cohort }: GpaPageProps) {
                       ) : (
                         <span
                           className="gpa-auto-chip"
-                          title="Hệ thống tự động quy đổi khi nhập điểm"
+                          title="Hệ thống tự động quy đổi sau khi nhập điểm"
                         >
-                          Tự động
+                          <Zap size={11} className="gpa-auto-icon" />
+                          <span>Tự động</span>
                         </span>
                       )}
                     </div>
@@ -516,13 +510,7 @@ export function GpaPage({ cohort }: GpaPageProps) {
                   <div className="gpa-mobile-card-header">
                     <div className="gpa-m-header-left">
                       <span className="gpa-m-idx">#{index + 1}</span>
-                      <input
-                        className="gpa-m-name-input"
-                        value={course.name}
-                        onChange={(e) => updateCourse(course.id, { name: e.target.value })}
-                        placeholder="Tên học phần..."
-                        aria-label={`Tên môn học ${index + 1}`}
-                      />
+                      <span className="gpa-m-fixed-title">Môn học {index + 1}</span>
                     </div>
                     <div className="gpa-m-header-right">
                       {showCourseGroup && (
@@ -620,7 +608,9 @@ export function GpaPage({ cohort }: GpaPageProps) {
 
                     {/* Col 3: Quy đổi */}
                     <div className="gpa-m-grid-field">
-                      <span className="gpa-m-field-label">QUY ĐỔI</span>
+                      <span className="gpa-m-field-label">
+                        {globalInputType === 'score10' ? 'QUY ĐỔI (TỰ ĐỘNG)' : 'HỆ 4 (TỰ ĐỘNG)'}
+                      </span>
                       <div className="gpa-m-chip-wrapper">
                         {isScoreErr ? (
                           <span className="gpa-mini-chip failed" title="Điểm thang 10 không hợp lệ (0 - 10)">
@@ -651,9 +641,10 @@ export function GpaPage({ cohort }: GpaPageProps) {
                         ) : (
                           <span
                             className="gpa-auto-chip"
-                            title="Hệ thống tự động quy đổi khi nhập điểm"
+                            title="Hệ thống tự động quy đổi sau khi nhập điểm"
                           >
-                            Tự động
+                            <Zap size={11} className="gpa-auto-icon" />
+                            <span>Tự động</span>
                           </span>
                         )}
                       </div>

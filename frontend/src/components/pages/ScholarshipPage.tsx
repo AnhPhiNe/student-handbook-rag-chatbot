@@ -9,6 +9,7 @@ import {
   Sparkles,
   ChevronDown,
   ChevronUp,
+  AlertCircle,
 } from 'lucide-react';
 import {
   calculateScholarshipScore,
@@ -88,6 +89,8 @@ export function ScholarshipPage() {
     numConduct !== null && (!Number.isFinite(numConduct) || numConduct < 0 || numConduct > 100);
   const isCreditsInvalid =
     credits !== '' && (!Number.isFinite(Number(credits)) || Number(credits) <= 0);
+  const isCreditsBelowMinimum =
+    credits !== '' && Number(credits) > 0 && Number(credits) < 15;
 
   const result = useMemo(() => {
     if (numAcademic === null || numConduct === null || isAcademicInvalid || isConductInvalid) {
@@ -105,9 +108,17 @@ export function ScholarshipPage() {
   }, [numAcademic, numConduct, result, isAcademicInvalid, isConductInvalid]);
 
   const scholarshipAmount = useMemo(() => {
-    if (!result?.classification || !credits || tuitionFee === 0 || isCreditsInvalid) return null;
+    if (
+      !result?.classification ||
+      !credits ||
+      tuitionFee === 0 ||
+      isCreditsInvalid ||
+      isCreditsBelowMinimum
+    ) {
+      return null;
+    }
     return Number(credits) * tuitionFee * result.multiplier;
-  }, [result, credits, tuitionFee, isCreditsInvalid]);
+  }, [result, credits, tuitionFee, isCreditsInvalid, isCreditsBelowMinimum]);
 
   const handleReset = () => {
     setAcademicScore('');
@@ -215,15 +226,20 @@ export function ScholarshipPage() {
           <div className="scholarship-form-card">
             <div className="scholarship-card-title-row">
               <span className="scholarship-step-num">1</span>
-              <h2 className="scholarship-card-title">Thông tin điểm xét học bổng</h2>
+              <div>
+                <h2 className="scholarship-card-title">Điểm xét học bổng</h2>
+                <p className="scholarship-card-subtitle">
+                  Tỷ lệ: 80% Điểm học tập + 20% Điểm rèn luyện quy đổi
+                </p>
+              </div>
             </div>
 
             <div className="scholarship-inputs-grid">
               {/* Điểm học tập */}
               <div className="scholarship-input-group">
                 <label className="scholarship-input-label">
-                  Điểm học tập (thang 4)
-                  <span className="scholarship-sub-label">Trọng số 80%</span>
+                  Điểm học tập (GPA)
+                  <span className="scholarship-sub-label weight-tag">80%</span>
                 </label>
                 <div className="course-target-input-wrap">
                   <input
@@ -247,8 +263,8 @@ export function ScholarshipPage() {
               {/* Điểm rèn luyện */}
               <div className="scholarship-input-group">
                 <label className="scholarship-input-label">
-                  Điểm rèn luyện (thang 100)
-                  <span className="scholarship-sub-label">Trọng số 20%</span>
+                  Điểm rèn luyện (ĐRL)
+                  <span className="scholarship-sub-label weight-tag">20%</span>
                 </label>
                 <div className="course-target-input-wrap">
                   <input
@@ -269,17 +285,6 @@ export function ScholarshipPage() {
                 )}
               </div>
             </div>
-
-            {/* Formula Progress Strip */}
-            <div className="scholarship-formula-strip">
-              <div className="scholarship-ratio-bar">
-                <div className="ratio-segment academic" style={{ width: '80%' }} />
-                <div className="ratio-segment conduct" style={{ width: '20%' }} />
-              </div>
-              <span className="scholarship-formula-text">
-                Công thức: (Điểm học tập × 80 + Điểm rèn luyện / 25 × 20) / 100
-              </span>
-            </div>
           </div>
 
           {/* Card 2: Giá trị học bổng (Ngành học & Tín chỉ) */}
@@ -287,6 +292,14 @@ export function ScholarshipPage() {
             <div className="scholarship-card-title-row">
               <span className="scholarship-step-num">2</span>
               <h2 className="scholarship-card-title">Ước tính số tiền học bổng</h2>
+            </div>
+
+            {/* Condition Notice Banner */}
+            <div className="scholarship-condition-callout">
+              <AlertCircle size={16} className="condition-callout-icon" />
+              <div className="condition-callout-text">
+                <strong>Điều kiện bắt buộc:</strong> Đăng ký và hoàn thành <strong>tối thiểu 15 tín chỉ</strong> trong học kỳ xét (học kỳ cuối: tối thiểu 6 TC) và <strong>không có môn bị điểm F</strong>.
+              </div>
             </div>
 
             {/* Autocomplete ngành học */}
@@ -363,8 +376,10 @@ export function ScholarshipPage() {
 
               <div className="scholarship-input-group">
                 <label className="scholarship-input-label">
-                  Số tín chỉ xét học kỳ
-                  <span className="scholarship-sub-label">Tối thiểu 15 TC</span>
+                  Số tín chỉ học kỳ
+                  <span className="scholarship-highlight-badge">
+                    ⚡ Tối thiểu 15 TC
+                  </span>
                 </label>
                 <div className="course-target-input-wrap">
                   <input
@@ -373,15 +388,15 @@ export function ScholarshipPage() {
                     value={credits}
                     onChange={(e) => setCredits(e.target.value)}
                     className={`course-target-input ${
-                      isCreditsInvalid || Number(credits) < 15 ? 'input-warning' : ''
+                      isCreditsInvalid || isCreditsBelowMinimum ? 'input-warning' : ''
                     }`}
                     placeholder="15"
                   />
                   <span className="course-target-affix">TC</span>
                 </div>
-                {Number(credits) < 15 && Number(credits) > 0 && (
+                {isCreditsBelowMinimum && (
                   <span className="scholarship-field-warning">
-                    ⚠️ Dưới 15 tín chỉ (chỉ áp dụng cho kỳ tốt nghiệp).
+                    ⚠️ Dưới 15 tín chỉ: Không đủ điều kiện xét học bổng (trừ HK tốt nghiệp tối thiểu 6 TC).
                   </span>
                 )}
               </div>
@@ -484,7 +499,15 @@ export function ScholarshipPage() {
           </div>
 
           {/* Amount Estimated Banner */}
-          {scholarshipAmount !== null ? (
+          {isCreditsBelowMinimum && result?.classification ? (
+            <div className="scholarship-amount-card warning">
+              <span className="amount-label">Số tiền học bổng</span>
+              <strong className="amount-warning-text">Chưa đủ 15 tín chỉ</strong>
+              <span className="amount-formula">
+                Quy chế HCMUE yêu cầu tối thiểu 15 TC trong học kỳ xét (trừ HK cuối: 6 TC)
+              </span>
+            </div>
+          ) : scholarshipAmount !== null ? (
             <div className="scholarship-amount-card">
               <span className="amount-label">Số tiền học bổng dự kiến</span>
               <strong className="amount-value">
@@ -507,69 +530,81 @@ export function ScholarshipPage() {
             )
           )}
 
-          {/* Criteria Checklist Matrix */}
-          <div className="scholarship-matrix-table">
-            <div className="course-target-table-header-row">
-              <span>MỨC HỌC BỔNG</span>
-              <span>ĐIỀU KIỆN & TRẠNG THÁI</span>
+          {/* Criteria Checklist Matrix Table */}
+          <div className="scholarship-matrix-wrapper">
+            <div className="scholarship-matrix-header">
+              <span className="matrix-title">TIÊU CHUẨN XÉT THEO QUY CHẾ</span>
             </div>
-
-            {tierDetails.map((tier) => (
-              <div
-                key={tier.label}
-                className={`scholarship-matrix-row ${tier.isFullyMet ? 'achieved' : ''}`}
-              >
-                <div className="scholarship-tier-col">
-                  <div className="tier-badge-wrap">
-                    <span
-                      className="course-target-row-badge"
-                      style={{ backgroundColor: tier.badgeColor }}
-                    >
-                      {tier.label.charAt(0)}
-                    </span>
-                    <strong className="tier-name">{tier.label}</strong>
-                  </div>
-                  <span className="tier-mult">Hệ số {tier.multiplier}x</span>
-                </div>
-
-                <div className="scholarship-conds-col">
-                  {/* Checklist of 3 sub-criteria */}
-                  <div className="cond-item">
-                    <span className={`cond-status ${tier.isScoreMet ? 'met' : 'unmet'}`}>
-                      {tier.isScoreMet ? <Check size={11} /> : <X size={11} />}
-                    </span>
-                    <span className="cond-text">
-                      Điểm xét ≥ {tier.minScholarshipScore.toFixed(2)}
-                    </span>
-                  </div>
-
-                  <div className="cond-item">
-                    <span className={`cond-status ${tier.isAcademicMet ? 'met' : 'unmet'}`}>
-                      {tier.isAcademicMet ? <Check size={11} /> : <X size={11} />}
-                    </span>
-                    <span className="cond-text">
-                      Học tập ≥ {tier.minAcademicScore.toFixed(2)}
-                    </span>
-                  </div>
-
-                  <div className="cond-item">
-                    <span className={`cond-status ${tier.isConductMet ? 'met' : 'unmet'}`}>
-                      {tier.isConductMet ? <Check size={11} /> : <X size={11} />}
-                    </span>
-                    <span className="cond-text">Rèn luyện ≥ {tier.minConductScore}</span>
-                  </div>
-
-                  {/* Final Row Status Badge */}
-                  <div className="tier-status-badge-wrap">
-                    {tier.isFullyMet ? (
-                      <span className="tier-result-tag achieved">ĐẠT 🎉</span>
-                    ) : (
-                      <span className="tier-result-tag unmet">Chưa đủ</span>
-                    )}
-                  </div>
-                </div>
+            <div className="scholarship-table-container">
+              <div className="scholarship-table-head">
+                <span className="th-tier">Mức</span>
+                <span className="th-stat">Đ.Xét</span>
+                <span className="th-stat">GPA</span>
+                <span className="th-stat">ĐRL</span>
+                <span className="th-status">Kết quả</span>
               </div>
-            ))}
+              <div className="scholarship-table-body">
+                {tierDetails.map((tier) => (
+                  <div
+                    key={tier.label}
+                    className={`scholarship-table-row ${
+                      result?.classification === tier.label ? 'achieved' : ''
+                    }`}
+                  >
+                    <div className="td-tier">
+                      <span
+                        className="tier-mini-badge"
+                        style={{ backgroundColor: tier.badgeColor }}
+                      >
+                        {tier.label.charAt(0)}
+                      </span>
+                      <div className="tier-meta">
+                        <strong className="tier-name">{tier.label}</strong>
+                        <span className="tier-mult">{tier.multiplier}x</span>
+                      </div>
+                    </div>
+
+                    <div className={`td-stat ${tier.isScoreMet ? 'met' : ''}`}>
+                      {tier.isScoreMet ? (
+                        <span className="stat-met">
+                          <Check size={10} /> {tier.minScholarshipScore.toFixed(2)}
+                        </span>
+                      ) : (
+                        <span className="stat-req">≥ {tier.minScholarshipScore.toFixed(2)}</span>
+                      )}
+                    </div>
+
+                    <div className={`td-stat ${tier.isAcademicMet ? 'met' : ''}`}>
+                      {tier.isAcademicMet ? (
+                        <span className="stat-met">
+                          <Check size={10} /> {tier.minAcademicScore.toFixed(2)}
+                        </span>
+                      ) : (
+                        <span className="stat-req">≥ {tier.minAcademicScore.toFixed(2)}</span>
+                      )}
+                    </div>
+
+                    <div className={`td-stat ${tier.isConductMet ? 'met' : ''}`}>
+                      {tier.isConductMet ? (
+                        <span className="stat-met">
+                          <Check size={10} /> {tier.minConductScore}
+                        </span>
+                      ) : (
+                        <span className="stat-req">≥ {tier.minConductScore}</span>
+                      )}
+                    </div>
+
+                    <div className="td-status">
+                      {tier.isFullyMet ? (
+                        <span className="tier-tag achieved">ĐẠT 🎉</span>
+                      ) : (
+                        <span className="tier-tag unmet">Chưa đủ</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Actionable Advice Message */}

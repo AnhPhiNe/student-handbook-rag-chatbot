@@ -1396,6 +1396,16 @@
 [data-theme='dark'] .gpa-tier-pill.tier-average { background: rgba(217, 119, 6, 0.2); color: #fbbf24; border-color: rgba(251, 191, 36, 0.35); }
 [data-theme='dark'] .gpa-tier-pill.tier-weak { background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: rgba(248, 113, 113, 0.35); }
 
+.gpa-tier-pill.gpa-tier-unranked {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  border-color: var(--border-color);
+}
+
+.gpa-mobile-hero-card .gpa-progress-track {
+  margin-bottom: 0;
+}
+
 .gpa-mobile-hero-middle {
   display: flex;
   align-items: baseline;
@@ -8054,6 +8064,27 @@ input:checked + .slider:before { transform: translateX(20px); }
   background: rgba(16, 185, 129, 0.12) !important;
   color: #10b981 !important;
   border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+.scholarship-desktop-only-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.scholarship-mobile-hero {
+  margin-bottom: 0.85rem;
+}
+
+@media (max-width: 960px) {
+  .scholarship-mobile-hero {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.65rem !important;
+  }
+  .scholarship-desktop-only-result {
+    display: none !important;
+  }
 }
 
 /* Amount Card */

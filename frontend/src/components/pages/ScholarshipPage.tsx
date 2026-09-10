@@ -171,6 +171,101 @@ export function ScholarshipPage() {
         />
       </div>
 
+      {/* Top Mobile Hero Card (Mobile only <= 960px, pinned to top, instant feedback) */}
+      <section
+        className="gpa-mobile-hero-card scholarship-mobile-hero"
+        aria-label="Kết quả xét học bổng"
+      >
+        <div className="gpa-mobile-hero-top">
+          <div className="gpa-result-tag-wrap">
+            <span className="gpa-live-dot" aria-hidden="true" />
+            <span className="gpa-hero-tag">KẾT QUẢ XÉT HỌC BỔNG</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            {result?.classification ? (
+              <span
+                className={`gpa-tier-pill ${
+                  result.classification === 'Xuất sắc'
+                    ? 'tier-excellent'
+                    : result.classification === 'Giỏi'
+                    ? 'tier-good'
+                    : 'tier-fair'
+                }`}
+              >
+                {result.classification === 'Xuất sắc' && '🏆 '}
+                {result.classification === 'Giỏi' && '⭐ '}
+                {result.classification === 'Khá' && '✨ '}
+                Loại {result.classification} ({result.multiplier}x)
+              </span>
+            ) : (
+              <span className="gpa-tier-pill gpa-tier-unranked">Chưa xếp loại</span>
+            )}
+            <button
+              type="button"
+              className="course-target-ref-icon-btn"
+              onClick={() => setShowRulesModal(true)}
+              title="Xem quy chế & điều kiện xét học bổng"
+              aria-label="Xem quy chế & điều kiện xét học bổng"
+            >
+              <Info size={13} />
+            </button>
+          </div>
+        </div>
+
+        <div className="gpa-mobile-hero-middle">
+          <div className="gpa-hero-score">
+            <span className="gpa-score-num text-gradient">
+              {result ? result.score.toFixed(3) : '--'}
+            </span>
+            <span className="gpa-score-den">/ 4.000</span>
+          </div>
+
+          <div className="gpa-mobile-stats-chips">
+            <span className="gpa-stat-chip">
+              GPA <strong>{academicScore || '--'}</strong>
+            </span>
+            <span className="gpa-stat-chip">
+              ĐRL <strong>{conductScore || '--'}</strong>
+            </span>
+            {scholarshipAmount !== null && !isCreditsBelowMinimum ? (
+              <span className="gpa-stat-chip text-success" style={{ fontWeight: 700 }}>
+                {new Intl.NumberFormat('vi-VN', {
+                  style: 'currency',
+                  currency: 'VND',
+                  maximumFractionDigits: 0,
+                }).format(scholarshipAmount)}
+              </span>
+            ) : isCreditsBelowMinimum && result?.classification ? (
+              <span className="gpa-stat-chip" style={{ color: '#d97706', fontWeight: 600 }}>
+                &lt; 15 TC
+              </span>
+            ) : credits ? (
+              <span className="gpa-stat-chip">
+                <strong>{credits}</strong> TC
+              </span>
+            ) : null}
+          </div>
+        </div>
+
+        {/* Mini progress bar */}
+        <div className="gpa-progress-track">
+          <div
+            className={`gpa-progress-fill ${
+              result?.classification === 'Xuất sắc'
+                ? 'tier-excellent'
+                : result?.classification === 'Giỏi'
+                ? 'tier-good'
+                : result?.classification === 'Khá'
+                ? 'tier-fair'
+                : ''
+            }`}
+            style={{
+              width: `${result ? Math.min(100, Math.max(0, (result.score / 4) * 100)) : 0}%`,
+            }}
+          />
+        </div>
+      </section>
+
       {/* Main Split Layout */}
       <div className="scholarship-split-layout">
         {/* Left Column: Input Form */}
@@ -419,57 +514,59 @@ export function ScholarshipPage() {
 
         {/* Right Column: Sticky Scholarship Result Card */}
         <aside className="scholarship-summary-card">
-          {/* Header */}
-          <div className="gpa-result-top">
-            <div className="gpa-result-tag-wrap">
-              <span className="gpa-live-dot" />
-              <span className="gpa-result-tag">KẾT QUẢ XÉT HỌC BỔNG</span>
+          {/* Desktop Only: Header & Primary Stat Boxes (Shown in Top Hero Card on mobile) */}
+          <div className="scholarship-desktop-only-result">
+            <div className="gpa-result-top">
+              <div className="gpa-result-tag-wrap">
+                <span className="gpa-live-dot" />
+                <span className="gpa-result-tag">KẾT QUẢ XÉT HỌC BỔNG</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <span
+                  className={`gpa-cohort-pill ${
+                    result?.classification ? 'scholarship-badge-active' : ''
+                  }`}
+                >
+                  {result?.multiplier ? `Hệ số: ${result.multiplier}x` : 'Chưa xếp loại'}
+                </span>
+                <button
+                  type="button"
+                  className="course-target-ref-icon-btn"
+                  onClick={() => setShowRulesModal(true)}
+                  title="Xem quy chế & điều kiện xét học bổng"
+                  aria-label="Xem quy chế & điều kiện xét học bổng"
+                >
+                  <Info size={14} />
+                </button>
+              </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <span
-                className={`gpa-cohort-pill ${
-                  result?.classification ? 'scholarship-badge-active' : ''
-                }`}
-              >
-                {result?.multiplier ? `Hệ số: ${result.multiplier}x` : 'Chưa xếp loại'}
-              </span>
-              <button
-                type="button"
-                className="course-target-ref-icon-btn"
-                onClick={() => setShowRulesModal(true)}
-                title="Xem quy chế & điều kiện xét học bổng"
-                aria-label="Xem quy chế & điều kiện xét học bổng"
-              >
-                <Info size={14} />
-              </button>
-            </div>
-          </div>
 
-          {/* Symmetrical Stat Grid */}
-          <div className="course-target-stats-grid">
-            <div className="gpa-stat-box">
-              <span className="gpa-stat-label">Điểm xét học bổng</span>
-              <strong className="gpa-stat-val">
-                {result ? result.score.toFixed(3) : '--'}
-              </strong>
-            </div>
-            <div className="gpa-stat-box">
-              <span className="gpa-stat-label">Xếp loại dự kiến</span>
-              <strong
-                className="gpa-stat-val"
-                style={{
-                  color:
-                    result?.classification === 'Xuất sắc'
-                      ? '#ec4899'
-                      : result?.classification === 'Giỏi'
-                      ? '#8b5cf6'
-                      : result?.classification === 'Khá'
-                      ? '#3b82f6'
-                      : undefined,
-                }}
-              >
-                {result?.classification ? `Loại ${result.classification}` : 'Chưa đạt'}
-              </strong>
+            {/* Symmetrical Stat Grid */}
+            <div className="course-target-stats-grid">
+              <div className="gpa-stat-box">
+                <span className="gpa-stat-label">Điểm xét học bổng</span>
+                <strong className="gpa-stat-val">
+                  {result ? result.score.toFixed(3) : '--'}
+                </strong>
+              </div>
+              <div className="gpa-stat-box">
+                <span className="gpa-stat-label">Xếp loại dự kiến</span>
+                <strong
+                  className="gpa-stat-val"
+                  style={{
+                    color:
+                      result?.classification === 'Xuất sắc'
+                        ? '#ec4899'
+                        : result?.classification === 'Giỏi'
+                        ? '#8b5cf6'
+                        : result?.classification === 'Khá'
+                        ? '#3b82f6'
+                        : undefined,
+                  }}
+                >
+                  {result?.classification ? `Loại ${result.classification}` : 'Chưa đạt'}
+                </strong>
+              </div>
             </div>
           </div>
 

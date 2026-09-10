@@ -91,219 +91,145 @@ export function TuitionPage() {
         <PageContextBadges schoolYear={schoolYear || undefined} source="Bảng học phí theo ngành" advisory />
       </div>
 
-      {/* Top Mobile Hero Card (Mobile only <= 960px, pinned to top) */}
-      <section
-        className="gpa-mobile-hero-card tuition-mobile-hero"
-        aria-label="Kết quả ước tính học phí"
-      >
-        <div className="gpa-mobile-hero-top">
-          <div className="gpa-result-tag-wrap">
-            <span className="gpa-live-dot" aria-hidden="true" />
-            <span className="gpa-hero-tag">ƯỚC TÍNH HỌC PHÍ</span>
-          </div>
-          {schoolYear && (
-            <span className="gpa-cohort-pill">
-              Năm {schoolYear}
-            </span>
-          )}
-        </div>
-
-        <div className="gpa-mobile-hero-middle">
-          <div className="gpa-hero-score">
-            <span className="gpa-score-num text-gradient">
-              {selectedProgram && schoolYear
-                ? hasValidCredits
-                  ? formatVnd(creditEstimate)
-                  : formatVnd(semester)
-                : '--'}
-            </span>
-            <span className="gpa-score-den">
-              {selectedProgram && schoolYear
-                ? hasValidCredits
-                  ? `(${creditCount} TC)`
-                  : '/ học kỳ'
-                : 'học phí'}
-            </span>
-          </div>
-
-          <div className="gpa-mobile-stats-chips">
-            <span className="gpa-stat-chip">
-              1 TC: <strong>{perCredit ? formatVnd(perCredit) : '--'}</strong>
-            </span>
-            <span className="gpa-stat-chip">
-              Kỳ: <strong>{semester ? formatVnd(semester) : '--'}</strong>
-            </span>
-            {hasValidCredits && (
-              <span className="gpa-stat-chip">
-                <strong>{creditCount}</strong> TC
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Mini progress bar */}
-        <div className="gpa-progress-track">
-          <div
-            className="gpa-progress-fill tier-good"
-            style={{
-              width: `${hasValidCredits ? Math.min(100, Math.max(0, (creditCount / 25) * 100)) : selectedProgram ? 50 : 0}%`,
-            }}
-          />
-        </div>
-      </section>
-
-      {/* Main Split Layout */}
+      {/* Main Split Layout: Form -> Result Card -> Notes */}
       <div className="tuition-split-layout">
-        {/* Left Column: Input Form Card & Important Note */}
-        <section className="tuition-main-column">
-          <div className="tuition-form-card">
-            {/* Top Toolbar */}
-            <div className="gpa-result-top scholarship-card-top">
-              <div className="gpa-result-tag-wrap">
-                <span className="gpa-live-dot" />
-                <span className="gpa-result-tag">CHỌN THÔNG TIN TRA CỨU</span>
+        {/* Form Card (order: 1 on mobile, grid-area: form on desktop) */}
+        <div className="tuition-form-card">
+          {/* Top Toolbar */}
+          <div className="gpa-result-top scholarship-card-top">
+            <div className="gpa-result-tag-wrap">
+              <span className="gpa-live-dot" />
+              <span className="gpa-result-tag">CHỌN THÔNG TIN TRA CỨU</span>
+            </div>
+            <button
+              type="button"
+              className="tool-btn gpa-reset-btn gpa-btn-sm"
+              onClick={handleReset}
+              title="Khôi phục mặc định"
+            >
+              <RotateCcw size={13} />
+              <span>Làm mới</span>
+            </button>
+          </div>
+
+          {/* Step 1: Ngành đào tạo */}
+          <div className="scholarship-section-block">
+            <div className="scholarship-block-title-row">
+              <span className="scholarship-step-num">1</span>
+              <div>
+                <h2 className="scholarship-block-title">Ngành đào tạo</h2>
+                <p className="scholarship-block-subtitle">Tìm kiếm theo tên ngành hoặc mã ngành đào tạo</p>
               </div>
-              <button
-                type="button"
-                className="tool-btn gpa-reset-btn gpa-btn-sm"
-                onClick={handleReset}
-                title="Khôi phục mặc định"
-              >
-                <RotateCcw size={13} />
-                <span>Làm mới</span>
-              </button>
             </div>
 
-            {/* Step 1: Ngành đào tạo */}
-            <div className="scholarship-section-block">
-              <div className="scholarship-block-title-row">
-                <span className="scholarship-step-num">1</span>
-                <div>
-                  <h2 className="scholarship-block-title">Ngành đào tạo</h2>
-                  <p className="scholarship-block-subtitle">Tìm kiếm theo tên ngành hoặc mã ngành đào tạo</p>
+            <div className="scholarship-search-box">
+              <Search size={16} className="scholarship-search-icon" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => {
+                  handleQueryChange(e.target.value);
+                  setFocusedIndex(-1);
+                }}
+                onKeyDown={handleKeyDown}
+                className="scholarship-search-input"
+                placeholder="VD: Công nghệ thông tin hoặc 7480201..."
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={clearQuery}
+                  className="scholarship-clear-btn"
+                  title="Xóa tìm kiếm"
+                >
+                  <X size={14} />
+                </button>
+              )}
+
+              {query && !selectedProgram && (
+                <div className="scholarship-autocomplete-dropdown">
+                  {suggestions.length > 0 ? (
+                    suggestions.map((program, index) => (
+                      <button
+                        key={`${program.code}-${program.name}`}
+                        type="button"
+                        onClick={() => selectProgram(program)}
+                        className={`scholarship-suggestion-item ${
+                          index === focusedIndex ? 'focused' : ''
+                        }`}
+                      >
+                        <span className="prog-name">{program.name}</span>
+                        <span className="prog-code">{program.code}</span>
+                      </button>
+                    ))
+                  ) : (
+                    <div className="scholarship-suggestion-empty">
+                      Không tìm thấy ngành phù hợp. Vui lòng chọn ngành trong danh sách.
+                    </div>
+                  )}
                 </div>
+              )}
+            </div>
+          </div>
+
+          <hr className="scholarship-section-divider" />
+
+          {/* Step 2: Năm học & Số tín chỉ */}
+          <div className="scholarship-section-block">
+            <div className="scholarship-block-title-row">
+              <span className="scholarship-step-num">2</span>
+              <div>
+                <h2 className="scholarship-block-title">Năm học & Số tín chỉ</h2>
+                <p className="scholarship-block-subtitle">Chọn niên khóa và số tín chỉ dự kiến đăng ký trong học kỳ</p>
+              </div>
+            </div>
+
+            <div className="scholarship-inputs-grid">
+              {/* Năm học */}
+              <div className="scholarship-input-group">
+                <label className="scholarship-input-label">Năm học áp dụng</label>
+                <select
+                  className="tool-select"
+                  value={schoolYear}
+                  onChange={(e) => setSchoolYear(e.target.value as SchoolYear | '')}
+                  style={{ height: '38px', padding: '0 0.75rem', borderRadius: '8px', fontSize: '0.84rem' }}
+                >
+                  <option value="" disabled>Chọn năm học</option>
+                  {SCHOOL_YEARS.map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
+                </select>
               </div>
 
-              <div className="scholarship-search-box">
-                <Search size={16} className="scholarship-search-icon" />
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => {
-                    handleQueryChange(e.target.value);
-                    setFocusedIndex(-1);
-                  }}
-                  onKeyDown={handleKeyDown}
-                  className="scholarship-search-input"
-                  placeholder="VD: Công nghệ thông tin hoặc 7480201..."
-                />
-                {query && (
-                  <button
-                    type="button"
-                    onClick={clearQuery}
-                    className="scholarship-clear-btn"
-                    title="Xóa tìm kiếm"
-                  >
-                    <X size={14} />
+              {/* Số tín chỉ */}
+              <div className="scholarship-input-group">
+                <label className="scholarship-input-label">Số tín chỉ học kỳ</label>
+                <div className="number-input-group" style={{ height: '38px' }}>
+                  <button type="button" className="number-btn" onClick={handleDecrement} aria-label="Giảm">
+                    <Minus size={14} />
                   </button>
-                )}
-
-                {query && !selectedProgram && (
-                  <div className="scholarship-autocomplete-dropdown">
-                    {suggestions.length > 0 ? (
-                      suggestions.map((program, index) => (
-                        <button
-                          key={`${program.code}-${program.name}`}
-                          type="button"
-                          onClick={() => selectProgram(program)}
-                          className={`scholarship-suggestion-item ${
-                            index === focusedIndex ? 'focused' : ''
-                          }`}
-                        >
-                          <span className="prog-name">{program.name}</span>
-                          <span className="prog-code">{program.code}</span>
-                        </button>
-                      ))
-                    ) : (
-                      <div className="scholarship-suggestion-empty">
-                        Không tìm thấy ngành phù hợp. Vui lòng chọn ngành trong danh sách.
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <hr className="scholarship-section-divider" />
-
-            {/* Step 2: Năm học & Số tín chỉ */}
-            <div className="scholarship-section-block">
-              <div className="scholarship-block-title-row">
-                <span className="scholarship-step-num">2</span>
-                <div>
-                  <h2 className="scholarship-block-title">Năm học & Số tín chỉ</h2>
-                  <p className="scholarship-block-subtitle">Chọn niên khóa và số tín chỉ dự kiến đăng ký trong học kỳ</p>
-                </div>
-              </div>
-
-              <div className="scholarship-inputs-grid">
-                {/* Năm học */}
-                <div className="scholarship-input-group">
-                  <label className="scholarship-input-label">Năm học áp dụng</label>
-                  <select
-                    className="tool-select"
-                    value={schoolYear}
-                    onChange={(e) => setSchoolYear(e.target.value as SchoolYear | '')}
-                    style={{ height: '38px', padding: '0 0.75rem', borderRadius: '8px', fontSize: '0.84rem' }}
-                  >
-                    <option value="" disabled>Chọn năm học</option>
-                    {SCHOOL_YEARS.map((year) => (
-                      <option key={year} value={year}>{year}</option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Số tín chỉ */}
-                <div className="scholarship-input-group">
-                  <label className="scholarship-input-label">Số tín chỉ học kỳ</label>
-                  <div className="number-input-group" style={{ height: '38px' }}>
-                    <button type="button" className="number-btn" onClick={handleDecrement} aria-label="Giảm">
-                      <Minus size={14} />
-                    </button>
-                    <input
-                      type="number"
-                      min="0"
-                      step="1"
-                      value={credits}
-                      onChange={(e) => setCredits(e.target.value)}
-                      placeholder="15"
-                      style={{ fontSize: '0.88rem', padding: '0' }}
-                    />
-                    <button type="button" className="number-btn" onClick={handleIncrement} aria-label="Tăng">
-                      <Plus size={14} />
-                    </button>
-                  </div>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={credits}
+                    onChange={(e) => setCredits(e.target.value)}
+                    placeholder="15"
+                    style={{ fontSize: '0.88rem', padding: '0' }}
+                  />
+                  <button type="button" className="number-btn" onClick={handleIncrement} aria-label="Tăng">
+                    <Plus size={14} />
+                  </button>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Important Note Card */}
-          <div className="tuition-note-card">
-            <div className="tuition-note-title">
-              <span>📌 Lưu ý quan trọng về học phí</span>
-            </div>
-            <div>
-              Học phí học kỳ ước tính bằng học phí năm chia 2. Số tiền thực tế có thể thay đổi theo số tín chỉ đăng ký,
-              học phần cụ thể và thông báo thu học phí chính thức từ Nhà trường trong từng học kỳ.
-            </div>
-          </div>
-        </section>
-
-        {/* Right Column: Sticky Summary Card */}
+        {/* Result Card (order: 2 on mobile, grid-area: result on desktop) */}
         <aside className="tuition-summary-card">
-          {/* Desktop Only: Header & Symmetrical Stat Grid */}
-          <div className="tuition-desktop-only-result">
+          {/* Header & Symmetrical Stat Grid */}
+          <div className="tuition-summary-header-wrap">
             <div className="gpa-result-top">
               <div className="gpa-result-tag-wrap">
                 <span className="gpa-live-dot" />
@@ -333,7 +259,7 @@ export function TuitionPage() {
             </div>
           </div>
 
-          {/* Primary Amount Card */}
+          {/* Primary Amount Card (Formatted specifically for VND with no line wrapping) */}
           {selectedProgram && schoolYear ? (
             hasValidCredits ? (
               <div className="scholarship-amount-card">
@@ -392,6 +318,17 @@ export function TuitionPage() {
             </div>
           )}
         </aside>
+
+        {/* Important Note Card (order: 3 on mobile, grid-area: note on desktop) */}
+        <div className="tuition-note-card">
+          <div className="tuition-note-title">
+            <span>📌 Lưu ý quan trọng về học phí</span>
+          </div>
+          <div>
+            Học phí học kỳ ước tính bằng học phí năm chia 2. Số tiền thực tế có thể thay đổi theo số tín chỉ đăng ký,
+            học phần cụ thể và thông báo thu học phí chính thức từ Nhà trường trong từng học kỳ.
+          </div>
+        </div>
       </div>
     </div>
   );

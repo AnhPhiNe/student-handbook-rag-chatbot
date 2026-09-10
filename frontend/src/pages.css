@@ -8144,6 +8144,7 @@ input:checked + .slider:before { transform: translateX(20px); }
   font-weight: 800;
   color: var(--primary);
   line-height: 1.2;
+  white-space: nowrap;
 }
 
 .scholarship-amount-card .amount-formula {
@@ -8443,6 +8444,9 @@ input:checked + .slider:before { transform: translateX(20px); }
 .tuition-split-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-areas:
+    "form result"
+    "note result";
   gap: 1.5rem;
   align-items: start;
   margin-top: 1.25rem;
@@ -8451,26 +8455,8 @@ input:checked + .slider:before { transform: translateX(20px); }
   box-sizing: border-box;
 }
 
-@media (max-width: 960px) {
-  .tuition-split-layout {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 1.25rem !important;
-    width: 100% !important;
-    margin-top: 0.75rem;
-  }
-}
-
-.tuition-main-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-width: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .tuition-form-card {
+  grid-area: form;
   background: var(--card-bg, #ffffff);
   border: 1px solid var(--border-color);
   border-radius: 16px;
@@ -8489,6 +8475,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .tuition-summary-card {
+  grid-area: result;
   background: var(--card-bg, #ffffff);
   border: 1px solid var(--border-color);
   border-radius: 16px;
@@ -8508,29 +8495,15 @@ input:checked + .slider:before { transform: translateX(20px); }
   background: rgba(30, 41, 59, 0.7);
 }
 
-.tuition-desktop-only-result {
+.tuition-summary-header-wrap {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
 }
 
-.tuition-mobile-hero {
-  margin-bottom: 0.85rem;
-}
-
-@media (max-width: 960px) {
-  .tuition-mobile-hero {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0.65rem !important;
-  }
-  .tuition-desktop-only-result {
-    display: none !important;
-  }
-}
-
 /* Tuition Note Card */
 .tuition-note-card {
+  grid-area: note;
   padding: 0.85rem 1.1rem;
   border-radius: 12px;
   background: rgba(var(--primary-rgb), 0.04);
@@ -8598,10 +8571,33 @@ input:checked + .slider:before { transform: translateX(20px); }
   font-size: 0.88rem;
 }
 
+@media (max-width: 960px) {
+  .tuition-split-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    margin-top: 0.75rem;
+  }
+  .tuition-form-card {
+    order: 1;
+  }
+  .tuition-summary-card {
+    order: 2;
+    position: static !important;
+  }
+  .tuition-note-card {
+    order: 3;
+  }
+}
+
 /* ==================== Trang Kiểm tra điều kiện hạ bằng (Credits Page) ==================== */
 .credits-split-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-areas:
+    "form result"
+    "rule result";
   gap: 1.5rem;
   align-items: start;
   margin-top: 1.25rem;
@@ -8610,26 +8606,8 @@ input:checked + .slider:before { transform: translateX(20px); }
   box-sizing: border-box;
 }
 
-@media (max-width: 960px) {
-  .credits-split-layout {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 1.25rem !important;
-    width: 100% !important;
-    margin-top: 0.75rem;
-  }
-}
-
-.credits-main-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-width: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .credits-form-card {
+  grid-area: form;
   background: var(--card-bg, #ffffff);
   border: 1px solid var(--border-color);
   border-radius: 16px;
@@ -8648,6 +8626,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .credits-summary-card {
+  grid-area: result;
   background: var(--card-bg, #ffffff);
   border: 1px solid var(--border-color);
   border-radius: 16px;
@@ -8667,29 +8646,15 @@ input:checked + .slider:before { transform: translateX(20px); }
   background: rgba(30, 41, 59, 0.7);
 }
 
-.credits-desktop-only-result {
+.credits-summary-header-wrap {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
 }
 
-.credits-mobile-hero {
-  margin-bottom: 0.85rem;
-}
-
-@media (max-width: 960px) {
-  .credits-mobile-hero {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0.65rem !important;
-  }
-  .credits-desktop-only-result {
-    display: none !important;
-  }
-}
-
 /* Credits Rule Card */
 .credits-rule-card {
+  grid-area: rule;
   padding: 1rem 1.15rem;
   border-radius: 14px;
   background: var(--card-bg, #ffffff);
@@ -8732,6 +8697,26 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .credits-rule-list li strong {
   color: var(--text-primary);
+}
+
+@media (max-width: 960px) {
+  .credits-split-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    margin-top: 0.75rem;
+  }
+  .credits-form-card {
+    order: 1;
+  }
+  .credits-summary-card {
+    order: 2;
+    position: static !important;
+  }
+  .credits-rule-card {
+    order: 3;
+  }
 }
 
 /* Status Banner in Credits Summary */

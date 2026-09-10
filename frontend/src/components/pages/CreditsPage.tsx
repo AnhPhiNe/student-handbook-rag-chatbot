@@ -54,194 +54,105 @@ export function CreditsPage() {
         />
       </div>
 
-      {/* Top Mobile Hero Card (Mobile only <= 960px, pinned to top) */}
-      <section
-        className="gpa-mobile-hero-card credits-mobile-hero"
-        aria-label="Kết quả đánh giá điều kiện hạ bằng"
-      >
-        <div className="gpa-mobile-hero-top">
-          <div className="gpa-result-tag-wrap">
-            <span className="gpa-live-dot" aria-hidden="true" />
-            <span className="gpa-hero-tag">ĐIỀU KIỆN HẠ BẰNG</span>
-          </div>
-          {result && (
-            <span className={`gpa-status-pill ${result.status}`}>
-              {result.status === 'safe' && '🟢 An toàn'}
-              {result.status === 'near' && '🟡 Gần ngưỡng'}
-              {result.status === 'exceeded' && '🔴 Vượt ngưỡng 5%'}
-            </span>
-          )}
-        </div>
-
-        <div className="gpa-mobile-hero-middle">
-          <div className="gpa-hero-score">
-            <span className="gpa-score-num text-gradient">
-              {result ? result.threshold.toFixed(1) : '--'}
-            </span>
-            <span className="gpa-score-den">TC tối đa (5%)</span>
-          </div>
-
-          <div className="gpa-mobile-stats-chips">
-            <span className="gpa-stat-chip">
-              Đã rớt: <strong>{checked || 0}</strong> TC
-            </span>
-            <span className="gpa-stat-chip">
-              {result && result.remaining >= 0 ? 'Còn lại: ' : 'Vượt: '}
-              <strong className={result && result.remaining < 0 ? 'text-danger' : ''}>
-                {result ? Math.abs(result.remaining).toFixed(1) : '--'}
-              </strong>{' '}
-              TC
-            </span>
-            <span className="gpa-stat-chip">
-              Tổng CT: <strong>{total || '--'}</strong> TC
-            </span>
-          </div>
-        </div>
-
-        {/* Mini progress bar */}
-        <div className="gpa-progress-track">
-          <div
-            className={`gpa-progress-fill ${
-              result?.status === 'exceeded'
-                ? 'tier-critical'
-                : result?.status === 'near'
-                ? 'tier-average'
-                : 'tier-good'
-            }`}
-            style={{ width: `${ratioPercent}%` }}
-          />
-        </div>
-      </section>
-
-      {/* Main Split Layout */}
+      {/* Main Split Layout: Form -> Result Card -> Rules */}
       <div className="credits-split-layout">
-        {/* Left Column: Input Form Card & Rules */}
-        <section className="credits-main-column">
-          <div className="credits-form-card">
-            {/* Top Toolbar */}
-            <div className="gpa-result-top scholarship-card-top">
-              <div className="gpa-result-tag-wrap">
-                <span className="gpa-live-dot" />
-                <span className="gpa-result-tag">THÔNG TIN TÍN CHỈ CHƯƠNG TRÌNH</span>
-              </div>
-              <button
-                type="button"
-                className="tool-btn gpa-reset-btn gpa-btn-sm"
-                onClick={handleReset}
-                title="Khôi phục mặc định"
-              >
-                <RotateCcw size={13} />
-                <span>Làm mới</span>
-              </button>
+        {/* Form Card (order: 1 on mobile, grid-area: form on desktop) */}
+        <div className="credits-form-card">
+          {/* Top Toolbar */}
+          <div className="gpa-result-top scholarship-card-top">
+            <div className="gpa-result-tag-wrap">
+              <span className="gpa-live-dot" />
+              <span className="gpa-result-tag">THÔNG TIN TÍN CHỈ CHƯƠNG TRÌNH</span>
             </div>
-
-            {/* Inputs Grid */}
-            <div className="scholarship-inputs-grid">
-              {/* Tổng tín chỉ */}
-              <div className="scholarship-input-group">
-                <label className="scholarship-input-label">Tổng tín chỉ toàn khóa</label>
-                <div className="number-input-group" style={{ height: '38px' }}>
-                  <button
-                    type="button"
-                    className="number-btn"
-                    onClick={handleDecTotal}
-                    aria-label="Giảm tổng tín chỉ"
-                  >
-                    <Minus size={14} />
-                  </button>
-                  <input
-                    type="number"
-                    min="1"
-                    step="1"
-                    value={totalCredits}
-                    onChange={(e) => setTotalCredits(e.target.value)}
-                    placeholder="130"
-                    style={{ fontSize: '0.88rem', padding: '0' }}
-                  />
-                  <button
-                    type="button"
-                    className="number-btn"
-                    onClick={handleIncTotal}
-                    aria-label="Tăng tổng tín chỉ"
-                  >
-                    <Plus size={14} />
-                  </button>
-                </div>
-                <span className="scholarship-input-hint">Thường từ 120 - 150 tín chỉ tùy ngành</span>
-              </div>
-
-              {/* Số tín chỉ rớt */}
-              <div className="scholarship-input-group">
-                <label className="scholarship-input-label">Số tín chỉ đã rớt / học lại</label>
-                <div className="number-input-group" style={{ height: '38px' }}>
-                  <button
-                    type="button"
-                    className="number-btn"
-                    onClick={handleDecChecked}
-                    aria-label="Giảm tín chỉ rớt"
-                  >
-                    <Minus size={14} />
-                  </button>
-                  <input
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={checkedCredits}
-                    onChange={(e) => setCheckedCredits(e.target.value)}
-                    placeholder="0"
-                    style={{ fontSize: '0.88rem', padding: '0' }}
-                  />
-                  <button
-                    type="button"
-                    className="number-btn"
-                    onClick={handleIncChecked}
-                    aria-label="Tăng tín chỉ rớt"
-                  >
-                    <Plus size={14} />
-                  </button>
-                </div>
-                <span className="scholarship-input-hint">Chỉ tính tín chỉ các môn điểm F phải học lại</span>
-              </div>
-            </div>
-
-            <p className="tool-note" style={{ margin: 0 }}>
-              💡 Công cụ tự động áp dụng công thức <strong>5% tổng số tín chỉ</strong> chương trình theo Quy chế Đào tạo ĐHQG-HCM.
-            </p>
+            <button
+              type="button"
+              className="tool-btn gpa-reset-btn gpa-btn-sm"
+              onClick={handleReset}
+              title="Khôi phục mặc định"
+            >
+              <RotateCcw size={13} />
+              <span>Làm mới</span>
+            </button>
           </div>
 
-          {/* Rules Card: Khoản 3 Điều 15 */}
-          <div className="credits-rule-card">
-            <div className="credits-rule-title">
-              <BookOpen size={16} style={{ color: 'var(--primary)' }} />
-              <span>Quy định hạ bậc tốt nghiệp (Khoản 3 Điều 15)</span>
+          {/* Inputs Grid */}
+          <div className="scholarship-inputs-grid">
+            {/* Tổng tín chỉ */}
+            <div className="scholarship-input-group">
+              <label className="scholarship-input-label">Tổng tín chỉ toàn khóa</label>
+              <div className="number-input-group" style={{ height: '38px' }}>
+                <button
+                  type="button"
+                  className="number-btn"
+                  onClick={handleDecTotal}
+                  aria-label="Giảm tổng tín chỉ"
+                >
+                  <Minus size={14} />
+                </button>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={totalCredits}
+                  onChange={(e) => setTotalCredits(e.target.value)}
+                  placeholder="130"
+                  style={{ fontSize: '0.88rem', padding: '0' }}
+                />
+                <button
+                  type="button"
+                  className="number-btn"
+                  onClick={handleIncTotal}
+                  aria-label="Tăng tổng tín chỉ"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+              <span className="scholarship-input-hint">Thường từ 120 - 150 tín chỉ tùy ngành</span>
             </div>
-            <ul className="credits-rule-list">
-              <li>
-                <span style={{ color: '#ef4444', fontWeight: 'bold' }}>⚠️</span>
-                <div>
-                  <strong>Điều kiện bị giảm 1 mức xếp loại:</strong> Sinh viên thuộc một trong hai trường hợp: (1) Khối lượng tín chỉ học lại vượt quá <strong>5% tổng số tín chỉ</strong> toàn khóa; hoặc (2) Bị kỷ luật từ mức <strong>cảnh cáo</strong> trở lên trong thời gian học.
-                </div>
-              </li>
-              <li>
-                <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>🎯</span>
-                <div>
-                  <strong>Phạm vi áp dụng:</strong> Chỉ áp dụng đối với hạng <strong>Xuất sắc</strong> (hạ xuống Giỏi) và hạng <strong>Giỏi</strong> (hạ xuống Khá).
-                </div>
-              </li>
-              <li>
-                <span style={{ color: '#10b981', fontWeight: 'bold' }}>✅</span>
-                <div>
-                  <strong>Ngoại lệ an toàn:</strong> Nếu điểm tốt nghiệp xếp loại <strong>Khá, Trung bình hoặc Yếu</strong> thì sẽ <strong>không bao giờ bị hạ bậc</strong> dù vượt quá 5% số tín chỉ học lại.
-                </div>
-              </li>
-            </ul>
-          </div>
-        </section>
 
-        {/* Right Column: Sticky Summary Card */}
+            {/* Số tín chỉ rớt */}
+            <div className="scholarship-input-group">
+              <label className="scholarship-input-label">Số tín chỉ đã rớt / học lại</label>
+              <div className="number-input-group" style={{ height: '38px' }}>
+                <button
+                  type="button"
+                  className="number-btn"
+                  onClick={handleDecChecked}
+                  aria-label="Giảm tín chỉ rớt"
+                >
+                  <Minus size={14} />
+                </button>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={checkedCredits}
+                  onChange={(e) => setCheckedCredits(e.target.value)}
+                  placeholder="0"
+                  style={{ fontSize: '0.88rem', padding: '0' }}
+                />
+                <button
+                  type="button"
+                  className="number-btn"
+                  onClick={handleIncChecked}
+                  aria-label="Tăng tín chỉ rớt"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+              <span className="scholarship-input-hint">Chỉ tính tín chỉ các môn điểm F phải học lại</span>
+            </div>
+          </div>
+
+          <p className="tool-note" style={{ margin: 0 }}>
+            💡 Công cụ tự động áp dụng công thức <strong>5% tổng số tín chỉ</strong> chương trình theo Quy chế Đào tạo ĐHQG-HCM.
+          </p>
+        </div>
+
+        {/* Result Card (order: 2 on mobile, grid-area: result on desktop) */}
         <aside className="credits-summary-card">
-          {/* Desktop Only: Header & Symmetrical Stat Grid */}
-          <div className="credits-desktop-only-result">
+          {/* Header & Symmetrical Stat Grid */}
+          <div className="credits-summary-header-wrap">
             <div className="gpa-result-top">
               <div className="gpa-result-tag-wrap">
                 <span className="gpa-live-dot" />
@@ -283,7 +194,7 @@ export function CreditsPage() {
             </div>
           </div>
 
-          {/* Dynamic Status Evaluation Banner */}
+          {/* Dynamic Status Evaluation Banner (The card user loved in Image 3) */}
           {result && (
             <div className={`credits-status-banner ${result.status}`}>
               <span className="banner-label">TÌNH TRẠNG ĐÁNH GIÁ</span>
@@ -356,6 +267,34 @@ export function CreditsPage() {
             </p>
           </div>
         </aside>
+
+        {/* Rules Card: Khoản 3 Điều 15 (order: 3 on mobile, grid-area: rule on desktop) */}
+        <div className="credits-rule-card">
+          <div className="credits-rule-title">
+            <BookOpen size={16} style={{ color: 'var(--primary)' }} />
+            <span>Quy định hạ bậc tốt nghiệp (Khoản 3 Điều 15)</span>
+          </div>
+          <ul className="credits-rule-list">
+            <li>
+              <span style={{ color: '#ef4444', fontWeight: 'bold' }}>⚠️</span>
+              <div>
+                <strong>Điều kiện bị giảm 1 mức xếp loại:</strong> Sinh viên thuộc một trong hai trường hợp: (1) Khối lượng tín chỉ học lại vượt quá <strong>5% tổng số tín chỉ</strong> toàn khóa; hoặc (2) Bị kỷ luật từ mức <strong>cảnh cáo</strong> trở lên trong thời gian học.
+              </div>
+            </li>
+            <li>
+              <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>🎯</span>
+              <div>
+                <strong>Phạm vi áp dụng:</strong> Chỉ áp dụng đối với hạng <strong>Xuất sắc</strong> (hạ xuống Giỏi) và hạng <strong>Giỏi</strong> (hạ xuống Khá).
+              </div>
+            </li>
+            <li>
+              <span style={{ color: '#10b981', fontWeight: 'bold' }}>✅</span>
+              <div>
+                <strong>Ngoại lệ an toàn:</strong> Nếu điểm tốt nghiệp xếp loại <strong>Khá, Trung bình hoặc Yếu</strong> thì sẽ <strong>không bao giờ bị hạ bậc</strong> dù vượt quá 5% số tín chỉ học lại.
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );

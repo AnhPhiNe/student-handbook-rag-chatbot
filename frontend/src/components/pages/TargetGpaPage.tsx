@@ -254,7 +254,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
             <div className="gpa-action-buttons">
               <button
                 type="button"
-                className="tool-btn ghost gpa-btn-sm"
+                className="tool-btn gpa-reset-btn gpa-btn-sm"
                 onClick={handleReset}
                 title="Xóa trắng các thông tin đã nhập"
               >

@@ -1471,6 +1471,63 @@
   white-space: nowrap;
 }
 
+.gpa-action-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tool-btn.gpa-btn-sm {
+  padding: 0.42rem 0.85rem;
+  font-size: 0.82rem;
+  border-radius: 9px;
+  font-weight: 600;
+  gap: 0.4rem;
+}
+
+/* Reset / Clear Button Styling - High contrast, distinct rose/red accent */
+.tool-btn.gpa-reset-btn {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #dc2626;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.06);
+}
+
+.tool-btn.gpa-reset-btn:hover {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #b91c1c;
+  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.15);
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .tool-btn.gpa-reset-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='dark'] .tool-btn.gpa-reset-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.55);
+  color: #fca5a5;
+  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.25);
+}
+
+.tool-btn.ghost {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.tool-btn.ghost:hover {
+  background: var(--card-bg, #ffffff);
+  color: var(--text-primary);
+  border-color: var(--primary);
+}
+
 @media (max-width: 640px) {
   .gpa-toolbar {
     flex-direction: row;

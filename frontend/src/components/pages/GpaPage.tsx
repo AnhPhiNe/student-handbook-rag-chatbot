@@ -313,7 +313,7 @@ export function GpaPage({ cohort }: GpaPageProps) {
             <div className="gpa-action-buttons">
               <button
                 type="button"
-                className="tool-btn ghost gpa-btn-sm"
+                className="tool-btn gpa-reset-btn gpa-btn-sm"
                 onClick={resetCourses}
                 title="Xóa trắng toàn bộ môn học"
               >

@@ -166,10 +166,6 @@ export function CreditsPage() {
               </div>
             </div>
           </div>
-
-          <p className="tool-note" style={{ margin: 0 }}>
-            💡 Công cụ tự động áp dụng công thức <strong>5% tổng số tín chỉ</strong> chương trình theo Quy chế Đào tạo ĐHQG-HCM.
-          </p>
         </div>
 
         {/* Result Card (order: 2 on mobile, grid-area: result on desktop) */}
@@ -181,13 +177,6 @@ export function CreditsPage() {
                 <span className="gpa-live-dot" />
                 <span className="gpa-result-tag">ĐÁNH GIÁ ĐIỀU KIỆN HẠ BẰNG</span>
               </div>
-              {result && (
-                <span className={`gpa-status-pill ${result.status}`}>
-                  {result.status === 'safe' && '🟢 An toàn'}
-                  {result.status === 'near' && '🟡 Gần ngưỡng'}
-                  {result.status === 'exceeded' && '🔴 Vượt ngưỡng 5%'}
-                </span>
-              )}
             </div>
 
             {/* Symmetrical Stat Grid */}
@@ -274,21 +263,6 @@ export function CreditsPage() {
               </div>
             </div>
           )}
-
-          {/* Advice Box */}
-          <div className="scholarship-advice-box">
-            <div className="scholarship-advice-title">
-              <ShieldCheck size={16} />
-              <span>Gợi ý & Định hướng</span>
-            </div>
-            <p className="scholarship-advice-desc">
-              {result?.status === 'safe'
-                ? 'Số tín chỉ học lại đang nằm trong mức an toàn cho phép. Cứ yên tâm duy trì nhịp học ổn định để hướng tới tấm bằng loại Xuất sắc hoặc Giỏi!'
-                : result?.status === 'near'
-                ? 'Bạn chỉ còn cách ngưỡng tối đa vài tín chỉ (tương đương 1-2 môn). Hãy cân nhắc số lượng môn đăng ký vừa sức ở học kỳ tới để tránh rớt thêm môn.'
-                : 'Bạn đã vượt quá 5% số tín chỉ của chương trình. Nếu điểm CPA của bạn xếp loại Xuất sắc sẽ nhận bằng Giỏi, hoặc Giỏi sẽ nhận bằng Khá. Bằng xếp loại Khá sẽ không bị ảnh hưởng.'}
-            </p>
-          </div>
         </aside>
 
         {/* Rules Card: Khoản 3 Điều 15 (order: 3 on mobile, grid-area: rule on desktop) */}

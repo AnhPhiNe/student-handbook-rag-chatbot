@@ -7410,28 +7410,41 @@ input:checked + .slider:before { transform: translateX(20px); }
   font-weight: 600;
 }
 
-/* Subtle Actionable Tip Box */
-.course-target-tip-box {
+/* Sleek Minimal Footer Reference Links */
+.course-target-footer-links {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem 0.75rem;
-  border-radius: 9px;
-  background: rgba(var(--primary-rgb), 0.05);
-  border: 1px solid rgba(var(--primary-rgb), 0.15);
-  margin-top: 0.65rem;
-  font-size: 0.74rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
+  justify-content: center;
+  gap: 0.6rem;
+  padding-top: 0.65rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid var(--border-color);
 }
 
-.course-target-tip-icon {
-  font-size: 0.85rem;
-  flex-shrink: 0;
+.course-target-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.course-target-tip-text {
-  flex: 1;
+.course-target-link-btn:hover {
+  color: var(--primary);
+  background: rgba(var(--primary-rgb), 0.08);
+}
+
+.course-target-link-dot {
+  color: var(--border-color);
+  font-size: 0.7rem;
+  user-select: none;
 }
 
 @media (max-width: 640px) {

@@ -528,40 +528,27 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               ))}
             </div>
 
-            {/* Quick Actionable Tip Box */}
-            <div className="course-target-tip-box">
-              <span className="course-target-tip-icon">💡</span>
-              <span className="course-target-tip-text">
-                {result.passTarget?.status === 'achieved'
-                  ? 'Bạn đã tích lũy đủ điểm để qua môn học phần này!'
-                  : result.passTarget?.requiredScore !== null && result.passTarget?.status === 'possible'
-                  ? `Cần thi đạt tối thiểu ${result.passTarget.requiredScore.toFixed(2)} điểm để qua môn (${result.lowestPassingLetter}).`
-                  : 'Nhập điểm quá trình để tính toán điểm thi cần đạt.'}
-              </span>
-            </div>
-
-            {/* Footer Reference Modal Buttons */}
-            <div className="gpa-card-footer">
-              <div className="gpa-action-pills-row">
-                <button
-                  type="button"
-                  className="gpa-footer-pill-btn"
-                  onClick={() => setReferenceModalTab('rules')}
-                  title="Xem quy chế tính điểm học phần"
-                >
-                  <Info size={14} />
-                  <span>Quy chế điểm</span>
-                </button>
-                <button
-                  type="button"
-                  className="gpa-footer-pill-btn"
-                  onClick={() => setReferenceModalTab('scale')}
-                  title={`Tra cứu bảng quy đổi điểm (${cohort})`}
-                >
-                  <GraduationCap size={15} />
-                  <span>Bảng quy đổi điểm</span>
-                </button>
-              </div>
+            {/* Minimal Inline Reference Links */}
+            <div className="course-target-footer-links">
+              <button
+                type="button"
+                className="course-target-link-btn"
+                onClick={() => setReferenceModalTab('rules')}
+                title="Xem quy chế tính điểm học phần"
+              >
+                <Info size={13} />
+                <span>Quy chế điểm</span>
+              </button>
+              <span className="course-target-link-dot">•</span>
+              <button
+                type="button"
+                className="course-target-link-btn"
+                onClick={() => setReferenceModalTab('scale')}
+                title={`Tra cứu bảng quy đổi điểm (${cohort})`}
+              >
+                <GraduationCap size={13} />
+                <span>Bảng quy đổi điểm</span>
+              </button>
             </div>
           </div>
         </aside>

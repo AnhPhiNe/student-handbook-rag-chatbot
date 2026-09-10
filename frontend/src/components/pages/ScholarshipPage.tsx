@@ -155,23 +155,21 @@ export function ScholarshipPage() {
 
   return (
     <div className="page-container tool-page">
-      {/* Page Header */}
-      <header className="gpa-page-header">
-        <div className="gpa-page-header-text">
-          <h1 className="gpa-page-title">
-            <Award className="gpa-page-title-icon" size={32} />
-            Tính điểm học bổng
-          </h1>
-          <p className="gpa-page-subtitle">
-            Tính điểm xét học bổng khuyến khích học tập và ước tính số tiền theo quy chế HCMUE.
-          </p>
-          <PageContextBadges
-            schoolYear={schoolYear || undefined}
-            source="Công thức học bổng và bảng học phí"
-            advisory
-          />
-        </div>
-      </header>
+      {/* Header with Title & Badges */}
+      <div className="page-header">
+        <h1 className="page-title-with-icon">
+          <Award aria-hidden="true" />
+          <span>Tính điểm học bổng</span>
+        </h1>
+        <p>
+          Tính điểm xét học bổng khuyến khích học tập và ước tính số tiền theo quy chế HCMUE.
+        </p>
+        <PageContextBadges
+          schoolYear={schoolYear || undefined}
+          source="Công thức học bổng & bảng học phí"
+          advisory
+        />
+      </div>
 
       {/* Main Split Layout */}
       <div className="scholarship-split-layout">
@@ -212,7 +210,10 @@ export function ScholarshipPage() {
                 {/* Điểm học tập */}
                 <div className="scholarship-input-group">
                   <label className="scholarship-input-label">
-                    <span>Điểm học tập (GPA)</span>
+                    <span>
+                      <span className="scholarship-label-full">Điểm học tập (GPA)</span>
+                      <span className="scholarship-label-short">Điểm GPA</span>
+                    </span>
                     <span className="scholarship-sub-label weight-tag">80%</span>
                   </label>
                   <div className="course-target-input-wrap">
@@ -237,7 +238,10 @@ export function ScholarshipPage() {
                 {/* Điểm rèn luyện */}
                 <div className="scholarship-input-group">
                   <label className="scholarship-input-label">
-                    <span>Điểm rèn luyện (ĐRL)</span>
+                    <span>
+                      <span className="scholarship-label-full">Điểm rèn luyện (ĐRL)</span>
+                      <span className="scholarship-label-short">Điểm ĐRL</span>
+                    </span>
                     <span className="scholarship-sub-label weight-tag">20%</span>
                   </label>
                   <div className="course-target-input-wrap">
@@ -292,7 +296,7 @@ export function ScholarshipPage() {
                       setFocusedIndex(-1);
                     }}
                     onKeyDown={handleKeyDown}
-                    placeholder="Nhập tên ngành hoặc mã ngành (VD: Sư phạm Toán, CNTT)..."
+                    placeholder="Tìm theo tên hoặc mã ngành (VD: Toán, CNTT)..."
                   />
                   {query && (
                     <button
@@ -335,7 +339,10 @@ export function ScholarshipPage() {
               <div className="scholarship-inputs-grid">
                 <div className="scholarship-input-group">
                   <label className="scholarship-input-label">
-                    <span>Năm học áp dụng</span>
+                    <span>
+                      <span className="scholarship-label-full">Năm học áp dụng</span>
+                      <span className="scholarship-label-short">Năm học</span>
+                    </span>
                   </label>
                   <select
                     className="course-target-select"
@@ -352,7 +359,10 @@ export function ScholarshipPage() {
 
                 <div className="scholarship-input-group">
                   <label className="scholarship-input-label">
-                    <span>Số tín chỉ học kỳ</span>
+                    <span>
+                      <span className="scholarship-label-full">Số tín chỉ học kỳ</span>
+                      <span className="scholarship-label-short">Số tín chỉ</span>
+                    </span>
                     <div className="scholarship-label-badges">
                       <span className="scholarship-highlight-badge">
                         ≥ 15 TC

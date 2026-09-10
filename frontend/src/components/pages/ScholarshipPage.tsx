@@ -5,6 +5,7 @@ import {
   Search,
   X,
   Check,
+  AlertTriangle,
 } from 'lucide-react';
 import {
   calculateScholarshipScore,
@@ -172,218 +173,228 @@ export function ScholarshipPage() {
       {/* Main Split Layout */}
       <div className="scholarship-split-layout">
         {/* Left Column: Input Form */}
+        {/* Left Column: Input Form Card */}
         <section className="scholarship-main-column">
-          {/* Controls Bar: Mode label & action buttons */}
-          <div className="gpa-toolbar scholarship-toolbar">
-            <div className="gpa-mode-control">
-              <span className="gpa-mode-label">Thông số xét học bổng:</span>
-            </div>
-
-            <div className="gpa-action-buttons">
+          <div className="scholarship-form-card">
+            {/* Unified Top Header matching Right Card */}
+            <div className="gpa-result-top scholarship-card-top">
+              <div className="gpa-result-tag-wrap">
+                <span className="gpa-live-dot" />
+                <span className="gpa-result-tag">THÔNG TIN XÉT HỌC BỔNG</span>
+              </div>
               <button
                 type="button"
                 className="tool-btn gpa-reset-btn gpa-btn-sm"
                 onClick={handleReset}
                 title="Khôi phục mặc định"
               >
-                <RotateCcw size={14} />
+                <RotateCcw size={13} />
                 <span>Làm mới</span>
               </button>
             </div>
-          </div>
 
-          {/* Card 1: Điểm học tập & Rèn luyện */}
-          <div className="scholarship-form-card">
-            <div className="scholarship-card-title-row">
-              <span className="scholarship-step-num">1</span>
-              <div>
-                <h2 className="scholarship-card-title">Điểm xét học bổng</h2>
-                <p className="scholarship-card-subtitle">
-                  Tỷ lệ: 80% Điểm học tập + 20% Điểm rèn luyện quy đổi
-                </p>
-              </div>
-            </div>
-
-            <div className="scholarship-inputs-grid">
-              {/* Điểm học tập */}
-              <div className="scholarship-input-group">
-                <label className="scholarship-input-label">
-                  Điểm học tập (GPA)
-                  <span className="scholarship-sub-label weight-tag">80%</span>
-                </label>
-                <div className="course-target-input-wrap">
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    value={academicScore}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(',', '.');
-                      if (val === '' || /^[0-9.]*$/.test(val)) setAcademicScore(val);
-                    }}
-                    className={`course-target-input ${isAcademicInvalid ? 'input-error' : ''}`}
-                    placeholder="VD: 3.50"
-                  />
-                  <span className="course-target-affix">/ 4.0</span>
+            {/* Section 1: Điểm học tập & Rèn luyện */}
+            <div className="scholarship-section-block">
+              <div className="scholarship-block-title-row">
+                <span className="scholarship-step-num">1</span>
+                <div>
+                  <h2 className="scholarship-block-title">Điểm học tập & Điểm rèn luyện</h2>
+                  <p className="scholarship-block-subtitle">
+                    Tỷ lệ xét: 80% Điểm học tập (GPA) + 20% Điểm rèn luyện quy đổi
+                  </p>
                 </div>
-                {isAcademicInvalid && (
-                  <span className="scholarship-field-error">Điểm phải từ 0.0 đến 4.0</span>
-                )}
               </div>
 
-              {/* Điểm rèn luyện */}
-              <div className="scholarship-input-group">
-                <label className="scholarship-input-label">
-                  Điểm rèn luyện (ĐRL)
-                  <span className="scholarship-sub-label weight-tag">20%</span>
-                </label>
-                <div className="course-target-input-wrap">
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    value={conductScore}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(',', '.');
-                      if (val === '' || /^[0-9]*$/.test(val)) setConductScore(val);
-                    }}
-                    className={`course-target-input ${isConductInvalid ? 'input-error' : ''}`}
-                    placeholder="VD: 85"
-                  />
-                  <span className="course-target-affix">/ 100</span>
-                </div>
-                {isConductInvalid && (
-                  <span className="scholarship-field-error">Điểm rèn luyện từ 0 đến 100</span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Giá trị học bổng (Ngành học & Tín chỉ) */}
-          <div className="scholarship-form-card">
-            <div className="scholarship-card-title-row">
-              <span className="scholarship-step-num">2</span>
-              <div>
-                <h2 className="scholarship-card-title">Ước tính số tiền học bổng</h2>
-                <p className="scholarship-card-subtitle">
-                  Học bổng = Đơn giá tín chỉ × Số tín chỉ × Hệ số mức thưởng
-                </p>
-              </div>
-            </div>
-
-            {/* Autocomplete ngành học */}
-            <div className="scholarship-input-group">
-              <label className="scholarship-input-label">
-                Tìm ngành học để tra đơn giá tín chỉ
-              </label>
-              <div className="scholarship-search-box">
-                <Search size={16} className="scholarship-search-icon" />
-                <input
-                  type="text"
-                  className="scholarship-search-input"
-                  value={query}
-                  onChange={(e) => {
-                    handleQueryChange(e.target.value);
-                    setFocusedIndex(-1);
-                  }}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Nhập tên ngành hoặc mã ngành (VD: Sư phạm Toán, CNTT)..."
-                />
-                {query && (
-                  <button
-                    type="button"
-                    className="scholarship-clear-btn"
-                    onClick={clearProgram}
-                    aria-label="Xóa tìm kiếm"
-                  >
-                    <X size={14} />
-                  </button>
-                )}
-              </div>
-
-              {query && !selectedProgram && (
-                <div className="scholarship-autocomplete-dropdown">
-                  {suggestions.length > 0 ? (
-                    suggestions.map((prog, idx) => (
-                      <button
-                        key={`${prog.code}-${prog.name}`}
-                        type="button"
-                        className={`scholarship-suggestion-item ${
-                          idx === focusedIndex ? 'focused' : ''
-                        }`}
-                        onClick={() => selectProgram(prog)}
-                      >
-                        <span className="prog-name">{prog.name}</span>
-                        <span className="prog-code">{prog.code}</span>
-                      </button>
-                    ))
-                  ) : (
-                    <div className="scholarship-suggestion-empty">
-                      Không tìm thấy ngành phù hợp. Vui lòng chọn ngành trong danh sách gợi ý.
-                    </div>
+              <div className="scholarship-inputs-grid">
+                {/* Điểm học tập */}
+                <div className="scholarship-input-group">
+                  <label className="scholarship-input-label">
+                    <span>Điểm học tập (GPA)</span>
+                    <span className="scholarship-sub-label weight-tag">80%</span>
+                  </label>
+                  <div className="course-target-input-wrap">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={academicScore}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(',', '.');
+                        if (val === '' || /^[0-9.]*$/.test(val)) setAcademicScore(val);
+                      }}
+                      className={`course-target-input ${isAcademicInvalid ? 'input-error' : ''}`}
+                      placeholder="VD: 3.50"
+                    />
+                    <span className="course-target-affix">/ 4.0</span>
+                  </div>
+                  {isAcademicInvalid && (
+                    <span className="scholarship-field-error">Điểm phải từ 0.0 đến 4.0</span>
                   )}
+                </div>
+
+                {/* Điểm rèn luyện */}
+                <div className="scholarship-input-group">
+                  <label className="scholarship-input-label">
+                    <span>Điểm rèn luyện (ĐRL)</span>
+                    <span className="scholarship-sub-label weight-tag">20%</span>
+                  </label>
+                  <div className="course-target-input-wrap">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={conductScore}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(',', '.');
+                        if (val === '' || /^[0-9]*$/.test(val)) setConductScore(val);
+                      }}
+                      className={`course-target-input ${isConductInvalid ? 'input-error' : ''}`}
+                      placeholder="VD: 85"
+                    />
+                    <span className="course-target-affix">/ 100</span>
+                  </div>
+                  {isConductInvalid && (
+                    <span className="scholarship-field-error">Điểm rèn luyện từ 0 đến 100</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Section Divider */}
+            <hr className="scholarship-section-divider" />
+
+            {/* Section 2: Ước tính số tiền học bổng */}
+            <div className="scholarship-section-block">
+              <div className="scholarship-block-title-row">
+                <span className="scholarship-step-num">2</span>
+                <div>
+                  <h2 className="scholarship-block-title">Ước tính số tiền học bổng</h2>
+                  <p className="scholarship-block-subtitle">
+                    Học bổng = Đơn giá tín chỉ × Số tín chỉ × Hệ số mức thưởng
+                  </p>
+                </div>
+              </div>
+
+              {/* Autocomplete ngành học */}
+              <div className="scholarship-input-group">
+                <label className="scholarship-input-label">
+                  <span>Tìm ngành học để tra đơn giá tín chỉ</span>
+                </label>
+                <div className="scholarship-search-box">
+                  <Search size={16} className="scholarship-search-icon" />
+                  <input
+                    type="text"
+                    className="scholarship-search-input"
+                    value={query}
+                    onChange={(e) => {
+                      handleQueryChange(e.target.value);
+                      setFocusedIndex(-1);
+                    }}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Nhập tên ngành hoặc mã ngành (VD: Sư phạm Toán, CNTT)..."
+                  />
+                  {query && (
+                    <button
+                      type="button"
+                      className="scholarship-clear-btn"
+                      onClick={clearProgram}
+                      aria-label="Xóa tìm kiếm"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+
+                {query && !selectedProgram && (
+                  <div className="scholarship-autocomplete-dropdown">
+                    {suggestions.length > 0 ? (
+                      suggestions.map((prog, idx) => (
+                        <button
+                          key={`${prog.code}-${prog.name}`}
+                          type="button"
+                          className={`scholarship-suggestion-item ${
+                            idx === focusedIndex ? 'focused' : ''
+                          }`}
+                          onClick={() => selectProgram(prog)}
+                        >
+                          <span className="prog-name">{prog.name}</span>
+                          <span className="prog-code">{prog.code}</span>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="scholarship-suggestion-empty">
+                        Không tìm thấy ngành phù hợp. Vui lòng chọn ngành trong danh sách gợi ý.
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Form grid: Năm học & Tín chỉ */}
+              <div className="scholarship-inputs-grid">
+                <div className="scholarship-input-group">
+                  <label className="scholarship-input-label">
+                    <span>Năm học áp dụng</span>
+                  </label>
+                  <select
+                    className="course-target-select"
+                    value={schoolYear}
+                    onChange={(e) => setSchoolYear(e.target.value as SchoolYear)}
+                  >
+                    {SCHOOL_YEARS.map((y) => (
+                      <option key={y} value={y}>
+                        Năm học {y}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="scholarship-input-group">
+                  <label className="scholarship-input-label">
+                    <span>Số tín chỉ học kỳ</span>
+                    <span className="scholarship-highlight-badge">
+                      ≥ 15 TC
+                    </span>
+                  </label>
+                  <div className="course-target-input-wrap">
+                    <input
+                      type="number"
+                      min="1"
+                      value={credits}
+                      onChange={(e) => setCredits(e.target.value)}
+                      className={`course-target-input ${
+                        isCreditsInvalid || isCreditsBelowMinimum ? 'input-warning' : ''
+                      }`}
+                      placeholder="15"
+                    />
+                    <span className="course-target-affix">TC</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Full-width Credit Rule Note (No vertical imbalance!) */}
+              {isCreditsBelowMinimum ? (
+                <div className="scholarship-credits-rule-note warning">
+                  <AlertTriangle size={14} />
+                  <span>Dưới 15 tín chỉ: Không đủ điều kiện xét học bổng (trừ HK tốt nghiệp tối thiểu 6 TC).</span>
+                </div>
+              ) : (
+                <div className="scholarship-credits-rule-note">
+                  <span className="credits-rule-dot">•</span>
+                  <span>Đăng ký tối thiểu 15 TC/kỳ (HK cuối: 6 TC) & không có môn điểm F.</span>
+                </div>
+              )}
+
+              {/* Tuition Rate Display Strip */}
+              {selectedProgram && schoolYear && (
+                <div className="scholarship-tuition-strip">
+                  <span className="strip-label">Đơn giá 1 tín chỉ ({schoolYear}):</span>
+                  <strong className="strip-value">
+                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+                      tuitionFee
+                    )}
+                  </strong>
                 </div>
               )}
             </div>
-
-            {/* Form grid: Năm học & Tín chỉ */}
-            <div className="scholarship-inputs-grid">
-              <div className="scholarship-input-group">
-                <label className="scholarship-input-label">Năm học áp dụng</label>
-                <select
-                  className="course-target-select"
-                  value={schoolYear}
-                  onChange={(e) => setSchoolYear(e.target.value as SchoolYear)}
-                >
-                  {SCHOOL_YEARS.map((y) => (
-                    <option key={y} value={y}>
-                      Năm học {y}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="scholarship-input-group">
-                <label className="scholarship-input-label">
-                  Số tín chỉ học kỳ
-                  <span className="scholarship-highlight-badge">
-                    ⚡ Tối thiểu 15 TC
-                  </span>
-                </label>
-                <div className="course-target-input-wrap">
-                  <input
-                    type="number"
-                    min="1"
-                    value={credits}
-                    onChange={(e) => setCredits(e.target.value)}
-                    className={`course-target-input ${
-                      isCreditsInvalid || isCreditsBelowMinimum ? 'input-warning' : ''
-                    }`}
-                    placeholder="15"
-                  />
-                  <span className="course-target-affix">TC</span>
-                </div>
-                {isCreditsBelowMinimum ? (
-                  <span className="scholarship-field-warning">
-                    ⚠️ Dưới 15 tín chỉ: Không đủ điều kiện xét học bổng (trừ HK tốt nghiệp tối thiểu 6 TC).
-                  </span>
-                ) : (
-                  <span className="scholarship-field-hint-text">
-                    Đăng ký tối thiểu 15 TC/kỳ (HK cuối: 6 TC) & không có môn điểm F.
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Tuition Rate Display Strip */}
-            {selectedProgram && schoolYear && (
-              <div className="scholarship-tuition-strip">
-                <span className="strip-label">Đơn giá 1 tín chỉ ({schoolYear}):</span>
-                <strong className="strip-value">
-                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
-                    tuitionFee
-                  )}
-                </strong>
-              </div>
-            )}
           </div>
         </section>
 

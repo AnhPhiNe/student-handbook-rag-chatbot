@@ -42,13 +42,13 @@ def main():
     from src.common.env_loader import load_project_env
     load_project_env()
     os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
-    from src.evaluation.dataset import _validate_common, _validate_deterministic_v9_contract
-    from src.evaluation.suites import evaluate_deterministic_v2
+    from src.evaluation.dataset import _validate_common, validate_deterministic_case
+    from src.evaluation.suites import evaluate_deterministic
     cases = json.loads((BUNDLE / "deterministic_tool_cases.json").read_text(encoding="utf-8"))
     errors = []
     for case in cases:
         _validate_common(case, "deterministic", errors)
-        _validate_deterministic_v9_contract(case, errors)
+        validate_deterministic_case(case, errors)
     if errors or len(cases) != 135:
         raise ValueError(errors or "Expected 135 cases")
     expected = {"QDRANT_COLLECTION_NAME": "student_handbook_semantic_v33",
@@ -88,7 +88,7 @@ def main():
                 "response_cache": "not used: retrieval-only deterministic execution"}
     (output / "run_snapshot.json").write_text(json.dumps(snapshot, indent=2), encoding="utf-8")
     print(f"Output: {output}", flush=True)
-    report = evaluate_deterministic_v2(cases, evaluation_contract="query-plan-grounded-outcome-v9",
+    report = evaluate_deterministic(cases, evaluation_contract="query-plan-grounded-outcome-v9",
                                       checkpoint_path=output / "checkpoint.json", resume=False,
                                       checkpoint_context=snapshot)
     report["run_snapshot"] = snapshot

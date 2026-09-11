@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from scripts.prepare_official_eval import ROOT, BUNDLE
-from src.evaluation.suites import evaluate_deterministic_v2
+from src.evaluation.suites import evaluate_deterministic
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
             # per-task clarification. No status is fabricated from gold.
             return result
 
-    report = evaluate_deterministic_v2(cases, pipeline_factory=SavedExecution,
+    report = evaluate_deterministic(cases, pipeline_factory=SavedExecution,
                                      evaluation_contract="query-plan-grounded-outcome-v9")
     for row, previous in zip(report["cases"], rows):
         row["latency_ms"] = previous["latency_ms"]

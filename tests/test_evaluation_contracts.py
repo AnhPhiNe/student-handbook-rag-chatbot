@@ -50,47 +50,11 @@ def test_scoring_grade_four_heading_accepts_classification_range_schema() -> Non
     )
 
 
-def test_v6_deterministic_gold_contract_requires_plan_and_tasks() -> None:
-    errors: list[str] = []
-    dataset._validate_deterministic_contract(
-        {"id": "missing", "contract_version": "query-plan-target-holdout-v6"},
-        errors,
-    )
-    assert "missing: expected_plan must be an object" in errors
-
-    errors = []
-    dataset._validate_deterministic_contract(
-        {
-            "id": "valid",
-            "contract_version": "query-plan-target-holdout-v6",
-            "expected_plan": {
-                "task_count": 1,
-                "allowed_modes": ["rag"],
-                "required_modes": ["rag"],
-                "mode_counts": {"rag": 1},
-                "lookup_types": [],
-                "cohorts": ["K51"],
-                "out_of_domain": False,
-                "needs_clarification": False,
-            },
-            "expected_tasks": [
-                {
-                    "mode": "rag",
-                    "intent": "open_question",
-                    "cohorts": ["K51"],
-                }
-            ],
-        },
-        errors,
-    )
-    assert errors == []
-
-
-def test_v7_outcome_contract_accepts_equivalent_task_shape() -> None:
+def test_outcome_contract_accepts_equivalent_task_shape() -> None:
     errors: list[str] = []
     case = {
         "id": "v7-equivalent",
-        "contract_version": "query-plan-outcome-equivalent-v7",
+        "contract_version": "query-plan-grounded-outcome-v9",
         "accepted_outcomes": [
             {
                 "name": "structured-evidence",
@@ -105,15 +69,16 @@ def test_v7_outcome_contract_accepts_equivalent_task_shape() -> None:
                         "slot_value_alternatives": {
                             "score_or_grade": ["B+", "b+"]
                         },
+                        "fact_lock_applicable": False,
                     }
                 ],
                 "structured_evidence": "required",
             }
         ],
     }
-    dataset._validate_deterministic_v7_contract(case, errors)
+    dataset.validate_deterministic_case(case, errors)
     assert errors == []
-    assert suites._v7_required_tasks_match(
+    assert suites._required_tasks_match(
         case["accepted_outcomes"][0]["required_tasks"],
         [
             {
@@ -128,7 +93,7 @@ def test_v7_outcome_contract_accepts_equivalent_task_shape() -> None:
     )
 
 
-def test_v7_outcome_contract_allows_task_level_clarification() -> None:
+def test_outcome_contract_allows_task_level_clarification() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):
             return {
@@ -159,7 +124,7 @@ def test_v7_outcome_contract_allows_task_level_clarification() -> None:
         "query": "TOEIC bốn kỹ năng nhưng thiếu điểm Viết",
         "cohort": "K51",
         "expected_llm_called": True,
-        "contract_version": "query-plan-outcome-equivalent-v7",
+        "contract_version": "query-plan-grounded-outcome-v9",
         "accepted_outcomes": [
             {
                 "name": "task-level-clarification",
@@ -170,16 +135,16 @@ def test_v7_outcome_contract_allows_task_level_clarification() -> None:
             }
         ],
     }
-    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
     assert report["summary"]["passed"] == 1
     assert report["cases"][0]["matched_outcome"] == "task-level-clarification"
 
 
-def test_v8_contract_validates_grounded_execution_assertions() -> None:
+def test_contract_validates_grounded_execution_assertions() -> None:
     errors: list[str] = []
     case = {
         "id": "v8-grounded",
-        "contract_version": "query-plan-grounded-outcome-v8",
+        "contract_version": "query-plan-grounded-outcome-v9",
         "accepted_outcomes": [
             {
                 "name": "grounded-structured-answer",
@@ -197,21 +162,22 @@ def test_v8_contract_validates_grounded_execution_assertions() -> None:
                             "grade_4": 3.5,
                         },
                         "resolved_result_required": True,
+                        "fact_lock_applicable": True,
                     }
                 ],
                 "structured_evidence": "required",
             }
         ],
     }
-    dataset._validate_deterministic_v8_contract(case, errors)
+    dataset.validate_deterministic_case(case, errors)
     assert errors == []
 
     case["accepted_outcomes"][0]["required_tasks"][0]["expected_source_ids"] = []
-    dataset._validate_deterministic_v8_contract(case, errors)
+    dataset.validate_deterministic_case(case, errors)
     assert any("expected_source_ids must be a non-empty string list" in error for error in errors)
 
 
-def test_v9_contract_requires_explicit_fact_lock_scope() -> None:
+def test_contract_requires_explicit_fact_lock_scope() -> None:
     errors: list[str] = []
     task = {
         "mode": "structured",
@@ -235,15 +201,15 @@ def test_v9_contract_requires_explicit_fact_lock_scope() -> None:
         ],
     }
 
-    dataset._validate_deterministic_v9_contract(case, errors)
+    dataset.validate_deterministic_case(case, errors)
     assert errors == []
 
     task["expected_resolved_fields"] = {"unit_name": "Phòng Đào tạo"}
-    dataset._validate_deterministic_v9_contract(case, errors)
+    dataset.validate_deterministic_case(case, errors)
     assert any("must not assert resolved_result" in error for error in errors)
 
 
-def test_v9_evidence_only_task_reports_resolved_result_as_na() -> None:
+def test_evidence_only_task_reports_resolved_result_as_na() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):
             evidence = {
@@ -300,7 +266,7 @@ def test_v9_evidence_only_task_reports_resolved_result_as_na() -> None:
         ],
     }
 
-    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
     row = report["cases"][0]
     assert row["passed"] is True
     assert row["structured_row_correct"] is True
@@ -308,7 +274,7 @@ def test_v9_evidence_only_task_reports_resolved_result_as_na() -> None:
     assert report["summary"]["assertion_support"]["resolved_result"] == 0
 
 
-def test_v8_evaluator_checks_source_row_and_resolved_result() -> None:
+def test_evaluator_checks_source_row_and_resolved_result() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):
             evidence = {
@@ -344,7 +310,7 @@ def test_v8_evaluator_checks_source_row_and_resolved_result() -> None:
         "id": "v8-grounded",
         "query": "B+ đổi sang hệ 4 là bao nhiêu?",
         "cohort": "K51",
-        "contract_version": "query-plan-grounded-outcome-v8",
+        "contract_version": "query-plan-grounded-outcome-v9",
         "accepted_outcomes": [
             {
                 "name": "grounded-structured-answer",
@@ -366,7 +332,7 @@ def test_v8_evaluator_checks_source_row_and_resolved_result() -> None:
             }
         ],
     }
-    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
     row = report["cases"][0]
     assert row["passed"] is True
     assert row["structured_source_correct"] is True
@@ -375,7 +341,7 @@ def test_v8_evaluator_checks_source_row_and_resolved_result() -> None:
     assert report["summary"]["assertion_support"]["resolved_result"] == 1
 
 
-def test_v8_evaluator_fails_wrong_resolved_value_without_inflating_na() -> None:
+def test_evaluator_fails_wrong_resolved_value_without_inflating_na() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):
             evidence = {
@@ -411,7 +377,7 @@ def test_v8_evaluator_fails_wrong_resolved_value_without_inflating_na() -> None:
         "id": "v8-wrong-resolved",
         "query": "B+ đổi sang hệ 4 là bao nhiêu?",
         "cohort": "K51",
-        "contract_version": "query-plan-grounded-outcome-v8",
+        "contract_version": "query-plan-grounded-outcome-v9",
         "accepted_outcomes": [
             {
                 "name": "grounded-structured-answer",
@@ -429,7 +395,7 @@ def test_v8_evaluator_fails_wrong_resolved_value_without_inflating_na() -> None:
             }
         ],
     }
-    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
     row = report["cases"][0]
     assert row["passed"] is False
     assert row["structured_source_correct"] is None
@@ -438,7 +404,7 @@ def test_v8_evaluator_fails_wrong_resolved_value_without_inflating_na() -> None:
     assert report["summary"]["structured_source_accuracy"] is None
 
 
-def test_v8_evaluator_recognizes_service_catalog_identity() -> None:
+def test_evaluator_recognizes_service_catalog_identity() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):
             evidence = {
@@ -471,7 +437,7 @@ def test_v8_evaluator_recognizes_service_catalog_identity() -> None:
         "id": "v8-service-source",
         "query": "Đơn vị nào hỗ trợ in bảng điểm?",
         "cohort": "K51",
-        "contract_version": "query-plan-grounded-outcome-v8",
+        "contract_version": "query-plan-grounded-outcome-v9",
         "accepted_outcomes": [
             {
                 "name": "grounded-service-answer",
@@ -492,7 +458,7 @@ def test_v8_evaluator_recognizes_service_catalog_identity() -> None:
             }
         ],
     }
-    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
+    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
     row = report["cases"][0]
     assert row["passed"] is True, json.dumps(
         row["accepted_outcome_evaluations"], ensure_ascii=False, indent=2
@@ -502,7 +468,7 @@ def test_v8_evaluator_recognizes_service_catalog_identity() -> None:
     assert row["resolved_result_correct"] is None
 
 
-def test_v8_evaluator_matches_public_directory_schema() -> None:
+def test_evaluator_matches_public_directory_schema() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):
             evidence = {
@@ -540,7 +506,7 @@ def test_v8_evaluator_matches_public_directory_schema() -> None:
         "id": "v8-public-directory",
         "query": "Khoa Tâm lý học ở đâu?",
         "cohort": "K51",
-        "contract_version": "query-plan-grounded-outcome-v8",
+        "contract_version": "query-plan-grounded-outcome-v9",
         "accepted_outcomes": [
             {
                 "name": "grounded-directory-answer",
@@ -569,13 +535,13 @@ def test_v8_evaluator_matches_public_directory_schema() -> None:
             }
         ],
     }
-    row = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)["cases"][0]
+    row = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)["cases"][0]
     assert row["passed"] is True
     assert row["structured_source_correct"] is None
     assert row["structured_row_correct"] is True
 
 
-def test_v8_evaluator_matches_display_row_to_canonical_resolved_row() -> None:
+def test_evaluator_matches_display_row_to_canonical_resolved_row() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):
             evidence = {
@@ -626,7 +592,7 @@ def test_v8_evaluator_matches_display_row_to_canonical_resolved_row() -> None:
         "id": "v8-canonical-resolved-row",
         "query": "8,1 được điểm chữ gì?",
         "cohort": "K51",
-        "contract_version": "query-plan-grounded-outcome-v8",
+        "contract_version": "query-plan-grounded-outcome-v9",
         "accepted_outcomes": [
             {
                 "name": "grounded-structured-answer",
@@ -647,55 +613,11 @@ def test_v8_evaluator_matches_display_row_to_canonical_resolved_row() -> None:
             }
         ],
     }
-    row = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)["cases"][0]
+    row = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)["cases"][0]
     assert row["passed"] is True
     assert row["structured_source_correct"] is True
     assert row["structured_row_correct"] is True
     assert row["resolved_result_correct"] is True
-
-
-def test_deterministic_v2_reports_non_applicable_assertions_as_na() -> None:
-    class Pipeline:
-        def _run_retrieval(self, query, cohort=None):
-            return {
-                "query_plan": {
-                    "tasks": [
-                        {
-                            "mode": "rag",
-                            "intent": "open_question",
-                            "cohorts": ["K51"],
-                        }
-                    ]
-                },
-                "needs_llm_answer": True,
-                "task_results": [],
-            }
-
-    case = {
-        "id": "one",
-        "query": "quy định nào?",
-        "cohort": "K51",
-        "expected_llm_called": True,
-        "expected_plan": {
-            "task_count": 1,
-            "allowed_modes": ["rag"],
-            "lookup_types": [],
-            "cohorts": ["K51"],
-            "out_of_domain": False,
-            "needs_clarification": False,
-        },
-        "expected_tasks": [
-            {"mode": "rag", "intent": "open_question", "cohorts": ["K51"]}
-        ],
-    }
-    report = suites.evaluate_deterministic_v2([case], pipeline_factory=Pipeline)
-    row = report["cases"][0]
-    assert row["citation_metadata_correct"] is None
-    assert row["structured_value_exact"] is None
-    assert row["numeric_value_correct"] is None
-    assert report["summary"]["citation_metadata_accuracy"] is None
-    assert report["summary"]["assertion_support"]["citation_metadata"] == 0
-    assert report["summary"]["passed"] == 1
 
 
 def test_ndcg_uses_all_gold_and_reports_primary_source_coverage() -> None:
@@ -803,30 +725,6 @@ def test_safe_non_answer_is_not_counted_as_wrong_abstention(
     assert checks["abstention_correct"] is True
 
 
-def test_expected_tasks_match_semantics_unordered_without_rejecting_optional_slots() -> None:
-    expected = [
-        {"mode": "structured", "lookup_type": "office", "intent": "lookup", "slots": {"office_name": "Phòng Đào tạo"}, "cohorts": ["K51"]},
-        {"mode": "rag", "intent": "open_question", "cohorts": ["K51"]},
-    ]
-    actual = [
-        {"mode": "rag", "intent": "open_question", "cohorts": ["K51"]},
-        {"mode": "structured", "lookup_type": "office", "intent": "lookup", "slots": {"office_name": "phong dao tao", "table": "grounded-extra"}, "cohorts": ["K51"]},
-    ]
-    assert suites._expected_tasks_match(expected, actual)
-    actual[1]["slots"]["office_name"] = "Phòng khác"
-    assert not suites._expected_tasks_match(expected, actual)
-    assert not suites._expected_tasks_match(
-        [{"slots": {"letter_grade": "B+"}}], [{"slots": {"letter_grade": "B"}}]
-    )
-    assert suites._expected_tasks_match(
-        [{"required_slot_keys": ["score"], "slots": {"score": 367}}],
-        [{"slots": {"score": "367", "harmless_hint": "x"}}],
-    )
-    assert not suites._expected_tasks_match(
-        [{"required_slot_keys": ["office"]}], [{"slots": {"requested_field": "email"}}]
-    )
-
-
 def test_deterministic_counts_compound_structured_and_preserves_failed_checkpoint(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -834,10 +732,15 @@ def test_deterministic_counts_compound_structured_and_preserves_failed_checkpoin
     calls = []
     cases = [
         {"id": "compound", "query": "q", "cohort": "K51", "history": history,
-         "case_type": "architecture", "expected_llm_called": True,
-         "expected_plan": {"task_count": 2, "allowed_modes": ["structured", "rag"], "mode_counts": {"structured": 1, "rag": 1}}},
+         "case_type": "architecture", "contract_version": "query-plan-grounded-outcome-v9",
+         "accepted_outcomes": [{"name": "structured-plus-rag", "state": "answer",
+                                "allowed_modes": ["structured", "rag"], "task_count": {"min": 2, "max": 2},
+                                "required_tasks": [{"mode": "structured", "lookup_type": "office",
+                                                    "fact_lock_applicable": False}, {"mode": "rag"}]}]},
         {"id": "failure", "query": "fail", "cohort": "K51", "case_type": "hard_negative",
-         "expected_plan": {"task_count": 1, "allowed_modes": ["rag"]}},
+         "contract_version": "query-plan-grounded-outcome-v9",
+         "accepted_outcomes": [{"name": "rag", "state": "answer", "allowed_modes": ["rag"],
+                                "task_count": {"min": 1, "max": 1}, "required_tasks": [{"mode": "rag"}]}]},
     ]
 
     class Pipeline:
@@ -854,15 +757,15 @@ def test_deterministic_counts_compound_structured_and_preserves_failed_checkpoin
 
     checkpoint = tmp_path / "det.json"
     monkeypatch.setenv("STUDENT_RAG_DISABLE_ROUTER_CACHE", "previous")
-    report = suites.evaluate_deterministic_v2(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint)
+    report = suites.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint)
     assert report["summary"]["precision"] == 1.0
     assert report["summary"]["structured_selection_counts"]["expected_positive_n"] == 1
     assert report["summary"]["passed"] == 1
     assert calls == [("q", history), ("fail", None)]
     assert os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] == "previous"
     with pytest.raises(FileExistsError):
-        suites.evaluate_deterministic_v2(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint)
-    resumed = suites.evaluate_deterministic_v2(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint, resume=True)
+        suites.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint)
+    resumed = suites.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint, resume=True)
     assert len(calls) == 2
     assert resumed["cases"][1]["error"] == "test failure"
 

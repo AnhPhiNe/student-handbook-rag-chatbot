@@ -54,6 +54,9 @@ EXPECTED_ANSWER_BEHAVIORS = {
     "abstain",
 }
 
+# The only deterministic gold contract official_v1 uses.
+DETERMINISTIC_CONTRACT = "query-plan-grounded-outcome-v9"
+
 COMMON_REQUIRED_FIELDS = {
     "id",
     "suite",
@@ -395,128 +398,20 @@ def _validate_common(case: dict[str, Any], suite: str, errors: list[str]) -> Non
         )
 
 
-def _validate_deterministic_contract(case: dict[str, Any], errors: list[str]) -> None:
-    """Fail closed when a deterministic case cannot express its V6 gold contract."""
-    case_id = str(case.get("id") or "<missing-id>")
-    contract = str(case.get("contract_version") or "").strip()
-    if not contract.startswith("query-plan-"):
-        errors.append(f"{case_id}: invalid deterministic contract_version={contract!r}")
-
-    expected = case.get("expected_plan")
-    if not isinstance(expected, dict):
-        errors.append(f"{case_id}: expected_plan must be an object")
-        return
-    required_plan_fields = {
-        "task_count",
-        "allowed_modes",
-        "required_modes",
-        "mode_counts",
-        "lookup_types",
-        "cohorts",
-        "out_of_domain",
-        "needs_clarification",
-    }
-    missing_plan_fields = sorted(required_plan_fields - set(expected))
-    if missing_plan_fields:
-        errors.append(f"{case_id}: expected_plan missing fields {missing_plan_fields}")
-
-    task_count = expected.get("task_count")
-    if (
-        not isinstance(task_count, int)
-        or isinstance(task_count, bool)
-        or not 0 <= task_count <= 3
-    ):
-        errors.append(f"{case_id}: invalid expected_plan.task_count={task_count!r}")
-        task_count = None
-    allowed_task_modes = {"structured", "rag", "clarify"}
-    for field in ("allowed_modes", "required_modes", "lookup_types", "cohorts"):
-        value = expected.get(field)
-        if not isinstance(value, list) or any(
-            not isinstance(item, str) for item in value
-        ):
-            errors.append(f"{case_id}: expected_plan.{field} must be a string list")
-    allowed_modes_value = expected.get("allowed_modes")
-    required_modes_value = expected.get("required_modes")
-    allowed_modes = allowed_modes_value if isinstance(allowed_modes_value, list) else []
-    required_modes = (
-        required_modes_value if isinstance(required_modes_value, list) else []
-    )
-    if any(mode not in allowed_task_modes for mode in allowed_modes + required_modes):
-        errors.append(f"{case_id}: expected_plan contains unsupported task mode")
-    if not set(required_modes) <= set(allowed_modes):
-        errors.append(f"{case_id}: required_modes must be a subset of allowed_modes")
-
-    mode_counts = expected.get("mode_counts")
-    if not isinstance(mode_counts, dict) or any(
-        mode not in allowed_task_modes
-        or not isinstance(count, int)
-        or isinstance(count, bool)
-        or count < 0
-        for mode, count in (mode_counts or {}).items()
-    ):
-        errors.append(f"{case_id}: invalid expected_plan.mode_counts")
-    elif task_count is not None and sum(mode_counts.values()) != task_count:
-        errors.append(f"{case_id}: mode_counts must sum to task_count")
-    for field in ("out_of_domain", "needs_clarification"):
-        if not isinstance(expected.get(field), bool):
-            errors.append(f"{case_id}: expected_plan.{field} must be boolean")
-
-    expected_tasks = case.get("expected_tasks")
-    if not isinstance(expected_tasks, list):
-        errors.append(f"{case_id}: expected_tasks must be a list")
-        return
-    if task_count is not None and len(expected_tasks) != task_count:
-        errors.append(f"{case_id}: expected_tasks length must equal task_count")
-    for index, task in enumerate(expected_tasks, start=1):
-        prefix = f"{case_id}: expected_tasks[{index}]"
-        if not isinstance(task, dict):
-            errors.append(f"{prefix} must be an object")
-            continue
-        mode = task.get("mode")
-        if mode not in allowed_task_modes:
-            errors.append(f"{prefix}.mode is invalid")
-        if mode != "clarify" and (
-            not isinstance(task.get("intent"), str) or not task.get("intent")
-        ):
-            errors.append(f"{prefix}.intent must be a non-empty string")
-        cohorts = task.get("cohorts")
-        if not isinstance(cohorts, list) or any(
-            not isinstance(cohort, str) for cohort in cohorts
-        ):
-            errors.append(f"{prefix}.cohorts must be a string list")
-        if mode == "structured" and not str(task.get("lookup_type") or "").strip():
-            errors.append(f"{prefix}.lookup_type is required for structured mode")
-        if "slots" in task and not isinstance(task.get("slots"), dict):
-            errors.append(f"{prefix}.slots must be an object")
-        if "required_slot_keys" in task and not isinstance(
-            task.get("required_slot_keys"), list
-        ):
-            errors.append(f"{prefix}.required_slot_keys must be a list")
-        if "slot_value_alternatives" in task and not isinstance(
-            task.get("slot_value_alternatives"), dict
-        ):
-            errors.append(f"{prefix}.slot_value_alternatives must be an object")
-
-
-def _validate_deterministic_v7_contract(
-    case: dict[str, Any],
-    errors: list[str],
-    *,
-    expected_contract: str = "query-plan-outcome-equivalent-v7",
-) -> None:
+def _validate_outcome_gold(case: dict[str, Any], errors: list[str]) -> None:
     """Validate outcome golds without prescribing one QueryPlan emission.
 
-    V7 deliberately evaluates architectural outcomes.  It may constrain a mode,
+    The contract evaluates architectural outcomes.  It may constrain a mode,
     lookup capability or grounded slot when that distinction is material, but it
     does not require an exact task order, task identifier or raw slot spelling.
     """
 
     case_id = str(case.get("id") or "<missing-id>")
     contract = str(case.get("contract_version") or "").strip()
-    if contract != expected_contract:
+    if contract != DETERMINISTIC_CONTRACT:
         errors.append(
             f"{case_id}: invalid deterministic contract={contract!r}; "
-            f"expected {expected_contract!r}"
+            f"expected {DETERMINISTIC_CONTRACT!r}"
         )
 
     outcomes = case.get("accepted_outcomes")
@@ -595,20 +490,10 @@ def _validate_deterministic_v7_contract(
                 )
 
 
-def _validate_grounded_deterministic_contract(
-    case: dict[str, Any],
-    errors: list[str],
-    *,
-    expected_contract: str,
-    require_fact_lock_scope: bool,
-) -> None:
-    """Validate outcome gold plus optional grounded-execution assertions."""
+def validate_deterministic_case(case: dict[str, Any], errors: list[str]) -> None:
+    """Validate one deterministic case: outcome gold, grounded execution and fact-lock scope."""
 
-    _validate_deterministic_v7_contract(
-        case,
-        errors,
-        expected_contract=expected_contract,
-    )
+    _validate_outcome_gold(case, errors)
     case_id = str(case.get("id") or "<missing-id>")
     for outcome_index, outcome in enumerate(
         case.get("accepted_outcomes") or [], start=1
@@ -629,12 +514,11 @@ def _validate_grounded_deterministic_contract(
                             or unit.get("lookup_type") != task.get("lookup_type") for unit in units)
                             or sorted(unit_cohorts) != sorted(task.get("cohorts", []))):
                         errors.append(f"{prefix}.execution_units must cover each declared cohort once")
-                    _validate_grounded_deterministic_contract(
+                    validate_deterministic_case(
                         {**case, "id": prefix, "accepted_outcomes": [{
                             "name": "execution-units", "state": "answer", "allowed_modes": ["structured"],
                             "task_count": {"min": len(units), "max": len(units)}, "required_tasks": units}]},
-                        errors, expected_contract=expected_contract,
-                        require_fact_lock_scope=require_fact_lock_scope,
+                        errors,
                     )
             if "expected_source_ids" in task and (
                 not isinstance(task.get("expected_source_ids"), list)
@@ -662,7 +546,7 @@ def _validate_grounded_deterministic_contract(
                 task.get("resolved_result_required"), bool
             ):
                 errors.append(f"{prefix}.resolved_result_required must be boolean")
-            if task.get("mode") != "structured" or not require_fact_lock_scope:
+            if task.get("mode") != "structured":
                 continue
             fact_lock_applicable = task.get("fact_lock_applicable")
             if not isinstance(fact_lock_applicable, bool):
@@ -688,31 +572,5 @@ def _validate_grounded_deterministic_contract(
                     f"{prefix} must not assert resolved_result when "
                     "fact_lock_applicable=false"
                 )
-
-
-def _validate_deterministic_v8_contract(
-    case: dict[str, Any], errors: list[str]
-) -> None:
-    """Validate V8 grounded execution assertions."""
-
-    _validate_grounded_deterministic_contract(
-        case,
-        errors,
-        expected_contract="query-plan-grounded-outcome-v8",
-        require_fact_lock_scope=False,
-    )
-
-
-def _validate_deterministic_v9_contract(
-    case: dict[str, Any], errors: list[str]
-) -> None:
-    """Validate V9 grounded assertions and explicit fact-lock applicability."""
-
-    _validate_grounded_deterministic_contract(
-        case,
-        errors,
-        expected_contract="query-plan-grounded-outcome-v9",
-        require_fact_lock_scope=True,
-    )
 
 

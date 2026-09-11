@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 
 import src.retrieval.core.ai_router as ai_router_module
-from src.evaluation.suites import evaluate_deterministic_v2
+from src.evaluation.suites import evaluate_deterministic
 from src.retrieval.core.ai_router import (
     AIRouter,
     PLANNER_DIAGNOSTIC_SCHEMA_VERSION,
@@ -266,8 +266,16 @@ def test_deterministic_eval_context_propagates_capture_to_rows(tmp_path: Path) -
         "id": "synthetic-diagnostic",
         "query": "synthetic query",
         "cohort": "K51",
-        "expected_llm_called": True,
-        "expected_plan": {"task_count": 1, "allowed_modes": ["rag"]},
+        "contract_version": "query-plan-grounded-outcome-v9",
+        "accepted_outcomes": [
+            {
+                "name": "rag",
+                "state": "answer",
+                "allowed_modes": ["rag"],
+                "task_count": {"min": 1, "max": 1},
+                "required_tasks": [{"mode": "rag"}],
+            }
+        ],
     }
     history_case = {
         **case,
@@ -275,7 +283,7 @@ def test_deterministic_eval_context_propagates_capture_to_rows(tmp_path: Path) -
         "chat_history": [{"role": "user", "content": "private history"}],
     }
     checkpoint = tmp_path / "diagnostics.json"
-    report = evaluate_deterministic_v2(
+    report = evaluate_deterministic(
         [case, history_case],
         pipeline_factory=Pipeline,
         checkpoint_path=checkpoint,

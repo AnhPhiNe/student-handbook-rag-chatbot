@@ -2,22 +2,4 @@ input:
   structured_sections: data/processed/metadata/structured_sections.json
 
 output:
-  regulation_chunks: data/processed/chunks/regulation_chunks.json
-  semantic_chunks: data/processed/chunks/semantic_chunks.json
-  structured_lookup_chunks: data/processed/chunks/structured_lookup_chunks.json
-  tool_rule_chunks: data/processed/chunks/tool_rule_chunks.json
-  all_chunks: data/processed/chunks/all_chunks.json
   docstore_items: data/processed/chunks/docstore_items.json
-  report: data/processed/metadata/chunk_report.json
-  index_manifest: data/processed/chunks/index_manifest.json
-
-chunking:
-  regulation:
-    max_tokens: 850
-    overlap_tokens: 80
-  table_summary:
-    max_tokens: 250
-  formula_summary:
-    max_tokens: 180
-  directory_summary:
-    max_tokens: 350

@@ -1,23 +1,24 @@
+"""Build full parent documents (one per regulation article) from parsed sections.
+
+Retrieval children are not built here: scripts/build_child_parent_index.py splits
+these parents into the narrative chunks that are embedded.
+"""
+
 import re
 from typing import Any
 
-from .chunk_schema import create_chunk
 from .regulation_highlight_extractor import (
-    build_regulation_highlight_chunk_content,
     extract_regulation_highlights,
     highlight_metadata_payload,
 )
 from .regulation_table_extractor import (
-    build_regulation_table_chunk_content,
     extract_regulation_tables,
     format_tables_for_parent,
     table_metadata_payload,
 )
 from .text_utils import join_non_empty, source_page_range
-from .token_utils import count_tokens_approx, split_text_by_paragraph
 
 
-CLAUSE_PATTERN = re.compile(r"^\d+\.\s+", re.MULTILINE)
 BOUNDARY_STOP_MARKERS = (
     "THÔNG TIN TRỌNG TÂM",
     "THONG TIN TRONG TAM",
@@ -58,7 +59,7 @@ LOW_VALUE_LINK_TERMS = (
 )
 
 
-def build_regulation_chunk_content(section: dict[str, Any], content: str) -> str:
+def build_section_content(section: dict[str, Any], content: str) -> str:
     """Render section metadata and source text into retrievable content."""
 
     raw_title = str(section.get("title") or "").strip()
@@ -132,7 +133,7 @@ def build_parent_doc_content(
     normalized_highlights = format_highlights_for_parent(highlights or [])
     return join_non_empty(
         [
-            build_regulation_chunk_content(section, content),
+            build_section_content(section, content),
             normalized_tables,
             normalized_highlights,
         ]
@@ -150,39 +151,10 @@ def format_highlights_for_parent(highlights: list[dict[str, Any]]) -> str:
     return "\n".join(lines).strip()
 
 
-def split_by_clause(content: str) -> list[str]:
-    """Split numbered clauses while preserving their shared introduction."""
-    matches = list(CLAUSE_PATTERN.finditer(content))
+def build_regulation_parents(sections: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Build one full parent document per regulation section."""
 
-    if len(matches) <= 1:
-        return [content]
-
-    chunks = []
-
-    intro = content[: matches[0].start()].strip()
-    for idx, match in enumerate(matches):
-        start = match.start()
-        end = matches[idx + 1].start() if idx + 1 < len(matches) else len(content)
-        clause_text = content[start:end].strip()
-
-        if intro:
-            clause_text = intro + "\n" + clause_text
-
-        chunks.append(clause_text)
-
-    return chunks
-
-
-def build_regulation_chunks(
-    sections: list[dict[str, Any]],
-    max_tokens: int = 200,
-    overlap_tokens: int = 40,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Build searchable child chunks and full parent regulation documents."""
-
-    chunks = []
     docstore_items = []
-
     for section in sections:
         if section.get("content_type") != "regulation_text":
             continue
@@ -192,24 +164,8 @@ def build_regulation_chunks(
             continue
 
         cleaned_section = {**section, "content": content}
-        source_pages = source_page_range(section["page_start"], section["page_end"])
         extracted_tables = extract_regulation_tables(cleaned_section)
         extracted_highlights = extract_regulation_highlights(cleaned_section)
-        base_metadata = {
-            "source_type": "structured_section",
-            "document_title": section.get("document_title"),
-            "part": section.get("part"),
-            "chapter": section.get("chapter"),
-            "article": section.get("article"),
-            "title": section.get("title"),
-            "source_pages": source_pages,
-            "content_type": section.get("content_type"),
-            "has_table": section.get("has_table"),
-            "has_formula": section.get("has_formula"),
-            "has_scoring_rule": section.get("has_scoring_rule"),
-            "has_thresholds": section.get("has_thresholds"),
-        }
-
         full_content = build_parent_doc_content(
             cleaned_section,
             content,
@@ -226,100 +182,22 @@ def build_regulation_chunks(
                     highlight_metadata_payload(highlight)
                     for highlight in extracted_highlights
                 ],
-                "metadata": base_metadata,
+                "metadata": {
+                    "source_type": "structured_section",
+                    "document_title": section.get("document_title"),
+                    "part": section.get("part"),
+                    "chapter": section.get("chapter"),
+                    "article": section.get("article"),
+                    "title": section.get("title"),
+                    "source_pages": source_page_range(
+                        section["page_start"], section["page_end"]
+                    ),
+                    "content_type": section.get("content_type"),
+                    "has_table": section.get("has_table"),
+                    "has_formula": section.get("has_formula"),
+                    "has_scoring_rule": section.get("has_scoring_rule"),
+                    "has_thresholds": section.get("has_thresholds"),
+                },
             }
         )
-
-        for table in extracted_tables:
-            table_metadata = dict(base_metadata)
-            table_metadata.update(
-                {
-                    "source_type": "regulation_table",
-                    "parent_section_id": section["section_id"],
-                    "semantic_content_kind": "table",
-                    "table_id": table["table_id"],
-                    "table_name": table["table_name"],
-                    "table_kind": table["table_kind"],
-                    "applicability": table.get("applicability"),
-                }
-            )
-            chunks.append(
-                create_chunk(
-                    chunk_id=f"reg_table_{table['table_id']}",
-                    chunk_type="regulation_table",
-                    index_mode="semantic",
-                    content=build_regulation_table_chunk_content(
-                        cleaned_section, table
-                    ),
-                    metadata=table_metadata,
-                )
-            )
-
-        for highlight in extracted_highlights:
-            highlight_metadata = dict(base_metadata)
-            highlight_metadata.update(
-                {
-                    "source_type": "regulation_highlight",
-                    "parent_section_id": section["section_id"],
-                    "semantic_content_kind": "highlight",
-                    "highlight_id": highlight["highlight_id"],
-                    "highlight_name": highlight["highlight_name"],
-                    "highlight_kind": highlight["highlight_kind"],
-                }
-            )
-            chunks.append(
-                create_chunk(
-                    chunk_id=f"reg_highlight_{highlight['highlight_id']}",
-                    chunk_type="regulation_highlight",
-                    index_mode="semantic",
-                    content=build_regulation_highlight_chunk_content(
-                        cleaned_section, highlight
-                    ),
-                    metadata=highlight_metadata,
-                )
-            )
-
-        if count_tokens_approx(full_content) <= max_tokens:
-            chunks.append(
-                create_chunk(
-                    chunk_id=f"reg_{section['section_id']}",
-                    chunk_type="regulation",
-                    index_mode="semantic",
-                    content=full_content,
-                    metadata=base_metadata,
-                )
-            )
-            continue
-
-        clause_parts = split_by_clause(content)
-        sub_index = 1
-
-        for clause in clause_parts:
-            clause_content = build_regulation_chunk_content(cleaned_section, clause)
-
-            if count_tokens_approx(clause_content) <= max_tokens:
-                split_parts = [clause_content]
-            else:
-                split_parts = split_text_by_paragraph(
-                    clause_content,
-                    max_tokens=max_tokens,
-                    overlap_tokens=overlap_tokens,
-                )
-
-            for part in split_parts:
-                metadata = dict(base_metadata)
-                metadata["parent_section_id"] = section["section_id"]
-                metadata["split_strategy"] = "clause_or_paragraph"
-
-                chunks.append(
-                    create_chunk(
-                        chunk_id=f"reg_{section['section_id']}_part_{sub_index}",
-                        chunk_type="regulation",
-                        index_mode="semantic",
-                        content=part,
-                        metadata=metadata,
-                    )
-                )
-                sub_index += 1
-
-    return chunks, docstore_items
+    return docstore_items

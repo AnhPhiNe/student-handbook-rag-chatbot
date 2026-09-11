@@ -19,22 +19,6 @@ def extract_regulation_highlights(section: dict[str, Any]) -> list[dict[str, Any
     return highlights
 
 
-def build_regulation_highlight_chunk_content(
-    section: dict[str, Any],
-    highlight: dict[str, Any],
-) -> str:
-    """Render one regulation highlight as standalone retrieval content."""
-
-    parts = [
-        f"Tài liệu: {section.get('document_title') or ''}",
-        f"Điều: {section.get('article') or ''}",
-        f"Tiêu đề: {section.get('title') or ''}",
-        f"Thông tin trọng tâm: {highlight['highlight_name']}",
-        f"Nội dung: {highlight['text']}",
-    ]
-    return "\n".join(part for part in parts if part and part.strip())
-
-
 def highlight_metadata_payload(highlight: dict[str, Any]) -> dict[str, Any]:
     """Project a highlight onto metadata persisted with its parent."""
 

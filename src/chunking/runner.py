@@ -4,37 +4,21 @@ import os
 
 from src.common.cohort import DOCUMENT_ID_BY_COHORT
 from src.common.io import load_json, load_yaml, save_json
-from .regulation_chunker import build_regulation_chunks
-from .report_builder import build_chunk_report
-from .validator import validate_chunks, validate_parent_links
+from .regulation_parents import build_regulation_parents
 
 
 CONFIG_PATH = Path("configs/chunking.yaml")
 
 
 def attach_cohort_metadata(
-    chunks: list[dict[str, Any]],
     docstore_items: list[dict[str, Any]],
     cohort: str | None,
     document_id: str | None = None,
 ) -> None:
-    """Attach handbook identity metadata to all child and parent records."""
+    """Attach handbook identity metadata to every parent record."""
+
     if not cohort and not document_id:
         return
-
-    for chunk in chunks:
-        metadata = chunk.setdefault("metadata", {})
-        if not metadata.get("content_type"):
-            metadata["content_type"] = (
-                metadata.get("source_type")
-                or chunk.get("chunk_type")
-                or chunk.get("index_mode")
-            )
-        if cohort:
-            metadata["cohort"] = cohort
-        if document_id:
-            metadata["document_id"] = document_id
-
     for item in docstore_items:
         if cohort:
             item["cohort"] = cohort
@@ -46,41 +30,10 @@ def attach_cohort_metadata(
             metadata["document_id"] = document_id
 
 
-def split_chunks_by_index_mode(
-    chunks: list[dict[str, Any]],
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
-    """Partition chunks by the runtime component responsible for indexing them."""
-
-    semantic = [chunk for chunk in chunks if chunk["index_mode"] == "semantic"]
-    structured = [chunk for chunk in chunks if chunk["index_mode"] == "structured"]
-    tool = [chunk for chunk in chunks if chunk["index_mode"] == "tool"]
-
-    return semantic, structured, tool
-
-
-def build_index_manifest(config: dict[str, Any]) -> dict[str, Any]:
-    """Declare which artifacts feed embedding, lookup, and tool stages."""
-    return {
-        "embedding_input": config["output"]["semantic_chunks"],
-        "structured_lookup_input": config["output"]["structured_lookup_chunks"],
-        "tool_rule_input": config["output"]["tool_rule_chunks"],
-        "do_not_embed": [
-            config["output"]["all_chunks"],
-            config["output"]["structured_lookup_chunks"],
-            config["output"]["tool_rule_chunks"],
-        ],
-        "note": (
-            "Embedding must embed only semantic_chunks.json. "
-            "Structured lookup chunks and tool rule chunks are handled separately."
-        ),
-    }
-
-
 def main() -> None:
-    """Run chunk construction and persist indexes, parents, manifests, and reports."""
+    """Build one cohort's full parent documents from its parsed sections."""
 
     config = load_yaml(CONFIG_PATH)
-
     structured_sections = load_json(Path(config["input"]["structured_sections"]))
     document_id = next(
         (
@@ -90,64 +43,15 @@ def main() -> None:
         ),
         None,
     )
-    regulation_config = config["chunking"]["regulation"]
-
-    regulation_chunks, docstore_items = build_regulation_chunks(
-        sections=structured_sections,
-        max_tokens=regulation_config["max_tokens"],
-        overlap_tokens=regulation_config["overlap_tokens"],
-    )
-
-    all_chunks = regulation_chunks
+    docstore_items = build_regulation_parents(structured_sections)
+    cohort = os.environ.get("COHORT")
     attach_cohort_metadata(
-        chunks=all_chunks,
-        docstore_items=docstore_items,
-        cohort=os.environ.get("COHORT"),
-        document_id=document_id or DOCUMENT_ID_BY_COHORT.get(os.environ.get("COHORT")),
-    )
-
-    semantic_chunks, structured_lookup_chunks, tool_rule_chunks = (
-        split_chunks_by_index_mode(all_chunks)
-    )
-
-    validation_issues = validate_chunks(all_chunks) + validate_parent_links(
-        all_chunks,
         docstore_items,
+        cohort=cohort,
+        document_id=document_id or DOCUMENT_ID_BY_COHORT.get(cohort),
     )
-
-    report = build_chunk_report(
-        regulation_chunks=regulation_chunks,
-        table_chunks=[],
-        formula_chunks=[],
-        directory_chunks=[],
-        all_chunks=all_chunks,
-        validation_issues=validation_issues,
-    )
-
-    index_manifest = build_index_manifest(config)
-
-    save_json(regulation_chunks, Path(config["output"]["regulation_chunks"]))
-
-    save_json(semantic_chunks, Path(config["output"]["semantic_chunks"]))
-    save_json(
-        structured_lookup_chunks, Path(config["output"]["structured_lookup_chunks"])
-    )
-    save_json(tool_rule_chunks, Path(config["output"]["tool_rule_chunks"]))
-    save_json(all_chunks, Path(config["output"]["all_chunks"]))
     save_json(docstore_items, Path(config["output"]["docstore_items"]))
-
-    save_json(report, Path(config["output"]["report"]))
-    save_json(index_manifest, Path(config["output"]["index_manifest"]))
-
-    print("Chunking completed.")
-    print(f"Total chunks: {len(all_chunks)}")
-    print(f"Semantic chunks: {len(semantic_chunks)}")
-    print(f"Structured lookup chunks: {len(structured_lookup_chunks)}")
-    print(f"Tool rule chunks: {len(tool_rule_chunks)}")
-    print(f"Validation issues: {len(validation_issues)}")
-    print(f"Overlong chunks: {report.get('overlong_chunks_count', 0)}")
     print(f"Docstore items saved: {len(docstore_items)}")
-    print(f"Index manifest saved: {config['output']['index_manifest']}")
 
 
 if __name__ == "__main__":

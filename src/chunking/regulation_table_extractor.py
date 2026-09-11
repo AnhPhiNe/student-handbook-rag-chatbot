@@ -71,35 +71,6 @@ def format_tables_for_parent(tables: list[dict[str, Any]]) -> str:
     return "\n".join(blocks).strip()
 
 
-def build_regulation_table_chunk_content(
-    section: dict[str, Any],
-    table: dict[str, Any],
-) -> str:
-    """Render one normalized table as standalone retrieval content."""
-
-    raw_title = str(section.get("title") or "").strip()
-    article = str(section.get("article") or "").strip()
-    clean_title = raw_title
-    if article and clean_title.lower().startswith(article.lower()):
-        clean_title = clean_title[len(article) :].lstrip(" .:-")
-
-    parts = [
-        f"Tài liệu: {section.get('document_title') or ''}",
-        f"Điều: {article}" if article else "",
-        f"Tiêu đề: {clean_title}" if clean_title else "",
-        f"Bảng: {table['table_name']}",
-    ]
-    if table.get("applicability"):
-        parts.append(f"Phạm vi áp dụng: {table['applicability']}")
-    parts.extend(
-        [
-            "Nội dung bảng:",
-            _rows_to_markdown(table["columns"], table["rows"]),
-        ]
-    )
-    return "\n".join(part for part in parts if part and part.strip())
-
-
 def table_metadata_payload(table: dict[str, Any]) -> dict[str, Any]:
     """Project a normalized table onto metadata persisted with its parent."""
 

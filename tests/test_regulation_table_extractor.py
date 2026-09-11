@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.chunking.regulation_chunker import build_regulation_chunks
+from src.chunking.regulation_parents import build_regulation_parents
 from src.chunking.regulation_table_extractor import extract_regulation_tables
 
 
@@ -117,24 +117,21 @@ def test_extract_k51_pass_fail_ungraded_as_separate_table() -> None:
     assert "không tính" in pass_fail["applicability"]
 
 
-def test_regulation_chunker_adds_table_chunks_and_parent_tables() -> None:
+def test_regulation_parents_render_normalized_tables() -> None:
     content = (
         "Thang điểm chữ Thang điểm 4 "
         "A 4,0 B+ 3,5 B 3,0 C+ 2,5 C 2,0 D+ 1,5 D 1,0 F+ 0,5 F 0,0 "
         "Xếp loại học lực Xuất sắc Giỏi Khá Trung bình"
     )
 
-    chunks, parents = build_regulation_chunks([_section(content, "article_11_p21_21")])
+    parents = build_regulation_parents([_section(content, "article_11_p21_21")])
 
-    table_chunks = [chunk for chunk in chunks if chunk["chunk_type"] == "regulation_table"]
-    assert table_chunks
-    assert any(chunk["metadata"]["table_kind"] == "letter_to_grade4" for chunk in table_chunks)
-    assert parents[0]["tables"]
+    assert any(table["table_kind"] == "letter_to_grade4" for table in parents[0]["tables"])
     assert "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN" in parents[0]["content"]
     assert "| Thang điểm chữ | Thang điểm 4 |" in parents[0]["content"]
 
 
-def test_regulation_chunker_adds_period_schedule_highlight_chunks() -> None:
+def test_regulation_parents_render_period_schedule_highlights() -> None:
     content = (
         "Điều 15. Công nhận tốt nghiệp và cấp bằng tốt nghiệp. "
         "5. Sinh viên hết thời gian học tập theo hình thức chính quy được chuyển sang học tập "
@@ -143,14 +140,10 @@ def test_regulation_chunker_adds_period_schedule_highlight_chunks() -> None:
         "thường được tổ chức vào tháng 5, tháng 8 và tháng 11."
     )
 
-    chunks, parents = build_regulation_chunks([_section(content, "article_15_p25_25")])
+    parents = build_regulation_parents([_section(content, "article_15_p25_25")])
 
-    highlight_chunks = [
-        chunk for chunk in chunks if chunk["chunk_type"] == "regulation_highlight"
-    ]
-    assert highlight_chunks
-    assert highlight_chunks[0]["metadata"]["highlight_kind"] == "period_schedule"
-    assert "03 đợt xét tốt nghiệp" in highlight_chunks[0]["content"]
-    assert "tháng 5, tháng 8 và tháng 11" in highlight_chunks[0]["content"]
-    assert parents[0]["highlights"]
+    highlights = parents[0]["highlights"]
+    assert highlights[0]["highlight_kind"] == "period_schedule"
+    assert "03 đợt xét tốt nghiệp" in parents[0]["content"]
+    assert "tháng 5, tháng 8 và tháng 11" in parents[0]["content"]
     assert "THÔNG TIN TRỌNG TÂM ĐÃ TÁCH TỪ NGUỒN" in parents[0]["content"]

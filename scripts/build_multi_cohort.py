@@ -73,36 +73,6 @@ def run_pipeline_for_pdf(pdf_path: Path, cohort: str):
         subprocess.run([sys.executable, *command], env=env, check=True)
 
 
-def merge_chunks(cohort_files, output_path):
-    all_chunks = []
-    for cohort, path in cohort_files.items():
-        if not path.exists():
-            continue
-        with open(path, "r", encoding="utf-8") as f:
-            chunks = json.load(f)
-            for chunk in chunks:
-                if "metadata" not in chunk:
-                    chunk["metadata"] = {}
-                chunk["metadata"]["cohort"] = cohort
-                chunk["metadata"]["document_id"] = DOCUMENT_ID_BY_COHORT.get(cohort)
-                chunk_id = str(chunk["chunk_id"])
-                if not chunk_id.startswith(f"{cohort}_"):
-                    chunk["chunk_id"] = f"{cohort}_{chunk_id}"
-                if "parent_id" in chunk["metadata"]:
-                    parent_id = str(chunk["metadata"]["parent_id"])
-                    if not parent_id.startswith(f"{cohort}_"):
-                        chunk["metadata"]["parent_id"] = f"{cohort}_{parent_id}"
-                if "parent_section_id" in chunk["metadata"]:
-                    parent_section_id = str(chunk["metadata"]["parent_section_id"])
-                    if not parent_section_id.startswith(f"{cohort}_"):
-                        chunk["metadata"]["parent_section_id"] = f"{cohort}_{parent_section_id}"
-            all_chunks.extend(chunks)
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(all_chunks, f, ensure_ascii=False, indent=2)
-
-
 def merge_docstore(cohort_files, output_path):
     all_docs = []
     for cohort, path in cohort_files.items():
@@ -666,11 +636,6 @@ def main(argv: list[str] | None = None):
 
     chunk_dir = Path("data/processed/chunks")
     
-    semantic_outputs = {}
-    structured_outputs = {}
-    tool_outputs = {}
-    all_chunk_outputs = {}
-    regulation_chunk_outputs = {}
     docstore_outputs = {}
     formula_outputs = {}
     scoring_outputs = {}
@@ -687,18 +652,8 @@ def main(argv: list[str] | None = None):
         cohort = get_cohort_from_filename(pdf.name)
         run_pipeline_for_pdf(pdf, cohort)
 
-        sem_dest = chunk_dir / f"{cohort}_semantic_chunks.json"
-        struc_dest = chunk_dir / f"{cohort}_structured_lookup_chunks.json"
-        tool_dest = chunk_dir / f"{cohort}_tool_rule_chunks.json"
-        all_chunks_dest = chunk_dir / f"{cohort}_all_chunks.json"
-        regulation_chunks_dest = chunk_dir / f"{cohort}_regulation_chunks.json"
         docstore_dest = chunk_dir / f"{cohort}_docstore_items.json"
         
-        shutil.copy(chunk_dir / "semantic_chunks.json", sem_dest)
-        shutil.copy(chunk_dir / "structured_lookup_chunks.json", struc_dest)
-        shutil.copy(chunk_dir / "tool_rule_chunks.json", tool_dest)
-        shutil.copy(chunk_dir / "all_chunks.json", all_chunks_dest)
-        shutil.copy(chunk_dir / "regulation_chunks.json", regulation_chunks_dest)
         shutil.copy(chunk_dir / "docstore_items.json", docstore_dest)
         
         formula_dest = table_dir / f"{cohort}_formula_rules.json"
@@ -717,11 +672,6 @@ def main(argv: list[str] | None = None):
         shutil.copy(metadata_dir / "document_profile.json", profile_dest)
         shutil.copy(metadata_dir / "content_audit_report.json", audit_dest)
         
-        semantic_outputs[cohort] = sem_dest
-        structured_outputs[cohort] = struc_dest
-        tool_outputs[cohort] = tool_dest
-        all_chunk_outputs[cohort] = all_chunks_dest
-        regulation_chunk_outputs[cohort] = regulation_chunks_dest
         docstore_outputs[cohort] = docstore_dest
         formula_outputs[cohort] = formula_dest
         scoring_outputs[cohort] = scoring_dest
@@ -732,20 +682,8 @@ def main(argv: list[str] | None = None):
         audit_outputs[cohort] = audit_dest
 
     print(f"\n{'='*50}\n--- MERGING MULTI-COHORT CHUNKS ---\n{'='*50}")
-    merge_chunks(semantic_outputs, chunk_dir / "semantic_chunks.json")
-    merge_chunks(structured_outputs, chunk_dir / "structured_lookup_chunks.json")
-    merge_chunks(tool_outputs, chunk_dir / "tool_rule_chunks.json")
-    merge_chunks(all_chunk_outputs, chunk_dir / "all_chunks.json")
-    merge_chunks(regulation_chunk_outputs, chunk_dir / "regulation_chunks.json")
     merge_docstore(docstore_outputs, chunk_dir / "all_docstore_items.json")
     
-    for stale_path in (
-        chunk_dir / "table_chunks.json",
-        chunk_dir / "formula_chunks.json",
-        chunk_dir / "directory_chunks.json",
-    ):
-        if stale_path.exists():
-            stale_path.unlink()
         
     derived_policy_report = derive_foreign_language_policy(
         chunk_dir / "all_docstore_items.json",
@@ -793,11 +731,6 @@ def main(argv: list[str] | None = None):
 
     validate_cohort_tags(
         [
-            chunk_dir / "all_chunks.json",
-            chunk_dir / "semantic_chunks.json",
-            chunk_dir / "structured_lookup_chunks.json",
-            chunk_dir / "tool_rule_chunks.json",
-            chunk_dir / "regulation_chunks.json",
             chunk_dir / "all_docstore_items.json",
             table_dir / "formula_rules.json",
             table_dir / "scoring_tables.json",
@@ -808,10 +741,6 @@ def main(argv: list[str] | None = None):
     )
     validate_retrieval_metadata(
         [
-            chunk_dir / "all_chunks.json",
-            chunk_dir / "semantic_chunks.json",
-            chunk_dir / "structured_lookup_chunks.json",
-            chunk_dir / "tool_rule_chunks.json",
             chunk_dir / "all_docstore_items.json",
             table_dir / "formula_rules.json",
             table_dir / "scoring_tables.json",

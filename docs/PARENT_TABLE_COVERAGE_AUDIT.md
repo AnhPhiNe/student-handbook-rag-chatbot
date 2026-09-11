@@ -79,14 +79,14 @@ complete semantic comparison of all source cells.
    when a page/article pair exists in the curated lookup. It skips `CaoDang`
    deliberately. It does not generally create standalone notice/appendix parents.
 2. `configs/document_sections*.yaml` gives scoring forms a separate content type.
-   `src/chunking/regulation_chunker.py:187` builds parents only for
+   `build_regulation_parents()` in `src/chunking/regulation_parents.py` builds parents only for
    `regulation_text`. Therefore the source can be extracted successfully and
    still never become a regulation parent.
 3. `clean_regulation_source_content()` cuts trailing notices/other documents
    away from the preceding article. This prevents mixing document identities,
    but no replacement parent is created for those notices here.
 4. After that trim, `source_pages` is still built from the original section range
-   (`src/chunking/regulation_chunker.py:195`). Two confirmed examples:
+   (`build_regulation_parents()`). Two confirmed examples:
    - `K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15`:
      pages 152-170, only 616 characters of parent content.
    - `K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15`:

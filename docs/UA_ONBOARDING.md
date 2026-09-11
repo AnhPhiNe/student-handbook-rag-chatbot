@@ -72,7 +72,7 @@ deployment workflow.
    `frontend/src/components/ChatMessage.tsx`, and
    `frontend/src/components/SystemStatusBadge.tsx`.
 8. **Finish with quality gates.** Read `scripts/evaluate_system.py`,
-   `tests/test_product_regression.py`, `tests/test_evaluation.py`, and
+   `tests/test_evaluation.py`, and
    `scripts/deploy_hf_backend.ps1`.
 
 ## 5. File Map
@@ -114,7 +114,6 @@ deployment workflow.
 
 - `scripts/evaluate_system.py`: manifest-based evaluation runner; callers must
   select a dataset explicitly instead of inheriting a historical default.
-- `tests/test_product_regression.py`: user-facing regression contract.
 - `tests/test_evaluation.py`: benchmark and evaluation contract tests.
 - `tests/test_response_cache.py`: cache TTL, prune, eviction, and legacy tests.
 - `scripts/deploy_hf_backend.ps1`: allow-listed Hugging Face backend package.

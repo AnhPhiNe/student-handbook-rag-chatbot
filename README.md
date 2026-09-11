@@ -419,9 +419,7 @@ student_handbook_rag/
 │   │   └── metadata/            # Build manifest, identities and audit metadata
 │   ├── eval/
 │   │   ├── official_v1/         # Current evaluation dataset, results and provenance
-│   │   ├── product_regression/  # Small user-facing regression fixture
-│   │   ├── product_acceptance/  # Reviewable acceptance fixture; not a headline suite
-│   │   ├── composer_development/ # Focused Composer development fixture
+│   │   ├── product_acceptance/  # Historical acceptance review record; not a headline suite
 │   │   ├── release_v33_smoke/   # Retained v33 release-verification evidence
 │   │   └── reports/             # Local run outputs; not necessarily tracked in Git
 │   └── cache/                   # Runtime caches and provider key-pool state

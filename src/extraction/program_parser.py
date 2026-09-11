@@ -5,13 +5,17 @@ import os
 from pathlib import Path
 from typing import Any
 
-import yaml
 
 from .directory_parser import clean_heading_name, is_faculty_heading
-from .program_faculty_enricher import clean_faculty_name, fold_text
+from src.common.text import fold_text
+
+from .program_faculty_enricher import (
+    PROGRAM_OVERRIDES_PATH,
+    clean_faculty_name,
+    load_program_overrides,
+)
 from .text_utils import get_pages_by_type, normalize_text
 
-PROGRAM_OVERRIDES_PATH = Path("configs/program_overrides.yaml")
 
 
 PROGRAM_HEADING_PATTERNS = [
@@ -102,11 +106,9 @@ def _load_implicit_program_rules(
     cohort: str | None,
     path: Path = PROGRAM_OVERRIDES_PATH,
 ) -> dict[str, list[str]]:
-    if not cohort or not path.exists():
+    if not cohort:
         return {}
-    with path.open("r", encoding="utf-8") as f:
-        config = yaml.safe_load(f) or {}
-    by_cohort = config.get("implicit_programs_by_cohort") or {}
+    by_cohort = load_program_overrides(path).get("implicit_programs_by_cohort") or {}
     cohort_rules = by_cohort.get(cohort) or {}
     if not isinstance(cohort_rules, dict):
         return {}

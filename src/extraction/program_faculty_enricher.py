@@ -1,116 +1,31 @@
 from __future__ import annotations
 
 import re
-import unicodedata
 from pathlib import Path
 from typing import Any
 
-import yaml
+from src.common.io import load_yaml
+from src.common.text import fold_text
 
 
 PROGRAM_OVERRIDES_PATH = Path("configs/program_overrides.yaml")
-
-
-def load_program_faculty_overrides(
-    path: Path = PROGRAM_OVERRIDES_PATH,
-) -> dict[str, str]:
-    """Load explicit program-to-faculty corrections."""
-
-    if not path.exists():
-        return MANUAL_PROGRAM_FACULTY
-    with path.open("r", encoding="utf-8") as f:
-        config = yaml.safe_load(f) or {}
-    overrides = config.get("program_faculty_overrides") or {}
-    if not isinstance(overrides, dict):
-        return MANUAL_PROGRAM_FACULTY
-    return {fold_text(key): str(value) for key, value in overrides.items()}
-
-
-def load_program_name_overrides(path: Path = PROGRAM_OVERRIDES_PATH) -> dict[str, str]:
-    """Load canonical program-name corrections."""
-
-    if not path.exists():
-        return {}
-    with path.open("r", encoding="utf-8") as f:
-        config = yaml.safe_load(f) or {}
-    overrides = config.get("program_name_overrides") or {}
-    if not isinstance(overrides, dict):
-        return {}
-    return {fold_text(key): str(value) for key, value in overrides.items()}
-
-
-def load_program_legacy_record_ids(
-    cohort: str | None,
-    path: Path = PROGRAM_OVERRIDES_PATH,
-) -> dict[str, list[str]]:
-    """Load explicit source-record aliases needed across catalog migrations."""
-    if not cohort or not path.exists():
-        return {}
-    with path.open("r", encoding="utf-8") as f:
-        config = yaml.safe_load(f) or {}
-    by_cohort = config.get("legacy_record_ids_by_cohort") or {}
-    cohort_map = by_cohort.get(cohort) or {}
-    if not isinstance(cohort_map, dict):
-        return {}
-    result: dict[str, list[str]] = {}
-    for program_name, aliases in cohort_map.items():
-        if isinstance(aliases, str):
-            aliases = [aliases]
-        if isinstance(aliases, list):
-            result[fold_text(program_name)] = [
-                str(alias).strip() for alias in aliases if str(alias).strip()
-            ]
-    return result
-
-
-MANUAL_PROGRAM_FACULTY = {
-    "cong nghe giao duc": "Khoa Công nghệ Thông tin",
-    "cong nghe thong tin": "Khoa Công nghệ Thông tin",
-    "dia ly hoc": "Khoa Địa lý",
-    "du lich": "Khoa Địa lý",
-    "giao duc chinh tri": "Khoa Giáo dục Chính trị",
-    "giao duc cong dan": "Khoa Giáo dục Chính trị",
-    "giao duc dac biet": "Khoa Giáo dục Đặc biệt",
-    "giao duc hoc": "Khoa Khoa học Giáo dục",
-    "giao duc mam non trinh do cao dang va dai hoc": "Khoa Giáo dục Mầm non",
-    "giao duc quoc phong an ninh": "Khoa Giáo dục Quốc phòng",
-    "giao duc the chat": "Khoa Giáo dục Thể chất",
-    "giao duc tieu hoc": "Khoa Giáo dục Tiểu học",
-    "hoa hoc": "Khoa Hóa học",
-    "ngon ngu han quoc": "Khoa Tiếng Hàn Quốc",
-    "ngon ngu nhat": "Khoa Tiếng Nhật",
-    "quan ly giao duc": "Khoa Khoa học Giáo dục",
-    "sinh hoc ung dung": "Khoa Sinh học",
-    "su pham cong nghe": "Khoa Vật lý",
-    "su pham dia ly": "Khoa Địa lý",
-    "su pham lich su dia ly": "Khoa Địa lý",
-    "su pham hoa hoc": "Khoa Hóa học",
-    "su pham sinh hoc": "Khoa Sinh học",
-    "su pham tin hoc": "Khoa Công nghệ Thông tin",
-    "su pham toan hoc": "Khoa Toán – Tin học",
-    "su pham toan hoc tieng viet va song ngu viet anh": "Khoa Toán – Tin học",
-    "su pham vat ly": "Khoa Vật lý",
-    "tam ly hoc": "Khoa Tâm lý học",
-    "tam ly hoc giao duc": "Khoa Tâm lý học",
-    "toan ung dung": "Khoa Toán – Tin học",
-    "vat ly hoc": "Khoa Vật lý",
-}
-
-
-def fold_text(text: str | None) -> str:
-    """Fold Vietnamese text into a comparison-safe representation."""
-
-    text = str(text or "").lower().replace("đ", "d").replace("Đ", "D")
-    decomposed = unicodedata.normalize("NFD", text)
-    text = "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn")
-    text = re.sub(r"[^a-z0-9]+", " ", text)
-    return re.sub(r"\s+", " ", text).strip()
-
 
 FACULTY_NAME_ALIASES = {
     "khoa tam li hoc": "Khoa Tâm lý học",
     "khoa tam ly hoc": "Khoa Tâm lý học",
 }
+
+
+def load_program_overrides(path: Path = PROGRAM_OVERRIDES_PATH) -> dict[str, Any]:
+    """Load curated program corrections: canonical names, faculties and legacy IDs."""
+
+    return load_yaml(path) or {}
+
+
+def _by_folded_name(mapping: Any) -> dict[str, str]:
+    if not isinstance(mapping, dict):
+        return {}
+    return {fold_text(key): str(value) for key, value in mapping.items()}
 
 
 def clean_faculty_name(name: str | None) -> str:
@@ -124,7 +39,7 @@ def resolve_faculty_name(
     candidate: str,
     faculty_records: list[dict[str, Any]],
 ) -> str:
-    """Resolve a program faculty from explicit and inferred mappings."""
+    """Prefer the faculty's name as written in the faculty directory."""
 
     folded_candidate = fold_text(clean_faculty_name(candidate))
     for faculty in faculty_records:
@@ -137,9 +52,13 @@ def resolve_faculty_name(
 def enrich_program_faculty_names(
     program_records: list[dict[str, Any]],
     faculty_records: list[dict[str, Any]],
+    overrides: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Infer a program faculty only when the handbook omits the direct mapping."""
-    program_name_overrides = load_program_name_overrides()
+
+    if overrides is None:
+        overrides = load_program_overrides()
+    program_name_overrides = _by_folded_name(overrides.get("program_name_overrides"))
     for program in program_records:
         program_key = fold_text(program.get("program_name"))
         canonical_name = program_name_overrides.get(program_key)
@@ -150,7 +69,9 @@ def enrich_program_faculty_names(
         if program.get("faculty_name"):
             program["faculty_name"] = clean_faculty_name(program.get("faculty_name"))
 
-    program_faculty_overrides = load_program_faculty_overrides()
+    program_faculty_overrides = _by_folded_name(
+        overrides.get("program_faculty_overrides")
+    )
     known_by_program: dict[str, str] = {}
     for program in program_records:
         faculty_name = program.get("faculty_name")
@@ -182,9 +103,24 @@ def enrich_program_faculty_names(
 def attach_program_legacy_record_ids(
     program_records: list[dict[str, Any]],
     cohort: str | None,
+    overrides: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Attach explicit aliases for IDs used by older frozen catalogs."""
-    aliases_by_name = load_program_legacy_record_ids(cohort)
+
+    if not cohort:
+        return program_records
+    if overrides is None:
+        overrides = load_program_overrides()
+    cohort_map = (overrides.get("legacy_record_ids_by_cohort") or {}).get(cohort)
+    aliases_by_name: dict[str, list[str]] = {}
+    for program_name, aliases in (cohort_map or {}).items():
+        if isinstance(aliases, str):
+            aliases = [aliases]
+        if isinstance(aliases, list):
+            aliases_by_name[fold_text(program_name)] = [
+                str(alias).strip() for alias in aliases if str(alias).strip()
+            ]
+
     for program in program_records:
         aliases = aliases_by_name.get(fold_text(program.get("program_name")))
         if not aliases:

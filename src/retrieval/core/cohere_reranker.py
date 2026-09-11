@@ -1,20 +1,17 @@
 from __future__ import annotations
 
-import hashlib
 import logging
 import math
 import os
-import threading
 import time
 from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import timezone
-from email.utils import parsedate_to_datetime
 from typing import Any, Callable
 
 import requests
 
 from src.common.env_loader import env_bool
+from src.common.key_pool import KeyPool, KeyPoolConfig, NoAvailableKey, retry_after_seconds
 
 logger = logging.getLogger("student_handbook_rag.retrieval.cohere_reranker")
 COHERE_RERANK_URL = "https://api.cohere.com/v2/rerank"
@@ -68,94 +65,14 @@ class CohereRerankerConfig:
             ),
         )
 
+    def key_pool_config(self) -> KeyPoolConfig:
+        """In-memory, non-blocking limits: reranking fails open instead of waiting."""
 
-class NoAvailableCohereKey(RuntimeError):
-    """Raised when every configured Cohere key is temporarily unavailable."""
-
-
-class CohereKeyPool:
-    """Process-local, non-blocking key rotation for Cohere Rerank."""
-
-    def __init__(
-        self,
-        keys: list[str],
-        *,
-        rpm_limit_per_key: int,
-        cooldown_seconds: float,
-    ) -> None:
-        self.keys = list(dict.fromkeys(key for key in keys if key))
-        self.rpm_limit_per_key = max(1, int(rpm_limit_per_key))
-        self.cooldown_seconds = max(1.0, float(cooldown_seconds))
-        self._lock = threading.Lock()
-        self._cursor = 0
-        self._state = {
-            self.fingerprint(key): {
-                "request_timestamps": [],
-                "cooldown_until": 0.0,
-            }
-            for key in self.keys
-        }
-
-    @property
-    def key_count(self) -> int:
-        return len(self.keys)
-
-    @staticmethod
-    def fingerprint(key: str) -> str:
-        return hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
-
-    def acquire_key(self, *, excluded: set[str] | None = None) -> tuple[str, str, int]:
-        excluded_ids = excluded or set()
-        with self._lock:
-            now = time.time()
-            for offset in range(len(self.keys)):
-                index = (self._cursor + offset) % len(self.keys)
-                key = self.keys[index]
-                key_id = self.fingerprint(key)
-                if key_id in excluded_ids:
-                    continue
-                state = self._state[key_id]
-                timestamps = [
-                    float(timestamp)
-                    for timestamp in state["request_timestamps"]
-                    if now - float(timestamp) < 60.0
-                ]
-                state["request_timestamps"] = timestamps
-                if float(state["cooldown_until"]) > now:
-                    continue
-                if len(timestamps) >= self.rpm_limit_per_key:
-                    continue
-                timestamps.append(now)
-                self._cursor = (index + 1) % len(self.keys)
-                return key, key_id, index
-        raise NoAvailableCohereKey("all_cohere_keys_temporarily_limited")
-
-    def record_rate_limit(self, key_id: str, *, retry_after_seconds: float | None) -> None:
-        with self._lock:
-            state = self._state.get(key_id)
-            if state is None:
-                return
-            cooldown = max(
-                self.cooldown_seconds,
-                float(retry_after_seconds or 0.0),
-            )
-            state["cooldown_until"] = time.time() + cooldown
-
-
-def _retry_after_seconds(response: requests.Response) -> float | None:
-    value = response.headers.get("Retry-After")
-    if not value:
-        return None
-    try:
-        return max(0.0, float(value))
-    except (TypeError, ValueError):
-        try:
-            retry_at = parsedate_to_datetime(value)
-        except (TypeError, ValueError, OverflowError):
-            return None
-        if retry_at.tzinfo is None:
-            retry_at = retry_at.replace(tzinfo=timezone.utc)
-        return max(0.0, retry_at.timestamp() - time.time())
+        return KeyPoolConfig(
+            name="cohere",
+            rpm_limit_per_key=self.rpm_limit_per_key,
+            cooldown_seconds=self.cooldown_seconds,
+        )
 
 
 class CohereReranker:
@@ -171,11 +88,7 @@ class CohereReranker:
         self.config = config
         self._post = post
         resolved_keys = _cohere_api_keys() if keys is None else keys
-        self.key_pool = CohereKeyPool(
-            resolved_keys,
-            rpm_limit_per_key=config.rpm_limit_per_key,
-            cooldown_seconds=config.cooldown_seconds,
-        )
+        self.key_pool = KeyPool(resolved_keys, config.key_pool_config(), scope=config.model)
         if config.enabled and not resolved_keys:
             logger.warning(
                 "Cohere reranker is enabled but COHERE_API_KEYS/COHERE_API_KEY is missing; "
@@ -230,8 +143,8 @@ class CohereReranker:
 
         while len(excluded) < self.key_pool.key_count:
             try:
-                key, key_id, key_index = self.key_pool.acquire_key(excluded=excluded)
-            except NoAvailableCohereKey:
+                key, key_id, key_index = self.key_pool.acquire(excluded=excluded)
+            except NoAvailableKey:
                 telemetry["cohere_fallback_reason"] = "all_keys_temporarily_limited"
                 telemetry["cohere_latency_ms"] = total_latency_ms
                 return fallback, telemetry
@@ -261,7 +174,7 @@ class CohereReranker:
             if response.status_code == 429:
                 self.key_pool.record_rate_limit(
                     key_id,
-                    retry_after_seconds=_retry_after_seconds(response),
+                    retry_after_seconds=retry_after_seconds(response),
                 )
                 logger.info(
                     "Cohere key slot %s reached a rate limit; rotating without waiting.",

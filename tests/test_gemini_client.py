@@ -5,7 +5,8 @@ import unittest
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier, Lock
 
-from src.generation.gemini_client import GeminiClient, GeminiKeyPool
+from src.common.key_pool import KeyPool
+from src.generation.gemini_client import GeminiClient, gemini_key_pool_config
 
 
 class _SlowStreamModels:
@@ -56,17 +57,17 @@ class _FakePool:
             ("secret-two", "fp-two", 1),
         ]
         self.index = 0
-        self.rate_limited: list[tuple[str, str | None]] = []
+        self.rate_limited: list[tuple[str, float | None]] = []
         self.successes: list[str] = []
         self.failures: list[tuple[str, str | None]] = []
 
-    def acquire_key(self):
+    def acquire(self):
         key = self.keys[self.index]
         self.index += 1
         return key
 
-    def record_rate_limit(self, key_id: str, error_type: str | None = None) -> None:
-        self.rate_limited.append((key_id, error_type))
+    def record_rate_limit(self, key_id: str, retry_after_seconds: float | None = None) -> None:
+        self.rate_limited.append((key_id, retry_after_seconds))
 
     def record_success(self, key_id: str) -> None:
         self.successes.append(key_id)
@@ -76,7 +77,7 @@ class _FakePool:
 
 
 class _UnavailablePool:
-    def acquire_key(self):
+    def acquire(self):
         raise RuntimeError("all_gemini_keys_daily_quota_exhausted")
 
 
@@ -148,7 +149,8 @@ class GeminiClientTest(unittest.TestCase):
 
         self.assertTrue(result["ok"])
         self.assertEqual(result["text"], "ok")
-        self.assertEqual(fake_pool.rate_limited, [("fp-one", "rate_limit")])
+        # Gemini sends no retry time, so the pool applies its configured cooldown.
+        self.assertEqual(fake_pool.rate_limited, [("fp-one", None)])
         self.assertEqual(fake_pool.successes, ["fp-two"])
         self.assertNotIn("secret-one", str(result))
 
@@ -179,7 +181,8 @@ class GeminiClientTest(unittest.TestCase):
         chunks = list(client.generate_stream("prompt"))
 
         self.assertEqual(chunks, ["chunk"])
-        self.assertEqual(fake_pool.rate_limited, [("fp-one", "rate_limit")])
+        # Gemini sends no retry time, so the pool applies its configured cooldown.
+        self.assertEqual(fake_pool.rate_limited, [("fp-one", None)])
         self.assertEqual(fake_pool.successes, ["fp-two"])
 
     def test_generate_stream_does_not_retry_after_emitting_a_chunk(self) -> None:
@@ -236,13 +239,13 @@ class GeminiClientTest(unittest.TestCase):
         client = object.__new__(GeminiClient)
         fake_pool = _FakePool()
         fake_pool_lock = Lock()
-        original_acquire_key = fake_pool.acquire_key
+        original_acquire_key = fake_pool.acquire
 
-        def acquire_key():
+        def acquire():
             with fake_pool_lock:
                 return original_acquire_key()
 
-        fake_pool.acquire_key = acquire_key
+        fake_pool.acquire = acquire
         client.available_keys = ["secret-one", "secret-two"]
         client.model_name = "fake-model"
         client.max_retries = 0
@@ -285,13 +288,13 @@ class GeminiClientTest(unittest.TestCase):
         client = object.__new__(GeminiClient)
         fake_pool = _FakePool()
         fake_pool_lock = Lock()
-        original_acquire_key = fake_pool.acquire_key
+        original_acquire_key = fake_pool.acquire
 
-        def acquire_key():
+        def acquire():
             with fake_pool_lock:
                 return original_acquire_key()
 
-        fake_pool.acquire_key = acquire_key
+        fake_pool.acquire = acquire
         client.available_keys = ["secret-one", "secret-two"]
         client.model_name = "fake-model"
         client.max_retries = 0
@@ -334,59 +337,36 @@ class GeminiClientTest(unittest.TestCase):
 
 
 class GeminiKeyPoolTest(unittest.TestCase):
-    def test_key_pool_load_balances_between_keys(self) -> None:
-        pool = GeminiKeyPool(
-            ["key-one", "key-two"],
-            model_name="fake-model",
-            config={
-                "rpm_limit_per_key": 12,
-                "rpd_limit_per_key": 450,
-                "state_path": "",
-                "wait_when_all_keys_limited": False,
-            },
-        )
+    @staticmethod
+    def _pool(keys: list[str], **config) -> KeyPool:
+        config = {"rpm_limit_per_key": 12, "rpd_limit_per_key": 450, "state_path": "", **config}
+        return KeyPool(keys, gemini_key_pool_config(config), scope="fake-model")
 
-        acquired = [pool.acquire_key()[1] for _ in range(4)]
+    def test_key_pool_load_balances_between_keys(self) -> None:
+        pool = self._pool(["key-one", "key-two"])
+
+        acquired = [pool.acquire()[1] for _ in range(4)]
 
         self.assertEqual(acquired[0], acquired[2])
         self.assertEqual(acquired[1], acquired[3])
         self.assertNotEqual(acquired[0], acquired[1])
 
     def test_key_pool_skips_key_in_cooldown(self) -> None:
-        pool = GeminiKeyPool(
-            ["key-one", "key-two"],
-            model_name="fake-model",
-            config={
-                "rpm_limit_per_key": 12,
-                "rpd_limit_per_key": 450,
-                "cooldown_on_rate_limit_seconds": 65,
-                "state_path": "",
-                "wait_when_all_keys_limited": False,
-            },
-        )
+        pool = self._pool(["key-one", "key-two"], cooldown_on_rate_limit_seconds=65)
 
-        _, first_key_id, _ = pool.acquire_key()
+        _, first_key_id, _ = pool.acquire()
         pool.record_rate_limit(first_key_id)
-        _, second_key_id, _ = pool.acquire_key()
+        _, second_key_id, _ = pool.acquire()
 
         self.assertNotEqual(first_key_id, second_key_id)
 
     def test_key_pool_blocks_daily_exhausted_keys(self) -> None:
-        pool = GeminiKeyPool(
-            ["key-one"],
-            model_name="fake-model",
-            config={
-                "rpm_limit_per_key": 12,
-                "rpd_limit_per_key": 1,
-                "state_path": "",
-                "wait_when_all_keys_limited": False,
-            },
-        )
+        pool = self._pool(["key-one"], rpd_limit_per_key=1)
 
-        pool.acquire_key()
+        pool.acquire()
 
-        with self.assertRaisesRegex(RuntimeError, "daily_quota"):
-            pool.acquire_key()
+        with self.assertRaisesRegex(RuntimeError, "daily_request_quota_exhausted"):
+            pool.acquire()
 
 
 if __name__ == "__main__":

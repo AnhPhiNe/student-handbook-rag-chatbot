@@ -5,14 +5,11 @@ import json
 import os
 import re
 import threading
-import time
 from collections.abc import Iterator
 from contextlib import contextmanager
 from contextvars import ContextVar
 from copy import deepcopy
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
-from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +18,7 @@ import yaml
 
 from src.common.cohort import cohort_admission_years
 from src.common.env_loader import load_project_env
+from src.common.key_pool import KeyPool, KeyPoolConfig, retry_after_seconds
 
 from .structured_routing import (
     compact_registry_for_prompt,
@@ -282,13 +280,6 @@ def _explicit_request_count(query: str) -> int | None:
     return count if count >= 2 else None
 
 
-_DURATION_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|[hms])", re.IGNORECASE)
-_RETRY_TEXT_RE = re.compile(
-    r"(?:try again in|retry after)\s+"
-    r"((?:\d+(?:\.\d+)?\s*(?:ms|[hms])\s*)+)",
-    re.IGNORECASE,
-)
-
 PLANNER_SYSTEM_PROMPT = """
 Lập QueryPlan cho Sổ tay HCMUE. Chỉ xuất JSON theo schema được cung cấp;
 không trả lời.
@@ -379,390 +370,20 @@ không trả lời.
 """
 
 
-def _parse_duration_seconds(value: str | None) -> float | None:
-    text = str(value or "").strip()
-    if not text:
-        return None
-    try:
-        return max(0.0, float(text))
-    except ValueError:
-        pass
+def router_key_pool_config(config: dict[str, Any] | None) -> KeyPoolConfig:
+    """Groq planner key limits from the key_pool section of configs/ai_router.yaml."""
 
-    total = 0.0
-    matched = False
-    for amount_text, unit in _DURATION_TOKEN_RE.findall(text):
-        matched = True
-        amount = float(amount_text)
-        normalized_unit = unit.lower()
-        if normalized_unit == "h":
-            total += amount * 3600.0
-        elif normalized_unit == "m":
-            total += amount * 60.0
-        elif normalized_unit == "ms":
-            total += amount / 1000.0
-        else:
-            total += amount
-    return total if matched else None
-
-
-def _retry_after_seconds(exc: Exception) -> float | None:
-    response = getattr(exc, "response", None)
-    headers = getattr(response, "headers", None) or {}
-    for header_name in (
-        "retry-after",
-        "x-ratelimit-reset-tokens",
-        "x-ratelimit-reset-requests",
-    ):
-        header_value = headers.get(header_name)
-        if header_value is None:
-            header_value = headers.get(header_name.title())
-        parsed = _parse_duration_seconds(header_value)
-        if parsed is not None:
-            return parsed
-        if header_name == "retry-after" and header_value:
-            try:
-                retry_at = parsedate_to_datetime(str(header_value))
-                return max(
-                    0.0,
-                    retry_at.timestamp() - datetime.now().astimezone().timestamp(),
-                )
-            except (TypeError, ValueError, OverflowError):
-                pass
-
-    match = _RETRY_TEXT_RE.search(str(exc))
-    return _parse_duration_seconds(match.group(1)) if match else None
-
-
-def _next_local_midnight_timestamp() -> float:
-    local_now = datetime.now().astimezone()
-    return (
-        (local_now + timedelta(days=1))
-        .replace(hour=0, minute=0, second=0, microsecond=0)
-        .timestamp()
+    config = config or {}
+    return KeyPoolConfig(
+        name="ai_router",
+        rpm_limit_per_key=max(1, int(config.get("rpm_limit_per_key", 30))),
+        rpd_limit_per_key=max(1, int(config.get("rpd_limit_per_key", 1000))),
+        tpm_limit_per_key=max(1, int(config.get("tpm_limit_per_key", 8000))),
+        tpd_limit_per_key=max(1, int(config.get("tpd_limit_per_key", 200000))),
+        cooldown_seconds=max(1.0, float(config.get("cooldown_seconds", 65.0))),
+        state_path=str(config.get("state_path", "data/cache/qwen_router_key_state.json")),
+        wait_when_limited=bool(config.get("wait_when_limited", False)),
     )
-
-
-@dataclass(frozen=True)
-class GroqRouterPoolConfig:
-    """Define bounded retry, quota, and cooldown settings for router API keys."""
-
-    rpm_limit_per_key: int = 30
-    rpd_limit_per_key: int = 1000
-    tpm_limit_per_key: int = 8000
-    tpd_limit_per_key: int = 200000
-    cooldown_seconds: float = 65.0
-    state_path: str = "data/cache/qwen_router_key_state.json"
-    wait_when_limited: bool = False
-
-    @classmethod
-    def from_config(cls, config: dict[str, Any] | None) -> "GroqRouterPoolConfig":
-        """Build quota-aware key-pool settings from a configuration mapping."""
-
-        config = config or {}
-        return cls(
-            rpm_limit_per_key=max(1, int(config.get("rpm_limit_per_key", 30))),
-            rpd_limit_per_key=max(1, int(config.get("rpd_limit_per_key", 1000))),
-            tpm_limit_per_key=max(1, int(config.get("tpm_limit_per_key", 8000))),
-            tpd_limit_per_key=max(1, int(config.get("tpd_limit_per_key", 200000))),
-            cooldown_seconds=max(1.0, float(config.get("cooldown_seconds", 65.0))),
-            state_path=str(
-                config.get("state_path", "data/cache/qwen_router_key_state.json")
-            ),
-            wait_when_limited=bool(config.get("wait_when_limited", False)),
-        )
-
-
-class GroqRouterKeyPool:
-    """Quota-aware LRU key pool that tracks requests and reserved tokens."""
-
-    def __init__(
-        self,
-        keys: list[str],
-        *,
-        model_name: str,
-        config: GroqRouterPoolConfig | dict[str, Any] | None = None,
-    ) -> None:
-        self.keys = [key for key in keys if key]
-        if not self.keys:
-            raise RuntimeError("No Groq router API keys available.")
-        self.model_name = model_name
-        self.config = (
-            config
-            if isinstance(config, GroqRouterPoolConfig)
-            else GroqRouterPoolConfig.from_config(config)
-        )
-        self._lock = threading.Lock()
-        self._state_path = Path(self.config.state_path)
-        self._state: dict[str, Any] = {"keys": {}}
-        self._load_state()
-        for key in self.keys:
-            self._key_state(self.fingerprint(key))
-        self._save_state()
-
-    @staticmethod
-    def fingerprint(key: str) -> str:
-        """Return a non-secret identity for the configured key pool."""
-
-        return hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
-
-    def acquire_key(self, estimated_tokens: int) -> tuple[str, str, int]:
-        """Select the next eligible API key under local quota constraints."""
-
-        estimated_tokens = max(1, int(estimated_tokens))
-        while True:
-            with self._lock:
-                now = time.time()
-                today = date.today().isoformat()
-                self._reset_daily(today)
-                self._prune_windows(now)
-
-                candidates: list[tuple[int, int, float, int, str]] = []
-                wait_until: list[float] = []
-                daily_available = False
-                daily_reasons: set[str] = set()
-                state_changed = False
-                for index, key in enumerate(self.keys):
-                    key_id = self.fingerprint(key)
-                    state = self._key_state(key_id)
-                    requests_today = int(state.get("requests_today", 0))
-                    tokens_today = int(state.get("tokens_today", 0))
-                    if requests_today >= self.config.rpd_limit_per_key:
-                        daily_reasons.add("daily_request_quota")
-                        state_changed |= self._mark_unavailable(
-                            state,
-                            reason="daily_request_quota",
-                            available_at=_next_local_midnight_timestamp(),
-                        )
-                        continue
-                    if tokens_today + estimated_tokens > self.config.tpd_limit_per_key:
-                        daily_reasons.add("daily_token_quota")
-                        state_changed |= self._mark_unavailable(
-                            state,
-                            reason="daily_token_quota",
-                            available_at=_next_local_midnight_timestamp(),
-                        )
-                        continue
-                    daily_available = True
-
-                    cooldown_until = float(state.get("cooldown_until", 0.0))
-                    if cooldown_until > now:
-                        wait_until.append(cooldown_until)
-                        state_changed |= self._mark_unavailable(
-                            state,
-                            reason=str(
-                                state.get("unavailable_reason") or "api_rate_limit"
-                            ),
-                            available_at=cooldown_until,
-                        )
-                        continue
-
-                    events = list(state.get("minute_events", []))
-                    minute_tokens = sum(int(event.get("tokens", 0)) for event in events)
-                    if len(events) >= self.config.rpm_limit_per_key:
-                        available_at = float(events[0]["at"]) + 60.0
-                        wait_until.append(available_at)
-                        state_changed |= self._mark_unavailable(
-                            state,
-                            reason="rpm_limit",
-                            available_at=available_at,
-                        )
-                        continue
-                    if minute_tokens + estimated_tokens > self.config.tpm_limit_per_key:
-                        available_at = (
-                            float(events[0]["at"]) + 60.0 if events else now + 1.0
-                        )
-                        wait_until.append(available_at)
-                        state_changed |= self._mark_unavailable(
-                            state,
-                            reason="tpm_limit",
-                            available_at=available_at,
-                        )
-                        continue
-
-                    candidates.append(
-                        (
-                            len(events),
-                            minute_tokens,
-                            float(state.get("last_used_at", 0.0)),
-                            index,
-                            key_id,
-                        )
-                    )
-
-                if candidates:
-                    _, _, _, index, key_id = min(candidates)
-                    self._record_attempt(key_id, now, today, estimated_tokens)
-                    return self.keys[index], key_id, index
-
-                if not daily_available:
-                    available_at = _next_local_midnight_timestamp()
-                    if state_changed:
-                        self._save_state()
-                    reason = (
-                        next(iter(daily_reasons))
-                        if len(daily_reasons) == 1
-                        else "daily_quota"
-                    )
-                    wait_seconds = max(0.0, available_at - now)
-                    raise RuntimeError(
-                        f"all_ai_router_keys_{reason}_exhausted_"
-                        f"retry_after_{wait_seconds:.1f}s"
-                    )
-
-                next_time = min(wait_until) if wait_until else now + 1.0
-                wait_seconds = max(0.1, min(60.0, next_time - now))
-                if state_changed:
-                    self._save_state()
-
-            if not self.config.wait_when_limited:
-                raise RuntimeError(
-                    f"all_ai_router_keys_temporarily_limited_retry_after_{wait_seconds:.1f}s"
-                )
-            time.sleep(wait_seconds)
-
-    def record_success(
-        self, key_id: str, *, actual_tokens: int, reserved_tokens: int
-    ) -> None:
-        """Record successful usage and clear transient failure state."""
-
-        with self._lock:
-            state = self._key_state(key_id)
-            extra = max(0, int(actual_tokens) - int(reserved_tokens))
-            if extra:
-                state["tokens_today"] = int(state.get("tokens_today", 0)) + extra
-                events = state.get("minute_events") or []
-                if events:
-                    events[-1]["tokens"] = int(events[-1].get("tokens", 0)) + extra
-            state["failure_count"] = 0
-            state["last_error_type"] = None
-            self._save_state()
-
-    def record_failure(self, key_id: str, error_type: str) -> None:
-        """Record a failed router attempt for cooldown decisions."""
-
-        with self._lock:
-            state = self._key_state(key_id)
-            state["failure_count"] = int(state.get("failure_count", 0)) + 1
-            state["last_error_type"] = error_type
-            self._save_state()
-
-    def record_rate_limit(
-        self,
-        key_id: str,
-        *,
-        retry_after_seconds: float | None = None,
-    ) -> None:
-        """Mark a key unavailable until its provider retry boundary."""
-
-        with self._lock:
-            state = self._key_state(key_id)
-            retry_seconds = (
-                max(0.1, float(retry_after_seconds))
-                if retry_after_seconds is not None
-                else self.config.cooldown_seconds
-            )
-            available_at = time.time() + retry_seconds
-            state["cooldown_until"] = available_at
-            self._mark_unavailable(
-                state,
-                reason="api_rate_limit",
-                available_at=available_at,
-            )
-            state["failure_count"] = int(state.get("failure_count", 0)) + 1
-            state["last_error_type"] = "rate_limit"
-            self._save_state()
-
-    def _state_key(self, key_id: str) -> str:
-        return f"{self.model_name}:{key_id}"
-
-    def _key_state(self, key_id: str) -> dict[str, Any]:
-        states = self._state.setdefault("keys", {})
-        state_key = self._state_key(key_id)
-        if state_key not in states:
-            states[state_key] = {
-                "minute_events": [],
-                "requests_today": 0,
-                "tokens_today": 0,
-                "daily_reset_date": date.today().isoformat(),
-                "cooldown_until": 0.0,
-                "last_used_at": 0.0,
-                "failure_count": 0,
-                "last_error_type": None,
-                "unavailable_reason": None,
-                "available_at": 0.0,
-            }
-        return states[state_key]
-
-    @staticmethod
-    def _mark_unavailable(
-        state: dict[str, Any],
-        *,
-        reason: str,
-        available_at: float,
-    ) -> bool:
-        changed = state.get("unavailable_reason") != reason or float(
-            state.get("available_at", 0.0)
-        ) != float(available_at)
-        state["unavailable_reason"] = reason
-        state["available_at"] = float(available_at)
-        return changed
-
-    def _record_attempt(
-        self, key_id: str, now: float, today: str, estimated_tokens: int
-    ) -> None:
-        state = self._key_state(key_id)
-        state["minute_events"].append({"at": now, "tokens": estimated_tokens})
-        state["requests_today"] = int(state.get("requests_today", 0)) + 1
-        state["tokens_today"] = int(state.get("tokens_today", 0)) + estimated_tokens
-        state["daily_reset_date"] = today
-        state["last_used_at"] = now
-        state["unavailable_reason"] = None
-        state["available_at"] = 0.0
-        self._save_state()
-
-    def _reset_daily(self, today: str) -> None:
-        for state in self._state.get("keys", {}).values():
-            if state.get("daily_reset_date") != today:
-                state["daily_reset_date"] = today
-                state["requests_today"] = 0
-                state["tokens_today"] = 0
-                if str(state.get("unavailable_reason") or "").startswith("daily_"):
-                    state["unavailable_reason"] = None
-                    state["available_at"] = 0.0
-
-    def _prune_windows(self, now: float) -> None:
-        for state in self._state.get("keys", {}).values():
-            state["minute_events"] = [
-                event
-                for event in state.get("minute_events", [])
-                if now - float(event.get("at", 0.0)) < 60.0
-            ]
-            if (
-                state.get("unavailable_reason") in {"rpm_limit", "tpm_limit"}
-                and float(state.get("available_at", 0.0)) <= now
-            ):
-                state["unavailable_reason"] = None
-                state["available_at"] = 0.0
-
-    def _load_state(self) -> None:
-        if not self._state_path.exists():
-            return
-        try:
-            value = json.loads(self._state_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            return
-        if isinstance(value, dict) and isinstance(value.get("keys"), dict):
-            self._state = {"keys": value["keys"]}
-
-    def _save_state(self) -> None:
-        try:
-            self._state_path.parent.mkdir(parents=True, exist_ok=True)
-            self._state_path.write_text(
-                json.dumps(self._state, ensure_ascii=False, indent=2),
-                encoding="utf-8",
-            )
-        except OSError:
-            return
 
 
 class RouterDecisionCache:
@@ -825,7 +446,7 @@ class AIRouter:
         max_retries: int = 1,
         reasoning_effort: str = "auto",
         response_format: str = "auto",
-        key_pool_config: GroqRouterPoolConfig | dict[str, Any] | None = None,
+        key_pool_config: KeyPoolConfig | dict[str, Any] | None = None,
         cache_path: str = "data/cache/qwen_router_cache.json",
         cache_enabled: bool = True,
         output_tokens_per_task: int = 640,
@@ -854,11 +475,9 @@ class AIRouter:
         self.reasoning_effort = str(reasoning_effort or "auto").strip().lower()
         self.response_format = str(response_format or "auto").strip().lower()
         self.registry = load_lookup_registry()
-        self.key_pool = GroqRouterKeyPool(
-            self.available_keys,
-            model_name=self.model_name,
-            config=key_pool_config,
-        )
+        if not isinstance(key_pool_config, KeyPoolConfig):
+            key_pool_config = router_key_pool_config(key_pool_config)
+        self.key_pool = KeyPool(self.available_keys, key_pool_config, scope=self.model_name)
         self.cache = RouterDecisionCache(cache_path) if cache_enabled else None
 
     @classmethod
@@ -1016,7 +635,7 @@ class AIRouter:
         max_attempts = len(self.available_keys)
         last_error: Exception | None = None
         while attempts < max_attempts:
-            key, key_id, key_index = self.key_pool.acquire_key(estimated_tokens)
+            key, key_id, key_index = self.key_pool.acquire(estimated_tokens)
             attempts += 1
             try:
                 response = self._chat_completion(
@@ -1183,7 +802,7 @@ class AIRouter:
                 if error_type == "rate_limit":
                     self.key_pool.record_rate_limit(
                         key_id,
-                        retry_after_seconds=_retry_after_seconds(exc),
+                        retry_after_seconds=retry_after_seconds(exc),
                     )
                     continue
                 self.key_pool.record_failure(key_id, error_type)

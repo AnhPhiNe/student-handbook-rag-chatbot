@@ -1,247 +1,30 @@
 from __future__ import annotations
 
-import hashlib
-import json
 import os
 import queue
 import threading
 import time
 from collections.abc import Generator
-from dataclasses import dataclass
-from datetime import date
-from pathlib import Path
 from typing import Any
 
 from src.common.env_loader import load_project_env
+from src.common.key_pool import KeyPool, KeyPoolConfig
 
 
-@dataclass(frozen=True)
-class GeminiKeyPoolConfig:
-    """Define quota, cooldown, and persistence settings for Gemini keys."""
+def gemini_key_pool_config(config: dict[str, Any] | None) -> KeyPoolConfig:
+    """Gemini key limits from the key_pool section of configs/answer_generation.yaml."""
 
-    rpm_limit_per_key: int = 12
-    rpd_limit_per_key: int = 450
-    cooldown_on_rate_limit_seconds: float = 65.0
-    state_path: str = "data/cache/gemini_key_state.json"
-    wait_when_all_keys_limited: bool = False
-
-    @classmethod
-    def from_config(cls, config: dict[str, Any] | None) -> "GeminiKeyPoolConfig":
-        """Build Gemini key-pool settings from configuration."""
-
-        config = config or {}
-        state_path = config.get("state_path", "data/cache/gemini_key_state.json")
-        return cls(
-            rpm_limit_per_key=max(1, int(config.get("rpm_limit_per_key", 12))),
-            rpd_limit_per_key=max(1, int(config.get("rpd_limit_per_key", 450))),
-            cooldown_on_rate_limit_seconds=max(
-                1.0, float(config.get("cooldown_on_rate_limit_seconds", 65.0))
-            ),
-            state_path=str(state_path),
-            wait_when_all_keys_limited=bool(
-                config.get("wait_when_all_keys_limited", False)
-            ),
-        )
-
-
-class GeminiKeyPool:
-    """Quota-aware load balancer for multiple Gemini API keys."""
-
-    def __init__(
-        self,
-        keys: list[str],
-        *,
-        model_name: str,
-        config: GeminiKeyPoolConfig | dict[str, Any] | None = None,
-    ) -> None:
-        self.keys = [key for key in keys if key]
-        if not self.keys:
-            raise RuntimeError("No Gemini API keys available.")
-        self.model_name = model_name
-        self.config = (
-            config
-            if isinstance(config, GeminiKeyPoolConfig)
-            else GeminiKeyPoolConfig.from_config(config)
-        )
-        self._lock = threading.Lock()
-        self._state_path = (
-            Path(self.config.state_path) if self.config.state_path else None
-        )
-        self._state: dict[str, Any] = {"keys": {}}
-        self._load_state()
-        self._ensure_key_states()
-
-    def acquire_key(self) -> tuple[str, str, int]:
-        """Return a healthy key and record that a request is about to be sent."""
-        while True:
-            with self._lock:
-                now = time.time()
-                today = date.today().isoformat()
-                self._reset_daily_counts(today)
-                self._prune_request_windows(now)
-
-                candidates: list[tuple[int, float, int, str]] = []
-                wait_until_values: list[float] = []
-                all_daily_exhausted = True
-
-                for index, key in enumerate(self.keys):
-                    key_id = self.fingerprint(key)
-                    state = self._key_state(key_id)
-                    daily_count = int(state.get("daily_count", 0))
-                    if daily_count < self.config.rpd_limit_per_key:
-                        all_daily_exhausted = False
-
-                    cooldown_until = float(state.get("cooldown_until", 0.0))
-                    if cooldown_until > now:
-                        wait_until_values.append(cooldown_until)
-                        continue
-                    if daily_count >= self.config.rpd_limit_per_key:
-                        continue
-
-                    timestamps = list(state.get("request_timestamps", []))
-                    if len(timestamps) >= self.config.rpm_limit_per_key:
-                        wait_until_values.append(float(timestamps[0]) + 60.0)
-                        continue
-
-                    candidates.append(
-                        (
-                            len(timestamps),
-                            float(state.get("last_used_at", 0.0)),
-                            index,
-                            key_id,
-                        )
-                    )
-
-                if candidates:
-                    _, _, index, key_id = min(candidates)
-                    self._record_attempt(key_id, now, today)
-                    return self.keys[index], key_id, index
-
-                if all_daily_exhausted:
-                    raise RuntimeError("all_gemini_keys_daily_quota_exhausted")
-
-                wait_until = min(wait_until_values) if wait_until_values else now + 1.0
-                wait_seconds = max(0.1, min(60.0, wait_until - now))
-
-            if not self.config.wait_when_all_keys_limited:
-                raise RuntimeError(
-                    f"all_gemini_keys_temporarily_limited_retry_after_{wait_seconds:.1f}s"
-                )
-            time.sleep(wait_seconds)
-
-    def record_success(self, key_id: str) -> None:
-        """Record successful generation usage and reset failure state."""
-
-        with self._lock:
-            state = self._key_state(key_id)
-            state["failure_count"] = 0
-            state["last_error_type"] = None
-            self._save_state()
-
-    def record_failure(self, key_id: str, error_type: str | None) -> None:
-        """Record a failed generation attempt for cooldown decisions."""
-
-        with self._lock:
-            state = self._key_state(key_id)
-            state["failure_count"] = int(state.get("failure_count", 0)) + 1
-            state["last_error_type"] = error_type or "unknown"
-            self._save_state()
-
-    def record_rate_limit(
-        self, key_id: str, error_type: str | None = "rate_limit"
-    ) -> None:
-        """Mark a Gemini key unavailable until its retry boundary."""
-
-        with self._lock:
-            state = self._key_state(key_id)
-            state["cooldown_until"] = (
-                time.time() + self.config.cooldown_on_rate_limit_seconds
-            )
-            state["failure_count"] = int(state.get("failure_count", 0)) + 1
-            state["last_error_type"] = error_type or "rate_limit"
-            self._save_state()
-
-    def fingerprint(self, key: str) -> str:
-        """Return a non-secret identifier for one Gemini API key."""
-
-        return hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
-
-    def _state_key(self, key_id: str) -> str:
-        return f"{self.model_name}:{key_id}"
-
-    def _key_state(self, key_id: str) -> dict[str, Any]:
-        states = self._state.setdefault("keys", {})
-        state_key = self._state_key(key_id)
-        if state_key not in states:
-            states[state_key] = self._new_key_state()
-        return states[state_key]
-
-    def _new_key_state(self) -> dict[str, Any]:
-        return {
-            "request_timestamps": [],
-            "daily_count": 0,
-            "daily_reset_date": date.today().isoformat(),
-            "cooldown_until": 0.0,
-            "last_used_at": 0.0,
-            "failure_count": 0,
-            "last_error_type": None,
-        }
-
-    def _ensure_key_states(self) -> None:
-        for key in self.keys:
-            self._key_state(self.fingerprint(key))
-        self._save_state()
-
-    def _record_attempt(self, key_id: str, now: float, today: str) -> None:
-        state = self._key_state(key_id)
-        state["request_timestamps"] = [
-            timestamp
-            for timestamp in state.get("request_timestamps", [])
-            if now - float(timestamp) < 60.0
-        ]
-        state["request_timestamps"].append(now)
-        state["daily_reset_date"] = today
-        state["daily_count"] = int(state.get("daily_count", 0)) + 1
-        state["last_used_at"] = now
-        self._save_state()
-
-    def _reset_daily_counts(self, today: str) -> None:
-        for state in self._state.get("keys", {}).values():
-            if state.get("daily_reset_date") != today:
-                state["daily_reset_date"] = today
-                state["daily_count"] = 0
-
-    def _prune_request_windows(self, now: float) -> None:
-        for state in self._state.get("keys", {}).values():
-            state["request_timestamps"] = [
-                timestamp
-                for timestamp in state.get("request_timestamps", [])
-                if now - float(timestamp) < 60.0
-            ]
-
-    def _load_state(self) -> None:
-        if not self._state_path or not self._state_path.exists():
-            return
-        try:
-            data = json.loads(self._state_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            return
-        if isinstance(data, dict):
-            keys = data.get("keys")
-            if isinstance(keys, dict):
-                self._state = {"keys": keys}
-
-    def _save_state(self) -> None:
-        if not self._state_path:
-            return
-        try:
-            self._state_path.parent.mkdir(parents=True, exist_ok=True)
-            self._state_path.write_text(
-                json.dumps(self._state, ensure_ascii=False, indent=2),
-                encoding="utf-8",
-            )
-        except OSError:
-            return
+    config = config or {}
+    return KeyPoolConfig(
+        name="gemini",
+        rpm_limit_per_key=max(1, int(config.get("rpm_limit_per_key", 12))),
+        rpd_limit_per_key=max(1, int(config.get("rpd_limit_per_key", 450))),
+        cooldown_seconds=max(
+            1.0, float(config.get("cooldown_on_rate_limit_seconds", 65.0))
+        ),
+        state_path=str(config.get("state_path", "data/cache/gemini_key_state.json")),
+        wait_when_limited=bool(config.get("wait_when_all_keys_limited", False)),
+    )
 
 
 class GeminiClient:
@@ -257,7 +40,7 @@ class GeminiClient:
         retry_max_delay_seconds: float = 20,
         request_timeout_seconds: float = 60,
         api_keys_env_var: str = "GEMINI_API_KEYS",
-        key_pool_config: GeminiKeyPoolConfig | dict[str, Any] | None = None,
+        key_pool_config: KeyPoolConfig | dict[str, Any] | None = None,
     ) -> None:
         load_project_env()
         self.api_keys_env_var = api_keys_env_var
@@ -288,10 +71,10 @@ class GeminiClient:
         self.retry_base_delay_seconds = float(retry_base_delay_seconds)
         self.retry_max_delay_seconds = float(retry_max_delay_seconds)
         self.request_timeout_seconds = float(request_timeout_seconds)
-        self.key_pool = GeminiKeyPool(
-            self.available_keys,
-            model_name=self.model_name,
-            config=key_pool_config,
+        if not isinstance(key_pool_config, KeyPoolConfig):
+            key_pool_config = gemini_key_pool_config(key_pool_config)
+        self.key_pool = KeyPool(
+            self.available_keys, key_pool_config, scope=self.model_name
         )
 
         self._client = self._create_client(self.available_keys[0])
@@ -318,7 +101,7 @@ class GeminiClient:
 
         while attempts < max_attempts:
             try:
-                current_key, key_id, key_index = self.key_pool.acquire_key()
+                current_key, key_id, key_index = self.key_pool.acquire()
             except Exception as exc:
                 last_error_type = self._classify_error(exc)
                 last_error_message = str(exc)
@@ -353,7 +136,7 @@ class GeminiClient:
                         "[GeminiClient] Key "
                         f"{key_index}:{key_id} hit rate limit; cooling down."
                     )
-                    self.key_pool.record_rate_limit(key_id, last_error_type)
+                    self.key_pool.record_rate_limit(key_id)
                     continue
 
                 self.key_pool.record_failure(key_id, last_error_type)
@@ -420,7 +203,7 @@ class GeminiClient:
             return "timeout"
 
         text = f"{type(exc).__name__}: {exc}".lower()
-        if "all_gemini_keys_daily_quota_exhausted" in text:
+        if "all_gemini_keys_daily" in text and "quota_exhausted" in text:
             return "quota_exhausted"
         if any(
             token in text
@@ -462,7 +245,7 @@ class GeminiClient:
         attempts = 0
         max_attempts = max(1, self.max_retries + 1)
         while attempts < max_attempts:
-            current_key, key_id, key_index = self.key_pool.acquire_key()
+            current_key, key_id, key_index = self.key_pool.acquire()
             attempts += 1
             emitted_any = False
             try:
@@ -495,7 +278,7 @@ class GeminiClient:
                         "[GeminiClient] Streaming key "
                         f"{key_index}:{key_id} hit rate limit; cooling down."
                     )
-                    self.key_pool.record_rate_limit(key_id, error_type)
+                    self.key_pool.record_rate_limit(key_id)
                     if emitted_any:
                         raise
                     continue

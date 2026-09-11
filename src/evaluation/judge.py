@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import math
 import os
 import re
-import threading
-import time
 from dataclasses import dataclass
-from datetime import date
 from pathlib import Path
 from typing import Any, Callable
+
+from src.common.key_pool import KeyPool, KeyPoolConfig
 
 
 PINNED_JUDGE_MODEL = "openai/gpt-oss-120b"
@@ -22,12 +20,6 @@ JUDGE_METRICS = (
     "context_recall",
     "citation_correctness",
 )
-
-
-def key_fingerprint(key: str) -> str:
-    """Return a non-secret identifier for one provider API key."""
-
-    return hashlib.sha256(key.encode("utf-8")).hexdigest()[:10]
 
 
 def estimate_tokens(text: str) -> int:
@@ -58,137 +50,25 @@ class JudgeConfig:
             raise ValueError(f"V8 Judge must use exactly {PINNED_JUDGE_MODEL}")
 
 
-class JudgeQuotaPool:
-    """Local quota-aware LRU pool. It never stores or logs raw API keys."""
+def judge_key_pool(keys: list[str], config: JudgeConfig) -> KeyPool:
+    """Groq key pool for the judge; it waits up to max_quota_wait_seconds for a key."""
 
-    def __init__(self, keys: list[str], config: JudgeConfig) -> None:
-        if not keys:
-            raise ValueError("Missing GROQ_API_KEYS for the generated-answer Judge")
-        self.keys = list(dict.fromkeys(key.strip() for key in keys if key.strip()))
-        self.config = config
-        self._lock = threading.Lock()
-        self._state = self._load_state()
-        for key in self.keys:
-            self._state.setdefault(key_fingerprint(key), self._new_state())
-        self._save_state()
-
-    @classmethod
-    def from_environment(cls, config: JudgeConfig) -> "JudgeQuotaPool":
-        """Build the judge key pool from environment configuration."""
-
-        raw = os.environ.get("GROQ_API_KEYS") or ""
-        return cls([item.strip() for item in raw.split(",") if item.strip()], config)
-
-    def acquire(self, estimated_input_tokens: int) -> tuple[str, str]:
-        """Acquire the next eligible judge API key under quota limits."""
-
-        if estimated_input_tokens > self.config.tpm_limit_per_key:
-            raise RuntimeError("judge_request_exceeds_per_key_tpm_limit")
-        deadline = time.monotonic() + self.config.max_quota_wait_seconds
-        while True:
-            with self._lock:
-                now = time.time()
-                candidates: list[tuple[int, float, str, str]] = []
-                daily_exhausted = 0
-                next_ready: list[float] = []
-                for key in self.keys:
-                    fingerprint = key_fingerprint(key)
-                    state = self._refresh(fingerprint, now)
-                    if (
-                        state["daily_tokens"] + estimated_input_tokens
-                        > self.config.tpd_limit_per_key
-                    ):
-                        daily_exhausted += 1
-                        continue
-                    if state["cooldown_until"] > now:
-                        next_ready.append(state["cooldown_until"] - now)
-                        continue
-                    requests = state["requests"]
-                    recent_tokens = sum(item[1] for item in requests)
-                    if len(requests) >= self.config.rpm_limit_per_key:
-                        next_ready.append(max(0.05, 60 - (now - requests[0][0])))
-                        continue
-                    if (
-                        recent_tokens + estimated_input_tokens
-                        > self.config.tpm_limit_per_key
-                    ):
-                        next_ready.append(max(0.05, 60 - (now - requests[0][0])))
-                        continue
-                    candidates.append(
-                        (recent_tokens, state["last_used_at"], key, fingerprint)
-                    )
-
-                if candidates:
-                    _, _, key, fingerprint = min(
-                        candidates, key=lambda item: (item[0], item[1])
-                    )
-                    state = self._state[fingerprint]
-                    state["requests"].append([now, estimated_input_tokens])
-                    state["daily_tokens"] += estimated_input_tokens
-                    state["last_used_at"] = now
-                    self._save_state()
-                    return key, fingerprint
-                if daily_exhausted == len(self.keys):
-                    raise RuntimeError(
-                        "all_groq_judge_keys_daily_token_quota_exhausted"
-                    )
-                wait_seconds = min(next_ready or [1.0])
-
-            if time.monotonic() + wait_seconds > deadline:
-                raise RuntimeError("all_groq_judge_keys_temporarily_limited")
-            time.sleep(wait_seconds)
-
-    def record_success(self, fingerprint: str, output_tokens: int) -> None:
-        """Record successful judge usage for quota accounting."""
-
-        with self._lock:
-            state = self._state[fingerprint]
-            state["failure_count"] = 0
-            self._save_state()
-
-    def record_failure(self, fingerprint: str, *, rate_limited: bool) -> None:
-        """Record a failed judge request and apply cooldown."""
-
-        with self._lock:
-            state = self._state[fingerprint]
-            state["failure_count"] += 1
-            if rate_limited:
-                state["cooldown_until"] = time.time() + self.config.cooldown_seconds
-            self._save_state()
-
-    def _refresh(self, fingerprint: str, now: float) -> dict[str, Any]:
-        state = self._state.setdefault(fingerprint, self._new_state())
-        state["requests"] = [
-            item for item in state["requests"] if now - float(item[0]) < 60
-        ]
-        today = date.today().isoformat()
-        if state["daily_date"] != today:
-            state.update(self._new_state())
-        return state
-
-    @staticmethod
-    def _new_state() -> dict[str, Any]:
-        return {
-            "requests": [],
-            "daily_tokens": 0,
-            "daily_date": date.today().isoformat(),
-            "cooldown_until": 0.0,
-            "last_used_at": 0.0,
-            "failure_count": 0,
-        }
-
-    def _load_state(self) -> dict[str, dict[str, Any]]:
-        try:
-            payload = json.loads(self.config.state_path.read_text(encoding="utf-8"))
-            return payload if isinstance(payload, dict) else {}
-        except (OSError, json.JSONDecodeError):
-            return {}
-
-    def _save_state(self) -> None:
-        self.config.state_path.parent.mkdir(parents=True, exist_ok=True)
-        self.config.state_path.write_text(
-            json.dumps(self._state, ensure_ascii=True, indent=2), encoding="utf-8"
-        )
+    if not keys:
+        raise ValueError("Missing GROQ_API_KEYS for the generated-answer Judge")
+    return KeyPool(
+        keys,
+        KeyPoolConfig(
+            name="groq_judge",
+            rpm_limit_per_key=config.rpm_limit_per_key,
+            tpm_limit_per_key=config.tpm_limit_per_key,
+            tpd_limit_per_key=config.tpd_limit_per_key,
+            cooldown_seconds=config.cooldown_seconds,
+            state_path=str(config.state_path),
+            wait_when_limited=True,
+            max_wait_seconds=config.max_quota_wait_seconds,
+        ),
+        scope=config.model_name,
+    )
 
 
 def compact_judge_packet(
@@ -504,12 +384,13 @@ class GroqJudgeClient:
         self,
         config: JudgeConfig | None = None,
         *,
-        pool: JudgeQuotaPool | None = None,
+        pool: KeyPool | None = None,
         request_fn: Callable[[str, str, JudgeConfig], tuple[str, dict[str, int]]]
         | None = None,
     ) -> None:
         self.config = config or JudgeConfig()
-        self.pool = pool or JudgeQuotaPool.from_environment(self.config)
+        keys = [key.strip() for key in (os.environ.get("GROQ_API_KEYS") or "").split(",")]
+        self.pool = pool or judge_key_pool([key for key in keys if key], self.config)
         self.request_fn = request_fn or self._request
 
     def judge(self, packet: dict[str, Any]) -> dict[str, Any]:
@@ -518,15 +399,13 @@ class GroqJudgeClient:
         prompt = build_judge_prompt(packet)
         last_error = "unknown"
         for attempt in range(1, self.config.max_retries + 2):
-            key, fingerprint = self.pool.acquire(
+            key, fingerprint, _ = self.pool.acquire(
                 estimate_tokens(prompt) + self.config.max_output_tokens
             )
             try:
                 text, usage = self.request_fn(key, prompt, self.config)
                 parsed = parse_judge_json(text)
-                self.pool.record_success(
-                    fingerprint, int(usage.get("output_tokens", 0))
-                )
+                self.pool.record_success(fingerprint)
                 return {
                     "ok": True,
                     "model_id": self.config.model_name,
@@ -542,7 +421,10 @@ class GroqJudgeClient:
                     token in last_error.lower()
                     for token in ("429", "rate limit", "quota")
                 )
-                self.pool.record_failure(fingerprint, rate_limited=rate_limited)
+                if rate_limited:
+                    self.pool.record_rate_limit(fingerprint)
+                else:
+                    self.pool.record_failure(fingerprint, "judge_error")
         return {
             "ok": False,
             "model_id": self.config.model_name,

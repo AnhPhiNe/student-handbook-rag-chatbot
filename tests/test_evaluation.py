@@ -15,11 +15,10 @@ from src.evaluation.judge import (
     PINNED_JUDGE_MODEL,
     GroqJudgeClient,
     JudgeConfig,
-    JudgeQuotaPool,
     build_judge_prompt,
     compact_judge_packet,
     estimate_tokens,
-    key_fingerprint,
+    judge_key_pool,
     parse_judge_json,
 )
 from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
@@ -34,7 +33,8 @@ from src.evaluation.suites import (
     evaluate_retrieval,
     generate_answers,
 )
-from src.generation.gemini_client import GeminiKeyPool, GeminiKeyPoolConfig
+from src.common.key_pool import KeyPool
+from src.generation.gemini_client import gemini_key_pool_config
 from src.generation.gemini_client import GeminiClient
 
 
@@ -637,7 +637,7 @@ def test_judge_prompt_is_fair_for_unanswerable_abstention() -> None:
 
 def test_judge_is_pinned_and_fails_over_without_model_switch(tmp_path: Path) -> None:
     config = JudgeConfig(state_path=tmp_path / "judge_state.json", max_retries=2)
-    pool = JudgeQuotaPool(["secret-one", "secret-two"], config)
+    pool = judge_key_pool(["secret-one", "secret-two"], config)
     called: list[tuple[str, str]] = []
 
     def request_fn(key: str, _prompt: str, actual_config: JudgeConfig):
@@ -668,32 +668,29 @@ def test_judge_rejects_any_other_model() -> None:
 
 def test_all_judge_daily_quota_exhausted_is_explicit(tmp_path: Path) -> None:
     config = JudgeConfig(state_path=tmp_path / "judge_state.json", tpd_limit_per_key=10)
-    pool = JudgeQuotaPool(["secret"], config)
-    pool._state[key_fingerprint("secret")]["daily_tokens"] = 10
+    pool = judge_key_pool(["secret"], config)
+    pool.acquire(10)
     with pytest.raises(RuntimeError, match="daily_token_quota_exhausted"):
         pool.acquire(1)
 
 
 def test_judge_request_larger_than_per_key_tpm_is_explicit(tmp_path: Path) -> None:
     config = JudgeConfig(state_path=tmp_path / "judge_state.json", tpm_limit_per_key=10)
-    pool = JudgeQuotaPool(["secret"], config)
+    pool = judge_key_pool(["secret"], config)
 
     with pytest.raises(RuntimeError, match="request_exceeds_per_key_tpm_limit"):
         pool.acquire(11)
 
 
 def test_gemini_pool_skips_rate_limited_key(tmp_path: Path) -> None:
-    pool = GeminiKeyPool(
+    pool = KeyPool(
         ["gemini-one", "gemini-two"],
-        model_name="gemini-3.1-flash-lite",
-        config=GeminiKeyPoolConfig(
-            state_path=str(tmp_path / "gemini_state.json"),
-            wait_when_all_keys_limited=False,
-        ),
+        gemini_key_pool_config({"state_path": str(tmp_path / "gemini_state.json")}),
+        scope="gemini-3.1-flash-lite",
     )
-    first_key, first_id, _ = pool.acquire_key()
+    first_key, first_id, _ = pool.acquire()
     pool.record_rate_limit(first_id)
-    second_key, _, _ = pool.acquire_key()
+    second_key, _, _ = pool.acquire()
     assert first_key != second_key
     state_text = (tmp_path / "gemini_state.json").read_text(encoding="utf-8")
     assert "gemini-one" not in state_text
@@ -701,23 +698,21 @@ def test_gemini_pool_skips_rate_limited_key(tmp_path: Path) -> None:
 
 
 def test_gemini_pool_reports_all_keys_temporarily_limited(tmp_path: Path) -> None:
-    pool = GeminiKeyPool(
+    pool = KeyPool(
         ["gemini-one"],
-        model_name="gemini-3.1-flash-lite",
-        config=GeminiKeyPoolConfig(
-            rpm_limit_per_key=1,
-            state_path=str(tmp_path / "gemini_state.json"),
-            wait_when_all_keys_limited=False,
+        gemini_key_pool_config(
+            {"rpm_limit_per_key": 1, "state_path": str(tmp_path / "gemini_state.json")}
         ),
+        scope="gemini-3.1-flash-lite",
     )
-    pool.acquire_key()
+    pool.acquire()
     with pytest.raises(RuntimeError, match="temporarily_limited"):
-        pool.acquire_key()
+        pool.acquire()
 
 
 def test_gemini_empty_response_is_not_success() -> None:
     class Pool:
-        def acquire_key(self):
+        def acquire(self):
             return "secret", "fingerprint", 0
 
         def record_failure(self, *_args):

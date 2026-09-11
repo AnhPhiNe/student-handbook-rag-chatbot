@@ -6,12 +6,10 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
+from src.common.key_pool import KeyPool, NoAvailableKey, retry_after_seconds
 from src.retrieval.core.cohere_reranker import (
-    CohereKeyPool,
     CohereReranker,
     CohereRerankerConfig,
-    NoAvailableCohereKey,
-    _retry_after_seconds,
 )
 
 
@@ -107,24 +105,23 @@ def test_rate_limit_rotates_to_next_key_without_waiting() -> None:
 def test_retry_after_accepts_http_date() -> None:
     response = _response(429, headers={"Retry-After": formatdate(200.0, usegmt=True)})
 
-    with patch("src.retrieval.core.cohere_reranker.time.time", return_value=100.0):
-        seconds = _retry_after_seconds(response)
+    with patch("src.common.key_pool.time.time", return_value=100.0):
+        seconds = retry_after_seconds(response)
 
     assert seconds == pytest.approx(100.0)
 
 
 def test_key_pool_enforces_rolling_per_minute_limit() -> None:
-    pool = CohereKeyPool(
-        ["key-a", "key-b"], rpm_limit_per_key=1, cooldown_seconds=65
-    )
-    with patch("src.retrieval.core.cohere_reranker.time.time", return_value=100.0):
-        assert pool.acquire_key()[2] == 0
-        assert pool.acquire_key()[2] == 1
-        with pytest.raises(NoAvailableCohereKey):
-            pool.acquire_key()
+    config = CohereRerankerConfig(rpm_limit_per_key=1, cooldown_seconds=65)
+    pool = KeyPool(["key-a", "key-b"], config.key_pool_config())
+    with patch("src.common.key_pool.time.time", return_value=100.0):
+        assert pool.acquire()[2] == 0
+        assert pool.acquire()[2] == 1
+        with pytest.raises(NoAvailableKey):
+            pool.acquire()
 
-    with patch("src.retrieval.core.cohere_reranker.time.time", return_value=161.0):
-        assert pool.acquire_key()[2] == 0
+    with patch("src.common.key_pool.time.time", return_value=161.0):
+        assert pool.acquire()[2] == 0
 
 
 def test_all_rate_limited_keys_fail_open_to_full_rrf() -> None:

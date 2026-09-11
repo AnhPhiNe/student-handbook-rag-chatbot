@@ -11,11 +11,13 @@ from src.evaluation.deterministic import evaluate_deterministic
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path)
+    parser.add_argument("--bundle", default=BUNDLE.name, help="Folder under data/eval, e.g. official_v2.")
     args = parser.parse_args()
+    bundle = ROOT / "data/eval" / args.bundle
     saved = json.loads(args.source.read_text(encoding="utf-8"))
-    cases = json.loads((BUNDLE / "deterministic_tool_cases.json").read_text(encoding="utf-8"))
+    cases = json.loads((bundle / "deterministic_tool_cases.json").read_text(encoding="utf-8"))
     rows = saved["cases"]
-    assert len(rows) == len(cases) == 135
+    assert len(rows) == len(cases) > 0
     for case, row in zip(cases, rows):
         assert case["id"] == row["id"] and case["query"] == row["query"]
         assert case["cohort"] == row["cohort"] and case["history"] == row["history"]
@@ -45,7 +47,7 @@ def main():
         "runtime_snapshot": saved["run_snapshot"],
         "runtime_hashes_matched_after_live_run": saved["post_run_hashes_match"],
         "grading_hashes": {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
-                           for p in [BUNDLE / "deterministic_tool_cases.json", Path(__file__),
+                           for p in [bundle / "deterministic_tool_cases.json", Path(__file__),
                                      *ROOT.glob("src/evaluation/*.py")]},
     }
     target = args.source.with_name("deterministic_regraded.json")

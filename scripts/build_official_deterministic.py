@@ -17,6 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "data/eval/official_v1"
 COHORTS = ("K48-K49", "K50", "K51")
 CONTRACT = "query-plan-grounded-outcome-v9"
+# Size and balance checks used when an authoring file declares no `settings.expected`.
+V1_EXPECTED = {"cases": 135, "per_cohort": 45, "styles": {"realistic": 108, "stress": 27}}
+V1_OVERLAP_POLICY = "Historical overlap screening not performed by owner decision. No independent holdout claim."
+# Optional per-case authoring fields copied onto the compiled case for slicing and provenance.
+CASE_METADATA_FIELDS = ("slice", "stress_type", "author", "reviewer")
 PATHS = {
     "tables": "data/processed/tables/structured_tables_registry.json",
     "formula": "data/processed/tables/formula_rules.json",
@@ -242,13 +247,23 @@ def compile_task(spec, cohort, catalogs):
     return task, gold
 
 
-def build():
-    definitions = yaml.safe_load((BUNDLE / "deterministic_authoring.yaml").read_text(encoding="utf-8"))["cases"]
-    assert len(definitions) == 135, len(definitions)
+def build(bundle: Path = BUNDLE):
+    """Compile `<bundle>/deterministic_authoring.yaml` into V9 case contracts.
+
+    Optional `settings` in the authoring file name the id prefix, the holdout claim and
+    the expected size and balance. Optional per-case fields: `selected_cohort` (the cohort
+    picked in the UI; otherwise cohorts rotate in file order), `history` (earlier turns as
+    role/content items) and the metadata in CASE_METADATA_FIELDS.
+    """
+    authoring = yaml.safe_load((bundle / "deterministic_authoring.yaml").read_text(encoding="utf-8"))
+    definitions = authoring["cases"]
+    settings = authoring.get("settings") or {}
+    expected = settings.get("expected", V1_EXPECTED)
+    assert len(definitions) == expected["cases"], len(definitions)
     catalogs = records()
     result = []
     for index, definition in enumerate(definitions, 1):
-        cohort = COHORTS[(index - 1) % 3]
+        cohort = definition.get("selected_cohort") or COHORTS[(index - 1) % 3]
         tasks, gold = [], []
         state = "clarify" if "clarify" in definition else "out_of_domain" if definition.get("out_of_domain") else "answer"
         if state == "answer":
@@ -268,9 +283,9 @@ def build():
         # Retrieval quality belongs to the retrieval suite. Here only routing is asserted.
         style = "stress" if definition.get("stress") else "realistic"
         case = {
-            "id": f"official_det_{index:03d}", "suite": "deterministic",
-            "query": definition["query"], "cohort": cohort, "history": [],
-            "tags": ["official_v1", definition["category"], style], "category": definition["category"],
+            "id": f"{settings.get('id_prefix', 'official_det')}_{index:03d}", "suite": "deterministic",
+            "query": definition["query"], "cohort": cohort, "history": definition.get("history", []),
+            "tags": [bundle.name, definition["category"], style], "category": definition["category"],
             "topic": "khac", "question_style": style, "eval_split": style,
             "coverage_features": definition.get("coverage_features", []),
             "expected_intent": "query_plan", "expected_strategy": "query_plan_execution",
@@ -278,9 +293,9 @@ def build():
             "contract_version": CONTRACT, "accepted_outcomes": [outcome],
             "bind_execution_to_plan": True,
             "gold_evidence": gold, "author_review_state": "ai_reviewed_pending_owner_approval",
-            "query_origin": "official_v1_hand_authored", "frozen": False,
-            "independent_holdout": False,
-            "overlap_policy": "Historical overlap screening not performed by owner decision. No independent holdout claim.",
+            "query_origin": f"{bundle.name}_hand_authored", "frozen": False,
+            "independent_holdout": bool(settings.get("independent_holdout", False)),
+            "overlap_policy": settings.get("overlap_policy", V1_OVERLAP_POLICY),
             "na_assertions": {"final_answer": "N/A: no Composer execution in this suite",
                               "retrieval_quality": "N/A: measured in separate retrieval suite"},
         }
@@ -335,16 +350,24 @@ def build():
         case["cohort_sensitivity"] = "multi_cohort_risk" if len(targets) > 1 else "single_cohort"
         case["question_specificity"] = "ambiguous" if state == "clarify" else "specific"
         case["expected_answer_behavior"] = "clarify_or_scope" if state == "clarify" else "abstain" if state == "out_of_domain" else "direct_answer"
+        case.update({key: definition[key] for key in CASE_METADATA_FIELDS if key in definition})
         result.append(case)
-    assert Counter(c["cohort"] for c in result) == dict.fromkeys(COHORTS, 45)
-    assert Counter(c["question_style"] for c in result) == {"realistic": 108, "stress": 27}
+    if expected.get("per_cohort"):
+        assert Counter(c["cohort"] for c in result) == dict.fromkeys(COHORTS, expected["per_cohort"])
+    if expected.get("styles"):
+        assert Counter(c["question_style"] for c in result) == expected["styles"]
     return result
 
 
 if __name__ == "__main__":
-    if (BUNDLE / "deterministic_manifest.json").exists():
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--bundle", default=BUNDLE.name, help="Folder under data/eval, e.g. official_v2.")
+    bundle = ROOT / "data/eval" / parser.parse_args().bundle
+    if (bundle / "deterministic_manifest.json").exists():
         raise RuntimeError("Deterministic suite already frozen; refusing to rebuild")
-    cases = build()
-    target = BUNDLE / "deterministic_tool_cases.json"
+    cases = build(bundle)
+    target = bundle / "deterministic_tool_cases.json"
     target.write_text(json.dumps(cases, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Compiled {len(cases)} source-backed contracts; no inference executed.")

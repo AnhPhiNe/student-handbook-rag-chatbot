@@ -86,3 +86,15 @@ def retrieval_metrics(
         else 1.0 / (first_relevant + 1),
         "ndcg_at_5": dcg / idcg if idcg else 0.0,
     }
+
+
+def wilson_interval(successes: int, n: int, z: float = 1.96) -> dict[str, float | None]:
+    """95% Wilson score interval for a pass rate; stays inside [0, 1] for small n."""
+
+    if n <= 0:
+        return {"low": None, "high": None}
+    p = successes / n
+    denominator = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / denominator
+    margin = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denominator
+    return {"low": max(0.0, centre - margin), "high": min(1.0, centre + margin)}

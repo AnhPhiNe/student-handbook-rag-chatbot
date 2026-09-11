@@ -316,3 +316,50 @@ def test_grouped_gold_rejects_missing_cohort_unit():
     errors = []
     validate_deterministic_case(case, errors)
     assert any("execution_units" in error for error in errors)
+
+
+def test_builder_compiles_a_holdout_bundle_with_history_and_slices(tmp_path):
+    import yaml
+    from src.evaluation.dataset import _validate_common
+
+    history = [{"role": "user", "content": "GPA 2,76 của K51 là loại gì?"},
+               {"role": "assistant", "content": "GPA 2,76 thuộc loại khá."}]
+    authoring = {
+        "settings": {"id_prefix": "official_v2_det", "independent_holdout": True,
+                     "overlap_policy": "Held-out set; never used to tune the system.",
+                     "expected": {"cases": 2}},
+        "cases": [
+            {"query": "GPA 2,76 là loại gì?", "category": "scoring", "selected_cohort": "K51",
+             "table": ["academic_classification", 2, "academic_classification"],
+             "input_slots": {"score_or_grade": 2.76}, "slice": "single.structured", "author": "owner"},
+            {"query": "Còn K50 thì sao?", "category": "scoring", "selected_cohort": "K50",
+             "table": ["academic_classification", 2, "academic_classification"],
+             "history": history, "slice": "memory.cohort_switch", "stress": True, "stress_type": "ellipsis"},
+        ],
+    }
+    bundle = tmp_path / "official_v2"
+    bundle.mkdir()
+    (bundle / "deterministic_authoring.yaml").write_text(yaml.safe_dump(authoring, allow_unicode=True), encoding="utf-8")
+
+    cases = build(bundle)
+
+    assert [c["id"] for c in cases] == ["official_v2_det_001", "official_v2_det_002"]
+    assert [c["cohort"] for c in cases] == ["K51", "K50"]
+    assert cases[0]["history"] == [] and cases[1]["history"] == history
+    assert cases[1]["accepted_outcomes"][0]["required_tasks"][0]["cohorts"] == ["K50"]
+    assert [c["slice"] for c in cases] == ["single.structured", "memory.cohort_switch"]
+    assert cases[1]["stress_type"] == "ellipsis" and cases[1]["question_style"] == "stress"
+    assert all(c["tags"][0] == "official_v2" and c["independent_holdout"] for c in cases)
+    errors = []
+    for case in cases:
+        _validate_common(case, "deterministic", errors)
+        validate_deterministic_case(case, errors)
+    assert errors == []
+
+
+def test_runner_requires_current_worktree_for_a_bundle_without_runtime_freeze(tmp_path):
+    import pytest
+    from scripts.run_official_deterministic import verify_runtime
+
+    with pytest.raises(ValueError, match="pass --current-worktree"):
+        verify_runtime(tmp_path, current_worktree=False)

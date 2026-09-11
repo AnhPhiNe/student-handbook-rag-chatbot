@@ -58,6 +58,7 @@ def main():
     parser.add_argument("--suite", choices=tuple(CASE_FILES), required=True)
     parser.add_argument("--output", help="Existing run directory to resume.")
     parser.add_argument("--limit", type=int, help="Smoke-test only the first N cases.")
+    parser.add_argument("--bundle", default=BUNDLE.name, help="Folder under data/eval, e.g. official_v2.")
     parser.add_argument("--base-url", default="http://127.0.0.1:8000",
                         help="Deployed API to send the production suite requests to.")
     parser.add_argument("--retrieval-mode", help="Retrieval suite only: run an ablation mode "
@@ -71,7 +72,7 @@ def main():
     from src.evaluation.production import evaluate_production
     from src.evaluation.retrieval import evaluate_retrieval
 
-    case_path = BUNDLE / CASE_FILES[args.suite]
+    case_path = ROOT / "data/eval" / args.bundle / CASE_FILES[args.suite]
     cases = json.loads(case_path.read_text(encoding="utf-8"))
     resume = bool(args.output)
     if resume:
@@ -80,7 +81,7 @@ def main():
     else:
         stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         smoke = f"_smoke{args.limit}" if args.limit else ""
-        output = ROOT / "data/eval/reports" / f"official_v1_{args.suite}{smoke}_{stamp}"
+        output = ROOT / "data/eval/reports" / f"{args.bundle}_{args.suite}{smoke}_{stamp}"
         output.mkdir(parents=True, exist_ok=False)
         snapshot = {**_snapshot(args.suite, case_path), "limit": args.limit}
         if args.suite == "production":

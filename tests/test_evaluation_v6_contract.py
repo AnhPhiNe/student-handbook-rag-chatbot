@@ -949,7 +949,7 @@ def test_checkpoint_identity_binds_mode_and_declared_context(tmp_path: Path) -> 
     kwargs = {"suite": "retrieval", "mode": "vector_only", "scope": "pure"}
     identity = suites._eval_checkpoint_identity(cases, **kwargs)
     suites._save_eval_checkpoint(path, [{"id": "one"}], identity=identity)
-    changed_mode = suites._eval_checkpoint_identity(cases, **{**kwargs, "mode": "full"})
+    changed_mode = suites._eval_checkpoint_identity(cases, **{**kwargs, "mode": "no_graph"})
     with pytest.raises(ValueError, match="identity mismatch"):
         suites._load_eval_checkpoint(path, resume=True, identity=changed_mode)
     changed_runtime = suites._eval_checkpoint_identity(

@@ -19,14 +19,14 @@ def test_production_retrieval_mode_defaults_to_vector_graph_contract(
 
 
 def test_ablation_mode_requires_explicit_guard(monkeypatch) -> None:
-    monkeypatch.setenv("STUDENT_RAG_RETRIEVAL_MODE", "full")
+    monkeypatch.setenv("STUDENT_RAG_RETRIEVAL_MODE", "no_graph")
     monkeypatch.delenv("STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION", raising=False)
 
     with pytest.raises(ValueError, match="evaluation-only"):
         resolve_retrieval_mode()
 
     monkeypatch.setenv("STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION", "1")
-    assert resolve_retrieval_mode() == "full"
+    assert resolve_retrieval_mode() == "no_graph"
 
 
 def test_runtime_mode_takes_precedence_over_legacy_eval_alias(monkeypatch) -> None:
@@ -34,6 +34,6 @@ def test_runtime_mode_takes_precedence_over_legacy_eval_alias(monkeypatch) -> No
         "STUDENT_RAG_RETRIEVAL_MODE",
         DEFAULT_RETRIEVAL_MODE,
     )
-    monkeypatch.setenv("STUDENT_RAG_EVAL_RETRIEVAL_MODE", "full")
+    monkeypatch.setenv("STUDENT_RAG_EVAL_RETRIEVAL_MODE", "no_graph")
 
     assert resolve_retrieval_mode() == DEFAULT_RETRIEVAL_MODE

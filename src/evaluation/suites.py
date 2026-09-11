@@ -27,7 +27,7 @@ from .metrics import (
     safe_mean,
 )
 from src.retrieval.core.runtime_health import get_bm25_runtime_status
-from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
+from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE, SUPPORTED_RETRIEVAL_MODES
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -1533,7 +1533,7 @@ def evaluate_retrieval(
     cases: list[dict[str, Any]],
     *,
     backend: str,
-    mode: str = "full",
+    mode: str = DEFAULT_RETRIEVAL_MODE,
     scope: str = "pure",
     limit: int | None = None,
     pipeline_factory: Callable[[], Any] | None = None,
@@ -1545,16 +1545,8 @@ def evaluate_retrieval(
 
     if backend != "qdrant":
         raise ValueError("backend must be qdrant")
-    if mode not in {
-        "full",
-        "no_graph",
-        "vector_only",
-        "vector_primary_graph_supplement",
-    }:
-        raise ValueError(
-            "mode must be full, no_graph, vector_only, "
-            "or vector_primary_graph_supplement"
-        )
+    if mode not in SUPPORTED_RETRIEVAL_MODES:
+        raise ValueError(f"mode must be one of {sorted(SUPPORTED_RETRIEVAL_MODES)}")
     if scope not in {"pure", "end_to_end"}:
         raise ValueError("scope must be pure or end_to_end")
     identity = (
@@ -1571,15 +1563,11 @@ def evaluate_retrieval(
     )
     rows = _load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
     completed_ids = {row["id"] for row in rows}
-    previous_backend = os.environ.get("STUDENT_RAG_USE_QDRANT")
-    previous_hybrid = os.environ.get("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL")
     previous_runtime_mode = os.environ.get("STUDENT_RAG_RETRIEVAL_MODE")
     previous_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
     previous_ablation_guard = os.environ.get("STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION")
     previous_router_wait = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
     previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
-    os.environ["STUDENT_RAG_USE_QDRANT"] = "1"
-    os.environ.pop("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", None)
     os.environ["STUDENT_RAG_RETRIEVAL_MODE"] = mode
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = mode
     os.environ["STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION"] = "1"
@@ -1803,8 +1791,6 @@ def evaluate_retrieval(
             finally:
                 _save_eval_checkpoint(checkpoint_path, rows, identity=identity)
     finally:
-        _restore_env("STUDENT_RAG_USE_QDRANT", previous_backend)
-        _restore_env("STUDENT_RAG_DISABLE_HYBRID_RETRIEVAL", previous_hybrid)
         _restore_env("STUDENT_RAG_RETRIEVAL_MODE", previous_runtime_mode)
         _restore_env("STUDENT_RAG_EVAL_RETRIEVAL_MODE", previous_mode)
         _restore_env(

@@ -6,7 +6,6 @@ from src.common.env_loader import env_bool
 
 DEFAULT_RETRIEVAL_MODE = "vector_primary_graph_supplement"
 SUPPORTED_RETRIEVAL_MODES = {
-    "full",
     "no_graph",
     "vector_only",
     DEFAULT_RETRIEVAL_MODE,

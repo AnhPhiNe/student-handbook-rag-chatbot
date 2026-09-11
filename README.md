@@ -372,7 +372,7 @@ The default `ChildParentHybridRetriever` fuses dense and BM25 rankings with RRF 
 
 A child hit expands to its full parent article, including reviewed table content, subject to task/cohort scope and context budget. Focused child text locates the article; it is not a substitute for the parent record.
 
-Graph neighbors are context-only related sources for navigation and display. They do not become Composer evidence. The default mode is `vector_primary_graph_supplement`; full/no-graph modes are explicit ablations. Reranking changes child order before parent grouping; it does not alter structured lookup, graph traversal, or Composer behavior.
+Graph neighbors are context-only related sources for navigation and display. They do not become Composer evidence. The default mode is `vector_primary_graph_supplement`; `no_graph` (no graph neighbours) and `vector_only` (dense retrieval without BM25 fusion, no graph) are explicit ablations. Reranking changes child order before parent grouping; it does not alter structured lookup, graph traversal, or Composer behavior.
 
 <a id="runtime-behavior"></a>
 

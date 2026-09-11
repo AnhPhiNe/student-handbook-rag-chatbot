@@ -292,7 +292,7 @@ def test_retrieval_reranks_children_before_grouping_by_parent() -> None:
     assert result == retriever._group_parent_results.return_value
 
 
-def test_full_ablation_keeps_rrf_without_a_reranker() -> None:
+def test_no_graph_ablation_keeps_rrf_without_a_reranker() -> None:
     hits = _vector_hits()
     retriever = _retriever_stub()
 
@@ -300,7 +300,7 @@ def test_full_ablation_keeps_rrf_without_a_reranker() -> None:
         patch.dict(
             os.environ,
             {
-                "STUDENT_RAG_EVAL_RETRIEVAL_MODE": "full",
+                "STUDENT_RAG_EVAL_RETRIEVAL_MODE": "no_graph",
                 "STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION": "1",
             },
         ),
@@ -388,3 +388,37 @@ def test_parent_grouping_preserves_scored_order_and_top_k() -> None:
     assert all(item["metadata"]["retrieval_role"] == "primary" for item in results)
     assert [item["content"] for item in results] == ["a", "b"]
     assert [item["document"] for item in results] == ["full P2", "full P1"]
+
+
+def test_vector_only_ablation_fuses_no_bm25_candidates() -> None:
+    hits = _vector_hits()
+    retriever = _retriever_stub()
+    retriever.bm25.sparse_search.return_value = [
+        {"chunk_id": "lexical-only", "bm25_score": 9.0, "content": "bm25"}
+    ]
+
+    with (
+        patch.dict(
+            os.environ,
+            {
+                "STUDENT_RAG_EVAL_RETRIEVAL_MODE": "vector_only",
+                "STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION": "1",
+            },
+        ),
+        patch(
+            "src.retrieval.core.hybrid_pipeline._query_points_with_retry",
+            return_value=hits,
+        ),
+    ):
+        ChildParentHybridRetriever.retrieve(
+            retriever,
+            "dieu kien hoc bong",
+            top_k_vector=12,
+            top_k_final=5,
+            graph_depth=2,
+            cohort="K50",
+        )
+
+    retriever.bm25.sparse_search.assert_not_called()
+    scored_chunks = retriever._group_parent_results.call_args.kwargs["scored_chunks"]
+    assert "lexical-only" not in {chunk["chunk_id"] for _, chunk in scored_chunks}

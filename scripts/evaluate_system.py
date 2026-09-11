@@ -351,7 +351,7 @@ def _run_retrieval_modes(
     cases: list[dict[str, Any]], args: argparse.Namespace, provenance: dict[str, Any]
 ) -> None:
     modes = (
-        ("full", "no_graph", "vector_only", "vector_primary_graph_supplement")
+        ("vector_primary_graph_supplement", "no_graph", "vector_only")
         if args.ablation == "all"
         else (args.ablation,)
     )
@@ -381,20 +381,20 @@ def _run_retrieval_modes(
             (f"retrieval_{args.retrieval_scope}_{args.backend}_{mode}_{args.profile}"),
         )
     if len(reports) > 1:
-        full = reports["full"]["summary"]
+        baseline = reports[DEFAULT_RETRIEVAL_MODE]["summary"]
         delta = {
             mode: {
                 metric: reports[mode]["summary"].get(metric, 0.0)
-                - full.get(metric, 0.0)
+                - baseline.get(metric, 0.0)
                 for metric in ("hit_at_3", "hit_at_5", "mrr", "ndcg_at_5")
             }
             for mode in reports
-            if mode != "full"
+            if mode != DEFAULT_RETRIEVAL_MODE
         }
         _write(
             {
                 "suite": "retrieval_ablation",
-                "summary": {"deltas_vs_full": delta},
+                "summary": {"deltas_vs_default": delta},
                 "provenance": provenance,
                 "cases": [],
             },
@@ -499,7 +499,6 @@ def main() -> None:
     parser.add_argument(
         "--ablation",
         choices=(
-            "full",
             "no_graph",
             "vector_only",
             "vector_primary_graph_supplement",

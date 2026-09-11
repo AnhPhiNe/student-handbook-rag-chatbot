@@ -383,16 +383,19 @@ class ChildParentHybridRetriever:
         ]
 
         # --- BM25 RETRIEVAL & RECIPROCAL RANK FUSION (RRF) ---
-        bm25_results = [
-            (float(chunk.get("bm25_score") or 0.0), chunk)
-            for chunk in self.bm25.sparse_search(
-                query,
-                top_k=search_limit,
-                chunk_types=["regulation"],
-                content_types=["regulation_text"],
-                cohort=cohort,
-            )
-        ]
+        # vector_only is the dense-only ablation: no lexical candidates are fused.
+        bm25_results = []
+        if eval_mode != "vector_only":
+            bm25_results = [
+                (float(chunk.get("bm25_score") or 0.0), chunk)
+                for chunk in self.bm25.sparse_search(
+                    query,
+                    top_k=search_limit,
+                    chunk_types=["regulation"],
+                    content_types=["regulation_text"],
+                    cohort=cohort,
+                )
+            ]
 
         # Union of chunk IDs
         dense_chunk_ids = [

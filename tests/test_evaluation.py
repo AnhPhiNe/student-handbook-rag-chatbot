@@ -867,7 +867,7 @@ def test_generation_restores_eval_environment_when_pipeline_init_fails(
 ) -> None:
     monkeypatch.setenv("STUDENT_RAG_OFFLINE_EVAL", "previous-offline")
     monkeypatch.setenv("STUDENT_RAG_QUALITY_EVAL", "previous-quality")
-    monkeypatch.setenv("STUDENT_RAG_EVAL_RETRIEVAL_MODE", "full")
+    monkeypatch.setenv("STUDENT_RAG_EVAL_RETRIEVAL_MODE", "no_graph")
     observed_modes: list[str | None] = []
 
     def fail_pipeline():
@@ -884,7 +884,7 @@ def test_generation_restores_eval_environment_when_pipeline_init_fails(
 
     assert os.environ["STUDENT_RAG_OFFLINE_EVAL"] == "previous-offline"
     assert os.environ["STUDENT_RAG_QUALITY_EVAL"] == "previous-quality"
-    assert os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] == "full"
+    assert os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] == "no_graph"
     assert observed_modes == [DEFAULT_RETRIEVAL_MODE]
 
 

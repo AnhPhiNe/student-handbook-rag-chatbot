@@ -702,13 +702,68 @@ def test_command_a_plus_uses_chat_v2_and_normalizes_the_same_plan_contract(
 
     assert decision["router_provider"] == "cohere"
     assert decision["model_used"] == "command-a-plus-05-2026"
-    assert decision["usage"] == {"input": 100, "output": 40, "total": 140}
+    assert decision["usage"] == {
+        "input": 100,
+        "output": 40,
+        "total": 140,
+        "reasoning": 0,
+    }
     assert decision["tasks"][0]["lookup_type"] == "foreign_language"
     request = calls[0]["kwargs"]
     assert calls[0]["args"] == (ai_router_module.COHERE_CHAT_URL,)
     assert "response_format" not in request["json"]
-    assert request["json"]["thinking"] == {"token_budget": 256}
+    assert request["json"]["thinking"] == {"token_budget": 1024}
+    assert request["json"]["max_tokens"] == (
+        router._planner_output_token_limit(None) + 1024
+    )
     assert request["timeout"] == 5.0
+
+
+def test_command_a_plus_prompt_embeds_the_native_schema_not_the_example(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setenv("COHERE_ROUTER_API_KEYS", "test-cohere-router-key")
+    router = AIRouter(
+        provider="cohere",
+        model_name="command-a-plus-05-2026",
+        cache_enabled=False,
+        key_pool_config={"state_path": str(tmp_path / "cohere-state.json")},
+    )
+
+    dynamic_prompt = router._build_plan_prompt("C+ là mấy điểm hệ 4?", cohort="K48-K49", chat_history=[])
+
+    schema = json.dumps(
+        ai_router_module.query_plan_response_schema(),
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+    assert f"OUTPUT JSON SCHEMA:\n{schema}" in dynamic_prompt
+    assert "OUTPUT CONTRACT" not in dynamic_prompt
+
+
+def test_command_a_plus_thinking_budget_comes_from_environment(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setenv("COHERE_ROUTER_API_KEYS", "test-cohere-router-key")
+    monkeypatch.setenv("STUDENT_RAG_ROUTER_PROVIDER", "cohere")
+    monkeypatch.setenv("STUDENT_RAG_COHERE_ROUTER_THINKING_BUDGET", "2048")
+    config_path = tmp_path / "router.yaml"
+    config_path.write_text(
+        "\n".join(
+            (
+                "cache_enabled: false",
+                "cohere_key_pool:",
+                f"  state_path: {json.dumps(str(tmp_path / 'cohere-state.json'))}",
+            )
+        ),
+        encoding="utf-8",
+    )
+
+    router = AIRouter.from_config(config_path)
+
+    assert router.thinking_token_budget == 2048
 
 
 def test_router_normalization_does_not_infer_missing_jlpt_level_slot() -> None:

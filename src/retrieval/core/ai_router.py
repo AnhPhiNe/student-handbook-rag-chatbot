@@ -40,6 +40,9 @@ from .query_plan import (
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
 DEFAULT_COHERE_ROUTER_MODEL = "command-a-plus-05-2026"
+# 256 truncated planner reasoning mid-task and produced canonical codes in
+# slot_spans; 1024 completed naturally (~820 reasoning tokens) in probes.
+DEFAULT_COHERE_THINKING_TOKEN_BUDGET = 1024
 COHERE_CHAT_URL = "https://api.cohere.com/v2/chat"
 ROUTER_PROMPT_VERSION = "structured-regulation-v41-explicit-request-count"
 PLANNER_DIAGNOSTIC_SCHEMA_VERSION = "planner-decision-diagnostics-v1"
@@ -845,6 +848,7 @@ class AIRouter:
         output_tokens_per_task: int = 640,
         hard_max_output_tokens: int = 2048,
         provider: str = "groq",
+        thinking_token_budget: int = DEFAULT_COHERE_THINKING_TOKEN_BUDGET,
     ) -> None:
         load_project_env()
         self.provider = str(provider or "groq").strip().lower()
@@ -883,6 +887,7 @@ class AIRouter:
         self.max_retries = max(0, int(max_retries))
         self.reasoning_effort = str(reasoning_effort or "auto").strip().lower()
         self.response_format = str(response_format or "auto").strip().lower()
+        self.thinking_token_budget = max(1, int(thinking_token_budget))
         self.registry = load_lookup_registry()
         self.key_pool = GroqRouterKeyPool(
             self.available_keys,
@@ -980,6 +985,10 @@ class AIRouter:
             cache_enabled=bool(config.get("cache_enabled", True))
             and not cache_disabled,
             provider=provider,
+            thinking_token_budget=int(
+                os.environ.get("STUDENT_RAG_COHERE_ROUTER_THINKING_BUDGET")
+                or DEFAULT_COHERE_THINKING_TOKEN_BUDGET
+            ),
         )
 
     def _planner_output_token_limit(self, explicit_request_count: int | None) -> int:
@@ -1025,8 +1034,10 @@ class AIRouter:
             "model": self.model_name,
             "messages": messages,
             "temperature": self.temperature,
-            "max_tokens": max_output_tokens,
-            "thinking": {"token_budget": 256},
+            # Cohere counts reasoning tokens against max_tokens; a budget above
+            # max_tokens is rejected with HTTP 400.
+            "max_tokens": max_output_tokens + self.thinking_token_budget,
+            "thinking": {"token_budget": self.thinking_token_budget},
         }
         if response_format:
             payload["response_format"] = response_format
@@ -1350,6 +1361,19 @@ class AIRouter:
                 "OUTPUT: tuân theo native JSON Schema; các quy tắc trên quyết định "
                 "ngữ nghĩa từng field.\n"
             )
+        elif self.provider == "cohere":
+            # Cohere structured output cannot express the free-form slots map
+            # (objects need declared, required fields), so embed the same
+            # schema Groq receives natively. The example-style contract lists
+            # every cohort as a sample value, which Cohere copied verbatim.
+            schema = json.dumps(
+                query_plan_response_schema(), ensure_ascii=False, separators=(",", ":")
+            )
+            output_guidance = (
+                f"OUTPUT JSON SCHEMA:\n{schema}\n"
+                "Chỉ xuất một JSON object hợp lệ theo schema; các quy tắc trên "
+                "quyết định ngữ nghĩa từng field.\n\n"
+            )
         else:
             schema = json.dumps(
                 query_plan_json_schema(), ensure_ascii=False, separators=(",", ":")
@@ -1489,6 +1513,9 @@ class AIRouter:
             "input": input_tokens,
             "output": output_tokens,
             "total": input_tokens + output_tokens,
+            "reasoning": int(
+                ((usage.get("tokens") or {}).get("reasoning_tokens", 0)) or 0
+            ),
         }
 
     @staticmethod

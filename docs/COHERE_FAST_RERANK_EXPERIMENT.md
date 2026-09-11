@@ -64,8 +64,10 @@ failures. Cohere calls averaged 0.690 s and the complete pipeline averaged
 The retrieval-layer comparison shows a useful ranking improvement. The
 answer-level changes are smaller and their confidence intervals overlap, while
 context precision decreased. Historical RRF/BGE answers were produced at
-commit `2ea5f270`; the Cohere answers were produced at `8a172ebd`, so the
-answer table is directional evidence rather than a strict causal A/B.
+commit `2ea5f270` (on the `codex/reranker-ab` branch, deleted on 2026-09-11,
+so that commit is no longer available); the Cohere answers were produced at
+`8a172ebd`, so the answer table is directional evidence rather than a strict
+causal A/B.
 
 The release candidate therefore integrates Cohere Fast as a bounded,
 fail-open stage rather than treating it as a correctness dependency:

@@ -1,4 +1,4 @@
-"""Run an official_v1 suite (retrieval, generate+judge, or production) with a run snapshot."""
+"""Run an official suite (retrieval, generate+judge, or production) with a run snapshot."""
 import argparse
 import hashlib
 import json

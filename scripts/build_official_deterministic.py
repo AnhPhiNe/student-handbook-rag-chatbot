@@ -365,7 +365,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle", default=BUNDLE.name, help="Folder under data/eval, e.g. official_v2.")
     bundle = ROOT / "data/eval" / parser.parse_args().bundle
-    if (bundle / "deterministic_manifest.json").exists():
+    if any((bundle / name).exists() for name in ("manifest.json", "deterministic_manifest.json")):
         raise RuntimeError("Deterministic suite already frozen; refusing to rebuild")
     cases = build(bundle)
     target = bundle / "deterministic_tool_cases.json"

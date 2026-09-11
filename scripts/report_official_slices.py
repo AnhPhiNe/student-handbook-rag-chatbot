@@ -1,7 +1,8 @@
 """Break an official suite report down by slice, cohort and question style.
 
-Deterministic reports score each case pass/fail, with a Wilson 95% interval. Judge
-reports average one judge score per case (default `answer_correctness`), with a
+Deterministic reports score each case pass/fail. Judge reports average one judge score
+per case (default `answer_correctness`); retrieval reports one ranking metric per case
+(default `hit_at_5`). Pass/fail scores get a Wilson 95% interval, graded scores a
 bootstrap 95% interval. Report rows are joined to the bundle's case file by id, to read
 each case's slice (`slice` in official_v2, `category` in official_v1), cohort and style.
 
@@ -11,6 +12,7 @@ overall score is also reported reweighted to that mix.
 
     python -m scripts.report_official_slices data/eval/reports/<run>/deterministic.json
     python -m scripts.report_official_slices <run>/generated_answer_judge.json --metric faithfulness
+    python -m scripts.report_official_slices <run>/retrieval.json --metric mrr
 """
 
 from __future__ import annotations
@@ -29,20 +31,22 @@ if str(ROOT) not in sys.path:
 
 from src.evaluation.metrics import bootstrap_mean_ci, wilson_interval  # noqa: E402
 
-CASE_FILES = {"deterministic": "deterministic_tool_cases.json", "judge": "generated_answer_cases.json"}
+CASE_FILES = {"deterministic": "deterministic_tool_cases.json", "judge": "generated_answer_cases.json",
+              "retrieval": "retrieval_cases.json"}
+DEFAULT_METRICS = {"judge": "answer_correctness", "retrieval": "hit_at_5"}
 
 
 def case_score(row: dict, suite: str, metric: str) -> float | None:
     if suite == "deterministic":
         return 1.0 if row.get("passed") else 0.0
-    score = ((row.get("judge") or {}).get("scores") or {}).get(metric)
+    score = row.get(metric) if suite == "retrieval" else ((row.get("judge") or {}).get("scores") or {}).get(metric)
     return None if score is None else float(score)
 
 
-def summarize(values: list[float], suite: str) -> dict:
+def summarize(values: list[float]) -> dict:
     n = len(values)
     mean = sum(values) / n if n else None
-    if suite == "deterministic":
+    if all(value in (0.0, 1.0) for value in values):
         interval = wilson_interval(int(sum(values)), n)
     else:
         interval = bootstrap_mean_ci(values)
@@ -73,7 +77,7 @@ def breakdown(report: dict, cases: dict[str, dict], metric: str) -> dict:
         for dimension, key in keys.items():
             groups[dimension][key].append(score)
     return {
-        dimension: {key: summarize(values, suite) for key, values in sorted(by_key.items())}
+        dimension: {key: summarize(values) for key, values in sorted(by_key.items())}
         for dimension, by_key in groups.items()
     }
 
@@ -108,7 +112,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("report", type=Path)
     parser.add_argument("--bundle", help="Folder under data/eval; defaults to the run snapshot's bundle.")
-    parser.add_argument("--metric", default="answer_correctness", help="Judge score to average.")
+    parser.add_argument("--metric", help="Judge score or retrieval metric to average; defaults per suite.")
     parser.add_argument("--json", action="store_true", help="Print the breakdown as JSON.")
     args = parser.parse_args()
 
@@ -119,15 +123,16 @@ def main() -> None:
     bundle_name = args.bundle or (report.get("run_snapshot") or {}).get("bundle") or "official_v1"
     bundle = ROOT / "data/eval" / bundle_name
     cases = {c["id"]: c for c in json.loads((bundle / CASE_FILES[suite]).read_text(encoding="utf-8"))}
-    result = breakdown(report, cases, args.metric)
+    metric = args.metric or DEFAULT_METRICS.get(suite)
+    result = breakdown(report, cases, metric)
     weights_path = bundle / "slice_weights.yaml"
     weights = yaml.safe_load(weights_path.read_text(encoding="utf-8")) if weights_path.exists() else {}
     weighted = reweighted(result.get("family", {}), weights or {})
     if args.json:
         print(json.dumps({"bundle": bundle_name, "suite": suite, "reweighted": weighted, **result}, indent=2))
         return
-    metric = "pass rate" if suite == "deterministic" else args.metric
-    print(render(result, f"{bundle_name} · {suite} · {metric}", weighted))
+    label = "pass rate" if suite == "deterministic" else metric
+    print(render(result, f"{bundle_name} · {suite} · {label}", weighted))
 
 
 if __name__ == "__main__":

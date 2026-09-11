@@ -41,3 +41,16 @@ def test_judge_reports_average_the_chosen_score():
     result = breakdown(report, cases, metric="answer_correctness")
 
     assert result["slice"]["policy"]["mean"] == pytest.approx(0.75)
+
+
+def test_retrieval_reports_average_a_ranking_metric_with_a_wilson_interval_when_binary():
+    cases = {"a": {"slice": "single.regulation"}, "b": {"slice": "single.regulation"}}
+    report = {"suite": "retrieval", "cases": [{"id": "a", "hit_at_5": 1.0, "mrr": 0.5},
+                                              {"id": "b", "hit_at_5": 0.0, "mrr": 0.25}]}
+
+    hits = breakdown(report, cases, metric="hit_at_5")["overall"]["all"]
+    mrr = breakdown(report, cases, metric="mrr")["overall"]["all"]
+
+    assert hits["mean"] == 0.5
+    assert hits["low"] == pytest.approx(wilson_interval(1, 2)["low"])
+    assert mrr["mean"] == pytest.approx(0.375)

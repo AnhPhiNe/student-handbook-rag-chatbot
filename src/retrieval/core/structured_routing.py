@@ -425,21 +425,21 @@ def _validate_slot_contract(slots: dict[str, Any], spec: dict[str, Any]) -> list
 
 
 def validate_fact_lock_inputs(
-    decision: dict[str, Any],
+    task: dict[str, Any],
     *,
     query: str,
     registry: dict[str, Any] | None = None,
 ) -> list[str]:
-    """Return reasons why a table-first decision must not emit a fact lock."""
+    """Return reasons why a table-first task must not emit a fact lock."""
 
     registry = registry or load_lookup_registry()
-    lookup_type = str(decision.get("lookup_type") or "")
+    lookup_type = str(task.get("lookup_type") or "")
     spec = registry.get("tools", {}).get(lookup_type)
     if not isinstance(spec, dict):
         return ["unknown_lookup_type"]
 
-    slots = decision.get("slots") or {}
-    spans = decision.get("slot_spans") or {}
+    slots = task.get("slots") or {}
+    spans = task.get("slot_spans") or {}
     slot_schema = spec.get("slot_schema") or {}
     errors = _validate_slot_contract(slots, spec)
     grounded_value_slots = 0

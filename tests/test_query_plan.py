@@ -1262,7 +1262,7 @@ def test_two_structured_domains_execute_without_cross_domain_probing(monkeypatch
         )
 
     monkeypatch.setattr(
-        "src.retrieval.core.structured_dispatcher.resolve_structured_decision",
+        "src.retrieval.core.structured_dispatcher.resolve_structured_task",
         fake_resolve,
     )
     result = _pipeline(_plan(tasks))._run_query_plan(query="hai ý", cohort="K51", chat_history=[])
@@ -1400,7 +1400,7 @@ def test_normalizer_does_not_invent_score_from_untyped_query_number(
 
 
 def test_normalizer_preserves_grounded_score_and_component_guard() -> None:
-    from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+    from src.retrieval.core.structured_dispatcher import resolve_structured_task
 
     question = "TOEIC tổng 650 tương đương bậc nào?"
     task = {
@@ -1420,7 +1420,7 @@ def test_normalizer_preserves_grounded_score_and_component_guard() -> None:
     registry = json.loads(Path(
         "data/processed/tables/structured_tables_registry.json"
     ).read_text(encoding="utf-8"))
-    resolution = resolve_structured_decision(
+    resolution = resolve_structured_task(
         normalized_task, query=question, cohort="K51", 
         formula_rules=[], office_directory=[], student_service_directory=[],
         student_faculty_profiles=[], 
@@ -1454,7 +1454,7 @@ def test_same_task_multicohort_fact_locks_keep_execution_scope(monkeypatch, shar
             })
         return StructuredResolution("scoring", "reference_table_lookup", "structured", lookup, ["structured_lookup"])
 
-    monkeypatch.setattr("src.retrieval.core.structured_dispatcher.resolve_structured_decision", resolve)
+    monkeypatch.setattr("src.retrieval.core.structured_dispatcher.resolve_structured_task", resolve)
     pipeline = _pipeline(_plan([task]))
     retrieval = pipeline._run_query_plan(query=task["question"], cohort="K51", chat_history=[])
     packet = build_authorized_evidence_packet(

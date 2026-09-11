@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from src.retrieval.core.slang_normalizer import SlangNormalizer
-from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+from src.retrieval.core.structured_dispatcher import resolve_structured_task
 from src.retrieval.core.structured_routing import prepare_structured_task
 
 
@@ -26,7 +26,7 @@ def test_pass_intent_survives_both_normalization_stages(phrase):
 def resolve(slots, cohort, *, registry=None, legacy=None, intent="direct_value", clarification=None):
     if registry is None:
         registry = json.loads(Path("data/processed/tables/structured_tables_registry.json").read_text(encoding="utf-8"))
-    return resolve_structured_decision(
+    return resolve_structured_task(
         {"lookup_type": "scoring", "intent": intent, "slots": slots,
          "clarification_question": clarification,
          "slot_spans": {"score_or_grade": "6,1", "course_scope": "học phần còn lại" if slots.get("course_scope") == "remaining" else slots.get("course_scope")}},

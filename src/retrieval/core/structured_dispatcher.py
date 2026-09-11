@@ -47,9 +47,9 @@ class StructuredResolution:
         return "resolved" if self.result.get("resolved_result") else "evidence_only"
 
 
-def _slot_text(decision: dict[str, Any], *names: str) -> str:
-    spans = decision.get("slot_spans") or {}
-    slots = decision.get("slots") or {}
+def _slot_text(task: dict[str, Any], *names: str) -> str:
+    spans = task.get("slot_spans") or {}
+    slots = task.get("slots") or {}
     for name in names:
         for source in (spans, slots):
             value = source.get(name)
@@ -511,7 +511,7 @@ def _has_multiple_result_choices(
 def _resolve_single_lookup(
     lookup_type: str,
     *,
-    decision: dict[str, Any],
+    task: dict[str, Any],
     query: str,
     effective_cohort: str | None,
     formula_rules: list[dict[str, Any]],
@@ -530,7 +530,7 @@ def _resolve_single_lookup(
 
     # The dispatcher executes only the normalized runtime payload. Missing and
     # explicitly empty mappings are both authoritative.
-    slots = decision.get("slots") or {}
+    slots = task.get("slots") or {}
     if not isinstance(slots, dict):
         slots = {}
 
@@ -552,7 +552,7 @@ def _resolve_single_lookup(
         # Keep the complete reference table for UI rendering, but expose a
         # deterministic fact lock when an existing domain resolver identifies
         # exactly one row. Ungrounded, invalid, or non-unique lookups stay unlocked.
-        fact_lock_errors = validate_fact_lock_inputs(decision, query=query)
+        fact_lock_errors = validate_fact_lock_inputs(task, query=query)
         if (
             result is not None
             and not result.get("needs_clarification")
@@ -579,10 +579,10 @@ def _resolve_single_lookup(
         # A planner-supplied request for missing information is not a resolved
         # lookup merely because a reference table can be displayed. Do not
         # infer personal intent from keywords or make list requests clarify.
-        clarification = decision.get("clarification_question")
+        clarification = task.get("clarification_question")
         if (result is not None and not result.get("needs_clarification")
                 and not result.get("resolved_result")
-                and decision.get("intent") == "direct_value"
+                and task.get("intent") == "direct_value"
                 and isinstance(clarification, str) and clarification.strip()):
             result = {
                 "lookup_type": lookup_type, "cohort": effective_cohort,
@@ -610,10 +610,10 @@ def _resolve_single_lookup(
             "faculty": "faculty",
         }[lookup_type]
         candidate_text = (
-            _slot_text(decision, candidate_slot)
-            or _slot_text(decision, "faculty")
-            or _slot_text(decision, "office")
-            or _slot_text(decision, "program_or_faculty")
+            _slot_text(task, candidate_slot)
+            or _slot_text(task, "faculty")
+            or _slot_text(task, "office")
+            or _slot_text(task, "program_or_faculty")
             or query
         )
         if lookup_type == "student_service":
@@ -673,8 +673,8 @@ def _resolve_single_lookup(
         )
 
     if lookup_type == "program":
-        candidate_text = _slot_text(decision, "program_or_faculty") or query
-        intent = decision.get("intent")
+        candidate_text = _slot_text(task, "program_or_faculty") or query
+        intent = task.get("intent")
         scope = str(slots.get("scope") or "school")
         requested_field = str(slots.get("requested_field") or "")
         if requested_field == "faculty":
@@ -716,8 +716,8 @@ def _resolve_single_lookup(
     return None
 
 
-def resolve_structured_decision(
-    decision: dict[str, Any],
+def resolve_structured_task(
+    task: dict[str, Any],
     *,
     query: str,
     cohort: str | None,
@@ -731,11 +731,11 @@ def resolve_structured_decision(
 ) -> StructuredResolution | None:
     """Dispatch a validated structured task to its lookup handler."""
 
-    lookup_type = str(decision.get("lookup_type") or "").strip()
-    effective_cohort = normalize_cohort(cohort or decision.get("cohort"))
+    lookup_type = str(task.get("lookup_type") or "").strip()
+    effective_cohort = normalize_cohort(cohort or task.get("cohort"))
 
     lookup_kwargs = {
-        "decision": decision,
+        "task": task,
         "query": query,
         "effective_cohort": effective_cohort,
         "formula_rules": formula_rules,

@@ -114,10 +114,10 @@ def test_mongo_verification_reads_only_and_reports_missing_parent(monkeypatch):
 
 
 def test_numeric_conduct_lookup_still_uses_unchanged_structured_json():
-    from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+    from src.retrieval.core.structured_dispatcher import resolve_structured_task
     def read(path):
         return json.loads(Path(path).read_text(encoding='utf-8'))
-    result = resolve_structured_decision(
+    result = resolve_structured_task(
         {'lookup_type':'scoring', 'intent':'direct_value',
          'slots':{'operation':'conduct_classification', 'score_or_grade':'82'},
          'slot_spans':{'score_or_grade':'82'}},

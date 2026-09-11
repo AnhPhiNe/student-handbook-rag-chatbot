@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from src.retrieval.core.structured_dispatcher import _reference_input_clarification
-from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+from src.retrieval.core.structured_dispatcher import resolve_structured_task
 
 
 @pytest.mark.parametrize("certificate", ["TOEIC", "ExampleCertificate"])
@@ -64,7 +64,7 @@ def test_scalar_certificate_has_no_component_requirement():
 ])
 def test_component_guard_with_runtime_catalog(cohort, slots, clarify):
     registry = json.loads(Path("data/processed/tables/structured_tables_registry.json").read_text(encoding="utf-8"))
-    resolution = resolve_structured_decision(
+    resolution = resolve_structured_task(
         {"lookup_type": "foreign_language", "intent": "direct_value", "slots": slots},
         query="Tra bảng chứng chỉ", cohort=cohort, formula_rules=[],
         office_directory=[], student_service_directory=[], student_faculty_profiles=[],

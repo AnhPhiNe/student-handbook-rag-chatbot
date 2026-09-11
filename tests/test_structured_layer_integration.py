@@ -7,7 +7,7 @@ from src.generation.answer_pipeline import AnswerPipeline
 from src.generation.prompt_builder import build_authorized_evidence_packet
 from src.retrieval.core.citation_builder import build_citation_from_lookup
 from src.retrieval.core.query_plan import normalize_query_plan
-from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+from src.retrieval.core.structured_dispatcher import resolve_structured_task
 
 
 def _task(question, lookup_type, slots, spans, cohorts):
@@ -28,7 +28,7 @@ def _resolve(task, cohort):
             encoding="utf-8"
         )
     )
-    return resolve_structured_decision(
+    return resolve_structured_task(
         task, query=task["question"], cohort=cohort,
         formula_rules=[], office_directory=[],
         student_service_directory=[], student_faculty_profiles=[],

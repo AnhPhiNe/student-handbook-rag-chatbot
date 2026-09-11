@@ -215,7 +215,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_reference_table_lookup_keeps_all_rows_despite_slots(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         table = {
@@ -234,7 +234,7 @@ class StructuredLookupTest(unittest.TestCase):
             "source_pages": [112],
             "source_parent_id": "K50_Dieu8",
         }
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "foreign_language",
                 "intent": "direct_value",
@@ -258,7 +258,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_k51_study_duration_reference_tables_use_amended_values(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -266,7 +266,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {"lookup_type": "study_duration", "intent": "direct_value"},
             query="Thời gian đào tạo K51",
             cohort="K51",
@@ -342,7 +342,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_foreign_language_scalar_score_requires_declared_components(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         table = {
@@ -377,7 +377,7 @@ class StructuredLookupTest(unittest.TestCase):
                 }
             ],
         }
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "foreign_language",
                 "intent": "direct_value",
@@ -403,7 +403,7 @@ class StructuredLookupTest(unittest.TestCase):
             ["listening_score", "reading_score"],
         )
 
-        alias_resolution = resolve_structured_decision(
+        alias_resolution = resolve_structured_task(
             {
                 "lookup_type": "foreign_language",
                 "intent": "direct_value",
@@ -563,7 +563,7 @@ class StructuredLookupTest(unittest.TestCase):
     def test_scholarship_lookup_without_aspect_returns_complete_policy_bundle(self) -> None:
         from src.generation.structured_result_presenter import build_structured_results
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         parent_id = "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27"
@@ -586,7 +586,7 @@ class StructuredLookupTest(unittest.TestCase):
                 }
             )
 
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "scholarship_classification",
                 "slots": {},
@@ -633,7 +633,7 @@ class StructuredLookupTest(unittest.TestCase):
     def test_scholarship_aspect_selects_only_the_requested_table(self) -> None:
         from src.generation.structured_result_presenter import build_structured_results
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -648,7 +648,7 @@ class StructuredLookupTest(unittest.TestCase):
 
         for aspect, expected_subtype in cases.items():
             with self.subTest(aspect=aspect):
-                resolution = resolve_structured_decision(
+                resolution = resolve_structured_task(
                     {
                         "lookup_type": "scholarship_classification",
                         "intent": "direct_value",
@@ -673,7 +673,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_scholarship_exact_level_exposes_deterministic_resolved_result(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -702,7 +702,7 @@ class StructuredLookupTest(unittest.TestCase):
 
         for query, aspect, aspect_span, level, result_field, expected in cases:
             with self.subTest(aspect=aspect, level=level):
-                resolution = resolve_structured_decision(
+                resolution = resolve_structured_task(
                     {
                         "lookup_type": "scholarship_classification",
                         "intent": "direct_value",
@@ -734,7 +734,7 @@ class StructuredLookupTest(unittest.TestCase):
                     3 if aspect == "amount" else 6,
                 )
 
-        ambiguous = resolve_structured_decision(
+        ambiguous = resolve_structured_task(
             {
                 "lookup_type": "scholarship_classification",
                 "intent": "direct_value",
@@ -764,7 +764,7 @@ class StructuredLookupTest(unittest.TestCase):
     def test_study_duration_training_mode_selects_only_the_requested_table(self) -> None:
         from src.generation.structured_result_presenter import build_structured_results
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -775,7 +775,7 @@ class StructuredLookupTest(unittest.TestCase):
 
         for training_mode in ("chinh_quy", "vua_lam_vua_hoc"):
             with self.subTest(training_mode=training_mode):
-                resolution = resolve_structured_decision(
+                resolution = resolve_structured_task(
                     {
                         "lookup_type": "study_duration",
                         "intent": "direct_value",
@@ -803,7 +803,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_scoring_selector_returns_every_row_of_the_selected_table(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -811,7 +811,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "scoring",
                 "intent": "direct_value",
@@ -840,7 +840,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_scoring_reference_table_exposes_deterministic_resolved_result(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry_table = {
@@ -856,7 +856,7 @@ class StructuredLookupTest(unittest.TestCase):
             ],
             "source_parent_id": "K50_Dieu10",
         }
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "scoring",
                 "intent": "direct_value",
@@ -884,7 +884,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_scalar_scoring_result_is_kept_as_unique_fact_lock(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -892,7 +892,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "scoring",
                 "intent": "direct_value",
@@ -922,7 +922,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_foreign_language_output_columns_do_not_require_component_scores(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -930,7 +930,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "foreign_language",
                 "intent": "direct_value",
@@ -960,7 +960,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_foreign_language_output_column_list_keeps_single_row_fact_lock(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -968,7 +968,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "foreign_language",
                 "intent": "direct_value",
@@ -999,7 +999,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_scoring_numeric_operand_accepts_grounded_scale_suffix(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -1007,7 +1007,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "scoring",
                 "intent": "direct_value",
@@ -1067,7 +1067,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_study_duration_does_not_infer_missing_program_from_query(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -1079,7 +1079,7 @@ class StructuredLookupTest(unittest.TestCase):
             "Hệ vừa làm vừa học, chương trình liên thông đại học đối với người "
             "đã có một bằng đại học có thời gian chuẩn và tối đa bao lâu?"
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "study_duration",
                 "intent": "direct_value",
@@ -1102,7 +1102,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_reference_table_keeps_full_rows_without_untrusted_fact_lock(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry_table = {
@@ -1118,7 +1118,7 @@ class StructuredLookupTest(unittest.TestCase):
             ],
             "source_parent_id": "K50_Dieu10",
         }
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "scoring",
                 "intent": "direct_value",
@@ -1144,7 +1144,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_reference_table_rejects_unvalidated_cross_cohort_fallback(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         table = {
@@ -1174,13 +1174,13 @@ class StructuredLookupTest(unittest.TestCase):
             "slot_spans": {},
         }
 
-        cross_cohort = resolve_structured_decision(
+        cross_cohort = resolve_structured_task(
             decision,
             query="Cho xem bảng điểm chữ của K51",
             cohort="K51",
             **kwargs,
         )
-        exact_cohort = resolve_structured_decision(
+        exact_cohort = resolve_structured_task(
             decision,
             query="Cho xem bảng điểm chữ của K50",
             cohort="K50",
@@ -1193,7 +1193,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_reference_fact_lock_is_optional_and_cross_domain(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -1201,7 +1201,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        foreign = resolve_structured_decision(
+        foreign = resolve_structured_task(
             {
                 "lookup_type": "foreign_language",
                 "intent": "direct_value",
@@ -1223,7 +1223,7 @@ class StructuredLookupTest(unittest.TestCase):
             structured_tables_registry=registry,
             program_directory=[],
         )
-        duration = resolve_structured_decision(
+        duration = resolve_structured_task(
             {
                 "lookup_type": "study_duration",
                 "intent": "direct_value",
@@ -1258,7 +1258,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_reference_fact_lock_is_absent_for_ambiguous_list_lookup(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -1266,7 +1266,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "study_duration",
                 "intent": "list",
@@ -1287,7 +1287,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_reference_fact_lock_is_absent_for_multiple_foreign_rows(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -1295,7 +1295,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "foreign_language",
                 "intent": "direct_value",
@@ -1321,7 +1321,7 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_reference_fact_lock_is_absent_for_multiple_foreign_scores(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
         registry = json.loads(
@@ -1329,7 +1329,7 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "foreign_language",
                 "intent": "direct_value",
@@ -1357,10 +1357,10 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_directory_record_is_preserved_when_optional_field_is_absent(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "office",
                 "intent": "contact",
@@ -1399,10 +1399,10 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_office_lookup_does_not_search_faculty_pool(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "office",
                 "intent": "contact",
@@ -1449,10 +1449,10 @@ class StructuredLookupTest(unittest.TestCase):
 
     def test_faculty_lookup_does_not_search_office_pool(self) -> None:
         from src.retrieval.core.structured_dispatcher import (
-            resolve_structured_decision,
+            resolve_structured_task,
         )
 
-        resolution = resolve_structured_decision(
+        resolution = resolve_structured_task(
             {
                 "lookup_type": "faculty",
                 "intent": "contact",

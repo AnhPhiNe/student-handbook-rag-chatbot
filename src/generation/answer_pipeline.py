@@ -1322,22 +1322,10 @@ class AnswerPipeline:
     ) -> dict[str, Any]:
         """Execute one structured lookup task and normalize its evidence packet."""
 
-        from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+        from src.retrieval.core.structured_dispatcher import resolve_structured_task
 
-        decision = {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": task.get("intent"),
-            "lookup_type": task.get("lookup_type"),
-            "slots": task.get("slots") or {},
-            "slot_spans": task.get("slot_spans") or {},
-            "cohort": cohort,
-            "cohorts": [cohort] if cohort else [],
-            "retrieval_query": task.get("question"),
-            "clarification_question": task.get("clarification_question"),
-        }
-        resolution = resolve_structured_decision(
-            decision,
+        resolution = resolve_structured_task(
+            task,
             query=self.slang_normalizer.normalize_for_retrieval(
                 str(task.get("question") or "")
             ),

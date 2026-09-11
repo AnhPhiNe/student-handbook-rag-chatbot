@@ -12,7 +12,7 @@ from src.retrieval.core.scholarship_lookup import scholarship_table_lookup
 from src.retrieval.core.study_duration_lookup import study_duration_lookup
 from src.retrieval.core.structured_dispatcher import (
     StructuredResolution,
-    resolve_structured_decision,
+    resolve_structured_task,
 )
 from src.retrieval.core.structured_lookup import structured_lookup_from_slots
 
@@ -103,7 +103,7 @@ def _resolve_student_service(
     cohort: str,
     directory: list[dict],
 ) -> StructuredResolution | None:
-    return resolve_structured_decision(
+    return resolve_structured_task(
         {
             "lookup_type": "student_service",
             "intent": "contact",
@@ -304,7 +304,7 @@ def test_distinct_score_list_keeps_evidence_without_false_fact_lock() -> None:
             {"Thang điểm 10": "7,0 - 7,9", "Thang điểm chữ": "B"},
         ],
     }
-    resolution = resolve_structured_decision(
+    resolution = resolve_structured_task(
         {
             "lookup_type": "scoring",
             "intent": "direct_value",

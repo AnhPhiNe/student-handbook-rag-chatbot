@@ -6,7 +6,7 @@ from pathlib import Path
 from src.extraction.formula_rules import extract_formula_rules
 from scripts.build_multi_cohort import merge_structured_data
 from src.retrieval.core.formula_lookup import formula_lookup
-from src.retrieval.core.structured_dispatcher import resolve_structured_decision
+from src.retrieval.core.structured_dispatcher import resolve_structured_task
 
 
 def _section(
@@ -119,7 +119,7 @@ def test_formula_sources_bind_to_each_formula_parent() -> None:
         )
     )
 
-    resolution = resolve_structured_decision(
+    resolution = resolve_structured_task(
         {"lookup_type": "formula", "intent": "direct_value", "slots": {}},
         query="K48-K49: cac cong thuc GPA va diem hoc bong duoc trinh bay the nao?",
         cohort="K48-K49",

@@ -36,14 +36,9 @@ class UsageTracker:
         )
 
     def get_steps(self) -> list[dict[str, Any]]:
-        """Return defensive copies of all recorded pipeline steps."""
+        """Return the recorded pipeline steps."""
 
         return self._steps
-
-    def total_tokens(self) -> int:
-        """Return the aggregate token count across recorded steps."""
-
-        return sum(int(step.get("total_tokens") or 0) for step in self._steps)
 
     def get_total_usage(self) -> dict[str, int]:
         """Return aggregate input, output, and total token usage."""

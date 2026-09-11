@@ -5,8 +5,34 @@ from pathlib import Path
 
 import pytest
 
-from scripts.build_table_separation_candidate import POLICY, digest, separate_tables, text_hash, verify_mongo_parents
-from tests.test_table_text_candidate import fixtures
+from scripts.build_parent_child_artifacts import (
+    POLICY,
+    digest,
+    separate_tables,
+    text_hash,
+    verify_mongo_parents,
+)
+
+
+def fixtures():
+    table = {
+        "table_id": "duration", "table_name": "Thời gian học",
+        "data_category": "regulation_table", "quality_status": "approved",
+        "cohort": "K51", "document_id": "handbook", "source_parent_id": "p1",
+        "source_pages": [3], "applicability": "Chính quy",
+        "columns": ["Chương trình", "Chuẩn", "Tối đa"],
+        "rows": [
+            {"Chương trình": "Chương trình thứ nhất", "Chuẩn": "4 năm", "Tối đa": "8 năm"},
+            {"Chương trình": "Liên thông", "Chuẩn": "2 năm", "Tối đa": "4 năm"},
+        ],
+    }
+    flat = "Chương trình\nChuẩn\nTối đa\nChương trình thứ nhất\n4 năm\n8 năm\nLiên thông\n2 năm\n4 năm"
+    parent = {
+        "_id": "p1", "content": f"Điều 3. Thời gian học\n1. Chỉ áp dụng chính quy:\n{flat}\n2. Sinh viên nộp đơn theo quy định.",
+        "metadata": {"title": "Thời gian học", "content_type": "regulation_text",
+                     "cohort": "K51", "document_id": "handbook", "source_pages": [3]},
+    }
+    return parent, table, flat
 
 
 def fixture():

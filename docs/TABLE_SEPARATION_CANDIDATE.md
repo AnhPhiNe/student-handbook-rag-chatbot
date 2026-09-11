@@ -1,8 +1,10 @@
 # Narrative-only retrieval / full-source parents
 
-Status: **implemented and locally validated; candidate only, not deployed**.
-This is a different policy from the rejected registry-text embedding experiment
-in `TABLE_TEXT_CANDIDATE.md`. Its artifacts and measurements are not interchangeable.
+Status: **historical A/B record**. The policy was later promoted: every build now
+applies it through `scripts/build_parent_child_artifacts.py` (see
+[PARENT_CHILD_BUILD_CONTRACT.md](PARENT_CHILD_BUILD_CONTRACT.md)). It differs from
+an earlier, rejected experiment that embedded registry-rendered table text; that
+experiment's scripts and write-up were removed and remain in git history.
 
 ## Contract
 
@@ -21,7 +23,7 @@ in `TABLE_TEXT_CANDIDATE.md`. Its artifacts and measurements are not interchange
 
 ## Implementation and scope
 
-`scripts/build_table_separation_candidate.py` consumes the original docstore,
+`scripts/build_parent_child_artifacts.py` consumes the original docstore,
 unchanged structured registry and `data/curated/regulation_table_regions.json`.
 The curated file records exact source spans, parent/cohort/document/page binding,
 source-review dispositions and registry projections. Three historical table
@@ -155,7 +157,7 @@ Current output: `work/table_separation_v1_verified/` (ignored experiment outputs
 
 ```powershell
 # A new directory is mandatory. --verify-mongo only reads the live source.
-.\.venv\Scripts\python.exe -X utf8 scripts/build_table_separation_candidate.py --output-dir work/table_separation_next --verify-mongo
+.\.venv\Scripts\python.exe -X utf8 scripts/build_parent_child_artifacts.py --output-dir work/table_separation_next --verify-mongo
 .\.venv\Scripts\python.exe -X utf8 scripts/ab_table_text_candidate.py --candidate-dir work/table_separation_next --stage retrieval
 .\.venv\Scripts\python.exe -X utf8 scripts/ab_table_text_candidate.py --candidate-dir work/table_separation_next --stage packets
 .\.venv\Scripts\python.exe -X utf8 scripts/summarize_table_text_ab.py --candidate-dir work/table_separation_next

@@ -15,7 +15,7 @@ from scripts.build_parent_child_artifacts import (
     validate_separation_contract,
 )
 from tests.test_build_artifact_manifest import _inputs, _write_json
-from tests.test_table_separation_candidate import fixture
+from tests.test_table_separation import fixture
 from src.common.io import sha256_file
 
 

@@ -6,7 +6,7 @@ from src.common.legal_reference import (
     article_label_from_heading,
     normalize_article_label,
 )
-from src.common.source_identity import canonical_article_source_id
+from src.common.source_identity import canonical_article_source_id, parse_source_pages
 
 
 _FOCUS_MARKERS = (
@@ -19,29 +19,6 @@ _NEW_PARAGRAPH_RE = re.compile(
     r"^(?:Điều\s+\d+\.|\d+\.\s|[a-zđ]\)|[-•]\s+|Tài liệu:|Phần:|Chương:|Tiêu đề:)",
     re.IGNORECASE,
 )
-
-
-def parse_source_pages(value: Any) -> list[int]:
-    """Normalize citation page metadata into sorted page numbers."""
-
-    if value is None:
-        return []
-
-    if isinstance(value, list):
-        return [int(v) for v in value]
-
-    if isinstance(value, int):
-        return [value]
-
-    if isinstance(value, str):
-        pages = []
-        for item in value.split(","):
-            item = item.strip()
-            if item.isdigit():
-                pages.append(int(item))
-        return pages
-
-    return []
 
 
 def _first_value(source: dict[str, Any], keys: tuple[str, ...]) -> Any:

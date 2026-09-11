@@ -1,4 +1,3 @@
-import json
 import os
 import re
 from pathlib import Path
@@ -6,6 +5,8 @@ from typing import Any
 
 import fitz
 import yaml
+
+from src.common.io import save_json
 
 
 PDF_PATH = Path(os.environ.get("PDF_PATH", "data/raw/so-tay-sinh-vien-khoa-48.pdf"))
@@ -265,15 +266,6 @@ def build_extraction_report(pages: list[dict[str, Any]]) -> dict[str, Any]:
             if p["needs_review"]
         ],
     }
-
-
-def save_json(data: Any, output_path: Path) -> None:
-    """Persist JSON output with Unicode preserved."""
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
 
 
 def main() -> None:

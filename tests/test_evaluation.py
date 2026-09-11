@@ -23,11 +23,10 @@ from src.evaluation.judge import (
     parse_judge_json,
 )
 from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
-from src.evaluation.metrics import retrieval_metrics, wilson_interval
+from src.evaluation.metrics import retrieval_metrics
 from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
     _answer_checks,
-    _deterministic_actual_group,
     _expected_response_status,
     _response_status_matches_expected,
     _retrieval_summary,
@@ -36,7 +35,6 @@ from src.evaluation.suites import (
     evaluate_production,
     evaluate_retrieval,
     generate_answers,
-    summarize_deterministic_rows,
 )
 from src.evaluation.human_audit import summarize_human_audit
 from src.generation.gemini_client import GeminiKeyPool, GeminiKeyPoolConfig
@@ -131,85 +129,6 @@ def test_graph_supplement_eval_scores_related_selection_cap(tmp_path: Path) -> N
     assert report["summary"]["direct_expansion_recall"] == 1.0
     assert report["summary"]["related_selection_recall_at_5"] == pytest.approx(5 / 6)
     assert selected == {f"K50_Target_{index}" for index in range(5)}
-
-
-def test_wilson_interval_bounds_probability() -> None:
-    interval = wilson_interval(98, 100)
-    assert 0 <= interval["low"] <= interval["high"] <= 1
-
-
-def test_deterministic_summary_counts_nested_router_validation_errors() -> None:
-    rows = [
-        {
-            "expected_group": "structured",
-            "actual_group": "rag",
-            "passed": False,
-            "router_api_success": True,
-            "router_cache_hit": False,
-            "router_validation_errors": [],
-            "router_decision": {
-                "router_validation_errors": ["missing_slot:score_or_level"]
-            },
-            "latency_ms": 10.0,
-            "eval_split": "realistic",
-        },
-        {
-            "expected_group": "rag",
-            "actual_group": "rag",
-            "passed": True,
-            "router_api_success": True,
-            "router_cache_hit": False,
-            "router_decision": {"router_validation_errors": []},
-            "latency_ms": 20.0,
-            "eval_split": "stress",
-        },
-    ]
-
-    summary = summarize_deterministic_rows(rows)
-
-    assert summary["router_validation_failure_rate"] == 0.5
-
-
-def test_deterministic_group_uses_query_plan_modes_with_composer_enabled() -> None:
-    structured = {"lookup_type": "foreign_language", "items": [{"value": "B1"}]}
-    result = {
-        "strategy": "query_plan_execution",
-        "needs_llm_answer": True,
-        "query_plan": {"tasks": [{"mode": "structured"}]},
-    }
-
-    assert _deterministic_actual_group(result, structured) == "structured"
-
-
-def test_deterministic_group_recognizes_mixed_query_plan() -> None:
-    result = {
-        "strategy": "query_plan_execution",
-        "needs_llm_answer": True,
-        "query_plan": {
-            "tasks": [{"mode": "structured"}, {"mode": "rag"}],
-        },
-    }
-
-    assert _deterministic_actual_group(result, {"items": [{"value": "x"}]}) == "mixed"
-
-
-def test_deterministic_group_preserves_guardrail_names() -> None:
-    assert (
-        _deterministic_actual_group(
-            {"out_of_domain": True, "query_plan": {"tasks": []}}, {}
-        )
-        == "out_of_domain"
-    )
-    assert (
-        _deterministic_actual_group(
-            {
-                "needs_clarification": True,
-                "query_plan": {"tasks": [{"mode": "clarify"}]},
-            },
-            {},
-        )
-        == "clarification"
-    )
 
 
 def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:

@@ -29,26 +29,6 @@ def percentile(values: Iterable[float], percentile_value: float) -> float | None
     return items[lower] * (1.0 - weight) + items[upper] * weight
 
 
-def wilson_interval(
-    successes: int, total: int, z: float = 1.96
-) -> dict[str, float | None]:
-    """Compute a Wilson confidence interval for a binary proportion."""
-
-    if total <= 0:
-        return {"low": None, "high": None}
-    proportion = successes / total
-    denominator = 1.0 + z * z / total
-    center = (proportion + z * z / (2.0 * total)) / denominator
-    margin = (
-        z
-        * math.sqrt(
-            proportion * (1.0 - proportion) / total + z * z / (4.0 * total * total)
-        )
-        / denominator
-    )
-    return {"low": max(0.0, center - margin), "high": min(1.0, center + margin)}
-
-
 def bootstrap_interval(
     values: list[float],
     *,

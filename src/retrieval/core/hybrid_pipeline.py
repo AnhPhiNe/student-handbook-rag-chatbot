@@ -27,17 +27,6 @@ BM25_INIT_MAX_ATTEMPTS = 3
 BM25_INIT_BACKOFF_SECONDS = 0.5
 
 
-def _chunk_matches_regulation_scope(
-    chunk: dict[str, Any], cohort: str | None = None
-) -> bool:
-    metadata = chunk.get("metadata") or {}
-    if metadata.get("content_type") != "regulation_text":
-        return False
-    if _is_supplemental_regulation_metadata(metadata):
-        return False
-    return is_cohort_applicable(chunk, cohort)
-
-
 def _query_points_with_retry(
     client: QdrantClient,
     *,

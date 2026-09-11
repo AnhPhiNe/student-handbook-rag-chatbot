@@ -8,7 +8,6 @@ from src.generation.answer_pipeline import AnswerPipeline
 from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
     build_related_references,
-    _chunk_matches_regulation_scope,
     _is_supplemental_regulation_metadata,
     _regulation_query_filter,
     select_graph_related_parent_candidates,
@@ -26,20 +25,6 @@ def test_retired_migration_parent_is_excluded_from_graph_context() -> None:
         )
         is True
     )
-
-
-def test_regulation_scope_accepts_source_declared_for_target_cohort() -> None:
-    chunk = {
-        "metadata": {
-            "content_type": "regulation_text",
-            "cohort": "K50",
-            "source_cohort": "K50",
-            "applicable_cohorts": ["K48-K49", "K50", "K51"],
-        }
-    }
-
-    assert _chunk_matches_regulation_scope(chunk, "K51") is True
-    assert _chunk_matches_regulation_scope(chunk, "K47") is False
 
 
 def test_qdrant_scope_filter_matches_direct_or_applicable_cohort() -> None:

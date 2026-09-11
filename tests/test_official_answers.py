@@ -64,7 +64,7 @@ def test_structured_sources_are_recognized_by_existing_evaluator():
 
 
 def test_official_semantic_gold_does_not_become_a_lexical_failure():
-    from src.evaluation.suites import _answer_checks
+    from src.evaluation.answers import _answer_checks
     case = build()[60]
     checks = _answer_checks(case, {"status": "answered", "answer": "GPA của em xếp loại xuất sắc."})
     assert checks["required_fact_hit"] is None

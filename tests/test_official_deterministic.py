@@ -5,7 +5,8 @@ from collections import Counter
 
 from scripts.build_official_deterministic import BUNDLE, build, read
 from src.evaluation.dataset import validate_deterministic_case
-from src.evaluation.suites import _evaluate_outcome_case, _task_execution_checks
+from src.evaluation.deterministic import _evaluate_outcome_case, _task_execution_checks
+import src.evaluation.deterministic as deterministic_suite
 
 
 def fixture_result(case):
@@ -64,7 +65,7 @@ def test_fact_lock_cannot_pass_using_full_display_table():
 
 
 def test_list_slot_is_compared_without_hashing_or_automatic_acceptance():
-    from src.evaluation.suites import _task_matches
+    from src.evaluation.deterministic import _task_matches
     actual = {"slots": {"requested_field": ["email", "office"]}}
     assert not _task_matches({"slot_value_alternatives": {"requested_field": ["all"]}}, actual)
     assert _task_matches({"slot_value_alternatives": {"requested_field": [["office", "email"]]}}, actual)
@@ -82,7 +83,6 @@ def test_grouped_directory_requires_every_entity_and_field():
 
 
 def test_evaluator_exception_retains_raw_runtime_result(monkeypatch):
-    import src.evaluation.suites as suites
     case = build()[0]
     result = fixture_result(case)
     class Pipeline:
@@ -90,8 +90,8 @@ def test_evaluator_exception_retains_raw_runtime_result(monkeypatch):
             return result
     def fail(*args, **kwargs):
         raise TypeError("fixture evaluator error")
-    monkeypatch.setattr(suites, "_evaluate_outcome_case", fail)
-    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline,
+    monkeypatch.setattr(deterministic_suite, "_evaluate_outcome_case", fail)
+    report = deterministic_suite.evaluate_deterministic([case], pipeline_factory=Pipeline,
                                              evaluation_contract=case["contract_version"])
     row = report["cases"][0]
     assert row["error_stage"] == "evaluator"

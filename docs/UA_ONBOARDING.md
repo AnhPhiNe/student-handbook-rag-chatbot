@@ -126,7 +126,8 @@ Read these files in focused passes rather than linearly in one sitting:
 2. `src/retrieval/core/hybrid_pipeline.py`
 3. `src/retrieval/core/ai_router.py`
 4. `src/generation/gemini_client.py`
-5. `src/evaluation/suites.py` and `tests/test_evaluation.py`
+5. `src/evaluation/` (one module per suite: `deterministic.py`, `retrieval.py`,
+   `answers.py`, `production.py`) and `tests/test_evaluation.py`
 
 For each hotspot, first identify its inputs, outputs, configuration sources,
 and tests. Only then read its internal helper functions.

@@ -43,7 +43,7 @@ def main():
     load_project_env()
     os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
     from src.evaluation.dataset import _validate_common, validate_deterministic_case
-    from src.evaluation.suites import evaluate_deterministic
+    from src.evaluation.deterministic import evaluate_deterministic
     cases = json.loads((BUNDLE / "deterministic_tool_cases.json").read_text(encoding="utf-8"))
     errors = []
     for case in cases:

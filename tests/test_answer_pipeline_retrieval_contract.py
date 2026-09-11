@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from unittest.mock import Mock
 
-from src.evaluation.suites import _run_pure_regulation_retrieval
+from src.evaluation.retrieval import _run_pure_regulation_retrieval
 from src.generation.answer_pipeline import AnswerPipeline
 
 

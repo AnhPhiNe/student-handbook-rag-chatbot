@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 
 import src.retrieval.core.ai_router as ai_router_module
-from src.evaluation.suites import evaluate_deterministic
+from src.evaluation.deterministic import evaluate_deterministic
 from src.retrieval.core.ai_router import (
     AIRouter,
     PLANNER_DIAGNOSTIC_SCHEMA_VERSION,

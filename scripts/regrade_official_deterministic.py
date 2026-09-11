@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from scripts.prepare_official_eval import ROOT, BUNDLE
-from src.evaluation.suites import evaluate_deterministic
+from src.evaluation.deterministic import evaluate_deterministic
 
 
 def main():

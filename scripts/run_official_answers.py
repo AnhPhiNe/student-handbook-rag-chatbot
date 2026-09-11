@@ -67,13 +67,9 @@ def main():
     load_project_env()
     os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
     from src.evaluation.gates import production_gates
-    from src.evaluation.suites import (
-        evaluate_production,
-        evaluate_retrieval,
-        generate_answers,
-        judge_answers,
-        load_answer_checkpoint,
-    )
+    from src.evaluation.answers import generate_answers, judge_answers, load_answer_checkpoint
+    from src.evaluation.production import evaluate_production
+    from src.evaluation.retrieval import evaluate_retrieval
 
     case_path = BUNDLE / CASE_FILES[args.suite]
     cases = json.loads(case_path.read_text(encoding="utf-8"))

@@ -34,7 +34,7 @@ def test_cohort_article_numbering_is_not_assumed_identical():
 
 
 def test_multi_source_recall_requires_both_cohorts():
-    from src.evaluation.suites import _retrieval_metrics_for_execution_units
+    from src.evaluation.retrieval import _retrieval_metrics_for_execution_units
 
     case = build()[34]
     grades = {j["parent_section_id"]: j["grade"] for j in case["relevance_judgments"]}
@@ -50,7 +50,7 @@ def test_multi_source_recall_requires_both_cohorts():
 
 
 def test_multi_article_questions_require_every_primary_source():
-    from src.evaluation.suites import _retrieval_metrics_for_execution_units
+    from src.evaluation.retrieval import _retrieval_metrics_for_execution_units
 
     case = build()[4]
     grades = {j["parent_section_id"]: j["grade"] for j in case["relevance_judgments"]}
@@ -61,7 +61,7 @@ def test_multi_article_questions_require_every_primary_source():
 
 
 def test_sufficient_exclusion_source_does_not_require_background_article():
-    from src.evaluation.suites import _retrieval_metrics_for_execution_units
+    from src.evaluation.retrieval import _retrieval_metrics_for_execution_units
 
     case = build()[89]
     grades = {j["parent_section_id"]: j["grade"] for j in case["relevance_judgments"]}
@@ -73,7 +73,7 @@ def test_sufficient_exclusion_source_does_not_require_background_article():
 
 
 def test_registration_comparison_requires_permissions_not_warning_background():
-    from src.evaluation.suites import _retrieval_metrics_for_execution_units
+    from src.evaluation.retrieval import _retrieval_metrics_for_execution_units
 
     case = build()[44]
     grades = {j["parent_section_id"]: j["grade"] for j in case["relevance_judgments"]}
@@ -89,7 +89,7 @@ def test_registration_comparison_requires_permissions_not_warning_background():
 
 
 def test_equivalent_source_either_suffices_without_double_credit():
-    from src.evaluation.suites import _retrieval_metrics_for_execution_units
+    from src.evaluation.retrieval import _retrieval_metrics_for_execution_units
 
     for index in (106, 112, 149):
         case = build()[index]
@@ -102,7 +102,7 @@ def test_equivalent_source_either_suffices_without_double_credit():
 
 
 def test_equivalent_duplicates_do_not_pull_rank_six_into_top_five():
-    from src.evaluation.suites import _retrieval_metrics_for_execution_units
+    from src.evaluation.retrieval import _retrieval_metrics_for_execution_units
 
     case = {"cohort": "K50", "equivalent_source_groups": [["a", "b"]]}
     metrics, _ = _retrieval_metrics_for_execution_units(

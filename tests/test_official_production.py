@@ -2,6 +2,7 @@ import json
 from collections import Counter
 
 from scripts.build_official_production import BUNDLE, build
+import src.evaluation.production as production_suite
 
 
 def test_production_counts_artifact_and_pairs():
@@ -34,7 +35,6 @@ def test_production_common_contract():
 def test_all_sixty_requests_use_existing_runner_with_fake_http(monkeypatch):
     from io import BytesIO
     from threading import Lock
-    import src.evaluation.suites as suites
 
     observed = []
     seen = set()
@@ -58,8 +58,8 @@ def test_all_sixty_requests_use_existing_runner_with_fake_http(monkeypatch):
             return Response("".join(chunks).encode())
         return Response(json.dumps(body).encode())
 
-    monkeypatch.setattr(suites.urllib_request, "urlopen", fake_urlopen)
-    result = suites.evaluate_production(build(), base_url="https://fixture.invalid")
+    monkeypatch.setattr(production_suite.urllib_request, "urlopen", fake_urlopen)
+    result = production_suite.evaluate_production(build(), base_url="https://fixture.invalid")
     assert len(observed) == 60
     assert sum(url.endswith("/stream") for url, _ in observed) == 10
     assert result["summary"]["cache_protocol_valid"]
@@ -69,22 +69,21 @@ def test_all_sixty_requests_use_existing_runner_with_fake_http(monkeypatch):
 
 def test_runner_records_http_and_stream_errors_without_live_calls(monkeypatch):
     from io import BytesIO
-    import src.evaluation.suites as suites
 
     def http_failure(request, timeout):
-        raise suites.urllib_error.HTTPError(request.full_url, 429, "fixture capacity", {}, BytesIO(b"fixture"))
+        raise production_suite.urllib_error.HTTPError(request.full_url, 429, "fixture capacity", {}, BytesIO(b"fixture"))
 
-    monkeypatch.setattr(suites.urllib_request, "urlopen", http_failure)
-    result = suites.evaluate_production(build()[:1], base_url="https://fixture.invalid")
+    monkeypatch.setattr(production_suite.urllib_request, "urlopen", http_failure)
+    result = production_suite.evaluate_production(build()[:1], base_url="https://fixture.invalid")
     assert not result["cases"][0]["success"]
     assert result["cases"][0]["status_code"] == 429
 
     class Response(BytesIO):
         status = 200
 
-    monkeypatch.setattr(suites.urllib_request, "urlopen", lambda *a, **k: Response(
+    monkeypatch.setattr(production_suite.urllib_request, "urlopen", lambda *a, **k: Response(
         b'event: error\ndata: {"error_type":"fixture_timeout"}\n\nevent: done\ndata: {"status":"api_error"}\n\n'))
-    result = suites.evaluate_production([build()[40]], base_url="https://fixture.invalid")
+    result = production_suite.evaluate_production([build()[40]], base_url="https://fixture.invalid")
     assert result["cases"][0]["stream_error"]
     assert not result["cases"][0]["success"]
 
@@ -93,7 +92,6 @@ def test_official_runner_production_suite_attaches_release_gates(tmp_path, monke
     import sys
 
     import scripts.run_official_answers as runner
-    import src.evaluation.suites as suites
 
     calls = {}
 
@@ -103,7 +101,7 @@ def test_official_runner_production_suite_attaches_release_gates(tmp_path, monke
 
     monkeypatch.setattr(runner, "ROOT", tmp_path)
     monkeypatch.setattr(runner, "_snapshot", lambda suite, case_path: {"suite": suite})
-    monkeypatch.setattr(suites, "evaluate_production", fake_evaluate_production)
+    monkeypatch.setattr(production_suite, "evaluate_production", fake_evaluate_production)
     monkeypatch.setattr(sys, "argv", ["run_official_answers", "--suite", "production",
                                       "--limit", "2", "--base-url", "http://example.test"])
     runner.main()

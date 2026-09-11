@@ -8,7 +8,7 @@ from urllib.error import HTTPError
 
 import pytest
 
-import src.evaluation.suites as evaluation_suites
+import src.evaluation.shared as shared_suite
 from src.evaluation.dataset import _structured_source_index
 from src.evaluation.gates import production_gates
 from src.evaluation.judge import (
@@ -23,16 +23,9 @@ from src.evaluation.judge import (
 )
 from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
 from src.evaluation.metrics import retrieval_metrics
-from src.evaluation.suites import (
-    _answer_checks,
-    _expected_response_status,
-    _response_status_matches_expected,
-    _retrieval_summary,
-    _summarize_production_rows,
-    evaluate_production,
-    evaluate_retrieval,
-    generate_answers,
-)
+from src.evaluation.answers import _answer_checks, generate_answers
+from src.evaluation.production import _expected_response_status, _response_status_matches_expected, _summarize_production_rows, evaluate_production
+from src.evaluation.retrieval import _retrieval_summary, evaluate_retrieval
 from src.common.key_pool import KeyPool
 from src.generation.gemini_client import gemini_key_pool_config
 from src.generation.gemini_client import GeminiClient
@@ -227,7 +220,7 @@ def test_production_eval_records_http_error_status(
         )
 
     monkeypatch.setattr(
-        "src.evaluation.suites.urllib_request.urlopen", raise_rate_limit
+        "src.evaluation.production.urllib_request.urlopen", raise_rate_limit
     )
     report = evaluate_production(
         [
@@ -270,7 +263,7 @@ def test_production_eval_rejects_terminal_stream_api_error(
             return iter(payload.encode("utf-8").splitlines(keepends=True))
 
     monkeypatch.setattr(
-        "src.evaluation.suites.urllib_request.urlopen",
+        "src.evaluation.production.urllib_request.urlopen",
         lambda *_args, **_kwargs: StreamResponse(),
     )
     report = evaluate_production(
@@ -791,26 +784,24 @@ def test_generation_restores_eval_environment_when_pipeline_init_fails(
 def test_answer_quality_wait_rejects_degraded_bm25(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr(
-        evaluation_suites,
+    monkeypatch.setattr(shared_suite,
         "get_bm25_runtime_status",
         lambda: {"status": "degraded", "attempts": 3, "error_type": "TimeoutError"},
     )
 
     with pytest.raises(RuntimeError, match="BM25 entered degraded state"):
-        evaluation_suites._wait_for_bm25_ready(timeout_seconds=0)
+        shared_suite.wait_for_bm25_ready(timeout_seconds=0)
 
 
 def test_answer_quality_wait_accepts_ready_bm25(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr(
-        evaluation_suites,
+    monkeypatch.setattr(shared_suite,
         "get_bm25_runtime_status",
         lambda: {"status": "ready", "attempts": 1, "error_type": None},
     )
 
-    evaluation_suites._wait_for_bm25_ready(timeout_seconds=0)
+    shared_suite.wait_for_bm25_ready(timeout_seconds=0)
 
 
 def test_mongo_parent_miss_cannot_count_as_retrieval_hit() -> None:

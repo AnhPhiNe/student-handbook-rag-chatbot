@@ -8,7 +8,11 @@ from pathlib import Path
 import pytest
 
 import src.evaluation.dataset as dataset
-import src.evaluation.suites as suites
+import src.evaluation.answers as answers_suite
+import src.evaluation.deterministic as deterministic_suite
+import src.evaluation.production as production_suite
+import src.evaluation.retrieval as retrieval_suite
+import src.evaluation.shared as shared_suite
 from src.evaluation.metrics import retrieval_metrics
 
 
@@ -25,7 +29,7 @@ from src.evaluation.metrics import retrieval_metrics
 def test_contract_values_accept_equivalent_numeric_and_range_renderings(
     actual: object, expected: object
 ) -> None:
-    assert suites._contract_values_equal(actual, expected)
+    assert deterministic_suite._contract_values_equal(actual, expected)
 
 
 @pytest.mark.parametrize(
@@ -39,11 +43,11 @@ def test_contract_values_accept_equivalent_numeric_and_range_renderings(
 def test_contract_values_preserve_range_semantics(
     actual: object, expected: object
 ) -> None:
-    assert not suites._contract_values_equal(actual, expected)
+    assert not deterministic_suite._contract_values_equal(actual, expected)
 
 
 def test_scoring_grade_four_heading_accepts_classification_range_schema() -> None:
-    assert suites._mapping_contains_fields(
+    assert deterministic_suite._mapping_contains_fields(
         {"range": "3.2-dưới 3.6", "label": "Giỏi"},
         {"Thang điểm 4": "Từ 3,2 đến dưới 3,6", "Xếp loại": "Giỏi"},
         lookup_type="scoring",
@@ -78,7 +82,7 @@ def test_outcome_contract_accepts_equivalent_task_shape() -> None:
     }
     dataset.validate_deterministic_case(case, errors)
     assert errors == []
-    assert suites._required_tasks_match(
+    assert deterministic_suite._required_tasks_match(
         case["accepted_outcomes"][0]["required_tasks"],
         [
             {
@@ -135,7 +139,7 @@ def test_outcome_contract_allows_task_level_clarification() -> None:
             }
         ],
     }
-    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
+    report = deterministic_suite.evaluate_deterministic([case], pipeline_factory=Pipeline)
     assert report["summary"]["passed"] == 1
     assert report["cases"][0]["matched_outcome"] == "task-level-clarification"
 
@@ -266,7 +270,7 @@ def test_evidence_only_task_reports_resolved_result_as_na() -> None:
         ],
     }
 
-    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
+    report = deterministic_suite.evaluate_deterministic([case], pipeline_factory=Pipeline)
     row = report["cases"][0]
     assert row["passed"] is True
     assert row["structured_row_correct"] is True
@@ -332,7 +336,7 @@ def test_evaluator_checks_source_row_and_resolved_result() -> None:
             }
         ],
     }
-    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
+    report = deterministic_suite.evaluate_deterministic([case], pipeline_factory=Pipeline)
     row = report["cases"][0]
     assert row["passed"] is True
     assert row["structured_source_correct"] is True
@@ -395,7 +399,7 @@ def test_evaluator_fails_wrong_resolved_value_without_inflating_na() -> None:
             }
         ],
     }
-    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
+    report = deterministic_suite.evaluate_deterministic([case], pipeline_factory=Pipeline)
     row = report["cases"][0]
     assert row["passed"] is False
     assert row["structured_source_correct"] is None
@@ -458,7 +462,7 @@ def test_evaluator_recognizes_service_catalog_identity() -> None:
             }
         ],
     }
-    report = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)
+    report = deterministic_suite.evaluate_deterministic([case], pipeline_factory=Pipeline)
     row = report["cases"][0]
     assert row["passed"] is True, json.dumps(
         row["accepted_outcome_evaluations"], ensure_ascii=False, indent=2
@@ -535,7 +539,7 @@ def test_evaluator_matches_public_directory_schema() -> None:
             }
         ],
     }
-    row = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)["cases"][0]
+    row = deterministic_suite.evaluate_deterministic([case], pipeline_factory=Pipeline)["cases"][0]
     assert row["passed"] is True
     assert row["structured_source_correct"] is None
     assert row["structured_row_correct"] is True
@@ -613,7 +617,7 @@ def test_evaluator_matches_display_row_to_canonical_resolved_row() -> None:
             }
         ],
     }
-    row = suites.evaluate_deterministic([case], pipeline_factory=Pipeline)["cases"][0]
+    row = deterministic_suite.evaluate_deterministic([case], pipeline_factory=Pipeline)["cases"][0]
     assert row["passed"] is True
     assert row["structured_source_correct"] is True
     assert row["structured_row_correct"] is True
@@ -623,7 +627,7 @@ def test_evaluator_matches_display_row_to_canonical_resolved_row() -> None:
 def test_ndcg_uses_all_gold_and_reports_primary_source_coverage() -> None:
     metric = retrieval_metrics([2], gold_grades=[2, 2])
     assert 0 < metric["ndcg_at_5"] < 1
-    metrics, scope = suites._retrieval_metrics_for_execution_units(
+    metrics, scope = retrieval_suite._retrieval_metrics_for_execution_units(
         case={"cohort": "K51"}, ranked_ids=["support"],
         grade_by_id={"support": 1, "main": 2}, scope="end_to_end",
     )
@@ -640,7 +644,7 @@ def test_retrieval_metrics_stable_deduplicate_parent_ids(cohort: str) -> None:
         {"parent_section_id": "K51_main", "cohort": "K51", "grade": 2},
         {"parent_section_id": "K50_main", "cohort": "K50", "grade": 2},
     ]
-    metrics, _ = suites._retrieval_metrics_for_execution_units(
+    metrics, _ = retrieval_suite._retrieval_metrics_for_execution_units(
         case={"cohort": cohort, "relevance_judgments": judgments},
         ranked_ids=["K51_main"] * 5 + ["K50_main"],
         grade_by_id={"K51_main": 2, "K50_main": 2}, scope="end_to_end",
@@ -660,19 +664,19 @@ def test_generation_resume_rejects_changed_inputs_and_keeps_list_format(tmp_path
     cases = [{"id": "one", "query": "original"}]
     cache_path = tmp_path / "answers.json"
     context = {"profile": "full", "dataset_version": "v6"}
-    suites.generate_answers(
+    answers_suite.generate_answers(
         cases, cache_path=cache_path, resume=False,
         pipeline_factory=Pipeline, checkpoint_context=context,
     )
     original_bytes = cache_path.read_bytes()
     assert isinstance(json.loads(original_bytes), list)
-    assert suites.load_answer_checkpoint(cases, cache_path, checkpoint_context=context)
+    assert answers_suite.load_answer_checkpoint(cases, cache_path, checkpoint_context=context)
     for changed_cases, changed_context in [
         ([{"id": "one", "query": "edited"}], context),
         (cases, {**context, "profile": "smoke"}),
     ]:
         with pytest.raises(ValueError, match="identity mismatch"):
-            suites.generate_answers(
+            answers_suite.generate_answers(
                 changed_cases, cache_path=cache_path, resume=True,
                 pipeline_factory=Pipeline, checkpoint_context=changed_context,
             )
@@ -685,7 +689,7 @@ def test_legacy_answer_cache_is_not_silently_rebound(tmp_path: Path) -> None:
     original = '[{"id": "one", "answer": "historical"}]'
     cache_path.write_text(original, encoding="utf-8")
     with pytest.raises(ValueError, match="Legacy checkpoint"):
-        suites.load_answer_checkpoint([{"id": "one", "query": "q"}], cache_path)
+        answers_suite.load_answer_checkpoint([{"id": "one", "query": "q"}], cache_path)
     assert cache_path.read_text(encoding="utf-8") == original
     assert not cache_path.with_suffix(".json.identity.json").exists()
 
@@ -694,16 +698,16 @@ def test_checkpoint_identity_binds_mode_and_declared_context(tmp_path: Path) -> 
     cases = [{"id": "one", "query": "q"}]
     path = tmp_path / "retrieval.json"
     kwargs = {"suite": "retrieval", "mode": "vector_only", "scope": "pure"}
-    identity = suites._eval_checkpoint_identity(cases, **kwargs)
-    suites._save_eval_checkpoint(path, [{"id": "one"}], identity=identity)
-    changed_mode = suites._eval_checkpoint_identity(cases, **{**kwargs, "mode": "no_graph"})
+    identity = shared_suite.eval_checkpoint_identity(cases, **kwargs)
+    shared_suite.save_eval_checkpoint(path, [{"id": "one"}], identity=identity)
+    changed_mode = shared_suite.eval_checkpoint_identity(cases, **{**kwargs, "mode": "no_graph"})
     with pytest.raises(ValueError, match="identity mismatch"):
-        suites._load_eval_checkpoint(path, resume=True, identity=changed_mode)
-    changed_runtime = suites._eval_checkpoint_identity(
+        shared_suite.load_eval_checkpoint(path, resume=True, identity=changed_mode)
+    changed_runtime = shared_suite.eval_checkpoint_identity(
         cases, **kwargs, context={"router_model": "different-test-model"}
     )
     with pytest.raises(ValueError, match="identity mismatch"):
-        suites._load_eval_checkpoint(path, resume=True, identity=changed_runtime)
+        shared_suite.load_eval_checkpoint(path, resume=True, identity=changed_runtime)
 
 
 @pytest.mark.parametrize(
@@ -713,7 +717,7 @@ def test_checkpoint_identity_binds_mode_and_declared_context(tmp_path: Path) -> 
 def test_safe_non_answer_is_not_counted_as_wrong_abstention(
     behavior: str, status: str,
 ) -> None:
-    checks = suites._answer_checks(
+    checks = answers_suite._answer_checks(
         {
             "answerability": "answerable",
             "expected_answer_behavior": behavior,
@@ -757,15 +761,15 @@ def test_deterministic_counts_compound_structured_and_preserves_failed_checkpoin
 
     checkpoint = tmp_path / "det.json"
     monkeypatch.setenv("STUDENT_RAG_DISABLE_ROUTER_CACHE", "previous")
-    report = suites.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint)
+    report = deterministic_suite.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint)
     assert report["summary"]["precision"] == 1.0
     assert report["summary"]["structured_selection_counts"]["expected_positive_n"] == 1
     assert report["summary"]["passed"] == 1
     assert calls == [("q", history), ("fail", None)]
     assert os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] == "previous"
     with pytest.raises(FileExistsError):
-        suites.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint)
-    resumed = suites.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint, resume=True)
+        deterministic_suite.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint)
+    resumed = deterministic_suite.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint, resume=True)
     assert len(calls) == 2
     assert resumed["cases"][1]["error"] == "test failure"
 
@@ -782,8 +786,8 @@ def test_retrieval_checkpoint_and_history_do_not_repeat_failures(tmp_path: Path)
     case = {"id": "ret", "query": "q", "history": history, "cohort": "K51", "case_type": "regulation_true_rag", "relevance_judgments": [{"parent_section_id": "p", "grade": 2}]}
     checkpoint = tmp_path / "ret.json"
     kwargs = {"backend": "qdrant", "mode": "vector_primary_graph_supplement", "pipeline_factory": Pipeline, "checkpoint_path": checkpoint}
-    suites.evaluate_retrieval([case], **kwargs)
-    report = suites.evaluate_retrieval([case], **kwargs, resume=True)
+    retrieval_suite.evaluate_retrieval([case], **kwargs)
+    report = retrieval_suite.evaluate_retrieval([case], **kwargs, resume=True)
     assert calls == [history]
     assert report["summary"]["n"] == 1
     assert report["summary"]["hit_at_5"] == 0.0
@@ -801,10 +805,10 @@ def test_generation_passes_history_disables_router_cache_and_is_once_only(tmp_pa
 
     case = {"id": "answer", "query": "q", "history": history}
     kwargs = {"cache_path": tmp_path / "answer.json", "pipeline_factory": Pipeline}
-    suites.generate_answers([case], **kwargs, resume=False)
+    answers_suite.generate_answers([case], **kwargs, resume=False)
     with pytest.raises(FileExistsError):
-        suites.generate_answers([case], **kwargs, resume=False)
-    suites.generate_answers([case], **kwargs, resume=True)
+        answers_suite.generate_answers([case], **kwargs, resume=False)
+    answers_suite.generate_answers([case], **kwargs, resume=True)
     assert calls == [history]
 
 
@@ -831,14 +835,14 @@ def test_production_retains_auditable_answers_history_and_checkpoint(
         calls.append(json.loads(req.data))
         return Response(body)
 
-    monkeypatch.setattr(suites.urllib_request, "urlopen", request)
+    monkeypatch.setattr(production_suite.urllib_request, "urlopen", request)
     case = {"id": "prod", "query": "q", "cohort": "K51", "history": history, "scenario": scenario, "expected_path": "regulation_rag"}
     kwargs = {"base_url": "http://unused", "checkpoint_path": tmp_path / "production.json"}
-    report = suites.evaluate_production([case], **kwargs)
+    report = production_suite.evaluate_production([case], **kwargs)
     assert calls[0]["chat_history"] == history
     assert report["cases"][0]["answer"] == "Có căn cứ."
     assert report["cases"][0]["response_payload"]["citations_used"] == response_payload["citations_used"]
-    resumed = suites.evaluate_production([case], **kwargs, resume=True)
+    resumed = production_suite.evaluate_production([case], **kwargs, resume=True)
     assert len(calls) == 1
     assert resumed["summary"]["n"] == 1
 
@@ -856,7 +860,7 @@ def test_production_uses_browser_identity_and_reuses_it_for_warm_repeat(
         client_ids.append(req.get_header("X-client-id"))
         return Response(json.dumps(response_payload).encode())
 
-    monkeypatch.setattr(suites.urllib_request, "urlopen", request)
+    monkeypatch.setattr(production_suite.urllib_request, "urlopen", request)
     cases = [
         {
             "id": "cold",
@@ -882,7 +886,7 @@ def test_production_uses_browser_identity_and_reuses_it_for_warm_repeat(
         },
     ]
 
-    report = suites.evaluate_production(cases, base_url="http://unused")
+    report = production_suite.evaluate_production(cases, base_url="http://unused")
 
     assert report["summary"]["n"] == 3
     assert client_ids[0] == client_ids[1]

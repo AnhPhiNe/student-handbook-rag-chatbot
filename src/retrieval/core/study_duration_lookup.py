@@ -1,21 +1,14 @@
-import re
-import unicodedata
+from functools import partial
 from typing import Any
 
 from src.common.cohort import (
     is_cohort_applicable,
     normalize_cohort,
 )
+from src.common.text import fold_text
+from src.common.text import slot_values as _slot_values
 
-
-def normalize_text(value: Any) -> str:
-    """Normalize text for study-duration rule matching."""
-
-    text = str(value or "").lower()
-    text = unicodedata.normalize("NFD", text)
-    text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
-    text = text.replace("đ", "d")
-    return re.sub(r"[^a-z0-9+\s-]", " ", text)
+normalize_text = partial(fold_text, keep="+-")
 
 
 def _filter_by_cohort(
@@ -33,14 +26,6 @@ def _filter_by_cohort(
     ]
 
 
-def _slot_values(value: Any) -> list[Any]:
-    """Return all non-empty slot choices without collapsing list input."""
-
-    if isinstance(value, list):
-        return [item for item in value if item is not None and str(item).strip()]
-    if value is None or not str(value).strip():
-        return []
-    return [value]
 
 
 def _wanted_training_modes(value: Any) -> set[str]:

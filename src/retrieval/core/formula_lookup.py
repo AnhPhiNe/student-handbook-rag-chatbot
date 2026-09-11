@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-import re
-import unicodedata
+from functools import partial
 from typing import Any
 
 from src.common.cohort import is_cohort_applicable, normalize_cohort
+from src.common.text import fold_text
+from src.common.text import slot_values as _slot_values
 
 
 def formula_lookup(
@@ -38,16 +39,6 @@ def formula_lookup(
     if len(matched) == 1:
         return matched[0]
     return _multi_formula_result(query, matched, cohort)
-
-
-def _slot_values(value: Any) -> list[Any]:
-    """Return supplied slot choices without collapsing a list to one value."""
-
-    if isinstance(value, list):
-        return [item for item in value if item is not None and str(item).strip()]
-    if value is None or not str(value).strip():
-        return []
-    return [value]
 
 
 def _all_formulas_result(
@@ -157,11 +148,4 @@ def _find_formula(
     return None
 
 
-def _ascii_text(text: str) -> str:
-    text = text.replace("đ", "d").replace("Đ", "D")
-    decomposed = unicodedata.normalize("NFD", text)
-    stripped = "".join(
-        char for char in decomposed if unicodedata.category(char) != "Mn"
-    )
-    stripped = re.sub(r"[^a-zA-Z0-9]+", " ", stripped)
-    return re.sub(r"\s+", " ", stripped.lower()).strip()
+_ascii_text = partial(fold_text, keep="")

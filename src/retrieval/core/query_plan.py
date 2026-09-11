@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-import unicodedata
+from functools import partial
 from typing import Any
 
 from src.common.cohort import (
@@ -11,13 +11,13 @@ from src.common.cohort import (
     normalize_cohort,
     valid_cohorts,
 )
+from src.common.text import fold_text
 
 from .structured_routing import (
     load_lookup_registry,
     normalize_router_decision,
     validate_router_decision,
 )
-
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
 QUERY_PLAN_NORMALIZER_VERSION = "v28-resolver-owned-directory-fallback"
@@ -75,14 +75,7 @@ _COMPARISON_PHRASES = (
 )
 
 
-def _fold_query(value: str) -> str:
-    value = value.replace("đ", "d").replace("Đ", "D")
-    decomposed = unicodedata.normalize("NFD", value)
-    ascii_text = "".join(
-        char for char in decomposed if unicodedata.category(char) != "Mn"
-    )
-    ascii_text = re.sub(r"[^a-zA-Z0-9]+", " ", ascii_text)
-    return re.sub(r"\s+", " ", ascii_text.casefold()).strip()
+_fold_query = partial(fold_text, keep="")
 
 
 def _has_handbook_domain_signal(query: str) -> bool:

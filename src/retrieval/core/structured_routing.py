@@ -2,15 +2,14 @@ from __future__ import annotations
 
 import json
 import re
-import unicodedata
-from functools import lru_cache
+from functools import lru_cache, partial
 from pathlib import Path
 from typing import Any
 
 import yaml
 
 from src.common.cohort import build_cohort_token_regex, normalize_cohort
-
+from src.common.text import fold_text
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REGISTRY_PATH = ROOT / "configs" / "structured_lookup_registry.yaml"
@@ -56,12 +55,7 @@ def _is_semantic_result_input_slot(slot_spec: dict[str, Any] | None) -> bool:
     )
 
 
-def _normalize_text(value: Any) -> str:
-    text = str(value or "").lower().replace("đ", "d")
-    text = unicodedata.normalize("NFD", text)
-    text = "".join(char for char in text if unicodedata.category(char) != "Mn")
-    text = re.sub(r"[^a-z0-9+.,]+", " ", text)
-    return re.sub(r"\s+", " ", text).strip()
+_normalize_text = partial(fold_text, keep="+.,")
 
 
 def _query_mentions_cohort(query: str) -> bool:

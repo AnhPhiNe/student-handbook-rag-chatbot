@@ -1,19 +1,12 @@
 import re
-import unicodedata
 from collections import defaultdict
+from functools import partial
 from typing import Any
 
 from src.common.cohort import is_cohort_applicable, normalize_cohort
+from src.common.text import fold_text
 
-
-def normalize_text(text: Any) -> str:
-    """Fold text into a stable accent-insensitive comparison form."""
-    value = str(text or "").lower()
-    value = value.replace("đ", "d").replace("Đ", "D")
-    value = unicodedata.normalize("NFD", value)
-    value = "".join(char for char in value if unicodedata.category(char) != "Mn")
-    value = re.sub(r"[^a-z0-9]+", " ", value)
-    return re.sub(r"\s+", " ", value).strip()
+normalize_text = partial(fold_text, keep="")
 
 
 def _normalize_faculty_name(value: Any) -> str:

@@ -1,8 +1,9 @@
 import re
-import unicodedata
+from functools import partial
 from typing import Any, Optional
 
 from src.common.cohort import is_validated_source_applicable, normalize_cohort
+from src.common.text import fold_text
 
 
 def extract_number(query: str) -> Optional[float]:
@@ -46,15 +47,7 @@ def find_table(tables: list[dict[str, Any]], table_id: str) -> Optional[dict[str
     return None
 
 
-def normalize_text(text: Any) -> str:
-    """Normalize text for deterministic table lookup."""
-
-    value = str(text or "").lower()
-    value = value.replace("đ", "d").replace("Đ", "D")
-    value = unicodedata.normalize("NFD", value)
-    value = "".join(char for char in value if unicodedata.category(char) != "Mn")
-    value = re.sub(r"[^a-z0-9+]+", " ", value)
-    return re.sub(r"\s+", " ", value).strip()
+normalize_text = partial(fold_text, keep="+")
 
 
 def _metadata_from_tables(tables: list[dict[str, Any]]) -> dict[str, Any]:

@@ -1,14 +1,14 @@
 import hashlib
 import re
 import threading
-import unicodedata
 from difflib import SequenceMatcher
+from functools import partial
 from typing import Any
 
 import numpy as np
 
 from src.common.cohort import is_validated_source_applicable, normalize_cohort
-
+from src.common.text import fold_text
 
 _EMBEDDING_CACHE: dict[tuple[int, str], np.ndarray] = {}
 _EMBEDDING_CACHE_LOCK = threading.Lock()
@@ -29,15 +29,7 @@ _IGNORED_ENTITY_SPAN_WORDS = {
 }
 
 
-def normalize_text(text: Any) -> str:
-    """Normalize text for office-name and service matching."""
-
-    value = str(text or "").lower()
-    value = value.replace("đ", "d").replace("Đ", "d")
-    decomposed = unicodedata.normalize("NFD", value)
-    value = "".join(char for char in decomposed if unicodedata.category(char) != "Mn")
-    value = re.sub(r"[^a-z0-9@._+-]+", " ", value)
-    return re.sub(r"\s+", " ", value).strip()
+normalize_text = partial(fold_text, keep="@._+-")
 
 
 def _strip_order_prefix(value: Any) -> str:

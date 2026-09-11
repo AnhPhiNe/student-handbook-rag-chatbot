@@ -1,16 +1,9 @@
 {
   "tables_extracted": 10,
   "formula_rules_extracted": 2,
-  "threshold_rules_extracted": 41,
-  "threshold_priority_count": {
-    "high": 12,
-    "medium": 5,
-    "low": 24
-  },
   "office_records_extracted": 21,
   "faculty_records_extracted": 32,
   "program_records_extracted": 45,
-  "reference_records_extracted": 0,
   "items_need_manual_review": {
     "tables": [
       "grade_10_to_letter_foundation",

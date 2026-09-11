@@ -6,7 +6,6 @@ from src.common.content_modes import apply_record_defaults
 from .directory_parser import (
     extract_faculty_program_directory,
     extract_office_directory,
-    extract_reference_directory,
 )
 from .audit_builder import build_content_audit
 from .formula_rules import extract_formula_rules
@@ -18,21 +17,9 @@ from .program_faculty_enricher import (
 from .program_parser import extract_program_directory
 from .report_builder import build_report
 from .scoring_tables import build_scoring_tables
-from .threshold_rules import extract_threshold_rules
 
 
 CONFIG_PATH = Path("configs/extraction.yaml")
-
-NON_EMBEDDED_CONTENT_TYPES = {
-    "scoring_table",
-    "formula_rule",
-    "threshold_rule",
-    "office_directory",
-    "faculty_directory",
-    "program_directory",
-    "reference_directory",
-}
-
 
 def main() -> None:
     """Run structured extraction and persist records plus audit reports."""
@@ -46,7 +33,6 @@ def main() -> None:
 
     scoring_tables = build_scoring_tables()
     formula_rules = extract_formula_rules(sections)
-    threshold_rules = extract_threshold_rules(sections)
 
     office_directory = extract_office_directory(pages)
     faculty_directory = extract_faculty_program_directory(pages)
@@ -56,30 +42,22 @@ def main() -> None:
         faculty_directory,
     )
     program_directory = attach_program_legacy_record_ids(program_directory, cohort)
-    reference_directory = extract_reference_directory(pages)
     content_audit_report = build_content_audit(pages, sections)
 
     record_groups = [
         (scoring_tables, "scoring_table"),
         (formula_rules, "formula_rule"),
-        (threshold_rules, "threshold_rule"),
         (office_directory, "office_directory"),
         (faculty_directory, "faculty_directory"),
         (program_directory, "program_directory"),
-        (reference_directory, "reference_directory"),
     ]
 
     for group, content_type in record_groups:
         for record in group:
+            # Structured records feed deterministic lookup; they are never embedded.
             record.setdefault("content_type", content_type)
-
-            if content_type in NON_EMBEDDED_CONTENT_TYPES:
-                record.setdefault("embedding_enabled", False)
-
-                record.setdefault("retrieval_mode", "deterministic")
-            else:
-                record.setdefault("embedding_enabled", True)
-                record.setdefault("retrieval_mode", "semantic")
+            record.setdefault("embedding_enabled", False)
+            record.setdefault("retrieval_mode", "deterministic")
 
             apply_record_defaults(
                 record,
@@ -97,33 +75,25 @@ def main() -> None:
     report = build_report(
         scoring_tables=scoring_tables,
         formula_rules=formula_rules,
-        threshold_rules=threshold_rules,
         office_directory=office_directory,
         faculty_directory=faculty_directory,
         program_directory=program_directory,
-        reference_directory=reference_directory,
     )
 
     save_json(scoring_tables, Path(config["output"]["scoring_tables"]))
     save_json(formula_rules, Path(config["output"]["formula_rules"]))
-    save_json(threshold_rules, Path(config["output"]["threshold_rules"]))
     save_json(office_directory, Path(config["output"]["office_directory"]))
     save_json(faculty_directory, Path(config["output"]["faculty_directory"]))
     save_json(program_directory, Path(config["output"]["program_directory"]))
-    # Backward-compatible alias while retrieval/chunking migrates off the old name.
-    save_json(faculty_directory, Path(config["output"]["faculty_program_directory"]))
-    save_json(reference_directory, Path(config["output"]["reference_directory"]))
     save_json(report, Path(config["output"]["report"]))
     save_json(content_audit_report, Path(config["output"]["content_audit_report"]))
 
     print("Structured extraction completed.")
     print(f"Scoring tables: {len(scoring_tables)}")
     print(f"Formula rules: {len(formula_rules)}")
-    print(f"Threshold rules: {len(threshold_rules)}")
     print(f"Office records: {len(office_directory)}")
     print(f"Faculty records: {len(faculty_directory)}")
     print(f"Program records: {len(program_directory)}")
-    print(f"Reference records: {len(reference_directory)}")
 
 
 if __name__ == "__main__":

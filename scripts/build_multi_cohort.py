@@ -674,11 +674,9 @@ def main(argv: list[str] | None = None):
     docstore_outputs = {}
     formula_outputs = {}
     scoring_outputs = {}
-    threshold_outputs = {}
     office_outputs = {}
     faculty_outputs = {}
     program_outputs = {}
-    reference_outputs = {}
     profile_outputs = {}
     audit_outputs = {}
     table_dir = Path("data/processed/tables")
@@ -704,22 +702,18 @@ def main(argv: list[str] | None = None):
         shutil.copy(chunk_dir / "docstore_items.json", docstore_dest)
         
         formula_dest = table_dir / f"{cohort}_formula_rules.json"
-        threshold_dest = table_dir / f"{cohort}_threshold_rules.json"
         scoring_dest = table_dir / f"{cohort}_scoring_tables.json"
         office_dest = directory_dir / f"{cohort}_office_directory.json"
         faculty_dest = directory_dir / f"{cohort}_faculty_directory.json"
         program_dest = directory_dir / f"{cohort}_program_directory.json"
-        reference_dest = directory_dir / f"{cohort}_reference_directory.json"
         profile_dest = metadata_dir / f"{cohort}_document_profile.json"
         audit_dest = metadata_dir / f"{cohort}_content_audit_report.json"
 
         shutil.copy(table_dir / "formula_rules.json", formula_dest)
-        shutil.copy(table_dir / "threshold_rules.json", threshold_dest)
         shutil.copy(table_dir / "scoring_tables.json", scoring_dest)
         shutil.copy(directory_dir / "office_directory.json", office_dest)
         shutil.copy(directory_dir / "faculty_directory.json", faculty_dest)
         shutil.copy(directory_dir / "program_directory.json", program_dest)
-        shutil.copy(directory_dir / "reference_directory.json", reference_dest)
         shutil.copy(metadata_dir / "document_profile.json", profile_dest)
         shutil.copy(metadata_dir / "content_audit_report.json", audit_dest)
         
@@ -730,12 +724,10 @@ def main(argv: list[str] | None = None):
         regulation_chunk_outputs[cohort] = regulation_chunks_dest
         docstore_outputs[cohort] = docstore_dest
         formula_outputs[cohort] = formula_dest
-        threshold_outputs[cohort] = threshold_dest
         scoring_outputs[cohort] = scoring_dest
         office_outputs[cohort] = office_dest
         faculty_outputs[cohort] = faculty_dest
         program_outputs[cohort] = program_dest
-        reference_outputs[cohort] = reference_dest
         profile_outputs[cohort] = profile_dest
         audit_outputs[cohort] = audit_dest
 
@@ -766,7 +758,6 @@ def main(argv: list[str] | None = None):
     
     print(f"\n{'='*50}\n--- MERGING STRUCTURED DATA ---\n{'='*50}")
     merge_structured_data(formula_outputs, table_dir / "formula_rules.json")
-    merge_structured_data(threshold_outputs, table_dir / "threshold_rules.json")
     merge_structured_data(scoring_outputs, table_dir / "scoring_tables.json")
     merge_structured_data(office_outputs, directory_dir / "office_directory.json")
     merge_structured_data(faculty_outputs, directory_dir / "faculty_directory.json")
@@ -776,24 +767,16 @@ def main(argv: list[str] | None = None):
         directory_dir / "faculty_directory.json",
         overrides,
     )
-    merge_structured_data(reference_outputs, directory_dir / "reference_directory.json")
     merge_json_documents(profile_outputs, metadata_dir / "document_profiles.json")
     merge_json_documents(audit_outputs, metadata_dir / "content_audit_reports.json")
-    # Backward-compatible alias for old config keys and reports.
-    shutil.copy(
-        directory_dir / "faculty_directory.json",
-        directory_dir / "faculty_program_directory.json",
-    )
     
     validate_structured_json(
         [
             table_dir / "scoring_tables.json",
             table_dir / "formula_rules.json",
-            table_dir / "threshold_rules.json",
             directory_dir / "office_directory.json",
             directory_dir / "faculty_directory.json",
             directory_dir / "program_directory.json",
-            directory_dir / "reference_directory.json",
         ]
     )
 
@@ -817,13 +800,10 @@ def main(argv: list[str] | None = None):
             chunk_dir / "regulation_chunks.json",
             chunk_dir / "all_docstore_items.json",
             table_dir / "formula_rules.json",
-            table_dir / "threshold_rules.json",
             table_dir / "scoring_tables.json",
             directory_dir / "office_directory.json",
             directory_dir / "faculty_directory.json",
             directory_dir / "program_directory.json",
-            directory_dir / "faculty_program_directory.json",
-            directory_dir / "reference_directory.json",
         ]
     )
     validate_retrieval_metadata(
@@ -834,7 +814,6 @@ def main(argv: list[str] | None = None):
             chunk_dir / "tool_rule_chunks.json",
             chunk_dir / "all_docstore_items.json",
             table_dir / "formula_rules.json",
-            table_dir / "threshold_rules.json",
             table_dir / "scoring_tables.json",
             directory_dir / "office_directory.json",
             directory_dir / "faculty_directory.json",

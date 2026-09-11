@@ -225,29 +225,3 @@ def extract_faculty_program_directory(
         content_type="faculty_program_directory",
         heading_type="faculty",
     )
-
-
-def extract_reference_directory(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Preserve non-core reference directories by page to avoid false parsing."""
-    reference_pages = get_pages_by_type(pages, "reference_directory")
-    records = []
-
-    for page in reference_pages:
-        page_number = page["page_number"]
-        text = normalize_text(page.get("text", ""))
-
-        if not text:
-            continue
-
-        records.append(
-            {
-                "record_id": f"reference_p{page_number}",
-                "content_type": "reference_directory",
-                "name": f"Tài liệu tham khảo/trang tra cứu {page_number}",
-                "source_pages": [page_number],
-                "raw_text": text,
-                "needs_manual_review": False,
-            }
-        )
-
-    return records

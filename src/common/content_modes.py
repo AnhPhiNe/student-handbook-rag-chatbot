@@ -21,7 +21,6 @@ ARCHIVE_ONLY_TYPES = {
 STRUCTURED_ONLY_TYPES = {
     "formula_rule",
     "scoring_table",
-    "threshold_rule",
 }
 
 RAG_INDEX_TYPES = {

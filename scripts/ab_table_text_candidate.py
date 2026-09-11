@@ -145,7 +145,7 @@ def answers(directory, indexes, cases, *, generate=True):
     if output.exists():
         raise ValueError("Answer output exists; do not rerun for a better score")
     # No Redis probe or local production-cache access is needed in this ablation.
-    disabled_cache = ResponseCache(directory / 'disabled_response_cache.json', enabled=False)
+    disabled_cache = ResponseCache(enabled=False)
     with patch.object(answer_pipeline, 'get_response_cache', return_value=disabled_cache):
         pipeline = AnswerPipeline()
     pipeline.llm_config.setdefault('key_pool', {})['state_path'] = str(directory / 'gemini_key_state.json')

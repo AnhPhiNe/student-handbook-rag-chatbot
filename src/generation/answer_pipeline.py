@@ -251,9 +251,6 @@ class AnswerPipeline:
 
         cache_config = self.config.get("cache", {})
         self.response_cache = get_response_cache(
-            path=Path(
-                cache_config.get("path", "data/cache/answer_response_cache.json")
-            ),
             enabled=cache_config.get("enabled", True),
             ttl_seconds=cache_config.get("ttl_seconds", 86400),
             max_entries=cache_config.get("max_entries", 1000),

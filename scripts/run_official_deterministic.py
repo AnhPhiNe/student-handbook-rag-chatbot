@@ -57,17 +57,32 @@ def main():
     actual = {key: os.environ.get(key) for key in expected}
     if actual != expected:
         raise ValueError(f"Storage configuration mismatch: {actual}")
+    from src.retrieval.core.ai_router import AIRouter
+    from src.retrieval.core.query_plan import QUERY_PLAN_NORMALIZER_VERSION
+    router = AIRouter.from_config()
+    planner = {"provider": router.provider, "model": router.model_name,
+               "response_format": router._resolved_response_format(),
+               "reasoning_effort": router._resolved_reasoning_effort(),
+               "thinking_token_budget": router.thinking_token_budget if router.provider == "cohere" else None,
+               "normalizer_version": QUERY_PLAN_NORMALIZER_VERSION}
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     output = ROOT / "data/eval/reports" / f"official_v1_deterministic_{stamp}"
     output.mkdir(parents=True, exist_ok=False)
+    frozen_runtime_files = []
+    for name in baseline["file_hashes"]:
+        path = ROOT / name
+        if path.exists():
+            frozen_runtime_files.append(path)
+        elif not args.current_worktree:
+            raise FileNotFoundError(f"Frozen runtime file is missing: {name}")
     files = [*BUNDLE.glob("*.json"), *BUNDLE.glob("*.yaml"),
              *ROOT.glob("src/**/*.py"), *ROOT.glob("configs/**/*.yaml"),
              *Path(ROOT / "src/evaluation").glob("*.py"), Path(__file__),
-             *(ROOT / name for name in baseline["file_hashes"])]
+             *frozen_runtime_files]
     hashes = {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
     snapshot = {"created_at": stamp, "dataset_frozen": False, "release_frozen": False,
                 "purpose": "pre-run identity; owner approval required before next suite",
-                "hashes": hashes, "storage": actual, "router_cache": False,
+                "hashes": hashes, "storage": actual, "router_cache": False, "planner": planner,
                 "runtime_base_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                 "approved_runtime_change": ("Current working tree: structured v68, normalizer v21, timeout 20s"
                                             if args.current_worktree else "Composer timeout 60 -> 20 seconds"),

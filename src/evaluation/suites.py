@@ -1442,6 +1442,7 @@ def _evaluate_v7_outcome_case(
     return {
         **case,
         "query_plan": plan,
+        "router_usage": result.get("router_usage"),
         "task_results": task_results,
         "structured_result": structured,
         "citations": citations,
@@ -1730,6 +1731,7 @@ def _evaluate_deterministic_v2_uncached(
             row = {
                 **case,
                 "query_plan": plan,
+                "router_usage": result.get("router_usage"),
                 "task_results": result.get("task_results") or [],
                 "structured_result": structured,
                 "citations": citations,

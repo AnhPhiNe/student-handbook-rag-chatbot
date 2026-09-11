@@ -17,7 +17,6 @@ from pathlib import Path
 from typing import Any
 
 from groq import Groq
-import requests
 import yaml
 
 from src.common.cohort import cohort_admission_years
@@ -39,11 +38,8 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
-DEFAULT_COHERE_ROUTER_MODEL = "command-a-plus-05-2026"
 # 256 truncated planner reasoning mid-task and produced canonical codes in
 # slot_spans; 1024 completed naturally (~820 reasoning tokens) in probes.
-DEFAULT_COHERE_THINKING_TOKEN_BUDGET = 1024
-COHERE_CHAT_URL = "https://api.cohere.com/v2/chat"
 ROUTER_PROMPT_VERSION = "structured-regulation-v43-no-catalog-hint"
 PLANNER_DIAGNOSTIC_SCHEMA_VERSION = "planner-decision-diagnostics-v1"
 _planner_diagnostics_scope: ContextVar[bool] = ContextVar(
@@ -457,7 +453,6 @@ class GroqRouterPoolConfig:
     cooldown_seconds: float = 65.0
     state_path: str = "data/cache/qwen_router_key_state.json"
     wait_when_limited: bool = False
-    track_token_quotas: bool = True
 
     @classmethod
     def from_config(cls, config: dict[str, Any] | None) -> "GroqRouterPoolConfig":
@@ -474,7 +469,6 @@ class GroqRouterPoolConfig:
                 config.get("state_path", "data/cache/qwen_router_key_state.json")
             ),
             wait_when_limited=bool(config.get("wait_when_limited", False)),
-            track_token_quotas=bool(config.get("track_token_quotas", True)),
         )
 
 
@@ -540,11 +534,7 @@ class GroqRouterKeyPool:
                             available_at=_next_local_midnight_timestamp(),
                         )
                         continue
-                    if (
-                        self.config.track_token_quotas
-                        and tokens_today + estimated_tokens
-                        > self.config.tpd_limit_per_key
-                    ):
+                    if tokens_today + estimated_tokens > self.config.tpd_limit_per_key:
                         daily_reasons.add("daily_token_quota")
                         state_changed |= self._mark_unavailable(
                             state,
@@ -577,11 +567,7 @@ class GroqRouterKeyPool:
                             available_at=available_at,
                         )
                         continue
-                    if (
-                        self.config.track_token_quotas
-                        and minute_tokens + estimated_tokens
-                        > self.config.tpm_limit_per_key
-                    ):
+                    if minute_tokens + estimated_tokens > self.config.tpm_limit_per_key:
                         available_at = (
                             float(events[0]["at"]) + 60.0 if events else now + 1.0
                         )
@@ -641,11 +627,7 @@ class GroqRouterKeyPool:
 
         with self._lock:
             state = self._key_state(key_id)
-            extra = (
-                max(0, int(actual_tokens) - int(reserved_tokens))
-                if self.config.track_token_quotas
-                else 0
-            )
+            extra = max(0, int(actual_tokens) - int(reserved_tokens))
             if extra:
                 state["tokens_today"] = int(state.get("tokens_today", 0)) + extra
                 events = state.get("minute_events") or []
@@ -729,10 +711,9 @@ class GroqRouterKeyPool:
         self, key_id: str, now: float, today: str, estimated_tokens: int
     ) -> None:
         state = self._key_state(key_id)
-        reserved_tokens = estimated_tokens if self.config.track_token_quotas else 0
-        state["minute_events"].append({"at": now, "tokens": reserved_tokens})
+        state["minute_events"].append({"at": now, "tokens": estimated_tokens})
         state["requests_today"] = int(state.get("requests_today", 0)) + 1
-        state["tokens_today"] = int(state.get("tokens_today", 0)) + reserved_tokens
+        state["tokens_today"] = int(state.get("tokens_today", 0)) + estimated_tokens
         state["daily_reset_date"] = today
         state["last_used_at"] = now
         state["unavailable_reason"] = None
@@ -826,14 +807,14 @@ class RouterDecisionCache:
 
 @dataclass(frozen=True)
 class _RouterCompletion:
-    """Provider-neutral planner response used by the orchestration loop."""
+    """Planner reply text and token usage."""
 
     text: str
     usage: dict[str, int]
 
 
 class AIRouter:
-    """Provider-backed QueryPlan planner with a validated JSON contract."""
+    """Groq-backed QueryPlan planner with a validated JSON contract."""
 
     def __init__(
         self,
@@ -849,34 +830,17 @@ class AIRouter:
         cache_enabled: bool = True,
         output_tokens_per_task: int = 640,
         hard_max_output_tokens: int = 2048,
-        provider: str = "groq",
-        thinking_token_budget: int = DEFAULT_COHERE_THINKING_TOKEN_BUDGET,
     ) -> None:
         load_project_env()
-        self.provider = str(provider or "groq").strip().lower()
-        if self.provider == "cohere":
-            keys_value = (
-                os.environ.get("COHERE_ROUTER_API_KEYS")
-                or os.environ.get("COHERE_API_KEYS")
-                or os.environ.get("COHERE_API_KEY")
-                or ""
-            )
-        elif self.provider == "groq":
-            keys_value = (
-                os.environ.get("GROQ_ROUTER_API_KEYS")
-                or os.environ.get("GROQ_API_KEYS")
-                or ""
-            )
-        else:
-            raise ValueError(f"Unsupported AI router provider: {self.provider}")
+        keys_value = (
+            os.environ.get("GROQ_ROUTER_API_KEYS")
+            or os.environ.get("GROQ_API_KEYS")
+            or ""
+        )
         self.available_keys = [
             key.strip() for key in keys_value.split(",") if key.strip()
         ]
         if not self.available_keys:
-            if self.provider == "cohere":
-                raise RuntimeError(
-                    "Missing COHERE_ROUTER_API_KEYS, COHERE_API_KEYS, or COHERE_API_KEY."
-                )
             raise RuntimeError("Missing GROQ_ROUTER_API_KEYS or GROQ_API_KEYS.")
         self.model_name = model_name
         self.temperature = float(temperature)
@@ -889,7 +853,6 @@ class AIRouter:
         self.max_retries = max(0, int(max_retries))
         self.reasoning_effort = str(reasoning_effort or "auto").strip().lower()
         self.response_format = str(response_format or "auto").strip().lower()
-        self.thinking_token_budget = max(1, int(thinking_token_budget))
         self.registry = load_lookup_registry()
         self.key_pool = GroqRouterKeyPool(
             self.available_keys,
@@ -909,22 +872,7 @@ class AIRouter:
         cache_disabled = str(
             os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE") or ""
         ).strip().lower() in {"1", "true", "yes", "on"}
-        provider = str(
-            os.environ.get("STUDENT_RAG_ROUTER_PROVIDER")
-            or config.get("provider")
-            or "groq"
-        ).strip().lower()
         key_pool_config = dict(config.get("key_pool") or {})
-        if provider == "cohere":
-            key_pool_config.update(config.get("cohere_key_pool") or {})
-            key_pool_config["rpm_limit_per_key"] = int(
-                (config.get("cohere_key_pool") or {}).get("rpm_limit_per_key", 20)
-            )
-            key_pool_config["track_token_quotas"] = False
-            if "state_path" not in (config.get("cohere_key_pool") or {}):
-                key_pool_config["state_path"] = (
-                    "data/cache/cohere_command_a_plus_router_key_state.json"
-                )
         wait_override = os.environ.get("STUDENT_RAG_ROUTER_WAIT_WHEN_LIMITED")
         if wait_override is not None:
             key_pool_config["wait_when_limited"] = wait_override.strip().lower() in {
@@ -933,13 +881,11 @@ class AIRouter:
                 "yes",
                 "on",
             }
-        model_override = os.environ.get("STUDENT_RAG_ROUTER_MODEL")
-        if model_override:
-            model_name = str(model_override)
-        elif provider == "cohere":
-            model_name = DEFAULT_COHERE_ROUTER_MODEL
-        else:
-            model_name = str(config.get("model_name") or DEFAULT_ROUTER_MODEL)
+        model_name = str(
+            os.environ.get("STUDENT_RAG_ROUTER_MODEL")
+            or config.get("model_name")
+            or DEFAULT_ROUTER_MODEL
+        )
         max_output_tokens = int(
             os.environ.get("STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS")
             or config.get("max_output_tokens")
@@ -966,31 +912,17 @@ class AIRouter:
                 or config.get("reasoning_effort")
                 or "auto"
             ),
-            response_format=(
-                str(
-                    os.environ.get("STUDENT_RAG_COHERE_ROUTER_RESPONSE_FORMAT")
-                    or "text"
-                )
-                if provider == "cohere"
-                else str(
-                    os.environ.get("STUDENT_RAG_ROUTER_RESPONSE_FORMAT")
-                    or config.get("response_format")
-                    or "auto"
-                )
+            response_format=str(
+                os.environ.get("STUDENT_RAG_ROUTER_RESPONSE_FORMAT")
+                or config.get("response_format")
+                or "auto"
             ),
             key_pool_config=key_pool_config,
-            cache_path=(
-                "data/cache/cohere_command_a_plus_router_cache.json"
-                if provider == "cohere"
-                else str(config.get("cache_path", "data/cache/qwen_router_cache.json"))
+            cache_path=str(
+                config.get("cache_path", "data/cache/qwen_router_cache.json")
             ),
             cache_enabled=bool(config.get("cache_enabled", True))
             and not cache_disabled,
-            provider=provider,
-            thinking_token_budget=int(
-                os.environ.get("STUDENT_RAG_COHERE_ROUTER_THINKING_BUDGET")
-                or DEFAULT_COHERE_THINKING_TOKEN_BUDGET
-            ),
         )
 
     def _planner_output_token_limit(self, explicit_request_count: int | None) -> int:
@@ -1011,76 +943,25 @@ class AIRouter:
         max_output_tokens: int,
         response_format: dict[str, Any],
     ) -> _RouterCompletion:
-        """Call the selected planner provider behind one small boundary."""
+        """Send one planner request to Groq."""
 
-        if self.provider == "groq":
-            client = Groq(
-                api_key=api_key,
-                timeout=self.request_timeout_seconds,
-                max_retries=0,
-            )
-            response = client.chat.completions.create(
-                model=self.model_name,
-                messages=messages,
-                temperature=self.temperature,
-                max_tokens=max_output_tokens,
-                reasoning_effort=self._resolved_reasoning_effort(),
-                response_format=response_format,
-            )
-            return _RouterCompletion(
-                text=response.choices[0].message.content or "",
-                usage=self._usage(response),
-            )
-
-        payload: dict[str, Any] = {
-            "model": self.model_name,
-            "messages": messages,
-            "temperature": self.temperature,
-            # Cohere counts reasoning tokens against max_tokens; a budget above
-            # max_tokens is rejected with HTTP 400.
-            "max_tokens": max_output_tokens + self.thinking_token_budget,
-            "thinking": {"token_budget": self.thinking_token_budget},
-        }
-        if response_format:
-            payload["response_format"] = response_format
-        response = requests.post(
-            COHERE_CHAT_URL,
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-                "X-Client-Name": "hcmue-student-handbook-rag-router-ab",
-            },
-            json=payload,
+        client = Groq(
+            api_key=api_key,
             timeout=self.request_timeout_seconds,
+            max_retries=0,
         )
-        if not response.ok:
-            detail = response.text.strip()[:500]
-            raise requests.HTTPError(
-                f"Cohere Chat API returned HTTP {response.status_code}: {detail}",
-                response=response,
-            )
-        body = response.json()
-        content = ((body.get("message") or {}).get("content") or [])
-        text = next(
-            (
-                str(item.get("text") or "")
-                for item in content
-                if isinstance(item, dict) and item.get("type") == "text"
-            ),
-            "",
+        response = client.chat.completions.create(
+            model=self.model_name,
+            messages=messages,
+            temperature=self.temperature,
+            max_tokens=max_output_tokens,
+            reasoning_effort=self._resolved_reasoning_effort(),
+            response_format=response_format,
         )
-        if not text:
-            content_types = [
-                str(item.get("type") or "unknown")
-                for item in content
-                if isinstance(item, dict)
-            ]
-            raise ValueError(
-                "Cohere AI router response did not contain text; "
-                f"finish_reason={body.get('finish_reason')!r}, "
-                f"content_types={content_types!r}"
-            )
-        return _RouterCompletion(text=text, usage=self._cohere_usage(body))
+        return _RouterCompletion(
+            text=response.choices[0].message.content or "",
+            usage=self._usage(response),
+        )
 
     def plan(
         self,
@@ -1113,7 +994,6 @@ class AIRouter:
                 {
                     **cached,
                     "model_used": self.model_name,
-                    "router_provider": self.provider,
                     "usage": None,
                     "router_cache_hit": True,
                     "prompt_stats": prompt_stats,
@@ -1284,7 +1164,6 @@ class AIRouter:
                     {
                         **plan,
                         "model_used": self.model_name,
-                        "router_provider": self.provider,
                         "usage": usage,
                         "key_fingerprint": key_id,
                         "router_cache_hit": False,
@@ -1324,7 +1203,6 @@ class AIRouter:
                 {
                     **fallback,
                     "model_used": self.model_name,
-                    "router_provider": self.provider,
                     "usage": None,
                     "key_fingerprint": None,
                     "router_cache_hit": False,
@@ -1359,19 +1237,6 @@ class AIRouter:
                 "OUTPUT: tuân theo native JSON Schema; các quy tắc trên quyết định "
                 "ngữ nghĩa từng field.\n"
             )
-        elif self.provider == "cohere":
-            # Cohere structured output cannot express the free-form slots map
-            # (objects need declared, required fields), so embed the same
-            # schema Groq receives natively. The example-style contract lists
-            # every cohort as a sample value, which Cohere copied verbatim.
-            schema = json.dumps(
-                query_plan_response_schema(), ensure_ascii=False, separators=(",", ":")
-            )
-            output_guidance = (
-                f"OUTPUT JSON SCHEMA:\n{schema}\n"
-                "Chỉ xuất một JSON object hợp lệ theo schema; các quy tắc trên "
-                "quyết định ngữ nghĩa từng field.\n\n"
-            )
         else:
             schema = json.dumps(
                 query_plan_json_schema(), ensure_ascii=False, separators=(",", ":")
@@ -1395,8 +1260,6 @@ class AIRouter:
         )
 
     def _resolved_reasoning_effort(self) -> str:
-        if self.provider == "cohere":
-            return "none"
         if self.reasoning_effort != "auto":
             return self.reasoning_effort
         if "qwen3.8" in self.model_name.lower():
@@ -1406,8 +1269,6 @@ class AIRouter:
     def _resolved_response_format(self) -> str:
         if self.response_format != "auto":
             return self.response_format
-        if self.provider == "cohere":
-            return "text"
         model_name = self.model_name.lower()
         return (
             "json_schema"
@@ -1419,11 +1280,6 @@ class AIRouter:
         if self._resolved_response_format() == "text":
             return {}
         if self._resolved_response_format() == "json_schema":
-            if self.provider == "cohere":
-                return {
-                    "type": "json_object",
-                    "schema": query_plan_response_schema(),
-                }
             return {
                 "type": "json_schema",
                 "json_schema": {
@@ -1466,7 +1322,6 @@ class AIRouter:
             "cohort": cohort,
             "history": (chat_history or [])[-4:],
             "model": self.model_name,
-            "provider": self.provider,
             "prompt_version": ROUTER_PROMPT_VERSION,
             "plan_normalizer_version": QUERY_PLAN_NORMALIZER_VERSION,
             "registry": registry_digest(self.registry),
@@ -1495,21 +1350,6 @@ class AIRouter:
             "input": int(getattr(usage, "prompt_tokens", 0) or 0),
             "output": int(getattr(usage, "completion_tokens", 0) or 0),
             "total": int(getattr(usage, "total_tokens", 0) or 0),
-        }
-
-    @staticmethod
-    def _cohere_usage(body: dict[str, Any]) -> dict[str, int]:
-        usage = body.get("usage") or {}
-        tokens = usage.get("tokens") or usage.get("billed_units") or {}
-        input_tokens = int(tokens.get("input_tokens", 0) or 0)
-        output_tokens = int(tokens.get("output_tokens", 0) or 0)
-        return {
-            "input": input_tokens,
-            "output": output_tokens,
-            "total": input_tokens + output_tokens,
-            "reasoning": int(
-                ((usage.get("tokens") or {}).get("reasoning_tokens", 0)) or 0
-            ),
         }
 
     @staticmethod

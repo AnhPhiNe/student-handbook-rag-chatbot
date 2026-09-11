@@ -60,10 +60,9 @@ def main():
     from src.retrieval.core.ai_router import AIRouter
     from src.retrieval.core.query_plan import QUERY_PLAN_NORMALIZER_VERSION
     router = AIRouter.from_config()
-    planner = {"provider": router.provider, "model": router.model_name,
+    planner = {"provider": "groq", "model": router.model_name,
                "response_format": router._resolved_response_format(),
                "reasoning_effort": router._resolved_reasoning_effort(),
-               "thinking_token_budget": router.thinking_token_budget if router.provider == "cohere" else None,
                "normalizer_version": QUERY_PLAN_NORMALIZER_VERSION}
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     output = ROOT / "data/eval/reports" / f"official_v1_deterministic_{stamp}"

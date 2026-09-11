@@ -7,9 +7,10 @@ from unittest.mock import Mock, patch
 from src.generation.answer_pipeline import AnswerPipeline
 from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
-    build_related_references,
     _is_supplemental_regulation_metadata,
     _regulation_query_filter,
+    build_related_references,
+    reciprocal_rank_fusion,
     select_graph_related_parent_candidates,
 )
 from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
@@ -422,3 +423,15 @@ def test_vector_only_ablation_fuses_no_bm25_candidates() -> None:
     retriever.bm25.sparse_search.assert_not_called()
     scored_chunks = retriever._group_parent_results.call_args.kwargs["scored_chunks"]
     assert "lexical-only" not in {chunk["chunk_id"] for _, chunk in scored_chunks}
+
+
+def test_reciprocal_rank_fusion_uses_ranks_not_raw_scores() -> None:
+    dense = [(0.99, {"chunk_id": "a"}), (0.10, {"chunk_id": "b"})]
+    lexical = [(55.0, {"chunk_id": "b"}), (1.0, {"chunk_id": "c"})]
+
+    fused = reciprocal_rank_fusion(dense, lexical)
+
+    # b is ranked by both retrievers, so it beats a (dense #1 only) despite a
+    # having the highest raw score.
+    assert [chunk["chunk_id"] for _, chunk in fused] == ["b", "a", "c"]
+    assert fused[0][0] == 1 / 62 + 1 / 61

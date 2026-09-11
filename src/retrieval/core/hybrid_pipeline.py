@@ -27,6 +27,43 @@ BM25_INIT_MAX_ATTEMPTS = 3
 BM25_INIT_BACKOFF_SECONDS = 0.5
 
 
+RRF_K = 60
+
+
+def _chunk_key(chunk: dict[str, Any]) -> str:
+    return str(chunk.get("_id") or chunk.get("chunk_id") or "")
+
+
+def reciprocal_rank_fusion(
+    dense: list[tuple[float, dict[str, Any]]],
+    lexical: list[tuple[float, dict[str, Any]]],
+) -> list[tuple[float, dict[str, Any]]]:
+    """Fuse two ranked candidate lists with RRF; only ranks matter, not raw scores."""
+
+    dense_ids = [_chunk_key(chunk) for _, chunk in dense]
+    lexical_ids = [_chunk_key(chunk) for _, chunk in lexical]
+    dense_rank = {cid: rank + 1 for rank, cid in enumerate(dense_ids)}
+    lexical_rank = {cid: rank + 1 for rank, cid in enumerate(lexical_ids)}
+    chunks = {_chunk_key(chunk): chunk for _, chunk in dense}
+    for _, chunk in lexical:
+        chunks.setdefault(_chunk_key(chunk), chunk)
+
+    fused = []
+    for cid in dict.fromkeys(dense_ids + lexical_ids):
+        score = sum(
+            1 / (ranks[cid] + RRF_K) for ranks in (dense_rank, lexical_rank) if cid in ranks
+        )
+        fused.append((score, chunks[cid]))
+    # Tie-break by chunk id so neither retriever is favoured and order is stable.
+    fused.sort(key=lambda item: (item[0], str(item[1].get("_id", ""))), reverse=True)
+    return fused
+
+
+def _attach_telemetry(results: list[dict[str, Any]], telemetry: dict[str, Any]) -> None:
+    for item in results:
+        item["metadata"] = {**(item.get("metadata") or {}), "retrieval_telemetry": telemetry}
+
+
 def _query_points_with_retry(
     client: QdrantClient,
     *,
@@ -327,9 +364,9 @@ class ChildParentHybridRetriever:
     ) -> list[dict[str, Any]]:
         """Retrieve parent-bound regulation sources using child/table chunks.
 
-        Production fuses BM25 and dense child candidates with RRF, optionally applies
-        fail-open Cohere reranking, then ranks parents and attaches outbound graph
-        neighbors as context-only related sources. Retrieval modes control graph scope.
+        Dense and BM25 child candidates are fused with RRF, optionally reranked
+        (fail-open Cohere), grouped into parent sources, and in the default mode
+        outbound graph neighbors are attached as context-only related sources.
         """
         eval_mode = resolve_retrieval_mode()
         if eval_mode in {"no_graph", "vector_only"}:
@@ -337,127 +374,27 @@ class ChildParentHybridRetriever:
 
         retrieval_started = time.perf_counter()
         logger.info("==> Child-parent query: %s", query)
-        query_vector = self.embed_model.encode(
-            query,
-            normalize_embeddings=getattr(self, "normalize_embeddings", True),
-        ).tolist()
-        query_filter = _regulation_query_filter(cohort)
         search_limit = max(top_k_vector * 2, 24)
-        search_results = _query_points_with_retry(
-            self.qdrant_client,
-            collection_name=self.collection_name,
-            query=query_vector,
-            query_filter=query_filter,
-            limit=search_limit,
-        )
-
-        seed_chunks = [
-            self._qdrant_point_to_chunk(hit) for hit in search_results if hit.payload
-        ]
-
-        seed_chunks = [
-            chunk
-            for chunk in seed_chunks
-            if chunk.get("chunk_id")
-            and not _is_supplemental_regulation_metadata(chunk.get("metadata") or {})
-        ]
-        qdrant_seed_chunk_count = len(seed_chunks)
-
-        if not seed_chunks:
+        dense = self._dense_candidates(query, cohort=cohort, limit=search_limit)
+        if not dense:
             return []
-
-        vector_scores = {
-            str(hit.payload.get("chunk_id")): float(getattr(hit, "score", 0.0) or 0.0)
-            for hit in search_results
-            if hit.payload and hit.payload.get("chunk_id")
-        }
-        vector_scored = [
-            (
-                vector_scores.get(
-                    str(chunk.get("_id") or chunk.get("chunk_id") or ""),
-                    0.0,
-                ),
-                chunk,
-            )
-            for chunk in seed_chunks
-        ]
-
-        # --- BM25 RETRIEVAL & RECIPROCAL RANK FUSION (RRF) ---
         # vector_only is the dense-only ablation: no lexical candidates are fused.
-        bm25_results = []
-        if eval_mode != "vector_only":
-            bm25_results = [
-                (float(chunk.get("bm25_score") or 0.0), chunk)
-                for chunk in self.bm25.sparse_search(
-                    query,
-                    top_k=search_limit,
-                    chunk_types=["regulation"],
-                    content_types=["regulation_text"],
-                    cohort=cohort,
-                )
-            ]
+        lexical = (
+            []
+            if eval_mode == "vector_only"
+            else self._bm25_candidates(query, cohort=cohort, limit=search_limit)
+        )
+        primary_scored = reciprocal_rank_fusion(dense, lexical)[:search_limit]
 
-        # Union of chunk IDs
-        dense_chunk_ids = [
-            str(c.get("_id") or c.get("chunk_id") or "") for _, c in vector_scored
-        ]
-        bm25_chunk_ids = [
-            str(c.get("_id") or c.get("chunk_id") or "") for _, c in bm25_results
-        ]
-
-        # Extract unique IDs sequentially to ensure deterministic base order
-        union_ids = []
-        seen = set()
-        for cid in dense_chunk_ids + bm25_chunk_ids:
-            if cid not in seen:
-                seen.add(cid)
-                union_ids.append(cid)
-
-        # Maps to store ranks
-        dense_rank_map = {cid: rank + 1 for rank, cid in enumerate(dense_chunk_ids)}
-        bm25_rank_map = {cid: rank + 1 for rank, cid in enumerate(bm25_chunk_ids)}
-
-        # Map to original chunks
-        chunk_map = {}
-        for _, c in vector_scored:
-            cid = str(c.get("_id") or c.get("chunk_id") or "")
-            chunk_map[cid] = c
-        for _, c in bm25_results:
-            cid = str(c.get("_id") or c.get("chunk_id") or "")
-            if cid not in chunk_map:
-                chunk_map[cid] = c
-
-        fusion_scored = []
-        for cid in union_ids:
-            dense_rank = dense_rank_map.get(cid)
-            bm25_rank = bm25_rank_map.get(cid)
-            # RRF Formula (k=60)
-            score_dense = 1 / (dense_rank + 60) if dense_rank else 0.0
-            score_bm25 = 1 / (bm25_rank + 60) if bm25_rank else 0.0
-            rrf_score = score_dense + score_bm25
-
-            fusion_scored.append((rrf_score, chunk_map[cid]))
-
-        # Sort strictly by RRF score (descending).
-        # Tie-break neutrally using chunk ID to ensure determinism without favoring Dense or BM25
-        fusion_scored.sort(key=lambda x: (x[0], str(x[1].get("_id", ""))), reverse=True)
-
-        # Cut top K
-        primary_scored = fusion_scored[:search_limit]
-
-        # Reconstruct seed_chunks and seeds_parent_ids from the new fused top K
-        seed_chunks = [chunk for _, chunk in primary_scored]
         seed_parent_ids = {
             str((chunk.get("metadata") or {}).get("parent_section_id") or "")
-            for chunk in seed_chunks
+            for _, chunk in primary_scored
             if (chunk.get("metadata") or {}).get("parent_section_id")
         }
-        # -----------------------------------------------------
-
         retrieval_telemetry = {
             "retrieval_mode": eval_mode,
             "qdrant_search_limit": search_limit,
-            "qdrant_seed_chunks": qdrant_seed_chunk_count,
+            "qdrant_seed_chunks": len(dense),
             "qdrant_seed_parents": len(seed_parent_ids),
             "ranking_method": "rrf",
         }
@@ -477,10 +414,7 @@ class ChildParentHybridRetriever:
             retrieval_telemetry["retrieval_latency_ms"] = (
                 time.perf_counter() - retrieval_started
             ) * 1000
-            for item in primary_results:
-                item_metadata = dict(item.get("metadata") or {})
-                item_metadata["retrieval_telemetry"] = retrieval_telemetry
-                item["metadata"] = item_metadata
+            _attach_telemetry(primary_results, retrieval_telemetry)
             return primary_results
 
         related_results, related_telemetry = self._graph_related_parent_results(
@@ -488,21 +422,62 @@ class ChildParentHybridRetriever:
             graph_depth=graph_depth,
             cohort=cohort,
         )
-        supplement_telemetry = {
-            **retrieval_telemetry,
-            **related_telemetry,
-            "retrieval_latency_ms": (time.perf_counter() - retrieval_started) * 1000,
-        }
-        for item in primary_results:
-            item_metadata = dict(item.get("metadata") or {})
-            item_metadata["retrieval_telemetry"] = supplement_telemetry
-            item["metadata"] = item_metadata
+        _attach_telemetry(
+            primary_results,
+            {
+                **retrieval_telemetry,
+                **related_telemetry,
+                "retrieval_latency_ms": (time.perf_counter() - retrieval_started) * 1000,
+            },
+        )
         if primary_results and related_results:
             primary_metadata = dict(primary_results[0].get("metadata") or {})
             primary_metadata["related_items"] = related_results
             primary_results[0]["metadata"] = primary_metadata
         return primary_results
 
+    def _dense_candidates(
+        self, query: str, *, cohort: str | None, limit: int
+    ) -> list[tuple[float, dict[str, Any]]]:
+        """Embed the query and return in-scope Qdrant child chunks with their scores."""
+
+        query_vector = self.embed_model.encode(
+            query,
+            normalize_embeddings=getattr(self, "normalize_embeddings", True),
+        ).tolist()
+        hits = _query_points_with_retry(
+            self.qdrant_client,
+            collection_name=self.collection_name,
+            query=query_vector,
+            query_filter=_regulation_query_filter(cohort),
+            limit=limit,
+        )
+        scores = {
+            str(hit.payload.get("chunk_id")): float(getattr(hit, "score", 0.0) or 0.0)
+            for hit in hits
+            if hit.payload and hit.payload.get("chunk_id")
+        }
+        chunks = [self._qdrant_point_to_chunk(hit) for hit in hits if hit.payload]
+        return [
+            (scores.get(_chunk_key(chunk), 0.0), chunk)
+            for chunk in chunks
+            if chunk.get("chunk_id")
+            and not _is_supplemental_regulation_metadata(chunk.get("metadata") or {})
+        ]
+
+    def _bm25_candidates(
+        self, query: str, *, cohort: str | None, limit: int
+    ) -> list[tuple[float, dict[str, Any]]]:
+        return [
+            (float(chunk.get("bm25_score") or 0.0), chunk)
+            for chunk in self.bm25.sparse_search(
+                query,
+                top_k=limit,
+                chunk_types=["regulation"],
+                content_types=["regulation_text"],
+                cohort=cohort,
+            )
+        ]
     def _graph_related_parent_results(
         self,
         primary_results: list[dict[str, Any]],

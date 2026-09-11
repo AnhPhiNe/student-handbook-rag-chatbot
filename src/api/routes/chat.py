@@ -146,7 +146,6 @@ def chat(
                 str(result.get("answer") or ""),
                 metadata=trace_metadata,
                 latency_ms=sync_latency,
-                model=trace_metadata.get("model"),
                 tags=["sync"],
                 tracker=result.get("tracker"),
             )

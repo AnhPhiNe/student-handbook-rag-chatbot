@@ -111,7 +111,6 @@ def chat_stream(
                             events.full_text,
                             metadata=trace_metadata,
                             latency_ms=done_latency,
-                            model=trace_metadata.get("model"),
                             tags=["stream"],
                             tracker=events.tracker,
                         )

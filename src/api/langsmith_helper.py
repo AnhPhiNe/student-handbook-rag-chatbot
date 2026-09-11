@@ -9,6 +9,8 @@ from typing import Any
 
 from langsmith import Client
 
+from src.common.usage_tracker import UsageTracker
+
 logger = logging.getLogger("student_handbook_rag.api.langsmith_helper")
 
 _client: Client | None = None
@@ -287,7 +289,7 @@ def build_trace_metadata(
         or query_handling.get("context_mode")
         or "standalone"
     )
-    model_name = src.get("model") or src.get("model_used") or "gemini-3.1-flash-lite"
+    model_name = src.get("model") or src.get("model_used")
     citations = _compact_source_records(
         src.get("citations_used") or src.get("citations") or []
     )
@@ -375,6 +377,75 @@ def build_trace_metadata(
     return meta
 
 
+def _run_uuid(value: str) -> uuid.UUID:
+    """Use a request id as the LangSmith run id, hashing ids that are not UUIDs."""
+
+    try:
+        return uuid.UUID(value)
+    except (ValueError, AttributeError):
+        return uuid.uuid5(uuid.NAMESPACE_DNS, str(value))
+
+
+def _usage(input_tokens: Any, output_tokens: Any, total_tokens: Any) -> dict[str, int]:
+    """Token usage under both key names LangSmith recognizes."""
+
+    input_tokens = int(input_tokens or 0)
+    output_tokens = int(output_tokens or 0)
+    return {
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "total_tokens": int(total_tokens or 0) or input_tokens + output_tokens,
+        "prompt_tokens": input_tokens,
+        "completion_tokens": output_tokens,
+    }
+
+
+def _trace_tags(meta: dict[str, Any], tags: list[str], cohort: str | None) -> list[str]:
+    """Filterable tags for the root run, derived from the trace metadata."""
+
+    task_count = int(meta.get("task_count") or 0)
+    trace_tags = list(tags)
+    trace_tags += [
+        f"cohort:{value}" for value in meta.get("cohorts") or [cohort] if value
+    ]
+    if meta.get("status"):
+        trace_tags.append(f"status:{meta['status']}")
+    if meta.get("context_mode"):
+        trace_tags.append(f"context:{meta['context_mode']}")
+    trace_tags.append(f"tasks:{task_count}")
+    if task_count > 1:
+        trace_tags.append("multi_task:true")
+    if meta.get("is_multi_cohort"):
+        trace_tags.append("multi_cohort:true")
+    trace_tags += [f"task_mode:{mode}" for mode in meta.get("task_modes") or []]
+    trace_tags += [f"lookup:{lookup}" for lookup in meta.get("lookup_types") or []]
+    coverages = [task.get("coverage") for task in meta.get("task_summaries") or []]
+    trace_tags += [f"coverage:{coverage}" for coverage in _ordered_unique(coverages)]
+    if meta.get("planner_fallback_used"):
+        trace_tags.append("planner_fallback:true")
+    trace_tags.append(f"llm_called:{str(bool(meta.get('llm_called'))).lower()}")
+    trace_tags.append(f"cache_hit:{str(bool(meta.get('used_cache'))).lower()}")
+    return list(dict.fromkeys(trace_tags))
+
+
+def _llm_run_extra(model: str, metadata: dict[str, Any]) -> dict[str, Any]:
+    """Fields LangSmith reads to show an LLM run's model and provider."""
+
+    if not model:
+        return {"metadata": dict(metadata)}
+    provider = "google_genai" if "gemini" in model.lower() else "groq"
+    return {
+        "metadata": {
+            **metadata,
+            "model": model,
+            "ls_provider": provider,
+            "ls_model_name": model,
+            "ls_model_type": "chat",
+        },
+        "invocation_params": {"model": model, "model_name": model},
+    }
+
+
 def push_trace_to_langsmith(
     trace_id: str,
     name: str = "HCMUE Student Handbook Assistant",
@@ -383,12 +454,10 @@ def push_trace_to_langsmith(
     output_text: str | Any = "",
     metadata: dict | None = None,
     latency_ms: float | None = None,
-    model: str | None = None,
-    usage: dict | None = None,
     tags: list[str] | None = None,
-    tracker: Any = None,
+    tracker: UsageTracker | None = None,
 ) -> None:
-    """Create a LangSmith root trace and optional child runs."""
+    """Create a LangSmith root run for one chat request, plus one child run per LLM call."""
     client = get_langsmith_client()
     if not client:
         return
@@ -397,188 +466,67 @@ def push_trace_to_langsmith(
         "LANGCHAIN_PROJECT", "hcmue-student-handbook-rag"
     )
     meta = dict(metadata or {})
-    trace_tags = list(tags or [])
-
-    resolved_cohort = session_id or meta.get("cohort")
-    if resolved_cohort:
-        meta.setdefault("cohort", resolved_cohort)
-    for trace_cohort in meta.get("cohorts") or [resolved_cohort]:
-        if trace_cohort:
-            trace_tags.append(f"cohort:{trace_cohort}")
-
-    if meta.get("status"):
-        trace_tags.append(f"status:{meta['status']}")
-    if meta.get("context_mode"):
-        trace_tags.append(f"context:{meta['context_mode']}")
-    trace_tags.append(f"tasks:{int(meta.get('task_count') or 0)}")
-    if int(meta.get("task_count") or 0) > 1:
-        trace_tags.append("multi_task:true")
-    if meta.get("is_multi_cohort"):
-        trace_tags.append("multi_cohort:true")
-    for task_mode in meta.get("task_modes") or []:
-        trace_tags.append(f"task_mode:{task_mode}")
-    for lookup_type in meta.get("lookup_types") or []:
-        trace_tags.append(f"lookup:{lookup_type}")
-    for coverage in _ordered_unique(
-        [task.get("coverage") for task in meta.get("task_summaries") or []]
-    ):
-        trace_tags.append(f"coverage:{coverage}")
-    if meta.get("planner_fallback_used"):
-        trace_tags.append("planner_fallback:true")
-    trace_tags.append(f"llm_called:{str(bool(meta.get('llm_called'))).lower()}")
-    trace_tags.append(f"cache_hit:{str(bool(meta.get('used_cache'))).lower()}")
-    trace_tags = list(dict.fromkeys(trace_tags))
-
-    used_model = model or meta.get("model") or "gemini-3.1-flash-lite"
-    meta.setdefault("model", used_model)
-    now = datetime.now(timezone.utc)
-    end_time = now
-    if latency_ms:
-        start_time = now - timedelta(milliseconds=latency_ms)
-    else:
-        start_time = now
+    cohort = session_id or meta.get("cohort")
+    if cohort:
+        meta.setdefault("cohort", cohort)
+    end_time = datetime.now(timezone.utc)
+    start_time = end_time - timedelta(milliseconds=latency_ms or 0)
+    run_id = _run_uuid(trace_id) if trace_id else None
 
     try:
-        # Validate/Format UUID for LangSmith run_id
-        run_uuid = None
-        if trace_id:
-            try:
-                run_uuid = uuid.UUID(trace_id)
-            except (ValueError, AttributeError):
-                run_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, str(trace_id))
+        extra: dict[str, Any] = {"metadata": meta}
+        if tracker is not None:
+            usage = _usage(**tracker.get_total_usage())
+            if usage["total_tokens"]:
+                extra["usage"] = usage
 
-        # Auto-compute total usage from tracker if not explicitly passed
-        final_usage = dict(usage or {})
-        if not final_usage and tracker and hasattr(tracker, "get_total_usage"):
-            tot = tracker.get_total_usage()
-            inp = int(tot.get("input_tokens", 0))
-            out = int(tot.get("output_tokens", 0))
-            t_tok = int(tot.get("total_tokens", 0)) or (inp + out)
-            if t_tok or inp or out:
-                final_usage = {
-                    "input_tokens": inp,
-                    "output_tokens": out,
-                    "total_tokens": t_tok,
-                    "prompt_tokens": inp,
-                    "completion_tokens": out,
-                }
-
-        extra_dict: dict[str, Any] = {
-            "metadata": meta,
-        }
-        if final_usage:
-            extra_dict["usage"] = final_usage
-
-        # Create the root chain run.
-        meta.setdefault("cohort", resolved_cohort)
-        citations_payload = meta.get("citations_used") or []
-        related_payload = meta.get("related_references") or []
+        citations = meta.get("citations_used") or []
         client.create_run(
-            id=run_uuid,
-            name=name or "HCMUE Student Handbook Assistant",
+            id=run_id,
+            name=name,
             run_type="chain",
-            inputs={
-                "query": input_text,
-                "student_cohort": resolved_cohort,
-            },
+            inputs={"query": input_text, "student_cohort": cohort},
             outputs={
                 "answer": output_text,
                 "status": meta.get("status", "ok"),
                 "task_count": meta.get("task_count", 0),
                 "task_summaries": meta.get("task_summaries") or [],
                 "coverage_by_task": meta.get("coverage_by_task") or {},
-                "citations_count": len(citations_payload),
-                "citations": citations_payload,
-                "related_references": related_payload,
+                "citations_count": len(citations),
+                "citations": citations,
+                "related_references": meta.get("related_references") or [],
                 "structured_results": meta.get("structured_result_summaries") or [],
             },
             start_time=start_time,
             end_time=end_time,
             project_name=project_name,
-            tags=trace_tags,
-            extra=extra_dict,
+            tags=_trace_tags(meta, tags or [], cohort),
+            extra=extra,
         )
 
-        # Add child runs when the pipeline telemetry tracker exposes steps.
-        if tracker and hasattr(tracker, "get_steps"):
-            steps = tracker.get_steps() or []
-            for step in steps:
-                step_name = step.get("step_name") or "Pipeline Step"
-                step_type = (
-                    "llm"
-                    if "llm" in step_name.lower()
-                    or "gemini" in step_name.lower()
-                    or "router" in step_name.lower()
-                    else "retriever"
-                )
-                # Parse start/end datetime for exact LLM latency calculation
-                step_start_raw = step.get("start_time")
-                step_end_raw = step.get("end_time")
-                step_start = None
-                step_end = None
-                if step_start_raw and step_end_raw:
-                    try:
-                        step_start = datetime.fromisoformat(str(step_start_raw))
-                        step_end = datetime.fromisoformat(str(step_end_raw))
-                    except Exception:
-                        pass
-
-                if not step_start or not step_end:
-                    step_lat = step.get("latency_ms") or 1500
-                    step_end = now
-                    step_start = now - timedelta(milliseconds=step_lat)
-
-                inp = int(step.get("input_tokens", 0))
-                out = int(step.get("output_tokens", 0))
-                t_tok = int(step.get("total_tokens", 0)) or (inp + out)
-                step_usage = {
-                    "input_tokens": inp,
-                    "output_tokens": out,
-                    "total_tokens": t_tok,
-                    "prompt_tokens": inp,
-                    "completion_tokens": out,
-                }
-
-                step_model = step.get("model") or "gemini-3.1-flash-lite"
-                provider = "google_genai" if "gemini" in step_model.lower() else "groq"
-                step_extra: dict[str, Any] = {
-                    "metadata": {
-                        **step.get("metadata", {}),
-                        "model": step_model,
-                        "ls_provider": provider,
-                        "ls_model_name": step_model,
-                        "ls_model_type": "chat",
-                    },
-                    "invocation_params": {
-                        "model": step_model,
-                        "model_name": step_model,
-                    },
-                }
-                if step_usage.get("total_tokens"):
-                    step_extra["usage"] = step_usage
-
-                step_outputs: dict[str, Any] = step.get("outputs") or {}
-                if not step_outputs:
-                    step_outputs = {
-                        "status": "completed",
-                        "model": step_model,
-                        "token_usage": step_usage,
-                    }
-
-                client.create_run(
-                    id=uuid.uuid4(),
-                    name=step_name,
-                    run_type=step_type,
-                    parent_run_id=run_uuid,
-                    inputs=step.get(
-                        "inputs", {"query": input_text, "prompts": [input_text]}
-                    ),
-                    outputs=step_outputs,
-                    start_time=step_start,
-                    end_time=step_end,
-                    project_name=project_name,
-                    extra=step_extra,
-                )
+        # The tracker records only LLM calls (the router and the composer).
+        for step in tracker.get_steps() if tracker is not None else []:
+            model = step.get("model") or ""
+            usage = _usage(
+                step.get("input_tokens"),
+                step.get("output_tokens"),
+                step.get("total_tokens"),
+            )
+            step_extra = _llm_run_extra(model, step.get("metadata") or {})
+            if usage["total_tokens"]:
+                step_extra["usage"] = usage
+            client.create_run(
+                id=uuid.uuid4(),
+                name=step["step_name"],
+                run_type="llm",
+                parent_run_id=run_id,
+                inputs={"query": input_text, "prompts": [input_text]},
+                outputs={"status": "completed", "model": model, "token_usage": usage},
+                start_time=datetime.fromisoformat(step["start_time"]),
+                end_time=datetime.fromisoformat(step["end_time"]),
+                project_name=project_name,
+                extra=step_extra,
+            )
     except Exception as exc:
         logger.warning(f"[LangSmith] Trace submission error: {exc}")
 
@@ -595,14 +543,8 @@ def push_feedback_to_langsmith(
         return
 
     try:
-        run_uuid = None
-        try:
-            run_uuid = uuid.UUID(run_id)
-        except (ValueError, AttributeError):
-            run_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, str(run_id))
-
         client.create_feedback(
-            run_id=run_uuid,
+            run_id=_run_uuid(run_id),
             key=feedback_key,
             score=score,
             comment=comment,

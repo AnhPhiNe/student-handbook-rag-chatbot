@@ -95,7 +95,7 @@ def test_deploy_audit_rejects_repeated_header_in_content(tmp_path) -> None:
         encoding="utf-8",
     )
 
-    assert validate_artifact(artifact, "file") == (
+    assert validate_artifact(artifact) == (
         "repeated PDF header leaked into content: "
         "174 SỔ TAY SINH VIÊN KHÓA 50"
     )
@@ -108,7 +108,7 @@ def test_deploy_audit_allows_handbook_name_in_regular_sentence(tmp_path) -> None
         encoding="utf-8",
     )
 
-    assert validate_artifact(artifact, "file") is None
+    assert validate_artifact(artifact) is None
 
 
 def test_deploy_audit_checks_manifest_hash_and_count(tmp_path) -> None:

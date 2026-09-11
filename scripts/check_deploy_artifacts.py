@@ -13,28 +13,17 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from src.common.console import configure_utf8_stdio
+from src.common.runtime_artifacts import RUNTIME_FILES
 from src.ingestion.pdf_loader import HANDBOOK_HEADER_PATTERN
+from src.retrieval.runtime_config import DEFAULT_RETRIEVAL_CONFIG_PATH
 
 
+# constraints-runtime.txt is only needed to build the Docker image, so the
+# runtime health check does not list it.
 REQUIRED_ARTIFACTS = [
-    ("constraints-runtime.txt", "file"),
-    ("configs/ai_router.yaml", "file"),
-    ("configs/answer_generation.yaml", "file"),
-    ("configs/retrieval.yaml", "file"),
-    ("configs/hcmue_slang_dictionary.yaml", "file"),
-    ("configs/office_aliases.yaml", "file"),
-    ("configs/structured_lookup_registry.yaml", "file"),
-    ("data/processed/tables/formula_rules.json", "file"),
-    ("data/processed/tables/structured_tables_registry.json", "file"),
-    ("data/processed/directories/student_service_directory.json", "file"),
-    ("data/processed/directories/student_office_profiles.json", "file"),
-    ("data/processed/directories/student_faculty_profiles.json", "file"),
-    ("data/processed/directories/program_directory.json", "file"),
-    ("data/processed/graphs/document_edges.json", "file"),
-    ("data/processed/amendments/amendments.json", "file"),
-    ("data/processed/chunks/all_docstore_items.json", "file"),
-    ("data/processed/chunks/child_parent_chunks.json", "file"),
-    ("data/processed/metadata/build_manifest.json", "file"),
+    "constraints-runtime.txt",
+    DEFAULT_RETRIEVAL_CONFIG_PATH.as_posix(),
+    *RUNTIME_FILES,
 ]
 
 CONTENT_FIELDS = {"content", "document", "raw_text", "text"}
@@ -59,14 +48,7 @@ def find_repeated_handbook_header(value: object) -> str | None:
     return None
 
 
-def validate_artifact(path: Path, kind: str) -> str | None:
-    if kind == "dir":
-        if not path.is_dir():
-            return "missing directory"
-        if not any(path.iterdir()):
-            return "empty directory"
-        return None
-
+def validate_artifact(path: Path) -> str | None:
     if not path.is_file():
         return "missing file"
     if path.stat().st_size == 0:
@@ -153,9 +135,8 @@ def main() -> None:
     args = parser.parse_args()
 
     failures: list[tuple[str, str]] = []
-    for raw_path, kind in REQUIRED_ARTIFACTS:
-        path = Path(raw_path)
-        error = validate_artifact(path, kind)
+    for raw_path in REQUIRED_ARTIFACTS:
+        error = validate_artifact(Path(raw_path))
         status = "OK" if error is None else ("WARN" if args.warn_only else "FAIL")
         print(f"{status}: {raw_path}" + (f" ({error})" if error else ""))
         if error is not None:

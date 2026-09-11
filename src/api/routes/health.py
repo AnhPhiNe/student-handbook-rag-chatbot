@@ -15,6 +15,7 @@ from src.api.schemas import (
     ReadinessResponse,
     RetrievalComponentStatus,
 )
+from src.common.runtime_artifacts import RUNTIME_FILES
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import get_bm25_runtime_status
 from src.retrieval.runtime_config import (
@@ -29,8 +30,23 @@ SERVICE_VERSION = "0.1.0"
 BUILD_MANIFEST_PATH = Path("data/processed/metadata/build_manifest.json")
 
 
-def _artifact(path: str, exists: bool, kind: str) -> ArtifactStatus:
-    return ArtifactStatus(path=path, exists=exists, kind=kind)
+REQUIRED_ENV_VARS = (
+    "QDRANT_URL",
+    "QDRANT_API_KEY",
+    "QDRANT_COLLECTION_NAME",
+    "MONGODB_URL",
+    "MONGODB_PARENT_COLLECTION",
+    "GROQ_API_KEYS",
+    "GEMINI_API_KEYS",
+)
+
+
+def _env_value(name: str) -> str | None:
+    """Read an env var; the Qdrant collection may also come from the hybrid override."""
+
+    if name == "QDRANT_COLLECTION_NAME":
+        return os.environ.get("STUDENT_RAG_HYBRID_COLLECTION") or os.environ.get(name)
+    return os.environ.get(name)
 
 
 def _build_manifest_matches_environment() -> bool:
@@ -40,10 +56,8 @@ def _build_manifest_matches_environment() -> bool:
         contract = load_retrieval_build_contract(BUILD_MANIFEST_PATH)
     except (OSError, ValueError, json.JSONDecodeError):
         return False
-    qdrant_collection = os.environ.get(
-        "STUDENT_RAG_HYBRID_COLLECTION"
-    ) or os.environ.get("QDRANT_COLLECTION_NAME")
-    mongo_collection = os.environ.get("MONGODB_PARENT_COLLECTION")
+    qdrant_collection = _env_value("QDRANT_COLLECTION_NAME")
+    mongo_collection = _env_value("MONGODB_PARENT_COLLECTION")
     return bool(
         contract.get("build_id")
         and qdrant_collection
@@ -56,133 +70,36 @@ def _build_manifest_matches_environment() -> bool:
 def _required_artifacts() -> list[ArtifactStatus]:
     """Resolve required files, store identity, and environment configuration."""
 
-    retrieval_config_path = Path(
-        os.environ.get("STUDENT_RAG_RETRIEVAL_CONFIG")
-        or DEFAULT_RETRIEVAL_CONFIG_PATH
+    retrieval_config = Path(
+        os.environ.get("STUDENT_RAG_RETRIEVAL_CONFIG") or DEFAULT_RETRIEVAL_CONFIG_PATH
     )
-    required = [
-        _artifact(
-            "configs/ai_router.yaml",
-            Path("configs/ai_router.yaml").is_file(),
-            "config",
-        ),
-        _artifact(
-            "configs/answer_generation.yaml",
-            Path("configs/answer_generation.yaml").is_file(),
-            "config",
-        ),
-        _artifact(
-            retrieval_config_path.as_posix(),
-            retrieval_config_path.is_file(),
-            "config",
-        ),
-        _artifact(
-            "configs/hcmue_slang_dictionary.yaml",
-            Path("configs/hcmue_slang_dictionary.yaml").is_file(),
-            "config",
-        ),
-        _artifact(
-            "configs/structured_lookup_registry.yaml",
-            Path("configs/structured_lookup_registry.yaml").is_file(),
-            "config",
-        ),
-        _artifact(
-            "configs/office_aliases.yaml",
-            Path("configs/office_aliases.yaml").is_file(),
-            "config",
-        ),
-        _artifact(
-            "data/processed/tables/formula_rules.json",
-            Path("data/processed/tables/formula_rules.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/tables/structured_tables_registry.json",
-            Path("data/processed/tables/structured_tables_registry.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/directories/student_service_directory.json",
-            Path("data/processed/directories/student_service_directory.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/directories/student_office_profiles.json",
-            Path("data/processed/directories/student_office_profiles.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/directories/student_faculty_profiles.json",
-            Path("data/processed/directories/student_faculty_profiles.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/directories/program_directory.json",
-            Path("data/processed/directories/program_directory.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/amendments/amendments.json",
-            Path("data/processed/amendments/amendments.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/chunks/all_docstore_items.json",
-            Path("data/processed/chunks/all_docstore_items.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/chunks/child_parent_chunks.json",
-            Path("data/processed/chunks/child_parent_chunks.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/metadata/build_manifest.json",
-            BUILD_MANIFEST_PATH.is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "build_manifest:storage_targets",
-            _build_manifest_matches_environment(),
-            "build_identity",
-        ),
-        _artifact(
-            "data/processed/graphs/document_edges.json",
-            Path("data/processed/graphs/document_edges.json").is_file(),
-            "processed_json",
-        ),
+    artifacts = [
+        ArtifactStatus(
+            path=retrieval_config.as_posix(),
+            exists=retrieval_config.is_file(),
+            kind="config",
+        )
     ]
-
-    required.extend(
-        [
-            _artifact("QDRANT_URL", bool(os.environ.get("QDRANT_URL")), "env"),
-            _artifact("QDRANT_API_KEY", bool(os.environ.get("QDRANT_API_KEY")), "env"),
-            _artifact(
-                "QDRANT_COLLECTION_NAME",
-                bool(
-                    os.environ.get("STUDENT_RAG_HYBRID_COLLECTION")
-                    or os.environ.get("QDRANT_COLLECTION_NAME")
-                ),
-                "env",
-            ),
-        ]
+    artifacts += [
+        ArtifactStatus(
+            path=path,
+            exists=Path(path).is_file(),
+            kind="config" if path.startswith("configs/") else "processed_json",
+        )
+        for path in RUNTIME_FILES
+    ]
+    artifacts.append(
+        ArtifactStatus(
+            path="build_manifest:storage_targets",
+            exists=_build_manifest_matches_environment(),
+            kind="build_identity",
+        )
     )
-
-    required.extend(
-        [
-            _artifact("MONGODB_URL", bool(os.environ.get("MONGODB_URL")), "env"),
-            _artifact(
-                "MONGODB_PARENT_COLLECTION",
-                bool(os.environ.get("MONGODB_PARENT_COLLECTION")),
-                "env",
-            ),
-            _artifact("GROQ_API_KEYS", bool(os.environ.get("GROQ_API_KEYS")), "env"),
-            _artifact(
-                "GEMINI_API_KEYS", bool(os.environ.get("GEMINI_API_KEYS")), "env"
-            ),
-        ]
-    )
-    return required
+    artifacts += [
+        ArtifactStatus(path=name, exists=bool(_env_value(name)), kind="env")
+        for name in REQUIRED_ENV_VARS
+    ]
+    return artifacts
 
 
 def _artifact_health_response() -> ArtifactHealthResponse:

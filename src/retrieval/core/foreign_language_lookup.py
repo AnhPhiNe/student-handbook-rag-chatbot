@@ -39,8 +39,6 @@ def _strip_cohort_numbers(text: str) -> str:
     return text
 
 
-
-
 def _parse_range(value: Any) -> tuple[float, float] | None:
     nums = _extract_numbers(normalize_text(value))
     if len(nums) >= 2:

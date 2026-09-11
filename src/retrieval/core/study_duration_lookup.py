@@ -26,8 +26,6 @@ def _filter_by_cohort(
     ]
 
 
-
-
 def _wanted_training_modes(value: Any) -> set[str]:
     modes: set[str] = set()
     for item in _slot_values(value):
@@ -48,46 +46,28 @@ def _table_mode(table: dict[str, Any]) -> str | None:
     return None
 
 
-def _row_score(row: dict[str, Any], query_norm: str) -> int:
-    program = normalize_text(row.get("Chương trình đào tạo"))
-    score = 0
-    if any(
-        term in query_norm
-        for term in ("cap bang thu nhat", "bang thu nhat", "first degree", "cu nhan")
-    ):
-        if "cap bang thu nhat" in program:
-            score += 4
-    if (
-        any(term in query_norm for term in ("cao dang", "college bridge"))
-        and "cao dang" in program
-    ):
-        score += 4
-    if (
-        any(term in query_norm for term in ("trung cap", "secondary bridge"))
-        and "trung cap" in program
-    ):
-        score += 4
-    if any(
-        term in query_norm
-        for term in (
-            "van bang",
-            "bang dai hoc thu hai",
-            "mot bang dai hoc",
-            "second degree",
-        )
-    ):
-        if "mot bang dai hoc" in program:
-            score += 4
-    return score
+# Folded "Chương trình đào tạo" label fragment that identifies each program_type row.
+_PROGRAM_ROW_MARKERS = {
+    "first_degree": "cap bang thu nhat",
+    "college_bridge": "cao dang",
+    "secondary_bridge": "trung cap",
+    "second_degree": "mot bang dai hoc",
+}
 
 
-def _select_rows(table: dict[str, Any], query_norm: str) -> list[dict[str, Any]]:
+def _select_rows(table: dict[str, Any], program_types: list[Any]) -> list[dict[str, Any]]:
     rows = list(table.get("rows") or [])
-    scored = [(row, _row_score(row, query_norm)) for row in rows]
-    max_score = max((score for _, score in scored), default=0)
-    if max_score <= 0:
-        return rows
-    return [row for row, score in scored if score == max_score]
+    markers = [
+        _PROGRAM_ROW_MARKERS[code]
+        for code in (str(value).strip().lower() for value in program_types)
+        if code in _PROGRAM_ROW_MARKERS
+    ]
+    matched = [
+        row
+        for row in rows
+        if any(marker in normalize_text(row.get("Chương trình đào tạo")) for marker in markers)
+    ]
+    return matched or rows
 
 
 def study_duration_lookup(
@@ -99,8 +79,7 @@ def study_duration_lookup(
 ) -> dict[str, Any] | None:
     """Resolve program duration rules from validated structured slots."""
 
-    program_values = _slot_values(slots.get("program_type"))
-    query_norm = normalize_text(" ".join(str(value) for value in program_values))
+    program_types = _slot_values(slots.get("program_type"))
     wanted_modes = _wanted_training_modes(slots.get("training_mode"))
     effective_cohort = normalize_cohort(cohort)
 
@@ -117,7 +96,7 @@ def study_duration_lookup(
 
     table_results = []
     for table in candidates:
-        rows = _select_rows(table, query_norm)
+        rows = _select_rows(table, program_types)
         if rows:
             table_results.append(
                 {

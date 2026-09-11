@@ -413,32 +413,14 @@ def structured_lookup_from_slots(
         # operand (for example, a letter grade or a value containing "qua
         # môn").
         return None
-    operation = normalize_text(operation_value)
+    # The normalizer has already validated operation against the registry enum.
+    canonical = normalize_text(operation_value).replace(" ", "_")
     value = _single_slot_value(slots.get("score_or_grade"))
 
     if value is None:
         return None
 
     value_text = str(value).strip()
-    operation_aliases = {
-        "conduct classification": "conduct_classification",
-        "academic classification": "academic_classification",
-        "grade 10 to letter": "grade_10_to_letter",
-        "letter to grade 4": "letter_to_grade_4",
-        "pass threshold": "pass_threshold",
-        "passing score": "pass_threshold",
-        "ren luyen": "conduct_classification",
-        "hoc luc": "academic_classification",
-        "diem 10 sang diem chu": "grade_10_to_letter",
-        "diem chu sang thang 4": "letter_to_grade_4",
-        "qua mon": "pass_threshold",
-        "diem toi thieu": "pass_threshold",
-    }
-
-    canonical = operation_aliases.get(
-        operation,
-        operation.replace(" ", "_"),
-    )
 
     # Map conduct scores to classifications.
     if canonical == "conduct_classification":

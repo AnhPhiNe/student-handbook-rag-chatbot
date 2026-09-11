@@ -4,6 +4,10 @@ Date: 2026-09-09
 
 Experiment runtime HEAD: `8a172ebd014b64cafacceb71bdfed0a6be2813cc`
 
+The experiment runners (`scripts/evaluate_cohere_rerank.py`,
+`scripts/evaluate_cohere_answers.py`) were removed after commit `07bf10e7`; check
+out that commit to rerun them. The reranker itself remains in the runtime.
+
 Dataset: `data/eval/official_v1/generated_answer_cases.json`
 
 Reranker: `rerank-v4.0-fast` over the first 16 RRF-ranked child candidates

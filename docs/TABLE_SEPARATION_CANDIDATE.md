@@ -158,10 +158,12 @@ Current output: `work/table_separation_v1_verified/` (ignored experiment outputs
 ```powershell
 # A new directory is mandatory. --verify-mongo only reads the live source.
 .\.venv\Scripts\python.exe -X utf8 scripts/build_parent_child_artifacts.py --output-dir work/table_separation_next --verify-mongo
-.\.venv\Scripts\python.exe -X utf8 scripts/ab_table_text_candidate.py --candidate-dir work/table_separation_next --stage retrieval
-.\.venv\Scripts\python.exe -X utf8 scripts/ab_table_text_candidate.py --candidate-dir work/table_separation_next --stage packets
-.\.venv\Scripts\python.exe -X utf8 scripts/summarize_table_text_ab.py --candidate-dir work/table_separation_next
 ```
+
+The A/B scripts that produced the retrieval and packet comparison
+(`ab_table_text_candidate.py`, `summarize_table_text_ab.py`) were removed after
+commit `07bf10e7`; check out that commit to rerun them. Future A/B work starts
+from a fresh protocol rather than these scripts.
 
 Implementation and local data validation are complete for this scope. Promotion
 is still separate: audit final answers/abstention with authorized API calls, then

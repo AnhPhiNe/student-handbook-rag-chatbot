@@ -1,0 +1,152 @@
+# Retrieval-only questions for official_v2, added to the retrieval cases derived from
+# deterministic_authoring.yaml. Each policy task names an article suffix and a literal
+# anchor from the selected cohort's article. Not used by the deterministic or answer suites.
+cases:
+  - query: "Sinh viên có nghĩa vụ tham gia hoạt động tình nguyện không?"
+    selected_cohort: K48-K49
+    policy: [QuyCheCongTacSinhVien_Chuong3_Dieu7, "Tham gia lao động công ích, hoạt động tình nguyện"]
+  - query: "Đi thực tập bao nhiêu giờ thì được tính một tín chỉ?"
+    selected_cohort: K50
+    policy: [QuyCheDaoTao_Chuong1_Dieu2, "45 giờ thực tập tại cơ sở"]
+  - query: "Hệ chính quy thì lịch học trong ngày nằm trong khoảng mấy giờ?"
+    selected_cohort: K48-K49
+    policy: [QuyCheDaoTao_Chuong1_Dieu5, "từ 06 giờ đến 20 giờ"]
+  - query: "Hệ vừa làm vừa học thì giờ học có cố định không?"
+    selected_cohort: K50
+    policy: [QuyCheDaoTao_Chuong1_Dieu5, "Thời gian tổ chức hoạt động giảng dạy linh hoạt"]
+  - query: "Môn học bị xếp lịch dồn thì một ngày học tối đa mấy giờ?"
+    selected_cohort: K51
+    policy: [QuyCheDaoTao_Chuong2_Dieu7, "không vượt quá 15 giờ/tuần và 4 giờ/ngày"]
+  - query: "Một học kỳ chính học bao nhiêu tuần?"
+    selected_cohort: K50
+    policy: [QuyCheDaoTao_Chuong2_Dieu7, "ít nhất 15 tuần thực học và 3 tuần thi"]
+  - query: "Bảng điểm ghi chữ I là sao ạ?"
+    selected_cohort: K48-K49
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "I: Điểm chưa hoàn thiện"]
+  - query: "Điểm R trong bảng điểm nghĩa là gì?"
+    selected_cohort: K51
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "R: Điểm học phần được miễn học và công nhận tín chỉ"]
+  - query: "Khóa luận tốt nghiệp bị dưới C thì phải làm sao?"
+    selected_cohort: K50
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "bị điểm dưới C phải đăng ký học một số học phần chuyên môn để thay thế"]
+  - query: "Điểm học phần được làm tròn đến mấy chữ số thập phân?"
+    selected_cohort: K48-K49
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "được làm tròn tới một chữ số thập phân"]
+  - query: "GPA được làm tròn đến mấy số lẻ?"
+    selected_cohort: K48-K49
+    policy: [QuyCheDaoTao_Chuong3_Dieu11, "làm tròn đến 2 chữ số thập phân"]
+  - query: "Môn em học thêm ngoài chương trình có được tính vào GPA không?"
+    selected_cohort: K50
+    policy: [QuyCheDaoTao_Chuong3_Dieu11, "Những học phần không nằm trong yêu cầu của CTĐT không được tính"]
+  - query: "GPA toàn khóa tối thiểu phải loại gì mới được tốt nghiệp?"
+    selected_cohort: K51
+    policy: [QuyCheDaoTao_Chuong3_Dieu15, "Điểm trung bình tích lũy của toàn khóa học đạt từ trung bình trở lên"]
+  - query: "Hệ vừa làm vừa học có mấy đợt xét tốt nghiệp trong năm?"
+    selected_cohort: K48-K49
+    policy: [QuyCheDaoTao_Chuong3_Dieu15, "05 đợt xét tốt nghiệp chính thức"]
+  - query: "Ngoài các đợt chính thức thì có đợt xét tốt nghiệp bổ sung không?"
+    selected_cohort: K50
+    policy: [QuyCheDaoTao_Chuong3_Dieu15, "Hiệu trưởng quyết định các đợt xét tốt nghiệp bổ sung"]
+  - query: "Sinh viên có bắt buộc phải đóng bảo hiểm y tế không?"
+    selected_cohort: K48-K49
+    policy: [QuyCheCongTacSinhVien_Chuong3_Dieu7, "Đóng học phí, bảo hiểm y tế đầy đủ và đúng thời hạn"]
+  - query: "Tân sinh viên có phải đi khám sức khỏe không?"
+    selected_cohort: K48-K49
+    policy: [QuyCheCongTacSinhVien_Chuong3_Dieu7, "khám sức khỏe khi nhập học"]
+  - query: "Hút thuốc trong khuôn viên trường có bị cấm không?"
+    selected_cohort: K50
+    policy: [QuyCheCongTacSinhVien_Chuong3_Dieu10, "Hút thuốc, uống rượu, bia trong trường học"]
+  - query: "Chơi cá độ bóng đá thì có vi phạm quy chế sinh viên không?"
+    selected_cohort: K51
+    stress: true
+    policy: [QuyCheCongTacSinhVien_Chuong3_Dieu10, "Tổ chức hoặc tham gia đánh bạc dưới mọi hình thức"]
+  - query: "Vẽ bậy lên bàn học có bị xử lý không?"
+    selected_cohort: K51
+    policy: [QuyCheCongTacSinhVien_Chuong3_Dieu10, "Bôi xóa, viết vẽ lên bàn, tường"]
+  - query: "Em đang bị áp lực tâm lý thì trường có dịch vụ tư vấn không?"
+    selected_cohort: K50
+    policy: [QuyCheCongTacSinhVien_Chuong3_Dieu8, "tư vấn việc làm, sức khỏe, tâm lý"]
+  - query: "Lớp trưởng làm nhiệm kỳ bao lâu?"
+    selected_cohort: K51
+    policy: [QuyCheCongTacSinhVien_Chuong4_Dieu24, "Nhiệm kỳ BCS lớp sinh viên theo năm học"]
+  - query: "Năm nhất thì ban cán sự lớp do ai chọn?"
+    selected_cohort: K48-K49
+    policy: [QuyCheCongTacSinhVien_Chuong4_Dieu25, "năm thứ nhất"]
+  - query: "Làm đề tài nghiên cứu khoa học có được trường cấp kinh phí không?"
+    selected_cohort: K50
+    policy: [QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12, "Được nhận kinh phí thực hiện đề tài"]
+  - query: "Muốn xin thôi học thì cần những gì?"
+    selected_cohort: K48-K49
+    policy: [QuyCheCongTacSinhVien_Chuong5_Dieu32, "bồi hoàn đầy đủ kinh phí đào tạo"]
+  - query: "Sổ tay sinh viên do đơn vị nào biên soạn?"
+    selected_cohort: K48-K49
+    policy: [QuyCheCongTacSinhVien_Chuong3_Dieu11, "xây dựng sổ tay sinh viên"]
+  - query: "Điểm rèn luyện chấm dựa trên những tiêu chí nào?"
+    selected_cohort: K50
+    policy: [RenLuyen_Chuong1_Dieu3, "Điểm rèn luyện được đánh giá bằng thang điểm 100"]
+  - query: "Bị kỷ luật buộc thôi học thì còn được đánh giá rèn luyện không?"
+    selected_cohort: K51
+    policy: [RenLuyen_Chuong3_Dieu10, "buộc thôi học không được đánh giá kết quả rèn luyện"]
+  - query: "Đang bị cảnh cáo thì rèn luyện tối đa được xếp loại gì?"
+    selected_cohort: K48-K49
+    policy: [RenLuyen_Chuong3_Dieu10, "không được vượt quá loại trung bình"]
+  - query: "Sinh viên khuyết tật có được cộng điểm rèn luyện không?"
+    selected_cohort: K50
+    policy: [RenLuyen_Chuong3_Dieu10, "cộng điểm khi đánh giá kết quả rèn luyện"]
+  - query: "Bảo lưu xong đi học lại thì điểm rèn luyện tính sao?"
+    selected_cohort: K51
+    policy: [RenLuyen_Chuong3_Dieu10, "được đánh giá kết quả rèn luyện khi tiếp tục trở lại học tập"]
+  - query: "Cố vấn học tập họp lớp mấy lần mỗi học kỳ?"
+    selected_cohort: K51
+    policy: [QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4, "Tổ chức họp lớp định kỳ 02 lần/học kỳ"]
+  - query: "Cố vấn học tập làm việc với ban cán sự lớp bao lâu một lần?"
+    selected_cohort: K48-K49
+    policy: [QuyDinhCongTacCoVanHocTap_Chuong3_Dieu6, "1 lần/ tháng"]
+  - query: "Ở trọ ngoài thì trường có hỗ trợ đăng ký ngoại trú không?"
+    selected_cohort: K50
+    policy: [NgoaiTruSinhVien_Chuong2_Dieu5, "hỗ trợ và giúp đỡ trong việc đăng ký ngoại trú"]
+  - query: "Đi học có bắt buộc mặc đồng phục không?"
+    selected_cohort: K51
+    policy: [QuyDinhQuyTacUngXu_Chuong3_Dieu12, "Khuyến khích người học mặc áo có logo"]
+  - query: "Sinh viên đăng bài trên mạng xã hội cần lưu ý gì?"
+    selected_cohort: K50
+    policy: [QuyDinhQuyTacUngXu_Chuong4_Dieu16, "Chỉ chia sẻ những thông tin có nguồn chính thống"]
+  - query: "Học thể dục thì mặc đồ gì cũng được hả?"
+    selected_cohort: K50
+    policy: [QuyDinhQuyTacUngXu_Chuong3_Dieu12, "trang phục theo quy định riêng"]
+  - query: "Một năm em được làm chủ nhiệm mấy đề tài nghiên cứu khoa học?"
+    selected_cohort: K51
+    policy: [QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12, "chịu trách nhiệm chính thực hiện một đề tài NCKH trong một năm học"]
+  - query: "Làm nghiên cứu khoa học có được ưu tiên xét học bổng không?"
+    selected_cohort: K48-K49
+    policy: [QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12, "ưu tiên xét cấp học bổng"]
+  - query: "Sinh viên sư phạm muốn nhận hỗ trợ học phí thì nộp đơn trong bao lâu?"
+    selected_cohort: K50
+    policy: [NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7, "Trong thời hạn 30 ngày kể từ ngày nhận được thông báo trúng tuyển"]
+  - query: "Đi dạy chưa đủ thời gian quy định thì tiền bồi hoàn tính thế nào?"
+    selected_cohort: K51
+    policy: [NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8, "S = (F / T1) x (T1 – T2)"]
+  - query: "Hỗ trợ sinh hoạt phí sư phạm được nhận mấy tháng một năm?"
+    selected_cohort: K48-K49
+    policy: [NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4, "không quá 10 tháng/năm học"]
+  - query: "Lệ phí xét miễn học ngoại ngữ là bao nhiêu?"
+    selected_cohort: K50
+    policy: [QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu6, "30.000 đ/sinh viên/lần"]
+  - query: "Bài kiểm tra ngoại ngữ đầu vào thi những kỹ năng nào?"
+    selected_cohort: K50
+    policy: [QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu2, "kỹ năng nghe và kỹ năng đọc"]
+  - query: "Sinh viên tài năng được trường khuyến khích bằng những hình thức nào?"
+    selected_cohort: K51
+    policy: [QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu5, "Học bổng hỗ trợ phát triển tài năng"]
+  - query: "Tân sinh viên có phải khám sức khỏe không, và bị tai nạn trong lúc học thì ai hỗ trợ giải quyết bảo hiểm?"
+    selected_cohort: K51
+    stress: true
+    tasks:
+      - {policy: [QuyCheCongTacSinhVien_Chuong3_Dieu7, "khám sức khỏe khi nhập học"]}
+      - {policy: [QuyCheCongTacSinhVien_Chuong4_Dieu21, "giải quyết các trường hợp sinh viên bị ốm đau, tai nạn"]}
+  - query: "Hút thuốc trong trường có bị cấm không, và vi phạm lần đầu ở mức nhẹ thì bị hình thức kỷ luật gì?"
+    selected_cohort: K48-K49
+    stress: true
+    tasks:
+      - {policy: [QuyCheCongTacSinhVien_Chuong3_Dieu10, "Hút thuốc, uống rượu, bia trong trường học"]}
+      - {policy: [QuyCheCongTacSinhVien_Chuong6_Dieu35, "vi phạm lần đầu nhưng ở mức độ nhẹ"]}

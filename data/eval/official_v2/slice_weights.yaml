@@ -1,0 +1,11 @@
+# Expected share of real student questions per slice family, used only for the
+# reweighted overall score (scripts/report_official_slices.py). Per-slice scores are
+# always reported as well. These are estimates made before any official_v2 run; they
+# are frozen with the bundle and may change only from traffic measured before the
+# first run, never after seeing official_v2 results.
+single: 0.60        # one structured lookup or one regulation question
+memory: 0.15        # follow-ups that depend on earlier turns
+boundary: 0.10      # missing input, partial clarification, out of domain
+multi_intent: 0.07  # two or three independent requests in one message
+multi_entity: 0.05  # the same question about several units, scores or certificates
+multi_cohort: 0.03  # one question comparing cohorts

@@ -2,13 +2,11 @@ from __future__ import annotations
 
 import json
 import os
-from argparse import Namespace
 from io import BytesIO
 from pathlib import Path
 
 import pytest
 
-import scripts.evaluate_system as runner
 import src.evaluation.dataset as dataset
 import src.evaluation.suites as suites
 from src.evaluation.metrics import retrieval_metrics
@@ -49,72 +47,6 @@ def test_scoring_grade_four_heading_accepts_classification_range_schema() -> Non
         {"range": "3.2-dưới 3.6", "label": "Giỏi"},
         {"Thang điểm 4": "Từ 3,2 đến dưới 3,6", "Xếp loại": "Giỏi"},
         lookup_type="scoring",
-    )
-
-
-def test_v6_deterministic_contract_is_resolved_from_cases() -> None:
-    cases = [
-        {"id": "one", "contract_version": "query-plan-target-holdout-v6"},
-        {"id": "two", "contract_version": "query-plan-target-holdout-v6"},
-    ]
-    assert (
-        runner._resolve_deterministic_contract(
-            {"evaluation_contract": "comprehensive-question-scenario-holdout-v6"},
-            cases,
-        )
-        == "query-plan-target-holdout-v6"
-    )
-
-
-def test_deterministic_contract_resolution_fails_closed() -> None:
-    with pytest.raises(ValueError, match="contract is missing"):
-        runner._resolve_deterministic_contract({}, [{"id": "one"}])
-    with pytest.raises(ValueError, match="Unsupported"):
-        runner._resolve_deterministic_contract(
-            {"deterministic_contract": "legacy-implicit"}, [{"id": "one"}]
-        )
-    with pytest.raises(ValueError, match="conflicting"):
-        runner._resolve_deterministic_contract(
-            {},
-            [
-                {"id": "one", "contract_version": "query-plan-a"},
-                {"id": "two", "contract_version": "query-plan-b"},
-            ],
-        )
-
-
-def test_deterministic_gate_skips_non_applicable_metrics() -> None:
-    gate = runner.evaluate_gates(
-        "deterministic",
-        {
-            "precision": 1.0,
-            "recall": 1.0,
-            "false_positive_rate": 0.0,
-            "citation_metadata_accuracy": None,
-            "cross_cohort_leak": 0.0,
-        },
-    )
-    assert gate["passed"] is True
-    assert gate["checks"]["citation_metadata_accuracy"] == {
-        "actual": None,
-        "operator": ">=",
-        "threshold": 1.0,
-        "applicable": False,
-        "passed": None,
-    }
-
-
-def test_post_fix_regression_is_not_labeled_original_holdout() -> None:
-    report = {"suite": "deterministic", "summary": {"n": 140}}
-    runner._finalize_report(
-        report,
-        expected_n=140,
-        provenance={"benchmark_run_kind": "post_fix_regression"},
-    )
-    assert report["completeness"]["complete"] is True
-    assert (
-        report["completeness"]["publication_status"]
-        == "post_fix_regression_not_original_holdout"
     )
 
 
@@ -722,40 +654,6 @@ def test_v8_evaluator_matches_display_row_to_canonical_resolved_row() -> None:
     assert row["resolved_result_correct"] is True
 
 
-def test_mutable_dataset_report_is_never_headline_eligible() -> None:
-    report = runner._finalize_report(
-        {"suite": "deterministic", "summary": {"n": 140}},
-        expected_n=140,
-        provenance={"dataset_frozen": False},
-        profile="full",
-    )
-    assert (
-        report["completeness"]["publication_status"]
-        == "draft_dataset_not_for_headline"
-    )
-
-    errors = []
-    dataset._validate_deterministic_contract(
-        {
-            "id": "clarify",
-            "contract_version": "query-plan-target-holdout-v6",
-            "expected_plan": {
-                "task_count": 1,
-                "allowed_modes": ["clarify"],
-                "required_modes": ["clarify"],
-                "mode_counts": {"clarify": 1},
-                "lookup_types": [],
-                "cohorts": ["K51"],
-                "out_of_domain": False,
-                "needs_clarification": True,
-            },
-            "expected_tasks": [{"mode": "clarify", "cohorts": ["K51"]}],
-        },
-        errors,
-    )
-    assert errors == []
-
-
 def test_deterministic_v2_reports_non_applicable_assertions_as_na() -> None:
     class Pipeline:
         def _run_retrieval(self, query, cohort=None):
@@ -798,79 +696,6 @@ def test_deterministic_v2_reports_non_applicable_assertions_as_na() -> None:
     assert report["summary"]["citation_metadata_accuracy"] is None
     assert report["summary"]["assertion_support"]["citation_metadata"] == 0
     assert report["summary"]["passed"] == 1
-
-
-def test_v6_runtime_storage_identity_requires_qdrant_and_mongo_v32() -> None:
-    manifest = {
-        "schema_version": "architecture-evaluation-v6",
-        "hybrid_collection": "student_handbook_semantic_v32",
-        "mongodb_parent_collection": "parent_docs_v32",
-    }
-    provenance = {
-        "qdrant_collection": "student_handbook_semantic_v32",
-        "mongodb_parent_collection": "parent_docs_v32",
-    }
-    assert runner._runtime_storage_errors(manifest, provenance, "qdrant") == []
-
-    provenance["mongodb_parent_collection"] = "parent_docs_v31"
-    assert runner._runtime_storage_errors(manifest, provenance, "qdrant") == [
-        "runtime storage mismatch: mongodb_parent_collection='parent_docs_v31', "
-        "expected 'parent_docs_v32'"
-    ]
-
-
-def test_v6_runtime_storage_identity_rejects_missing_manifest_field() -> None:
-    errors = runner._runtime_storage_errors(
-        {
-            "schema_version": "architecture-evaluation-v6",
-            "hybrid_collection": "student_handbook_semantic_v32",
-        },
-        {
-            "qdrant_collection": "student_handbook_semantic_v32",
-            "mongodb_parent_collection": "parent_docs_v32",
-        },
-        "qdrant",
-    )
-    assert errors == [
-        "manifest missing storage identity: mongodb_parent_collection"
-    ]
-
-
-def test_retrieval_completeness_uses_dataset_count(monkeypatch: pytest.MonkeyPatch) -> None:
-    captured = []
-    monkeypatch.setattr(runner, "evaluate_retrieval", lambda *args, **kwargs: {"suite": "retrieval", "summary": {"n": 160}})
-    monkeypatch.setattr(runner, "_write", lambda report, *args: captured.append(report))
-    runner._run_retrieval_modes(
-        [{}] * 160,
-        Namespace(ablation="vector_primary_graph_supplement", backend="qdrant", retrieval_scope="end_to_end", limit=None, output=Path("unused"), profile="full", resume=False),
-        {},
-    )
-    assert captured[0]["completeness"]["complete"] is True
-    assert captured[0]["completeness"]["expected_n"] == 160
-
-
-@pytest.mark.parametrize("suite", ["deterministic", "retrieval", "answer_generation", "judge", "production"])
-def test_completed_smoke_sample_is_never_headline_eligible(suite: str) -> None:
-    report = runner._finalize_report(
-        {"suite": suite, "summary": {"n": 5, "judged_n": 5}},
-        expected_n=5, provenance={}, profile="smoke",
-    )
-    assert report["completeness"]["profile"] == "smoke"
-    assert report["completeness"]["complete"] is False
-    assert report["completeness"]["publication_status"] == "smoke_not_for_headline"
-    if "gates" in report:
-        assert report["gates"]["passed"] is False
-
-
-@pytest.mark.parametrize("suite,count", [("deterministic", 140), ("retrieval", 160), ("judge", 150)])
-def test_full_v6_counts_remain_headline_eligible(suite: str, count: int) -> None:
-    report = runner._finalize_report(
-        {"suite": suite, "summary": {"n": count, "judged_n": count}},
-        expected_n=count, provenance={}, profile="full",
-    )
-    assert report["completeness"]["expected_n"] == count
-    assert report["completeness"]["complete"] is True
-    assert report["completeness"]["publication_status"] == "headline_eligible"
 
 
 def test_ndcg_uses_all_gold_and_reports_primary_source_coverage() -> None:
@@ -957,16 +782,6 @@ def test_checkpoint_identity_binds_mode_and_declared_context(tmp_path: Path) -> 
     )
     with pytest.raises(ValueError, match="identity mismatch"):
         suites._load_eval_checkpoint(path, resume=True, identity=changed_runtime)
-
-
-def test_failed_judge_records_do_not_make_headline_complete() -> None:
-    report = runner._finalize_report(
-        {"suite": "judge", "summary": {"n": 150, "judged_n": 149}},
-        expected_n=150, provenance={},
-    )
-    assert report["completeness"]["complete"] is False
-    assert report["completeness"]["publication_status"] == "partial_judge_not_for_headline"
-    assert report["gates"]["passed"] is False
 
 
 @pytest.mark.parametrize(

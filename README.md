@@ -746,11 +746,24 @@ CI performs:
 ~~~bash
 python -m pip check
 python scripts/check_deploy_artifacts.py
-python -m ruff check src tests scripts/check_deploy_artifacts.py scripts/evaluate_system.py --select E,F --ignore E402,E501
+python -m ruff check src tests scripts/check_deploy_artifacts.py scripts/run_official_deterministic.py scripts/run_official_answers.py --select E,F --ignore E402,E501
 python -m pytest tests
 ~~~
 
 Frontend CI uses Node 20 with `npm ci`, `npm run lint`, and `npm run build`. Evaluation scripts can contact model or vector-store providers and are not required for a documentation-only change.
+
+### Running the official evaluation
+
+The `official_v1` suites run from the repository root. Each run writes its report and a `run_snapshot.json` (git commit, dataset hash, planner, Composer and storage identity) under `data/eval/reports/`; `--limit N` runs a smoke subset and `--output DIR` resumes a run.
+
+~~~bash
+python -m scripts.run_official_deterministic --current-worktree
+python -m scripts.run_official_answers --suite retrieval
+python -m scripts.run_official_answers --suite answers
+python -m scripts.run_official_answers --suite production --base-url https://<your-space>.hf.space
+~~~
+
+`--retrieval-mode no_graph` or `--retrieval-mode vector_only` runs a retrieval ablation. `scripts/regrade_official_deterministic.py` rescores a saved deterministic run without model calls. The production suite reports pass/fail release gates (success rate, 429s, cache protocol, p95 latency).
 
 <a id="rebuilding-locally"></a>
 

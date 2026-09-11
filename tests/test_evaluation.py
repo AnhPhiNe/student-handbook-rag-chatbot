@@ -10,7 +10,7 @@ import pytest
 
 import src.evaluation.suites as evaluation_suites
 from src.evaluation.dataset import _structured_source_index
-from src.evaluation.gates import evaluate_gates
+from src.evaluation.gates import production_gates
 from src.evaluation.judge import (
     PINNED_JUDGE_MODEL,
     GroqJudgeClient,
@@ -24,19 +24,16 @@ from src.evaluation.judge import (
 )
 from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
 from src.evaluation.metrics import retrieval_metrics
-from src.evaluation.reporting import write_report_bundle
 from src.evaluation.suites import (
     _answer_checks,
     _expected_response_status,
     _response_status_matches_expected,
     _retrieval_summary,
     _summarize_production_rows,
-    evaluate_graph_supplement,
     evaluate_production,
     evaluate_retrieval,
     generate_answers,
 )
-from src.evaluation.human_audit import summarize_human_audit
 from src.generation.gemini_client import GeminiKeyPool, GeminiKeyPoolConfig
 from src.generation.gemini_client import GeminiClient
 
@@ -110,25 +107,6 @@ def test_retrieval_summary_excludes_graph_supplement_metrics() -> None:
     assert "graph_supporting_hit_rate" not in summary
     assert "context_hit_at_10" not in summary
     assert summary["hit_at_5"] == 1.0
-
-
-def test_graph_supplement_eval_scores_related_selection_cap(tmp_path: Path) -> None:
-    edges = [
-        {"source": "K50_Source", "target": f"K50_Target_{index}", "relation": "ref"}
-        for index in range(6)
-    ]
-    edges_path = tmp_path / "document_edges.json"
-    edges_path.write_text(json.dumps(edges), encoding="utf-8")
-
-    report = evaluate_graph_supplement(edges_path=edges_path, related_limit=5)
-
-    selected = {
-        row["target_parent_id"] for row in report["cases"] if row["target_selected"]
-    }
-    assert len(report["cases"]) == 6
-    assert report["summary"]["direct_expansion_recall"] == 1.0
-    assert report["summary"]["related_selection_recall_at_5"] == pytest.approx(5 / 6)
-    assert selected == {f"K50_Target_{index}" for index in range(5)}
 
 
 def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
@@ -215,10 +193,10 @@ def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
     assert summary["cache_protocol_valid"] is True
     assert summary["response_status_accuracy"] == 1.0
     assert summary["by_expected_path"]["structured"]["n"] == 2
-    assert evaluate_gates("production", summary)["passed"] is True
+    assert production_gates(summary)["passed"] is True
 
     summary["cold_cache_hit_rate"] = 0.5
-    assert evaluate_gates("production", summary)["passed"] is False
+    assert production_gates(summary)["passed"] is False
 
 
 def test_production_clarify_abstain_accepts_guardrail_statuses() -> None:
@@ -315,79 +293,6 @@ def test_production_eval_rejects_terminal_stream_api_error(
     assert row["success"] is False
     assert row["response_status"] == "api_error"
     assert row["response_error_type"] == "RuntimeError"
-
-
-def test_human_audit_uses_template_size_and_repeat_flags() -> None:
-    audit_rows = [
-        {
-            "id": f"case-{index}",
-            "human_score": 1.0 if index < 24 else None,
-            "repeat_for_consistency": index < 5,
-            "repeat_score": 1.0 if index < 5 else None,
-            "critical_false_pass": False,
-        }
-        for index in range(25)
-    ]
-    judge_rows = [{"id": f"case-{index}", "judge": {}} for index in range(25)]
-
-    incomplete = summarize_human_audit(audit_rows, judge_rows)
-    audit_rows[-1]["human_score"] = 1.0
-    complete = summarize_human_audit(audit_rows, judge_rows)
-
-    assert incomplete["required_n"] == 25
-    assert incomplete["completed_n"] == 24
-    assert incomplete["complete"] is False
-    assert complete["complete"] is True
-    assert complete["repeat_required_n"] == 5
-    assert complete["repeat_completed_n"] == 5
-
-
-def test_human_audit_must_match_frozen_template_and_repeat_contract() -> None:
-    template = [
-        {
-            "id": f"case-{index}",
-            "repeat_for_consistency": index < 2,
-        }
-        for index in range(4)
-    ]
-    audit_rows = [
-        {
-            **row,
-            "human_score": 1.0,
-            "repeat_score": 1.0 if row["repeat_for_consistency"] else None,
-        }
-        for row in template[:3]
-    ]
-    judge_rows = [{"id": row["id"], "judge": {}} for row in template]
-
-    missing_case = summarize_human_audit(
-        audit_rows,
-        judge_rows,
-        template_rows=template,
-    )
-    assert missing_case["required_n"] == 4
-    assert missing_case["complete"] is False
-    assert missing_case["contract_errors"] == [
-        "human_audit_missing_template_ids:case-3"
-    ]
-
-    audit_rows.append(
-        {
-            **template[3],
-            "human_score": 1.0,
-            "repeat_score": None,
-        }
-    )
-    audit_rows[0]["repeat_score"] = None
-    missing_repeat = summarize_human_audit(
-        audit_rows,
-        judge_rows,
-        template_rows=template,
-    )
-    assert missing_repeat["contract_errors"] == []
-    assert missing_repeat["repeat_required_n"] == 2
-    assert missing_repeat["repeat_completed_n"] == 1
-    assert missing_repeat["complete"] is False
 
 
 def test_compact_packet_keeps_required_fact() -> None:
@@ -990,9 +895,3 @@ def test_retrieval_cohort_check_uses_applicable_cohorts() -> None:
     assert report["cases"][0]["cohort_leak"] is False
 
 
-def test_report_bundle_writes_json_csv_and_markdown(tmp_path: Path) -> None:
-    paths = write_report_bundle(
-        {"evaluation": "V8", "summary": {"n": 1}, "cases": [{"id": "x", "ok": True}]},
-        tmp_path / "report.json",
-    )
-    assert all(Path(path).exists() for path in paths.values())

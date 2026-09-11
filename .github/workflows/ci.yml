@@ -28,7 +28,7 @@ jobs:
         run: python scripts/check_deploy_artifacts.py
 
       - name: Lint backend
-        run: python -m ruff check src tests scripts/check_deploy_artifacts.py scripts/evaluate_system.py --select E,F --ignore E402,E501
+        run: python -m ruff check src tests scripts/check_deploy_artifacts.py scripts/run_official_deterministic.py scripts/run_official_answers.py --select E,F --ignore E402,E501
 
       - name: Run backend tests
         run: python -m pytest tests

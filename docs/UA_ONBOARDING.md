@@ -28,7 +28,7 @@ deployment workflow.
 | Answer generation | Query orchestration, citations, cache, Gemini | `src/generation/answer_pipeline.py` |
 | Retrieval | Query plan, vector search, BM25, evidence assembly | `src/retrieval/core/hybrid_pipeline.py` |
 | Frontend | Chat UX, citations, feedback, status display | `frontend/src/` |
-| Evaluation | Official-v1 casebooks, manifest-based diagnostics and regression gates | `data/eval/official_v1/`, `scripts/evaluate_system.py`, `tests/` |
+| Evaluation | Official-v1 casebooks, suite runners and production release gates | `data/eval/official_v1/`, `scripts/run_official_*.py`, `tests/` |
 
 ## 3. Key Runtime Decisions
 
@@ -71,7 +71,7 @@ deployment workflow.
 7. **Cross-check the user experience.** Read `frontend/src/App.tsx`,
    `frontend/src/components/ChatMessage.tsx`, and
    `frontend/src/components/SystemStatusBadge.tsx`.
-8. **Finish with quality gates.** Read `scripts/evaluate_system.py`,
+8. **Finish with quality gates.** Read `scripts/run_official_answers.py`,
    `tests/test_evaluation.py`, and
    `scripts/deploy_hf_backend.ps1`.
 
@@ -112,8 +112,8 @@ deployment workflow.
 
 ### Quality and deployment
 
-- `scripts/evaluate_system.py`: manifest-based evaluation runner; callers must
-  select a dataset explicitly instead of inheriting a historical default.
+- `scripts/run_official_deterministic.py`, `scripts/run_official_answers.py`:
+  official_v1 suite runners; each run records a snapshot of the runtime it measured.
 - `tests/test_evaluation.py`: benchmark and evaluation contract tests.
 - `tests/test_response_cache.py`: cache TTL, prune, eviction, and legacy tests.
 - `scripts/deploy_hf_backend.ps1`: allow-listed Hugging Face backend package.
@@ -126,7 +126,7 @@ Read these files in focused passes rather than linearly in one sitting:
 2. `src/retrieval/core/hybrid_pipeline.py`
 3. `src/retrieval/core/ai_router.py`
 4. `src/generation/gemini_client.py`
-5. `scripts/evaluate_system.py` and `tests/test_evaluation.py`
+5. `src/evaluation/suites.py` and `tests/test_evaluation.py`
 
 For each hotspot, first identify its inputs, outputs, configuration sources,
 and tests. Only then read its internal helper functions.

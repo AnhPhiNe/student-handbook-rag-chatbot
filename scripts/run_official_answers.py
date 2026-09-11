@@ -1,4 +1,4 @@
-"""Run the official_v1 retrieval or generate+judge suite with a run snapshot."""
+"""Run an official_v1 suite (retrieval, generate+judge, or production) with a run snapshot."""
 import argparse
 import hashlib
 import json
@@ -10,7 +10,11 @@ import yaml
 
 from scripts.prepare_official_eval import BUNDLE, ROOT
 
-CASE_FILES = {"retrieval": "retrieval_cases.json", "answers": "generated_answer_cases.json"}
+CASE_FILES = {
+    "retrieval": "retrieval_cases.json",
+    "answers": "generated_answer_cases.json",
+    "production": "production_cases.json",
+}
 
 
 def _snapshot(suite: str, case_path) -> dict:
@@ -54,11 +58,22 @@ def main():
     parser.add_argument("--suite", choices=tuple(CASE_FILES), required=True)
     parser.add_argument("--output", help="Existing run directory to resume.")
     parser.add_argument("--limit", type=int, help="Smoke-test only the first N cases.")
+    parser.add_argument("--base-url", default="http://127.0.0.1:8000",
+                        help="Deployed API to send the production suite requests to.")
+    parser.add_argument("--retrieval-mode", help="Retrieval suite only: run an ablation mode "
+                        "(no_graph, vector_only) instead of the default.")
     args = parser.parse_args()
     from src.common.env_loader import load_project_env
     load_project_env()
     os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
-    from src.evaluation.suites import evaluate_retrieval, generate_answers, judge_answers, load_answer_checkpoint
+    from src.evaluation.gates import production_gates
+    from src.evaluation.suites import (
+        evaluate_production,
+        evaluate_retrieval,
+        generate_answers,
+        judge_answers,
+        load_answer_checkpoint,
+    )
 
     case_path = BUNDLE / CASE_FILES[args.suite]
     cases = json.loads(case_path.read_text(encoding="utf-8"))
@@ -72,6 +87,10 @@ def main():
         output = ROOT / "data/eval/reports" / f"official_v1_{args.suite}{smoke}_{stamp}"
         output.mkdir(parents=True, exist_ok=False)
         snapshot = {**_snapshot(args.suite, case_path), "limit": args.limit}
+        if args.suite == "production":
+            snapshot["base_url"] = args.base_url
+        if args.retrieval_mode:
+            snapshot["retrieval_mode"] = args.retrieval_mode
         (output / "run_snapshot.json").write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Output: {output}", flush=True)
 
@@ -81,6 +100,15 @@ def main():
                                     resume=resume, checkpoint_context=snapshot)
         report["run_snapshot"] = snapshot
         _write(report, output / "retrieval.json")
+        return
+
+    if args.suite == "production":
+        report = evaluate_production(cases, base_url=snapshot["base_url"], limit=snapshot["limit"],
+                                     checkpoint_path=output / "production_checkpoint.json",
+                                     resume=resume, checkpoint_context=snapshot)
+        report["gates"] = production_gates(report.get("summary") or {})
+        report["run_snapshot"] = snapshot
+        _write(report, output / "production.json")
         return
 
     answer_cache = output / "answer_cache.json"

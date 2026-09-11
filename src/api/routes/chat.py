@@ -40,7 +40,6 @@ def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
         "strategy": result.get("strategy"),
         "effective_query": result.get("effective_query"),
         "query_handling": result.get("query_handling"),
-        "router_decision": result.get("router_decision"),
         "retrieval_query": result.get("retrieval_query"),
         "llm_called": bool(result.get("llm_called", False)),
         "used_cache": bool(result.get("used_cache", False)),

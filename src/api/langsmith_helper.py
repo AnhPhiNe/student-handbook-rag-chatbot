@@ -271,23 +271,13 @@ def build_trace_metadata(
 ) -> dict[str, Any]:
     """Build a compact, privacy-conscious trace for the QueryPlan runtime."""
     src = source or {}
-    router_decision = src.get("router_decision") or {}
-    query_handling = (
-        src.get("query_handling") or router_decision.get("query_handling") or {}
-    )
+    query_handling = src.get("query_handling") or {}
 
     status = status_override or src.get("status") or "answered"
-    execution_mode = (
-        src.get("execution_mode")
-        or router_decision.get("execution_mode")
-        or "regulation"
-    )
-    lookup_type = src.get("lookup_type") or router_decision.get("lookup_type")
+    execution_mode = src.get("execution_mode") or "regulation"
+    lookup_type = src.get("lookup_type")
     query_type = (
-        src.get("query_type")
-        or router_decision.get("query_type")
-        or query_handling.get("context_mode")
-        or "standalone"
+        src.get("query_type") or query_handling.get("context_mode") or "standalone"
     )
     model_name = src.get("model") or src.get("model_used")
     citations = _compact_source_records(
@@ -298,12 +288,7 @@ def build_trace_metadata(
         src.get("structured_results") or []
     )
     task_summaries = _task_summaries(src)
-    resolved_cohort = (
-        cohort
-        or src.get("cohort")
-        or (router_decision or {}).get("cohort")
-        or "default"
-    )
+    resolved_cohort = cohort or src.get("cohort") or "default"
     plan = src.get("query_plan") if isinstance(src.get("query_plan"), dict) else {}
     cohorts = _ordered_unique(
         [
@@ -328,8 +313,8 @@ def build_trace_metadata(
         "cohorts": cohorts,
         "is_multi_cohort": len(cohorts) > 1,
         "status": status,
-        "intent": src.get("intent") or router_decision.get("intent"),
-        "strategy": src.get("strategy") or router_decision.get("strategy"),
+        "intent": src.get("intent"),
+        "strategy": src.get("strategy"),
         "execution_mode": execution_mode,
         "lookup_type": lookup_type,
         "query_type": query_type,

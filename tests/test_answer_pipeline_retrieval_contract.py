@@ -40,7 +40,6 @@ def test_answer_output_propagates_query_handling() -> None:
         retrieval_result={
             "effective_query": handling["effective_query"],
             "query_handling": handling,
-            "router_decision": {"query_handling": handling},
         },
         final_answer="test",
         context_used="",
@@ -54,7 +53,6 @@ def test_answer_output_propagates_query_handling() -> None:
 
     assert output["effective_query"] == handling["effective_query"]
     assert output["query_handling"] == handling
-    assert output["router_decision"]["query_handling"] == handling
 
 
 def test_prepare_answer_logs_retrieval_failure_with_trace_id(caplog) -> None:
@@ -119,5 +117,5 @@ def test_evaluation_pure_retrieval_bypasses_planner(monkeypatch) -> None:
 
     assert captured["query"] == "K50 bao luu duoc bao lau?"
     assert captured["retrieval_query"] == "slang::K50 bao luu duoc bao lau?"
-    assert result["router_decision"]["evaluation_scope"] == "pure_regulation"
+    assert result["evaluation_scope"] == "pure_regulation"
     assert result["query_handling"]["source"] == "evaluation_pure_regulation"

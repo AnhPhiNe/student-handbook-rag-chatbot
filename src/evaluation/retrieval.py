@@ -122,16 +122,7 @@ def _run_pure_regulation_retrieval(
     result.update(
         {
             "selected_cohort": cohort,
-            "router_decision": {
-                "route": "rag",
-                "execution_mode": "regulation",
-                "intent": "open_question",
-                "lookup_type": None,
-                "cohort": cohort,
-                "retrieval_query": retrieval_query,
-                "query_handling": query_handling,
-                "evaluation_scope": "pure_regulation",
-            },
+            "evaluation_scope": "pure_regulation",
             "raw_query": query,
             "effective_query": query,
             "query_handling": query_handling,
@@ -286,12 +277,7 @@ def evaluate_retrieval(
                     and actual_content_types <= expected_content_types
                 )
                 retrieval_telemetry = _first_retrieval_telemetry(items)
-                router_decision = result.get("router_decision") or {}
-                query_handling = result.get("query_handling") or (
-                    router_decision.get("query_handling")
-                    if isinstance(router_decision, dict)
-                    else {}
-                )
+                query_handling = result.get("query_handling")
                 if not isinstance(query_handling, dict):
                     query_handling = {}
                 rows.append(
@@ -312,16 +298,6 @@ def evaluate_retrieval(
                             "validation_errors"
                         )
                         or [],
-                        "router_route": (
-                            router_decision.get("route")
-                            if isinstance(router_decision, dict)
-                            else None
-                        ),
-                        "router_execution_mode": (
-                            router_decision.get("execution_mode")
-                            if isinstance(router_decision, dict)
-                            else None
-                        ),
                         "citation_binding": bool(expected_ids & citation_ids)
                         or bool(metrics["hit_at_5"]),
                         "cohort_match": cohort_ok,

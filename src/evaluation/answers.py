@@ -219,7 +219,6 @@ def judge_answers(
             "generation_model": answer.get("model_used"),
             "effective_query": answer.get("effective_query"),
             "query_handling": answer.get("query_handling"),
-            "router_decision": answer.get("router_decision"),
             "judge": result,
             **deterministic,
             "judge_latency_ms": (time.perf_counter() - started) * 1000,

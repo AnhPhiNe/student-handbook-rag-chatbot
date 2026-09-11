@@ -671,21 +671,13 @@ class AnswerPipeline:
     ) -> dict[str, Any]:
         """Build standardized metadata chunk for streaming responses dynamically."""
         res = retrieval_result or {}
-        router_decision = res.get("router_decision") or {}
-        query_handling = (
-            res.get("query_handling") or router_decision.get("query_handling") or {}
-        )
+        query_handling = res.get("query_handling") or {}
 
-        execution_mode = (
-            res.get("execution_mode")
-            or router_decision.get("execution_mode")
-            or "regulation"
-        )
-        lookup_type = res.get("lookup_type") or router_decision.get("lookup_type")
+        execution_mode = res.get("execution_mode") or "regulation"
+        lookup_type = res.get("lookup_type")
         query_type = (
             query_type_override
             or res.get("query_type")
-            or router_decision.get("query_type")
             or query_handling.get("context_mode")
             or "standalone"
         )
@@ -714,15 +706,10 @@ class AnswerPipeline:
         return {
             "type": "metadata",
             "run_id": run_id,
-            "cohort": (
-                res.get("cohort")
-                or (router_decision or {}).get("cohort")
-                or res.get("selected_cohort")
-                or "default"
-            ),
+            "cohort": res.get("cohort") or res.get("selected_cohort") or "default",
             "status": status,
-            "intent": res.get("intent") or router_decision.get("intent"),
-            "strategy": res.get("strategy") or router_decision.get("strategy"),
+            "intent": res.get("intent"),
+            "strategy": res.get("strategy"),
             "execution_mode": execution_mode,
             "lookup_type": lookup_type,
             "query_type": query_type,
@@ -1707,10 +1694,7 @@ class AnswerPipeline:
     ) -> dict[str, Any]:
         """Assemble the canonical answer result consumed by all adapters."""
 
-        router_decision = retrieval_result.get("router_decision")
         query_handling = retrieval_result.get("query_handling")
-        if not isinstance(query_handling, dict) and isinstance(router_decision, dict):
-            query_handling = router_decision.get("query_handling")
         if not isinstance(query_handling, dict):
             query_handling = None
         run_id = None
@@ -1724,25 +1708,18 @@ class AnswerPipeline:
             or (query_handling or {}).get("effective_query")
             or query,
             "cohort": retrieval_result.get("cohort")
-            or (router_decision or {}).get("cohort")
             or retrieval_result.get("selected_cohort")
             or "default",
             "query_handling": query_handling,
-            "router_decision": router_decision,
             "answer": final_answer,
             "status": status,
             "error_type": error_type,
             "error_message": error_message,
             "intent": retrieval_result.get("intent"),
             "strategy": retrieval_result.get("strategy"),
-            "execution_mode": retrieval_result.get("execution_mode")
-            or (router_decision or {}).get("execution_mode")
-            or "regulation",
-            "lookup_type": retrieval_result.get("lookup_type")
-            or (router_decision or {}).get("lookup_type"),
-            "query_type": retrieval_result.get("query_type")
-            or (router_decision or {}).get("query_type")
-            or "standalone",
+            "execution_mode": retrieval_result.get("execution_mode") or "regulation",
+            "lookup_type": retrieval_result.get("lookup_type"),
+            "query_type": retrieval_result.get("query_type") or "standalone",
             "target_chunk_types": retrieval_result.get("target_chunk_types") or [],
             "raw_query": query,
             "fallback_reason": error_type

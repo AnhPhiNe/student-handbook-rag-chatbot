@@ -24,11 +24,9 @@ for dead production code.
 
 | Area | Current state | Safe way to change it |
 |---|---|---|
-| Router-decision layer | `normalize_router_decision` still maps QueryPlan tasks to an older decision shape with fields nothing reads | Collapse it into the QueryPlan task, verified by a full deterministic run |
 | `AnswerPipeline` size | Plan execution and task-result merging (about 650 lines) live inside the pipeline class | Extract them into their own module, verified by full deterministic and answers runs |
 | Planner diagnostics | About 230 lines of evaluation-only diagnostics sit inside `AIRouter.plan` | Move them behind a separate evaluation hook; the planner prompt and requests must stay identical |
 | Scoring result schema | `scoring_lookup_from_reference` renames columns to an English schema read by the evaluator and `StructuredResults.tsx` | Migrate the schema together with the frontend |
-| Legacy report fields | Evaluation reports still carry `phoranker_*` fields, always false or zero, from a removed reranker | Drop them with the next report-format change |
 | Directory matching | Office, service and faculty matching are kept as they are | Refactor only with tests covering exact aliases, ambiguity, cohort applicability and cross-entity isolation |
 | Structured span grounding | Planner slots are grounded by matching the same value in the question | Change only with tests for schema values, negation and literal grounding |
 

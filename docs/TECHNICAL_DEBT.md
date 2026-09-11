@@ -1,54 +1,51 @@
 # Technical Debt and Maintenance Boundary
 
-This document records intentional maintenance debt in the current runtime. It
-prevents future cleanup work from mistaking dynamically invoked code, build
-inputs, or evaluation-only capabilities for dead production code.
+This document records known maintenance debt in the current runtime. It also
+prevents future cleanup from mistaking dynamically invoked code or build inputs
+for dead production code.
 
-## Verified release boundary
+## Release boundary
 
-- Runtime readiness requires only the current structured catalogs, parent/chunk
-  artifacts, graph edges, build manifest, environment keys, and live storage
-  targets.
-- `office_directory.json`, `faculty_directory.json`, and their cohort-specific
-  variants are build inputs. Production lookup uses
-  `student_office_profiles.json`, `student_faculty_profiles.json`, and
-  `student_service_directory.json`; the raw directory inputs are not packaged
-  by the Hugging Face deployment allowlist.
-- `configs/retrieval.yaml` is an active runtime dependency. It defines the
-  embedding/build contract loaded by `src/retrieval/runtime_config.py` and must
-  remain in readiness and deployment packaging.
-- The PhoRanker loader and its runtime ranking branch have been removed.
-  Retrieval now uses dense and BM25 candidate search, RRF fusion, and optional
-  fail-open Cohere Fast child reranking. Historical PhoRanker evaluator fields
-  and reports are retained for compatibility, not as evidence that the model
-  can still be enabled.
-- FastAPI route handlers and dependencies, plus executor callbacks used by
-  LangSmith telemetry, may have no ordinary static caller. Framework or
-  callback registration invokes them at runtime, so they must not be removed
-  based only on call-graph in-degree.
+- Runtime readiness requires the structured catalogs, parent and child
+  artifacts, graph edges, build manifest, environment keys and live storage
+  targets listed in `src/common/runtime_artifacts.py`. The deploy allowlist and
+  `.dockerignore` are tested against that list.
+- `office_directory.json`, `faculty_directory.json`, `scoring_tables.json`,
+  `foreign_language_equivalency_table.json` and the cohort-prefixed files under
+  `data/processed/` are build inputs, not runtime inputs. Production lookup uses
+  the structured registry and the student office, faculty and service profiles.
+- `configs/retrieval.yaml` is a runtime dependency: it defines the embedding and
+  build contract loaded by `src/retrieval/runtime_config.py`.
+- FastAPI route handlers and dependencies, and executor callbacks used by
+  LangSmith telemetry, may have no ordinary static caller. The framework calls
+  them, so call-graph in-degree alone never justifies removing them.
 
-## Intentionally deferred
+## Known debt
 
-| Area | Current decision | Safe condition for later work |
+| Area | Current state | Safe way to change it |
 |---|---|---|
-| Directory matching | Keep the existing office/service/faculty matcher | Refactor only with characterization tests covering exact aliases, ambiguity, cohort applicability, and cross-entity isolation |
-| Structured span grounding | Keep same-value span grounding for planner-supplied slots | Change it only after equivalent schema, negation, and literal-grounding behavior is tested |
-| Text normalization | Keep domain-local implementations | Consolidate only after tests lock Unicode, punctuation, numeric range, acronym, and identifier behavior for every caller |
-| Evaluation compatibility | Keep explicit compatibility aliases and historical evaluators outside the deployed image | Remove only when no maintained evaluation bundle or script depends on them |
-| Cache compatibility | Keep legacy-entry readers | Remove after the supported cache migration window is explicitly closed |
+| Router-decision layer | `normalize_router_decision` still maps QueryPlan tasks to an older decision shape with fields nothing reads | Collapse it into the QueryPlan task, verified by a full deterministic run |
+| `AnswerPipeline` size | Plan execution and task-result merging (about 650 lines) live inside the pipeline class | Extract them into their own module, verified by full deterministic and answers runs |
+| Planner diagnostics | About 230 lines of evaluation-only diagnostics sit inside `AIRouter.plan` | Move them behind a separate evaluation hook; the planner prompt and requests must stay identical |
+| Scoring result schema | `scoring_lookup_from_reference` renames columns to an English schema read by the evaluator and `StructuredResults.tsx` | Migrate the schema together with the frontend |
+| Legacy report fields | Evaluation reports still carry `phoranker_*` fields, always false or zero, from a removed reranker | Drop them with the next report-format change |
+| Directory matching | Office, service and faculty matching are kept as they are | Refactor only with tests covering exact aliases, ambiguity, cohort applicability and cross-entity isolation |
+| Structured span grounding | Planner slots are grounded by matching the same value in the question | Change only with tests for schema values, negation and literal grounding |
 
 ## Dead-code removal rule
 
 A symbol or file is removable only when all of the following are true:
 
-1. Static call/import search finds no production, build, test, or evaluation
-   caller.
-2. It is not registered dynamically as a FastAPI route/dependency, callback,
-   plugin, serializer hook, or command entry point.
-3. Deployment and artifact-build scripts do not copy, generate, or validate it.
-4. Removing it passes lint, the full test suite, deploy-artifact validation,
-   readiness checks, and sync/stream smoke tests.
+1. Static call and import search finds no production, build, test or
+   evaluation caller.
+2. It is not registered dynamically as a FastAPI route or dependency, a
+   callback, a plugin, a serializer hook or a command entry point.
+3. Deployment and artifact-build scripts do not copy, generate or validate it.
+4. Removing it passes lint, the full test suite, deploy-artifact validation and
+   an equivalence check suited to the code: a byte-for-byte rebuild for build
+   code, an offline regrade of saved runs for evaluators, or a fake-provider
+   comparison for provider clients.
 
-The current audit found no additional runtime symbol that satisfies all four
-conditions. Future cleanup should therefore begin with evidence from a caller
-trace or failing maintenance boundary, not with line-count reduction.
+The September 2026 cleanup (`chore/p2-cleanup`) applied this rule across the
+backend, the offline build and the evaluation code. Each removal is recorded
+in its commit message together with the check that verified it.

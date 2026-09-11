@@ -194,7 +194,7 @@ def main():
     import numpy as np
     from src.common.env_loader import load_project_env
     from src.retrieval.runtime_config import load_retrieval_runtime_config, load_retrieval_build_contract
-    from src.retrieval.core.vector_retriever import load_embedding_model
+    from src.retrieval.core.embedding_model import load_embedding_model
     load_project_env()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--candidate-dir', type=Path, required=True)

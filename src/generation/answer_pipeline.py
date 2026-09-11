@@ -26,7 +26,7 @@ from src.retrieval.core.hybrid_pipeline import (
     select_graph_related_parent_candidates,
 )
 from src.retrieval.core.slang_normalizer import SlangNormalizer
-from src.retrieval.core.vector_retriever import (
+from src.retrieval.core.embedding_model import (
     load_embedding_model,
 )
 from src.retrieval.runtime_config import load_retrieval_runtime_config

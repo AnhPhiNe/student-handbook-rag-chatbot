@@ -65,7 +65,7 @@ deployment workflow.
    before diving into helpers. Focus on routing, task execution, aggregation,
    citations, and cache decisions.
 5. **Study retrieval.** Read `src/retrieval/core/hybrid_pipeline.py`, then
-   `vector_retriever.py`, `bm25_retriever.py`, and `query_plan.py`.
+   `embedding_model.py`, `bm25_retriever.py`, and `query_plan.py`.
 6. **Study provider and cache boundaries.** Read `gemini_client.py` and
    `response_cache.py`.
 7. **Cross-check the user experience.** Read `frontend/src/App.tsx`,
@@ -97,7 +97,7 @@ deployment workflow.
 
 - `src/retrieval/core/hybrid_pipeline.py`: hybrid retrieval and evidence
   assembly.
-- `src/retrieval/core/vector_retriever.py`: Qdrant semantic retrieval.
+- `src/retrieval/core/embedding_model.py`: cached BGE-M3 embedding model loader (the Qdrant query itself lives in `hybrid_pipeline.py`).
 - `src/retrieval/core/bm25_retriever.py`: local lexical retrieval signal.
 - `src/retrieval/core/query_plan.py`: task decomposition and aggregation
   contracts.

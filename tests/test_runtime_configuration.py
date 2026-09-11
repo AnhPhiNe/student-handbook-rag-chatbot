@@ -9,7 +9,7 @@ from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
 )
 from src.retrieval.runtime_config import load_retrieval_runtime_config
-from src.retrieval.core.vector_retriever import load_embedding_model
+from src.retrieval.core.embedding_model import load_embedding_model
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
 
@@ -35,10 +35,10 @@ def test_embedding_model_loader_reuses_one_process_instance() -> None:
     try:
         with (
             patch(
-                "src.retrieval.core.vector_retriever.SentenceTransformer",
+                "src.retrieval.core.embedding_model.SentenceTransformer",
                 return_value=model,
             ) as model_class,
-            patch("src.retrieval.core.vector_retriever.get_device", return_value="cpu"),
+            patch("src.retrieval.core.embedding_model.get_device", return_value="cpu"),
         ):
             first = load_embedding_model("test/model")
             second = load_embedding_model("test/model")

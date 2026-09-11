@@ -38,6 +38,3 @@ citations:
 
 guardrails:
   skip_llm_on_low_confidence: true
-
-output:
-  test_report: data/processed/metadata/answer_generation_test_report.json

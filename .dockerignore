@@ -40,10 +40,8 @@ data/cache
 data/processed/retrieval
 data/processed/user_feedback.jsonl
 data/processed/tables/*
-!data/processed/tables/scoring_tables.json
 !data/processed/tables/formula_rules.json
 !data/processed/tables/structured_tables_registry.json
-!data/processed/tables/foreign_language_equivalency_table.json
 data/processed/directories/*
 !data/processed/directories/student_service_directory.json
 !data/processed/directories/student_office_profiles.json

@@ -6,25 +6,18 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
 from typing import Any, Callable
 
+from src.common.env_loader import env_int
 from src.retrieval.runtime_config import load_retrieval_build_contract
-
 
 _PROBE_CACHE_LOCK = Lock()
 _PROBE_CACHE: dict[tuple[str, str, str], tuple[float, dict[str, Any]]] = {}
-
-
-def _env_int(name: str, default: int) -> int:
-    try:
-        return int(os.environ.get(name, default))
-    except (TypeError, ValueError):
-        return default
 
 
 def _cached_probe(
     cache_key: tuple[str, str, str],
     probe: Callable[[], None],
 ) -> dict[str, Any]:
-    ttl_seconds = max(0, _env_int("STUDENT_RAG_READINESS_CACHE_SECONDS", 30))
+    ttl_seconds = max(0, env_int("STUDENT_RAG_READINESS_CACHE_SECONDS", 30))
     now = time.monotonic()
     with _PROBE_CACHE_LOCK:
         cached = _PROBE_CACHE.get(cache_key)
@@ -86,7 +79,7 @@ def probe_qdrant() -> dict[str, Any]:
 
     timeout_seconds = max(
         0.1,
-        _env_int("STUDENT_RAG_READINESS_PROBE_TIMEOUT_MS", 1500) / 1000,
+        env_int("STUDENT_RAG_READINESS_PROBE_TIMEOUT_MS", 1500) / 1000,
     )
 
     def _probe() -> None:
@@ -133,7 +126,7 @@ def probe_mongodb() -> dict[str, Any]:
 
     timeout_ms = max(
         100,
-        _env_int("STUDENT_RAG_READINESS_PROBE_TIMEOUT_MS", 1500),
+        env_int("STUDENT_RAG_READINESS_PROBE_TIMEOUT_MS", 1500),
     )
     database = str(os.environ.get("MONGODB_DB_NAME") or "chatbotHCMUE").strip()
 

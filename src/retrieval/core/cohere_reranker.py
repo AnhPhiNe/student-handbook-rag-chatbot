@@ -14,16 +14,10 @@ from typing import Any, Callable
 
 import requests
 
+from src.common.env_loader import env_bool
 
 logger = logging.getLogger("student_handbook_rag.retrieval.cohere_reranker")
 COHERE_RERANK_URL = "https://api.cohere.com/v2/rerank"
-
-
-def _env_bool(name: str, default: bool) -> bool:
-    value = os.environ.get(name)
-    if value is None:
-        return default
-    return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _cohere_api_keys() -> list[str]:
@@ -52,7 +46,7 @@ class CohereRerankerConfig:
     def from_config(cls, value: dict[str, Any] | None) -> "CohereRerankerConfig":
         config = dict(value or {})
         key_pool = dict(config.get("key_pool") or {})
-        enabled = _env_bool(
+        enabled = env_bool(
             "STUDENT_RAG_COHERE_RERANKER_ENABLED",
             bool(config.get("enabled", True)),
         )

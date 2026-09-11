@@ -12,6 +12,7 @@ from uuid import UUID
 
 from fastapi import HTTPException, Request
 
+from src.common.env_loader import env_float, env_int
 
 DEFAULT_MAX_QUERY_CHARS = 1000
 DEFAULT_RATE_LIMIT_PER_MINUTE = 5
@@ -301,17 +302,17 @@ def chat_capacity_settings() -> tuple[int, int, float]:
     """Return concurrency, queue-size, and timeout settings from the environment."""
 
     return (
-        _env_int(
+        env_int(
             "STUDENT_RAG_MAX_CONCURRENT_CHAT",
             DEFAULT_MAX_CONCURRENT_CHAT,
             minimum=0,
         ),
-        _env_int(
+        env_int(
             "STUDENT_RAG_MAX_QUEUE_SIZE",
             DEFAULT_MAX_QUEUE_SIZE,
             minimum=0,
         ),
-        _env_float(
+        env_float(
             "STUDENT_RAG_QUEUE_TIMEOUT_SECONDS",
             DEFAULT_QUEUE_TIMEOUT_SECONDS,
             minimum=0.0,
@@ -346,29 +347,11 @@ def rate_limit_per_minute() -> int:
 
 def ip_rate_limit_per_minute() -> int:
     """Return the broader public-IP abuse limit for identified browser clients."""
-    return _env_int(
+    return env_int(
         "STUDENT_RAG_IP_RATE_LIMIT_PER_MINUTE",
         DEFAULT_IP_RATE_LIMIT_PER_MINUTE,
         minimum=0,
     )
-
-
-def _env_int(name: str, default: int, *, minimum: int) -> int:
-    raw_value = os.getenv(name, str(default))
-    try:
-        value = int(raw_value)
-    except ValueError:
-        return default
-    return max(minimum, value)
-
-
-def _env_float(name: str, default: float, *, minimum: float) -> float:
-    raw_value = os.getenv(name, str(default))
-    try:
-        value = float(raw_value)
-    except ValueError:
-        return default
-    return max(minimum, value)
 
 
 def should_include_debug(include_debug: bool) -> bool:

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 
+from src.common.env_loader import env_bool
 
 DEFAULT_RETRIEVAL_MODE = "vector_primary_graph_supplement"
 SUPPORTED_RETRIEVAL_MODES = {
@@ -11,13 +12,6 @@ SUPPORTED_RETRIEVAL_MODES = {
     DEFAULT_RETRIEVAL_MODE,
 }
 RETRIEVAL_ABLATION_MODES = SUPPORTED_RETRIEVAL_MODES - {DEFAULT_RETRIEVAL_MODE}
-
-
-def _env_bool(name: str, default: bool = False) -> bool:
-    value = os.environ.get(name)
-    if value is None:
-        return default
-    return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 def resolve_retrieval_mode() -> str:
@@ -39,7 +33,7 @@ def resolve_retrieval_mode() -> str:
     )
     if mode not in SUPPORTED_RETRIEVAL_MODES:
         raise ValueError(f"Unsupported retrieval mode={mode!r}")
-    if mode in RETRIEVAL_ABLATION_MODES and not _env_bool(
+    if mode in RETRIEVAL_ABLATION_MODES and not env_bool(
         "STUDENT_RAG_ALLOW_RETRIEVAL_ABLATION"
     ):
         raise ValueError(

@@ -1,7 +1,6 @@
 import hashlib
 import json
 import logging
-import os
 import threading
 import time
 from collections.abc import Iterator
@@ -10,11 +9,12 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-
 from src.common.cohort import (
     is_validated_source_applicable,
     resolve_cohort_from_query,
 )
+from src.common.env_loader import env_bool
+from src.common.io import load_json, load_yaml
 from src.retrieval.core.citation_builder import (
     build_citation_from_lookup,
     enrich_citations_with_parent_details,
@@ -25,11 +25,12 @@ from src.retrieval.core.hybrid_pipeline import (
     run_hybrid_retrieval_pipeline,
     select_graph_related_parent_candidates,
 )
-from src.retrieval.runtime_config import load_retrieval_runtime_config
+from src.retrieval.core.slang_normalizer import SlangNormalizer
 from src.retrieval.core.vector_retriever import (
     load_embedding_model,
 )
-from src.retrieval.core.slang_normalizer import SlangNormalizer
+from src.retrieval.runtime_config import load_retrieval_runtime_config
+
 from .answer_formatter import (
     clean_stream_fragment,
     clean_stream_start,
@@ -49,7 +50,6 @@ from .citation_formatter import (
     select_relevant_citations,
 )
 from .gemini_client import GeminiClient
-from src.common.io import load_json, load_yaml
 from .prompt_builder import (
     ANSWER_PROMPT_VERSION,
     DEFAULT_MAX_CONTEXT_CHARS,
@@ -57,7 +57,6 @@ from .prompt_builder import (
 )
 from .response_cache import get_response_cache
 from .structured_result_presenter import build_structured_results
-
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
@@ -67,13 +66,6 @@ logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
     "answer_pipeline_evaluation_telemetry", default=None
 )
-
-
-def _env_bool(name: str, default: bool = False) -> bool:
-    value = os.environ.get(name)
-    if value is None:
-        return default
-    return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _normalize_retrieval_cohort(cohort: str | None) -> str | None:
@@ -234,9 +226,9 @@ class AnswerPipeline:
         if llm_config.get("provider") != "gemini":
             raise ValueError("AnswerPipeline requires llm.provider='gemini'.")
 
-        if _env_bool("STUDENT_RAG_OFFLINE_EVAL"):
+        if env_bool("STUDENT_RAG_OFFLINE_EVAL"):
             self.config.setdefault("cache", {})["enabled"] = False
-        elif _env_bool("STUDENT_RAG_QUALITY_EVAL"):
+        elif env_bool("STUDENT_RAG_QUALITY_EVAL"):
             # Quality evaluation must exercise retrieval and generation.
             self.config.setdefault("cache", {})["enabled"] = False
 
@@ -477,12 +469,13 @@ class AnswerPipeline:
                 "retry_count": 0,
                 "cooldown_events": 0,
             }
-            if _env_bool("STUDENT_RAG_EVAL_TELEMETRY")
+            if env_bool("STUDENT_RAG_EVAL_TELEMETRY")
             else None
         )
         _evaluation_telemetry.set(telemetry)
-        from src.common.usage_tracker import UsageTracker
         from datetime import datetime, timezone
+
+        from src.common.usage_tracker import UsageTracker
 
         tracker = UsageTracker()
         trace_id = str(kwargs.get("trace_id") or "").strip() or None
@@ -766,8 +759,9 @@ class AnswerPipeline:
         """
         run_id = None
 
-        from src.common.usage_tracker import UsageTracker
         from datetime import datetime, timezone
+
+        from src.common.usage_tracker import UsageTracker
 
         tracker = UsageTracker()
         trace_id = str(kwargs.get("trace_id") or "").strip() or None

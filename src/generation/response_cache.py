@@ -9,16 +9,11 @@ import time
 from collections import OrderedDict
 from typing import Any
 
+from src.common.env_loader import env_bool
+
 DEFAULT_CACHE_TTL_SECONDS = 86400
 DEFAULT_CACHE_MAX_ENTRIES = 1000
 DEFAULT_CACHE_NAMESPACE = "v44-answer-anchor-citation-order"
-
-
-def _env_bool(name: str, default: bool = False) -> bool:
-    value = os.environ.get(name)
-    if value is None:
-        return default
-    return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 def make_cache_key(
@@ -150,8 +145,8 @@ def get_response_cache(
 ) -> ResponseCache | RedisResponseCache:
     """Create the configured Redis cache or the bounded in-process fallback."""
 
-    require_redis = _env_bool("STUDENT_RAG_REQUIRE_REDIS")
-    redis_disabled = _env_bool("STUDENT_RAG_DISABLE_REDIS")
+    require_redis = env_bool("STUDENT_RAG_REQUIRE_REDIS")
+    redis_disabled = env_bool("STUDENT_RAG_DISABLE_REDIS")
     redis_url = os.environ.get("REDIS_URL")
 
     if require_redis and redis_disabled:

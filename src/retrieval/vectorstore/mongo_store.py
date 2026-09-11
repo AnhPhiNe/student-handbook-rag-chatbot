@@ -5,27 +5,10 @@ from typing import Any, Dict, List, Optional
 
 from pymongo import MongoClient, UpdateOne
 
-from src.common.env_loader import load_project_env
+from src.common.env_loader import env_bool, env_int, load_project_env
 from src.common.storage_config import require_mongo_parent_collection_name
 
 logger = logging.getLogger(__name__)
-
-
-def _env_bool(name: str, default: bool = True) -> bool:
-    value = os.environ.get(name)
-    if value is None:
-        return default
-    return value.strip().lower() in {"1", "true", "yes", "on"}
-
-
-def _env_int(name: str, default: int) -> int:
-    value = os.environ.get(name)
-    if value is None:
-        return default
-    try:
-        return int(value)
-    except ValueError:
-        return default
 
 
 class DisabledMongoDocStore:
@@ -110,20 +93,20 @@ class MongoDocStore:
 def get_mongo_store() -> MongoDocStore | DisabledMongoDocStore:
     """Create the configured MongoDB docstore or its disabled fallback."""
 
-    if not _env_bool("MONGODB_PARENT_LOOKUP_ENABLED", default=True):
+    if not env_bool("MONGODB_PARENT_LOOKUP_ENABLED", default=True):
         return DisabledMongoDocStore()
 
     load_project_env(override=False)
 
-    if not _env_bool("MONGODB_PARENT_LOOKUP_ENABLED", default=True):
+    if not env_bool("MONGODB_PARENT_LOOKUP_ENABLED", default=True):
         return DisabledMongoDocStore()
 
     uri = os.environ.get("MONGODB_URL")
     if not uri:
         raise ValueError("MONGODB_URL not found in environment variables")
 
-    timeout_ms = _env_int("MONGODB_TIMEOUT_MS", 30000)
-    failure_backoff_seconds = _env_int("MONGODB_FAILURE_BACKOFF_SECONDS", 300)
+    timeout_ms = env_int("MONGODB_TIMEOUT_MS", 30000)
+    failure_backoff_seconds = env_int("MONGODB_FAILURE_BACKOFF_SECONDS", 300)
     db_name = str(os.environ.get("MONGODB_DB_NAME") or "chatbotHCMUE").strip()
     collection_name = require_mongo_parent_collection_name()
     return MongoDocStore(

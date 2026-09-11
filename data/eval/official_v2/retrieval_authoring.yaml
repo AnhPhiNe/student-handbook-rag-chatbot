@@ -71,7 +71,7 @@ cases:
     policy: [QuyCheCongTacSinhVien_Chuong4_Dieu24, "Nhiệm kỳ BCS lớp sinh viên theo năm học"]
   - query: "Năm nhất thì ban cán sự lớp do ai chọn?"
     selected_cohort: K48-K49
-    policy: [QuyCheCongTacSinhVien_Chuong4_Dieu25, "năm thứ nhất"]
+    policy: [QuyCheCongTacSinhVien_Chuong4_Dieu25, "được khoa chỉ định (năm thứ nhất)"]
   - query: "Làm đề tài nghiên cứu khoa học có được trường cấp kinh phí không?"
     selected_cohort: K50
     policy: [QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12, "Được nhận kinh phí thực hiện đề tài"]

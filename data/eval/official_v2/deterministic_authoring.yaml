@@ -407,13 +407,13 @@ cases:
     slice: single.regulation
     selected_cohort: K51
     policy: [QuyDinhQuyTacUngXu_Chuong3_Dieu12, "đeo đúng thẻ sinh viên"]
-    fact: "Có: người học phải đeo đúng thẻ sinh viên do Trường phát hành khi đến lớp, sinh hoạt lớp, đoàn thể và làm việc với các đơn vị, và không cho người khác mượn thẻ."
+    fact: "Có: người học phải đeo đúng thẻ sinh viên khi đến lớp, sinh hoạt lớp, sinh hoạt đoàn thể và làm việc với các đơn vị trong Trường."
   - query: "Sinh viên sư phạm được hỗ trợ sinh hoạt phí bao nhiêu một tháng?"
     category: policy
     slice: single.regulation
     selected_cohort: K48-K49
     policy: [NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4, "3,63 triệu đồng/tháng"]
-    fact: "Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt, không quá 10 tháng/năm học."
+    fact: "Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt."
   - query: "Được hỗ trợ học phí sư phạm mà ra trường không đi dạy thì có phải trả lại tiền không?"
     category: policy
     slice: single.regulation
@@ -475,6 +475,9 @@ cases:
     category: out_of_domain
     slice: boundary.out_of_domain
     selected_cohort: K50
+    # Handbook words ("sinh viên năm nhất") inside an unrelated request.
+    stress: true
+    stress_type: domain_vocabulary
     out_of_domain: true
   - query: "Chè đậu xanh nấu sao cho nhanh nhừ vậy?"
     category: out_of_domain
@@ -562,7 +565,7 @@ cases:
     coverage_features: [structured_regulation]
     tasks:
       - {program: Du lịch}
-      - {policy: [QuyCheDaoTao_Chuong4_Dieu19, "xếp loại khá trở lên"], fact: "Học lực theo điểm trung bình tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng của chương trình thứ hai, hoặc loại trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai; đăng ký sớm nhất từ trình độ năm thứ hai."}
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu19, "xếp loại khá trở lên"], fact: "Học lực theo điểm trung bình tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng của chương trình thứ hai, hoặc loại trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai."}
   # structured + structured, different lookups
   - query: "GPA 3,65 xếp loại gì, và muốn học bổng xuất sắc thì rèn luyện phải loại gì?"
     category: compound
@@ -646,7 +649,7 @@ cases:
     coverage_features: [regulation_regulation]
     tasks:
       - {policy: [QuyCheDaoTao_Chuong2_Dieu9, "Khối lượng tối thiểu không ít hơn 2/3"], fact: "Tối thiểu không ít hơn 2/3 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn của CTĐT."}
-      - {policy: [QuyCheDaoTao_Chuong3_Dieu12, "vượt quá 24"], fact: "Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24 (hoặc số tín chỉ không đạt trong học kỳ vượt quá 50% khối lượng đã đăng ký)."}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu12, "vượt quá 24"], fact: "Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24."}
   - query: "Chấm thi kết thúc học phần phải có mấy giảng viên, và muốn nghỉ học tạm thời vì việc riêng thì phải học ít nhất bao lâu?"
     category: compound
     slice: multi_intent.regu_regu
@@ -661,7 +664,7 @@ cases:
     selected_cohort: K51
     coverage_features: [regulation_regulation]
     tasks:
-      - {policy: [NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4, "3,63 triệu đồng/tháng"], fact: "Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt, không quá 10 tháng/năm học."}
+      - {policy: [NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4, "3,63 triệu đồng/tháng"], fact: "Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt."}
       - {policy: [NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6, "không được hưởng chính sách hỗ trợ trong thời gian nghỉ học"], fact: "Không: trong thời gian nghỉ học tạm thời hoặc bị đình chỉ học tạm thời thì không được hưởng hỗ trợ."}
   - query: "Điểm rèn luyện toàn khóa tính thế nào, thấy sai thì khiếu nại ở đâu?"
     category: compound
@@ -670,7 +673,7 @@ cases:
     coverage_features: [regulation_regulation]
     tasks:
       - {policy: [RenLuyen_Chuong4_Dieu13, "Điểm rèn luyện toàn khóa học là trung bình cộng"], fact: "Điểm rèn luyện toàn khóa là trung bình cộng điểm rèn luyện các học kỳ thực tế sinh viên tham gia đánh giá."}
-      - {policy: [RenLuyen_Chuong4_Dieu15, "Sinh viên gửi đơn khiếu nại"], fact: "Gửi đơn khiếu nại về Phòng CTCT&HSSV trong vòng 07 ngày kể từ ngày công bố kết quả đã được Hội đồng cấp Trường thông qua."}
+      - {policy: [RenLuyen_Chuong4_Dieu15, "Sinh viên gửi đơn khiếu nại"], fact: "Gửi đơn khiếu nại về Phòng CTCT&HSSV."}
   - query: "Đánh giá trực tuyến được chiếm tối đa bao nhiêu trọng số điểm học phần, còn học phần song hành là sao?"
     category: compound
     slice: multi_intent.regu_regu

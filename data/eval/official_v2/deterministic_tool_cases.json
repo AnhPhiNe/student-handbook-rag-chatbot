@@ -8620,12 +8620,12 @@
     "tags": [
       "official_v2",
       "out_of_domain",
-      "realistic"
+      "stress"
     ],
     "category": "out_of_domain",
     "topic": "khac",
-    "question_style": "realistic",
-    "eval_split": "realistic",
+    "question_style": "stress",
+    "eval_split": "stress",
     "coverage_features": [],
     "expected_intent": "query_plan",
     "expected_strategy": "query_plan_execution",
@@ -8658,7 +8658,8 @@
     "cohort_sensitivity": "single_cohort",
     "question_specificity": "specific",
     "expected_answer_behavior": "abstain",
-    "slice": "boundary.out_of_domain"
+    "slice": "boundary.out_of_domain",
+    "stress_type": "domain_vocabulary"
   },
   {
     "id": "official_v2_det_078",

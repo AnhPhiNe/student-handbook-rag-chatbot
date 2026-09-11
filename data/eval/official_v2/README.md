@@ -48,9 +48,10 @@ A slice is named `family.detail`. Cohorts are balanced (K48-K49 51, K50 51, K51 
 | multi_cohort | structured, regulation | 9 | One question comparing two cohorts |
 | memory | cohort_switch, entity_switch, value_switch, pronoun, topic_switch | 25 | Follow-ups that need the earlier turns, and traps where they must be ignored |
 
-Stress is a cross-cutting label on 31 cases (20%), each with a `stress_type`: cohort
+Stress is a cross-cutting label on 32 cases (21%), each with a `stress_type`: cohort
 difference, informal spelling, dense request, boundary value, context trap, similar
-sub-requests, tool boundary and partial missing input.
+sub-requests, tool boundary, handbook words inside an unrelated request, and partial
+missing input.
 
 ## Gold rules
 

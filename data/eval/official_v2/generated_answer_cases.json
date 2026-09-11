@@ -7457,9 +7457,9 @@
       "official_v2",
       "realistic"
     ],
-    "ground_truth": "[K51] Có: người học phải đeo đúng thẻ sinh viên do Trường phát hành khi đến lớp, sinh hoạt lớp, đoàn thể và làm việc với các đơn vị, và không cho người khác mượn thẻ.",
+    "ground_truth": "[K51] Có: người học phải đeo đúng thẻ sinh viên khi đến lớp, sinh hoạt lớp, sinh hoạt đoàn thể và làm việc với các đơn vị trong Trường.",
     "required_facts": [
-      "[K51] Có: người học phải đeo đúng thẻ sinh viên do Trường phát hành khi đến lớp, sinh hoạt lớp, đoàn thể và làm việc với các đơn vị, và không cho người khác mượn thẻ."
+      "[K51] Có: người học phải đeo đúng thẻ sinh viên khi đến lớp, sinh hoạt lớp, sinh hoạt đoàn thể và làm việc với các đơn vị trong Trường."
     ],
     "forbidden_claims": [],
     "relevance_judgments": [
@@ -7502,7 +7502,7 @@
     "answer_units": [
       {
         "cohort": "K51",
-        "required_meaning": "[K51] Có: người học phải đeo đúng thẻ sinh viên do Trường phát hành khi đến lớp, sinh hoạt lớp, đoàn thể và làm việc với các đơn vị, và không cho người khác mượn thẻ.",
+        "required_meaning": "[K51] Có: người học phải đeo đúng thẻ sinh viên khi đến lớp, sinh hoạt lớp, sinh hoạt đoàn thể và làm việc với các đơn vị trong Trường.",
         "mode": "rag"
       }
     ],
@@ -7542,9 +7542,9 @@
       "official_v2",
       "realistic"
     ],
-    "ground_truth": "[K48-K49] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt, không quá 10 tháng/năm học.",
+    "ground_truth": "[K48-K49] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt.",
     "required_facts": [
-      "[K48-K49] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt, không quá 10 tháng/năm học."
+      "[K48-K49] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt."
     ],
     "forbidden_claims": [],
     "relevance_judgments": [
@@ -7587,7 +7587,7 @@
     "answer_units": [
       {
         "cohort": "K48-K49",
-        "required_meaning": "[K48-K49] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt, không quá 10 tháng/năm học.",
+        "required_meaning": "[K48-K49] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt.",
         "mode": "rag"
       }
     ],
@@ -8230,11 +8230,11 @@
     "expected_strategy": "hybrid_graph_retrieval",
     "expected_answer_behavior": "abstain",
     "answerability": "unanswerable",
-    "question_style": "realistic",
-    "eval_split": "realistic",
+    "question_style": "stress",
+    "eval_split": "stress",
     "tags": [
       "official_v2",
-      "realistic"
+      "stress"
     ],
     "ground_truth": "Từ chối lịch sự vì câu hỏi nằm ngoài phạm vi Sổ tay sinh viên; không bịa câu trả lời.",
     "required_facts": [
@@ -8260,7 +8260,8 @@
     "independent_holdout": true,
     "na_assertions": {
       "fact_lock": "N/A: final-answer quality, not resolver execution"
-    }
+    },
+    "stress_type": "domain_vocabulary"
   },
   {
     "id": "official_v2_ans_078",
@@ -9577,10 +9578,10 @@
       "official_v2",
       "realistic"
     ],
-    "ground_truth": "[K50] Ngành: Du lịch; Khoa: Khoa Địa lý\n[K50] Học lực theo điểm trung bình tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng của chương trình thứ hai, hoặc loại trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai; đăng ký sớm nhất từ trình độ năm thứ hai.",
+    "ground_truth": "[K50] Ngành: Du lịch; Khoa: Khoa Địa lý\n[K50] Học lực theo điểm trung bình tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng của chương trình thứ hai, hoặc loại trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai.",
     "required_facts": [
       "[K50] Ngành: Du lịch; Khoa: Khoa Địa lý",
-      "[K50] Học lực theo điểm trung bình tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng của chương trình thứ hai, hoặc loại trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai; đăng ký sớm nhất từ trình độ năm thứ hai."
+      "[K50] Học lực theo điểm trung bình tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng của chương trình thứ hai, hoặc loại trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai."
     ],
     "forbidden_claims": [],
     "relevance_judgments": [
@@ -9683,7 +9684,7 @@
       },
       {
         "cohort": "K50",
-        "required_meaning": "[K50] Học lực theo điểm trung bình tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng của chương trình thứ hai, hoặc loại trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai; đăng ký sớm nhất từ trình độ năm thứ hai.",
+        "required_meaning": "[K50] Học lực theo điểm trung bình tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng của chương trình thứ hai, hoặc loại trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai.",
         "mode": "rag"
       }
     ],
@@ -11585,10 +11586,10 @@
       "official_v2",
       "realistic"
     ],
-    "ground_truth": "[K50] Tối thiểu không ít hơn 2/3 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn của CTĐT.\n[K50] Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24 (hoặc số tín chỉ không đạt trong học kỳ vượt quá 50% khối lượng đã đăng ký).",
+    "ground_truth": "[K50] Tối thiểu không ít hơn 2/3 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn của CTĐT.\n[K50] Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24.",
     "required_facts": [
       "[K50] Tối thiểu không ít hơn 2/3 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn của CTĐT.",
-      "[K50] Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24 (hoặc số tín chỉ không đạt trong học kỳ vượt quá 50% khối lượng đã đăng ký)."
+      "[K50] Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24."
     ],
     "forbidden_claims": [],
     "relevance_judgments": [
@@ -11670,7 +11671,7 @@
       },
       {
         "cohort": "K50",
-        "required_meaning": "[K50] Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24 (hoặc số tín chỉ không đạt trong học kỳ vượt quá 50% khối lượng đã đăng ký).",
+        "required_meaning": "[K50] Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24.",
         "mode": "rag"
       }
     ],
@@ -11843,9 +11844,9 @@
       "official_v2",
       "realistic"
     ],
-    "ground_truth": "[K51] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt, không quá 10 tháng/năm học.\n[K51] Không: trong thời gian nghỉ học tạm thời hoặc bị đình chỉ học tạm thời thì không được hưởng hỗ trợ.",
+    "ground_truth": "[K51] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt.\n[K51] Không: trong thời gian nghỉ học tạm thời hoặc bị đình chỉ học tạm thời thì không được hưởng hỗ trợ.",
     "required_facts": [
-      "[K51] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt, không quá 10 tháng/năm học.",
+      "[K51] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt.",
       "[K51] Không: trong thời gian nghỉ học tạm thời hoặc bị đình chỉ học tạm thời thì không được hưởng hỗ trợ."
     ],
     "forbidden_claims": [],
@@ -11921,7 +11922,7 @@
     "answer_units": [
       {
         "cohort": "K51",
-        "required_meaning": "[K51] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt, không quá 10 tháng/năm học.",
+        "required_meaning": "[K51] Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt.",
         "mode": "rag"
       },
       {
@@ -11968,10 +11969,10 @@
       "official_v2",
       "realistic"
     ],
-    "ground_truth": "[K50] Điểm rèn luyện toàn khóa là trung bình cộng điểm rèn luyện các học kỳ thực tế sinh viên tham gia đánh giá.\n[K50] Gửi đơn khiếu nại về Phòng CTCT&HSSV trong vòng 07 ngày kể từ ngày công bố kết quả đã được Hội đồng cấp Trường thông qua.",
+    "ground_truth": "[K50] Điểm rèn luyện toàn khóa là trung bình cộng điểm rèn luyện các học kỳ thực tế sinh viên tham gia đánh giá.\n[K50] Gửi đơn khiếu nại về Phòng CTCT&HSSV.",
     "required_facts": [
       "[K50] Điểm rèn luyện toàn khóa là trung bình cộng điểm rèn luyện các học kỳ thực tế sinh viên tham gia đánh giá.",
-      "[K50] Gửi đơn khiếu nại về Phòng CTCT&HSSV trong vòng 07 ngày kể từ ngày công bố kết quả đã được Hội đồng cấp Trường thông qua."
+      "[K50] Gửi đơn khiếu nại về Phòng CTCT&HSSV."
     ],
     "forbidden_claims": [],
     "relevance_judgments": [
@@ -12049,7 +12050,7 @@
       },
       {
         "cohort": "K50",
-        "required_meaning": "[K50] Gửi đơn khiếu nại về Phòng CTCT&HSSV trong vòng 07 ngày kể từ ngày công bố kết quả đã được Hội đồng cấp Trường thông qua.",
+        "required_meaning": "[K50] Gửi đơn khiếu nại về Phòng CTCT&HSSV.",
         "mode": "rag"
       }
     ],

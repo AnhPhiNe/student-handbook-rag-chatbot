@@ -1,0 +1,11 @@
+{
+  "bundle": "official_v2",
+  "frozen_on": "2026-09-11",
+  "approval": "Owner reviewed and approved all questions, selectors and facts, including the five decisions listed in the review (history-first cohort, 'chuyên ngành' = remaining courses, clarify-only for an unnamed training mode, source-faithful K50 scholarship ranges, full list for conduct-result uses).",
+  "counts": {
+    "deterministic": 154,
+    "answers": 154,
+    "retrieval": 93
+  },
+  "integrity": "The git commit that adds this file is the frozen version; see README, Protocol step 2."
+}

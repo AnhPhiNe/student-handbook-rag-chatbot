@@ -6,7 +6,9 @@ published in the project README. It also covers what official_v1 barely tests:
 follow-up questions (official_v1 has no case with history), several requests in one
 message, several entities, and cohort comparisons.
 
-**Status: draft, pending owner review. Not frozen and not yet run.**
+**Status: approved by the owner and frozen on 2026-09-11 (the commit that adds `manifest.json`). Not yet run.**
+The per-case `review_status` and `frozen` fields keep their drafting values; `manifest.json`
+is the record of approval.
 
 ## Provenance
 
@@ -78,8 +80,14 @@ mainly in their values.
 
 1. The owner reviews every question, selector and fact. Corrections are made in the
    authoring files only, then the compiled files are rebuilt.
-2. Freeze: record the SHA-256 of every file in this folder in `manifest.json`. The
-   builders refuse to overwrite a bundle that has a manifest.
+2. Freeze: commit `manifest.json`. That commit is the frozen version, and the builders
+   refuse to overwrite a bundle that has a manifest. Before a run, check that nothing in
+   the folder changed since then (no output means unchanged):
+
+   ```bash
+   git diff --stat $(git log -1 --format=%H -- data/eval/official_v2/manifest.json) -- data/eval/official_v2
+   ```
+
 3. Run each suite once on the final runtime, with response and router caches disabled:
 
    ```bash

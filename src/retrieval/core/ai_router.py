@@ -44,7 +44,7 @@ DEFAULT_COHERE_ROUTER_MODEL = "command-a-plus-05-2026"
 # slot_spans; 1024 completed naturally (~820 reasoning tokens) in probes.
 DEFAULT_COHERE_THINKING_TOKEN_BUDGET = 1024
 COHERE_CHAT_URL = "https://api.cohere.com/v2/chat"
-ROUTER_PROMPT_VERSION = "structured-regulation-v42-control-value-meanings"
+ROUTER_PROMPT_VERSION = "structured-regulation-v43-no-catalog-hint"
 PLANNER_DIAGNOSTIC_SCHEMA_VERSION = "planner-decision-diagnostics-v1"
 _planner_diagnostics_scope: ContextVar[bool] = ContextVar(
     "planner_diagnostics_scope", default=False
@@ -365,9 +365,6 @@ không trả lời.
   bộ câu hỏi. Mỗi slot_span phải chính là cụm nguyên văn tạo ra canonical slot
   value tương ứng; control value được chuẩn hóa nhưng không được đổi nghĩa.
   Ví dụ slots.training_mode="chinh_quy" thì slot_span là "chính quy", không phải mã.
-- CATALOG_HINT là metadata đã được grounding. Chỉ dùng lookup_type và entity_text
-  cho task liên quan; chỉ suy intent/requested_field từ QUERY/HISTORY, không tạo
-  thêm yêu cầu hoặc slot không có căn cứ.
 
 6. OUTPUT VÀ TỰ KIỂM TRA
 - Mọi RAG task dùng intent=open_question và lookup_type=null. Clarify task cũng
@@ -1091,7 +1088,6 @@ class AIRouter:
         *,
         cohort: str | None = None,
         chat_history: list[dict[str, str]] | None = None,
-        routing_hint: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Create a bounded, validated QueryPlan for one user message."""
         capture_planner_diagnostics = _planner_diagnostics_scope.get() and not bool(
@@ -1102,7 +1098,6 @@ class AIRouter:
             query,
             cohort=cohort,
             chat_history=chat_history,
-            routing_hint=routing_hint,
         )
         response_format = self._plan_response_format_payload()
         prompt_stats = self._prompt_stats_for_system(
@@ -1112,7 +1107,6 @@ class AIRouter:
             query,
             cohort=cohort,
             chat_history=chat_history,
-            routing_hint=routing_hint,
         )
         if self.cache and (cached := self.cache.get(cache_key)):
             return _attach_planner_diagnostics(
@@ -1352,7 +1346,6 @@ class AIRouter:
         *,
         cohort: str | None,
         chat_history: list[dict[str, str]] | None,
-        routing_hint: dict[str, Any] | None = None,
     ) -> str:
         history_lines = []
         for local_index, item in enumerate((chat_history or [])[-4:]):
@@ -1384,7 +1377,6 @@ class AIRouter:
                 query_plan_json_schema(), ensure_ascii=False, separators=(",", ":")
             )
             output_guidance = f"OUTPUT CONTRACT:\n{schema}\n\n"
-        hint = json.dumps(routing_hint, ensure_ascii=False, separators=(",", ":"))
         cohort_years = json.dumps(
             cohort_admission_years(),
             ensure_ascii=False,
@@ -1395,7 +1387,6 @@ class AIRouter:
             "TOOLS:\n"
             f"{compact_registry_for_prompt(self.registry)}\n\n"
             f"{output_guidance}"
-            f"CATALOG_HINT: {hint if routing_hint else 'none'}\n"
             f"COHORT: {cohort or 'unknown'}\n"
             f"COHORT_ADMISSION_YEARS: {cohort_years}\n"
             f"EXPLICIT_REQUEST_COUNT: {explicit_request_count or 'not_declared'}\n"
@@ -1469,13 +1460,11 @@ class AIRouter:
         *,
         cohort: str | None,
         chat_history: list[dict[str, str]] | None,
-        routing_hint: dict[str, Any] | None = None,
     ) -> str:
         payload = {
             "query": query.strip(),
             "cohort": cohort,
             "history": (chat_history or [])[-4:],
-            "routing_hint": routing_hint,
             "model": self.model_name,
             "provider": self.provider,
             "prompt_version": ROUTER_PROMPT_VERSION,

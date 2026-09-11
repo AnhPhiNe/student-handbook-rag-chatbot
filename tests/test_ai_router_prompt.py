@@ -202,7 +202,7 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
     # over v41; keep the cap tight so the prompt cannot creep.
     assert stats["total_chars"] <= 12000
     assert stats["estimated_input_tokens"] <= 3000
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v42-control-value-meanings"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v43-no-catalog-hint"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert "native JSON Schema" in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
@@ -294,10 +294,10 @@ def test_planner_prompt_requires_grounded_slots_for_structured_mode() -> None:
     assert "Chỉ clarify task bị thiếu thông tin" in PLANNER_PROMPT_TEXT
 
 
-def test_planner_prompt_defines_context_and_hint_precedence_once() -> None:
+def test_planner_prompt_defines_context_precedence_once() -> None:
     assert "standalone_query" in PLANNER_PROMPT_TEXT
     assert "referenced_turns" in PLANNER_PROMPT_TEXT
-    assert "CATALOG_HINT là metadata đã được grounding" in PLANNER_PROMPT_TEXT
+    assert "CATALOG_HINT" not in PLANNER_PROMPT_TEXT
     assert PLANNER_PROMPT_TEXT.count("hơn 3 yêu cầu") == 2
     assert "xuất đúng một clarify task" in PLANNER_PROMPT_TEXT
     assert "không thực thi một phần" in PLANNER_PROMPT_TEXT

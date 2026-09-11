@@ -15,8 +15,8 @@ from src.common.text import fold_text
 
 from .structured_routing import (
     load_lookup_registry,
-    normalize_router_decision,
-    validate_router_decision,
+    prepare_structured_task,
+    validate_structured_task,
 )
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
@@ -598,30 +598,22 @@ def _normalize_task(
             validation_errors=errors,
         ), errors
 
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": intent,
-            "lookup_type": lookup_type,
-            "cohort": cohorts[0] if cohorts else None,
-            "cohorts": cohorts,
-            "is_multi_cohort": len(cohorts) > 1,
-            "slots": slots,
-            "slot_spans": spans,
-            "retrieval_query": question,
-        },
-        # Prepare only values/spans supplied by this task. Keep the complete
-        # user query below for grounding validation so a task-local paraphrase
-        # cannot introduce factual values absent from the original context.
-        query=question,
-        selected_cohort=cohorts[0] if cohorts else selected_cohort,
+    task_cohort = cohorts[0] if cohorts else normalize_cohort(selected_cohort)
+    # Prepare only values/spans supplied by this task. Validate against the
+    # complete user query so a task-local paraphrase cannot introduce factual
+    # values absent from the original context.
+    decision = prepare_structured_task(
+        question,
+        lookup_type=lookup_type,
+        intent=intent,
+        slots=slots,
+        slot_spans=spans,
+        cohort=task_cohort,
         registry=registry,
     )
-    validation_errors = validate_router_decision(
+    validation_errors = validate_structured_task(
         decision,
         query=original_query,
-        selected_cohort=cohorts[0] if cohorts else selected_cohort,
         grounding_context=grounding_context,
         registry=registry,
     )
@@ -677,10 +669,9 @@ def _normalize_task(
             for key, value in (decision.get("slot_spans") or {}).items()
             if key not in optional_invalid
         }
-        validation_errors = validate_router_decision(
+        validation_errors = validate_structured_task(
             decision,
             query=original_query,
-            selected_cohort=cohorts[0] if cohorts else selected_cohort,
             grounding_context=grounding_context,
             registry=registry,
         )
@@ -746,7 +737,7 @@ def _normalize_task(
         "lookup_type": decision.get("lookup_type"),
         "slots": decision.get("slots") or {},
         "slot_spans": decision.get("slot_spans") or {},
-        "cohorts": decision.get("cohorts") or cohorts,
+        "cohorts": cohorts or ([task_cohort] if task_cohort else []),
         "clarification_question": clarification,
         "validation_errors": errors.copy(),
         **(

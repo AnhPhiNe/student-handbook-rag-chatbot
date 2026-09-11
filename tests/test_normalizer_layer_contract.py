@@ -8,8 +8,8 @@ import pytest
 
 from src.retrieval.core.query_plan import normalize_query_plan
 from src.retrieval.core.structured_routing import (
-    normalize_router_decision,
-    validate_router_decision,
+    prepare_structured_task,
+    validate_structured_task,
 )
 
 
@@ -21,17 +21,13 @@ def _decision(
     slot_spans: dict[str, Any],
     intent: str = "direct_value",
 ) -> dict[str, Any]:
-    return normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": intent,
-            "lookup_type": lookup_type,
-            "slots": slots,
-            "slot_spans": slot_spans,
-        },
-        query=query,
-        selected_cohort="K51",
+    return prepare_structured_task(
+        query,
+        lookup_type=lookup_type,
+        intent=intent,
+        slots=slots,
+        slot_spans=slot_spans,
+        cohort="K51",
     )
 
 
@@ -80,11 +76,7 @@ def test_supplied_semantic_value_accepts_unseen_grounded_span() -> None:
     assert decision["slot_spans"]["program_type"] == (
         "lộ trình đại học dành cho người mới"
     )
-    assert validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    ) == []
+    assert validate_structured_task(decision, query=query) == []
 
 
 def test_supplied_semantic_value_is_not_reinterpreted_from_conflicting_alias() -> None:
@@ -99,11 +91,7 @@ def test_supplied_semantic_value_is_not_reinterpreted_from_conflicting_alias() -
     # The normalizer preserves the planner's meaning.  It does not decide
     # whether the planner chose the right meaning from the source phrase.
     assert decision["slots"]["program_type"] == "first_degree"
-    assert validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    ) == []
+    assert validate_structured_task(decision, query=query) == []
 
 
 def test_missing_enum_values_are_not_inferred_from_query_aliases() -> None:
@@ -134,11 +122,7 @@ def test_reading_intent_enum_does_not_require_a_registry_literal() -> None:
         },
     )
 
-    assert validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    ) == []
+    assert validate_structured_task(decision, query=query) == []
 
 
 def test_invented_numeric_input_still_requires_matching_source_value() -> None:
@@ -156,11 +140,7 @@ def test_invented_numeric_input_still_requires_matching_source_value() -> None:
         },
     )
 
-    assert "slot_span_mismatch:score_or_grade" in validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    )
+    assert "slot_span_mismatch:score_or_grade" in validate_structured_task(decision, query=query)
 
 
 @pytest.mark.parametrize(
@@ -183,11 +163,7 @@ def test_semantic_enum_type_and_domain_remain_strict(
         slot_spans={"program_type": span},
     )
 
-    assert error in validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    )
+    assert error in validate_structured_task(decision, query=query)
 
 
 @pytest.mark.parametrize(
@@ -210,11 +186,7 @@ def test_semantic_enum_requires_a_real_non_cohort_source_span(
         slot_spans={"program_type": span},
     )
 
-    assert error in validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    )
+    assert error in validate_structured_task(decision, query=query)
 
 
 def test_compound_tasks_do_not_cross_infer_missing_semantic_values() -> None:

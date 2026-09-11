@@ -13,10 +13,6 @@ from src.common.text import fold_text
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_REGISTRY_PATH = ROOT / "configs" / "structured_lookup_registry.yaml"
-ALLOWED_ROUTES = {"structured", "rag", "clarify", "out_of_domain"}
-ALLOWED_EXECUTION_MODES = {"structured", "regulation", "mixed"}
-ALLOWED_CONTEXT_MODES = {"standalone", "follow_up", "ambiguous"}
-ALLOWED_CONFIDENCE_LEVELS = {"high", "medium", "low", "none"}
 COHORT_SCOPED_LOOKUPS = {
     "foreign_language",
     "study_duration",
@@ -136,25 +132,6 @@ def _ground_declared_literal_slots(
         # selected resolver rather than this normalizer.
 
 
-def _prepare_structured_slots(
-    query: str,
-    *,
-    intent: str | None,
-    spec: dict[str, Any] | None,
-    slots: dict[str, Any],
-    spans: dict[str, Any],
-) -> None:
-    """Ground spans for supplied values without inventing missing slots."""
-
-    _ground_declared_literal_slots(
-        query,
-        intent=intent,
-        spec=spec,
-        slots=slots,
-        spans=spans,
-    )
-
-
 @lru_cache(maxsize=4)
 def load_lookup_registry(path: str | Path = DEFAULT_REGISTRY_PATH) -> dict[str, Any]:
     """Load the structured lookup registry."""
@@ -218,58 +195,29 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
     return "\n".join(lines)
 
 
-def normalize_router_decision(
-    payload: dict[str, Any],
+def prepare_structured_task(
+    question: str,
     *,
-    query: str,
-    selected_cohort: str | None = None,
+    lookup_type: str | None,
+    intent: str | None,
+    slots: dict[str, Any],
+    slot_spans: dict[str, Any],
+    cohort: str | None = None,
     registry: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Normalize a raw router decision to the stable contract.
+    """Prepare one structured task's slots before validation.
 
-    ``query`` is the task-local text used to ground values supplied by the
-    planner. Missing semantic values remain missing for the resolver to handle
-    according to the selected lookup contract.
+    Falls back to the lookup's default intent when the planner's intent is not
+    supported, collects the spans of nested slots, and grounds spans only for
+    values the planner supplied. ``question`` is the task-local text; missing
+    values stay missing for the resolver to handle.
     """
 
-    raw_route = str(payload.get("route") or "rag").strip().lower()
-    raw_execution_mode = str(payload.get("execution_mode") or "").strip().lower()
-    if raw_route == "structured":
-        route = "structured"
-        execution_mode = "structured"
-    elif raw_route in ALLOWED_ROUTES:
-        route = raw_route
-        if raw_execution_mode in ALLOWED_EXECUTION_MODES:
-            execution_mode = raw_execution_mode
-        elif route == "rag" and payload.get("lookup_type"):
-            execution_mode = "mixed"
-        else:
-            execution_mode = "regulation"
-    else:
-        route = raw_route
-        execution_mode = raw_execution_mode or "regulation"
-
-    if route == "rag" and execution_mode == "structured":
-        route = "structured"
-    elif route == "structured":
-        execution_mode = "structured"
-    elif raw_execution_mode in ALLOWED_EXECUTION_MODES:
-        execution_mode = raw_execution_mode
-    elif route == "rag" and payload.get("lookup_type"):
-        execution_mode = "mixed"
-    else:
-        execution_mode = "regulation"
-    intent = str(payload.get("intent") or "open_question").strip().lower()
-    lookup_type = payload.get("lookup_type")
-    if lookup_type is not None:
-        lookup_type = str(lookup_type).strip().lower() or None
-
-    slots = dict(payload.get("slots")) if isinstance(payload.get("slots"), dict) else {}
-    spans = (
-        dict(payload.get("slot_spans"))
-        if isinstance(payload.get("slot_spans"), dict)
-        else {}
-    )
+    registry = registry or load_lookup_registry()
+    spec = registry["tools"].get(lookup_type) if lookup_type else None
+    intent = str(intent or "open_question").strip().lower()
+    slots = dict(slots)
+    spans = dict(slot_spans)
     for slot_name, slot_value in slots.items():
         if not isinstance(slot_value, dict) or isinstance(spans.get(slot_name), dict):
             continue
@@ -281,128 +229,23 @@ def normalize_router_decision(
         if nested_spans:
             spans[slot_name] = nested_spans
 
-    registry = registry or load_lookup_registry()
-    spec = registry["tools"].get(lookup_type) if lookup_type else None
     allowed_intents = list((spec or {}).get("intents") or [])
-    if route == "structured" and intent not in allowed_intents:
+    if intent not in allowed_intents:
         default_intent = (spec or {}).get("default_intent")
         if default_intent in allowed_intents:
             intent = str(default_intent)
         elif len(allowed_intents) == 1:
             intent = allowed_intents[0]
-    target_types = payload.get("target_chunk_types")
-    if not isinstance(target_types, list):
-        target_types = (
-            ["regulation"]
-            if route == "rag" and execution_mode in {"regulation", "mixed"}
-            else []
-        )
 
-    raw_cohorts = payload.get("cohorts")
-    if isinstance(raw_cohorts, list):
-        payload_cohorts = [
-            normalize_cohort(c) for c in raw_cohorts if normalize_cohort(c)
-        ]
-    else:
-        payload_cohorts = []
-    payload_cohort = normalize_cohort(payload.get("cohort"))
-    if payload_cohort and payload_cohort not in payload_cohorts:
-        payload_cohorts.insert(0, payload_cohort)
-    payload_cohorts = list(dict.fromkeys(payload_cohorts))
-
-    is_multi_cohort = len(payload_cohorts) >= 2 or bool(
-        payload.get("is_multi_cohort") and len(payload_cohorts) >= 2
+    _ground_declared_literal_slots(
+        question, intent=intent, spec=spec, slots=slots, spans=spans
     )
-    selected = normalize_cohort(selected_cohort)
-    if is_multi_cohort:
-        cohorts = payload_cohorts
-        cohort = payload_cohorts[0]
-    else:
-        cohort = selected or payload_cohort
-        cohorts = [cohort] if cohort else []
-        is_multi_cohort = False
-
-    retrieval_query = str(payload.get("retrieval_query") or query).strip()
-    if not retrieval_query or len(retrieval_query) > 600:
-        retrieval_query = query.strip()
-
-    raw_context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
-    context_mode = (
-        raw_context_mode if raw_context_mode in ALLOWED_CONTEXT_MODES else "ambiguous"
-    )
-    raw_context_confidence = (
-        str(payload.get("context_confidence") or "none").strip().lower()
-    )
-    context_confidence = (
-        raw_context_confidence
-        if raw_context_confidence in ALLOWED_CONFIDENCE_LEVELS
-        else "none"
-    )
-    raw_normalization_confidence = (
-        str(payload.get("normalization_confidence") or "none").strip().lower()
-    )
-    normalization_confidence = (
-        raw_normalization_confidence
-        if raw_normalization_confidence in ALLOWED_CONFIDENCE_LEVELS
-        else "none"
-    )
-    normalized_query = str(payload.get("normalized_query") or query).strip()
-    if not normalized_query or len(normalized_query) > 600:
-        normalized_query = query.strip()
-    standalone_query = str(payload.get("standalone_query") or "").strip() or None
-    if standalone_query and len(standalone_query) > 600:
-        standalone_query = None
-    corrections = payload.get("corrections")
-    if not isinstance(corrections, list):
-        corrections = []
-    referenced_turns = payload.get("referenced_turns")
-    if not isinstance(referenced_turns, list):
-        referenced_turns = []
-
-    _prepare_structured_slots(
-        query,
-        intent=intent,
-        spec=spec,
-        slots=slots,
-        spans=spans,
-    )
-
     return {
-        "context_mode": context_mode,
-        "context_confidence": context_confidence,
-        "normalized_query": normalized_query,
-        "normalization_confidence": normalization_confidence,
-        "corrections": [
-            {
-                "original_span": str(item.get("original_span") or "").strip(),
-                "normalized_span": str(item.get("normalized_span") or "").strip(),
-            }
-            for item in corrections
-            if isinstance(item, dict)
-            and str(item.get("original_span") or "").strip()
-            and str(item.get("normalized_span") or "").strip()
-        ],
-        "standalone_query": standalone_query,
-        "referenced_turns": [
-            int(item)
-            for item in referenced_turns
-            if isinstance(item, int) and not isinstance(item, bool) and item >= 0
-        ],
-        "route": route,
-        "execution_mode": execution_mode,
-        "intent": intent,
         "lookup_type": lookup_type,
-        "cohort": cohort,
-        "cohorts": cohorts,
-        "is_multi_cohort": is_multi_cohort,
-        "router_cohort": payload_cohort,
+        "intent": intent,
+        "cohort": normalize_cohort(cohort),
         "slots": slots,
         "slot_spans": spans,
-        "retrieval_query": retrieval_query,
-        "target_chunk_types": [str(item) for item in target_types if item],
-        "needs_clarification": route == "clarify"
-        or bool(payload.get("needs_clarification")),
-        "clarification_question": payload.get("clarification_question"),
     }
 
 
@@ -622,72 +465,39 @@ def validate_fact_lock_inputs(
     return list(dict.fromkeys(errors))
 
 
-def validate_router_decision(
-    decision: dict[str, Any],
+def validate_structured_task(
+    task: dict[str, Any],
     *,
     query: str,
-    selected_cohort: str | None = None,
     grounding_context: str = "",
     registry: dict[str, Any] | None = None,
 ) -> list[str]:
-    """Validate router intent, tasks, cohorts, and lookup targets."""
+    """Validate a prepared structured task against its lookup contract.
+
+    Values must be grounded in ``query`` (the complete user question) or in
+    ``grounding_context`` (recent history), never only in a task paraphrase.
+    """
 
     registry = registry or load_lookup_registry()
     errors: list[str] = []
-    route = decision.get("route")
-    if route not in ALLOWED_ROUTES:
-        errors.append("invalid_route")
-        return errors
-
-    selected = normalize_cohort(selected_cohort)
-    router_cohort = normalize_cohort(decision.get("router_cohort"))
-    if selected and router_cohort and selected != router_cohort:
-        errors.append("cohort_conflict")
-
-    execution_mode = decision.get("execution_mode")
-    if execution_mode not in ALLOWED_EXECUTION_MODES:
-        errors.append("invalid_execution_mode")
-        return errors
-    if route == "structured" and execution_mode != "structured":
-        errors.append("structured_requires_structured_mode")
-    if route == "rag" and execution_mode == "structured":
-        errors.append("rag_cannot_use_structured_mode")
-
-    if route not in {"structured", "rag"}:
-        if route == "clarify" and not decision.get("clarification_question"):
-            errors.append("missing_clarification_question")
-        return errors
-
-    if execution_mode == "regulation":
-        if decision.get("lookup_type"):
-            errors.append("regulation_must_not_select_lookup")
-        return errors
-
-    if route == "structured" and execution_mode != "structured":
-        return errors
-    if route == "rag" and execution_mode != "mixed":
-        errors.append("rag_lookup_requires_mixed_mode")
-
-    lookup_type = decision.get("lookup_type")
+    lookup_type = task.get("lookup_type")
     spec = registry["tools"].get(lookup_type)
     if not spec:
-        errors.append("unknown_lookup_type")
-        return errors
+        return ["unknown_lookup_type"]
     if (
-        execution_mode == "structured"
-        and lookup_type in COHORT_SCOPED_LOOKUPS
-        and not normalize_cohort(decision.get("cohort"))
+        lookup_type in COHORT_SCOPED_LOOKUPS
+        and not normalize_cohort(task.get("cohort"))
         and not _query_mentions_cohort(query)
     ):
         errors.append("missing_cohort")
 
-    intent = decision.get("intent")
+    intent = task.get("intent")
     allowed_intents = set(spec.get("intents") or [])
-    if route == "structured" and intent not in allowed_intents:
+    if intent not in allowed_intents:
         errors.append("unsupported_intent")
 
-    slots = decision.get("slots") or {}
-    spans = decision.get("slot_spans") or {}
+    slots = task.get("slots") or {}
+    spans = task.get("slot_spans") or {}
     slot_schema = spec.get("slot_schema") or {}
     declared_slots = set((spec.get("slot_schema") or {}).keys())
     for slot_name in spans:

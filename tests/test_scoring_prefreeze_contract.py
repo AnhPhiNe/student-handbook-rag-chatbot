@@ -6,17 +6,20 @@ import pytest
 
 from src.retrieval.core.slang_normalizer import SlangNormalizer
 from src.retrieval.core.structured_dispatcher import resolve_structured_decision
-from src.retrieval.core.structured_routing import normalize_router_decision
+from src.retrieval.core.structured_routing import prepare_structured_task
 
 
 @pytest.mark.parametrize("phrase", ["qua môn", "không qua môn", "pass môn", "rớt môn", "đậu môn"])
 def test_pass_intent_survives_both_normalization_stages(phrase):
     query = SlangNormalizer().replace_for_router(f"Em được 6,1 thì có {phrase} không?")
-    decision = normalize_router_decision({
-        "route": "structured", "lookup_type": "scoring", "intent": "direct_value",
-        "slots": {"operation": "pass_threshold", "score_or_grade": "6.1"},
-        "slot_spans": {"score_or_grade": "6,1"},
-    }, query=query, selected_cohort="K51")
+    decision = prepare_structured_task(
+        query,
+        lookup_type="scoring",
+        intent="direct_value",
+        slots={"operation": "pass_threshold", "score_or_grade": "6.1"},
+        slot_spans={"score_or_grade": "6,1"},
+        cohort="K51",
+    )
     assert decision["slots"]["operation"] == "pass_threshold"
 
 

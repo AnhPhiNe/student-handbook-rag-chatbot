@@ -9,8 +9,8 @@ import pytest
 from src.retrieval.core.query_plan import normalize_query_plan
 from src.retrieval.core.structured_routing import (
     load_lookup_registry,
-    normalize_router_decision,
-    validate_router_decision,
+    prepare_structured_task,
+    validate_structured_task,
 )
 
 
@@ -81,24 +81,16 @@ def test_reading_intent_selector_still_enforces_type_and_enum(
     value: Any, error: str,
 ) -> None:
     query = "Học bổng xuất sắc cần thông tin gì?"
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "direct_value",
-            "lookup_type": "scholarship_classification",
-            "slots": {"aspect": value, "score_or_label": "xuất sắc"},
-            "slot_spans": {"score_or_label": "xuất sắc"},
-        },
-        query=query,
-        selected_cohort="K51",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="scholarship_classification",
+        intent="direct_value",
+        slots={"aspect": value, "score_or_label": "xuất sắc"},
+        slot_spans={"score_or_label": "xuất sắc"},
+        cohort="K51",
     )
 
-    assert error in validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    )
+    assert error in validate_structured_task(decision, query=query)
 
 
 @pytest.mark.parametrize(
@@ -109,40 +101,28 @@ def test_invalid_reading_intent_value_is_not_repaired_from_alias(
     value: Any, error: str,
 ) -> None:
     query = "Mức tiền học bổng xuất sắc là bao nhiêu?"
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "direct_value",
-            "lookup_type": "scholarship_classification",
-            "slots": {"aspect": value, "score_or_label": "xuất sắc"},
-            "slot_spans": {"score_or_label": "xuất sắc"},
-        },
-        query=query,
-        selected_cohort="K51",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="scholarship_classification",
+        intent="direct_value",
+        slots={"aspect": value, "score_or_label": "xuất sắc"},
+        slot_spans={"score_or_label": "xuất sắc"},
+        cohort="K51",
     )
 
     assert decision["slots"]["aspect"] == value
-    assert error in validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    )
+    assert error in validate_structured_task(decision, query=query)
 
 
 def test_present_result_input_repairs_only_same_value_span() -> None:
     query = "K51 học chương trình bằng thứ nhất tối đa bao lâu?"
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "direct_value",
-            "lookup_type": "study_duration",
-            "slots": {"program_type": "first_degree"},
-            "slot_spans": {},
-        },
-        query=query,
-        selected_cohort="K51",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="study_duration",
+        intent="direct_value",
+        slots={"program_type": "first_degree"},
+        slot_spans={},
+        cohort="K51",
     )
 
     assert decision["slots"]["program_type"] == "first_degree"
@@ -151,28 +131,20 @@ def test_present_result_input_repairs_only_same_value_span() -> None:
 
 def test_semantic_enum_meaning_is_not_reinterpreted_from_alias() -> None:
     query = "K51 học chương trình văn bằng hai tối đa bao lâu?"
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "direct_value",
-            "lookup_type": "study_duration",
-            "slots": {"program_type": "first_degree"},
-            "slot_spans": {"program_type": "văn bằng hai"},
-        },
-        query=query,
-        selected_cohort="K51",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="study_duration",
+        intent="direct_value",
+        slots={"program_type": "first_degree"},
+        slot_spans={"program_type": "văn bằng hai"},
+        cohort="K51",
     )
 
     assert decision["slots"]["program_type"] == "first_degree"
     assert decision["slot_spans"]["program_type"] == "văn bằng hai"
     # Source/schema validation is not a second semantic classifier. A wrong
     # semantic interpretation remains a Planner error, not an alias repair.
-    assert validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    ) == []
+    assert validate_structured_task(decision, query=query) == []
 
 
 @pytest.mark.parametrize(
@@ -234,20 +206,16 @@ def test_undeclared_slot_role_defaults_to_source_grounding() -> None:
         }
     }
     query = "A paraphrased request without the literal."
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "direct_value",
-            "lookup_type": "custom",
-            "slots": {"value": "known"},
-            "slot_spans": {},
-        },
-        query=query,
+    decision = prepare_structured_task(
+        query,
+        lookup_type="custom",
+        intent="direct_value",
+        slots={"value": "known"},
+        slot_spans={},
         registry=registry,
     )
 
-    assert validate_router_decision(decision, query=query, registry=registry) == [
+    assert validate_structured_task(decision, query=query, registry=registry) == [
         "missing_slot_span:value"
     ]
 

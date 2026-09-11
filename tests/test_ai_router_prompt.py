@@ -15,8 +15,8 @@ from src.retrieval.core.ai_router import (
 from src.retrieval.core.query_plan import QUERY_PLAN_NORMALIZER_VERSION
 from src.retrieval.core.structured_routing import (
     compact_registry_for_prompt,
-    normalize_router_decision,
-    validate_router_decision,
+    prepare_structured_task,
+    validate_structured_task,
 )
 
 PLANNER_PROMPT_TEXT = " ".join(PLANNER_SYSTEM_PROMPT.split())
@@ -85,61 +85,52 @@ def test_supplied_reference_table_selectors_recover_only_their_source_spans(
     lookup_type: str,
     expected_slots: dict[str, str],
 ) -> None:
-    normalized = normalize_router_decision(
-        {
-            "route": "structured",
-            "lookup_type": lookup_type,
-            "intent": "direct_value",
-            "slots": expected_slots,
-            "slot_spans": {},
-        },
-        query=query,
-        selected_cohort="K51",
+    normalized = prepare_structured_task(
+        query,
+        lookup_type=lookup_type,
+        intent="direct_value",
+        slots=expected_slots,
+        slot_spans={},
+        cohort="K51",
     )
 
     assert normalized["slots"] == expected_slots
     assert set(normalized["slot_spans"]) == set(expected_slots)
-    assert validate_router_decision(normalized, query=query) == []
+    assert validate_structured_task(normalized, query=query) == []
 
 
 def test_scoring_course_scope_accepts_natural_course_synonym() -> None:
     query = "Môn còn lại của K51 được 5,0 thì có đạt không?"
-    normalized = normalize_router_decision(
-        {
-            "route": "structured",
-            "lookup_type": "scoring",
-            "intent": "direct_value",
-            "slots": {
-                "operation": "pass_threshold",
-                "score_or_grade": "5.0",
-                "course_scope": "remaining",
-            },
-            "slot_spans": {
-                "operation": "có đạt không",
-                "score_or_grade": "5,0",
-                "course_scope": "Môn còn lại",
-            },
-        },
-        query=query,
-        selected_cohort="K51",
+    normalized = prepare_structured_task(
+        query,
+        lookup_type="scoring",
+        intent="direct_value",
+        slots={
+                    "operation": "pass_threshold",
+                    "score_or_grade": "5.0",
+                    "course_scope": "remaining",
+                },
+        slot_spans={
+                    "operation": "có đạt không",
+                    "score_or_grade": "5,0",
+                    "course_scope": "Môn còn lại",
+                },
+        cohort="K51",
     )
 
     assert normalized["slots"]["course_scope"] == "remaining"
     assert normalized["slot_spans"]["course_scope"] == "Môn còn lại"
-    assert validate_router_decision(normalized, query=query) == []
+    assert validate_structured_task(normalized, query=query) == []
 
 
 def test_reference_table_selector_stays_absent_for_general_question() -> None:
-    normalized = normalize_router_decision(
-        {
-            "route": "structured",
-            "lookup_type": "scholarship_classification",
-            "intent": "direct_value",
-            "slots": {},
-            "slot_spans": {},
-        },
-        query="Cho tôi thông tin tổng quan về học bổng.",
-        selected_cohort="K51",
+    normalized = prepare_structured_task(
+        "Cho tôi thông tin tổng quan về học bổng.",
+        lookup_type="scholarship_classification",
+        intent="direct_value",
+        slots={},
+        slot_spans={},
+        cohort="K51",
     )
 
     assert normalized["slots"] == {}
@@ -147,16 +138,13 @@ def test_reference_table_selector_stays_absent_for_general_question() -> None:
 
 
 def test_scholarship_policy_question_does_not_infer_structured_aspect() -> None:
-    normalized = normalize_router_decision(
-        {
-            "route": "structured",
-            "lookup_type": "scholarship_classification",
-            "intent": "direct_value",
-            "slots": {},
-            "slot_spans": {},
-        },
-        query="Điều kiện để được xét học bổng là gì?",
-        selected_cohort="K51",
+    normalized = prepare_structured_task(
+        "Điều kiện để được xét học bổng là gì?",
+        lookup_type="scholarship_classification",
+        intent="direct_value",
+        slots={},
+        slot_spans={},
+        cohort="K51",
     )
 
     assert normalized["slots"] == {}
@@ -621,42 +609,28 @@ def test_from_config_accepts_model_environment_override(
 
 def test_router_normalization_does_not_infer_missing_jlpt_level_slot() -> None:
     query = "K50 JLPT N3 tương đương bậc mấy?"
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "direct_value",
-            "lookup_type": "foreign_language",
-            "cohort": "K50",
-            "slots": {"certificate_or_language": "JLPT"},
-            "slot_spans": {"certificate_or_language": "JLPT"},
-        },
-        query=query,
-        selected_cohort="K50",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="foreign_language",
+        intent="direct_value",
+        slots={"certificate_or_language": "JLPT"},
+        slot_spans={"certificate_or_language": "JLPT"},
+        cohort="K50",
     )
 
     assert "score_or_level" not in decision["slots"]
-    assert validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K50",
-    ) == []
+    assert validate_structured_task(decision, query=query) == []
 
 
 def test_router_normalization_leaves_missing_duration_inputs_absent() -> None:
     query = "K51 hệ vừa làm vừa học văn bằng hai tối đa bao lâu?"
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "direct_value",
-            "lookup_type": "study_duration",
-            "cohort": "K51",
-            "slots": {},
-            "slot_spans": {},
-        },
-        query=query,
-        selected_cohort="K51",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="study_duration",
+        intent="direct_value",
+        slots={},
+        slot_spans={},
+        cohort="K51",
     )
 
     assert decision["slots"] == {}
@@ -664,18 +638,13 @@ def test_router_normalization_leaves_missing_duration_inputs_absent() -> None:
 
 
 def test_router_normalization_does_not_choose_between_two_declared_literals() -> None:
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "direct_value",
-            "lookup_type": "foreign_language",
-            "cohort": "K51",
-            "slots": {},
-            "slot_spans": {},
-        },
-        query="So sánh IELTS và TOEFL ở K51.",
-        selected_cohort="K51",
+    decision = prepare_structured_task(
+        "So sánh IELTS và TOEFL ở K51.",
+        lookup_type="foreign_language",
+        intent="direct_value",
+        slots={},
+        slot_spans={},
+        cohort="K51",
     )
 
     assert "certificate_or_language" not in decision["slots"]
@@ -683,17 +652,13 @@ def test_router_normalization_does_not_choose_between_two_declared_literals() ->
 
 def test_router_normalization_does_not_infer_missing_requested_field() -> None:
     query = "Tài khoản sinh viên bị lỗi thì đơn vị nào hỗ trợ?"
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "contact",
-            "lookup_type": "student_service",
-            "slots": {"service": "Tài khoản sinh viên bị lỗi"},
-            "slot_spans": {"service": "Tài khoản sinh viên bị lỗi"},
-        },
-        query=query,
-        selected_cohort="K51",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="student_service",
+        intent="contact",
+        slots={"service": "Tài khoản sinh viên bị lỗi"},
+        slot_spans={"service": "Tài khoản sinh viên bị lỗi"},
+        cohort="K51",
     )
 
     assert "requested_field" not in decision["slots"]
@@ -702,18 +667,13 @@ def test_router_normalization_does_not_infer_missing_requested_field() -> None:
 
 def test_router_normalization_does_not_infer_program_list_scope() -> None:
     query = "Khoa Công nghệ Thông tin có những ngành nào?"
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "list_items",
-            "lookup_type": "program",
-            "cohort": "K51",
-            "slots": {},
-            "slot_spans": {},
-        },
-        query=query,
-        selected_cohort="K51",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="program",
+        intent="list_items",
+        slots={},
+        slot_spans={},
+        cohort="K51",
     )
 
     assert "scope" not in decision["slots"]
@@ -721,102 +681,38 @@ def test_router_normalization_does_not_infer_program_list_scope() -> None:
 
 def test_router_normalization_does_not_rewrite_student_service_from_query() -> None:
     query = "Tài khoản sinh viên bị lỗi thì đơn vị nào hỗ trợ?"
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "contact",
-            "lookup_type": "student_service",
-            "slots": {
-                "service": "hỗ trợ lỗi tài khoản",
-                "requested_field": "unit",
-            },
-            "slot_spans": {"service": "hỗ trợ lỗi tài khoản"},
-        },
-        query=query,
-        selected_cohort="K48-K49",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="student_service",
+        intent="contact",
+        slots={
+                    "service": "hỗ trợ lỗi tài khoản",
+                    "requested_field": "unit",
+                },
+        slot_spans={"service": "hỗ trợ lỗi tài khoản"},
+        cohort="K48-K49",
     )
 
     assert decision["slots"]["service"] == "hỗ trợ lỗi tài khoản"
     assert decision["slot_spans"]["service"] == "hỗ trợ lỗi tài khoản"
     assert decision["slots"]["requested_field"] == "unit"
-    assert validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    ) == ["ungrounded_slot:service"]
+    assert validate_structured_task(decision, query=query) == ["ungrounded_slot:service"]
 
 
 def test_router_normalization_preserves_grounded_student_service_span() -> None:
     query = "Muốn mượn phòng học thì hỏi đơn vị nào; cho tôi website Khoa Hóa học."
-    decision = normalize_router_decision(
-        {
-            "route": "structured",
-            "execution_mode": "structured",
-            "intent": "contact",
-            "lookup_type": "student_service",
-            "cohort": "K51",
-            "slots": {
-                "service": "mượn phòng học",
-                "requested_field": "unit",
-            },
-            "slot_spans": {"service": "mượn phòng học"},
-        },
-        query=query,
-        selected_cohort="K51",
+    decision = prepare_structured_task(
+        query,
+        lookup_type="student_service",
+        intent="contact",
+        slots={
+                    "service": "mượn phòng học",
+                    "requested_field": "unit",
+                },
+        slot_spans={"service": "mượn phòng học"},
+        cohort="K51",
     )
 
     assert decision["slots"]["service"] == "mượn phòng học"
     assert decision["slot_spans"]["service"] == "mượn phòng học"
-    assert validate_router_decision(
-        decision,
-        query=query,
-        selected_cohort="K51",
-    ) == []
-
-
-def test_router_normalization_handles_multi_cohort_comparison() -> None:
-    query = "K50 và K51 thì mấy điểm mới qua môn?"
-    decision = normalize_router_decision(
-        {
-            "route": "rag",
-            "execution_mode": "regulation",
-            "intent": "regulation",
-            "lookup_type": None,
-            "cohort": "K50",
-            "cohorts": ["K50", "K51"],
-            "is_multi_cohort": True,
-            "slots": {},
-            "slot_spans": {},
-        },
-        query=query,
-        selected_cohort="K50",
-    )
-
-    assert decision["is_multi_cohort"] is True
-    assert decision["cohorts"] == ["K50", "K51"]
-    assert decision["cohort"] == "K50"
-
-
-def test_structured_normalization_preserves_single_cohort() -> None:
-    query = "K50 mấy điểm qua môn?"
-    decision = normalize_router_decision(
-        {
-            "route": "rag",
-            "execution_mode": "regulation",
-            "intent": "regulation",
-            "lookup_type": None,
-            "cohort": "K50",
-            "cohorts": ["K50"],
-            "is_multi_cohort": False,
-            "slots": {},
-            "slot_spans": {},
-        },
-        query=query,
-        selected_cohort="K50",
-    )
-
-    assert decision["is_multi_cohort"] is False
-    assert decision["cohorts"] == ["K50"]
-    assert decision["cohort"] == "K50"
-
+    assert validate_structured_task(decision, query=query) == []

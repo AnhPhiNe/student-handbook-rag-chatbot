@@ -18,12 +18,44 @@ FIELD_LABELS = {
     "certificate": "Chứng chỉ", "equivalent_level_3": "Bậc 3", "equivalent_level_4": "Bậc 4",
     "scholarship_level": "Loại học bổng", "label": "Loại học bổng", "multiplier": "Hệ số",
     "formula": "Công thức", "formula_text": "Công thức", "tuition_basis": "Căn cứ học phí",
-    "academic_score_range": "Điểm học tập", "conduct_score_condition": "Điểm rèn luyện",
+    "scholarship_score_range": "Điểm học bổng", "academic_score_range": "Điểm học tập", "conduct_score_condition": "Điểm rèn luyện",
     "academic_classification": "Xếp loại học tập", "conduct_classification_condition": "Xếp loại rèn luyện",
     "unit_name": "Đơn vị", "program_name": "Ngành", "faculty_name": "Khoa",
     "office": "Địa điểm", "phone": "Điện thoại", "email": "Email", "website": "Website",
     "status": "Kết quả",
 }
+GPA_FORMULA_NOTE = "; ai là điểm học phần, ni là số tín chỉ; không lấy trung bình đều nếu tín chỉ khác nhau."
+EVALUATION_NOTES = (
+    "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold hay mã nội bộ. "
+    "Phải trả lời mọi ý được hỏi; một ý cần hỏi thêm không thay thế các ý có đủ dữ kiện. "
+    "Với nhiều khóa/thực thể, mỗi kết quả phải gắn đúng đối tượng. Không bắt ghi tên khóa "
+    "trong câu trả lời chỉ hỏi một khóa. Không bắt liệt kê toàn bảng hoặc khoảng điểm "
+    "khi câu hỏi chỉ cần nhãn xếp loại. Chấp nhận số/thời gian tương đương và số điện thoại "
+    "hợp lệ bất kỳ trong các số liên hệ của đúng đơn vị, trừ khi câu hỏi yêu cầu tất cả. "
+    "Đường xử lý chỉ là metadata mô tả, không phải tiêu chí chất lượng đáp án."
+)
+
+
+def citation(parent, cohort):
+    """Expected citation of one regulation parent."""
+    meta = parent["metadata"]
+    return {"parent_section_id": parent["_id"], "grade": 2, "cohort": cohort,
+            "document_id": parent["document_id"], "content_type": "regulation_text",
+            "source_section": meta["title"], "source_pages": meta["source_pages"]}
+
+
+def structured_ref(source, cohort):
+    """Expected structured source of one compiled catalog record."""
+    record = source.get("table", source.get("record", {}))
+    provenance = record.get("source_provenance", {})
+    source_id = (record.get("record_id") or provenance.get("record_id") or record.get("table_id")
+                 or record.get("rule_id") or record.get("program_id")
+                 or record.get("service_id"))
+    if source["catalog"] == "tables" and record.get("source_parent_id") and record.get("table_subtype"):
+        source_id = f"{record['source_parent_id']}_{record['table_subtype']}"
+    assert source_id, record.keys()
+    catalog_name = {"tables": "structured_tables_registry"}.get(source["catalog"], source["catalog"])
+    return {"source_id": source_id, "catalog": catalog_name, "cohort": cohort}
 
 
 def answer_meaning(spec, task):
@@ -64,12 +96,7 @@ def build():
             parent = matches[0]
             assert anchor in " ".join(parent["content"].split()), (index, anchor)
             assert query.strip() and fact.strip()
-            meta = parent["metadata"]
-            citation = {
-                "parent_section_id": parent["_id"], "grade": 2, "cohort": cohort,
-                "document_id": parent["document_id"], "content_type": "regulation_text",
-                "source_section": meta["title"], "source_pages": meta["source_pages"],
-            }
+            expected = citation(parent, cohort)
             style = "stress" if offset == 4 else "realistic"
             cases.append({
                 "id": f"official_ans_{index:03d}", "suite": "answers",
@@ -81,7 +108,7 @@ def build():
                 "question_style": style, "eval_split": style,
                 "tags": ["official_v1", "citation_required", style],
                 "ground_truth": fact, "required_facts": [fact], "forbidden_claims": [],
-                "relevance_judgments": [citation], "expected_citations": [citation],
+                "relevance_judgments": [expected], "expected_citations": [expected],
                 "gold_evidence": [{
                     "source_id": parent["_id"], "cohort": cohort, "anchor": anchor,
                     "content": parent["content"],
@@ -108,29 +135,14 @@ def build():
                 fact = spec["fact"]
                 source = sources[0]
                 parent = next(p for p in parents if p["_id"] == source["source_id"])
-                meta = parent["metadata"]
-                citation = {"parent_section_id": parent["_id"], "grade": 2,
-                            "cohort": target, "document_id": parent["document_id"],
-                            "content_type": "regulation_text", "source_section": meta["title"],
-                            "source_pages": meta["source_pages"]}
-                citations.append(citation)
+                citations.append(citation(parent, target))
                 evidence.append({**source, "content": parent["content"]})
             else:
                 fact = answer_meaning(spec, task)
                 if spec.get("formula") == "gpa_weighted_average":
-                    fact += "; ai là điểm học phần, ni là số tín chỉ; không lấy trung bình đều nếu tín chỉ khác nhau."
+                    fact += GPA_FORMULA_NOTE
                 for source in sources:
-                    record = source.get("table", source.get("record", {}))
-                    provenance = record.get("source_provenance", {})
-                    source_id = (record.get("record_id") or provenance.get("record_id") or record.get("table_id")
-                                 or record.get("rule_id") or record.get("program_id")
-                                 or record.get("service_id"))
-                    if source["catalog"] == "tables" and record.get("source_parent_id") and record.get("table_subtype"):
-                        source_id = f"{record['source_parent_id']}_{record['table_subtype']}"
-                    assert source_id, (index, record.keys())
-                    catalog_name = {"tables": "structured_tables_registry"}.get(source["catalog"], source["catalog"])
-                    structured.append({"source_id": source_id, "catalog": catalog_name,
-                                       "cohort": target})
+                    structured.append(structured_ref(source, target))
                     evidence.append({**source, "requested_cohort": target})
             scoped = f"[{target}] {fact}"
             facts.append(scoped)
@@ -172,15 +184,7 @@ def build():
         case.setdefault("expected_intent", "regulation_query")
         case.setdefault("expected_strategy", "deterministic_lookup" if case["expected_path"] == "structured" else "hybrid_graph_retrieval")
         case["lexical_fact_check_applicable"] = False
-        case["evaluation_notes"] = (
-            "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold hay mã nội bộ. "
-            "Phải trả lời mọi ý được hỏi; một ý cần hỏi thêm không thay thế các ý có đủ dữ kiện. "
-            "Với nhiều khóa/thực thể, mỗi kết quả phải gắn đúng đối tượng. Không bắt ghi tên khóa "
-            "trong câu trả lời chỉ hỏi một khóa. Không bắt liệt kê toàn bảng hoặc khoảng điểm "
-            "khi câu hỏi chỉ cần nhãn xếp loại. Chấp nhận số/thời gian tương đương và số điện thoại "
-            "hợp lệ bất kỳ trong các số liên hệ của đúng đơn vị, trừ khi câu hỏi yêu cầu tất cả. "
-            "Đường xử lý chỉ là metadata mô tả, không phải tiêu chí chất lượng đáp án."
-        )
+        case["evaluation_notes"] = EVALUATION_NOTES
         modes = [u["mode"] for u in case.get("answer_units", [])]
         features = []
         if len(modes) > 1:

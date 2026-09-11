@@ -34,6 +34,24 @@ def validate_relevance(case):
         seen.update(group)
 
 
+def judgment(parent, cohort, grade=2):
+    """Relevance judgment for one regulation parent."""
+    return {"parent_section_id": parent["_id"], "grade": grade, "cohort": cohort,
+            "document_id": parent["document_id"], "content_type": "regulation_text",
+            "source_section": parent["metadata"]["title"],
+            "source_pages": parent["metadata"]["source_pages"]}
+
+
+def evidence(parent, anchor):
+    """Gold evidence: the anchor quote with some surrounding article text."""
+    content = " ".join(parent["content"].split())
+    assert anchor in content, (parent["_id"], anchor)
+    position = content.index(anchor)
+    return {"source_id": parent["_id"], "anchor": anchor,
+            "context": content[max(0, position - 200):position + len(anchor) + 600],
+            "content_sha256": hashlib.sha256(parent["content"].encode()).hexdigest()}
+
+
 def build():
     definitions = yaml.safe_load((BUNDLE / "retrieval_authoring.yaml").read_text(encoding="utf-8"))
     groups = definitions["groups"]
@@ -48,10 +66,6 @@ def build():
             matches = [p for p in parents if p["cohort"] == cohort and p["_id"].endswith(suffix)]
             assert len(matches) == 1, (index, cohort, suffix)
             parent = matches[0]
-            content = " ".join(parent["content"].split())
-            assert anchor in content, (index, cohort, suffix, anchor)
-            position = content.index(anchor)
-            meta = parent["metadata"]
             style = "stress" if offset == 4 else "realistic"
             cases.append({
                 "id": f"official_ret_{index:03d}", "suite": "retrieval",
@@ -65,14 +79,8 @@ def build():
                 "case_type": "regulation_true_rag",
                 "cohort_sensitivity": "single_cohort", "question_specificity": "specific",
                 "expected_answer_behavior": "scoped_summary",
-                "relevance_judgments": [{
-                    "parent_section_id": parent["_id"], "grade": 2, "cohort": cohort,
-                    "document_id": parent["document_id"], "content_type": "regulation_text",
-                    "source_section": meta["title"], "source_pages": meta["source_pages"],
-                }],
-                "gold_evidence": [{"source_id": parent["_id"], "anchor": anchor,
-                    "context": content[max(0, position - 200):position + len(anchor) + 600],
-                    "content_sha256": hashlib.sha256(parent["content"].encode()).hexdigest()}],
+                "relevance_judgments": [judgment(parent, cohort)],
+                "gold_evidence": [evidence(parent, anchor)],
                 "annotation_status": "draft_source_anchored",
                 "review_status": "pending_equivalent_sources_and_context_review",
                 "frozen": False, "independent_holdout": False,
@@ -89,21 +97,9 @@ def build():
             cohort = explicit_cohort[0] if explicit_cohort else case["cohort"]
             matches = [p for p in parents if p["cohort"] == cohort and p["_id"].endswith(suffix)]
             assert len(matches) == 1, (index, cohort, suffix)
-            parent = matches[0]
-            content = " ".join(parent["content"].split())
-            assert anchor in content, (index, anchor, parent["_id"])
-            position = content.index(anchor)
-            case["relevance_judgments"].append({
-                "parent_section_id": parent["_id"],
-                "grade": replacement.get("source_grades", [2] * len(replacement["sources"]))[source_index],
-                "cohort": cohort,
-                "document_id": parent["document_id"], "content_type": "regulation_text",
-                "source_section": parent["metadata"]["title"],
-                "source_pages": parent["metadata"]["source_pages"],
-            })
-            case["gold_evidence"].append({"source_id": parent["_id"], "anchor": anchor,
-                "context": content[max(0, position - 200):position + len(anchor) + 600],
-                "content_sha256": hashlib.sha256(parent["content"].encode()).hexdigest()})
+            grade = replacement.get("source_grades", [2] * len(replacement["sources"]))[source_index]
+            case["relevance_judgments"].append(judgment(matches[0], cohort, grade))
+            case["gold_evidence"].append(evidence(matches[0], anchor))
         case["requested_cohorts"] = sorted({j["cohort"] for j in case["relevance_judgments"]})
         if replacement.get("review_note"):
             case["gold_rationale"] = replacement["review_note"]
@@ -116,19 +112,10 @@ def build():
         matches = [p for p in parents if p["cohort"] == case["cohort"] and p["_id"].endswith(suffix)]
         assert len(matches) == 1
         parent = matches[0]
-        content = " ".join(parent["content"].split())
-        assert anchor in content, (index, anchor)
         assert len(case["relevance_judgments"]) == 1
         case["equivalent_source_groups"] = [[case["relevance_judgments"][0]["parent_section_id"], parent["_id"]]]
-        case["relevance_judgments"].append({
-            "parent_section_id": parent["_id"], "grade": 2, "cohort": case["cohort"],
-            "document_id": parent["document_id"], "content_type": "regulation_text",
-            "source_section": parent["metadata"]["title"], "source_pages": parent["metadata"]["source_pages"],
-        })
-        position = content.index(anchor)
-        case["gold_evidence"].append({"source_id": parent["_id"], "anchor": anchor,
-            "context": content[max(0, position - 200):position + len(anchor) + 600],
-            "content_sha256": hashlib.sha256(parent["content"].encode()).hexdigest()})
+        case["relevance_judgments"].append(judgment(parent, case["cohort"]))
+        case["gold_evidence"].append(evidence(parent, anchor))
     assert len(cases) == 155
     assert Counter(c.get("allocation_cohort", c["cohort"]) for c in cases) == {"K48-K49": 52, "K50": 52, "K51": 51}
     assert Counter(c["question_style"] for c in cases) == {"realistic": 124, "stress": 31}

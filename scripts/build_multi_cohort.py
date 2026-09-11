@@ -9,6 +9,7 @@ import shutil
 
 from scripts.derive_foreign_language_policy import derive_foreign_language_policy
 from src.common.cohort import COHORT_REGISTRY, DOCUMENT_ID_BY_COHORT
+from src.common.env_loader import env_bool
 from src.common.io import load_json, save_json
 from src.common.text import fold_text
 from src.extraction.program_faculty_enricher import (
@@ -19,11 +20,30 @@ from src.extraction.program_faculty_enricher import (
 
 VALID_COHORTS = set(COHORT_REGISTRY)
 LEGACY_COHORT_PREFIXES = ("K50-K51_",)
-GENERATED_OUTPUT_DIRS = (
-    Path("data/processed/chunks"),
-    Path("data/processed/directories"),
-    Path("data/processed/tables"),
-    Path("data/processed/metadata"),
+CHUNK_DIR = Path("data/processed/chunks")
+DIRECTORY_DIR = Path("data/processed/directories")
+TABLE_DIR = Path("data/processed/tables")
+METADATA_DIR = Path("data/processed/metadata")
+GENERATED_OUTPUT_DIRS = (CHUNK_DIR, DIRECTORY_DIR, TABLE_DIR, METADATA_DIR)
+
+# Files each cohort's pipeline writes under a fixed name (see build_cohort).
+COHORT_OUTPUTS = (
+    (CHUNK_DIR, "docstore_items.json"),
+    (TABLE_DIR, "formula_rules.json"),
+    (TABLE_DIR, "scoring_tables.json"),
+    (DIRECTORY_DIR, "office_directory.json"),
+    (DIRECTORY_DIR, "faculty_directory.json"),
+    (DIRECTORY_DIR, "program_directory.json"),
+    (METADATA_DIR, "document_profile.json"),
+    (METADATA_DIR, "content_audit_report.json"),
+)
+# Structured records merged across cohorts; they feed the structured table layer.
+STRUCTURED_FILES = (
+    TABLE_DIR / "formula_rules.json",
+    TABLE_DIR / "scoring_tables.json",
+    DIRECTORY_DIR / "office_directory.json",
+    DIRECTORY_DIR / "faculty_directory.json",
+    DIRECTORY_DIR / "program_directory.json",
 )
 
 
@@ -595,226 +615,160 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return args
 
 
-def main(argv: list[str] | None = None):
-    args = parse_args(argv)
-    overrides = load_program_overrides()
-    cleanup_legacy_cohort_artifacts()
+def find_cohort_pdfs(raw_dir: Path) -> dict[str, Path]:
+    """Map each cohort to its handbook PDF; exactly one PDF per cohort is required."""
 
-    raw_dir = Path("data/raw")
-    pdfs = sorted(raw_dir.glob("*.pdf"))
-
-    if not pdfs:
-        print("No PDFs found in data/raw!")
-        return
-
-    seen_cohorts: dict[str, Path] = {}
-
-    for pdf in pdfs:
+    pdf_by_cohort: dict[str, Path] = {}
+    for pdf in sorted(raw_dir.glob("*.pdf")):
         cohort = get_cohort_from_filename(pdf.name)
-
         if cohort not in VALID_COHORTS:
-            raise RuntimeError(
-                f"Cohort không hợp lệ cho file {pdf.name}: {cohort}"
-            )
-
-        if cohort in seen_cohorts:
+            raise RuntimeError(f"Cohort không hợp lệ cho file {pdf.name}: {cohort}")
+        if cohort in pdf_by_cohort:
             raise RuntimeError(
                 f"Phát hiện hai PDF cùng cohort {cohort}:\n"
-                f"- {seen_cohorts[cohort]}\n"
+                f"- {pdf_by_cohort[cohort]}\n"
                 f"- {pdf}"
             )
+        pdf_by_cohort[cohort] = pdf
 
-        seen_cohorts[cohort] = pdf
-        
-    missing_cohorts = VALID_COHORTS - set(seen_cohorts)
-
-    if missing_cohorts:
+    missing_cohorts = VALID_COHORTS - set(pdf_by_cohort)
+    if pdf_by_cohort and missing_cohorts:
         raise RuntimeError(
-            "Thiếu PDF của các cohort: "
-            + ", ".join(sorted(missing_cohorts))
+            "Thiếu PDF của các cohort: " + ", ".join(sorted(missing_cohorts))
         )
+    return pdf_by_cohort
 
-    chunk_dir = Path("data/processed/chunks")
-    
-    docstore_outputs = {}
-    formula_outputs = {}
-    scoring_outputs = {}
-    office_outputs = {}
-    faculty_outputs = {}
-    program_outputs = {}
-    profile_outputs = {}
-    audit_outputs = {}
-    table_dir = Path("data/processed/tables")
-    directory_dir = Path("data/processed/directories")
-    metadata_dir = Path("data/processed/metadata")
 
-    for pdf in pdfs:
-        cohort = get_cohort_from_filename(pdf.name)
-        run_pipeline_for_pdf(pdf, cohort)
+def build_cohort(pdf: Path, cohort: str) -> None:
+    """Run one handbook through the per-cohort stages and keep its outputs.
 
-        docstore_dest = chunk_dir / f"{cohort}_docstore_items.json"
-        
-        shutil.copy(chunk_dir / "docstore_items.json", docstore_dest)
-        
-        formula_dest = table_dir / f"{cohort}_formula_rules.json"
-        scoring_dest = table_dir / f"{cohort}_scoring_tables.json"
-        office_dest = directory_dir / f"{cohort}_office_directory.json"
-        faculty_dest = directory_dir / f"{cohort}_faculty_directory.json"
-        program_dest = directory_dir / f"{cohort}_program_directory.json"
-        profile_dest = metadata_dir / f"{cohort}_document_profile.json"
-        audit_dest = metadata_dir / f"{cohort}_content_audit_report.json"
+    Every cohort writes to the same file names, so each output is copied under a
+    cohort prefix before the next cohort overwrites it.
+    """
 
-        shutil.copy(table_dir / "formula_rules.json", formula_dest)
-        shutil.copy(table_dir / "scoring_tables.json", scoring_dest)
-        shutil.copy(directory_dir / "office_directory.json", office_dest)
-        shutil.copy(directory_dir / "faculty_directory.json", faculty_dest)
-        shutil.copy(directory_dir / "program_directory.json", program_dest)
-        shutil.copy(metadata_dir / "document_profile.json", profile_dest)
-        shutil.copy(metadata_dir / "content_audit_report.json", audit_dest)
-        
-        docstore_outputs[cohort] = docstore_dest
-        formula_outputs[cohort] = formula_dest
-        scoring_outputs[cohort] = scoring_dest
-        office_outputs[cohort] = office_dest
-        faculty_outputs[cohort] = faculty_dest
-        program_outputs[cohort] = program_dest
-        profile_outputs[cohort] = profile_dest
-        audit_outputs[cohort] = audit_dest
+    run_pipeline_for_pdf(pdf, cohort)
+    for directory, name in COHORT_OUTPUTS:
+        shutil.copy(directory / name, directory / f"{cohort}_{name}")
 
-    print(f"\n{'='*50}\n--- MERGING MULTI-COHORT CHUNKS ---\n{'='*50}")
-    merge_docstore(docstore_outputs, chunk_dir / "all_docstore_items.json")
-    
-        
+
+def merge_cohorts(cohorts: list[str], overrides: dict) -> None:
+    """Merge the per-cohort outputs into the shared multi-cohort files."""
+
+    def cohort_files(directory: Path, name: str) -> dict[str, Path]:
+        return {cohort: directory / f"{cohort}_{name}" for cohort in cohorts}
+
+    print(f"\n{'='*50}\n--- MERGING PARENT DOCUMENTS ---\n{'='*50}")
+    merge_docstore(
+        cohort_files(CHUNK_DIR, "docstore_items.json"),
+        CHUNK_DIR / "all_docstore_items.json",
+    )
     derived_policy_report = derive_foreign_language_policy(
-        chunk_dir / "all_docstore_items.json",
-        metadata_dir / "derived_foreign_language_policy_report.json",
+        CHUNK_DIR / "all_docstore_items.json",
+        METADATA_DIR / "derived_foreign_language_policy_report.json",
     )
     print(
         "Annotated foreign-language policy sections: "
         f"{derived_policy_report['annotated_section_count']}"
     )
-    
+
     print(f"\n{'='*50}\n--- MERGING STRUCTURED DATA ---\n{'='*50}")
-    merge_structured_data(formula_outputs, table_dir / "formula_rules.json")
-    merge_structured_data(scoring_outputs, table_dir / "scoring_tables.json")
-    merge_structured_data(office_outputs, directory_dir / "office_directory.json")
-    merge_structured_data(faculty_outputs, directory_dir / "faculty_directory.json")
-    merge_structured_data(program_outputs, directory_dir / "program_directory.json")
+    for path in STRUCTURED_FILES:
+        merge_structured_data(cohort_files(path.parent, path.name), path)
     enrich_merged_program_faculties(
-        directory_dir / "program_directory.json",
-        directory_dir / "faculty_directory.json",
+        DIRECTORY_DIR / "program_directory.json",
+        DIRECTORY_DIR / "faculty_directory.json",
         overrides,
     )
-    merge_json_documents(profile_outputs, metadata_dir / "document_profiles.json")
-    merge_json_documents(audit_outputs, metadata_dir / "content_audit_reports.json")
-    
-    validate_structured_json(
-        [
-            table_dir / "scoring_tables.json",
-            table_dir / "formula_rules.json",
-            directory_dir / "office_directory.json",
-            directory_dir / "faculty_directory.json",
-            directory_dir / "program_directory.json",
-        ]
+
+    merge_json_documents(
+        cohort_files(METADATA_DIR, "document_profile.json"),
+        METADATA_DIR / "document_profiles.json",
+    )
+    audit_files = cohort_files(METADATA_DIR, "content_audit_report.json")
+    merge_json_documents(audit_files, METADATA_DIR / "content_audit_reports.json")
+    audit_reports = {cohort: load_json(path) for cohort, path in audit_files.items()}
+    save_json(
+        build_content_audit_diff(audit_reports),
+        METADATA_DIR / "content_audit_diff_report.json",
     )
 
-    audit_reports = {}
-    for cohort, path in audit_outputs.items():
-        with open(path, "r", encoding="utf-8") as f:
-            audit_reports[cohort] = json.load(f)
-    with open(
-        metadata_dir / "content_audit_diff_report.json",
-        "w",
-        encoding="utf-8",
-    ) as f:
-        json.dump(build_content_audit_diff(audit_reports), f, ensure_ascii=False, indent=2)
 
-    validate_cohort_tags(
-        [
-            chunk_dir / "all_docstore_items.json",
-            table_dir / "formula_rules.json",
-            table_dir / "scoring_tables.json",
-            directory_dir / "office_directory.json",
-            directory_dir / "faculty_directory.json",
-            directory_dir / "program_directory.json",
-        ]
-    )
-    validate_retrieval_metadata(
-        [
-            chunk_dir / "all_docstore_items.json",
-            table_dir / "formula_rules.json",
-            table_dir / "scoring_tables.json",
-            directory_dir / "office_directory.json",
-            directory_dir / "faculty_directory.json",
-            directory_dir / "program_directory.json",
-        ]
-    )
-    validate_program_directory(directory_dir / "program_directory.json", overrides)
+def validate_merged_outputs(overrides: dict) -> None:
+    """Fail the build if merged records lost their cohort or source metadata."""
+
+    validate_structured_json(list(STRUCTURED_FILES))
+    merged_records = [CHUNK_DIR / "all_docstore_items.json", *STRUCTURED_FILES]
+    validate_cohort_tags(merged_records)
+    validate_retrieval_metadata(merged_records)
+    validate_program_directory(DIRECTORY_DIR / "program_directory.json", overrides)
+
+
+def run_module(module: str, *args: str, env: dict | None = None) -> None:
+    subprocess.run([sys.executable, "-m", module, *args], check=True, env=env)
+
+
+def build_runtime_artifacts(args: argparse.Namespace) -> None:
+    """Build the artifacts the API loads, then write and audit the manifest."""
 
     print(f"\n{'='*50}\n--- BUILDING STRUCTURED TABLE LAYER ---\n{'='*50}")
-    subprocess.run(
-        [sys.executable, "-m", "scripts.build_structured_table_layer"],
-        check=True,
-    )
+    run_module("scripts.build_structured_table_layer")
     # This artifact is generated by the structured layer, not PDF extraction.
-    validate_structured_json([table_dir / "foreign_language_equivalency_table.json"])
+    validate_structured_json([TABLE_DIR / "foreign_language_equivalency_table.json"])
 
     print("\n--- BUILDING FULL PARENTS AND NARRATIVE-ONLY CHILDREN ---")
-    subprocess.run(
-        [sys.executable, "-m", "scripts.build_parent_child_artifacts", "--publish-artifacts"],
-        check=True,
-    )
+    run_module("scripts.build_parent_child_artifacts", "--publish-artifacts")
 
     print(f"\n{'='*50}\n--- BUILDING CROSS-REFERENCE GRAPH ---\n{'='*50}")
-    subprocess.run([sys.executable, "-m", "src.ingestion.graph_extractor"], check=True)
+    run_module("src.ingestion.graph_extractor")
 
     print(f"\n{'='*50}\n--- WRITING BUILD MANIFEST ---\n{'='*50}")
-    subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "scripts.build_artifact_manifest",
-            "--qdrant-collection",
-            args.qdrant_collection,
-            "--mongo-collection",
-            args.mongo_collection,
-        ],
-        check=True,
+    run_module(
+        "scripts.build_artifact_manifest",
+        "--qdrant-collection",
+        args.qdrant_collection,
+        "--mongo-collection",
+        args.mongo_collection,
     )
 
     print(f"\n{'='*50}\n--- RUNNING ARTIFACT INTEGRITY AUDITS ---\n{'='*50}")
-    subprocess.run([sys.executable, "-m", "scripts.audit_table_quality"], check=True)
-    subprocess.run([sys.executable, "-m", "scripts.check_deploy_artifacts"], check=True)
+    run_module("scripts.audit_table_quality")
+    run_module("scripts.check_deploy_artifacts")
 
-    if os.environ.get("PUSH_REMOTE", "").strip().lower() in {"1", "true", "yes", "on"}:
-        print(f"\n{'='*50}\n--- PUSHING TO MONGODB & QDRANT CLOUD ---\n{'='*50}")
-        publish_env = os.environ.copy()
-        publish_env["QDRANT_COLLECTION_NAME"] = args.qdrant_collection
-        publish_env["STUDENT_RAG_HYBRID_COLLECTION"] = args.qdrant_collection
-        publish_env["MONGODB_PARENT_COLLECTION"] = args.mongo_collection
-        subprocess.run(
-            [sys.executable, "-m", "scripts.verify_remote_build", "--preflight"],
-            check=True,
-            env=publish_env,
-        )
-        subprocess.run(
-            [sys.executable, "-m", "scripts.push_to_qdrant"],
-            check=True,
-            env=publish_env,
-        )
-        subprocess.run(
-            [sys.executable, "-m", "scripts.push_to_mongo"],
-            check=True,
-            env=publish_env,
-        )
-        subprocess.run(
-            [sys.executable, "-m", "scripts.verify_remote_build"],
-            check=True,
-            env=publish_env,
-        )
+
+def publish_to_remote(args: argparse.Namespace) -> None:
+    """Upload children to Qdrant and parents to MongoDB, verifying before and after."""
+
+    print(f"\n{'='*50}\n--- PUSHING TO MONGODB & QDRANT CLOUD ---\n{'='*50}")
+    publish_env = os.environ.copy()
+    publish_env["QDRANT_COLLECTION_NAME"] = args.qdrant_collection
+    publish_env["STUDENT_RAG_HYBRID_COLLECTION"] = args.qdrant_collection
+    publish_env["MONGODB_PARENT_COLLECTION"] = args.mongo_collection
+    run_module("scripts.verify_remote_build", "--preflight", env=publish_env)
+    run_module("scripts.push_to_qdrant", env=publish_env)
+    run_module("scripts.push_to_mongo", env=publish_env)
+    run_module("scripts.verify_remote_build", env=publish_env)
+
+
+def main(argv: list[str] | None = None):
+    args = parse_args(argv)
+    overrides = load_program_overrides()
+    cleanup_legacy_cohort_artifacts()
+
+    pdf_by_cohort = find_cohort_pdfs(Path("data/raw"))
+    if not pdf_by_cohort:
+        print("No PDFs found in data/raw!")
+        return
+
+    for cohort, pdf in pdf_by_cohort.items():
+        build_cohort(pdf, cohort)
+    merge_cohorts(list(pdf_by_cohort), overrides)
+    validate_merged_outputs(overrides)
+    build_runtime_artifacts(args)
+
+    if env_bool("PUSH_REMOTE"):
+        publish_to_remote(args)
     else:
         print("\nRemote push skipped. Set PUSH_REMOTE=1 to upload MongoDB/Qdrant.")
-
     print("\nMulti-cohort preprocessing completed successfully!")
 
 

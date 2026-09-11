@@ -37,8 +37,6 @@ ruff.toml
 data/raw
 data/eval
 data/cache
-data/processed/retrieval
-data/processed/user_feedback.jsonl
 data/processed/tables/*
 !data/processed/tables/formula_rules.json
 !data/processed/tables/structured_tables_registry.json

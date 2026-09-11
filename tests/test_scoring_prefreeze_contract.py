@@ -28,8 +28,8 @@ def resolve(slots, cohort, *, registry=None, legacy=None, intent="direct_value",
          "clarification_question": clarification,
          "slot_spans": {"score_or_grade": "6,1", "course_scope": "học phần còn lại" if slots.get("course_scope") == "remaining" else slots.get("course_scope")}},
         query="6,1 học phần còn lại foundation remaining pass_fail_ungraded", cohort=cohort,
-        scoring_tables=legacy or [], formula_rules=[], office_directory=[], student_service_directory=[],
-        student_faculty_profiles=[], foreign_language_tables=[], structured_tables_registry=registry,
+        formula_rules=[], office_directory=[], student_service_directory=[],
+        student_faculty_profiles=[], structured_tables_registry=registry,
         program_directory=[],
     )
 

@@ -1055,12 +1055,10 @@ def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
         "planning": {"max_citations": 10},
     }
     pipeline.model = None
-    pipeline.scoring_tables = []
     pipeline.formula_rules = []
     pipeline.student_office_profiles = []
     pipeline.student_service_directory = []
     pipeline.student_faculty_profiles = []
-    pipeline.foreign_language_tables = []
     pipeline.structured_tables_registry = []
     pipeline.program_directory = []
     pipeline.parent_sources_by_id = {}
@@ -1423,9 +1421,9 @@ def test_normalizer_preserves_grounded_score_and_component_guard() -> None:
         "data/processed/tables/structured_tables_registry.json"
     ).read_text(encoding="utf-8"))
     resolution = resolve_structured_decision(
-        normalized_task, query=question, cohort="K51", scoring_tables=[],
+        normalized_task, query=question, cohort="K51", 
         formula_rules=[], office_directory=[], student_service_directory=[],
-        student_faculty_profiles=[], foreign_language_tables=[],
+        student_faculty_profiles=[], 
         structured_tables_registry=registry, program_directory=[],
     )
     assert resolution.result_kind == "clarification"

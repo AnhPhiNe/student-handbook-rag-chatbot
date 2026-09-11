@@ -66,9 +66,9 @@ def test_component_guard_with_runtime_catalog(cohort, slots, clarify):
     registry = json.loads(Path("data/processed/tables/structured_tables_registry.json").read_text(encoding="utf-8"))
     resolution = resolve_structured_decision(
         {"lookup_type": "foreign_language", "intent": "direct_value", "slots": slots},
-        query="Tra bảng chứng chỉ", cohort=cohort, scoring_tables=[], formula_rules=[],
+        query="Tra bảng chứng chỉ", cohort=cohort, formula_rules=[],
         office_directory=[], student_service_directory=[], student_faculty_profiles=[],
-        foreign_language_tables=[], structured_tables_registry=registry, program_directory=[],
+        structured_tables_registry=registry, program_directory=[],
     )
     assert resolution is not None
     assert (resolution.result_kind == "clarification") is clarify

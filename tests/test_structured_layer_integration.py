@@ -30,9 +30,9 @@ def _resolve(task, cohort):
     )
     return resolve_structured_decision(
         task, query=task["question"], cohort=cohort,
-        scoring_tables=[], formula_rules=[], office_directory=[],
+        formula_rules=[], office_directory=[],
         student_service_directory=[], student_faculty_profiles=[],
-        foreign_language_tables=[], structured_tables_registry=tables,
+        structured_tables_registry=tables,
         program_directory=[],
     )
 

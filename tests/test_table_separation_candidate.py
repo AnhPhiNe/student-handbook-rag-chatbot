@@ -96,9 +96,9 @@ def test_numeric_conduct_lookup_still_uses_unchanged_structured_json():
          'slots':{'operation':'conduct_classification', 'score_or_grade':'82'},
          'slot_spans':{'score_or_grade':'82'}},
         query='K50 được 82 điểm rèn luyện thì xếp loại gì?', cohort='K50',
-        scoring_tables=read('data/processed/tables/scoring_tables.json'), formula_rules=[],
+        formula_rules=[],
         office_directory=[], student_service_directory=[], student_faculty_profiles=[],
-        foreign_language_tables=[], program_directory=[],
+        program_directory=[],
         structured_tables_registry=read('data/processed/tables/structured_tables_registry.json'))
     assert result is not None
     resolved = result.result['resolved_result']

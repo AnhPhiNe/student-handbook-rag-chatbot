@@ -242,12 +242,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="IELTS và TOEFL ở K51",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=[table],
             program_directory=[],
         )
@@ -272,12 +270,10 @@ class StructuredLookupTest(unittest.TestCase):
             {"lookup_type": "study_duration", "intent": "direct_value"},
             query="Thời gian đào tạo K51",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -392,12 +388,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Chứng chỉ ABC tổng 650 tương đương bậc nào?",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=[table],
             program_directory=[],
         )
@@ -420,12 +414,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Chứng chỉ Alpha nhiều kỹ năng tổng 700 tương đương bậc nào?",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=[table],
             program_directory=[],
         )
@@ -601,12 +593,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Cho tôi thông tin tổng quan về học bổng khuyến khích học tập.",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -666,12 +656,10 @@ class StructuredLookupTest(unittest.TestCase):
                     },
                     query="Tra cứu học bổng khuyến khích học tập.",
                     cohort="K51",
-                    scoring_tables=[],
                     formula_rules=[],
                     office_directory=[],
                     student_service_directory=[],
                     student_faculty_profiles=[],
-                    foreign_language_tables=[],
                     structured_tables_registry=registry,
                     program_directory=[],
                 )
@@ -729,12 +717,10 @@ class StructuredLookupTest(unittest.TestCase):
                     },
                     query=query,
                     cohort="K51",
-                    scoring_tables=[],
                     formula_rules=[],
                     office_directory=[],
                     student_service_directory=[],
                     student_faculty_profiles=[],
-                    foreign_language_tables=[],
                     structured_tables_registry=registry,
                     program_directory=[],
                 )
@@ -763,12 +749,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Học bổng loại Giỏi yêu cầu xếp loại thế nào?",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -799,12 +783,10 @@ class StructuredLookupTest(unittest.TestCase):
                     },
                     query="Thời gian đào tạo tối đa là bao lâu?",
                     cohort="K51",
-                    scoring_tables=[],
                     formula_rules=[],
                     office_directory=[],
                     student_service_directory=[],
                     student_faculty_profiles=[],
-                    foreign_language_tables=[],
                     structured_tables_registry=registry,
                     program_directory=[],
                 )
@@ -840,12 +822,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="85 điểm rèn luyện được xếp loại gì?",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -876,15 +856,6 @@ class StructuredLookupTest(unittest.TestCase):
             ],
             "source_parent_id": "K50_Dieu10",
         }
-        scoring_table = {
-            "table_id": "K50_grade_10_to_letter",
-            "lookup_group": "grade_10_to_letter",
-            "cohort": "K50",
-            "rows": [
-                {"score_10_range": "7.8-8.4", "letter_grade": "B+"},
-                {"score_10_range": "7.0-7.7", "letter_grade": "B"},
-            ],
-        }
         resolution = resolve_structured_decision(
             {
                 "lookup_type": "scoring",
@@ -897,12 +868,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Điểm 7,9 quy đổi thành điểm chữ gì?",
             cohort="K50",
-            scoring_tables=[scoring_table],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=[registry_table],
             program_directory=[],
         )
@@ -918,11 +887,6 @@ class StructuredLookupTest(unittest.TestCase):
             resolve_structured_decision,
         )
 
-        scoring_tables = json.loads(
-            Path("data/processed/tables/scoring_tables.json").read_text(
-                encoding="utf-8"
-            )
-        )
         registry = json.loads(
             Path("data/processed/tables/structured_tables_registry.json").read_text(
                 encoding="utf-8"
@@ -943,12 +907,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="B+ tương ứng hệ 4 bao nhiêu?",
             cohort="K51",
-            scoring_tables=scoring_tables,
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -968,11 +930,6 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        foreign_language_tables = json.loads(
-            Path("data/processed/tables/foreign_language_equivalency_table.json").read_text(
-                encoding="utf-8"
-            )
-        )
         resolution = resolve_structured_decision(
             {
                 "lookup_type": "foreign_language",
@@ -988,12 +945,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="TOEIC (4 kỹ năng) tương ứng bậc 3 và bậc 4 thế nào?",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=foreign_language_tables,
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -1013,11 +968,6 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        foreign_language_tables = json.loads(
-            Path("data/processed/tables/foreign_language_equivalency_table.json").read_text(
-                encoding="utf-8"
-            )
-        )
         resolution = resolve_structured_decision(
             {
                 "lookup_type": "foreign_language",
@@ -1033,12 +983,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="TOEFL iBT cần bao nhiêu điểm để tương đương bậc 3, bậc 4?",
             cohort="K50",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=foreign_language_tables,
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -1075,12 +1023,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Môn tính GPA em được 3,6/10 thì có qua không?",
             cohort="K48-K49",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -1142,12 +1088,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query=query,
             cohort="K48-K49",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -1174,15 +1118,6 @@ class StructuredLookupTest(unittest.TestCase):
             ],
             "source_parent_id": "K50_Dieu10",
         }
-        scoring_table = {
-            "table_id": "K50_grade_10_to_letter",
-            "lookup_group": "grade_10_to_letter",
-            "cohort": "K50",
-            "rows": [
-                {"score_10_range": "7.8-8.4", "letter_grade": "B+"},
-                {"score_10_range": "7.0-7.7", "letter_grade": "B"},
-            ],
-        }
         resolution = resolve_structured_decision(
             {
                 "lookup_type": "scoring",
@@ -1195,12 +1130,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Điểm 7,9 quy đổi thành điểm chữ gì?",
             cohort="K50",
-            scoring_tables=[scoring_table],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=[registry_table],
             program_directory=[],
         )
@@ -1227,12 +1160,10 @@ class StructuredLookupTest(unittest.TestCase):
             "source_parent_id": "K50_Dieu10",
         }
         kwargs = {
-            "scoring_tables": [],
             "formula_rules": [],
             "office_directory": [],
             "student_service_directory": [],
             "student_faculty_profiles": [],
-            "foreign_language_tables": [],
             "structured_tables_registry": [table],
             "program_directory": [],
         }
@@ -1270,11 +1201,6 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        foreign_tables = json.loads(
-            Path(
-                "data/processed/tables/foreign_language_equivalency_table.json"
-            ).read_text(encoding="utf-8")
-        )
         foreign = resolve_structured_decision(
             {
                 "lookup_type": "foreign_language",
@@ -1290,12 +1216,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="IELTS 5.5 tương đương bậc mấy?",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=foreign_tables,
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -1314,12 +1238,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Chính quy cấp bằng thứ nhất K51 học tối đa bao lâu?",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=foreign_tables,
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -1352,12 +1274,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Cho xem toàn bộ thời gian đào tạo K51",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -1375,11 +1295,6 @@ class StructuredLookupTest(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        foreign_language_tables = json.loads(
-            Path("data/processed/tables/foreign_language_equivalency_table.json").read_text(
-                encoding="utf-8"
-            )
-        )
         resolution = resolve_structured_decision(
             {
                 "lookup_type": "foreign_language",
@@ -1393,12 +1308,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="IELTS và TOEFL iBT tương đương bậc nào?",
             cohort="K50",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=foreign_language_tables,
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -1413,11 +1326,6 @@ class StructuredLookupTest(unittest.TestCase):
 
         registry = json.loads(
             Path("data/processed/tables/structured_tables_registry.json").read_text(
-                encoding="utf-8"
-            )
-        )
-        foreign_language_tables = json.loads(
-            Path("data/processed/tables/foreign_language_equivalency_table.json").read_text(
                 encoding="utf-8"
             )
         )
@@ -1436,12 +1344,10 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="IELTS 4.5 và 6.0 tương đương bậc nào?",
             cohort="K50",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=foreign_language_tables,
             structured_tables_registry=registry,
             program_directory=[],
         )
@@ -1466,7 +1372,6 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Website của Phòng Đào tạo là gì?",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[
                 {
@@ -1482,7 +1387,6 @@ class StructuredLookupTest(unittest.TestCase):
             ],
             student_service_directory=[],
             student_faculty_profiles=[],
-            foreign_language_tables=[],
             structured_tables_registry=[],
             program_directory=[],
         )
@@ -1512,7 +1416,6 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Phòng Công tác chính trị và Học sinh, sinh viên ở đâu?",
             cohort="K50",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[
                 {
@@ -1533,7 +1436,6 @@ class StructuredLookupTest(unittest.TestCase):
                     "content_type": "student_faculty_profile",
                 }
             ],
-            foreign_language_tables=[],
             structured_tables_registry=[],
             program_directory=[],
         )
@@ -1562,7 +1464,6 @@ class StructuredLookupTest(unittest.TestCase):
             },
             query="Khoa Công nghệ Thông tin ở đâu?",
             cohort="K51",
-            scoring_tables=[],
             formula_rules=[],
             office_directory=[
                 {
@@ -1583,7 +1484,6 @@ class StructuredLookupTest(unittest.TestCase):
                     "content_type": "student_faculty_profile",
                 }
             ],
-            foreign_language_tables=[],
             structured_tables_registry=[],
             program_directory=[],
         )

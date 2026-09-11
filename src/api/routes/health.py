@@ -92,11 +92,6 @@ def _required_artifacts() -> list[ArtifactStatus]:
             "config",
         ),
         _artifact(
-            "data/processed/tables/scoring_tables.json",
-            Path("data/processed/tables/scoring_tables.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
             "data/processed/tables/formula_rules.json",
             Path("data/processed/tables/formula_rules.json").is_file(),
             "processed_json",
@@ -104,13 +99,6 @@ def _required_artifacts() -> list[ArtifactStatus]:
         _artifact(
             "data/processed/tables/structured_tables_registry.json",
             Path("data/processed/tables/structured_tables_registry.json").is_file(),
-            "processed_json",
-        ),
-        _artifact(
-            "data/processed/tables/foreign_language_equivalency_table.json",
-            Path(
-                "data/processed/tables/foreign_language_equivalency_table.json"
-            ).is_file(),
             "processed_json",
         ),
         _artifact(

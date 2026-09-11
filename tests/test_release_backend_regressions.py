@@ -66,12 +66,10 @@ def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
         "guardrails": {"skip_llm_on_low_confidence": False},
     }
     pipeline.model = None
-    pipeline.scoring_tables = []
     pipeline.formula_rules = []
     pipeline.student_office_profiles = []
     pipeline.student_service_directory = []
     pipeline.student_faculty_profiles = []
-    pipeline.foreign_language_tables = []
     pipeline.structured_tables_registry = []
     pipeline.program_directory = []
     pipeline.parent_sources_by_id = {}

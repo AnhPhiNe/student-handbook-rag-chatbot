@@ -13,12 +13,10 @@ def _minimal_pipeline() -> AnswerPipeline:
         "retrieval": {"default_top_k": 5},
     }
     pipeline.model = object()
-    pipeline.scoring_tables = []
     pipeline.formula_rules = []
     pipeline.student_office_profiles = []
     pipeline.student_service_directory = []
     pipeline.student_faculty_profiles = []
-    pipeline.foreign_language_tables = []
     pipeline.structured_tables_registry = []
     pipeline.program_directory = []
 

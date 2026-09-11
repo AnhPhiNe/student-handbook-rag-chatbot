@@ -123,12 +123,10 @@ def test_formula_sources_bind_to_each_formula_parent() -> None:
         {"lookup_type": "formula", "intent": "direct_value", "slots": {}},
         query="K48-K49: cac cong thuc GPA va diem hoc bong duoc trinh bay the nao?",
         cohort="K48-K49",
-        scoring_tables=[],
         formula_rules=rules,
         office_directory=[],
         student_service_directory=[],
         student_faculty_profiles=[],
-        foreign_language_tables=[],
         structured_tables_registry=registry,
         program_directory=[],
     )

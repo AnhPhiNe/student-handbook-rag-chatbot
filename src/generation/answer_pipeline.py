@@ -172,7 +172,6 @@ class AnswerPipeline:
         self.config = load_yaml(self.config_path)
         self.retrieval_config = load_retrieval_runtime_config()
 
-        self.scoring_tables = load_json(self.config["input"]["scoring_tables"])
         self.formula_rules = load_json(self.config["input"]["formula_rules"])
         student_service_directory_path = self.config["input"].get(
             "student_service_directory"
@@ -199,15 +198,6 @@ class AnswerPipeline:
             load_json(student_faculty_profiles_path)
             if student_faculty_profiles_path
             and Path(student_faculty_profiles_path).is_file()
-            else []
-        )
-        foreign_language_table_path = self.config["input"].get(
-            "foreign_language_equivalency_table"
-        )
-        self.foreign_language_tables = (
-            load_json(foreign_language_table_path)
-            if foreign_language_table_path
-            and Path(foreign_language_table_path).is_file()
             else []
         )
         structured_tables_registry_path = self.config["input"].get(
@@ -1361,12 +1351,10 @@ class AnswerPipeline:
                 str(task.get("question") or "")
             ),
             cohort=cohort,
-            scoring_tables=self.scoring_tables,
             formula_rules=self.formula_rules,
             office_directory=self.student_office_profiles,
             student_service_directory=self.student_service_directory,
             student_faculty_profiles=self.student_faculty_profiles,
-            foreign_language_tables=self.foreign_language_tables,
             structured_tables_registry=self.structured_tables_registry,
             program_directory=self.program_directory,
             model=self.model,

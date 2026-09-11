@@ -225,6 +225,9 @@ class AnswerPipeline:
         self.llm_config = llm_config
         if llm_config.get("provider") != "gemini":
             raise ValueError("AnswerPipeline requires llm.provider='gemini'.")
+        self.model_name = str(llm_config.get("model_name") or "").strip()
+        if not self.model_name:
+            raise ValueError("AnswerPipeline requires llm.model_name.")
 
         if env_bool("STUDENT_RAG_OFFLINE_EVAL"):
             self.config.setdefault("cache", {})["enabled"] = False
@@ -577,7 +580,7 @@ class AnswerPipeline:
             u = llm_result.get("usage") or {}
             tracker.record(
                 step_name="LLM Generation",
-                model=llm_result.get("model_used") or "gemini-3.1-flash-lite",
+                model=llm_result.get("model_used") or self.model_name,
                 input_tokens=u.get("input", 0),
                 output_tokens=u.get("output", 0),
                 total_tokens=u.get("total", 0),
@@ -681,9 +684,7 @@ class AnswerPipeline:
             or query_handling.get("context_mode")
             or "standalone"
         )
-        model_name = (getattr(self, "llm_config", {}) or {}).get(
-            "model_name", "gemini-3.1-flash-lite"
-        )
+        model_name = getattr(self, "model_name", None)
 
         resolved_fallback = fallback_reason or (
             "none" if status in {"answered", "streaming"} else status
@@ -1642,9 +1643,7 @@ class AnswerPipeline:
                     provider = llm_config.get("provider", "gemini")
                     if provider == "gemini":
                         self._llm_client = GeminiClient(
-                            model_name=llm_config.get(
-                                "model_name", "gemini-3.1-flash-lite"
-                            ),
+                            model_name=llm_config["model_name"],
                             temperature=llm_config.get("temperature", 0.2),
                             max_output_tokens=llm_config.get(
                                 "max_output_tokens", 1024
@@ -1699,8 +1698,7 @@ class AnswerPipeline:
             query_handling = None
         run_id = None
         if model_used is None:
-            llm_cfg = getattr(self, "llm_config", {}) or {}
-            model_used = llm_cfg.get("model_name", "gemini-3.1-flash-lite")
+            model_used = getattr(self, "model_name", None)
         return {
             "run_id": run_id,
             "query": query,

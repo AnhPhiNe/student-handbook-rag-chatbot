@@ -323,12 +323,6 @@ def evaluate_retrieval(
                         "synthetic_leak": case["case_type"] == "regulation_true_rag"
                         and not content_ok,
                         "retrieval_telemetry": retrieval_telemetry,
-                        "phoranker_candidate_chunks": int(
-                            retrieval_telemetry.get("phoranker_candidate_chunks") or 0
-                        ),
-                        "phoranker_candidate_parents": int(
-                            retrieval_telemetry.get("phoranker_candidate_parents") or 0
-                        ),
                         "graph_neighbor_chunks_selected": int(
                             retrieval_telemetry.get("graph_neighbor_chunks_selected")
                             or 0
@@ -457,20 +451,6 @@ def _retrieval_summary(
                     float(row.get("hit_at_5", 0.0))
                     for row in headline
                     if row.get("eval_split") == "stress"
-                ]
-            ),
-            "phoranker_candidate_chunks": latency_summary(
-                [
-                    float(row.get("phoranker_candidate_chunks") or 0)
-                    for row in rows
-                    if row.get("phoranker_candidate_chunks") is not None
-                ]
-            ),
-            "phoranker_candidate_parents": latency_summary(
-                [
-                    float(row.get("phoranker_candidate_parents") or 0)
-                    for row in rows
-                    if row.get("phoranker_candidate_parents") is not None
                 ]
             ),
         }

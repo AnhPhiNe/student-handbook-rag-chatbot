@@ -105,7 +105,9 @@ def test_answer_pipeline_initializes_llm_once_under_concurrency(monkeypatch) -> 
 
     monkeypatch.setattr(answer_pipeline_module, "GeminiClient", FakeGeminiClient)
     pipeline = AnswerPipeline.__new__(AnswerPipeline)
-    pipeline.config = {"llm": {"provider": "gemini"}}
+    pipeline.config = {
+        "llm": {"provider": "gemini", "model_name": "gemini-3.1-flash-lite"}
+    }
     pipeline._llm_client = None
     pipeline._component_init_lock = Lock()
 

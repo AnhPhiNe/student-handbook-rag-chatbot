@@ -100,7 +100,6 @@ def generate_answers(
                     "id": case["id"],
                     **clean_output,
                     "evaluation_retrieval_mode": DEFAULT_RETRIEVAL_MODE,
-                    "phoranker_used": False,
                     "latency_ms": (time.perf_counter() - started) * 1000,
                 }
             except Exception as exc:
@@ -139,7 +138,6 @@ def generate_answers(
         "summary": {
             "n": len(rows),
             "retrieval_mode": DEFAULT_RETRIEVAL_MODE,
-            "phoranker_used": False,
             "success_rate": safe_mean(
                 [float(row.get("status") == "answered") for row in rows]
             ),

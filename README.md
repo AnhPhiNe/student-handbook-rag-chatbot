@@ -29,16 +29,19 @@
 
 1. [Overview](#overview)
 2. [Highlights](#highlights)
-3. [Architecture](#architecture)
-4. [Knowledge base](#knowledge-base)
-5. [Evaluation](#evaluation)
-6. [Getting started](#getting-started)
-7. [API](#api)
-8. [Project structure](#project-structure)
-9. [Deployment](#deployment)
-10. [Limitations and roadmap](#limitations-and-roadmap)
-11. [Documentation](#documentation)
-12. [License](#license)
+3. [Architecture](#architecture): [request lifecycle](#request-lifecycle), [a query plan in practice](#a-query-plan-in-practice), [deep dives](#deep-dives)
+4. [Design decisions](#design-decisions)
+5. [Knowledge base](#knowledge-base)
+6. [Evaluation](#evaluation)
+7. [Getting started](#getting-started)
+8. [API](#api)
+9. [Frontend](#frontend)
+10. [Operations and security](#operations-and-security)
+11. [Project structure](#project-structure)
+12. [Deployment](#deployment)
+13. [Limitations and roadmap](#limitations-and-roadmap)
+14. [Documentation](#documentation)
+15. [License](#license)
 
 ## Overview
 
@@ -59,7 +62,7 @@ The web app also includes a GPA calculator, credit and tuition tools, scholarshi
 
 ## Highlights
 
-- **The LLM plans and the code verifies.** Qwen3 on Groq returns a JSON-schema `QueryPlan`: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer checks each slot against the question text (`slot_spans`), registry aliases and cohort rules. An invalid task becomes a clarification or a RAG task; the plan is never trusted blindly.
+- **The LLM plans and the code verifies.** Qwen3 on Groq returns a JSON-schema `QueryPlan`: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer drops any slot value that does not appear in the question, checks lookup types and cohorts against the registry, and turns a task it cannot trust into a clarifying question or a RAG task. The plan is never trusted blindly.
 - **Exact facts come from tables, not from generation.** Nine lookup capabilities run over reviewed JSON catalogs: grading scales, foreign-language equivalency, scholarship classification, study duration, formulas, and office, faculty, program and student-service directories. A unique match becomes a `resolved_result` that the writer is instructed to keep verbatim.
 - **Hybrid retrieval.** `BAAI/bge-m3` dense search in Qdrant and in-process BM25 are fused with reciprocal rank fusion (k = 60). An optional Cohere `rerank-v4.0-fast` pass reorders the top 16 children. Children then expand to their full parent article from MongoDB. An offline cross-reference graph adds related-article links for the UI.
 - **Cohort isolation end to end.** Every task runs per cohort, and retrieved sources and citations are filtered to the cohort that was asked for.
@@ -106,6 +109,173 @@ flowchart TD
 | Only part of a compound question is answerable | The answered parts plus a question about the missing part |
 | No key is available or the provider fails | An explicit error status; failures are never cached |
 | The reranker is unavailable | The original RRF order is used and the request continues |
+
+### A query plan in practice
+
+For *"K51: IELTS 6.0 tương đương bậc mấy? Và muốn bảo lưu kết quả học tập cần điều kiện gì?"* (what CEFR level IELTS 6.0 maps to, and what is required to defer one's studies), the planner returns two tasks:
+
+```json
+{
+  "context_mode": "standalone",
+  "out_of_domain": false,
+  "tasks": [
+    {
+      "id": "t1", "mode": "structured", "intent": "direct_value",
+      "lookup_type": "foreign_language",
+      "question": "IELTS 6.0 tương đương bậc mấy?",
+      "slots":      {"certificate_or_language": "IELTS", "score_or_level": "6.0"},
+      "slot_spans": {"certificate_or_language": "IELTS", "score_or_level": "6.0"},
+      "cohorts": ["K51"], "clarification_question": null
+    },
+    {
+      "id": "t2", "mode": "rag", "intent": "open_question", "lookup_type": null,
+      "question": "Muốn bảo lưu kết quả học tập cần điều kiện gì?",
+      "slots": {}, "slot_spans": {},
+      "cohorts": ["K51"], "clarification_question": null
+    }
+  ]
+}
+```
+
+`t1` reads the K51 foreign-language equivalency table and locks the result: IELTS 6.0 falls in the 5.5–6.5 band, which is level 4 (`matched_level: bac_4`). `t2` retrieves the K51 regulation on deferring studies. Both results go into one evidence packet and one answer. If the planner had written `"score_or_level": "7.0"`, a score the student never typed, the normalizer would drop it. The lookup would still return the IELTS row, but with no matched level, so the answer could not state a level for a score nobody asked about.
+
+### Deep dives
+
+<details>
+<summary><strong>Query understanding: planner and normalizer</strong></summary>
+
+```mermaid
+flowchart TD
+    Q["Question + cohort + recent history"] --> Slang["Expand student slang and abbreviations"]
+    Slang --> Hit{"Router cache hit?"}
+    Hit -->|yes| Done["Validated plan"]
+    Hit -->|no| Key["Take a Groq key from the quota-aware pool"]
+    Key --> LLM["Qwen3: QueryPlan as native JSON schema<br/>lookup registry and cohort years in the prompt"]
+    LLM -.->|429| Next["Cool that key down, try the next key"]
+    Next -.-> Key
+    LLM -.->|timeout or 5xx after retries| Safe["Safe RAG plan"]
+    LLM --> Norm["Normalizer, per task"]
+    Norm --> Count{"Numbered requests<br/>match the task count?"}
+    Count -->|no| Repair["One repair call, then normalize again"]
+    Repair -->|still no| Safe
+    Repair -->|yes| Fatal
+    Count -->|yes| Fatal{"Unreadable task or invalid<br/>structured task left?"}
+    Fatal -->|yes| Safe
+    Fatal -->|no| Done
+    Done --> Cache[("Router cache")]
+```
+
+What the normalizer does to each task:
+
+| Check | Effect |
+|---|---|
+| A slot value does not appear in the question | The value is dropped |
+| A required slot is still missing | The task becomes a clarifying question for that value |
+| The lookup type is not in the registry | The task becomes a clarifying question |
+| Any other structured-contract error | Only that task falls back to RAG; sibling tasks are kept |
+| `out_of_domain` is set but the question uses handbook vocabulary | The flag is overridden and the question is answered from the handbook |
+
+</details>
+
+<details>
+<summary><strong>Structured lookup</strong></summary>
+
+```mermaid
+flowchart TD
+    T["Structured task: lookup_type, slots, cohort"] --> D{"lookup_type"}
+    D -->|"scoring · foreign_language ·<br/>study_duration · scholarship_classification"| Tables["Select reviewed tables<br/>that apply to the cohort"]
+    D -->|"office · faculty · program · student_service"| Dir["Match unit names and aliases<br/>in the directory profiles"]
+    D -->|formula| F["Formula rule, variables and source<br/>no calculation"]
+    Tables --> One{"Grounded inputs and<br/>exactly one matching row?"}
+    One -->|yes| Resolved["resolved: table + resolved_result (fact lock)"]
+    One -->|no| Evidence["evidence_only: the full table"]
+    Tables -->|required input missing| Clarify["needs_clarification"]
+    Dir -->|match| Records["evidence_only: matching records"]
+    Dir -->|ambiguous| Clarify
+    D -->|nothing found| Fallback["No result: the task uses RAG"]
+```
+
+`resolved_result` exists only when the inputs are grounded and exactly one row applies. The full table is always kept beside it, so the writer can explain the value in context.
+
+</details>
+
+<details>
+<summary><strong>Retrieval</strong></summary>
+
+```mermaid
+flowchart TD
+    Q["RAG task query + cohort"] --> Dense["bge-m3 embedding<br/>Qdrant search with cohort filter<br/>top 24 children"]
+    Q --> Lex["In-process BM25<br/>built from Qdrant payloads at startup<br/>top 24 children"]
+    Dense -->|no dense hits| None["No evidence for this task"]
+    Dense --> RRF["Reciprocal rank fusion, k = 60<br/>pool of 24"]
+    Lex --> RRF
+    RRF --> Rerank["Cohere rerank-v4.0-fast<br/>first 16 children"]
+    Rerank -->|valid ordering| Group["Group children by parent article<br/>keep the top 5 parents"]
+    Rerank -.->|"no key · 429 · timeout · invalid"| Group
+    Group --> Mongo[("MongoDB parents<br/>with an in-process LRU cache")]
+    Mongo --> Evidence["Primary evidence: full articles<br/>plus the matching child text"]
+    Group --> Graph["Cross-reference graph<br/>NetworkX, depth 2"]
+    Graph --> Related["related_references<br/>UI navigation only, never evidence"]
+```
+
+Children are small, so matching stays precise; the writer always receives the full parent article, so the context stays complete. The `no_graph` and `vector_only` modes switch off the graph and BM25 for ablations.
+
+</details>
+
+<details>
+<summary><strong>One streaming request, end to end</strong></summary>
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Client
+    participant A as FastAPI /chat/stream
+    participant P as AnswerPipeline
+    participant G as Groq planner
+    participant S as Qdrant, BM25, MongoDB
+    participant R as Response cache
+    participant M as Gemini composer
+    C->>A: question, cohort, recent history
+    A-->>C: queued (repeats while waiting for a slot)
+    A->>P: start
+    P-->>C: progress (analyzing the question)
+    P->>G: plan (router cache first)
+    G-->>P: QueryPlan
+    P-->>C: progress (searching the handbook)
+    P->>S: lookups and retrieval, one task at a time
+    S-->>P: evidence
+    alt nothing answerable
+        P-->>C: token (clarification or out-of-scope reply), done
+    else answerable
+        P->>R: evidence-bound cache key
+        alt cache hit
+            P-->>C: metadata, token (cached answer), done
+        else cache miss
+            P-->>C: progress (composing), metadata (citations, tables)
+            P->>M: evidence packet
+            M-->>P: text chunks
+            P-->>C: token, token, ..., done
+            P->>R: store the answer
+        end
+    end
+    A-)A: send the trace to LangSmith in the background
+```
+
+`/chat` runs the same preparation and returns the finished answer as one JSON response.
+
+</details>
+
+## Design decisions
+
+| Decision | Alternative | Why |
+|---|---|---|
+| The planner emits a typed plan; code validates and executes it | A free-form tool-calling agent | Every step can be inspected and unit-tested, and invented values never reach a lookup |
+| Exact values come from reviewed tables and are locked into the prompt | Letting the writer read tables from retrieved text | PDF tables flatten badly, and grades or equivalencies must be exact |
+| Small children are embedded; answers use full parent articles | Embedding whole articles | Precise matching plus complete context for the writer |
+| Dense and BM25 are fused with RRF | Dense search only | Exact terms such as certificate names, cohort codes and article numbers need lexical matching |
+| The reranker is optional and fails open | A mandatory reranker | A provider limit should cost ranking quality, not the answer |
+| Separate models for planning and writing | One large model for both | Each role has a narrow contract; a small fast planner keeps latency and cost down |
+| A frozen, source-anchored benchmark with run snapshots | Ad-hoc spot checks | Every change is compared on identical cases against a recorded runtime |
 
 ## Knowledge base
 
@@ -210,6 +380,8 @@ Interactive API docs are then served at `http://127.0.0.1:8000/docs`.
 | `COHERE_API_KEYS` | no | Reranker key pool; without it retrieval uses the RRF order |
 | `REDIS_URL` | no | Shared response cache; without it an in-memory cache is used |
 | `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT` | no | Request tracing and user feedback |
+| `STUDENT_RAG_CORS_ORIGINS` | no | Comma-separated browser origins allowed to call the API (needed when the frontend is on another domain) |
+| `STUDENT_RAG_ADMIN_API_KEY` | no | Enables `/health/artifacts` through the `X-Admin-API-Key` header |
 | `STUDENT_RAG_RATE_LIMIT_PER_MINUTE`, `STUDENT_RAG_MAX_CONCURRENT_CHAT`, ... | no | Admission and rate-limit overrides |
 
 [`.env.example`](.env.example) lists every setting with its default. Keep `.env` out of version control.
@@ -239,7 +411,9 @@ python -m ruff check src tests --select E,F --ignore E402,E501
 python scripts/check_deploy_artifacts.py # required runtime files and build manifest
 ```
 
-CI runs these checks, plus the frontend lint and build, on every push and pull request to `main`.
+The test suite covers the API contracts, planner prompt and normalizer, every structured lookup, retrieval fusion and reranking, the key pools, the response cache, the build scripts and the evaluators. No test needs network access or API keys. CI runs these checks, plus the frontend lint and build, on every push and pull request to `main`.
+
+Behavior-preserving refactors are also checked with an equivalence test: a byte-for-byte rebuild of `data/processed/` for build code, an offline regrade of saved evaluation runs for evaluators, or a fake-provider comparison for provider clients.
 
 ## API
 
@@ -260,6 +434,29 @@ curl -X POST http://127.0.0.1:8000/chat \
 ```
 
 The response carries `answer`, `status` (`answered`, `needs_clarification`, `out_of_domain`, `low_confidence`, ...), `citations`, `structured_results` and `related_references`.
+
+## Frontend
+
+The React 19 + TypeScript client ([`frontend/`](frontend)) is a mobile-first single-page app:
+
+- **Chat.** A cohort picker, answers streamed token by token over SSE, citations that open the source article, structured results rendered as tables, related-article links, and thumbs-up or thumbs-down feedback.
+- **Status.** A badge reads `/health/readiness`, so users can see when the backend is degraded.
+- **Tools.** A GPA calculator, a target-GPA planner, credit and tuition helpers, scholarship rules, downloadable forms and a student survival guide. These run in the browser and need no API calls.
+
+Conversation history lives in the browser's `sessionStorage` and is sent with each request; the server does not store chats.
+
+## Operations and security
+
+| Concern | Implementation |
+|---|---|
+| Admission control | At most 3 chats at a time, a queue of 10 and a 15 s wait; beyond that, HTTP 503 for `/chat` or a `server_busy` event for `/chat/stream` |
+| Rate limits | 5 requests per minute per client and 120 per minute per IP, answered with HTTP 429 and `Retry-After`; questions longer than 1,000 characters are rejected |
+| Provider quotas | One `KeyPool` per provider rotates keys under per-key request, token and daily limits and cools a key down after a 429 |
+| Caching | A router cache for plans, and an answer cache keyed by the question, cohort, selected evidence and prompt versions (Redis, 24 h TTL, or an in-memory fallback) |
+| Observability | One LangSmith trace per request, with child runs and token usage for the planner and the composer; feedback is attached to the same run |
+| Health | `/health` for liveness, `/health/readiness` for Qdrant, MongoDB, BM25 and artifacts, and an admin-only `/health/artifacts` |
+| Secrets | Keys are read from environment variables only; key-pool state and logs store a SHA-256 fingerprint, never the key itself |
+| Privacy | The server keeps no chat log. With LangSmith tracing on, questions and answers are sent to LangSmith |
 
 ## Project structure
 

@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import pytest
 
 from scripts import push_to_mongo, push_to_qdrant, verify_remote_build
+from src.common.io import sha256_file
 
 
 def _write_json(path: Path, value: object) -> None:
@@ -34,7 +35,7 @@ def test_qdrant_publish_requires_matching_manifest_and_build_id(
             "storage_targets": {"qdrant_collection": "qdrant-v30"},
             "artifacts": {
                 "child_chunks": {
-                    "sha256": push_to_qdrant.sha256_file(data_path),
+                    "sha256": sha256_file(data_path),
                     "count": 1,
                 }
             },
@@ -76,7 +77,7 @@ def test_mongo_publish_requires_matching_manifest_and_build_id(
             "storage_targets": {"mongo_parent_collection": "parents-v30"},
             "artifacts": {
                 "parent_docstore": {
-                    "sha256": push_to_mongo.sha256_file(data_path),
+                    "sha256": sha256_file(data_path),
                     "count": 1,
                 }
             },

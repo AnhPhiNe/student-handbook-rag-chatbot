@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.common.io import sha256_file
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 from scripts.build_parent_child_artifacts import validate_separation_contract
 
@@ -28,14 +29,6 @@ DEFAULT_TABLE_EMBEDDING_AUDIT_PATH = Path(
     "data/processed/metadata/structured_table_embedding_audit.json"
 )
 DEFAULT_OUTPUT_PATH = Path("data/processed/metadata/build_manifest.json")
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def _canonical_digest(value: Any) -> str:

@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 import os
 
+from src.common.cohort import DOCUMENT_ID_BY_COHORT
 from src.common.io import load_json, load_yaml, save_json
 from .regulation_chunker import build_regulation_chunks
 from .report_builder import build_chunk_report
@@ -9,12 +10,6 @@ from .validator import validate_chunks, validate_parent_links
 
 
 CONFIG_PATH = Path("configs/chunking.yaml")
-DOCUMENT_ID_BY_COHORT = {
-    "K48-K49": "so_tay_sinh_vien_khoa_48_49",
-    "K50": "so_tay_sinh_vien_khoa_50",
-    "K51": "so_tay_sinh_vien_khoa_51",
-    "K50-K51": "so_tay_sinh_vien_khoa_51",
-}
 
 
 def attach_cohort_metadata(

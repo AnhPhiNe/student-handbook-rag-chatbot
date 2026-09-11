@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
 import sys
@@ -13,6 +12,8 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.common.io import sha256_file
 
 
 ALLOWED_COHORTS = {"K48-K49", "K50", "K51"}
@@ -114,14 +115,6 @@ def main() -> None:
         },
     )
     print(f"Table embedding audit -> {args.table_embedding_audit}")
-
-
-def _sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def _normalize_table_cell(value: Any) -> str:
@@ -269,9 +262,9 @@ def build_table_embedding_audit_report(
     return {
         "schema_version": "structured-table-embedding-audit-v1",
         "docstore_path": str(docstore_path),
-        "docstore_sha256": _sha256_file(docstore_path),
+        "docstore_sha256": sha256_file(docstore_path),
         "structured_registry_path": str(registry_path),
-        "structured_registry_sha256": _sha256_file(registry_path),
+        "structured_registry_sha256": sha256_file(registry_path),
         "child_output_path": str(child_output_path),
         "child_count": child_count,
         "total_table_like_rows": len(rows),

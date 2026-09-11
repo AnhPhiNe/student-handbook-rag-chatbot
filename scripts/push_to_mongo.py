@@ -1,5 +1,4 @@
 import os
-import hashlib
 import json
 import sys
 from collections import Counter
@@ -7,21 +6,13 @@ from collections import Counter
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
-from src.common.io import load_json
+from src.common.io import load_json, sha256_file
 from pathlib import Path
 from scripts.build_parent_child_artifacts import validate_publish_separation
 
 
 BUILD_MANIFEST_PATH = Path("data/processed/metadata/build_manifest.json")
 DOCSTORE_DEFAULT_PATH = Path("data/processed/chunks/all_docstore_items.json")
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def validate_build_contract(

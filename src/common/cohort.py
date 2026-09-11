@@ -24,16 +24,24 @@ COHORT_REGISTRY: dict[str, dict[str, Any]] = {
             "48_49",
         ),
         "admission_years": (2022, 2023),
+        "document_id": "so_tay_sinh_vien_khoa_48_49",
     },
     "K50": {
         "aliases": ("K50",),
         "admission_years": (2024,),
+        "document_id": "so_tay_sinh_vien_khoa_50",
     },
     "K51": {
         "aliases": ("K51",),
         "legacy_aliases": ("K50-K51", "50-51", "K50K51"),
         "admission_years": (2025,),
+        "document_id": "so_tay_sinh_vien_khoa_51",
     },
+}
+
+# Handbook PDF each cohort is built from.
+DOCUMENT_ID_BY_COHORT = {
+    cohort: spec["document_id"] for cohort, spec in COHORT_REGISTRY.items()
 }
 
 

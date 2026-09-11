@@ -25,6 +25,9 @@ import requests
 ROOT = Path(__file__).resolve().parents[1]
 if __package__ in {None, ""}:
     sys.path.insert(0, str(ROOT))
+
+from src.common.io import sha256_file
+
 DEFAULT_CASES = ROOT / "data/eval/official_v1/retrieval_cases.json"
 DEFAULT_CAPTURE = ROOT / (
     "data/eval/reports/official_v1_retrieval_layer_bge_top12_"
@@ -41,14 +44,6 @@ EXPECTED_EVENT_COUNT = 157
 
 class EvaluationError(RuntimeError):
     """Raised when experiment identity or output invariants do not hold."""
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def sha256_text(value: str) -> str:

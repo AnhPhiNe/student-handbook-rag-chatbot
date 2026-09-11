@@ -16,6 +16,7 @@ from scripts.build_parent_child_artifacts import (
 )
 from tests.test_build_artifact_manifest import _inputs, _write_json
 from tests.test_table_separation_candidate import fixture
+from src.common.io import sha256_file
 
 
 def test_reviewed_page_correction_preserves_content_and_updates_children():
@@ -98,7 +99,7 @@ def separated_inputs(tmp_path):
         },
     }
     audit = {
-        "structured_registry_sha256": push_to_mongo.sha256_file(inputs["table_path"]),
+        "structured_registry_sha256": sha256_file(inputs["table_path"]),
         "child_count": 3,
         "total_table_like_rows": 0,
         "excluded_as_structured": 0,

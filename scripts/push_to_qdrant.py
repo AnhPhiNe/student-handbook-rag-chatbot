@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
 
 from src.common.storage_config import require_qdrant_collection_name
 from src.retrieval.runtime_config import load_retrieval_runtime_config
+from src.common.io import sha256_file
 from scripts.build_parent_child_artifacts import validate_publish_separation
 
 
@@ -29,14 +30,6 @@ BUILD_MANIFEST_PATH = Path("data/processed/metadata/build_manifest.json")
 def string_to_uuid(value: str) -> str:
     digest = hashlib.md5(value.encode("utf-8")).hexdigest()
     return str(uuid.UUID(digest))
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def validate_build_contract(

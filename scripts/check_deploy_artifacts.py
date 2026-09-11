@@ -3,7 +3,6 @@ from __future__ import annotations
 # ruff: noqa: E402
 
 import argparse
-import hashlib
 import json
 import sys
 from pathlib import Path
@@ -13,6 +12,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from src.common.console import configure_utf8_stdio
+from src.common.io import sha256_file
 from src.common.runtime_artifacts import RUNTIME_FILES
 from src.ingestion.pdf_loader import HANDBOOK_HEADER_PATTERN
 from src.retrieval.runtime_config import DEFAULT_RETRIEVAL_CONFIG_PATH
@@ -66,14 +66,6 @@ def validate_artifact(path: Path) -> str | None:
     return None
 
 
-def _sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
-
-
 def validate_build_manifest(path: Path = BUILD_MANIFEST_PATH) -> list[str]:
     """Return artifact identity mismatches declared by a build manifest."""
 
@@ -103,7 +95,7 @@ def validate_build_manifest(path: Path = BUILD_MANIFEST_PATH) -> list[str]:
             continue
 
         expected_sha = str(record.get("sha256") or "").strip().lower()
-        actual_sha = _sha256_file(artifact_path)
+        actual_sha = sha256_file(artifact_path)
         if not expected_sha:
             errors.append(f"{name}: missing sha256")
         elif expected_sha != actual_sha:

@@ -126,7 +126,7 @@ def test_manifest_binds_table_embedding_audit_to_registry_and_build(
     table_path = Path(inputs["table_path"])
     child_path = Path(inputs["child_path"])
     audit_path = tmp_path / "table_embedding_audit.json"
-    from scripts.build_artifact_manifest import sha256_file
+    from src.common.io import sha256_file
 
     _write_json(
         audit_path,

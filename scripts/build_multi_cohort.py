@@ -8,6 +8,7 @@ import re
 import shutil
 
 from scripts.derive_foreign_language_policy import derive_foreign_language_policy
+from src.common.cohort import COHORT_REGISTRY, DOCUMENT_ID_BY_COHORT
 from src.common.io import load_json, save_json
 from src.common.text import fold_text
 from src.extraction.program_faculty_enricher import (
@@ -16,7 +17,7 @@ from src.extraction.program_faculty_enricher import (
 )
 
 
-VALID_COHORTS = {"K48-K49", "K50", "K51"}
+VALID_COHORTS = set(COHORT_REGISTRY)
 LEGACY_COHORT_PREFIXES = ("K50-K51_",)
 GENERATED_OUTPUT_DIRS = (
     Path("data/processed/chunks"),
@@ -24,11 +25,6 @@ GENERATED_OUTPUT_DIRS = (
     Path("data/processed/tables"),
     Path("data/processed/metadata"),
 )
-DOCUMENT_ID_BY_COHORT = {
-    "K48-K49": "so_tay_sinh_vien_khoa_48_49",
-    "K50": "so_tay_sinh_vien_khoa_50",
-    "K51": "so_tay_sinh_vien_khoa_51",
-}
 
 
 def get_cohort_from_filename(filename: str) -> str:

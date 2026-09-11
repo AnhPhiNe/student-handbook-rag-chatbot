@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -32,3 +33,13 @@ def load_yaml(path: str | Path) -> dict[str, Any]:
         raise FileNotFoundError(f"Missing YAML file: {source}")
     with source.open("r", encoding="utf-8") as file:
         return yaml.safe_load(file)
+
+
+def sha256_file(path: str | Path) -> str:
+    """Return the SHA-256 hex digest of a file, read in 1 MiB blocks."""
+
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()

@@ -34,7 +34,7 @@ def _snapshot(suite: str, case_path) -> dict:
         "pipeline_version": PIPELINE_VERSION,
         "retrieval_mode": DEFAULT_RETRIEVAL_MODE,
         "cohere_reranker": {"enabled": bool(reranker.get("enabled")), "model": reranker.get("model")},
-        "planner": {"provider": router.provider, "model": router.model_name,
+        "planner": {"provider": "groq", "model": router.model_name,
                     "prompt_version": ROUTER_PROMPT_VERSION,
                     "reasoning_effort": router._resolved_reasoning_effort(),
                     "normalizer_version": QUERY_PLAN_NORMALIZER_VERSION},

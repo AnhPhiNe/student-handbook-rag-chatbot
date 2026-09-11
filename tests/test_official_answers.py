@@ -103,3 +103,15 @@ def test_structured_gold_is_scoped_to_requested_answer():
     assert "Xuất sắc" in cases[101]["ground_truth"] and "Giỏi" in cases[101]["ground_truth"]
     assert "Học tập" in cases[121]["required_facts"][0]
     assert "Rèn luyện" in cases[121]["required_facts"][1]
+
+
+def test_official_run_snapshot_records_the_planner_identity(monkeypatch):
+    """The snapshot is built before any model call; it must not touch removed router fields."""
+    from scripts.run_official_answers import _snapshot
+
+    monkeypatch.setenv("GROQ_ROUTER_API_KEYS", "test-key")
+    snapshot = _snapshot("retrieval", BUNDLE / "retrieval_cases.json")
+
+    assert snapshot["planner"]["provider"] == "groq"
+    assert snapshot["planner"]["model"]
+    assert snapshot["dataset"] == "data/eval/official_v1/retrieval_cases.json"

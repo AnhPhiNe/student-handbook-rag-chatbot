@@ -191,7 +191,20 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
                 slot_spec.get("enum") or slot_spec.get("canonical_values") or []
             )
             if allowed_values:
-                compact_spec["values"] = allowed_values
+                aliases = slot_spec.get("span_aliases") or {}
+                # Codes such as "secondary_bridge" are opaque to the planner, so
+                # map each to its first alias; self-describing codes map to
+                # themselves.
+                meanings = {
+                    value: aliases[value][0]
+                    for value in allowed_values
+                    if aliases.get(value) and value not in aliases[value]
+                }
+                compact_spec["values"] = (
+                    {value: meanings.get(value, value) for value in allowed_values}
+                    if meanings
+                    else allowed_values
+                )
             slot_contract[slot_name] = compact_spec
         lines.append(
             "|".join(

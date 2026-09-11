@@ -44,7 +44,10 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert "điểm học bổng từ điểm học tập và rèn luyện=scholarship_score" in prompt_registry
     assert "Điểm hoặc tên mức xếp loại được hỏi" in prompt_registry
     assert '"aspect":{"type":"string"' in prompt_registry
-    assert '"values":["amount","classification"]' in prompt_registry
+    assert '"values":{"amount":"mức tiền","classification":"xếp loại"}' in prompt_registry
+    assert '"secondary_bridge":"liên thông từ trung cấp"' in prompt_registry
+    # Self-describing codes keep their code instead of repeating an alias.
+    assert '"email":"email"' in prompt_registry
     scholarship_contract = prompt_registry.split("scholarship_classification|", 1)[1].split(
         "\n", 1
     )[0]
@@ -195,10 +198,11 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         router._plan_response_format_payload(),
     )
 
-    # Optional scoring scope adds a small, explicit selector contract.
-    assert stats["total_chars"] <= 10950
-    assert stats["estimated_input_tokens"] <= 2750
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v41-explicit-request-count"
+    # Control-value meanings and the clarify-vs-RAG boundary cost ~240 tokens
+    # over v41; keep the cap tight so the prompt cannot creep.
+    assert stats["total_chars"] <= 12000
+    assert stats["estimated_input_tokens"] <= 3000
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v42-control-value-meanings"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert "native JSON Schema" in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
@@ -249,7 +253,11 @@ def test_planner_prompt_treats_compare_as_presentation_and_slots_as_grounded() -
 def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
     assert "tham chiếu thật sự mơ hồ" in PLANNER_PROMPT_TEXT
     assert "như loại cảnh báo" not in PLANNER_PROMPT_TEXT
-    assert "Target rõ về trạng thái hiện thời" in PLANNER_PROMPT_TEXT
+    # Only data the school holds routes to RAG; values the user knows clarify.
+    assert "chỉ hệ thống nhà trường có, không nằm trong Sổ tay" in PLANNER_PROMPT_TEXT
+    assert "chưa nêu giá trị họ tự biết" in PLANNER_PROMPT_TEXT
+    # "vận hành" also describes student_service, so it must not route to RAG.
+    assert "hoặc vận hành mà Sổ tay" not in PLANNER_PROMPT_TEXT
     assert "vì target rõ nhưng nguồn có thể thiếu dữ liệu" in PLANNER_PROMPT_TEXT
 
 

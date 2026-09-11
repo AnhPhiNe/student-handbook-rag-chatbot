@@ -44,7 +44,7 @@ DEFAULT_COHERE_ROUTER_MODEL = "command-a-plus-05-2026"
 # slot_spans; 1024 completed naturally (~820 reasoning tokens) in probes.
 DEFAULT_COHERE_THINKING_TOKEN_BUDGET = 1024
 COHERE_CHAT_URL = "https://api.cohere.com/v2/chat"
-ROUTER_PROMPT_VERSION = "structured-regulation-v41-explicit-request-count"
+ROUTER_PROMPT_VERSION = "structured-regulation-v42-control-value-meanings"
 PLANNER_DIAGNOSTIC_SCHEMA_VERSION = "planner-decision-diagnostics-v1"
 _planner_diagnostics_scope: ContextVar[bool] = ContextVar(
     "planner_diagnostics_scope", default=False
@@ -313,7 +313,8 @@ không trả lời.
 - Tách task khi các phần hỏi về đối tượng/chủ đề độc lập hoặc cần mode/lookup
   khác nhau. Từ nối "và" hoặc "so sánh" không tự quyết định số task.
 - Nhiều entity dùng cùng một structured lookup và cùng phép tra được gộp trong
-  một task; giữ đủ entity và ý so sánh trong task.question.
+  một task, slot là danh sách entity; giữ đủ entity và ý so sánh trong
+  task.question.
 - Mỗi task chỉ có một mode và tối đa một lookup_type. Structured target và RAG
   target luôn là hai task; composer mới kết hợp kết quả.
 - TASK IDENTITY không phụ thuộc cohort: M target trên N cohort vẫn là M task,
@@ -348,11 +349,14 @@ không trả lời.
   nếu TOOLS có công thức tương ứng, kể cả khi QUERY không viết từ "công thức".
 - So sánh là yêu cầu trình bày, không phải intent. Không dùng intent=compare;
   giữ ý so sánh trong task.question và mọi cohort cần tra.
-- clarify chỉ khi một task thiếu slot required hoặc có tham chiếu thật sự mơ hồ.
+- clarify khi task thiếu slot required, có tham chiếu thật sự mơ hồ, hoặc người
+  hỏi muốn tra kết quả của chính mình nhưng chưa nêu giá trị họ tự biết (vd. hỏi
+  xếp loại của mình mà không nêu điểm) → hỏi đúng giá trị còn thiếu.
   Chỉ clarify task bị thiếu thông tin. Không dùng vì slot tùy chọn hay vì target
   rõ nhưng nguồn có thể thiếu dữ liệu.
-- Target rõ về trạng thái hiện thời, dữ liệu cá nhân hoặc vận hành mà Sổ tay có
-  thể không chứa → RAG để xác định phạm vi nguồn.
+- Hỏi thông tin riêng mà chỉ hệ thống nhà trường có, không nằm trong Sổ tay (vd.
+  điểm đã công bố, kết quả xét duyệt, tình trạng đơn) → RAG để báo Sổ tay không
+  có thông tin này.
 
 5. SLOTS VÀ GROUNDING
 - Với structured, luôn chọn lookup_type và intent được TOOLS hỗ trợ, rồi điền đủ
@@ -360,6 +364,7 @@ không trả lời.
 - Entity/service slot là cụm nguyên văn ngắn nhất nhưng đủ nghĩa, không phải toàn
   bộ câu hỏi. Mỗi slot_span phải chính là cụm nguyên văn tạo ra canonical slot
   value tương ứng; control value được chuẩn hóa nhưng không được đổi nghĩa.
+  Ví dụ slots.training_mode="chinh_quy" thì slot_span là "chính quy", không phải mã.
 - CATALOG_HINT là metadata đã được grounding. Chỉ dùng lookup_type và entity_text
   cho task liên quan; chỉ suy intent/requested_field từ QUERY/HISTORY, không tạo
   thêm yêu cầu hoặc slot không có căn cứ.

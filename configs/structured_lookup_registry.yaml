@@ -93,7 +93,7 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
-    description: Tra mức tiền, công thức tiền, hệ số, căn cứ học phí hoặc xếp loại HBKKHT trong bảng.
+    description: Tra mức tiền, công thức tiền, hệ số, căn cứ học phí hoặc xếp loại HBKKHT kèm mức điểm học tập và rèn luyện của từng loại trong bảng.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -104,7 +104,7 @@ tools:
         type: string
         verification_role: reading_intent
         enum: [amount, classification]
-        description: Khía cạnh học bổng được hỏi; để trống khi câu hỏi yêu cầu tổng quan.
+        description: "Bảng được hỏi: amount=mức tiền, hệ số, căn cứ học phí; classification=mức điểm học tập và rèn luyện của từng loại. Để trống khi hỏi tổng quan."
         span_aliases:
           amount: [mức tiền, mức học bổng, hệ số]
           classification: [xếp loại, loại học bổng]
@@ -227,7 +227,7 @@ tools:
   office:
     data_category: directory_table
     presentation_type: contact_card
-    description: "Tra danh bạ và dịch vụ tổng quát. Trách nhiệm theo quy chế, quy định, thủ tục hoặc biểu mẫu dùng RAG."
+    description: "Tra liên hệ, địa chỉ hoặc dịch vụ của một đơn vị được nêu tên. Trách nhiệm theo quy chế, quy định, thủ tục hoặc biểu mẫu dùng RAG."
     intents: [contact]
     default_intent: contact
     required_slots:

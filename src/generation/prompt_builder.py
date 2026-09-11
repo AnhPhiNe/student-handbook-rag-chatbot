@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import re
-import unicodedata
 from typing import Any
 
 from src.common.cohort import (
@@ -14,6 +13,7 @@ from src.common.legal_reference import (
     article_label_from_heading,
     normalize_article_label,
 )
+from src.common.text import fold_text
 
 from .amendment_precedence import (
     ApplicableAmendment,
@@ -439,7 +439,7 @@ def _assign_evidence_roles(
 ) -> list[dict[str, Any]]:
     """Mark one uniquely requested article without treating rank as authority."""
 
-    query_text = _fold_text(f"{unit_question} {original_query}")
+    query_text = fold_text(f"{unit_question} {original_query}")
     article_numbers = set(re.findall(r"\bdieu\s+(\d+)\b", query_text))
     article_matches = [
         index
@@ -462,17 +462,8 @@ def _assign_evidence_roles(
     ]
 
 
-def _fold_text(value: Any) -> str:
-    text = unicodedata.normalize("NFD", str(value or "").casefold())
-    text = "".join(
-        character for character in text if not unicodedata.combining(character)
-    )
-    text = text.replace("đ", "d")
-    return " ".join(re.sub(r"[^a-z0-9]+", " ", text).split())
-
-
 def _article_number(article_label: Any) -> str | None:
-    match = re.search(r"\bdieu\s+(\d+)\b", _fold_text(article_label))
+    match = re.search(r"\bdieu\s+(\d+)\b", fold_text(article_label))
     return match.group(1) if match else None
 
 

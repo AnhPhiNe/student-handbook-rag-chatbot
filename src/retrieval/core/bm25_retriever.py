@@ -1,12 +1,12 @@
 import logging
 import re
-import unicodedata
 from pathlib import Path
 from typing import Any
 
 from rank_bm25 import BM25Okapi
 
 from src.common.cohort import is_cohort_applicable
+from src.common.text import fold_text
 from src.retrieval.core.acronym_registry import (
     DEFAULT_PROGRAM_DIRECTORY_PATH,
     DEFAULT_VOCABULARY_PATH,
@@ -23,24 +23,14 @@ except ModuleNotFoundError:
 logger = logging.getLogger(__name__)
 
 
-def _fold_text(value: str) -> str:
-    value = value.replace("đ", "d").replace("Đ", "D")
-    value = "".join(
-        character
-        for character in unicodedata.normalize("NFD", value)
-        if unicodedata.category(character) != "Mn"
-    )
-    return " ".join(re.findall(r"[a-z0-9]+", value.casefold()))
-
-
 def title_query_match_priority(query: str, chunk: dict[str, Any]) -> int:
     """Return a conservative lexical priority for an explicit section title."""
 
     metadata = chunk.get("metadata") or {}
-    title = _fold_text(
+    title = fold_text(
         str(metadata.get("title") or metadata.get("source_section") or "")
     )
-    query_text = _fold_text(query)
+    query_text = fold_text(query)
     # Single-token headings are too broad to use as lexical anchors.
     if len(title.split()) < 2:
         return 0

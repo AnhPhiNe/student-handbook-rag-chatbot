@@ -251,13 +251,6 @@ def lookup_grade_10_to_letter(
             table.get("table_name", "Bảng quy đổi") for table in matching_tables
         )
 
-    requested_grade = _requested_letter_grade(query, tables)
-    requested_grade_rows = _matching_grade_rows(
-        requested_grade,
-        matching_tables,
-    )
-    letter_grade_4 = lookup_letter_grade(query, tables)
-
     return _with_metadata(
         {
             "lookup_type": "grade_10_to_letter",
@@ -271,51 +264,9 @@ def lookup_grade_10_to_letter(
                 }
             ),
             "table_name": table_name,
-            "requested_letter_grade": requested_grade,
-            "requested_grade_rows": requested_grade_rows,
-            "letter_grade_4": (
-                letter_grade_4.get("result") if letter_grade_4 else None
-            ),
         },
         matching_tables,
     )
-
-
-def _requested_letter_grade(query: str, tables: list[dict[str, Any]]) -> str | None:
-    table = find_table(tables, "letter_to_grade_4")
-    if not table:
-        return None
-
-    q = query.upper()
-    rows = sorted(table["rows"], key=lambda x: len(x["letter_grade"]), reverse=True)
-    for row in rows:
-        grade = row["letter_grade"].upper()
-        if _contains_letter_grade(q, grade):
-            return grade
-    return None
-
-
-def _matching_grade_rows(
-    grade: str | None,
-    tables: list[dict[str, Any]],
-) -> list[dict[str, Any]]:
-    if not grade:
-        return []
-
-    matches = []
-    for table in tables:
-        for row in table.get("rows") or []:
-            if str(row.get("letter_grade") or "").upper() == grade:
-                matches.append(
-                    {
-                        "table_id": table.get("table_id"),
-                        "table_name": table.get("table_name"),
-                        "applicability": table.get("applicability"),
-                        "pass_threshold": table.get("pass_threshold"),
-                        "row": row,
-                    }
-                )
-    return matches
 
 
 def _contains_letter_grade(text: str, grade: str) -> bool:
@@ -330,11 +281,14 @@ def _contains_letter_grade(text: str, grade: str) -> bool:
 def scoring_lookup_from_reference(
     slots: dict[str, Any], table: dict[str, Any], cohort: str | None = None,
 ) -> Optional[dict[str, Any]]:
-    """Adapt one selected canonical table to the existing scoring operations.
+    """Resolve a scoring operation inside the one table the dispatcher selected.
 
-    This translates column names, not table selection or query meaning. Values
-    come only from the same rows used for evidence; the legacy scoring catalog
-    is deliberately not consulted.
+    The resolvers below predate the canonical table registry and read English
+    field names (score_10_range, letter_grade, score_4, range, label). This
+    adapter renames the registry's Vietnamese columns to those names; the
+    renamed rows are also the result schema the evaluator and the frontend
+    read, so removing the adapter means migrating that schema end to end.
+    Table selection and query meaning are never decided here.
     """
     if not is_validated_source_applicable(table, cohort):
         return None

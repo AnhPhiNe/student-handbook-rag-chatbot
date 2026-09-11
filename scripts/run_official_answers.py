@@ -72,7 +72,7 @@ def main():
     from src.evaluation.production import evaluate_production
     from src.evaluation.retrieval import evaluate_retrieval
 
-    case_path = ROOT / "data/eval" / args.bundle / CASE_FILES[args.suite]
+    case_path = BUNDLE.parent / args.bundle / CASE_FILES[args.suite]
     cases = json.loads(case_path.read_text(encoding="utf-8"))
     resume = bool(args.output)
     if resume:

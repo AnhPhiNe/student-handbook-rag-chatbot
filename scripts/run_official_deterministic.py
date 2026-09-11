@@ -47,7 +47,7 @@ def main():
     parser.add_argument("--current-worktree", action="store_true")
     parser.add_argument("--bundle", default=BUNDLE.name, help="Folder under data/eval, e.g. official_v2.")
     args = parser.parse_args()
-    bundle = ROOT / "data/eval" / args.bundle
+    bundle = BUNDLE.parent / args.bundle
     baseline = verify_runtime(bundle, args.current_worktree)
     from src.common.env_loader import load_project_env
     load_project_env()

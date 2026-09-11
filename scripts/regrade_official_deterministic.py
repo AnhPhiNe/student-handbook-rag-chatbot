@@ -13,7 +13,7 @@ def main():
     parser.add_argument("source", type=Path)
     parser.add_argument("--bundle", default=BUNDLE.name, help="Folder under data/eval, e.g. official_v2.")
     args = parser.parse_args()
-    bundle = ROOT / "data/eval" / args.bundle
+    bundle = BUNDLE.parent / args.bundle
     saved = json.loads(args.source.read_text(encoding="utf-8"))
     cases = json.loads((bundle / "deterministic_tool_cases.json").read_text(encoding="utf-8"))
     rows = saved["cases"]

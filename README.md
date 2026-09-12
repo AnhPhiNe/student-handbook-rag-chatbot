@@ -336,10 +336,12 @@ message, several entities and cohort comparisons
 
 ### Results
 
-Held-out `official_v2`, run once on 2026-09-12 (commit `d09e970`, pipeline `v76`, planner
-Qwen3 `v43` on Groq, normalizer `v28`, composer Gemini 3.1 Flash-Lite, judge
-`openai/gpt-oss-120b`). Intervals are 95%: Wilson for pass rates, bootstrap for judge
-scores.
+The first three rows are `official_v2`'s single hold-out run on 2026-09-12 (commit
+`d09e970`, pipeline `v76`, planner Qwen3 `v43` on Groq, normalizer `v28`, composer Gemini
+3.1 Flash-Lite, judge `openai/gpt-oss-120b`); that run is the only hold-out measurement
+this bundle will ever produce, since its failures then informed a fix. The production row
+is `official_v1`'s 60 requests against the live Space on the same day at commit
+`6eba6d4a`. Intervals are 95%: Wilson for pass rates, bootstrap for judge scores.
 
 | Suite | Headline metric | Result |
 |---|---|---|

@@ -4,7 +4,20 @@ import os
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
-from src.generation.answer_pipeline import AnswerPipeline
+from src.generation.plan_executor import PlanExecutor, StructuredCatalogs
+
+
+def _executor(**kwargs) -> PlanExecutor:
+    """A plan executor with empty catalogs, for graph-only assertions."""
+    return PlanExecutor(
+        router=None,
+        slang_normalizer=None,
+        catalogs=StructuredCatalogs([], [], [], [], [], []),
+        parent_sources_by_id=kwargs.get("parent_sources_by_id", {}),
+        top_k=5,
+        public_source_limit=10,
+        graph=kwargs.get("graph"),
+    )
 from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
     _is_supplemental_regulation_metadata,
@@ -123,8 +136,7 @@ def test_related_references_are_ui_metadata_not_answer_evidence() -> None:
 
 
 def test_structured_source_exposes_direct_graph_neighbor_for_ui() -> None:
-    pipeline = AnswerPipeline.__new__(AnswerPipeline)
-    pipeline._structured_graph = SimpleNamespace(
+    graph = SimpleNamespace(
         expand_context=lambda seed_ids, max_depth: [
             {
                 "id": "K50_Dieu3",
@@ -133,7 +145,7 @@ def test_structured_source_exposes_direct_graph_neighbor_for_ui() -> None:
             }
         ]
     )
-    pipeline.parent_sources_by_id = {
+    parent_sources_by_id = {
         "K50_Dieu3": {
             "_id": "K50_Dieu3",
             "content": "Điều 3. Giải thích từ ngữ.",
@@ -145,7 +157,8 @@ def test_structured_source_exposes_direct_graph_neighbor_for_ui() -> None:
         }
     }
 
-    references = pipeline._structured_related_references(
+    executor = _executor(graph=graph, parent_sources_by_id=parent_sources_by_id)
+    references = executor._structured_related_references(
         [
             {
                 "chunk_id": "K50_Dieu27",
@@ -163,7 +176,7 @@ def test_structured_source_exposes_direct_graph_neighbor_for_ui() -> None:
 
 
 def test_related_reference_merge_is_deterministic_and_deduplicated() -> None:
-    merged = AnswerPipeline._merge_related_references(
+    merged = PlanExecutor._merge_related_references(
         [
             {"id": "R9", "primary_chunk_id": "P1", "related_chunk_id": "R1"},
             {"id": "R2", "primary_chunk_id": "P1", "related_chunk_id": "R1"},

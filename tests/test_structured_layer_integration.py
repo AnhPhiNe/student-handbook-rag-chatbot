@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from src.generation.answer_pipeline import AnswerPipeline
+from src.generation.plan_executor import PlanExecutor
 from src.generation.prompt_builder import build_authorized_evidence_packet
 from src.retrieval.core.citation_builder import build_citation_from_lookup
 from src.retrieval.core.query_plan import normalize_query_plan
@@ -82,7 +82,7 @@ def test_validated_inputs_keep_task_and_cohort_identity_through_packet():
             "query_plan": plan,
             "coverage_by_task": {task["id"]: "covered" for task in plan["tasks"]},
         },
-        selected_citations=AnswerPipeline._merge_task_citations(citations),
+        selected_citations=PlanExecutor._merge_task_citations(citations),
         fallback_cohort="K51", max_context_chars=30000,
     )
     seen = set()

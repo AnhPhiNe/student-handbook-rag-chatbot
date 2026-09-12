@@ -9,6 +9,7 @@ import pytest
 import src.common.cohort as cohort_module
 from src.common.cohort import is_validated_source_applicable
 from src.generation.answer_pipeline import AnswerPipeline, PreparedAnswer
+from src.generation.plan_executor import PlanExecutor, StructuredCatalogs
 from src.api.routes.chat import _to_chat_response
 from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.query_plan import (
@@ -46,7 +47,7 @@ def test_fact_locks_survive_source_merge_without_cross_task_or_cohort_leakage():
         citations.extend({**c, "supports_task_ids": [task_id]} for c in build_citation_from_lookup(_multi_table_fact_lookup(cohort, value)))
     tasks.append({"id": "t4", "question": "Quy định", "mode": "rag", "cohorts": ["K51"]})
     citations.append({"source_parent_id": "article-10", "cohort": "K51", "supports_task_ids": ["t4"], "content": "Policy text"})
-    merged = AnswerPipeline._merge_task_citations(citations)
+    merged = PlanExecutor._merge_task_citations(citations)
     assert len(merged) == 4
     packet = build_authorized_evidence_packet(
         query="Tra cứu nhiều yêu cầu", retrieval_result={
@@ -67,7 +68,7 @@ def test_multi_table_fact_lock_reaches_actual_composer_prompt(monkeypatch, trans
     task = {**_rag_task(1, "Tra điểm"), "mode": "structured", "cohorts": ["K51"]}
     plan = _plan([task])
     lookup = _multi_table_fact_lookup()
-    citations = AnswerPipeline._merge_task_citations([
+    citations = PlanExecutor._merge_task_citations([
         {**c, "supports_task_ids": ["t1"]} for c in build_citation_from_lookup(lookup)
     ])
     pipeline = _pipeline(plan)
@@ -1048,21 +1049,33 @@ def test_safe_fallback_is_one_regulation_rag_task() -> None:
 
 
 def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
+    """Build an answer pipeline whose planner returns one fixed plan."""
     pipeline = AnswerPipeline.__new__(AnswerPipeline)
     pipeline.router = type("Planner", (), {"plan": lambda self, *args, **kwargs: plan})()
     pipeline.slang_normalizer = SlangNormalizer()
-    pipeline.config = {
-        "planning": {"max_citations": 10},
-    }
+    pipeline.config = {"planning": {"max_citations": 10}}
     pipeline.model = None
-    pipeline.formula_rules = []
-    pipeline.student_office_profiles = []
-    pipeline.student_service_directory = []
-    pipeline.student_faculty_profiles = []
-    pipeline.structured_tables_registry = []
-    pipeline.program_directory = []
-    pipeline.parent_sources_by_id = {}
+    pipeline._plan_executor = _executor(plan)
     return pipeline
+
+
+def _executor(plan: dict[str, Any], **catalogs: Any) -> PlanExecutor:
+    """Build a plan executor whose planner returns one fixed plan."""
+    return PlanExecutor(
+        router=type("Planner", (), {"plan": lambda self, *args, **kwargs: plan})(),
+        slang_normalizer=SlangNormalizer(),
+        catalogs=StructuredCatalogs(
+            formula_rules=catalogs.get("formula_rules", []),
+            office_directory=catalogs.get("office_directory", []),
+            student_service_directory=catalogs.get("student_service_directory", []),
+            student_faculty_profiles=catalogs.get("student_faculty_profiles", []),
+            structured_tables_registry=catalogs.get("structured_tables_registry", []),
+            program_directory=catalogs.get("program_directory", []),
+        ),
+        parent_sources_by_id=catalogs.get("parent_sources_by_id", {}),
+        top_k=5,
+        public_source_limit=10,
+    )
 
 
 def test_query_plan_receives_canonical_improvement_study_query() -> None:
@@ -1073,7 +1086,6 @@ def test_query_plan_receives_canonical_improvement_study_query() -> None:
         "clarification_question": "Bạn muốn hỏi cách tính điểm học cải thiện?",
     }
     plan = _plan([clarification_task])
-    pipeline = _pipeline(plan)
 
     class CapturingPlanner:
         def plan(self, query: str, **kwargs: Any) -> dict[str, Any]:
@@ -1081,9 +1093,10 @@ def test_query_plan_receives_canonical_improvement_study_query() -> None:
             captured["kwargs"] = kwargs
             return plan
 
-    pipeline.router = CapturingPlanner()
+    executor = _executor(plan)
+    executor.router = CapturingPlanner()
 
-    pipeline._run_query_plan(
+    executor.run(
         query="Học cải thiện tính điểm thế nào?",
         cohort="K51",
         chat_history=[],
@@ -1102,14 +1115,14 @@ def test_execute_task_normalizes_clarification_without_retrieval(monkeypatch) ->
         "cohorts": ["K50", "K50"],
         "clarification_question": "Bạn muốn hỏi quy chế nào?",
     }
-    pipeline = _pipeline(_plan([task]))
+    executor = _executor(_plan([task]))
 
     def fail_if_called(**kwargs):
         del kwargs
         raise AssertionError("clarification tasks must not execute retrieval")
 
-    monkeypatch.setattr(pipeline, "_execute_planned_rag_task", fail_if_called)
-    execution = pipeline.execute_task(
+    monkeypatch.setattr(executor, "_execute_planned_rag_task", fail_if_called)
+    execution = executor.execute_task(
         task=task,
         task_index=0,
         default_cohort="K51",
@@ -1135,14 +1148,14 @@ def test_aggregate_results_keeps_clarification_contract() -> None:
         "clarification_question": "Bạn muốn hỏi quy chế nào?",
     }
     plan = _plan([task])
-    pipeline = _pipeline(plan)
-    execution = pipeline.execute_task(
+    executor = _executor(plan)
+    execution = executor.execute_task(
         task=task,
         task_index=0,
         default_cohort="K51",
     )
 
-    result = pipeline.aggregate_results(
+    result = executor.aggregate_results(
         base_result={"query": "Điều nào?"},
         plan=plan,
         task_executions=[execution],
@@ -1192,7 +1205,7 @@ def test_planned_rag_task_rejects_unvalidated_cross_cohort_sources(
         for item in retrieved_items
     ]
     monkeypatch.setattr(
-        "src.generation.answer_pipeline.run_hybrid_retrieval_pipeline",
+        "src.generation.plan_executor.run_hybrid_retrieval_pipeline",
         lambda **kwargs: {
             "retrieved_items": retrieved_items,
             "citations": citations,
@@ -1206,7 +1219,7 @@ def test_planned_rag_task_rejects_unvalidated_cross_cohort_sources(
         },
     )
 
-    result = _pipeline(_plan([task]))._execute_planned_rag_task(
+    result = _executor(_plan([task]))._execute_planned_rag_task(
         task=task,
         task_id="t1",
         cohort="K51",
@@ -1265,7 +1278,7 @@ def test_two_structured_domains_execute_without_cross_domain_probing(monkeypatch
         "src.retrieval.core.structured_dispatcher.resolve_structured_task",
         fake_resolve,
     )
-    result = _pipeline(_plan(tasks))._run_query_plan(query="hai ý", cohort="K51", chat_history=[])
+    result = _executor(_plan(tasks)).run(query="hai ý", cohort="K51", chat_history=[])
     assert calls == ["foreign_language", "scholarship_classification"]
     assert result["coverage_by_task"] == {"t1": "covered", "t2": "covered"}
     assert len(result["citations"]) == 2
@@ -1282,14 +1295,16 @@ def test_one_study_duration_task_executes_each_cohort_from_full_tables() -> None
         "intent": "direct_value",
         "cohorts": ["K50", "K51"],
     }
-    pipeline = _pipeline(_plan([task]))
-    pipeline.structured_tables_registry = json.loads(
-        Path("data/processed/tables/structured_tables_registry.json").read_text(
-            encoding="utf-8"
-        )
+    executor = _executor(
+        _plan([task]),
+        structured_tables_registry=json.loads(
+            Path("data/processed/tables/structured_tables_registry.json").read_text(
+                encoding="utf-8"
+            )
+        ),
     )
 
-    result = pipeline._run_query_plan(
+    result = executor.run(
         query=task["question"],
         cohort="K51",
         chat_history=[],
@@ -1338,8 +1353,8 @@ def test_rag_tasks_keep_top_five_and_deduplicate_shared_source(monkeypatch) -> N
             ],
         }
 
-    monkeypatch.setattr("src.generation.answer_pipeline.run_hybrid_retrieval_pipeline", fake_retrieval)
-    result = _pipeline(_plan([_rag_task(1, "quy định một"), _rag_task(2, "quy định hai")]))._run_query_plan(
+    monkeypatch.setattr("src.generation.plan_executor.run_hybrid_retrieval_pipeline", fake_retrieval)
+    result = _executor(_plan([_rag_task(1, "quy định một"), _rag_task(2, "quy định hai")])).run(
         query="hai quy định", cohort="K51", chat_history=[]
     )
     assert calls == [("quy định một", 5), ("quy định hai", 5)]
@@ -1366,8 +1381,8 @@ def test_covered_and_uncovered_tasks_keep_partial_answer_path(monkeypatch) -> No
             "citations": [{"chunk_id": "p1", "source_parent_id": "p1", "cohort": "K51"}],
         }
 
-    monkeypatch.setattr("src.generation.answer_pipeline.run_hybrid_retrieval_pipeline", fake_retrieval)
-    result = _pipeline(_plan([_rag_task(1, "ý đủ nguồn"), _rag_task(2, "ý thiếu")]))._run_query_plan(
+    monkeypatch.setattr("src.generation.plan_executor.run_hybrid_retrieval_pipeline", fake_retrieval)
+    result = _executor(_plan([_rag_task(1, "ý đủ nguồn"), _rag_task(2, "ý thiếu")])).run(
         query="hai ý", cohort="K51", chat_history=[]
     )
     assert result["coverage_by_task"] == {"t1": "covered", "t2": "uncovered"}
@@ -1455,8 +1470,8 @@ def test_same_task_multicohort_fact_locks_keep_execution_scope(monkeypatch, shar
         return StructuredResolution("scoring", "reference_table_lookup", "structured", lookup, ["structured_lookup"])
 
     monkeypatch.setattr("src.retrieval.core.structured_dispatcher.resolve_structured_task", resolve)
-    pipeline = _pipeline(_plan([task]))
-    retrieval = pipeline._run_query_plan(query=task["question"], cohort="K51", chat_history=[])
+    executor = _executor(_plan([task]))
+    retrieval = executor.run(query=task["question"], cohort="K51", chat_history=[])
     packet = build_authorized_evidence_packet(
         query=task["question"], retrieval_result=retrieval,
         selected_citations=retrieval["citations"], fallback_cohort="K51", max_context_chars=20000,
@@ -1480,7 +1495,7 @@ def test_runtime_clarification_stays_on_its_task_and_cohort(monkeypatch) -> None
         "cohorts": ["K50", "K51"],
     }
     rag_task = {**_rag_task(2, "Yêu cầu về quy định"), "cohorts": ["K51"]}
-    pipeline = _pipeline(_plan([structured_task, rag_task]))
+    executor = _executor(_plan([structured_task, rag_task]))
     clarification = "Vui lòng cung cấp các thành phần còn thiếu của kết quả."
 
     def fake_execute(*, task, task_id, cohort, **kwargs):
@@ -1499,9 +1514,9 @@ def test_runtime_clarification_stays_on_its_task_and_cohort(monkeypatch) -> None
             "citations": [citation], "retrieved_items": [],
         }
 
-    monkeypatch.setattr(pipeline, "_execute_planned_structured_task", fake_execute)
-    monkeypatch.setattr(pipeline, "_execute_planned_rag_task", fake_execute)
-    result = pipeline._run_query_plan(query="hai ý", cohort=None, chat_history=[])
+    monkeypatch.setattr(executor, "_execute_planned_structured_task", fake_execute)
+    monkeypatch.setattr(executor, "_execute_planned_rag_task", fake_execute)
+    result = executor.run(query="hai ý", cohort=None, chat_history=[])
     assert result["needs_llm_answer"] is True
     assert result["needs_clarification"] is False
     assert result["task_results"][0]["clarification_by_cohort"] == {"K50": clarification}
@@ -1969,8 +1984,8 @@ def test_execution_mode_ignores_clarification_when_one_task_executes() -> None:
         "clarification_question": "Bạn muốn tra nội dung nào?",
         "cohorts": ["K51"],
     }
-    pipeline = _pipeline(_plan([structured, clarify]))
-    pipeline._execute_planned_structured_task = lambda **kwargs: {
+    executor = _executor(_plan([structured, clarify]))
+    executor._execute_planned_structured_task = lambda **kwargs: {
         "coverage": "covered",
         "evidence": [],
         "citations": [],
@@ -1978,7 +1993,7 @@ def test_execution_mode_ignores_clarification_when_one_task_executes() -> None:
         "structured_result": {"lookup_type": "scoring", "result": []},
     }
 
-    result = pipeline._run_query_plan(
+    result = executor.run(
         query="hai yêu cầu",
         cohort="K51",
         chat_history=[],
@@ -2037,7 +2052,7 @@ def test_structured_citation_dedup_preserves_sibling_tables_and_applicability() 
         },
     ]
 
-    merged = AnswerPipeline._merge_task_citations(citations)
+    merged = PlanExecutor._merge_task_citations(citations)
 
     assert len(merged) == 1
     tables = json.loads(merged[0]["content"])["tables"]

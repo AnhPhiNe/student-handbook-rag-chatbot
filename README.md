@@ -39,7 +39,7 @@
 10. [Operations and security](#operations-and-security)
 11. [Project structure](#project-structure)
 12. [Deployment](#deployment)
-13. [Limitations and roadmap](#limitations-and-roadmap)
+13. [What the evidence supports, and what comes next](#what-the-evidence-supports-and-what-comes-next)
 14. [Documentation](#documentation)
 15. [License](#license)
 
@@ -66,7 +66,7 @@ The web app also includes a GPA calculator, credit and tuition tools, scholarshi
 - **Exact facts come from tables, not from generation.** Nine lookup capabilities run over reviewed JSON catalogs: grading scales, foreign-language equivalency, scholarship classification, study duration, formulas, and office, faculty, program and student-service directories. A unique match becomes a `resolved_result` that the writer is instructed to keep verbatim.
 - **Hybrid retrieval.** `BAAI/bge-m3` dense search in Qdrant and in-process BM25 are fused with reciprocal rank fusion (k = 60). An optional Cohere `rerank-v4.0-fast` pass reorders the top 16 children. Children then expand to their full parent article from MongoDB. An offline cross-reference graph adds related-article links for the UI.
 - **Cohort isolation end to end.** Every task runs per cohort, and retrieved sources and citations are filtered to the cohort that was asked for.
-- **Graceful degradation.** Each provider has a quota-aware key pool with per-key RPM, TPM and daily limits that honors the provider's retry hints. Reranking fails open to the RRF order. A planner failure falls back to a safe RAG plan. Admission control allows 3 concurrent requests, a queue of 10 and a 15 s wait; each client is limited to 5 requests per minute.
+- **Graceful degradation.** Each provider has a quota-aware key pool with per-key RPM, TPM and daily limits that honors the provider's retry hints. Reranking fails open to the RRF order. A planner failure falls back to a safe RAG plan. Admission control allows 3 concurrent requests, a queue of 10 and a 15 s wait, with a configurable per-client rate limit.
 - **Reproducible data.** One command rebuilds the corpus from the PDFs, and the rebuild is byte-for-byte deterministic. A build manifest of hashes, counts and target collections ties the Qdrant and MongoDB contents to one build ID.
 - **Frozen evaluation harness.** Four suites run over a hand-authored, source-anchored dataset. Every run records the git commit, the dataset hash and the model and prompt versions it measured.
 
@@ -403,15 +403,11 @@ The command overwrites `data/processed/`, so run it in a clean worktree. With `P
 
 ## Evaluation
 
-Two hand-authored datasets, both with every expected answer anchored to a handbook
-source. `official_v1` is the development set the planner prompts were tuned on
-([notes](data/eval/official_v1/README.md)). `official_v2` was frozen before its initial
-held-out evaluation. Its observed scoring failure subsequently informed the
-`matched_rows` fix, so later measurements are post-fix evaluations on a seen test set,
-not a new independent holdout. It adds follow-up questions, several requests in one
-message, several entities and cohort comparisons
-([dataset notes](data/eval/official_v2/README.md),
-[initial results](data/eval/official_v2/RESULTS.md)).
+Two hand-authored datasets, every expected answer anchored to a handbook source.
+`official_v1` is the development set the planner prompts were tuned on
+([notes](data/eval/official_v1/README.md)). `official_v2` is a spent hold-out, now a
+regression set: its single hold-out run exposed a real defect, and every run since is
+labelled as such ([dataset notes](data/eval/official_v2/README.md)).
 
 | Suite | v1 / v2 cases | What it measures |
 |---|---:|---|
@@ -422,85 +418,115 @@ message, several entities and cohort comparisons
 
 ### Results
 
-The first three rows are `official_v2`'s single hold-out run on 2026-09-12 (commit
-`d09e970`, pipeline `v76`, planner Qwen3 `v43` on Groq, normalizer `v28`, composer Gemini
-3.1 Flash-Lite, judge `openai/gpt-oss-120b`); that run is the only hold-out measurement
-this bundle will ever produce, since its failures then informed a fix. The production row
-is `official_v1`'s 60 requests against the live Space on the same day at commit
-`6eba6d4a`. Intervals are 95%: Wilson for pass rates, bootstrap for judge scores.
+`official_v2`'s hold-out run: 2026-09-12, commit `d09e970`, planner Qwen3 `v43` on Groq,
+composer Gemini 3.1 Flash-Lite, judge `openai/gpt-oss-120b`. Production: `official_v1`'s
+60 requests against the live Space the same day, commit `6eba6d4a`. Intervals are 95%:
+Wilson for pass rates, bootstrap for judge scores.
 
-| Suite | Headline metric | Result |
-|---|---|---|
-| Deterministic | Cases passing every applicable assertion | **92.2%** (142/154), CI 86.9–95.5 |
-| Retrieval | Hit@5 / MRR / nDCG@5 | **94.6%** / 84.8 / 85.3, Hit@5 CI 88.0–97.7 |
-| Generate + judge | Answer correctness / faithfulness | **96.3** / 96.0, correctness CI 93.4–98.6 |
-| Production | Release gates | **7 of 12 pass** on the live Space; transport 100%, payload 96.7% ([analysis](data/eval/official_v1/PRODUCTION_RESULTS.md)) |
+#### Deterministic — 92.2% (142/154), CI 86.9–95.5
 
-Per capability, deterministic pass rate and judged answer correctness:
-
-| Capability | Cases | Deterministic | Answer correctness |
+| Capability | Cases | Pass rate | Answer correctness¹ |
 |---|---:|---:|---:|
-| Single lookup or single regulation question | 68 | 94.1 | 96.8 |
-| Follow-up questions with history | 25 | 92.0 | 94.2 |
-| Missing input, partial clarification, out of domain | 13 | 92.3 | 99.2 |
-| Two or three requests in one message | 27 | 88.9 | 94.8 |
-| Several entities in one question | 12 | 100.0 | 95.0 |
-| Cohort comparison | 9 | 77.8 | 100.0 |
+| Single lookup or single regulation | 68 | 94.1% | 96.8 |
+| Follow-up question with history | 25 | 92.0% | 94.2 |
+| Missing input, clarify, or out of domain | 13 | 92.3% | 99.2 |
+| Two or three requests in one message | 27 | 88.9% | 94.8 |
+| Several entities in one question | 12 | 100.0% | 95.0 |
+| Cohort comparison | 9 | 77.8% | 100.0 |
+| **Reweighted to expected traffic mix²** | 154 | **93.1%** | **96.5** |
 
-Reweighted to the expected real-question mix ([`slice_weights.yaml`](data/eval/official_v2/slice_weights.yaml)):
-93.1 deterministic, 96.5 answer correctness. Cohorts are within 4 points of each other
-(K48-K49 90.2, K50 94.1, K51 92.3), and the 32 stress cases score 90.6 deterministic and
-100 on answer correctness.
+¹ From the paired generate+judge run on the same questions.
+² Weights from [`slice_weights.yaml`](data/eval/official_v2/slice_weights.yaml), an estimate — see notes below.
 
-Development set `official_v1`, same runtime: 129/135 deterministic, unchanged from the run
-before the planner and pipeline refactors, with the same six failing cases.
+Cohorts score within 4 points of each other (K48–K49 90.2, K50 94.1, K51 92.3); the 32
+stress-tagged cases score 90.6% deterministic / 100 answer correctness. Running the suite twice separates real failures
+from planner noise: 11 of the 12 failing cases fail both times, 3 more flip on only one
+run. `official_v1` (development set, same runtime): 129/135, unchanged since before this
+session's refactors, same six failing cases.
 
-Reading the failures afterwards exposed one real defect. Where several grade scales apply
-at once — K51 grades foundation and remaining courses differently — the resolver returned
-every table and the composer picked the interval itself, calling a failing 5,2 a pass.
-Commit `536169fc` resolves the row inside each applicable table instead. `official_v1`
-re-run on the fixed runtime scores 129/135 with the same six failures, so the change
-causes no regression. `official_v2` re-run scores 141/154, but **that is no longer a
-held-out number**, because the fix came from a v2 failure; the 92.2% above stands as the
-holdout result. The one-case difference is planner nondeterminism rather than the fix:
-case 024 now passes while 105 and 115 fail on task shape, and the new code path runs in
-exactly one of the 154 cases. That case still fails the deterministic contract by design —
-the gold names a single expected source, while the system now reports all three applicable
-scales with a resolved row each rather than guessing which one the student meant.
+**One real defect surfaced this way.** K51 grades foundation and remaining courses on
+different scales; without a `course_scope` slot the resolver returned every table and the
+composer picked the wrong interval, calling a failing 5.2 a pass. Fixed in `536169fc` by
+resolving the row inside each table instead of leaving it to the composer. `official_v1`
+re-run: 129/135, no regression. `official_v2` re-run: 141/154 — **not a new hold-out
+number**, since the fix came from reading a v2 failure; 92.2% above stands as the one
+hold-out result the bundle will ever produce.
 
-The production suite ran once against the deployed Space on 2026-09-12 and its release
-gates failed, 7 of 12 checks passing. That result is kept as it came out rather than
-tuned into a pass, because four of the five failures say more about the gates and the
-run than about the service. All three strict p95 latency gates were calibrated against a
-**local** backend - the earlier smoke run recorded a 2,940 ms deterministic p95 on
-localhost, just under its 3,000 ms limit - while the deployed target is a free-tier
-Space whose deterministic p50 alone is 5,147 ms across two LLM round trips and a network
-hop. `telemetry_coverage` asks for a field the API emits only under an evaluation flag
-that production correctly leaves off. Of the two payload failures, one is a provider
-rate limit reached because evaluation and production share a key pool by choice, and one
-is an unexplained streaming `RuntimeError` that needs Space logs to diagnose. What the
-suite does establish: 100% transport success, zero HTTP 429s from the service itself, a
-valid cache protocol with a 90% warm-cache hit rate and no cold-cache leakage, and full
-streaming time-to-first-token coverage. Details and the per-scenario latency table are
-in [PRODUCTION_RESULTS.md](data/eval/official_v1/PRODUCTION_RESULTS.md).
+#### Retrieval
 
-Honest limits: one author wrote both datasets and no second reviewer checked them; the
-judge is an LLM whose agreement with a human has not been measured; the twelve
-deterministic failures are concentrated in cohort comparison (2 of 5 structured cases),
-two-lookup questions (2 of 8) and a few single lookups; context precision is 60.8, so the
-composer receives more context than it needs.
+| Metric | Result |
+|---|---:|
+| Hit@1 | 77.4% |
+| **Hit@5** | **94.6%**, CI 88.0–97.7 |
+| MRR | 84.8 |
+| nDCG@5 | 85.3 |
+| Required-source recall@5 | 91.9% |
 
-Two limits are worth stating with the measurement behind them rather than as a failure
-count. The questions were written from handbook content in student phrasing, not collected
-from real students, so the mix of topics is the author's estimate: several administrative
-lookups in the set are questions a student may never ask. And directory lookup was probed
-separately over all 239 service records: every one resolves to the right unit when the
-question stays close to the catalog wording, and 220 of 239 survive a mechanical
-shortening of the query. Of the 9 that do not, all land on one unit whose name matches the
-common word `đào tạo`, and the only genuine pattern among them concerns postgraduate
-services this undergraduate handbook does not cover. Running with two runs of the
-deterministic suite also separates stable failures from planner nondeterminism: 11 of the
-cases fail in both runs, while 3 differ between them.
+#### Generate + judge
+
+| Metric | Result |
+|---|---:|
+| **Answer correctness** | **96.3**, CI 93.4–98.6 |
+| Faithfulness | 96.0 |
+| Answer relevancy | 98.8 |
+| Citation correctness | 96.6 |
+| Context recall | 84.5 |
+| Context precision | 60.8³ |
+| Hallucination rate | 6.5% |
+| Critical false passes | 3 of 154 |
+
+³ The composer is handed more evidence than a given answer draws on — a token-spend cost, not a correctness one.
+
+#### Production — release gates FAILED, 7 of 12 pass
+
+| Gate | Result | Threshold | |
+|---|---:|---:|:-:|
+| `success_rate` | 96.7% | ≥ 98% | ❌ |
+| `telemetry_coverage` | 0% | ≥ 100% | ❌⁴ |
+| `warm_cache_hit_rate` | 90% | ≥ 90% | ✅ |
+| `cold_cache_status_coverage` | 100% | ≥ 100% | ✅ |
+| `warm_cache_status_coverage` | 100% | ≥ 100% | ✅ |
+| `streaming_ttft_coverage` | 100% | ≥ 100% | ✅ |
+| `http_429_rate` | 0% | ≤ 0% | ✅ |
+| `cold_cache_hit_rate` | 0% | ≤ 0% | ✅ |
+| `deterministic_p95_ms` | 20,054 ms | ≤ 3,000 ms | ❌⁵ |
+| `warm_cache_p95_ms` | 4,313 ms | ≤ 2,000 ms | ❌⁵ |
+| `rag_p95_ms` | 9,111 ms | ≤ 45,000 ms | ✅ |
+| `streaming_ttft_p95_ms` | 13,050 ms | ≤ 10,000 ms | ❌⁵ |
+
+| Scenario | p50 | p95 | Success |
+|---|---:|---:|---:|
+| Warm cache | 2,396 ms | 4,313 ms | 100% |
+| Streaming | 3,411 ms | 15,084 ms | 90% |
+| Deterministic | 5,147 ms | 20,054 ms | 100% |
+| Cold RAG | 6,852 ms | 9,111 ms | 100% |
+| Burst | 7,555 ms | 15,308 ms | 90% |
+
+⁴ Needs `STUDENT_RAG_EVAL_TELEMETRY=true`, which production correctly leaves off — a
+configuration mismatch between the gate and ordinary serving, not a defect.
+⁵ Calibrated on a **local** backend (a 2026-08-08 smoke run hit 2,940 ms on localhost
+against this same limit); the deployed free-tier Space needs two LLM round trips and a
+network hop per structured question, so its p50 alone exceeds it. Recalibrating against
+the real target — not lowering the bar to pass — is the fix.
+
+One of the two payload failures (`official_prod_052`) is a Groq/Gemini rate limit hit
+because evaluation and production share a key pool by choice; the other
+(`official_prod_042`) is an unexplained streaming `RuntimeError`, left open rather than
+explained away. Full gate-by-gate reasoning and a 31.2 s outlier worth reading:
+[PRODUCTION_RESULTS.md](data/eval/official_v1/PRODUCTION_RESULTS.md).
+
+### Notes on these numbers
+
+- The questions were written from handbook content in student phrasing, not collected
+  from real students, so the reweighted score's traffic mix is the author's estimate —
+  several administrative lookups in the set may be questions nobody asks.
+- Directory lookup was probed separately over all 239 service records: every one
+  resolves correctly when the query stays close to the catalog wording, and 220 of 239
+  survive a mechanical shortening. The 9 that don't all land on one unit whose name
+  matches the common word `đào tạo`; the only real pattern among them is postgraduate
+  services this undergraduate handbook doesn't cover.
+- One author wrote both datasets; no second reviewer checked them.
+- The judge is an LLM whose agreement with a human rater hasn't been measured.
 
 ### Running the suites
 
@@ -671,15 +697,19 @@ A suggested reading order for the backend: [`schemas.py`](src/api/schemas.py), t
 
 [`deploy_hf_backend.ps1`](scripts/deploy_hf_backend.ps1) packages only the allowlisted runtime files and checks that the build manifest targets the intended collections. `-DryRun` validates the package without touching the Space. After a deploy, check `/health/readiness`, then run the production suite against the Space.
 
-## Limitations and roadmap
+## What the evidence supports, and what comes next
 
-- **Scope.** The system covers the three handbooks only. It does not calculate new values from a formula, perform OCR on image-only tables, or answer from outside knowledge.
-- **No baseline.** Every number here is absolute. Nothing measures the typed-plan design against plain RAG, or against the same pipeline with the reranker or the graph switched off, so the architecture is argued rather than demonstrated. This is the largest gap in the evaluation.
-- **The hold-out is spent.** `official_v2` produced exactly one hold-out measurement. Reading its failures then informed a code fix, so every later run of it is a regression measurement on a seen set. A genuinely fresh generalization estimate needs a new bundle.
-- **Judge-based scores.** Answer quality is scored by an LLM judge; the judge has not yet been validated against human labels.
-- **No real traffic.** Both question sets were written from handbook content in student phrasing, not collected from students, so the slice weights behind the reweighted score are an estimate rather than an observed mix.
-- **Load.** Throughput is bounded by free-tier provider quotas and a single worker, and the release gates currently fail on latency because their thresholds were calibrated against a local backend rather than the deployed Space.
-- **Next.** A closed beta with students; a fresh generalization question set; human validation of the judge; ablations and baselines under a pre-registered protocol; latency gates recalibrated against the real deployment target.
+Every claim above is backed by a specific run on a specific commit. This is where that
+evidence stops, and what would extend it.
+
+| Where the evidence stops | What would close it |
+|---|---|
+| **No baseline.** Every number is absolute — nothing here compares the typed-plan design against plain RAG, or the same pipeline with the reranker or the graph switched off. | `--retrieval-mode no_graph` / `--retrieval-mode vector_only` already exist for exactly this ablation; running them is the highest-value next step. |
+| **The hold-out is spent.** `official_v2` produced one hold-out measurement; reading its failure informed a fix, so every later run of it is a regression check on a seen set. | A fresh bundle, frozen before any code sees a result from it. |
+| **The judge is unvalidated.** Every quality score comes from an LLM judge with no measured agreement to a human rater. | A sample double-scored by a person, compared to the judge. |
+| **Neither dataset is real traffic.** Both were written from handbook content in student phrasing, so the reweighted score's slice mix is an estimate. | A closed beta with real students; slice weights refit to the observed query mix. |
+| **Production gates measure the wrong baseline.** Three of the five failing release gates were calibrated on localhost, not the deployed Space. | Recalibrate the thresholds against the real deployment target — never lower them just to turn the run green. |
+| **Scope.** The system answers from the three handbooks only — no formula calculation, no OCR on image-only tables, no outside knowledge. | Out of scope by design, not a gap to close. |
 
 ## Documentation
 

@@ -386,6 +386,18 @@ deterministic failures are concentrated in cohort comparison (2 of 5 structured 
 two-lookup questions (2 of 8) and a few single lookups; context precision is 60.8, so the
 composer receives more context than it needs.
 
+Two limits are worth stating with the measurement behind them rather than as a failure
+count. The questions were written from handbook content in student phrasing, not collected
+from real students, so the mix of topics is the author's estimate: several administrative
+lookups in the set are questions a student may never ask. And directory lookup was probed
+separately over all 239 service records: every one resolves to the right unit when the
+question stays close to the catalog wording, and 220 of 239 survive a mechanical
+shortening of the query. Of the 9 that do not, all land on one unit whose name matches the
+common word `đào tạo`, and the only genuine pattern among them concerns postgraduate
+services this undergraduate handbook does not cover. Running with two runs of the
+deterministic suite also separates stable failures from planner nondeterminism: 11 of the
+cases fail in both runs, while 3 differ between them.
+
 ### Running the suites
 
 ```bash

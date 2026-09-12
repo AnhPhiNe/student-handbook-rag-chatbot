@@ -93,6 +93,30 @@ flowchart TD
     Cache --> API
 ```
 
+**Reading the diagram.** Three things in it are easy to misread.
+
+*The response cache sits after the evidence packet, not before it.* That looks backwards -
+surely you check the cache before doing the expensive work? - but the cache key is not the
+question. It is a SHA-256 over the question, the cohort, the selected citations, the
+structured result, a fingerprint of the authorized context, and both the pipeline and
+answer-prompt versions. Four of those only exist once planning and retrieval have run, so
+the key cannot be computed any earlier. The trade is deliberate: a cache entry is bound to
+the evidence that produced it, so a corpus change, a different retrieval result or a
+prompt-version bump all change the key and a stale answer can never be served for a
+regulation that has since moved. The cost is that a cache hit only saves the composer call.
+The production run shows exactly that: warm-cache p50 is 2,396 ms against 6,852 ms for a
+cold RAG request - about 4.5 s saved on the composer, with the planner and retrieval still
+paid in full.
+
+*The normalizer, not the planner, decides what actually runs.* The planner is an LLM and is
+treated as untrusted: it proposes a typed plan, and the normalizer validates every task
+against the question text and the lookup registry before a single lookup executes.
+
+*Every branch out of the normalizer can end without a composer call.* A clarify task, an
+out-of-domain question or a request where nothing is answerable returns an explicit status
+and never reaches Gemini. That is what keeps a wrong-but-fluent answer from being generated
+in the first place.
+
 ### Request lifecycle
 
 1. **Receive.** The API validates the question, the selected cohort and the recent conversation history, then admits the request.
@@ -186,16 +210,38 @@ flowchart TD
     D -->|"scoring · foreign_language ·<br/>study_duration · scholarship_classification"| Tables["Select reviewed tables<br/>that apply to the cohort"]
     D -->|"office · faculty · program · student_service"| Dir["Match unit names and aliases<br/>in the directory profiles"]
     D -->|formula| F["Formula rule, variables and source<br/>no calculation"]
-    Tables --> One{"Grounded inputs and<br/>exactly one matching row?"}
-    One -->|yes| Resolved["resolved: table + resolved_result (fact lock)"]
+    Tables --> Scope{"How many tables<br/>apply to this cohort?"}
+    Scope -->|"one"| One{"Grounded inputs and<br/>exactly one matching row?"}
+    One -->|yes| Resolved["resolved: table + resolved_result<br/>fact lock ON"]
     One -->|no| Evidence["evidence_only: the full table"]
+    Scope -->|"several, mutually exclusive"| Multi["evidence_only: every table,<br/>each with its own resolved_rows<br/>fact lock OFF"]
     Tables -->|required input missing| Clarify["needs_clarification"]
     Dir -->|match| Records["evidence_only: matching records"]
     Dir -->|ambiguous| Clarify
     D -->|nothing found| Fallback["No result: the task uses RAG"]
 ```
 
-`resolved_result` exists only when the inputs are grounded and exactly one row applies. The full table is always kept beside it, so the writer can explain the value in context.
+The layer distinguishes three outcomes, and the distinction is the point.
+
+**One table, one row → `resolved_result`, fact lock on.** The inputs are grounded in the
+question and exactly one row applies, so the system commits to a value. The composer is
+told to copy it verbatim and not re-read the table. The full table travels alongside it so
+the answer can explain the value in context.
+
+**Several tables apply → `resolved_rows` per table, fact lock deliberately off.** K51 grades
+foundation courses and remaining courses on different scales, so 5.2 is *Đạt* in one table
+and *Không đạt* in the other. When the planner does not ground a `course_scope`, the system
+cannot know which the student means, so it locks nothing and returns all applicable tables.
+What it does not do is leave the arithmetic to the composer: it resolves the matching row
+*inside each table* and hands over one grounded result per scope. This exists because the
+composer previously read the interval itself and reported a failing 5.2 as a pass. Picking
+which scope applies is semantics and stays with the composer; finding the row inside a
+scope is arithmetic and belongs to the resolver.
+
+**Nothing resolvable → `evidence_only` or a clarifying question.** Scoring is the only lookup
+where several applicable tables mean mutually exclusive answers. A scholarship question also
+returns several tables - amount, classification, eligibility, formula - but those are
+complementary facets with no single row to pick, so `resolved_rows` does not apply to them.
 
 </details>
 
@@ -219,6 +265,46 @@ flowchart TD
 ```
 
 Children are small, so matching stays precise; the writer always receives the full parent article, so the context stays complete. The `no_graph` and `vector_only` modes switch off the graph and BM25 for ablations.
+
+</details>
+
+<details>
+<summary><strong>Container start: what is ready before the first question</strong></summary>
+
+```mermaid
+flowchart TD
+    Boot["Container starts<br/>uvicorn, one worker"] --> Life["FastAPI lifespan"]
+    Life --> Port["Port opens immediately<br/>/health answers right away"]
+    Life --> Flag{"STUDENT_RAG_WARMUP_ON_STARTUP?"}
+    Flag -->|off, the local default| Lazy["Everything stays lazy:<br/>the first question builds it"]
+    Flag -->|"on, set by the Dockerfile"| Thread["Background warm-up thread"]
+    Thread --> Model["Embedding model from the image<br/>baked in at build time"]
+    Model --> Cat["Catalogs, parent docstore,<br/>planner client, plan executor, composer client"]
+    Cat --> Retr["Hybrid retriever singleton"]
+    Retr --> BM["BM25 index<br/>scroll Qdrant, then wait up to 180 s"]
+    BM --> Ready["Warm: the first question costs what the second does"]
+    BM -.->|"timeout or Qdrant unreachable"| Degraded["BM25 degraded, dense retrieval still serves"]
+```
+
+Two properties matter here, and both were learned by measuring the deployed Space rather
+than by reasoning about it.
+
+**Warm-up runs on a background thread, never in the startup path.** The container has to
+answer `/health` while a multi-gigabyte model is still loading, or the platform health
+check fails and restarts it into a loop. So the port opens first and warming happens
+beside it.
+
+**It warms the retriever, not just the model.** An earlier version warmed the model,
+catalogs and clients but left the hybrid retriever lazy. Measured on the live Space: a
+structured question answered in 4.7 s while the first RAG question took 23.3 s and the
+second took 6.9 s - the first one was paying about 16 s to build the retriever and scroll
+Qdrant for the BM25 index. Warming the retriever too brought the first RAG question to
+7.5 s, matching the second. The embedding model is baked into the image at build time, so
+a fresh container never downloads it at run time.
+
+Warm-up can only make a container slower to become useful, never broken: BM25 is fail-open,
+so a timeout or an unreachable Qdrant leaves dense retrieval serving, and any exception is
+logged rather than propagated.
 
 </details>
 
@@ -527,11 +613,12 @@ Conversation history lives in the browser's `sessionStorage` and is sent with ea
 | Concern | Implementation |
 |---|---|
 | Admission control | At most 3 chats at a time, a queue of 10 and a 15 s wait; beyond that, HTTP 503 for `/chat` or a `server_busy` event for `/chat/stream` |
-| Rate limits | 5 requests per minute per client and 120 per minute per IP, answered with HTTP 429 and `Retry-After`; questions longer than 1,000 characters are rejected |
+| Rate limits | Code defaults are 5 requests per minute per client, 120 per minute per IP and a 1,000-character question limit, all overridable; the shipped `.env.example` raises the per-client limit to 20/min and tightens the question limit to 500 characters. Over the limit returns HTTP 429 with `Retry-After` |
 | Provider quotas | One `KeyPool` per provider rotates keys under per-key request, token and daily limits and cools a key down after a 429 |
 | Caching | A router cache for plans, and an answer cache keyed by the question, cohort, selected evidence and prompt versions (Redis, 24 h TTL, or an in-memory fallback) |
 | Observability | One LangSmith trace per request, with child runs and token usage for the planner and the composer; feedback is attached to the same run |
 | Health | `/health` for liveness, `/health/readiness` for Qdrant, MongoDB, BM25 and artifacts, and an admin-only `/health/artifacts` |
+| Cold start | The embedding model is baked into the image at build time, and `STUDENT_RAG_WARMUP_ON_STARTUP` (set by the Dockerfile) builds the pipeline and the BM25 index on a background thread at boot, so the first question costs what the second does. Off by default locally, so a shell or a test run never loads the model |
 | Secrets | Keys are read from environment variables only; key-pool state and logs store a SHA-256 fingerprint, never the key itself |
 | Privacy | The server keeps no chat log. With LangSmith tracing on, questions and answers are sent to LangSmith |
 
@@ -543,11 +630,12 @@ Conversation history lives in the browser's `sessionStorage` and is sent with ea
 │   ├── raw/                  # Source handbook PDFs
 │   ├── curated/              # Reviewed table regions and corrections
 │   ├── processed/            # Versioned build output: parents, children, tables, graph, manifest
-│   └── eval/official_v1/     # Frozen benchmark, results notes and provenance
+│   ├── eval/official_v1/     # Development set, plus the production-suite results
+│   └── eval/official_v2/     # Frozen bundle: one hold-out run, now a regression set
 ├── src/
-│   ├── api/                  # FastAPI routes, schemas, admission control, health checks, tracing
+│   ├── api/                  # FastAPI routes, schemas, admission control, health checks, startup warm-up, tracing
 │   ├── services/             # Shared AnswerPipeline lifecycle
-│   ├── generation/           # Pipeline orchestration, evidence packet, prompts, Gemini client
+│   ├── generation/           # Pipeline orchestration, plan executor, evidence packet, prompts, Gemini client
 │   ├── retrieval/core/       # Planner, normalizer, structured lookups, hybrid retrieval, reranker
 │   ├── retrieval/vectorstore/# MongoDB parent store
 │   ├── common/               # Cohorts, text folding, key pool, I/O and config helpers
@@ -586,9 +674,12 @@ A suggested reading order for the backend: [`schemas.py`](src/api/schemas.py), t
 ## Limitations and roadmap
 
 - **Scope.** The system covers the three handbooks only. It does not calculate new values from a formula, perform OCR on image-only tables, or answer from outside knowledge.
+- **No baseline.** Every number here is absolute. Nothing measures the typed-plan design against plain RAG, or against the same pipeline with the reranker or the graph switched off, so the architecture is argued rather than demonstrated. This is the largest gap in the evaluation.
+- **The hold-out is spent.** `official_v2` produced exactly one hold-out measurement. Reading its failures then informed a code fix, so every later run of it is a regression measurement on a seen set. A genuinely fresh generalization estimate needs a new bundle.
 - **Judge-based scores.** Answer quality is scored by an LLM judge; the judge has not yet been validated against human labels.
-- **Load.** Throughput is bounded by free-tier provider quotas and a single worker.
-- **Next.** A closed beta with students; a fresh generalization question set; human validation of the judge; ablations and baselines under a pre-registered protocol.
+- **No real traffic.** Both question sets were written from handbook content in student phrasing, not collected from students, so the slice weights behind the reweighted score are an estimate rather than an observed mix.
+- **Load.** Throughput is bounded by free-tier provider quotas and a single worker, and the release gates currently fail on latency because their thresholds were calibrated against a local backend rather than the deployed Space.
+- **Next.** A closed beta with students; a fresh generalization question set; human validation of the judge; ablations and baselines under a pre-registered protocol; latency gates recalibrated against the real deployment target.
 
 ## Documentation
 

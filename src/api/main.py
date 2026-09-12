@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import os
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.routes import chat, chat_stream, health, metrics
+from src.api.warmup import start_warmup
 from src.common.env_loader import load_project_env
 
 
@@ -19,9 +22,17 @@ if sys.stdout and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
 
 
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    """Warm the pipeline in the background while the port already accepts calls."""
+    start_warmup()
+    yield
+
+
 app = FastAPI(
     title="Student Handbook RAG API",
     version=API_VERSION,
+    lifespan=lifespan,
 )
 
 cors_origins = [

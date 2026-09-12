@@ -50,6 +50,19 @@ class AnswerService:
             query, chat_history=chat_history, cohort=cohort, **kwargs
         )
 
+    def warm(self) -> None:
+        """Build everything the first question would otherwise build itself.
+
+        The constructor loads the embedding model, catalogs and parent
+        docstore; the router, plan executor and LLM client stay lazy behind
+        properties. Touching all of them here means the first request runs the
+        same code path as the hundredth.
+        """
+        pipeline = self._get_pipeline()
+        pipeline._get_router()
+        _ = pipeline.plan_executor
+        pipeline._get_llm_client()
+
     def _get_pipeline(self) -> AnswerPipeline:
         """Initialize the shared pipeline once, guarded against concurrent requests."""
 

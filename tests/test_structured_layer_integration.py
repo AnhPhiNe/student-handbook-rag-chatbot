@@ -135,9 +135,9 @@ def test_ambiguous_grade_scale_resolves_each_table_instead_of_the_composer():
     }
     foundation = by_id["K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation"]
     remaining = by_id["K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining"]
-    assert foundation["matched_rows"][0]["row"] == {
+    assert foundation["resolved_rows"][0]["row"] == {
         "status": "Đạt", "score_10_range": "4,8 - 5,4", "letter_grade": "D+"}
-    assert remaining["matched_rows"][0]["row"] == {
+    assert remaining["resolved_rows"][0]["row"] == {
         "status": "Không đạt", "score_10_range": "4,8 - 5,4", "letter_grade": "D+"}
 
 
@@ -150,4 +150,4 @@ def test_a_single_applicable_table_keeps_its_locked_result_shape():
                  {"score_or_grade": "5,2"}, ["K50"])
     resolution = _resolve(task, "K50")
     assert resolution is not None
-    assert "matched_rows" not in resolution.result
+    assert "resolved_rows" not in resolution.result

@@ -300,21 +300,28 @@ def _select_reference_tables(
     return candidates
 
 
-def _table_matched_rows(
+def _rows_resolved_in_table(
     lookup_type: str,
     table: dict[str, Any],
     *,
     slots: dict[str, Any],
     cohort: str | None,
 ) -> list[dict[str, Any]] | None:
-    """Resolve the row a scoring operand selects inside one applicable table.
+    """Resolve the row an operand selects inside one of several applicable tables.
 
-    Several tables can apply at once: K51 grades foundation and remaining
-    courses on different scales, so the same mark is Dat in one and Khong dat
-    in the other. Locking a single fact would have to guess which table the
-    student meant, so the dispatcher keeps every table. The row lookup inside
-    each table is still arithmetic, and arithmetic belongs to the resolver,
-    not to the composer reading intervals out of a rendered table.
+    Scoring is the only lookup where several applicable tables mean several
+    *mutually exclusive* answers to the same question: K51 grades foundation
+    and remaining courses on different scales, so 5,2 is Dat in one table and
+    Khong dat in the other. Without a course_scope slot the dispatcher cannot
+    tell which one the student means, so it keeps them all and locks no fact.
+    Picking the row inside each table is still arithmetic, and arithmetic
+    belongs to the resolver rather than to a composer reading intervals out of
+    a rendered table.
+
+    Other lookups are excluded because their multiple tables are complementary,
+    not exclusive: a scholarship question returns the amount, classification,
+    eligibility and formula tables, which describe different facets and have no
+    single row to resolve.
     """
 
     if lookup_type != "scoring" or not slots:
@@ -370,8 +377,8 @@ def _reference_table_lookup(
     for table in candidates:
         rows = [dict(row) for row in table.get("rows") or [] if isinstance(row, dict)]
         source_section = table.get("source_parent_id") or table.get("source_section_id")
-        matched_rows = (
-            _table_matched_rows(lookup_type, table, slots=slots, cohort=cohort)
+        resolved_rows = (
+            _rows_resolved_in_table(lookup_type, table, slots=slots, cohort=cohort)
             if len(candidates) > 1
             else None
         )
@@ -383,9 +390,9 @@ def _reference_table_lookup(
                     "table_id": table.get("table_id"),
                     "table_subtype": table.get("table_subtype"),
                     "rows": rows,
-                    **({"matched_rows": matched_rows} if matched_rows else {}),
+                    **({"resolved_rows": resolved_rows} if resolved_rows else {}),
                 },
-                **({"matched_rows": matched_rows} if matched_rows else {}),
+                **({"resolved_rows": resolved_rows} if resolved_rows else {}),
                 "items": rows,
                 "display_rows": rows,
                 "table_id": table.get("table_id"),
@@ -426,8 +433,8 @@ def _reference_table_lookup(
                     "applicability": item.get("applicability"),
                     "rows": item.get("items") or [],
                     **(
-                        {"matched_rows": item["matched_rows"]}
-                        if item.get("matched_rows")
+                        {"resolved_rows": item["resolved_rows"]}
+                        if item.get("resolved_rows")
                         else {}
                     ),
                 }

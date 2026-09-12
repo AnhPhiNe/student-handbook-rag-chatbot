@@ -346,7 +346,7 @@ scores.
 | Deterministic | Cases passing every applicable assertion | **92.2%** (142/154), CI 86.9–95.5 |
 | Retrieval | Hit@5 / MRR / nDCG@5 | **94.6%** / 84.8 / 85.3, Hit@5 CI 88.0–97.7 |
 | Generate + judge | Answer correctness / faithfulness | **96.3** / 96.0, correctness CI 93.4–98.6 |
-| Production | Release gates | not run in this scope |
+| Production | Release gates | **7 of 12 pass** on the live Space; transport 100%, payload 96.7% ([analysis](data/eval/official_v1/PRODUCTION_RESULTS.md)) |
 
 Per capability, deterministic pass rate and judged answer correctness:
 
@@ -379,6 +379,22 @@ case 024 now passes while 105 and 115 fail on task shape, and the new code path 
 exactly one of the 154 cases. That case still fails the deterministic contract by design —
 the gold names a single expected source, while the system now reports all three applicable
 scales with a resolved row each rather than guessing which one the student meant.
+
+The production suite ran once against the deployed Space on 2026-09-12 and its release
+gates failed, 7 of 12 checks passing. That result is kept as it came out rather than
+tuned into a pass, because four of the five failures say more about the gates and the
+run than about the service. All three strict p95 latency gates were calibrated against a
+**local** backend - the earlier smoke run recorded a 2,940 ms deterministic p95 on
+localhost, just under its 3,000 ms limit - while the deployed target is a free-tier
+Space whose deterministic p50 alone is 5,147 ms across two LLM round trips and a network
+hop. `telemetry_coverage` asks for a field the API emits only under an evaluation flag
+that production correctly leaves off. Of the two payload failures, one is a provider
+rate limit reached because evaluation and production share a key pool by choice, and one
+is an unexplained streaming `RuntimeError` that needs Space logs to diagnose. What the
+suite does establish: 100% transport success, zero HTTP 429s from the service itself, a
+valid cache protocol with a 90% warm-cache hit rate and no cold-cache leakage, and full
+streaming time-to-first-token coverage. Details and the per-scenario latency table are
+in [PRODUCTION_RESULTS.md](data/eval/official_v1/PRODUCTION_RESULTS.md).
 
 Honest limits: one author wrote both datasets and no second reviewer checked them; the
 judge is an LLM whose agreement with a human has not been measured; the twelve

@@ -319,10 +319,13 @@ The command overwrites `data/processed/`, so run it in a clean worktree. With `P
 
 Two hand-authored datasets, both with every expected answer anchored to a handbook
 source. `official_v1` is the development set the planner prompts were tuned on
-([notes](data/eval/official_v1/README.md)). `official_v2` is the held-out test set: it was
-frozen before its first run, never used for tuning, and it adds what v1 barely covered —
-follow-up questions, several requests in one message, several entities and cohort
-comparisons ([notes](data/eval/official_v2/README.md)).
+([notes](data/eval/official_v1/README.md)). `official_v2` was frozen before its initial
+held-out evaluation. Its observed scoring failure subsequently informed the
+`matched_rows` fix, so later measurements are post-fix evaluations on a seen test set,
+not a new independent holdout. It adds follow-up questions, several requests in one
+message, several entities and cohort comparisons
+([dataset notes](data/eval/official_v2/README.md),
+[initial results](data/eval/official_v2/RESULTS.md)).
 
 | Suite | v1 / v2 cases | What it measures |
 |---|---:|---|
@@ -363,6 +366,19 @@ Reweighted to the expected real-question mix ([`slice_weights.yaml`](data/eval/o
 
 Development set `official_v1`, same runtime: 129/135 deterministic, unchanged from the run
 before the planner and pipeline refactors, with the same six failing cases.
+
+Reading the failures afterwards exposed one real defect. Where several grade scales apply
+at once — K51 grades foundation and remaining courses differently — the resolver returned
+every table and the composer picked the interval itself, calling a failing 5,2 a pass.
+Commit `536169fc` resolves the row inside each applicable table instead. `official_v1`
+re-run on the fixed runtime scores 129/135 with the same six failures, so the change
+causes no regression. `official_v2` re-run scores 141/154, but **that is no longer a
+held-out number**, because the fix came from a v2 failure; the 92.2% above stands as the
+holdout result. The one-case difference is planner nondeterminism rather than the fix:
+case 024 now passes while 105 and 115 fail on task shape, and the new code path runs in
+exactly one of the 154 cases. That case still fails the deterministic contract by design —
+the gold names a single expected source, while the system now reports all three applicable
+scales with a resolved row each rather than guessing which one the student meant.
 
 Honest limits: one author wrote both datasets and no second reviewer checked them; the
 judge is an LLM whose agreement with a human has not been measured; the twelve

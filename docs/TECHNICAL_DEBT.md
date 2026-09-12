@@ -24,7 +24,6 @@ for dead production code.
 
 | Area | Current state | Safe way to change it |
 |---|---|---|
-| `AnswerPipeline` size | Plan execution and task-result merging (about 650 lines) live inside the pipeline class | Extract them into their own module, verified by full deterministic and answers runs |
 | Planner diagnostics | About 230 lines of evaluation-only diagnostics sit inside `AIRouter.plan` | Move them behind a separate evaluation hook; the planner prompt and requests must stay identical |
 | Scoring result schema | `scoring_lookup_from_reference` renames columns to an English schema read by the evaluator and `StructuredResults.tsx` | Migrate the schema together with the frontend |
 | Directory matching | Office, service and faculty matching are kept as they are | Refactor only with tests covering exact aliases, ambiguity, cohort applicability and cross-entity isolation |

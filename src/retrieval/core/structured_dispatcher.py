@@ -300,6 +300,35 @@ def _select_reference_tables(
     return candidates
 
 
+def _table_matched_rows(
+    lookup_type: str,
+    table: dict[str, Any],
+    *,
+    slots: dict[str, Any],
+    cohort: str | None,
+) -> list[dict[str, Any]] | None:
+    """Resolve the row a scoring operand selects inside one applicable table.
+
+    Several tables can apply at once: K51 grades foundation and remaining
+    courses on different scales, so the same mark is Dat in one and Khong dat
+    in the other. Locking a single fact would have to guess which table the
+    student meant, so the dispatcher keeps every table. The row lookup inside
+    each table is still arithmetic, and arithmetic belongs to the resolver,
+    not to the composer reading intervals out of a rendered table.
+    """
+
+    if lookup_type != "scoring" or not slots:
+        return None
+    resolved = scoring_lookup_from_reference(slots, table, cohort=cohort)
+    if not resolved:
+        return None
+    items = resolved.get("items")
+    if isinstance(items, list):
+        return [row for row in items if isinstance(row, dict)] or None
+    result = resolved.get("result")
+    return [result] if isinstance(result, dict) else None
+
+
 def _reference_table_lookup(
     lookup_type: str,
     *,
@@ -341,6 +370,11 @@ def _reference_table_lookup(
     for table in candidates:
         rows = [dict(row) for row in table.get("rows") or [] if isinstance(row, dict)]
         source_section = table.get("source_parent_id") or table.get("source_section_id")
+        matched_rows = (
+            _table_matched_rows(lookup_type, table, slots=slots, cohort=cohort)
+            if len(candidates) > 1
+            else None
+        )
         leaf_lookups.append(
             {
                 "lookup_type": lookup_type,
@@ -349,7 +383,9 @@ def _reference_table_lookup(
                     "table_id": table.get("table_id"),
                     "table_subtype": table.get("table_subtype"),
                     "rows": rows,
+                    **({"matched_rows": matched_rows} if matched_rows else {}),
                 },
+                **({"matched_rows": matched_rows} if matched_rows else {}),
                 "items": rows,
                 "display_rows": rows,
                 "table_id": table.get("table_id"),
@@ -389,6 +425,11 @@ def _reference_table_lookup(
                     "cohort": item.get("cohort"),
                     "applicability": item.get("applicability"),
                     "rows": item.get("items") or [],
+                    **(
+                        {"matched_rows": item["matched_rows"]}
+                        if item.get("matched_rows")
+                        else {}
+                    ),
                 }
                 for item in leaf_lookups
             ],

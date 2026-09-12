@@ -114,3 +114,40 @@ def test_missing_duration_selector_stays_evidence_only_after_normalization():
     assert resolution is not None
     assert resolution.resolution_status == "evidence_only"
     assert len(resolution.result["items"]) == 4
+
+
+def test_ambiguous_grade_scale_resolves_each_table_instead_of_the_composer():
+    # K51 grades foundation and remaining courses on different scales, so 5,2
+    # is Dat in one table and Khong dat in the other. Without a course_scope
+    # slot the lookup must stay unlocked, but the row inside each applicable
+    # table is arithmetic the resolver owns.
+    query = "Học phần chuyên ngành em được 5,2 vậy có bị rớt môn không?"
+    task = _task(query, "scoring",
+                 {"operation": "pass_threshold", "score_or_grade": "5.2"},
+                 {"score_or_grade": "5,2"}, ["K51"])
+    resolution = _resolve(task, "K51")
+    assert resolution is not None
+    assert resolution.resolution_status == "evidence_only"
+
+    by_id = {
+        table["table_id"]: table
+        for table in resolution.result["result"]["tables"]
+    }
+    foundation = by_id["K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation"]
+    remaining = by_id["K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining"]
+    assert foundation["matched_rows"][0]["row"] == {
+        "status": "Đạt", "score_10_range": "4,8 - 5,4", "letter_grade": "D+"}
+    assert remaining["matched_rows"][0]["row"] == {
+        "status": "Không đạt", "score_10_range": "4,8 - 5,4", "letter_grade": "D+"}
+
+
+def test_a_single_applicable_table_keeps_its_locked_result_shape():
+    # One table means the existing fact lock already carries the row; the
+    # per-table rows exist only to disambiguate a multi-table answer.
+    query = "Điểm 5,2 thì quy đổi ra điểm chữ nào?"
+    task = _task(query, "scoring",
+                 {"operation": "grade_10_to_letter", "score_or_grade": "5.2"},
+                 {"score_or_grade": "5,2"}, ["K50"])
+    resolution = _resolve(task, "K50")
+    assert resolution is not None
+    assert "matched_rows" not in resolution.result

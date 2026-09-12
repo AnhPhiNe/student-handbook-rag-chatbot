@@ -77,6 +77,7 @@ QUY CÁCH
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
 - Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vào Markdown vì giao diện đã hiển thị dữ liệu đó riêng.
 - Nếu structured evidence có resolved_result, phải sao chép chính xác kết quả đó; không tự chọn lại hàng hoặc tính lại từ bảng đầy đủ.
+- Nếu một bảng có matched_rows, đó là hàng hệ thống đã tra sẵn cho bảng đó: dùng đúng hàng ấy, không dò lại khoảng giá trị. Nhiều bảng cùng có matched_rows nghĩa là mỗi phạm vi áp dụng cho một kết quả khác nhau; nêu từng trường hợp kèm phạm vi, không gộp thành một kết quả.
 - Khi cần đọc bảng mà chưa có resolved_result, chọn bảng đúng phạm vi áp dụng rồi lấy kết quả từ đúng hàng và cột tương ứng, giữ nguyên quan hệ giữa các giá trị và nhãn kết quả. Không ghép giá trị giữa các bảng hoặc hàng. Nếu còn nhiều bảng hoặc hàng áp dụng, trình bày các trường hợp có căn cứ, không tự chọn một kết quả duy nhất.
 - Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
 - Dùng Markdown có chọn lọc: in đậm kết luận chính, số liệu, thời hạn và điều kiện quan trọng; dùng danh sách khi có nhiều bước, điều kiện hoặc trường hợp. Không in đậm cả đoạn.

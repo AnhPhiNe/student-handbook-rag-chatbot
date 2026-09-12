@@ -93,29 +93,26 @@ flowchart TD
     Cache --> API
 ```
 
-**Reading the diagram.** Three things in it are easy to misread.
+**Reading the diagram**, three things that are easy to misread:
 
-*The response cache sits after the evidence packet, not before it.* That looks backwards -
-surely you check the cache before doing the expensive work? - but the cache key is not the
-question. It is a SHA-256 over the question, the cohort, the selected citations, the
-structured result, a fingerprint of the authorized context, and both the pipeline and
-answer-prompt versions. Four of those only exist once planning and retrieval have run, so
-the key cannot be computed any earlier. The trade is deliberate: a cache entry is bound to
-the evidence that produced it, so a corpus change, a different retrieval result or a
-prompt-version bump all change the key and a stale answer can never be served for a
-regulation that has since moved. The cost is that a cache hit only saves the composer call.
-The production run shows exactly that: warm-cache p50 is 2,396 ms against 6,852 ms for a
-cold RAG request - about 4.5 s saved on the composer, with the planner and retrieval still
-paid in full.
-
-*The normalizer, not the planner, decides what actually runs.* The planner is an LLM and is
-treated as untrusted: it proposes a typed plan, and the normalizer validates every task
-against the question text and the lookup registry before a single lookup executes.
-
-*Every branch out of the normalizer can end without a composer call.* A clarify task, an
-out-of-domain question or a request where nothing is answerable returns an explicit status
-and never reaches Gemini. That is what keeps a wrong-but-fluent answer from being generated
-in the first place.
+- **The response cache sits after the evidence packet, not before it.** That looks
+  backwards, but the cache key is not the question - it is a SHA-256 over the question,
+  cohort, selected citations, structured result, a context fingerprint, and the pipeline
+  and prompt versions. Four of those only exist once planning and retrieval have run, so
+  the key cannot be computed any earlier. This is deliberate: a corpus change, a
+  different retrieval result or a prompt-version bump all change the key, so a stale
+  answer can never be served for a regulation that has since moved. The cost is that a
+  hit only saves the composer call - the production run shows warm-cache p50 at 2,396 ms
+  against 6,852 ms cold, about 4.5 s saved, with planner and retrieval still paid in
+  full.
+- **The normalizer, not the planner, decides what actually runs.** The planner is an LLM
+  and is treated as untrusted: it proposes a typed plan, and the normalizer validates
+  every task against the question text and the lookup registry before a single lookup
+  executes.
+- **Every branch out of the normalizer can end without a composer call.** A clarify
+  task, an out-of-domain question, or a request where nothing is answerable returns an
+  explicit status and never reaches Gemini - what keeps a wrong-but-fluent answer from
+  being generated in the first place.
 
 ### Request lifecycle
 
@@ -221,27 +218,26 @@ flowchart TD
     D -->|nothing found| Fallback["No result: the task uses RAG"]
 ```
 
-The layer distinguishes three outcomes, and the distinction is the point.
+The layer distinguishes three outcomes, and the distinction is the point:
 
-**One table, one row → `resolved_result`, fact lock on.** The inputs are grounded in the
-question and exactly one row applies, so the system commits to a value. The composer is
-told to copy it verbatim and not re-read the table. The full table travels alongside it so
-the answer can explain the value in context.
-
-**Several tables apply → `resolved_rows` per table, fact lock deliberately off.** K51 grades
-foundation courses and remaining courses on different scales, so 5.2 is *Đạt* in one table
-and *Không đạt* in the other. When the planner does not ground a `course_scope`, the system
-cannot know which the student means, so it locks nothing and returns all applicable tables.
-What it does not do is leave the arithmetic to the composer: it resolves the matching row
-*inside each table* and hands over one grounded result per scope. This exists because the
-composer previously read the interval itself and reported a failing 5.2 as a pass. Picking
-which scope applies is semantics and stays with the composer; finding the row inside a
-scope is arithmetic and belongs to the resolver.
-
-**Nothing resolvable → `evidence_only` or a clarifying question.** Scoring is the only lookup
-where several applicable tables mean mutually exclusive answers. A scholarship question also
-returns several tables - amount, classification, eligibility, formula - but those are
-complementary facets with no single row to pick, so `resolved_rows` does not apply to them.
+- **One table, one row → `resolved_result`, fact lock on.** Inputs are grounded and
+  exactly one row applies, so the system commits to a value; the composer is told to
+  copy it verbatim, never re-read the table. The full table travels alongside it so the
+  answer can explain the value in context.
+- **Several tables apply → `resolved_rows` per table, fact lock deliberately off.** K51
+  grades foundation and remaining courses on different scales, so 5.2 is *Đạt* in one
+  table and *Không đạt* in the other. Without a grounded `course_scope`, the system
+  cannot know which the student means, so it locks nothing and returns every applicable
+  table - but it still resolves the matching row *inside each one*, rather than leaving
+  the arithmetic to the composer. This exists because the composer once read the
+  interval itself and reported a failing 5.2 as a pass. Picking which scope applies is
+  semantics and stays with the composer; finding the row inside a scope is arithmetic
+  and belongs to the resolver.
+- **Nothing resolvable → `evidence_only` or a clarifying question.** Scoring is the only
+  lookup where several applicable tables mean mutually exclusive answers. A scholarship
+  question also returns several tables - amount, classification, eligibility, formula -
+  but those are complementary facets with no single row to pick, so `resolved_rows` does
+  not apply to them.
 
 </details>
 
@@ -286,25 +282,23 @@ flowchart TD
     BM -.->|"timeout or Qdrant unreachable"| Degraded["BM25 degraded, dense retrieval still serves"]
 ```
 
-Two properties matter here, and both were learned by measuring the deployed Space rather
-than by reasoning about it.
+Two properties here were learned by measuring the deployed Space, not by reasoning
+about it:
 
-**Warm-up runs on a background thread, never in the startup path.** The container has to
-answer `/health` while a multi-gigabyte model is still loading, or the platform health
-check fails and restarts it into a loop. So the port opens first and warming happens
-beside it.
-
-**It warms the retriever, not just the model.** An earlier version warmed the model,
-catalogs and clients but left the hybrid retriever lazy. Measured on the live Space: a
-structured question answered in 4.7 s while the first RAG question took 23.3 s and the
-second took 6.9 s - the first one was paying about 16 s to build the retriever and scroll
-Qdrant for the BM25 index. Warming the retriever too brought the first RAG question to
-7.5 s, matching the second. The embedding model is baked into the image at build time, so
-a fresh container never downloads it at run time.
-
-Warm-up can only make a container slower to become useful, never broken: BM25 is fail-open,
-so a timeout or an unreachable Qdrant leaves dense retrieval serving, and any exception is
-logged rather than propagated.
+- **Warm-up runs on a background thread, never in the startup path.** The container has
+  to answer `/health` while a multi-gigabyte model is still loading, or the platform
+  health check fails and restarts it into a loop - so the port opens first and warming
+  happens beside it.
+- **It warms the retriever, not just the model.** An earlier version warmed the model,
+  catalogs and clients but left the hybrid retriever lazy. Measured on the live Space: a
+  structured question answered in 4.7 s, but the first RAG question took 23.3 s and the
+  second took 6.9 s - the first one paid about 16 s to build the retriever and scroll
+  Qdrant for the BM25 index. Warming the retriever too brought it to 7.5 s, matching the
+  second. The embedding model is baked into the image at build time, so a fresh
+  container never downloads it at run time.
+- **It can only make startup slower, never broken.** BM25 is fail-open, so a timeout or
+  an unreachable Qdrant leaves dense retrieval serving, and any exception is logged
+  rather than propagated.
 
 </details>
 
@@ -477,22 +471,22 @@ hold-out result the bundle will ever produce.
 
 ³ The composer is handed more evidence than a given answer draws on — a token-spend cost, not a correctness one.
 
-#### Production — release gates FAILED, 7 of 12 pass
+#### Production — release gates: 7 of 12 pass
 
-| Gate | Result | Threshold | |
-|---|---:|---:|:-:|
-| `success_rate` | 96.7% | ≥ 98% | ❌ |
-| `telemetry_coverage` | 0% | ≥ 100% | ❌⁴ |
-| `warm_cache_hit_rate` | 90% | ≥ 90% | ✅ |
-| `cold_cache_status_coverage` | 100% | ≥ 100% | ✅ |
-| `warm_cache_status_coverage` | 100% | ≥ 100% | ✅ |
-| `streaming_ttft_coverage` | 100% | ≥ 100% | ✅ |
-| `http_429_rate` | 0% | ≤ 0% | ✅ |
-| `cold_cache_hit_rate` | 0% | ≤ 0% | ✅ |
-| `deterministic_p95_ms` | 20,054 ms | ≤ 3,000 ms | ❌⁵ |
-| `warm_cache_p95_ms` | 4,313 ms | ≤ 2,000 ms | ❌⁵ |
-| `rag_p95_ms` | 9,111 ms | ≤ 45,000 ms | ✅ |
-| `streaming_ttft_p95_ms` | 13,050 ms | ≤ 10,000 ms | ❌⁵ |
+| Gate | Result |
+|---|---:|
+| `success_rate` | 96.7% |
+| `telemetry_coverage` | 0% |
+| `warm_cache_hit_rate` | 90% |
+| `cold_cache_status_coverage` | 100% |
+| `warm_cache_status_coverage` | 100% |
+| `streaming_ttft_coverage` | 100% |
+| `http_429_rate` | 0% |
+| `cold_cache_hit_rate` | 0% |
+| `deterministic_p95_ms` | 20,054 ms |
+| `warm_cache_p95_ms` | 4,313 ms |
+| `rag_p95_ms` | 9,111 ms |
+| `streaming_ttft_p95_ms` | 13,050 ms |
 
 | Scenario | p50 | p95 | Success |
 |---|---:|---:|---:|
@@ -502,17 +496,18 @@ hold-out result the bundle will ever produce.
 | Cold RAG | 6,852 ms | 9,111 ms | 100% |
 | Burst | 7,555 ms | 15,308 ms | 90% |
 
-⁴ Needs `STUDENT_RAG_EVAL_TELEMETRY=true`, which production correctly leaves off — a
-configuration mismatch between the gate and ordinary serving, not a defect.
-⁵ Calibrated on a **local** backend (a 2026-08-08 smoke run hit 2,940 ms on localhost
-against this same limit); the deployed free-tier Space needs two LLM round trips and a
-network hop per structured question, so its p50 alone exceeds it. Recalibrating against
-the real target — not lowering the bar to pass — is the fix.
-
-One of the two payload failures (`official_prod_052`) is a Groq/Gemini rate limit hit
-because evaluation and production share a key pool by choice; the other
+Five gates fail. `telemetry_coverage` needs `STUDENT_RAG_EVAL_TELEMETRY=true`, which
+production correctly leaves off — a configuration mismatch, not a defect. The three
+p95 latency gates (`deterministic_p95_ms`, `warm_cache_p95_ms`, `streaming_ttft_p95_ms`)
+were calibrated on a **local** backend: a 2026-08-08 smoke run hit 2,940 ms on localhost
+against the same 3,000 ms limit that the deployed free-tier Space's 5,147 ms
+deterministic p50 alone cannot meet, since the Space pays for two LLM round trips and a
+network hop that localhost never did. Recalibrating those thresholds against the real
+deployment target — not lowering them to pass — is the fix. `success_rate` misses its
+98% target because of two payload failures: one (`official_prod_052`) is a Groq/Gemini
+rate limit hit since evaluation and production share a key pool by choice, and the other
 (`official_prod_042`) is an unexplained streaming `RuntimeError`, left open rather than
-explained away. Full gate-by-gate reasoning and a 31.2 s outlier worth reading:
+explained away. Thresholds, per-gate verdicts and the 31.2 s outlier:
 [PRODUCTION_RESULTS.md](data/eval/official_v1/PRODUCTION_RESULTS.md).
 
 ### Notes on these numbers

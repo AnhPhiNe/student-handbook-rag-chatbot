@@ -22,7 +22,7 @@ from .amendment_precedence import (
 )
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.24-grounded-table-context"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.25-resolved-rows"
 
 
 def build_answer_prompt_bundle(
@@ -76,9 +76,8 @@ QUY CÁCH
 - admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp; dùng metadata này để đối chiếu phạm vi áp dụng, không tự suy năm tuyển sinh từ mã khóa. Nếu tập năm có nhiều phần tử, không tự chọn một năm; nếu chưa xác định được trường hợp áp dụng, trình bày các trường hợp có căn cứ và nêu thông tin còn thiếu.
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
 - Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vào Markdown vì giao diện đã hiển thị dữ liệu đó riêng.
-- Nếu structured evidence có resolved_result, phải sao chép chính xác kết quả đó; không tự chọn lại hàng hoặc tính lại từ bảng đầy đủ.
-- Nếu một bảng có resolved_rows, đó là hàng hệ thống đã tra sẵn cho bảng đó: dùng đúng hàng ấy, không dò lại khoảng giá trị. Nhiều bảng cùng có resolved_rows nghĩa là mỗi phạm vi áp dụng cho một kết quả khác nhau; nêu từng trường hợp kèm phạm vi, không gộp thành một kết quả.
-- Khi cần đọc bảng mà chưa có resolved_result, chọn bảng đúng phạm vi áp dụng rồi lấy kết quả từ đúng hàng và cột tương ứng, giữ nguyên quan hệ giữa các giá trị và nhãn kết quả. Không ghép giá trị giữa các bảng hoặc hàng. Nếu còn nhiều bảng hoặc hàng áp dụng, trình bày các trường hợp có căn cứ, không tự chọn một kết quả duy nhất.
+- Hệ thống tra sẵn hàng cho bạn bất cứ khi nào tra được, và bạn phải dùng đúng hàng đó, không chọn lại hàng hay dò lại khoảng giá trị: resolved_result là kết quả đã chốt khi chỉ một phạm vi áp dụng, còn resolved_rows trong từng bảng là kết quả riêng của phạm vi bảng đó khi nhiều phạm vi cùng áp dụng — khi ấy nêu từng trường hợp kèm phạm vi, không gộp thành một kết quả duy nhất.
+- Chỉ khi evidence không có resolved_result lẫn resolved_rows thì mới tự đọc bảng: chọn bảng đúng phạm vi áp dụng rồi lấy kết quả từ đúng hàng và cột tương ứng, giữ nguyên quan hệ giữa các giá trị và nhãn kết quả. Không ghép giá trị giữa các bảng hoặc hàng. Nếu còn nhiều bảng hoặc hàng áp dụng, trình bày các trường hợp có căn cứ, không tự chọn một kết quả duy nhất.
 - Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
 - Dùng Markdown có chọn lọc: in đậm kết luận chính, số liệu, thời hạn và điều kiện quan trọng; dùng danh sách khi có nhiều bước, điều kiện hoặc trường hợp. Không in đậm cả đoạn.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.

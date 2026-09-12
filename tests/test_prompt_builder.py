@@ -130,11 +130,11 @@ def test_prompt_binds_table_cells_and_cohort_years_without_overriding_fact_lock(
     assert "admission_years" in prompt
     assert "không tự suy năm tuyển sinh từ mã khóa" in prompt
     assert "không tự chọn một năm" in prompt
-    assert "Khi cần đọc bảng mà chưa có resolved_result" in prompt
+    assert "không có resolved_result lẫn resolved_rows thì mới tự đọc bảng" in prompt
     assert "chọn bảng đúng phạm vi áp dụng" in prompt
     assert "đúng hàng và cột tương ứng" in prompt
     assert "Không ghép giá trị giữa các bảng hoặc hàng" in prompt
-    assert "không tự chọn lại hàng hoặc tính lại từ bảng đầy đủ" in prompt
+    assert "không chọn lại hàng hay dò lại khoảng giá trị" in prompt
 
 
 def test_prompt_is_compact_and_places_final_task_after_evidence() -> None:
@@ -211,7 +211,9 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "in đậm kết luận chính" in prompt
     assert "Với đơn vị mode=structured" in prompt
     assert "không sao chép toàn bộ bảng" in prompt
-    assert "structured evidence có resolved_result" in prompt
+    assert "Hệ thống tra sẵn hàng cho bạn" in prompt
+    assert "resolved_result là kết quả đã chốt khi chỉ một phạm vi áp dụng" in prompt
+    assert "resolved_rows trong từng bảng là kết quả riêng của phạm vi bảng đó" in prompt
     assert 'không suy "Sổ tay không quy định"' in prompt
     assert "role=target" in prompt
     assert "ưu tiên target để trả lời đúng khía cạnh được hỏi" in prompt

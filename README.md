@@ -317,36 +317,67 @@ The command overwrites `data/processed/`, so run it in a clean worktree. With `P
 
 ## Evaluation
 
-The benchmark is `official_v1`: a hand-authored dataset in which every expected answer is anchored to a handbook source and reviewed before it was frozen ([dataset notes](data/eval/official_v1/README.md)).
+Two hand-authored datasets, both with every expected answer anchored to a handbook
+source. `official_v1` is the development set the planner prompts were tuned on
+([notes](data/eval/official_v1/README.md)). `official_v2` is the held-out test set: it was
+frozen before its first run, never used for tuning, and it adds what v1 barely covered —
+follow-up questions, several requests in one message, several entities and cohort
+comparisons ([notes](data/eval/official_v2/README.md)).
 
-| Suite | Cases | What it measures |
+| Suite | v1 / v2 cases | What it measures |
 |---|---:|---|
-| Deterministic | 135 | Planning and structured execution against accepted outcomes: task split, lookup choice, cohort, grounded slots and the exact table value |
-| Retrieval | 155 | Ranking of the retrieved evidence: Hit@k, MRR, nDCG@5 and required-source recall |
-| Generate + judge | 150 | End-to-end answers scored by a pinned LLM judge (`openai/gpt-oss-120b`): correctness, faithfulness, citation correctness, context recall and precision, hallucination rate |
-| Production | 60 | Requests against the deployed API: success rate, 429s, cache behavior, streaming time to first token and p95 latency, with pass/fail release gates |
+| Deterministic | 135 / 154 | Planning and structured execution against accepted outcomes: task split, lookup choice, cohort, grounded slots and the exact table value |
+| Retrieval | 155 / 93 | Ranking of the retrieved evidence: Hit@k, MRR, nDCG@5 and required-source recall |
+| Generate + judge | 150 / 154 | End-to-end answers scored by a pinned LLM judge (`openai/gpt-oss-120b`): correctness, faithfulness, citation correctness, context recall and precision, hallucination rate |
+| Production | 60 / — | Requests against the deployed API: success rate, 429s, cache behavior, streaming time to first token and p95 latency, with pass/fail release gates |
 
 ### Results
 
-> [!NOTE]
-> Results will be published after the next frozen run on the current code (pipeline `v76`, planner prompt `v43`, normalizer `v28`). Earlier development runs are recorded in [`RESULTS_AND_LIMITATIONS.md`](data/eval/official_v1/RESULTS_AND_LIMITATIONS.md).
-
-<!-- TODO: fill in from the next frozen official_v1 run (deterministic, retrieval, generate + judge, production). -->
+Held-out `official_v2`, run once on 2026-09-12 (commit `d09e970`, pipeline `v76`, planner
+Qwen3 `v43` on Groq, normalizer `v28`, composer Gemini 3.1 Flash-Lite, judge
+`openai/gpt-oss-120b`). Intervals are 95%: Wilson for pass rates, bootstrap for judge
+scores.
 
 | Suite | Headline metric | Result |
 |---|---|---|
-| Deterministic | Cases passing every applicable assertion | — |
-| Retrieval | Hit@5 / MRR / nDCG@5 | — |
-| Generate + judge | Answer correctness / faithfulness | — |
-| Production | Release gates | — |
+| Deterministic | Cases passing every applicable assertion | **92.2%** (142/154), CI 86.9–95.5 |
+| Retrieval | Hit@5 / MRR / nDCG@5 | **94.6%** / 84.8 / 85.3, Hit@5 CI 88.0–97.7 |
+| Generate + judge | Answer correctness / faithfulness | **96.3** / 96.0, correctness CI 93.4–98.6 |
+| Production | Release gates | not run in this scope |
+
+Per capability, deterministic pass rate and judged answer correctness:
+
+| Capability | Cases | Deterministic | Answer correctness |
+|---|---:|---:|---:|
+| Single lookup or single regulation question | 68 | 94.1 | 96.8 |
+| Follow-up questions with history | 25 | 92.0 | 94.2 |
+| Missing input, partial clarification, out of domain | 13 | 92.3 | 99.2 |
+| Two or three requests in one message | 27 | 88.9 | 94.8 |
+| Several entities in one question | 12 | 100.0 | 95.0 |
+| Cohort comparison | 9 | 77.8 | 100.0 |
+
+Reweighted to the expected real-question mix ([`slice_weights.yaml`](data/eval/official_v2/slice_weights.yaml)):
+93.1 deterministic, 96.5 answer correctness. Cohorts are within 4 points of each other
+(K48-K49 90.2, K50 94.1, K51 92.3), and the 32 stress cases score 90.6 deterministic and
+100 on answer correctness.
+
+Development set `official_v1`, same runtime: 129/135 deterministic, unchanged from the run
+before the planner and pipeline refactors, with the same six failing cases.
+
+Honest limits: one author wrote both datasets and no second reviewer checked them; the
+judge is an LLM whose agreement with a human has not been measured; the twelve
+deterministic failures are concentrated in cohort comparison (2 of 5 structured cases),
+two-lookup questions (2 of 8) and a few single lookups; context precision is 60.8, so the
+composer receives more context than it needs.
 
 ### Running the suites
 
 ```bash
-python -m scripts.run_official_deterministic --current-worktree
-python -m scripts.run_official_answers --suite retrieval
-python -m scripts.run_official_answers --suite answers
-python -m scripts.run_official_answers --suite production --base-url https://<your-space>.hf.space
+python -m scripts.run_official_deterministic --bundle official_v2 --current-worktree
+python -m scripts.run_official_answers --bundle official_v2 --suite retrieval
+python -m scripts.run_official_answers --bundle official_v2 --suite answers
+python -m scripts.run_official_answers --bundle official_v1 --suite production --base-url https://<your-space>.hf.space
+python -m scripts.report_official_slices <run>/deterministic.json --bundle official_v2
 ```
 
 Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`. `--limit N` runs a smoke subset, and `--output DIR` resumes an interrupted run. `--retrieval-mode no_graph` or `--retrieval-mode vector_only` runs a retrieval ablation. [`regrade_official_deterministic.py`](scripts/regrade_official_deterministic.py) rescores a saved run without any model calls. The suites disable the router and response caches, and they call paid providers.

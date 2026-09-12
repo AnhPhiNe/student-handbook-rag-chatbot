@@ -6,7 +6,7 @@ published in the project README. It also covers what official_v1 barely tests:
 follow-up questions (official_v1 has no case with history), several requests in one
 message, several entities, and cohort comparisons.
 
-**Status: approved by the owner and frozen on 2026-09-11 (the commit that adds `manifest.json`). Not yet run.**
+**Status: frozen on 2026-09-11 (the commit that adds `manifest.json`) and run once on 2026-09-12; see [RESULTS.md](RESULTS.md).**
 The per-case `review_status` and `frozen` fields keep their drafting values; `manifest.json`
 is the record of approval.
 
@@ -85,8 +85,10 @@ mainly in their values.
    the folder changed since then (no output means unchanged):
 
    ```bash
-   git diff --stat $(git log -1 --format=%H -- data/eval/official_v2/manifest.json) -- data/eval/official_v2
+   git diff --stat $(git log -1 --format=%H -- data/eval/official_v2/manifest.json) -- data/eval/official_v2 ':!data/eval/official_v2/RESULTS.md'
    ```
+
+   `RESULTS.md` is written after a run and is excluded from the check.
 
 3. Run each suite once on the final runtime, with response and router caches disabled:
 

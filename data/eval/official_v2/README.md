@@ -1,12 +1,19 @@
-# Official evaluation v2: held-out test set
+# Official evaluation v2: a spent hold-out, now a regression set
 
 official_v1 is the development set: planner prompts v42 and v43 were tuned on it, so its
-scores are optimistic. official_v2 is the held-out test set. Its numbers are the ones
-published in the project README. It also covers what official_v1 barely tests:
-follow-up questions (official_v1 has no case with history), several requests in one
-message, several entities, and cohort comparisons.
+scores are optimistic. official_v2 was built as the held-out test set and covers what
+official_v1 barely tests: follow-up questions (official_v1 has no case with history),
+several requests in one message, several entities, and cohort comparisons.
 
-**Status: frozen on 2026-09-11 (the commit that adds `manifest.json`) and run once on 2026-09-12; see [RESULTS.md](RESULTS.md).**
+**Its hold-out status is spent.** The first run on 2026-09-12 scored 92.2% deterministic,
+and that number stands as the one and only hold-out measurement (see [RESULTS.md](RESULTS.md)).
+Reading its failures then exposed a real defect - case 003, where the composer read the
+wrong row out of two applicable K51 grade scales and called a failing mark a pass - and
+the fix for it (`536169fc`) came from that reading. Every later run of official_v2 is
+therefore a post-fix measurement on a **seen** set, not a second independent hold-out, and
+must be labelled that way. A genuinely fresh hold-out requires a new bundle.
+
+**Status: frozen on 2026-09-11 (the commit that adds `manifest.json`), run as a hold-out once on 2026-09-12, re-run afterwards as a regression set.**
 The per-case `review_status` and `frozen` fields keep their drafting values; `manifest.json`
 is the record of approval.
 
@@ -105,8 +112,11 @@ mainly in their values.
    python -m scripts.report_official_slices <run>/deterministic.json
    ```
 
-5. Never change prompts, code or gold because of an official_v2 result. A fix found here
-   is verified on official_v1, and official_v2 stays as it was reported.
+5. The gold never changes because of a result. Code may change when a result exposes a
+   real defect, but then the hold-out is spent: verify the fix on official_v1, keep the
+   original official_v2 numbers as reported, and label every later official_v2 run as a
+   post-fix regression measurement rather than a hold-out. This is what happened on
+   2026-09-12; see the note at the top.
 
 ## Limitations
 

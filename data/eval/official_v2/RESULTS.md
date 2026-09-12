@@ -3,6 +3,11 @@
 One run per suite on 2026-09-12, on the frozen bundle. The runtime was commit
 `d09e970` (pipeline v76, planner Qwen3 prompt v43 on Groq, normalizer v28, composer
 Gemini 3.1 Flash-Lite, judge `openai/gpt-oss-120b`); router and response caches off.
+These numbers describe that commit, and they are the only hold-out measurement of
+official_v2: the runtime has since changed (case 003 below exposed a real defect, fixed in
+`536169fc`), so later runs of this bundle are post-fix regression measurements on a seen
+set. See the bundle [README](README.md) for the protocol that now applies.
+
 Reports live under `data/eval/reports/` (not in git):
 
 - `official_v2_deterministic_20260912T043159Z`

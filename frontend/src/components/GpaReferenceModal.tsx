@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, GraduationCap, Info, Award, AlertTriangle, BookOpen } from 'lucide-react';
 import type { Cohort } from '../utils/gradeScale';
@@ -18,20 +18,32 @@ export function GpaReferenceModal({
   cohort,
   initialTab = 'scale',
 }: GpaReferenceModalProps) {
+  // Mount the dialog only while it is open and key it on the requested tab, so
+  // opening it always starts on that tab. The previous version reset the tab
+  // from inside an effect, which React warns against because the extra render
+  // it triggers is exactly what remounting expresses directly.
+  if (!isOpen) return null;
+  return (
+    <GpaReferenceDialog
+      key={initialTab}
+      onClose={onClose}
+      cohort={cohort}
+      initialTab={initialTab}
+    />
+  );
+}
+
+function GpaReferenceDialog({
+  onClose,
+  cohort,
+  initialTab,
+}: Omit<GpaReferenceModalProps, 'isOpen' | 'initialTab'> & { initialTab: 'scale' | 'rules' }) {
   const [activeTab, setActiveTab] = useState<'scale' | 'rules'>(initialTab);
 
-  useEffect(() => {
-    if (isOpen) {
-      setActiveTab(initialTab);
-    }
-  }, [isOpen, initialTab]);
-
   const dialogRef = useAccessibleDialog<HTMLDivElement>({
-    isOpen,
+    isOpen: true,
     onClose,
   });
-
-  if (!isOpen) return null;
 
   const gradeScales = getGradeScales(cohort);
   const showCourseGroup = gradeScales.length > 1;

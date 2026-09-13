@@ -120,14 +120,14 @@ flowchart LR
 
 ## 3. Bộ diagram và cách đọc
 
-Portal [Toàn bộ kiến trúc backend](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/index.html) nhúng chín diagram
+Portal [Toàn bộ kiến trúc backend](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/index.html) nhúng chín diagram
 tương tác trong một trang. Mỗi diagram có thể zoom, search, focus node, trace
 relationship và đổi light/dark mode. Viewer UI của Archify dùng tiếng Anh; nội
 dung do dự án viết bằng tiếng Việt.
 
 ### 3.1 Kiến trúc tổng thể
 
-[Mở diagram](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/system-overview.html)
+[Mở diagram](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/system-overview.html)
 
 **Diagram trả lời:** hệ thống có những boundary nào và dữ liệu đi qua chúng ra
 sao?
@@ -143,7 +143,7 @@ node đại diện cho một trách nhiệm, không nhất thiết tương ứng
 
 ### 3.2 Bản đồ module backend
 
-[Mở diagram](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/backend-module-map.html)
+[Mở diagram](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/backend-module-map.html)
 
 **Diagram trả lời:** khi gặp một hành vi, nên mở file nào trước?
 
@@ -158,7 +158,7 @@ thực thi task; `ChildParentHybridRetriever` là seam retrieval. Không nên b�
 
 ### 3.3 Request lifecycle
 
-[Mở diagram](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/request-lifecycle.html)
+[Mở diagram](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/request-lifecycle.html)
 
 **Diagram trả lời:** một request streaming trải qua các bước nào theo thời gian?
 
@@ -173,7 +173,7 @@ dùng cùng logic chuẩn bị evidence.
 
 ### 3.4 Structured execution
 
-[Mở diagram](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/structured-execution.html)
+[Mở diagram](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/structured-execution.html)
 
 **Diagram trả lời:** làm sao một task structured trở thành fact lock hoặc chỉ là
 bảng tham khảo?
@@ -188,7 +188,7 @@ quyết định khác nhau. Resolver chỉ khóa fact khi điều kiện đủ r
 
 ### 3.5 Hybrid retrieval
 
-[Mở diagram](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/hybrid-retrieval.html)
+[Mở diagram](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/hybrid-retrieval.html)
 
 **Diagram trả lời:** một RAG task tìm được full article bằng cách nào?
 
@@ -201,7 +201,7 @@ Nếu Cohere lỗi, hệ thống giữ thứ tự RRF thay vì làm hỏng reque
 
 ### 3.6 Answer composition
 
-[Mở diagram](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/answer-composition.html)
+[Mở diagram](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/answer-composition.html)
 
 **Diagram trả lời:** bằng chứng nào được phép đi vào Composer và cache nằm ở đâu?
 
@@ -214,7 +214,7 @@ không bỏ qua Planner/retrieval, vì cache key phải phản ánh evidence th�
 
 ### 3.7 Ingestion và retrieval artifacts
 
-[Mở diagram](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/ingestion-retrieval.html)
+[Mở diagram](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/ingestion-retrieval.html)
 
 **Diagram trả lời:** PDF biến thành dữ liệu runtime như thế nào?
 
@@ -228,7 +228,7 @@ bảng vừa bị LLM đọc tự do vừa được xử lý deterministic.
 
 ### 3.8 Startup và readiness
 
-[Mở diagram](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/runtime-startup.html)
+[Mở diagram](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/runtime-startup.html)
 
 **Diagram trả lời:** container mở port, warm model và báo sẵn sàng theo thứ tự nào?
 
@@ -242,7 +242,7 @@ buộc khác vẫn sẵn sàng; dense retrieval tiếp tục phục vụ.
 
 ### 3.9 Evaluation lifecycle
 
-[Mở diagram](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/evaluation-lifecycle.html)
+[Mở diagram](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/evaluation-lifecycle.html)
 
 **Diagram trả lời:** dataset, runtime, report và release gate liên hệ thế nào?
 
@@ -1698,7 +1698,7 @@ Không copy placeholder trong `.env.example` thành secret thật trong Git.
 
 Nếu chỉ có 30 phút, hãy làm theo thứ tự:
 
-1. Mở [portal kiến trúc](https://raw.githack.com/AnhPhiNe/student-handbook-rag-chatbot/836353078c94a25a037fd0fbbe8428b58ad51c6f/docs/architecture/index.html).
+1. Mở [portal kiến trúc](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/index.html).
 2. Đọc [API schemas](../src/api/schemas.py).
 3. Đọc `AnswerPipeline.prepare_answer` trong
    [answer pipeline](../src/generation/answer_pipeline.py).

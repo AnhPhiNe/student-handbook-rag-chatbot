@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Container startup, warm-up và readiness",
+    "subtitle": "Port mở trước; model và BM25 khởi tạo trên background thread",
+    "output": "runtime-startup.html",
+    "viewBox": [1080, 580],
+    "column_fit": "spread",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {"id": "boot", "label": "Boot không chặn port", "focus": ["platform", "uvicorn", "lifespan", "health"], "note": "Liveness hoạt động ngay cả khi warm-up vẫn đang chạy."},
+      {"id": "warmup", "label": "Background warm-up", "focus": ["lifespan", "warmup", "assets", "retriever"], "note": "Embedding, catalogs, clients và hybrid retriever được dựng ngoài startup path."},
+      {"id": "readiness", "label": "Readiness và degraded mode", "focus": ["retriever", "health", "platform"], "note": "BM25 fail-open; readiness vẫn báo rõ trạng thái Qdrant, MongoDB và artifacts."}
+    ]
+  },
+  "participants": [
+    {"id": "platform", "type": "external", "label": "Hosting platform", "sublabel": "container probe"},
+    {"id": "uvicorn", "type": "backend", "label": "Uvicorn", "sublabel": "one worker"},
+    {"id": "lifespan", "type": "backend", "label": "FastAPI lifespan", "sublabel": "startup hook"},
+    {"id": "warmup", "type": "backend", "label": "Warm-up thread", "sublabel": "non-blocking"},
+    {"id": "assets", "type": "database", "label": "Models + catalogs", "sublabel": "local artifacts"},
+    {"id": "retriever", "type": "backend", "label": "Hybrid retriever", "sublabel": "BM25 state"},
+    {"id": "health", "type": "security", "label": "Health routes", "sublabel": "live + ready"}
+  ],
+  "segments": [
+    {"from": 150, "to": 260, "label": "Port first"},
+    {"from": 265, "to": 410, "label": "Background warm-up"},
+    {"from": 415, "to": 510, "label": "Readiness"}
+  ],
+  "messages": [
+    {"id": "start", "from": "platform", "to": "uvicorn", "y": 165, "label": "start container", "variant": "emphasis"},
+    {"id": "lifespan", "from": "uvicorn", "to": "lifespan", "y": 195, "label": "enter lifespan", "variant": "default"},
+    {"id": "port", "from": "uvicorn", "to": "platform", "y": 225, "label": "port available", "variant": "return"},
+    {"id": "live", "from": "platform", "to": "health", "y": 255, "label": "GET /health", "variant": "security"},
+    {"id": "thread", "from": "lifespan", "to": "warmup", "y": 285, "label": "start background thread", "variant": "dashed"},
+    {"id": "load", "from": "warmup", "to": "assets", "y": 315, "label": "load embedding + catalogs", "variant": "default"},
+    {"id": "init", "from": "warmup", "to": "retriever", "y": 345, "label": "initialize singleton", "variant": "emphasis"},
+    {"id": "bm25", "from": "retriever", "to": "assets", "y": 375, "label": "scroll payloads + build BM25", "variant": "default"},
+    {"id": "status", "from": "retriever", "to": "warmup", "y": 405, "label": "ready or dense-only", "variant": "return"},
+    {"id": "probe", "from": "platform", "to": "health", "y": 435, "label": "GET /health/readiness", "variant": "security"},
+    {"id": "deps", "from": "health", "to": "retriever", "y": 465, "label": "dependency + artifact status", "variant": "default"},
+    {"id": "ready", "from": "health", "to": "platform", "y": 495, "label": "readiness response", "variant": "return"}
+  ],
+  "activations": [
+    {"participant": "uvicorn", "from": 160, "to": 235, "type": "backend"},
+    {"participant": "lifespan", "from": 190, "to": 295, "type": "backend"},
+    {"participant": "warmup", "from": 280, "to": 410, "type": "backend"},
+    {"participant": "assets", "from": 310, "to": 385, "type": "database"},
+    {"participant": "retriever", "from": 340, "to": 475, "type": "backend"},
+    {"participant": "health", "from": 250, "to": 505, "type": "security"}
+  ]
+}

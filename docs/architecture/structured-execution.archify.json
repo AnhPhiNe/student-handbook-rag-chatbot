@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Nhánh tra cứu có cấu trúc",
+    "subtitle": "Từ task đã lập kế hoạch đến dữ kiện xác định và citation",
+    "output": "structured-execution.html",
+    "viewBox": [1080, 650],
+    "column_fit": "spread",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {"id": "binding", "label": "Chuẩn hóa và ràng buộc", "focus": ["executor", "dispatcher", "cohort", "registry"], "note": "Task chỉ được tra trong nguồn phù hợp với cohort và lookup kind."},
+      {"id": "resolution", "label": "Giải quyết dữ kiện", "focus": ["dispatcher", "resolver", "registry"], "note": "Resolver chọn bảng, công thức hoặc directory record một cách xác định."},
+      {"id": "provenance", "label": "Provenance và tổng hợp", "focus": ["resolver", "guard", "dispatcher", "executor"], "note": "Nguồn được kiểm tra trước khi resolved rows quay lại PlanExecutor."}
+    ]
+  },
+  "participants": [
+    {"id": "executor", "type": "backend", "label": "PlanExecutor", "sublabel": "planned task"},
+    {"id": "dispatcher", "type": "backend", "label": "Dispatcher", "sublabel": "structured routing"},
+    {"id": "cohort", "type": "security", "label": "Cohort policy", "sublabel": "scope guard"},
+    {"id": "registry", "type": "database", "label": "Lookup registry", "sublabel": "tables + catalogs"},
+    {"id": "resolver", "type": "backend", "label": "Lookup resolver", "sublabel": "deterministic"},
+    {"id": "guard", "type": "security", "label": "Source guard", "sublabel": "applicability"}
+  ],
+  "segments": [
+    {"from": 150, "to": 285, "label": "Bind task"},
+    {"from": 290, "to": 455, "label": "Resolve"},
+    {"from": 460, "to": 585, "label": "Validate + return"}
+  ],
+  "messages": [
+    {"id": "task", "from": "executor", "to": "dispatcher", "y": 165, "label": "lookup kind + slots + cohort", "variant": "emphasis"},
+    {"id": "normalize", "from": "dispatcher", "to": "cohort", "y": 200, "label": "normalize cohort", "variant": "security"},
+    {"id": "scope", "from": "cohort", "to": "dispatcher", "y": 232, "label": "canonical cohort scope", "variant": "return"},
+    {"id": "select", "from": "dispatcher", "to": "registry", "y": 268, "label": "select candidate sources", "variant": "default"},
+    {"id": "candidates", "from": "registry", "to": "dispatcher", "y": 302, "label": "tables / formulas / records", "variant": "return"},
+    {"id": "resolve", "from": "dispatcher", "to": "resolver", "y": 338, "label": "resolve one lookup", "variant": "emphasis"},
+    {"id": "read", "from": "resolver", "to": "registry", "y": 372, "label": "match grounded slots", "variant": "default"},
+    {"id": "rows", "from": "registry", "to": "resolver", "y": 406, "label": "matching rows + source ids", "variant": "return"},
+    {"id": "validate", "from": "resolver", "to": "guard", "y": 450, "label": "validate source applicability", "variant": "security"},
+    {"id": "validated", "from": "guard", "to": "resolver", "y": 484, "label": "accepted provenance", "variant": "return"},
+    {"id": "resolution", "from": "resolver", "to": "dispatcher", "y": 520, "label": "resolution + citations", "variant": "return"},
+    {"id": "result", "from": "dispatcher", "to": "executor", "y": 558, "label": "resolved rows or evidence_only", "variant": "return"}
+  ],
+  "activations": [
+    {"participant": "dispatcher", "from": 160, "to": 566, "type": "backend"},
+    {"participant": "cohort", "from": 194, "to": 238, "type": "security"},
+    {"participant": "registry", "from": 262, "to": 308, "type": "database"},
+    {"participant": "resolver", "from": 332, "to": 526, "type": "backend"},
+    {"participant": "guard", "from": 444, "to": 490, "type": "security"}
+  ]
+}

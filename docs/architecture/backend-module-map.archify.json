@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Bản đồ module backend",
+    "subtitle": "Các seam chính để đọc source theo trách nhiệm",
+    "output": "backend-module-map.html",
+    "viewBox": [1240, 740],
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/AnhPhiNe/student-handbook-rag-chatbot",
+      "provider": "github",
+      "revision": "6eba6d4a46a3ea415cb96338d00c679d431ff20c"
+    },
+    "views": [
+      {"id": "entry", "label": "API đến orchestration", "focus": ["api", "service", "pipeline", "executor"], "note": "Đọc từ schema/route qua service facade đến AnswerPipeline và PlanExecutor."},
+      {"id": "planning", "label": "Planning và execution", "focus": ["executor", "router", "query_plan", "structured", "hybrid"], "note": "Planner tạo typed plan; executor chọn deterministic lookup hoặc hybrid RAG."},
+      {"id": "composition", "label": "Composition helpers", "focus": ["pipeline", "cache", "prompt", "guardrails", "citations"], "note": "Cache, prompt authorization, guardrails và citation formatting là các module riêng."}
+    ]
+  },
+  "components": [
+    {"id": "api", "type": "backend", "label": "API routes + schemas", "sublabel": "HTTP, SSE, health", "pos": [35, 330], "size": [155, 68], "sources": [{"path": "src/api/schemas.py", "label": "API contracts"}, {"path": "src/api/routes/chat_stream.py", "label": "Streaming route"}]},
+    {"id": "service", "type": "backend", "label": "AnswerService", "sublabel": "application facade", "pos": [235, 330], "size": [150, 68], "sources": [{"path": "src/services/answer_service.py", "label": "Service facade"}]},
+    {"id": "pipeline", "type": "backend", "label": "AnswerPipeline", "sublabel": "answer lifecycle", "pos": [430, 330], "size": [155, 68], "sources": [{"path": "src/generation/answer_pipeline.py", "line": 402, "label": "Sync path"}, {"path": "src/generation/answer_pipeline.py", "line": 682, "label": "Stream path"}]},
+    {"id": "executor", "type": "backend", "label": "PlanExecutor", "sublabel": "task execution", "pos": [650, 330], "size": [155, 68], "sources": [{"path": "src/generation/plan_executor.py", "line": 82, "label": "Executor"}]},
+    {"id": "cache", "type": "database", "label": "ResponseCache", "sublabel": "memory or Redis", "pos": [430, 125], "size": [155, 68], "sources": [{"path": "src/generation/response_cache.py", "line": 19, "label": "Cache key"}, {"path": "src/generation/response_cache.py", "line": 56, "label": "Cache implementations"}]},
+    {"id": "router", "type": "backend", "label": "AIRouter", "sublabel": "planner + diagnostics", "pos": [650, 125], "size": [155, 68], "sources": [{"path": "src/retrieval/core/ai_router.py", "line": 585, "label": "Planner"}]},
+    {"id": "query_plan", "type": "backend", "label": "QueryPlan", "sublabel": "schema + normalizer", "pos": [870, 125], "size": [165, 68], "sources": [{"path": "src/retrieval/core/query_plan.py", "line": 23, "label": "Plan normalization"}]},
+    {"id": "structured", "type": "backend", "label": "StructuredDispatcher", "sublabel": "deterministic lookup", "pos": [870, 300], "size": [180, 68], "sources": [{"path": "src/retrieval/core/structured_dispatcher.py", "line": 767, "label": "Structured task"}]},
+    {"id": "hybrid", "type": "backend", "label": "HybridRetriever", "sublabel": "dense + BM25 + graph", "pos": [870, 440], "size": [180, 68], "sources": [{"path": "src/retrieval/core/hybrid_pipeline.py", "line": 388, "label": "Retrieve"}]},
+    {"id": "prompt", "type": "backend", "label": "PromptBuilder", "sublabel": "authorized evidence", "pos": [425, 570], "size": [165, 68], "sources": [{"path": "src/generation/prompt_builder.py", "line": 28, "label": "Prompt bundle"}, {"path": "src/generation/prompt_builder.py", "line": 101, "label": "Evidence packet"}]},
+    {"id": "guardrails", "type": "security", "label": "AnswerGuardrails", "sublabel": "fallback + clarify", "pos": [610, 570], "size": [175, 68], "sources": [{"path": "src/generation/answer_guardrails.py", "line": 4, "label": "Guardrails"}]},
+    {"id": "citations", "type": "backend", "label": "CitationFormatter", "sublabel": "select + prioritize", "pos": [840, 570], "size": [175, 68], "sources": [{"path": "src/generation/citation_formatter.py", "line": 33, "label": "Citation selection"}, {"path": "src/retrieval/core/citation_builder.py", "line": 271, "label": "Structured citation"}]}
+  ],
+  "boundaries": [
+    {"kind": "region", "label": "Backend runtime", "wraps": ["api", "service", "pipeline", "executor", "cache", "router", "query_plan", "structured", "hybrid"]},
+    {"kind": "region", "label": "Composition helpers", "wraps": ["prompt", "guardrails", "citations"]}
+  ],
+  "connections": [
+    {"id": "api-service", "from": "api", "to": "service", "label": "request", "variant": "emphasis"},
+    {"id": "service-pipeline", "from": "service", "to": "pipeline", "variant": "emphasis"},
+    {"id": "pipeline-executor", "from": "pipeline", "to": "executor", "variant": "emphasis"},
+    {"id": "pipeline-cache", "from": "pipeline", "to": "cache", "label": "read / write", "variant": "dashed"},
+    {"id": "executor-router", "from": "executor", "to": "router", "label": "plan"},
+    {"id": "router-plan", "from": "router", "to": "query_plan", "label": "normalize"},
+    {"id": "executor-structured", "from": "executor", "to": "structured", "variant": "emphasis"},
+    {"id": "executor-hybrid", "from": "executor", "to": "hybrid", "label": "RAG task", "variant": "emphasis"},
+    {"id": "pipeline-prompt", "from": "pipeline", "to": "prompt", "fromSide": "bottom", "toSide": "top"}
+  ]
+}

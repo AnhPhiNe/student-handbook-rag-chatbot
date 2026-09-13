@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Từ PDF đến runtime artifacts",
+    "subtitle": "Offline build tạo biểu diễn riêng cho search, context, lookup và navigation",
+    "output": "ingestion-retrieval.html",
+    "viewBox": [1080, 610],
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "views": [
+      {"id": "normalize", "label": "Trích xuất và chuẩn hóa", "focus": ["pdfs", "extract_merge"], "note": "PDF được tách trang, parse section, chọn article và gắn cohort."},
+      {"id": "representations", "label": "Hai biểu diễn nội dung", "focus": ["extract_merge", "parent_child", "structured"], "note": "Prose đi vào parent/child; bảng và directory đi vào structured layer."},
+      {"id": "runtime-assets", "label": "Bốn runtime artifacts", "focus": ["parent_child", "structured", "qdrant", "mongo", "registry", "graph"], "note": "Mỗi artifact có một nhiệm vụ riêng và cùng bị khóa bởi manifest/audit gate."}
+    ]
+  },
+  "stages": [
+    {"label": "Nguồn"},
+    {"label": "Chuẩn hóa"},
+    {"label": "Biểu diễn"},
+    {"label": "Runtime artifacts"}
+  ],
+  "nodes": [
+    {"id": "pdfs", "type": "external", "label": "Handbook PDFs", "sublabel": "K48–K51", "stage": 0, "row": 2, "tag": "source"},
+    {"id": "extract_merge", "type": "backend", "label": "Extract + merge", "sublabel": "pages, articles, cohorts", "stage": 1, "row": 2, "tag": "offline build"},
+    {"id": "parent_child", "type": "backend", "label": "Parent / child", "sublabel": "full parents + small children", "stage": 2, "row": 0, "width": 144, "tag": "review-bound"},
+    {"id": "structured", "type": "backend", "label": "Structured layer", "sublabel": "tables + directories", "stage": 2, "row": 3, "tag": "deterministic"},
+    {"id": "qdrant", "type": "database", "label": "Qdrant children", "sublabel": "BGE-M3 vectors", "stage": 3, "row": 0, "tag": "dense + BM25"},
+    {"id": "graph", "type": "database", "label": "Reference graph", "sublabel": "cross-article edges", "stage": 3, "row": 1, "tag": "navigation only"},
+    {"id": "mongo", "type": "database", "label": "Mongo parents", "sublabel": "full articles", "stage": 3, "row": 2, "tag": "citation context"},
+    {"id": "registry", "type": "database", "label": "Structured registry", "sublabel": "reviewed tables", "stage": 3, "row": 3, "tag": "exact lookup"}
+  ],
+  "flows": [
+    {"id": "pdf-extract", "from": "pdfs", "to": "extract_merge", "label": "extract", "variant": "emphasis", "route": "straight"},
+    {"id": "extract-split", "from": "extract_merge", "to": "parent_child", "label": "articles", "variant": "emphasis", "route": "vertical-channel"},
+    {"id": "extract-structured", "from": "extract_merge", "to": "structured", "label": "tables", "variant": "default", "route": "vertical-channel"},
+    {"id": "split-qdrant", "from": "parent_child", "to": "qdrant", "label": "children", "variant": "emphasis", "route": "straight"},
+    {"id": "split-graph", "from": "parent_child", "to": "graph", "label": "links", "variant": "dashed", "route": "vertical-channel", "channelX": 670, "labelAt": [696, 200]},
+    {"id": "split-mongo", "from": "parent_child", "to": "mongo", "label": "parents", "variant": "default", "route": "vertical-channel", "labelDx": -12},
+    {"id": "structured-registry", "from": "structured", "to": "registry", "label": "facts", "variant": "default", "route": "straight"}
+  ]
+}

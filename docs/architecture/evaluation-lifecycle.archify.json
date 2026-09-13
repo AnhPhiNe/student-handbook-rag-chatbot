@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "Vòng đời đánh giá và release gate",
+    "subtitle": "Tách planner, retrieval, answer quality và production behavior",
+    "output": "evaluation-lifecycle.html",
+    "viewBox": [1080, 600],
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {"id": "offline", "label": "Bốn lớp đánh giá", "focus": ["dataset", "deterministic", "retrieval", "answer_judge", "production"], "note": "Mỗi suite cô lập một lớp lỗi trước khi đo production."},
+      {"id": "result-integrity", "label": "Tính toàn vẹn kết quả", "focus": ["dataset", "answer_judge", "production"], "note": "Dataset, commit, model và judge identity đi cùng kết quả công bố."},
+      {"id": "release", "label": "Gate, sửa và chạy lại", "focus": ["production", "gate_fail", "diagnose", "rerun"], "note": "Không công bố kết quả như release-ready nếu một gate bắt buộc thất bại."}
+    ]
+  },
+  "lanes": [
+    {"id": "main", "label": "Evaluation suites"},
+    {"id": "exceptions", "label": "Failure loop"}
+  ],
+  "states": [
+    {"id": "dataset", "type": "start", "label": "Freeze dataset", "sublabel": "source-anchored cases", "lane": "main", "col": 0, "step": "01", "tag": "input"},
+    {"id": "deterministic", "type": "active", "label": "Deterministic", "sublabel": "plan + lookup outcome", "lane": "main", "col": 1, "step": "02", "tag": "router"},
+    {"id": "retrieval", "type": "active", "label": "Retrieval", "sublabel": "Hit@k, MRR, nDCG", "lane": "main", "col": 2, "step": "03", "tag": "evidence"},
+    {"id": "answer_judge", "type": "active", "label": "Generate + judge", "sublabel": "faithfulness + citations", "lane": "main", "col": 3, "step": "04", "tag": "answer"},
+    {"id": "production", "type": "decision", "label": "Production gate", "sublabel": "TTFT, p95, 429, cache", "lane": "main", "col": 4, "step": "05", "tag": "live API"},
+    {"id": "gate_fail", "type": "failure", "label": "Gate failed", "sublabel": "retain evidence", "lane": "exceptions", "col": 2, "width": 120, "yOffset": 78, "tag": "stop"},
+    {"id": "diagnose", "type": "active", "label": "Diagnose + fix", "sublabel": "root cause only", "lane": "exceptions", "col": 1, "width": 120, "yOffset": 78, "tag": "change code"},
+    {"id": "rerun", "type": "active", "label": "Rerun v1", "sublabel": "then labeled regression", "lane": "exceptions", "col": 0, "width": 120, "yOffset": 78, "tag": "verify"}
+  ],
+  "transitions": [
+    {"id": "gate-failure", "from": "production", "to": "gate_fail", "variant": "security", "route": "right-channel", "note": "Một gate bắt buộc thất bại thì dừng release."},
+    {"id": "failure-diagnose", "from": "gate_fail", "to": "diagnose", "variant": "security", "route": "straight"},
+    {"id": "diagnose-rerun", "from": "diagnose", "to": "rerun", "variant": "emphasis", "route": "straight"}
+  ]
+}

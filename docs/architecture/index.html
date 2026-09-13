@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Student Handbook RAG — Architecture Dossier</title>
+  <style>
+    :root {
+      --bg: #f3f7fb;
+      --surface: rgba(255, 255, 255, .9);
+      --surface-strong: #ffffff;
+      --ink: #102033;
+      --muted: #5c6b7d;
+      --line: #d8e2ec;
+      --cyan: #0891b2;
+      --green: #059669;
+      --violet: #7c3aed;
+      --rose: #e11d48;
+      --shadow: 0 18px 55px rgba(20, 45, 75, .09);
+      --radius: 22px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 92px; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 2%, rgba(8,145,178,.12), transparent 28rem),
+        radial-gradient(circle at 92% 12%, rgba(124,58,237,.08), transparent 30rem),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .shell { width: min(1540px, calc(100% - 40px)); margin: 0 auto; }
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      border-bottom: 1px solid rgba(216,226,236,.86);
+      background: rgba(243,247,251,.88);
+      backdrop-filter: blur(18px);
+    }
+    .topbar-inner { display: flex; align-items: center; gap: 24px; min-height: 70px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; white-space: nowrap; }
+    .brand-dot { width: 12px; height: 12px; border-radius: 99px; background: var(--cyan); box-shadow: 0 0 0 7px rgba(8,145,178,.12); }
+    nav { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; padding: 8px 0; }
+    nav::-webkit-scrollbar { display: none; }
+    nav a { text-decoration: none; color: var(--muted); font-size: 13px; font-weight: 700; padding: 8px 11px; border-radius: 99px; white-space: nowrap; }
+    nav a:hover, nav a.active { color: #fff; background: var(--ink); }
+    .hero { padding: 76px 0 42px; }
+    .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { max-width: 900px; margin: 12px 0 18px; font-size: clamp(42px, 6vw, 78px); line-height: .98; letter-spacing: -.055em; }
+    .lede { max-width: 840px; margin: 0; color: var(--muted); font-size: clamp(17px, 2vw, 22px); }
+    .meta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+    .pill { padding: 9px 13px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); font-size: 13px; font-weight: 700; }
+    .pill.ok { color: #047857; border-color: rgba(5,150,105,.3); background: rgba(236,253,245,.9); }
+    .pill.report-link { color: #fff; border-color: var(--cyan); background: var(--cyan); text-decoration: none; }
+    .pill.report-link:hover { filter: brightness(.93); }
+    .overview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0 54px; }
+    .stat { padding: 19px; border: 1px solid var(--line); border-radius: 17px; background: var(--surface); }
+    .stat strong { display: block; font-size: 28px; letter-spacing: -.04em; }
+    .stat span { color: var(--muted); font-size: 13px; }
+    section { margin: 0 0 56px; }
+    .section-head { display: grid; grid-template-columns: 90px minmax(0, 1fr) minmax(260px, 520px); gap: 20px; align-items: end; margin-bottom: 16px; }
+    .section-no { color: var(--cyan); font: 800 14px/1 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    h2 { margin: 0; font-size: clamp(28px, 4vw, 46px); letter-spacing: -.04em; line-height: 1.04; }
+    .section-head p { margin: 0; color: var(--muted); }
+    .frame { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-strong); box-shadow: var(--shadow); }
+    iframe { display: block; width: 100%; height: 900px; border: 0; background: #f7f9fc; }
+    .frame-foot { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 13px 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    .frame-foot a { color: var(--cyan); font-weight: 800; text-decoration: none; }
+    .catalog { padding: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .catalog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .catalog-card { padding: 18px; border-radius: 16px; background: #f8fbfe; border: 1px solid var(--line); }
+    .catalog-card h3 { margin: 0 0 10px; font-size: 16px; }
+    .catalog-card ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+    .catalog-card code { color: var(--ink); font-size: 12px; }
+    .source-table { width: 100%; border-collapse: collapse; margin-top: 22px; font-size: 14px; }
+    .source-table th, .source-table td { padding: 13px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .source-table th { color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+    .source-table a { color: var(--cyan); font-weight: 750; text-decoration: none; }
+    footer { padding: 18px 0 70px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 960px) {
+      .shell { width: min(100% - 22px, 1540px); }
+      .topbar-inner { display: block; padding: 12px 0 6px; }
+      .overview-grid, .catalog-grid { grid-template-columns: 1fr 1fr; }
+      .section-head { grid-template-columns: 56px 1fr; }
+      .section-head p { grid-column: 2; }
+      iframe { height: 760px; }
+    }
+    @media (max-width: 620px) {
+      .hero { padding-top: 48px; }
+      .overview-grid, .catalog-grid { grid-template-columns: 1fr; }
+      .section-head { grid-template-columns: 1fr; }
+      .section-head p { grid-column: 1; }
+      iframe { height: 680px; }
+      .frame-foot { align-items: flex-start; flex-direction: column; }
+      .source-table { display: block; overflow-x: auto; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#09111c; --surface:rgba(16,27,42,.9); --surface-strong:#0f1928; --ink:#e7f0fa; --muted:#9babbc; --line:#26364a; --shadow:0 18px 55px rgba(0,0,0,.28); }
+      .pill.ok { color:#6ee7b7; background:rgba(6,78,59,.35); }
+      .catalog-card { background:#0c1725; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand"><span class="brand-dot"></span>Student Handbook RAG</div>
+      <nav aria-label="Mục lục kiến trúc">
+        <a href="#overview">Tổng thể</a>
+        <a href="#modules">Modules</a>
+        <a href="#request">Request</a>
+        <a href="#structured">Structured</a>
+        <a href="#retrieval">Retrieval</a>
+        <a href="#composition">Composition</a>
+        <a href="#ingestion">Ingestion</a>
+        <a href="#runtime">Runtime</a>
+        <a href="#evaluation">Evaluation</a>
+        <a href="#source-map">Source map</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <div class="hero">
+      <div class="eyebrow">Interactive architecture dossier</div>
+      <h1>Toàn bộ backend trong một trang.</h1>
+      <p class="lede">Một luồng đọc liên tục từ API và orchestration, qua hai nhánh evidence, composition, offline ingestion, startup/readiness đến evaluation gate. Mỗi sơ đồ vẫn giữ zoom, guided views, light/dark mode và export của Archify.</p>
+      <div class="meta-row">
+        <span class="pill ok">9/9 showcase checks · 0 warnings</span>
+        <span class="pill">9 interactive views</span>
+        <span class="pill">Pinned revision 6eba6d4a</span>
+        <span class="pill">README.md untouched</span>
+        <a class="pill report-link" href="../BACKEND_SYSTEM_GUIDE.md">Đọc báo cáo chi tiết ↗</a>
+      </div>
+    </div>
+
+    <div class="overview-grid" aria-label="Thống kê kiến trúc">
+      <div class="stat"><strong>2</strong><span>đường evidence: structured và hybrid RAG</span></div>
+      <div class="stat"><strong>12</strong><span>module backend cốt lõi trong source map</span></div>
+      <div class="stat"><strong>4</strong><span>runtime artifact families</span></div>
+      <div class="stat"><strong>4</strong><span>lớp đánh giá trước release</span></div>
+    </div>
+
+    <section id="overview">
+      <div class="section-head"><div class="section-no">01 / 09</div><h2>Kiến trúc tổng thể</h2><p>Level 1: frontend → API → AnswerPipeline → PlanExecutor, với cache, planner và hai nhánh evidence.</p></div>
+      <div class="frame"><iframe src="system-overview.html" title="Kiến trúc tổng thể" loading="eager"></iframe><div class="frame-foot"><span>Bắt đầu ở đây khi trình bày dự án trong 60–90 giây.</span><a href="system-overview.html">Mở riêng ↗</a></div></div>
+    </section>
+
+    <section id="modules">
+      <div class="section-head"><div class="section-no">02 / 09</div><h2>Bản đồ module backend</h2><p>Level 2: ranh giới trách nhiệm và các file nên đọc cùng nhau.</p></div>
+      <div class="frame"><iframe src="backend-module-map.html" title="Bản đồ module backend" loading="lazy"></iframe><div class="frame-foot"><span>Click node để mở source đã pin theo commit trên GitHub.</span><a href="backend-module-map.html">Mở riêng ↗</a></div></div>
+    </section>
+
+    <section id="request">
+      <div class="section-head"><div class="section-no">03 / 09</div><h2>Một request streaming</h2><p>Từ payload của client đến typed plan, evidence, cache miss, composer và SSE response.</p></div>
+      <div class="frame"><iframe src="request-lifecycle.html" title="Request streaming lifecycle" loading="lazy"></iframe><div class="frame-foot"><span>Luồng chính để giải thích hệ thống end-to-end.</span><a href="request-lifecycle.html">Mở riêng ↗</a></div></div>
+    </section>
+
+    <section id="structured">
+      <div class="section-head"><div class="section-no">04 / 09</div><h2>Structured execution</h2><p>Cohort scope, lookup registry, deterministic resolution và provenance guard.</p></div>
+      <div class="frame"><iframe src="structured-execution.html" title="Structured lookup execution" loading="lazy"></iframe><div class="frame-foot"><span>Giải thích vì sao số liệu bảng không được giao cho LLM tự suy đoán.</span><a href="structured-execution.html">Mở riêng ↗</a></div></div>
+    </section>
+
+    <section id="retrieval">
+      <div class="section-head"><div class="section-no">05 / 09</div><h2>Hybrid retrieval internals</h2><p>BGE-M3/Qdrant, BM25, RRF, Cohere rerank, parent hydration và graph navigation.</p></div>
+      <div class="frame"><iframe src="hybrid-retrieval.html" title="Hybrid retrieval internals" loading="lazy"></iframe><div class="frame-foot"><span>Primary evidence và related references được tách rõ.</span><a href="hybrid-retrieval.html">Mở riêng ↗</a></div></div>
+    </section>
+
+    <section id="composition">
+      <div class="section-head"><div class="section-no">06 / 09</div><h2>Answer composition</h2><p>Guardrails, evidence-bound cache, citation selection, authorized prompt và streaming formatter.</p></div>
+      <div class="frame"><iframe src="answer-composition.html" title="Answer composition" loading="lazy"></iframe><div class="frame-foot"><span>Cho thấy model call nằm sau safety và evidence authorization.</span><a href="answer-composition.html">Mở riêng ↗</a></div></div>
+    </section>
+
+    <section id="ingestion">
+      <div class="section-head"><div class="section-no">07 / 09</div><h2>Offline ingestion</h2><p>PDF → extract/merge → parent-child và structured representations → bốn runtime artifacts.</p></div>
+      <div class="frame"><iframe src="ingestion-retrieval.html" title="Offline ingestion pipeline" loading="lazy"></iframe><div class="frame-foot"><span>Manifest và curated review policy được mô tả trong catalog bên dưới.</span><a href="ingestion-retrieval.html">Mở riêng ↗</a></div></div>
+    </section>
+
+    <section id="runtime">
+      <div class="section-head"><div class="section-no">08 / 09</div><h2>Startup và readiness</h2><p>Port-first startup, background warm-up, BM25 fail-open và dependency probes.</p></div>
+      <div class="frame"><iframe src="runtime-startup.html" title="Runtime startup and readiness" loading="lazy"></iframe><div class="frame-foot"><span>Phần ổn định vận hành thường bị thiếu trong portfolio RAG.</span><a href="runtime-startup.html">Mở riêng ↗</a></div></div>
+    </section>
+
+    <section id="evaluation">
+      <div class="section-head"><div class="section-no">09 / 09</div><h2>Evaluation và release gate</h2><p>Deterministic, retrieval, generate+judge và production behavior được đo tách lớp.</p></div>
+      <div class="frame"><iframe src="evaluation-lifecycle.html" title="Evaluation lifecycle" loading="lazy"></iframe><div class="frame-foot"><span>official_v2 đã tiêu hold-out và chỉ còn được dùng như regression set.</span><a href="evaluation-lifecycle.html">Mở riêng ↗</a></div></div>
+    </section>
+
+    <section id="source-map">
+      <div class="section-head"><div class="section-no">SOURCE</div><h2>Component catalog</h2><p>Danh mục này bù cho giới hạn 12 node/sơ đồ mà không biến hình thành một khối đường nối khó đọc.</p></div>
+      <div class="catalog">
+        <div class="catalog-grid">
+          <article class="catalog-card"><h3>API & application</h3><ul><li><code>api/schemas.py</code></li><li><code>api/routes/chat*.py</code></li><li><code>services/answer_service.py</code></li><li><code>api/deps.py</code></li></ul></article>
+          <article class="catalog-card"><h3>Planning & execution</h3><ul><li><code>answer_pipeline.py</code></li><li><code>plan_executor.py</code></li><li><code>ai_router.py</code></li><li><code>query_plan.py</code></li><li><code>slang_normalizer.py</code></li></ul></article>
+          <article class="catalog-card"><h3>Structured lookup</h3><ul><li><code>structured_dispatcher.py</code></li><li><code>structured_lookup_registry.yaml</code></li><li><code>common/cohort.py</code></li><li><code>citation_builder.py</code></li></ul></article>
+          <article class="catalog-card"><h3>Hybrid retrieval</h3><ul><li><code>hybrid_pipeline.py</code></li><li><code>embedding_model.py</code></li><li><code>bm25_retriever.py</code></li><li><code>cohere_reranker.py</code></li><li><code>graph_traverser.py</code></li></ul></article>
+          <article class="catalog-card"><h3>Generation & safety</h3><ul><li><code>prompt_builder.py</code></li><li><code>answer_guardrails.py</code></li><li><code>citation_formatter.py</code></li><li><code>answer_formatter.py</code></li><li><code>response_cache.py</code></li><li><code>gemini_client.py</code></li></ul></article>
+          <article class="catalog-card"><h3>Build, ops & evaluation</h3><ul><li><code>build_multi_cohort.py</code></li><li><code>build_parent_child_artifacts.py</code></li><li><code>api/warmup.py</code></li><li><code>api/routes/health.py</code></li><li><code>evaluation/{deterministic,retrieval,answers,production}.py</code></li></ul></article>
+        </div>
+
+        <table class="source-table">
+          <thead><tr><th>Đọc theo thứ tự</th><th>Trách nhiệm</th><th>Source đã pin</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>API contract và SSE entry</td><td><a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/api/schemas.py">schemas.py</a> · <a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/api/routes/chat_stream.py">chat_stream.py</a></td></tr>
+            <tr><td>2</td><td>Vòng đời answer</td><td><a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/generation/answer_pipeline.py">answer_pipeline.py</a></td></tr>
+            <tr><td>3</td><td>Typed planning</td><td><a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/retrieval/core/ai_router.py">ai_router.py</a> · <a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/retrieval/core/query_plan.py">query_plan.py</a></td></tr>
+            <tr><td>4</td><td>Task execution</td><td><a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/generation/plan_executor.py">plan_executor.py</a></td></tr>
+            <tr><td>5</td><td>Deterministic facts</td><td><a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/retrieval/core/structured_dispatcher.py">structured_dispatcher.py</a></td></tr>
+            <tr><td>6</td><td>Hybrid evidence</td><td><a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/retrieval/core/hybrid_pipeline.py">hybrid_pipeline.py</a></td></tr>
+            <tr><td>7</td><td>Prompt, guardrails và citations</td><td><a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/generation/prompt_builder.py">prompt_builder.py</a> · <a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/generation/answer_guardrails.py">answer_guardrails.py</a></td></tr>
+            <tr><td>8</td><td>Startup và health</td><td><a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/api/warmup.py">warmup.py</a> · <a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/blob/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/api/routes/health.py">health.py</a></td></tr>
+            <tr><td>9</td><td>Evaluation</td><td><a href="https://github.com/AnhPhiNe/student-handbook-rag-chatbot/tree/6eba6d4a46a3ea415cb96338d00c679d431ff20c/src/evaluation">src/evaluation/</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">Architecture snapshot tied to commit <code>6eba6d4a46a3ea415cb96338d00c679d431ff20c</code>. Archify viewer controls remain in English; authored architecture notes are Vietnamese.</footer>
+  <script>
+    const links = [...document.querySelectorAll('nav a')];
+    const targets = links.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${visible.target.id}`));
+    }, { rootMargin: '-20% 0px -65%', threshold: [0, .15, .4] });
+    targets.forEach(target => observer.observe(target));
+  </script>
+</body>
+</html>

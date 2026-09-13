@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Answer composition, guardrails và citations",
+    "subtitle": "Evidence được kiểm tra, cache và đóng gói trước khi gọi composer",
+    "output": "answer-composition.html",
+    "viewBox": [1080, 610],
+    "column_fit": "spread",
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "views": [
+      {"id": "safety", "label": "Guardrails", "focus": ["pipeline", "guard", "cache"], "note": "Context rỗng, confidence thấp hoặc query mơ hồ dừng trước model call."},
+      {"id": "packet", "label": "Evidence packet", "focus": ["pipeline", "citation", "prompt"], "note": "Nguồn được chọn và phân vai theo từng composition unit."},
+      {"id": "stream", "label": "Compose và stream", "focus": ["prompt", "composer", "formatter", "pipeline", "api"], "note": "Fragments được làm sạch rồi trả cùng metadata và citations."}
+    ]
+  },
+  "participants": [
+    {"id": "pipeline", "type": "backend", "label": "AnswerPipeline", "sublabel": "prepared evidence"},
+    {"id": "guard", "type": "security", "label": "Guardrails", "sublabel": "fallback / clarify"},
+    {"id": "cache", "type": "database", "label": "Response cache", "sublabel": "evidence-bound"},
+    {"id": "citation", "type": "backend", "label": "Citation select", "sublabel": "priority + dedupe"},
+    {"id": "prompt", "type": "backend", "label": "Prompt builder", "sublabel": "authorized packet"},
+    {"id": "composer", "type": "external", "label": "Gemini client", "sublabel": "streaming LLM"},
+    {"id": "formatter", "type": "backend", "label": "Formatter", "sublabel": "clean fragments"},
+    {"id": "api", "type": "backend", "label": "SSE route", "sublabel": "client events"}
+  ],
+  "segments": [
+    {"from": 150, "to": 265, "label": "Safety + cache"},
+    {"from": 270, "to": 395, "label": "Authorized context"},
+    {"from": 400, "to": 535, "label": "Generation + delivery"}
+  ],
+  "messages": [
+    {"id": "check", "from": "pipeline", "to": "guard", "y": 165, "label": "check context + confidence", "variant": "security"},
+    {"id": "decision", "from": "guard", "to": "pipeline", "y": 195, "label": "continue or safe fallback", "variant": "return"},
+    {"id": "cache-read", "from": "pipeline", "to": "cache", "y": 225, "label": "evidence-bound key", "variant": "dashed"},
+    {"id": "cache-result", "from": "cache", "to": "pipeline", "y": 255, "label": "hit or miss", "variant": "return"},
+    {"id": "select", "from": "pipeline", "to": "citation", "y": 285, "label": "select relevant citations", "variant": "default"},
+    {"id": "selected", "from": "citation", "to": "pipeline", "y": 315, "label": "ordered source set", "variant": "return"},
+    {"id": "packet", "from": "pipeline", "to": "prompt", "y": 345, "label": "build authorized packet", "variant": "emphasis"},
+    {"id": "bundle", "from": "prompt", "to": "pipeline", "y": 375, "label": "prompt + composition units", "variant": "return"},
+    {"id": "generate", "from": "pipeline", "to": "composer", "y": 405, "label": "generate_stream(bundle)", "variant": "emphasis"},
+    {"id": "chunks", "from": "composer", "to": "pipeline", "y": 435, "label": "text chunks", "variant": "return"},
+    {"id": "clean", "from": "pipeline", "to": "formatter", "y": 465, "label": "clean stream fragments", "variant": "default"},
+    {"id": "formatted", "from": "formatter", "to": "pipeline", "y": 495, "label": "safe final text", "variant": "return"},
+    {"id": "deliver", "from": "pipeline", "to": "api", "y": 525, "label": "metadata + tokens + done", "variant": "return"}
+  ],
+  "activations": [
+    {"participant": "pipeline", "from": 160, "to": 533, "type": "backend"},
+    {"participant": "guard", "from": 160, "to": 200, "type": "security"},
+    {"participant": "cache", "from": 220, "to": 260, "type": "database"},
+    {"participant": "citation", "from": 280, "to": 320, "type": "backend"},
+    {"participant": "prompt", "from": 340, "to": 380, "type": "backend"},
+    {"participant": "composer", "from": 400, "to": 440, "type": "external"},
+    {"participant": "formatter", "from": 460, "to": 500, "type": "backend"}
+  ]
+}

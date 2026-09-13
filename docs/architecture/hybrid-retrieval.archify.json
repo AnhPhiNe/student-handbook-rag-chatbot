@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Hybrid retrieval bên trong",
+    "subtitle": "Dense + BM25 → RRF → fail-open rerank → full parent evidence",
+    "output": "hybrid-retrieval.html",
+    "viewBox": [1080, 610],
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "views": [
+      {"id": "candidates", "label": "Sinh candidates", "focus": ["query", "dense", "bm25", "rrf"], "note": "Dense và lexical search chạy trên child chunks rồi hợp nhất bằng reciprocal rank fusion."},
+      {"id": "rank", "label": "Rerank và parent hydration", "focus": ["rrf", "rerank", "group", "mongo", "evidence"], "note": "Cohere chỉ đổi thứ tự; lỗi reranker không làm hỏng retrieval."},
+      {"id": "navigation", "label": "Evidence và điều hướng", "focus": ["group", "mongo", "evidence", "related"], "note": "Full parent là primary evidence; graph chỉ tạo related references cho UI."}
+    ]
+  },
+  "stages": [
+    {"label": "Task"},
+    {"label": "Candidates"},
+    {"label": "Ranking"},
+    {"label": "Hydration"},
+    {"label": "Outputs"}
+  ],
+  "nodes": [
+    {"id": "query", "type": "backend", "label": "RAG task", "sublabel": "query + cohort", "stage": 0, "row": 2, "tag": "typed plan"},
+    {"id": "dense", "type": "database", "label": "Dense search", "sublabel": "BGE-M3 + Qdrant", "stage": 1, "row": 0, "tag": "top children"},
+    {"id": "bm25", "type": "database", "label": "BM25 search", "sublabel": "in-process lexical", "stage": 1, "row": 3, "tag": "fail-open"},
+    {"id": "rrf", "type": "backend", "label": "RRF fusion", "sublabel": "k = 60", "stage": 2, "row": 1, "tag": "candidate pool"},
+    {"id": "rerank", "type": "external", "label": "Cohere reranker", "sublabel": "top 16 children", "stage": 2, "row": 3, "tag": "optional"},
+    {"id": "group", "type": "backend", "label": "Group by parent", "sublabel": "top parent articles", "stage": 3, "row": 1, "tag": "deduplicate"},
+    {"id": "mongo", "type": "database", "label": "Mongo docstore", "sublabel": "full parent text", "stage": 3, "row": 3, "tag": "LRU cached"},
+    {"id": "evidence", "type": "backend", "label": "Primary evidence", "sublabel": "parents + matched child", "stage": 4, "row": 1, "tag": "composer input"},
+    {"id": "related", "type": "frontend", "label": "Related references", "sublabel": "graph depth ≤ 2", "stage": 4, "row": 3, "tag": "not evidence"}
+  ],
+  "flows": [
+    {"id": "query-dense", "from": "query", "to": "dense", "label": "embed", "variant": "emphasis", "route": "vertical-channel"},
+    {"id": "query-bm25", "from": "query", "to": "bm25", "label": "tokenize", "variant": "default", "route": "vertical-channel"},
+    {"id": "dense-rrf", "from": "dense", "to": "rrf", "label": "dense ranks", "variant": "emphasis", "route": "vertical-channel"},
+    {"id": "bm25-rrf", "from": "bm25", "to": "rrf", "label": "lexical ranks", "variant": "default", "route": "vertical-channel"},
+    {"id": "rrf-rerank", "from": "rrf", "to": "rerank", "label": "top pool", "variant": "emphasis", "route": "vertical-channel"},
+    {"id": "rerank-group", "from": "rerank", "to": "group", "label": "ordering", "variant": "emphasis", "route": "vertical-channel"},
+    {"id": "group-mongo", "from": "group", "to": "mongo", "label": "parent ids", "variant": "default", "route": "vertical-channel"},
+    {"id": "mongo-evidence", "from": "mongo", "to": "evidence", "label": "full context", "variant": "emphasis", "route": "vertical-channel"},
+    {"id": "group-related", "from": "group", "to": "related", "label": "graph links", "variant": "dashed", "fromSide": "top", "toSide": "right", "via": [[745, 210], [1040, 210], [1040, 499]], "labelAt": [900, 200]}
+  ]
+}

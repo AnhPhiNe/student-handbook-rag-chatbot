@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Kiến trúc tổng thể Student Handbook RAG",
+    "output": "system-overview.html",
+    "viewBox": [1390, 820],
+    "animation": "trace",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/AnhPhiNe/student-handbook-rag-chatbot",
+      "provider": "github",
+      "revision": "6eba6d4a46a3ea415cb96338d00c679d431ff20c"
+    },
+    "views": [
+      {
+        "id": "request-core",
+        "label": "Luồng yêu cầu chính",
+        "focus": ["frontend", "fastapi", "pipeline", "executor"],
+        "note": "Theo dõi yêu cầu từ giao diện đến bộ điều phối QueryPlan."
+      },
+      {
+        "id": "structured-path",
+        "label": "Nhánh tra cứu có cấu trúc",
+        "focus": ["executor", "structured", "catalogs"],
+        "note": "Tra bảng và danh mục theo niên khóa trước khi khóa dữ kiện."
+      },
+      {
+        "id": "rag-path",
+        "label": "Nhánh hybrid RAG",
+        "focus": ["executor", "hybrid", "retrieval_store"],
+        "note": "Kết hợp dense, BM25, document graph và reranking để tạo evidence."
+      },
+      {
+        "id": "cache-and-models",
+        "label": "Cache và model bên ngoài",
+        "focus": ["pipeline", "response_cache", "router", "planner_provider", "composer_provider"],
+        "note": "Tách đường cache khỏi các lời gọi planner, reranker và composer."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "frontend",
+      "type": "frontend",
+      "label": "React frontend",
+      "sublabel": "chat và streaming UI",
+      "pos": [40, 360],
+      "size": [145, 62]
+    },
+    {
+      "id": "fastapi",
+      "type": "backend",
+      "label": "FastAPI",
+      "sublabel": "HTTP và SSE routes",
+      "pos": [245, 360],
+      "size": [145, 62],
+      "sources": [
+        {"path": "src/api/main.py", "label": "Ứng dụng HTTP"},
+        {"path": "src/api/routes/chat_stream.py", "label": "SSE route"}
+      ]
+    },
+    {
+      "id": "pipeline",
+      "type": "backend",
+      "label": "AnswerPipeline",
+      "sublabel": "vòng đời câu trả lời",
+      "pos": [455, 360],
+      "size": [155, 62],
+      "sources": [
+        {"path": "src/generation/answer_pipeline.py", "line": 402, "label": "Sync answer"},
+        {"path": "src/generation/answer_pipeline.py", "line": 682, "label": "Streaming answer"}
+      ]
+    },
+    {
+      "id": "executor",
+      "type": "backend",
+      "label": "PlanExecutor",
+      "sublabel": "thực thi và tổng hợp task",
+      "pos": [690, 360],
+      "size": [155, 62],
+      "sources": [
+        {"path": "src/generation/plan_executor.py", "line": 82, "label": "Plan executor"}
+      ]
+    },
+    {
+      "id": "router",
+      "type": "backend",
+      "label": "AI Router",
+      "sublabel": "typed QueryPlan",
+      "pos": [690, 155],
+      "size": [155, 62],
+      "sources": [
+        {"path": "src/retrieval/core/ai_router.py", "line": 585, "label": "Planner"},
+        {"path": "src/retrieval/core/query_plan.py", "line": 23, "label": "Normalizer"}
+      ]
+    },
+    {
+      "id": "structured",
+      "type": "backend",
+      "label": "Structured lookup",
+      "sublabel": "bảng, công thức, đơn vị",
+      "pos": [960, 335],
+      "size": [175, 68],
+      "sources": [
+        {"path": "src/retrieval/core/structured_dispatcher.py", "line": 767, "label": "Dispatcher"}
+      ]
+    },
+    {
+      "id": "hybrid",
+      "type": "backend",
+      "label": "Hybrid retrieval",
+      "sublabel": "dense, BM25, graph, rerank",
+      "pos": [960, 530],
+      "size": [175, 68],
+      "sources": [
+        {"path": "src/retrieval/core/hybrid_pipeline.py", "label": "Retrieval pipeline"}
+      ]
+    },
+    {
+      "id": "response_cache",
+      "type": "database",
+      "label": "Response cache",
+      "sublabel": "Redis hoặc memory",
+      "pos": [455, 155],
+      "size": [155, 62]
+    },
+    {
+      "id": "catalogs",
+      "type": "database",
+      "label": "Structured artifacts",
+      "sublabel": "tables và directories",
+      "pos": [1180, 335],
+      "size": [175, 68],
+      "sources": [
+        {"path": "configs/structured_lookup_registry.yaml", "label": "Registry"}
+      ]
+    },
+    {
+      "id": "retrieval_store",
+      "type": "database",
+      "label": "Retrieval artifacts",
+      "sublabel": "Qdrant và local indexes",
+      "pos": [1180, 530],
+      "size": [175, 68],
+      "sources": [
+        {"path": "data/processed/metadata/build_manifest.json", "label": "Build manifest"}
+      ]
+    },
+    {
+      "id": "planner_provider",
+      "type": "external",
+      "label": "Planner provider",
+      "sublabel": "typed QueryPlan",
+      "pos": [960, 155],
+      "size": [175, 62]
+    },
+    {
+      "id": "composer_provider",
+      "type": "external",
+      "label": "Composer provider",
+      "sublabel": "grounded answer",
+      "pos": [455, 570],
+      "size": [175, 62]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Student Handbook RAG runtime",
+      "wraps": ["frontend", "fastapi", "pipeline", "executor", "router", "structured", "hybrid", "response_cache", "catalogs", "retrieval_store"]
+    }
+  ],
+  "connections": [
+    {"id": "ui-api", "from": "frontend", "to": "fastapi", "label": "POST /chat/stream", "labelAt": [217, 438], "variant": "emphasis"},
+    {"id": "api-pipeline", "from": "fastapi", "to": "pipeline", "label": "query + cohort", "labelAt": [425, 438], "variant": "emphasis"},
+    {"id": "pipeline-executor", "from": "pipeline", "to": "executor", "label": "execute QueryPlan", "labelAt": [662, 438], "variant": "emphasis"},
+    {"id": "pipeline-cache", "from": "pipeline", "to": "response_cache", "label": "read / write", "variant": "dashed"},
+    {"id": "executor-router", "from": "executor", "to": "router", "label": "plan request"},
+    {"id": "router-provider", "from": "router", "to": "planner_provider", "label": "planner LLM", "labelAt": [922, 233]},
+    {"id": "executor-structured", "from": "executor", "to": "structured", "label": "structured task", "labelAt": [927, 322], "variant": "emphasis"},
+    {"id": "structured-catalogs", "from": "structured", "to": "catalogs", "label": "resolved facts", "labelAt": [1158, 417]},
+    {"id": "executor-hybrid", "from": "executor", "to": "hybrid", "label": "RAG task", "variant": "emphasis"},
+    {"id": "hybrid-store", "from": "hybrid", "to": "retrieval_store", "label": "evidence search", "labelAt": [1202, 608]},
+    {"id": "pipeline-provider", "from": "pipeline", "to": "composer_provider", "fromSide": "bottom", "toSide": "top", "label": "compose answer"}
+  ]
+}

@@ -76,7 +76,14 @@ async function checkHfSpaceStage(parentSignal: AbortSignal): Promise<SystemStatu
   }
 }
 
-export function SystemStatusBadge({ compact = false }: { compact?: boolean }) {
+export function SystemStatusBadge({
+  compact = false,
+  hideWhenOnline = false,
+}: {
+  compact?: boolean;
+  /** Render nothing while the backend is healthy or still being checked. */
+  hideWhenOnline?: boolean;
+}) {
   const [status, setStatus] = useState<SystemStatus>('checking');
 
   useEffect(() => {
@@ -146,6 +153,8 @@ export function SystemStatusBadge({ compact = false }: { compact?: boolean }) {
     degraded: 'Backend phản hồi nhưng chưa đủ điều kiện sẵn sàng, có thể đang build hoặc cập nhật cấu hình',
     offline: 'Không thể kết nối tới dịch vụ HCMUE AI',
   };
+
+  if (hideWhenOnline && (status === 'online' || status === 'checking')) return null;
 
   if (compact) {
     return (

@@ -911,12 +911,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   align-items: center;
 }
 
-@media (min-width: 901px) {
-  .chat-header-inner {
-    padding-left: 170px; /* Close to VisitorCounter */
-  }
-}
-
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -938,6 +932,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: var(--text-primary);
 }
 [data-theme='dark'] .theme-toggle:hover { background-color: rgba(255,255,255,0.1); }
+.theme-toggle.icon-only { padding: 0.45rem; }
 
 .back-btn {
   display: flex;

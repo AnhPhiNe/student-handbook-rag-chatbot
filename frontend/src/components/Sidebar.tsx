@@ -9,10 +9,9 @@ interface SidebarProps {
   isMobileOpen: boolean;
   onClose: () => void;
   onToggleCollapse: () => void;
-  showVisitorCounter?: boolean;
 }
 
-export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onClose, onToggleCollapse, showVisitorCounter }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onClose, onToggleCollapse }: SidebarProps) {
   const handleTabClick = (tab: string) => {
     onTabChange(tab);
     onClose(); // close mobile menu on selection
@@ -112,11 +111,9 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onC
         </nav>
 
         <div className="sidebar-footer">
-          {showVisitorCounter && (
-            <div className="sidebar-visitor-wrapper" style={{ marginBottom: '12px' }}>
-              <VisitorCounter />
-            </div>
-          )}
+          <div className="sidebar-visitor-wrapper" style={{ marginBottom: '12px' }}>
+            <VisitorCounter />
+          </div>
           <p>Dự án cá nhân vì sinh viên HCMUE · Phiên bản 1.0</p>
         </div>
       </aside>

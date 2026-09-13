@@ -1,297 +1,297 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { BookOpen, ChevronDown, Minus, Plus, RotateCcw, ShieldCheck } from 'lucide-react';
 import {
-  Minus,
-  Plus,
-  ShieldCheck,
-  RotateCcw,
-  BookOpen,
-} from 'lucide-react';
-import { calculateCreditThreshold } from '../../utils/creditThreshold';
-import { PageContextBadges } from '../PageContextBadges';
-import { InfoPopover } from '../InfoPopover';
+  calculateCreditThreshold,
+  type CreditThresholdStatus,
+} from '../../utils/creditThreshold';
 
-export function CreditsPage() {
-  const [totalCredits, setTotalCredits] = useState('130');
-  const [checkedCredits, setCheckedCredits] = useState('0');
+const DEFAULT_TOTAL_CREDITS = '130';
+const DEFAULT_FAILED_CREDITS = '0';
+// Above this many allowed credits the one-segment-per-credit meter gets too thin to read.
+const MAX_METER_SEGMENTS = 40;
 
-  const total = Number(totalCredits);
-  const checked = Number(checkedCredits);
+const STATUS_LABELS: Record<CreditThresholdStatus, string> = {
+  safe: 'An toàn',
+  near: 'Sát ngưỡng',
+  exceeded: 'Đã vượt ngưỡng',
+};
 
-  const result = useMemo(() => {
-    if (!Number.isFinite(total) || total <= 0) return null;
-    if (!Number.isFinite(checked) || checked < 0) return null;
-    return calculateCreditThreshold(total, checked);
-  }, [total, checked]);
+function formatCredits(value: number) {
+  return String(Math.round(value * 100) / 100);
+}
 
-  const handleIncTotal = () => setTotalCredits((prev) => (Math.max(1, Number(prev || 130)) + 1).toString());
-  const handleDecTotal = () => setTotalCredits((prev) => Math.max(1, Number(prev || 130) - 1).toString());
+/** Eases the displayed integer toward `target` so a changed result is noticed. */
+function useAnimatedInteger(target: number) {
+  const [display, setDisplay] = useState(target);
+  const displayRef = useRef(target);
 
-  const handleIncChecked = () => setCheckedCredits((prev) => (Math.max(0, Number(prev || 0)) + 1).toString());
-  const handleDecChecked = () => setCheckedCredits((prev) => Math.max(0, Number(prev || 0) - 1).toString());
+  useEffect(() => {
+    const from = displayRef.current;
+    if (from === target) return;
 
-  const handleReset = () => {
-    setTotalCredits('130');
-    setCheckedCredits('0');
-  };
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const start = performance.now();
+    let frame = 0;
 
-  const ratioPercent =
-    result && result.threshold > 0
-      ? Math.min(100, Math.max(0, (checked / result.threshold) * 100))
-      : 0;
+    const step = (now: number) => {
+      const progress = reduceMotion ? 1 : Math.min(1, (now - start) / 220);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.round(from + (target - from) * eased);
+      displayRef.current = value;
+      setDisplay(value);
+      if (progress < 1) frame = window.requestAnimationFrame(step);
+    };
+
+    frame = window.requestAnimationFrame(step);
+    return () => window.cancelAnimationFrame(frame);
+  }, [target]);
+
+  return display;
+}
+
+interface CreditStepperProps {
+  id: string;
+  label: string;
+  hint: string;
+  value: string;
+  min: number;
+  fallback: number;
+  onChange: (value: string) => void;
+}
+
+function CreditStepper({ id, label, hint, value, min, fallback, onChange }: CreditStepperProps) {
+  const current = Number(value || fallback);
+  const hintId = `${id}-hint`;
 
   return (
-    <div className="page-container tool-page">
-      {/* Header */}
-      <div className="page-header">
+    <div className="credits-field">
+      <label htmlFor={id}>{label}</label>
+      <div className="credits-stepper">
+        <button
+          type="button"
+          onClick={() => onChange(String(Math.max(min, current - 1)))}
+          aria-label={`Giảm ${label.toLowerCase()}`}
+        >
+          <Minus size={15} aria-hidden="true" />
+        </button>
+        <input
+          id={id}
+          type="text"
+          inputMode="numeric"
+          maxLength={3}
+          value={value}
+          onChange={(e) => onChange(e.target.value.replace(/\D/g, ''))}
+          aria-describedby={hintId}
+        />
+        <button
+          type="button"
+          onClick={() => onChange(String(Math.max(min, current) + 1))}
+          aria-label={`Tăng ${label.toLowerCase()}`}
+        >
+          <Plus size={15} aria-hidden="true" />
+        </button>
+      </div>
+      <p id={hintId} className="credits-hint">{hint}</p>
+    </div>
+  );
+}
+
+interface CreditMeterProps {
+  failed: number;
+  maxCredits: number;
+}
+
+function CreditMeter({ failed, maxCredits }: CreditMeterProps) {
+  const segmented = maxCredits >= 1 && maxCredits <= MAX_METER_SEGMENTS;
+  const fillPercent = maxCredits > 0 ? Math.min(100, (failed / maxCredits) * 100) : failed > 0 ? 100 : 0;
+
+  return (
+    <div className="credits-meter" role="img" aria-label={`Đã rớt ${failed} trên tối đa ${maxCredits} tín chỉ`}>
+      {segmented ? (
+        <div className="credits-segments">
+          {Array.from({ length: maxCredits }, (_, index) => (
+            <span
+              key={index}
+              className={`credits-segment ${index < failed ? 'on' : ''}`}
+              style={{ transitionDelay: `${index * 25}ms` }}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="credits-track">
+          <div className="credits-fill" style={{ width: `${fillPercent}%` }} />
+        </div>
+      )}
+      <div className="credits-scale">
+        <span>0</span>
+        <span>Tối đa {maxCredits} TC</span>
+      </div>
+    </div>
+  );
+}
+
+export function CreditsPage() {
+  const [totalCredits, setTotalCredits] = useState(DEFAULT_TOTAL_CREDITS);
+  const [failedCredits, setFailedCredits] = useState(DEFAULT_FAILED_CREDITS);
+  const [showCalculation, setShowCalculation] = useState(false);
+
+  const total = Number(totalCredits);
+  const failed = Number(failedCredits || 0);
+  const result = calculateCreditThreshold(total, failed);
+  const exceeded = result?.status === 'exceeded';
+
+  // The status chip pulses only when the status changes between two results, not on first render.
+  const status = result?.status ?? null;
+  const [lastStatus, setLastStatus] = useState(status);
+  const [statusChanges, setStatusChanges] = useState(0);
+  if (status !== lastStatus) {
+    setLastStatus(status);
+    if (lastStatus && status) setStatusChanges((count) => count + 1);
+  }
+
+  const animatedCreditsLeft = useAnimatedInteger(result ? Math.abs(result.creditsLeft) : 0);
+
+  const handleReset = () => {
+    setTotalCredits(DEFAULT_TOTAL_CREDITS);
+    setFailedCredits(DEFAULT_FAILED_CREDITS);
+  };
+
+  return (
+    <div className="page-container tool-page credits-page">
+      <div className="page-header compact">
         <h1 className="page-title-with-icon">
           <ShieldCheck aria-hidden="true" />
           <span>Kiểm tra điều kiện hạ bằng</span>
         </h1>
-        <p>Ước tính ngưỡng 5% tổng tín chỉ để theo dõi rủi ro bị hạ bậc bằng tốt nghiệp.</p>
-        <PageContextBadges
-          source="Khoản 3 Điều 15 Quy chế đào tạo"
-          advisory
-          advisoryLabel="Công cụ tham khảo"
-        />
+        <p>Xem bạn còn được rớt bao nhiêu tín chỉ trước khi bị hạ bậc bằng tốt nghiệp.</p>
       </div>
 
-      {/* Main Split Layout: Form -> Result Card -> Rules */}
-      <div className="credits-split-layout">
-        {/* Form Card (order: 1 on mobile, grid-area: form on desktop) */}
-        <div className="credits-form-card">
-          {/* Top Toolbar */}
-          <div className="gpa-result-top scholarship-card-top">
-            <div className="gpa-result-tag-wrap">
-              <span className="gpa-live-dot" />
-              <span className="gpa-result-tag">THÔNG TIN TÍN CHỈ CHƯƠNG TRÌNH</span>
+      <div className="credits-layout">
+        <div className="credits-main">
+          <section className="credits-card" aria-labelledby="credits-input-title">
+            <div className="credits-section-head">
+              <h2 id="credits-input-title">Thông tin tín chỉ</h2>
+              <button type="button" className="credits-text-btn" onClick={handleReset}>
+                <RotateCcw size={14} aria-hidden="true" />
+                Đặt lại
+              </button>
             </div>
-            <button
-              type="button"
-              className="tool-btn gpa-reset-btn gpa-btn-sm"
-              onClick={handleReset}
-              title="Khôi phục mặc định"
-            >
-              <RotateCcw size={13} />
-              <span>Làm mới</span>
-            </button>
-          </div>
+            <div className="credits-fields">
+              <CreditStepper
+                id="credits-total-input"
+                label="Tổng tín chỉ toàn khóa"
+                hint="Xem trong chương trình đào tạo của ngành, thường 120–150 TC."
+                value={totalCredits}
+                min={1}
+                fallback={130}
+                onChange={setTotalCredits}
+              />
+              <CreditStepper
+                id="credits-failed-input"
+                label="Tín chỉ đã rớt, phải học lại"
+                hint="Chỉ tính học phần bị điểm F. Học cải thiện điểm D không tính."
+                value={failedCredits}
+                min={0}
+                fallback={0}
+                onChange={setFailedCredits}
+              />
+            </div>
+          </section>
 
-          {/* Inputs Grid */}
-          <div className="scholarship-inputs-grid">
-            {/* Tổng tín chỉ */}
-            <div className="scholarship-input-group">
-              <div className="scholarship-input-label">
-                <label htmlFor="credits-total-input">Tổng tín chỉ toàn khóa</label>
-                <InfoPopover
-                  title="Tổng tín chỉ toàn khóa"
-                  content={
-                    <>
-                      Thường từ <strong>120 – 150 tín chỉ</strong> tùy ngành đào tạo theo quy định của trường.
-                    </>
-                  }
-                  align="right"
-                />
+          <section className="credits-rules" aria-labelledby="credits-rules-title">
+            <h2 id="credits-rules-title">Quy định hạ bậc tốt nghiệp</h2>
+            <dl>
+              <div>
+                <dt>Bị hạ 1 mức khi</dt>
+                <dd>Tín chỉ học lại vượt 5% tổng tín chỉ toàn khóa, hoặc bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học.</dd>
               </div>
-              <div className="number-input-group" style={{ height: '38px' }}>
-                <button
-                  type="button"
-                  className="number-btn"
-                  onClick={handleDecTotal}
-                  aria-label="Giảm tổng tín chỉ"
-                >
-                  <Minus size={14} />
-                </button>
-                <input
-                  id="credits-total-input"
-                  type="number"
-                  min="1"
-                  step="1"
-                  value={totalCredits}
-                  onChange={(e) => setTotalCredits(e.target.value)}
-                  placeholder="130"
-                  style={{ fontSize: '0.88rem', padding: '0' }}
-                />
-                <button
-                  type="button"
-                  className="number-btn"
-                  onClick={handleIncTotal}
-                  aria-label="Tăng tổng tín chỉ"
-                >
-                  <Plus size={14} />
-                </button>
+              <div>
+                <dt>Chỉ áp dụng cho</dt>
+                <dd>Bằng Xuất sắc (hạ xuống Giỏi) và bằng Giỏi (hạ xuống Khá).</dd>
               </div>
-            </div>
-
-            {/* Số tín chỉ rớt */}
-            <div className="scholarship-input-group">
-              <div className="scholarship-input-label">
-                <label htmlFor="credits-failed-input">Số tín chỉ đã rớt / học lại</label>
-                <InfoPopover
-                  title="Tín chỉ học lại tính hạ bằng"
-                  content={
-                    <>
-                      Chỉ tính tín chỉ các học phần bị <strong>điểm F</strong> phải học lại. Điểm D cải thiện không bị tính vào đây.
-                    </>
-                  }
-                  align="right"
-                />
+              <div>
+                <dt>Không bị hạ nếu</dt>
+                <dd>Xếp loại tốt nghiệp là Khá, Trung bình hoặc Yếu, kể cả khi vượt 5%.</dd>
               </div>
-              <div className="number-input-group" style={{ height: '38px' }}>
-                <button
-                  type="button"
-                  className="number-btn"
-                  onClick={handleDecChecked}
-                  aria-label="Giảm tín chỉ rớt"
-                >
-                  <Minus size={14} />
-                </button>
-                <input
-                  id="credits-failed-input"
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={checkedCredits}
-                  onChange={(e) => setCheckedCredits(e.target.value)}
-                  placeholder="0"
-                  style={{ fontSize: '0.88rem', padding: '0' }}
-                />
-                <button
-                  type="button"
-                  className="number-btn"
-                  onClick={handleIncChecked}
-                  aria-label="Tăng tín chỉ rớt"
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
-            </div>
-          </div>
+            </dl>
+          </section>
         </div>
 
-        {/* Result Card (order: 2 on mobile, grid-area: result on desktop) */}
-        <aside className="credits-summary-card">
-          {/* Header & Symmetrical Stat Grid */}
-          <div className="credits-summary-header-wrap">
-            <div className="gpa-result-top">
-              <div className="gpa-result-tag-wrap">
-                <span className="gpa-live-dot" />
-                <span className="gpa-result-tag">ĐÁNH GIÁ ĐIỀU KIỆN HẠ BẰNG</span>
-              </div>
-            </div>
-
-            {/* Symmetrical Stat Grid */}
-            <div className="course-target-stats-grid">
-              <div className="gpa-stat-box">
-                <span className="gpa-stat-label">Ngưỡng 5% cho phép</span>
-                <strong className="gpa-stat-val text-gradient">
-                  {result ? `${result.threshold.toFixed(2)} TC` : '--'}
-                </strong>
-              </div>
-              <div className="gpa-stat-box">
-                <span className="gpa-stat-label">Số tín chỉ đã rớt</span>
-                <strong
-                  className="gpa-stat-val"
-                  style={{
-                    color:
-                      result?.status === 'exceeded'
-                        ? '#ef4444'
-                        : result?.status === 'near'
-                        ? '#d97706'
-                        : 'var(--text-primary)',
-                  }}
-                >
-                  {checked || 0} TC
-                </strong>
-              </div>
-            </div>
-          </div>
-
-          {/* Dynamic Status Evaluation Banner (The card user loved in Image 3) */}
-          {result && (
-            <div className={`credits-status-banner ${result.status}`}>
-              <span className="banner-label">TÌNH TRẠNG ĐÁNH GIÁ</span>
-              <div className="banner-value">
-                {result.status === 'safe' && 'Trong vùng an toàn'}
-                {result.status === 'near' && 'Đang sát ngưỡng 5%'}
-                {result.status === 'exceeded' && 'Đã vượt ngưỡng 5%'}
-              </div>
-              <span className="banner-desc">{result.message}</span>
-            </div>
-          )}
-
-          {/* Ratio Meter Bar */}
-          {result && (
-            <div className="credits-meter-wrap">
-              <div className="credits-meter-header">
-                <span>Tỷ lệ tín chỉ rớt so với ngưỡng 5%:</span>
-                <strong>{ratioPercent.toFixed(1)}%</strong>
-              </div>
-              <div className="credits-meter-track">
-                <div
-                  className={`credits-meter-fill ${result.status}`}
-                  style={{ width: `${Math.min(100, ratioPercent)}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Detailed Breakdown List */}
-          {result && (
-            <div className="tuition-breakdown-list">
-              <div className="tuition-breakdown-item">
-                <span className="label">Tổng tín chỉ toàn khóa</span>
-                <span className="value">{total} tín chỉ</span>
-              </div>
-              <div className="tuition-breakdown-item">
-                <span className="label">Mức trần cho phép (5%)</span>
-                <span className="value">{result.threshold.toFixed(2)} tín chỉ</span>
-              </div>
-              <div className="tuition-breakdown-item">
-                <span className="label">Số tín chỉ đã học lại</span>
-                <span className="value">{checked} tín chỉ</span>
-              </div>
-              <div className="tuition-breakdown-item highlight">
-                <span className="label">
-                  {result.remaining >= 0 ? 'Còn cách ngưỡng an toàn' : 'Số tín chỉ vượt quá'}
-                </span>
+        <aside className={`credits-result ${result ? result.status : ''}`} aria-labelledby="credits-result-title">
+          {result ? (
+            <>
+              <div className="credits-result-top">
+                <span id="credits-result-title">Kết quả</span>
                 <span
-                  className="value"
-                  style={{ color: result.remaining < 0 ? '#ef4444' : '#10b981' }}
+                  key={statusChanges}
+                  className={`credits-chip ${statusChanges > 0 ? 'pulse' : ''}`}
                 >
-                  {Math.abs(result.remaining).toFixed(2)} tín chỉ
+                  {STATUS_LABELS[result.status]}
                 </span>
               </div>
-            </div>
+
+              <div aria-live="polite">
+                <p className="credits-big-label">
+                  {exceeded ? 'Số tín chỉ đã vượt mức tối đa' : 'Còn được rớt thêm tối đa'}
+                </p>
+                <p className={`credits-big ${exceeded ? 'exceeded' : ''}`}>
+                  <strong>{animatedCreditsLeft}</strong>
+                  <span>tín chỉ</span>
+                </p>
+              </div>
+              {!Number.isInteger(result.threshold) && (
+                <p className="credits-note">
+                  5% của {total} TC là {formatCredits(result.threshold)} TC, làm tròn xuống thành {result.maxCredits} TC vì mỗi học phần có số tín chỉ nguyên.
+                </p>
+              )}
+              <p className="credits-sub">
+                Đã rớt <strong>{failed} TC</strong> trên mức tối đa <strong>{result.maxCredits} TC</strong>.
+              </p>
+
+              <CreditMeter failed={failed} maxCredits={result.maxCredits} />
+
+              <p className="credits-message">{result.message}</p>
+
+              <div className="credits-calc-wrap">
+                <button
+                  type="button"
+                  className="credits-calc-toggle"
+                  aria-expanded={showCalculation}
+                  aria-controls="credits-calc"
+                  onClick={() => setShowCalculation((open) => !open)}
+                >
+                  <ChevronDown size={15} aria-hidden="true" />
+                  Xem cách tính
+                </button>
+                <div id="credits-calc" className={`credits-calc ${showCalculation ? 'open' : ''}`} inert={!showCalculation}>
+                  <div>
+                    <dl>
+                      <dt>Tổng tín chỉ toàn khóa</dt>
+                      <dd>{total} TC</dd>
+                      <dt>Ngưỡng 5%</dt>
+                      <dd>{total} × 5% = {formatCredits(result.threshold)} TC</dd>
+                      <dt>Mức tối đa (làm tròn xuống)</dt>
+                      <dd>{result.maxCredits} TC</dd>
+                      <dt>Đã rớt, phải học lại</dt>
+                      <dd>{failed} TC</dd>
+                      <dt>{exceeded ? 'Vượt mức tối đa' : 'Còn được rớt thêm'}</dt>
+                      <dd>{Math.abs(result.creditsLeft)} TC</dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+
+              <p className="credits-source">
+                <BookOpen size={14} aria-hidden="true" />
+                Theo Khoản 3 Điều 15 Quy chế đào tạo. Kết quả chỉ để tham khảo.
+              </p>
+            </>
+          ) : (
+            <p className="credits-empty" id="credits-result-title">
+              Nhập tổng tín chỉ toàn khóa (lớn hơn 0) để xem kết quả.
+            </p>
           )}
         </aside>
-
-        {/* Rules Card: Khoản 3 Điều 15 (order: 3 on mobile, grid-area: rule on desktop) */}
-        <div className="credits-rule-card">
-          <div className="credits-rule-title">
-            <BookOpen size={16} style={{ color: 'var(--primary)' }} />
-            <span>Quy định hạ bậc tốt nghiệp (Khoản 3 Điều 15)</span>
-          </div>
-          <div className="credits-rule-list">
-            <div className="credits-rule-item warning">
-              <span className="credits-rule-icon" aria-hidden="true">⚠️</span>
-              <div className="credits-rule-content">
-                <strong>Điều kiện bị giảm 1 mức xếp loại:</strong> Sinh viên thuộc một trong hai trường hợp: (1) Khối lượng tín chỉ học lại vượt quá <strong>5% tổng số tín chỉ</strong> toàn khóa; hoặc (2) Bị kỷ luật từ mức <strong>cảnh cáo</strong> trở lên trong thời gian học.
-              </div>
-            </div>
-            <div className="credits-rule-item scope">
-              <span className="credits-rule-icon" aria-hidden="true">🎯</span>
-              <div className="credits-rule-content">
-                <strong>Phạm vi áp dụng:</strong> Chỉ áp dụng đối với hạng <strong>Xuất sắc</strong> (hạ xuống Giỏi) và hạng <strong>Giỏi</strong> (hạ xuống Khá).
-              </div>
-            </div>
-            <div className="credits-rule-item safe">
-              <span className="credits-rule-icon" aria-hidden="true">✅</span>
-              <div className="credits-rule-content">
-                <strong>Ngoại lệ an toàn:</strong> Nếu điểm tốt nghiệp xếp loại <strong>Khá, Trung bình hoặc Yếu</strong> thì sẽ <strong>không bao giờ bị hạ bậc</strong> dù vượt quá 5% số tín chỉ học lại.
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

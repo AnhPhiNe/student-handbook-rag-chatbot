@@ -44,7 +44,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          # 22+ runs the TypeScript unit tests natively (type stripping); Node 20 is end-of-life.
+          node-version: "22"
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
@@ -53,6 +54,9 @@ jobs:
 
       - name: Lint frontend
         run: npm run lint
+
+      - name: Test frontend
+        run: npm test
 
       - name: Build frontend
         run: npm run build

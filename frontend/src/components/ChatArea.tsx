@@ -8,7 +8,7 @@ import type { Cohort } from '../utils/gradeScale';
 import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import { OwlMascot } from './OwlMascot';
 
-const IS_MAINTENANCE_MODE = false;
+const IS_MAINTENANCE_MODE = true;
 const CHAT_TIPS_STORAGE_KEY = 'hcmue-chat-question-tips-seen';
 
 

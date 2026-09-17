@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { X, GraduationCap, Info, Award, AlertTriangle, BookOpen } from 'lucide-react';
 import type { Cohort } from '../utils/gradeScale';
 import { getGradeScales } from '../utils/gradeScale';
+import { getGradeTone } from '../utils/gradeTone';
 import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
 interface GpaReferenceModalProps {
@@ -138,7 +139,7 @@ function GpaReferenceDialog({
                                 className="gpa-scale-chip passed"
                               >
                                 <div className="gpa-chip-top">
-                                  <span className="gpa-chip-letter">{row.letter}</span>
+                                  <span className={`gpa-chip-letter grade-tone-${getGradeTone(row)}`}>{row.letter}</span>
                                   <span className="gpa-chip-score4">{row.score4.toFixed(1)}</span>
                                 </div>
                                 <div className="gpa-chip-range">
@@ -163,7 +164,7 @@ function GpaReferenceDialog({
                                   className="gpa-scale-chip failed"
                                 >
                                   <div className="gpa-chip-top">
-                                    <span className="gpa-chip-letter">{row.letter}</span>
+                                    <span className={`gpa-chip-letter grade-tone-${getGradeTone(row)}`}>{row.letter}</span>
                                     <span className="gpa-chip-score4">{row.score4.toFixed(1)}</span>
                                   </div>
                                   <div className="gpa-chip-range">

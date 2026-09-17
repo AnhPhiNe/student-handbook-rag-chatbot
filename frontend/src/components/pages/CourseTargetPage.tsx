@@ -1,12 +1,5 @@
-import { useMemo, useState } from 'react';
-import {
-  Target,
-  Plus,
-  Trash2,
-  RotateCcw,
-  Sparkles,
-  Info,
-} from 'lucide-react';
+import { useMemo, useState, type ReactNode } from 'react';
+import { Plus, Target, Trash2 } from 'lucide-react';
 import {
   getCourseGroupOptions,
   getDefaultCourseGroup,
@@ -14,10 +7,18 @@ import {
   isSplitGradeCohort,
   type Cohort,
   type CourseGroup,
-  type LetterGrade,
+  type GradeScaleRow,
 } from '../../utils/gradeScale';
-import { PageContextBadges } from '../PageContextBadges';
+import { sanitizeDecimal } from '../../utils/numberInput';
+import { getGradeTone } from '../../utils/gradeTone';
+import { useAnimatedNumber } from '../../hooks/useAnimatedNumber';
 import { GpaReferenceModal } from '../GpaReferenceModal';
+import { ToolPageHeader } from '../tool/ToolPageHeader';
+import { ResetButton } from '../tool/ToolSection';
+import { ResultCard, type ResultTone } from '../tool/ResultCard';
+import { ToolMobileSummary } from '../tool/ToolMobileSummary';
+import { ResultFacts } from '../tool/ResultFacts';
+import { ResultCallout } from '../tool/ResultCallout';
 
 interface CourseTargetPageProps {
   cohort: Cohort;
@@ -30,7 +31,13 @@ interface ScoreComponent {
   score: string;
 }
 
-type TargetStatus = 'possible' | 'achieved' | 'impossible' | 'error' | 'fail';
+type TargetStatus = 'possible' | 'achieved' | 'impossible';
+
+interface GradeTarget {
+  grade: GradeScaleRow;
+  requiredScore: number | null;
+  status: TargetStatus;
+}
 
 interface SyllabusPreset {
   label: string;
@@ -38,83 +45,58 @@ interface SyllabusPreset {
 }
 
 const SYLLABUS_PRESETS: SyllabusPreset[] = [
-  {
-    label: '20% - 20% (Thi 60%)',
-    components: [
-      { name: 'Quá trình', weight: '20' },
-      { name: 'Giữa kỳ', weight: '20' },
-    ],
-  },
-  {
-    label: '30% (Thi 70%)',
-    components: [{ name: 'Quá trình', weight: '30' }],
-  },
-  {
-    label: '10% - 30% (Thi 60%)',
-    components: [
-      { name: 'Chuyên cần', weight: '10' },
-      { name: 'Giữa kỳ', weight: '30' },
-    ],
-  },
-  {
-    label: '10% - 40% (Thi 50%)',
-    components: [
-      { name: 'Chuyên cần', weight: '10' },
-      { name: 'Giữa kỳ', weight: '40' },
-    ],
-  },
+  { label: '20% - 20% (Thi 60%)', components: [{ name: 'Quá trình', weight: '20' }, { name: 'Giữa kỳ', weight: '20' }] },
+  { label: '30% (Thi 70%)', components: [{ name: 'Quá trình', weight: '30' }] },
+  { label: '10% - 30% (Thi 60%)', components: [{ name: 'Chuyên cần', weight: '10' }, { name: 'Giữa kỳ', weight: '30' }] },
+  { label: '10% - 40% (Thi 50%)', components: [{ name: 'Chuyên cần', weight: '10' }, { name: 'Giữa kỳ', weight: '40' }] },
 ];
 
-const GRADE_META: Record<
-  LetterGrade,
-  { name: string; color: string }
-> = {
-  A: { name: 'Xuất sắc', color: '#ec4899' },
-  'B+': { name: 'Giỏi', color: '#8b5cf6' },
-  B: { name: 'Khá', color: '#3b82f6' },
-  'C+': { name: 'Trung bình Khá', color: '#10b981' },
-  C: { name: 'Trung bình', color: '#f59e0b' },
-  'D+': { name: 'Trung bình Yếu', color: '#f97316' },
-  D: { name: 'Qua môn', color: '#ef4444' },
-  'F+': { name: 'Không đạt', color: '#94a3b8' },
-  F: { name: 'Không đạt', color: '#64748b' },
-};
+const COMPONENT_NAMES = ['Quá trình', 'Chuyên cần', 'Giữa kỳ', 'Thực hành', 'Bài tập', 'Tiểu luận', 'Thuyết trình', 'Khác'];
+
+// A required final score above this is reachable but hard, so the result is flagged as a warning.
+const HARD_FINAL_SCORE = 8;
+
+// Ids for columns added after the defaults; a module counter keeps handlers pure.
+let addedComponentCount = 0;
+function createComponentId() {
+  addedComponentCount += 1;
+  return `comp-added-${addedComponentCount}`;
+}
+
+function defaultComponents(): ScoreComponent[] {
+  return [
+    { id: 'comp-1', name: 'Quá trình', weight: '20', score: '' },
+    { id: 'comp-2', name: 'Giữa kỳ', weight: '20', score: '' },
+  ];
+}
 
 export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
   const [courseGroup, setCourseGroup] = useState<CourseGroup>(getDefaultCourseGroup(cohort));
-  const [components, setComponents] = useState<ScoreComponent[]>([
-    { id: 'comp-1', name: 'Quá trình', weight: '20', score: '' },
-    { id: 'comp-2', name: 'Giữa kỳ', weight: '20', score: '' },
-  ]);
+  const [components, setComponents] = useState<ScoreComponent[]>(defaultComponents);
   const [referenceModalTab, setReferenceModalTab] = useState<'scale' | 'rules' | null>(null);
 
-  const activeGroup = isSplitGradeCohort(cohort) ? courseGroup : getDefaultCourseGroup(cohort);
+  const isSplit = isSplitGradeCohort(cohort);
+  const activeGroup = isSplit ? courseGroup : getDefaultCourseGroup(cohort);
   const scale = getGradeScale(cohort, activeGroup);
 
   const addComponent = () => {
-    setComponents((curr) => [
-      ...curr,
-      { id: `comp-${Date.now()}`, name: 'Quá trình', weight: '', score: '' },
-    ]);
+    setComponents((current) => [...current, { id: createComponentId(), name: 'Quá trình', weight: '', score: '' }]);
   };
 
   const removeComponent = (id: string) => {
-    if (components.length <= 1) return;
-    setComponents((curr) => curr.filter((c) => c.id !== id));
+    setComponents((current) => (current.length > 1 ? current.filter((component) => component.id !== id) : current));
   };
 
   const updateComponent = (id: string, field: keyof ScoreComponent, value: string) => {
-    setComponents((curr) =>
-      curr.map((c) => (c.id === id ? { ...c, [field]: value } : c))
-    );
+    setComponents((current) => current.map((component) => (component.id === id ? { ...component, [field]: value } : component)));
   };
 
   const applyPreset = (preset: SyllabusPreset) => {
     setComponents(
-      preset.components.map((c, idx) => ({
-        id: `comp-preset-${idx}-${Date.now()}`,
-        name: c.name,
-        weight: c.weight,
+      preset.components.map((component) => ({
+        id: createComponentId(),
+        name: component.name,
+        weight: component.weight,
         score: '',
       }))
     );
@@ -122,312 +104,233 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
 
   const handleReset = () => {
     const hasData = components.some((c) => c.score !== '' || (c.weight !== '20' && c.weight !== ''));
-    if (hasData) {
-      if (!window.confirm('Bạn có chắc chắn muốn khôi phục về bảng điểm mặc định không?')) {
-        return;
-      }
+    if (hasData && !window.confirm('Bạn có chắc chắn muốn khôi phục về bảng điểm mặc định không?')) {
+      return;
     }
-    setComponents([
-      { id: 'comp-1', name: 'Quá trình', weight: '20', score: '' },
-      { id: 'comp-2', name: 'Giữa kỳ', weight: '20', score: '' },
-    ]);
+    setComponents(defaultComponents());
   };
 
   const result = useMemo(() => {
     let totalWeight = 0;
     let accumulatedScore = 0;
+    let weightedCount = 0;
     let hasInvalidWeight = false;
     let hasInvalidScore = false;
+    let hasMissingScore = false;
 
-    for (const comp of components) {
-      const w = Number(comp.weight);
-      const s = Number(comp.score);
+    for (const component of components) {
+      const weight = Number(component.weight);
+      const score = Number(component.score);
 
-      if (comp.weight !== '') {
-        if (!Number.isFinite(w) || w < 0 || w > 100) hasInvalidWeight = true;
-        totalWeight += w;
+      if (component.weight !== '') {
+        if (!Number.isFinite(weight) || weight < 0 || weight > 100) {
+          hasInvalidWeight = true;
+        } else {
+          totalWeight += weight;
+          if (weight > 0) weightedCount += 1;
+          if (weight > 0 && component.score === '') hasMissingScore = true;
+        }
       }
 
-      if (comp.score !== '') {
-        if (!Number.isFinite(s) || s < 0 || s > 10) {
+      if (component.score !== '') {
+        if (!Number.isFinite(score) || score < 0 || score > 10) {
           hasInvalidScore = true;
-        } else if (comp.weight !== '' && Number.isFinite(w) && w >= 0) {
-          accumulatedScore += (s * w) / 100;
+        } else if (component.weight !== '' && Number.isFinite(weight) && weight >= 0) {
+          accumulatedScore += (score * weight) / 100;
         }
       }
     }
 
     const remainingWeight = Math.max(0, 100 - totalWeight);
-    const isError = totalWeight > 100 || hasInvalidWeight || hasInvalidScore;
+    const hasWeightOverflow = totalWeight > 100;
+    // A column with a weight but no score would otherwise count as 0 and show alarming targets.
+    const isComplete = !hasWeightOverflow && !hasInvalidWeight && !hasInvalidScore && !hasMissingScore && weightedCount > 0;
 
-    const targets = scale.rows
-      .filter((row) => row.letter !== 'F' && row.letter !== 'F+')
+    const targets: GradeTarget[] = scale.rows
+      .filter((row) => row.status === 'Đạt')
       .map((grade) => {
-        const meta = GRADE_META[grade.letter];
-        const isFailingByRule = grade.status === 'Không đạt';
-
-        if (isFailingByRule) {
-          return {
-            ...grade,
-            ...meta,
-            requiredScore: null,
-            status: 'fail' as TargetStatus,
-          };
-        }
-
-        if (isError) {
-          return { ...grade, ...meta, requiredScore: null, status: 'error' as TargetStatus };
-        }
-
         const missingScore = grade.min10 - accumulatedScore;
-
         if (remainingWeight === 0) {
-          return {
-            ...grade,
-            ...meta,
-            requiredScore: null,
-            status: (missingScore <= 0 ? 'achieved' : 'impossible') as TargetStatus,
-          };
+          return { grade, requiredScore: null, status: missingScore <= 0 ? 'achieved' : 'impossible' };
         }
-
-        const requiredScoreOnFinal = (missingScore * 100) / remainingWeight;
-
-        let status: TargetStatus = 'possible';
-        if (requiredScoreOnFinal > 10.0) status = 'impossible';
-        else if (requiredScoreOnFinal <= 0) status = 'achieved';
-
-        return {
-          ...grade,
-          ...meta,
-          requiredScore: requiredScoreOnFinal,
-          status,
-        };
+        const requiredScore = (missingScore * 100) / remainingWeight;
+        const status: TargetStatus = requiredScore > 10 ? 'impossible' : requiredScore <= 0 ? 'achieved' : 'possible';
+        return { grade, requiredScore, status };
       });
 
-    const passingRows = scale.rows.filter((r) => r.status === 'Đạt');
-    const lowestPassingRow = passingRows[passingRows.length - 1];
-    const passTarget = lowestPassingRow ? targets.find((t) => t.letter === lowestPassingRow.letter) : null;
+    let errorMessage: string | null = null;
+    if (hasWeightOverflow) errorMessage = `Tổng trọng số đang là ${totalWeight}%, vượt quá 100%. Hãy sửa lại các cột.`;
+    else if (hasInvalidWeight) errorMessage = 'Trọng số mỗi cột phải từ 0 đến 100%.';
+    else if (hasInvalidScore) errorMessage = 'Điểm mỗi cột phải từ 0 đến 10.';
 
     return {
       totalWeight,
       remainingWeight,
       accumulatedScore,
-      isError,
+      isComplete,
+      hasWeightOverflow,
+      weightedCount,
       targets,
-      passTarget,
-      lowestPassingLetter: lowestPassingRow?.letter ?? 'D',
+      passTarget: targets.length > 0 ? targets[targets.length - 1] : null,
+      errorMessage,
     };
   }, [components, scale]);
 
+  const passTarget = result.isComplete ? result.passTarget : null;
+  let tone: ResultTone | null = null;
+  let chip: string | null = null;
+  if (passTarget?.status === 'achieved') {
+    tone = 'success';
+    chip = 'Đã đủ qua môn';
+  } else if (passTarget?.status === 'impossible') {
+    tone = 'danger';
+    chip = 'Không thể qua môn';
+  } else if (passTarget?.requiredScore != null) {
+    const isHard = passTarget.requiredScore > HARD_FINAL_SCORE;
+    tone = isHard ? 'warning' : 'success';
+    chip = isHard ? 'Cần điểm thi cao' : 'Khả thi';
+  }
+
+  const animatedRequired = useAnimatedNumber(
+    passTarget?.status === 'possible' && passTarget.requiredScore != null ? Math.round(passTarget.requiredScore * 100) / 100 : 0,
+    2,
+  );
+
+  // The lowest grade above the pass mark that the final exam can still reach, as a stretch goal.
+  const stretchTarget = passTarget
+    ? result.targets.slice(0, -1).reverse().find((target) => target.status === 'possible') ?? null
+    : null;
+  const stretchAdvice =
+    stretchTarget?.requiredScore != null ? (
+      <>
+        {' '}Muốn đạt <strong>{stretchTarget.grade.letter}</strong> cần thi <strong>{stretchTarget.requiredScore.toFixed(2)}</strong>.
+      </>
+    ) : null;
+
+  let passAdvice: ReactNode = null;
+  if (passTarget?.status === 'possible' && passTarget.requiredScore != null) {
+    passAdvice = (
+      <>
+        Cần thi từ <strong>{passTarget.requiredScore.toFixed(2)}</strong> điểm để qua môn.{stretchAdvice}
+      </>
+    );
+  } else if (passTarget?.status === 'achieved') {
+    passAdvice = <>Điểm các cột đã đủ qua môn.{stretchAdvice}</>;
+  } else if (passTarget?.status === 'impossible') {
+    passAdvice =
+      result.remainingWeight === 0 ? (
+        <>
+          Điểm các cột chưa đủ mức qua môn <strong>({passTarget.grade.letter})</strong> và không còn điểm thi cuối kỳ.
+        </>
+      ) : (
+        <>
+          Dù thi được <strong>10</strong> điểm cũng chưa đủ mức qua môn <strong>({passTarget.grade.letter})</strong>.
+        </>
+      );
+  }
+
+  const emptyMessage =
+    result.weightedCount === 0
+      ? 'Nhập trọng số và điểm của các cột đã có để xem điểm thi cần đạt.'
+      : 'Nhập điểm cho mọi cột đã có trọng số để xem điểm thi cần đạt.';
+
+  const summaryValue =
+    passTarget?.status === 'achieved'
+      ? 'Đã đủ'
+      : passTarget?.status === 'impossible'
+      ? '> 10'
+      : passTarget?.requiredScore != null
+      ? passTarget.requiredScore.toFixed(2)
+      : '--';
+
+  const groupLabel = getCourseGroupOptions(cohort).find((option) => option.id === activeGroup)?.shortLabel;
+
   return (
-    <div className="page-container tool-page">
-      {/* Header with Title & Badges */}
-      <div className="page-header">
-        <h1 className="page-title-with-icon">
-          <Target aria-hidden="true" />
-          <span>Mục tiêu môn học</span>
-        </h1>
-        <p>Tính điểm thi cuối kỳ cần đạt dựa trên các cột điểm thành phần và bảng quy đổi của {cohort}.</p>
-        <PageContextBadges cohort={cohort} source="Thang điểm áp dụng theo khóa" advisory />
-      </div>
+    <div className="page-container tool-page simplified">
+      <ToolPageHeader
+        icon={Target}
+        title="Mục tiêu môn học"
+        description={`Tính điểm thi cuối kỳ cần đạt từ các cột điểm đã có, theo thang điểm ${cohort}.`}
+      />
 
-      {/* Top Mobile Hero Card (Pinned to top on mobile <= 960px, instant live feedback) */}
-      <section
-        className="gpa-mobile-hero-card course-target-mobile-hero"
-        aria-label="Kết quả mục tiêu môn học"
-      >
-        <div className="gpa-mobile-hero-top">
-          <div className="gpa-result-tag-wrap">
-            <span className="gpa-live-dot" aria-hidden="true" />
-            <span className="gpa-hero-tag">MỤC TIÊU CUỐI KỲ • {cohort}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            {result.isError && result.totalWeight > 100 ? (
-              <span className="gpa-tier-pill tier-weak">Lỗi trọng số</span>
-            ) : result.passTarget?.status === 'achieved' ? (
-              <span className="gpa-tier-pill tier-excellent">🎉 Đã đủ qua môn</span>
-            ) : result.passTarget?.status === 'impossible' ? (
-              <span className="gpa-tier-pill tier-weak">⚠️ Khó qua môn</span>
-            ) : result.passTarget?.requiredScore != null ? (
-              <span className="gpa-tier-pill tier-good">
-                Cần thi ≥ {result.passTarget.requiredScore.toFixed(2)}
-              </span>
-            ) : (
-              <span className="gpa-cohort-pill">Thi: {result.remainingWeight}%</span>
-            )}
-            <button
-              type="button"
-              className="course-target-ref-icon-btn"
-              onClick={() => setReferenceModalTab('scale')}
-              title="Tra cứu bảng quy đổi điểm & quy chế"
-              aria-label="Tra cứu bảng quy đổi điểm & quy chế"
-            >
-              <Info size={13} />
-            </button>
-          </div>
-        </div>
+      <ToolMobileSummary
+        label={`Thi cần đạt${result.passTarget ? ` (${result.passTarget.grade.letter})` : ''}`}
+        value={summaryValue}
+        unit={passTarget?.status === 'possible' ? '/ 10' : undefined}
+        chip={chip}
+        tone={tone}
+      />
 
-        <div className="gpa-mobile-hero-middle">
-          <div className="gpa-hero-score">
-            <span className="gpa-score-num text-gradient">
-              {result.isError
-                ? '--'
-                : result.passTarget
-                ? result.passTarget.status === 'achieved'
-                  ? 'Đạt'
-                  : result.passTarget.status === 'impossible'
-                  ? '> 10'
-                  : result.passTarget.requiredScore !== null
-                  ? result.passTarget.requiredScore.toFixed(2)
-                  : '--'
-                : '--'}
-            </span>
-            <span className="gpa-score-den">
-              {result.passTarget?.status === 'achieved'
-                ? 'qua môn'
-                : `/ 10 thi (${result.lowestPassingLetter})`}
-            </span>
-          </div>
-
-          <div className="gpa-mobile-stats-chips">
-            <span className="gpa-stat-chip">
-              Tích lũy <strong>{result.accumulatedScore > 0 ? `${result.accumulatedScore.toFixed(2)} đ` : '--'}</strong>
-            </span>
-            <span className="gpa-stat-chip">
-              Đã có <strong>{result.totalWeight}%</strong>
-            </span>
-            <span className="gpa-stat-chip">
-              Thi cuối <strong>{result.totalWeight > 100 ? '0%' : `${result.remainingWeight}%`}</strong>
-            </span>
-          </div>
-        </div>
-
-        {/* Mini progress bar: visual progress of accumulated points towards 10.0 scale */}
-        <div className="gpa-progress-track">
-          <div
-            className={`gpa-progress-fill ${
-              result.totalWeight > 100
-                ? 'tier-weak'
-                : result.passTarget?.status === 'achieved'
-                ? 'tier-excellent'
-                : result.accumulatedScore > 0
-                ? 'tier-good'
-                : ''
-            }`}
-            style={{
-              width: `${Math.min(100, Math.max(0, (result.accumulatedScore / 10) * 100))}%`,
-            }}
-          />
-        </div>
-      </section>
-
-      {/* Main 2-Column Split Layout */}
-      <div className="course-target-split-layout">
-        {/* Left Column: Input Form */}
-        <section className="gpa-main-column">
-          {/* Toolbar: Group Selector & Action Buttons */}
-          <div className="gpa-toolbar">
-            {isSplitGradeCohort(cohort) ? (
-              <div className="gpa-mode-control">
-                <span className="gpa-mode-label">Nhóm môn:</span>
-                <div className="gpa-mode-pills" role="radiogroup" aria-label="Nhóm môn học">
-                  {getCourseGroupOptions(cohort).map((option) => (
-                    <button
-                      key={option.id}
-                      type="button"
-                      className={`gpa-mode-btn ${courseGroup === option.id ? 'active' : ''}`}
-                      onClick={() => setCourseGroup(option.id as CourseGroup)}
-                      title={option.label}
-                    >
-                      {option.shortLabel}
-                    </button>
-                  ))}
-                </div>
+      <div className="tool-grid wide">
+        <div className="tool-main">
+          <div className="tool-toolbar">
+            {isSplit ? (
+              <div className="tool-segmented" role="group" aria-label="Nhóm môn học">
+                {getCourseGroupOptions(cohort).map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    aria-pressed={courseGroup === option.id}
+                    onClick={() => setCourseGroup(option.id)}
+                    title={option.label}
+                  >
+                    {option.shortLabel}
+                  </button>
+                ))}
               </div>
             ) : (
-              <div className="gpa-mode-control">
-                <span className="gpa-mode-label">Điểm thành phần đã có:</span>
-              </div>
+              <span className="tool-toolbar-label">Các cột điểm đã có</span>
             )}
-
-            <div className="gpa-action-buttons">
-              <button
-                type="button"
-                className="tool-btn gpa-reset-btn gpa-btn-sm"
-                onClick={handleReset}
-                title="Khôi phục các cột điểm mặc định"
-              >
-                <RotateCcw size={14} />
-                <span>Làm mới</span>
-              </button>
-              <button
-                type="button"
-                className="tool-btn primary gpa-btn-sm gpa-add-top-btn"
-                onClick={addComponent}
-                title="Thêm một cột điểm thành phần mới"
-                disabled={result.totalWeight >= 100}
-              >
-                <Plus size={15} />
-                <span>Thêm cột</span>
-              </button>
-            </div>
+            <ResetButton onClick={handleReset} />
           </div>
 
-          {/* Form Card */}
           <div className="course-target-form-card">
-            {/* Quick Presets Bar (Single line, horizontal scroll) */}
             <div className="course-target-presets-bar">
-              <span className="course-target-presets-label">
-                <Sparkles size={13} /> Mẫu:
-              </span>
+              <span className="course-target-presets-label">Mẫu trọng số:</span>
               {SYLLABUS_PRESETS.map((preset) => (
                 <button
                   key={preset.label}
                   type="button"
                   className="course-target-preset-chip"
                   onClick={() => applyPreset(preset)}
-                  title={`Áp dụng phân bổ: ${preset.label}`}
                 >
                   {preset.label}
                 </button>
               ))}
             </div>
 
-            {/* Components Table */}
             <div className="course-target-table-wrap">
               <table className="course-target-table">
                 <thead>
                   <tr>
-                    <th style={{ width: '35%' }}>THÀNH PHẦN</th>
-                    <th style={{ width: '28%' }}>TRỌNG SỐ (%)</th>
-                    <th style={{ width: '28%' }}>ĐIỂM (10)</th>
-                    <th style={{ width: '9%', textAlign: 'center' }}></th>
+                    <th style={{ width: '35%' }}>Thành phần</th>
+                    <th style={{ width: '28%' }}>Trọng số (%)</th>
+                    <th style={{ width: '28%' }}>Điểm (10)</th>
+                    <th style={{ width: '9%' }}>
+                      <span className="sr-only">Xóa</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {components.map((comp) => {
-                    const isWeightInvalid =
-                      comp.weight !== '' &&
-                      (Number(comp.weight) < 0 || Number(comp.weight) > 100 || isNaN(Number(comp.weight)));
-                    const isScoreInvalid =
-                      comp.score !== '' &&
-                      (Number(comp.score) < 0 || Number(comp.score) > 10 || isNaN(Number(comp.score)));
+                  {components.map((component, index) => {
+                    const weight = Number(component.weight);
+                    const score = Number(component.score);
+                    const isWeightInvalid = component.weight !== '' && (!Number.isFinite(weight) || weight < 0 || weight > 100);
+                    const isScoreInvalid = component.score !== '' && (!Number.isFinite(score) || score < 0 || score > 10);
                     return (
-                      <tr key={comp.id}>
+                      <tr key={component.id}>
                         <td>
                           <select
-                            value={comp.name}
-                            onChange={(e) => updateComponent(comp.id, 'name', e.target.value)}
+                            value={component.name}
+                            onChange={(e) => updateComponent(component.id, 'name', e.target.value)}
                             className="course-target-select"
+                            aria-label={`Tên cột điểm ${index + 1}`}
                           >
-                            <option value="Quá trình">Quá trình</option>
-                            <option value="Chuyên cần">Chuyên cần</option>
-                            <option value="Giữa kỳ">Giữa kỳ</option>
-                            <option value="Thực hành">Thực hành</option>
-                            <option value="Bài tập">Bài tập</option>
-                            <option value="Tiểu luận">Tiểu luận</option>
-                            <option value="Thuyết trình">Thuyết trình</option>
-                            <option value="Khác">Khác...</option>
+                            {COMPONENT_NAMES.map((name) => (
+                              <option key={name} value={name}>
+                                {name}
+                              </option>
+                            ))}
                           </select>
                         </td>
                         <td>
@@ -435,13 +338,12 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                             <input
                               type="text"
                               inputMode="decimal"
-                              value={comp.weight}
-                              onChange={(e) => {
-                                const val = e.target.value.replace(',', '.');
-                                if (val === '' || /^[0-9.]*$/.test(val)) updateComponent(comp.id, 'weight', val);
-                              }}
+                              value={component.weight}
+                              onChange={(e) => updateComponent(component.id, 'weight', sanitizeDecimal(e.target.value))}
                               className={`course-target-input ${isWeightInvalid ? 'input-error' : ''}`}
                               placeholder="VD: 20"
+                              aria-label={`Trọng số cột ${index + 1}`}
+                              aria-invalid={isWeightInvalid}
                             />
                             <span className="course-target-affix">%</span>
                           </div>
@@ -451,13 +353,12 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                             <input
                               type="text"
                               inputMode="decimal"
-                              value={comp.score}
-                              onChange={(e) => {
-                                const val = e.target.value.replace(',', '.');
-                                if (val === '' || /^[0-9.]*$/.test(val)) updateComponent(comp.id, 'score', val);
-                              }}
+                              value={component.score}
+                              onChange={(e) => updateComponent(component.id, 'score', sanitizeDecimal(e.target.value))}
                               className={`course-target-input ${isScoreInvalid ? 'input-error' : ''}`}
                               placeholder="VD: 7.5"
+                              aria-label={`Điểm cột ${index + 1}`}
+                              aria-invalid={isScoreInvalid}
                             />
                             <span className="course-target-affix">/ 10</span>
                           </div>
@@ -467,10 +368,10 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                             <button
                               type="button"
                               className="course-target-del-btn"
-                              onClick={() => removeComponent(comp.id)}
-                              title="Xóa cột điểm này"
+                              onClick={() => removeComponent(component.id)}
+                              aria-label={`Xóa cột điểm ${index + 1}`}
                             >
-                              <Trash2 size={15} />
+                              <Trash2 size={15} aria-hidden="true" />
                             </button>
                           )}
                         </td>
@@ -481,7 +382,6 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               </table>
             </div>
 
-            {/* Visual Weight Balance Bar */}
             <div className="course-target-weight-bar-card">
               <div className="course-target-weight-header">
                 <div className="course-target-weight-stat">
@@ -489,156 +389,114 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                   <span>
                     Đã có: <strong>{result.totalWeight}%</strong>
                   </span>
-                  {result.accumulatedScore > 0 && (
-                    <span className="course-target-subscore">
-                      (tích lũy: <strong>{result.accumulatedScore.toFixed(2)}</strong> đ)
-                    </span>
-                  )}
                 </div>
                 <div className="course-target-weight-stat">
                   <span className="course-target-dot final" />
                   <span>
-                    Trọng số thi cuối kỳ:{' '}
-                    <strong>
-                      {result.totalWeight > 100 ? '0%' : `${result.remainingWeight}%`}
-                    </strong>
+                    Thi cuối kỳ: <strong>{result.hasWeightOverflow ? '0%' : `${result.remainingWeight}%`}</strong>
                   </span>
                 </div>
               </div>
-
               <div className="course-target-progress-track">
                 <div
-                  className={`course-target-progress-fill entered ${result.totalWeight > 100 ? 'error' : ''}`}
+                  className={`course-target-progress-fill entered ${result.hasWeightOverflow ? 'error' : ''}`}
                   style={{ width: `${Math.min(100, Math.max(0, result.totalWeight))}%` }}
                 />
                 {result.totalWeight < 100 && (
-                  <div
-                    className="course-target-progress-fill final"
-                    style={{ width: `${Math.max(0, result.remainingWeight)}%` }}
-                  />
+                  <div className="course-target-progress-fill final" style={{ width: `${result.remainingWeight}%` }} />
                 )}
               </div>
-
-              {result.totalWeight > 100 && (
-                <div className="course-target-weight-warning">
-                  ⚠️ Tổng trọng số các cột điểm đang là <strong>{result.totalWeight}%</strong> (vượt quá 100%). Vui lòng điều chỉnh lại!
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* Right Column: Sticky Summary & Target Result Card */}
-        {/* Right Column: Sticky Summary & Target Result Card */}
-        <aside className="course-target-summary-card">
-          {/* Desktop Only: Header & Symmetrical Stat Grid (Shown in Top Hero Card on mobile) */}
-          <div className="course-target-desktop-only-result">
-            {/* Header: Title & Remaining Weight Pill */}
-            <div className="gpa-result-top">
-              <div className="gpa-result-tag-wrap">
-                <span className="gpa-live-dot" />
-                <span className="gpa-result-tag">MỤC TIÊU CUỐI KỲ</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <span className="gpa-cohort-pill">
-                  {result.isError && result.totalWeight > 100 ? 'Lỗi trọng số' : `Thi: ${result.remainingWeight}%`}
-                </span>
-                <button
-                  type="button"
-                  className="course-target-ref-icon-btn"
-                  onClick={() => setReferenceModalTab('scale')}
-                  title="Tra cứu bảng quy đổi điểm & quy chế"
-                  aria-label="Tra cứu bảng quy đổi điểm & quy chế"
-                >
-                  <Info size={14} />
-                </button>
-              </div>
-            </div>
-
-            {/* Summary Stats Grid (2 Equal Symmetrical Cards) */}
-            <div className="course-target-stats-grid">
-              <div className="gpa-stat-box">
-                <span className="gpa-stat-label">Điểm tích lũy</span>
-                <strong className="gpa-stat-val">
-                  {result.accumulatedScore > 0 ? result.accumulatedScore.toFixed(2) : '--'}
-                </strong>
-              </div>
-              <div className="gpa-stat-box">
-                <span className="gpa-stat-label">Qua môn ({result.lowestPassingLetter})</span>
-                <strong
-                  className="gpa-stat-val"
-                  style={{
-                    color:
-                      result.passTarget?.status === 'achieved'
-                        ? '#10b981'
-                        : result.passTarget?.status === 'impossible'
-                        ? '#ef4444'
-                        : undefined,
-                  }}
-                >
-                  {result.isError
-                    ? '--'
-                    : result.passTarget
-                    ? result.passTarget.status === 'achieved'
-                      ? 'Đạt 🎉'
-                      : result.passTarget.status === 'impossible'
-                      ? '> 10'
-                      : result.passTarget.requiredScore !== null
-                      ? result.passTarget.requiredScore.toFixed(2)
-                      : '--'
-                    : '--'}
-                </strong>
-              </div>
             </div>
           </div>
 
-          {/* Mobile Only: Section Header for Detailed Target Table */}
-          <div className="course-target-mobile-details-header">
-            <span className="gpa-hero-tag">CHI TIẾT ĐIỂM THI TỪNG MỨC</span>
+          <div className="gpa-bottom-add">
+            <button
+              type="button"
+              className="gpa-add-dashed-btn"
+              onClick={addComponent}
+              disabled={result.totalWeight >= 100}
+            >
+              <Plus size={16} aria-hidden="true" />
+              <span>Thêm cột điểm</span>
+            </button>
           </div>
+        </div>
 
-          {/* Compact Target Matrix Table */}
-          <div className="course-target-compact-table">
-            <div className="course-target-table-header-row">
-              <span>MỨC ĐIỂM</span>
-              <span>ĐIỂM THI CẦN ĐẠT</span>
-            </div>
-            {result.targets.map((target) => (
-              <div key={target.letter} className="course-target-compact-row">
-                <div className="course-target-row-left">
-                  <span
-                    className="course-target-row-badge"
-                    style={{ backgroundColor: target.color }}
-                  >
-                    {target.letter}
-                  </span>
-                  <span className="course-target-row-label">
-                    {target.name} <span className="course-target-min10">(≥ {target.min10.toFixed(1)})</span>
-                  </span>
-                </div>
+        <ResultCard id="course-target-result" title="Mục tiêu cuối kỳ" tone={tone} chip={chip}>
+          {passTarget ? (
+            <>
+              <div aria-live="polite">
+                <p className="tool-big-label">Điểm thi cuối kỳ cần đạt để qua môn ({passTarget.grade.letter})</p>
+                {passTarget.status === 'possible' && (
+                  <p className="tool-big">
+                    <strong>{animatedRequired.toFixed(2)}</strong>
+                    <span>/ 10</span>
+                  </p>
+                )}
+                {passTarget.status === 'achieved' && (
+                  <p className="tool-big text">
+                    <strong>Đã đủ</strong>
+                    <span>điểm qua môn</span>
+                  </p>
+                )}
+                {passTarget.status === 'impossible' && (
+                  <p className="tool-big text danger">
+                    <strong>&gt; 10</strong>
+                    <span>không thể qua môn</span>
+                  </p>
+                )}
+              </div>
+              <ResultFacts
+                facts={[
+                  { label: 'Điểm tích lũy', value: result.accumulatedScore.toFixed(2) },
+                  { label: 'Đã có', value: `${result.totalWeight}%` },
+                  { label: 'Thi cuối kỳ', value: `${result.remainingWeight}%` },
+                ]}
+              />
+              {passAdvice && <ResultCallout tone={tone}>{passAdvice}</ResultCallout>}
 
-                <div className="course-target-row-right">
-                  {target.status === 'fail' ? (
-                    <span className="course-target-row-score fail">Không đạt (rớt)</span>
-                  ) : target.status === 'impossible' ? (
-                    <span className="course-target-row-score impossible">Bất khả thi</span>
-                  ) : target.status === 'achieved' ? (
-                    <span className="course-target-row-score achieved">Đã đạt 🎉</span>
-                  ) : target.requiredScore !== null ? (
-                    <span className="course-target-row-score score-val">
-                      {target.requiredScore.toFixed(2)}
+              <p className="tool-grade-list-title">Điểm thi cần cho từng mức</p>
+              <ul className="tool-grade-list">
+                {result.targets.map((target) => (
+                  <li key={target.grade.letter} className={target === passTarget ? 'is-pass' : undefined}>
+                    <span>
+                      <span className={`tool-grade-letter grade-tone-${getGradeTone(target.grade)}`}>{target.grade.letter}</span>
+                      <span className="tool-grade-min">từ {target.grade.min10.toFixed(1)}</span>
+                      {target === passTarget && <span className="tool-grade-tag">mức qua môn</span>}
                     </span>
-                  ) : (
-                    <span className="course-target-row-score">--</span>
-                  )}
-                </div>
-              </div>
-            ))}
+                    <span className={`tool-grade-value ${target.status}`}>
+                      {target.status === 'achieved'
+                        ? 'Đã đạt'
+                        : target.status === 'impossible'
+                        ? 'Không thể'
+                        : target.requiredScore?.toFixed(2)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            !result.errorMessage && <p className="tool-empty">{emptyMessage}</p>
+          )}
+
+          {result.errorMessage && (
+            <p className="tool-error" role="alert">
+              {result.errorMessage}
+            </p>
+          )}
+
+          <div className="tool-source">
+            <span>
+              Theo thang điểm {cohort}
+              {isSplit && groupLabel ? `, nhóm ${groupLabel}` : ''}.
+            </span>
+            <button type="button" className="tool-text-btn" onClick={() => setReferenceModalTab('scale')}>
+              Bảng quy đổi điểm
+            </button>
           </div>
-        </aside>
+        </ResultCard>
       </div>
 
-      {/* Reference Modal */}
       <GpaReferenceModal
         isOpen={referenceModalTab !== null}
         onClose={() => setReferenceModalTab(null)}

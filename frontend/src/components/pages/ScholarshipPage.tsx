@@ -1,38 +1,162 @@
-import { useMemo, useState } from 'react';
-import {
-  Award,
-  RotateCcw,
-  Search,
-  X,
-  Check,
-  AlertTriangle,
-  Info,
-} from 'lucide-react';
+import { useState } from 'react';
+import { AlertTriangle, Award } from 'lucide-react';
 import {
   calculateScholarshipScore,
-  getScholarshipTierDetails,
+  type ScholarshipClassification,
+  type ScholarshipTierDetail,
 } from '../../utils/scholarship';
 import {
   SCHOOL_YEARS,
-  searchTuitionPrograms,
+  formatVnd,
   type SchoolYear,
   type TuitionProgram,
 } from '../../data/tuitionRates';
-import { PageContextBadges } from '../PageContextBadges';
+import type { GradeTone } from '../../utils/gradeTone';
+import { sanitizeDecimal, sanitizeInteger } from '../../utils/numberInput';
 import { ScholarshipRulesModal } from '../ScholarshipRulesModal';
+import { ToolPageHeader } from '../tool/ToolPageHeader';
+import { ResetButton, ToolSection } from '../tool/ToolSection';
+import { SelectField, TextField } from '../tool/fields';
+import { NumberStepper } from '../tool/NumberStepper';
+import { ProgramSearch } from '../tool/ProgramSearch';
+import { ResultCard } from '../tool/ResultCard';
+
+const MIN_SCHOLARSHIP_CREDITS = 15;
+const DEFAULT_CREDITS = '15';
+const DEFAULT_YEAR: SchoolYear = '2024-2025';
+const YEAR_OPTIONS = SCHOOL_YEARS.map((year) => ({ value: year, label: `Năm học ${year}` }));
+
+// Scholarship tiers reuse the letter-grade colour bands, so "Xuất sắc" reads like an A.
+const TIER_TONES: Record<ScholarshipClassification, GradeTone> = {
+  'Xuất sắc': 'excellent',
+  Giỏi: 'good',
+  Khá: 'fair',
+};
+
+interface TierLadderProps {
+  tiers: ScholarshipTierDetail[];
+  current: ScholarshipClassification | null;
+}
+
+/**
+ * A slim three-segment progress bar from the lowest tier to the highest. Reached segments share
+ * the student's tier colour; only the current tier's label is emphasised.
+ */
+function TierLadder({ tiers, current }: TierLadderProps) {
+  return (
+    <ol
+      className={['tier-ladder', current && `grade-tone-${TIER_TONES[current]}`].filter(Boolean).join(' ')}
+      aria-label="Các mức học bổng, từ thấp đến cao"
+    >
+      {[...tiers].reverse().map((tier) => {
+        const classes = [tier.isFullyMet && 'reached', tier.label === current && 'current'].filter(Boolean).join(' ');
+        return (
+          <li key={tier.label} className={classes || undefined}>
+            <span className="tier-ladder-label">
+              <span className="tier-ladder-name">{tier.label}</span>
+              <span className="tier-ladder-mult">× {tier.multiplier}</span>
+            </span>
+            <span className="sr-only">{tier.isFullyMet ? ', đã đạt' : ', chưa đạt'}</span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+interface CriteriaProgressProps {
+  tier: ScholarshipTierDetail;
+  heading: string;
+  score: number;
+  gpa: number;
+  conduct: number;
+}
+
+/** Each criterion as value, bar with the tier's threshold marked, and the remaining gap. */
+function CriteriaProgress({ tier, heading, score, gpa, conduct }: CriteriaProgressProps) {
+  const rows = [
+    { label: 'Điểm xét', value: score, valueDecimals: 3, target: tier.minScholarshipScore, max: 4, decimals: 2, met: tier.isScoreMet },
+    { label: 'GPA', value: gpa, valueDecimals: 2, target: tier.minAcademicScore, max: 4, decimals: 2, met: tier.isAcademicMet },
+    { label: 'Rèn luyện', value: conduct, valueDecimals: 0, target: tier.minConductScore, max: 100, decimals: 0, met: tier.isConductMet },
+  ];
+
+  return (
+    <div className="criteria-progress">
+      <p className="criteria-progress-title">{heading}</p>
+      <ul>
+        {rows.map((row) => {
+          const factor = 10 ** row.decimals;
+          // Round the gap up (after trimming float noise) so "thiếu" never understates what is still needed.
+          const gap = Math.ceil(Math.round((row.target - row.value) * factor * 1000) / 1000) / factor;
+          return (
+            <li key={row.label} className={row.met ? 'met' : 'unmet'}>
+              <span className="criteria-label">{row.label}</span>
+              <strong className="criteria-value">{row.value.toFixed(row.valueDecimals)}</strong>
+              <span className="criteria-track" aria-hidden="true">
+                <span className="criteria-fill" style={{ width: `${Math.min(100, (row.value / row.max) * 100)}%` }} />
+                <span className="criteria-target" style={{ left: `${(row.target / row.max) * 100}%` }} />
+              </span>
+              <span className="criteria-gap">
+                <b>{row.met ? 'Đạt' : `thiếu ${gap.toFixed(row.decimals)}`}</b>
+                <small>cần {row.target.toFixed(row.decimals)}</small>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
 
 export function ScholarshipPage() {
   const [academicScore, setAcademicScore] = useState('');
   const [conductScore, setConductScore] = useState('');
-  const [credits, setCredits] = useState('15');
-  const [showRulesModal, setShowRulesModal] = useState(false);
-
+  const [credits, setCredits] = useState(DEFAULT_CREDITS);
   const [query, setQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<TuitionProgram | null>(null);
-  const [focusedIndex, setFocusedIndex] = useState(-1);
-  const [schoolYear, setSchoolYear] = useState<SchoolYear | ''>('2024-2025');
+  const [schoolYear, setSchoolYear] = useState<SchoolYear>(DEFAULT_YEAR);
+  const [showRulesModal, setShowRulesModal] = useState(false);
 
-  const suggestions = useMemo(() => searchTuitionPrograms(query), [query]);
+  const gpa = academicScore !== '' ? Number(academicScore) : null;
+  const conduct = conductScore !== '' ? Number(conductScore) : null;
+  const academicError =
+    gpa !== null && (!Number.isFinite(gpa) || gpa < 0 || gpa > 4) ? 'GPA phải từ 0 đến 4.0.' : null;
+  const conductError =
+    conduct !== null && (!Number.isFinite(conduct) || conduct < 0 || conduct > 100)
+      ? 'Điểm rèn luyện phải từ 0 đến 100.'
+      : null;
+
+  // No result until both scores are entered and valid, so nothing reads "Chưa đạt" before any input.
+  const result =
+    gpa !== null && conduct !== null && !academicError && !conductError
+      ? calculateScholarshipScore(gpa, conduct)
+      : null;
+  const classified = Boolean(result?.classification);
+
+  const creditCount = Number(credits);
+  const hasCredits = credits !== '' && creditCount > 0;
+  const isBelowMinimum = hasCredits && creditCount < MIN_SCHOLARSHIP_CREDITS;
+  const perCredit = selectedProgram?.perCredit[schoolYear] ?? 0;
+  const amount =
+    result?.classification && perCredit > 0 && hasCredits && !isBelowMinimum
+      ? creditCount * perCredit * result.multiplier
+      : null;
+
+  // Tiers are ordered highest first. Compare against the next tier up, or the top tier once it is reached.
+  let targetTier: ScholarshipTierDetail | null = null;
+  let criteriaHeading = '';
+  if (result) {
+    const currentIndex = result.classification
+      ? result.tierDetails.findIndex((tier) => tier.label === result.classification)
+      : result.tierDetails.length;
+    if (currentIndex === 0) {
+      targetTier = result.tierDetails[0];
+      criteriaHeading = `Đạt đủ điều kiện mức ${targetTier.label}`;
+    } else {
+      targetTier = result.tierDetails[currentIndex - 1];
+      criteriaHeading = `${classified ? 'Để lên' : 'Để đạt'} mức ${targetTier.label} (× ${targetTier.multiplier})`;
+    }
+  }
 
   const handleQueryChange = (value: string) => {
     setQuery(value);
@@ -44,656 +168,168 @@ export function ScholarshipPage() {
   const selectProgram = (program: TuitionProgram) => {
     setSelectedProgram(program);
     setQuery(`${program.code} - ${program.name}`);
-    setFocusedIndex(-1);
   };
 
   const clearProgram = () => {
     setSelectedProgram(null);
     setQuery('');
-    setFocusedIndex(-1);
   };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!query || selectedProgram || suggestions.length === 0) return;
-
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      setFocusedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : prev));
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      setFocusedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      if (focusedIndex >= 0 && focusedIndex < suggestions.length) {
-        selectProgram(suggestions[focusedIndex]);
-      }
-    }
-  };
-
-  const tuitionFee = schoolYear && selectedProgram ? selectedProgram.perCredit[schoolYear] ?? 0 : 0;
-
-  const numAcademic = academicScore !== '' ? Number(academicScore) : null;
-  const numConduct = conductScore !== '' ? Number(conductScore) : null;
-
-  const isAcademicInvalid =
-    numAcademic !== null && (!Number.isFinite(numAcademic) || numAcademic < 0 || numAcademic > 4);
-  const isConductInvalid =
-    numConduct !== null && (!Number.isFinite(numConduct) || numConduct < 0 || numConduct > 100);
-  const isCreditsInvalid =
-    credits !== '' && (!Number.isFinite(Number(credits)) || Number(credits) <= 0);
-  const isCreditsBelowMinimum =
-    credits !== '' && Number(credits) > 0 && Number(credits) < 15;
-
-  const result = useMemo(() => {
-    if (numAcademic === null || numConduct === null || isAcademicInvalid || isConductInvalid) {
-      return null;
-    }
-    return calculateScholarshipScore(numAcademic, numConduct);
-  }, [numAcademic, numConduct, isAcademicInvalid, isConductInvalid]);
-
-  const tierDetails = useMemo(() => {
-    return getScholarshipTierDetails(
-      !isAcademicInvalid ? numAcademic : null,
-      !isConductInvalid ? numConduct : null,
-      result?.score ?? null
-    );
-  }, [numAcademic, numConduct, result, isAcademicInvalid, isConductInvalid]);
-
-  const scholarshipAmount = useMemo(() => {
-    if (
-      !result?.classification ||
-      !credits ||
-      tuitionFee === 0 ||
-      isCreditsInvalid ||
-      isCreditsBelowMinimum
-    ) {
-      return null;
-    }
-    return Number(credits) * tuitionFee * result.multiplier;
-  }, [result, credits, tuitionFee, isCreditsInvalid, isCreditsBelowMinimum]);
 
   const handleReset = () => {
     setAcademicScore('');
     setConductScore('');
-    setCredits('15');
-    setSelectedProgram(null);
-    setQuery('');
+    setCredits(DEFAULT_CREDITS);
+    setSchoolYear(DEFAULT_YEAR);
+    clearProgram();
   };
 
-  // Smart suggestion for next tier
-  const nextTierAdvice = useMemo(() => {
-    if (!result) return null;
-    if (result.classification === 'Xuất sắc') {
-      return '🎉 Bạn đã đạt mức học bổng cao nhất (Xuất sắc - Hệ số 1.5x)!';
-    }
-
-    if (result.classification === 'Giỏi') {
-      const neededScore = 3.6;
-      const neededConduct = 90;
-      const curScore = result.score;
-      const curConduct = numConduct ?? 0;
-      const reasons: string[] = [];
-      if (curScore < neededScore) reasons.push(`điểm xét ≥ 3.60 (hiện tại: ${curScore.toFixed(2)})`);
-      if (curConduct < neededConduct) reasons.push(`điểm rèn luyện ≥ 90 (hiện tại: ${curConduct})`);
-      return `💡 Để nâng lên mức Xuất sắc (1.5x), bạn cần: ${reasons.join(' và ')}.`;
-    }
-
-    if (result.classification === 'Khá') {
-      const neededScore = 3.2;
-      const neededConduct = 80;
-      const curScore = result.score;
-      const curConduct = numConduct ?? 0;
-      const reasons: string[] = [];
-      if (curScore < neededScore) reasons.push(`điểm xét ≥ 3.20 (hiện tại: ${curScore.toFixed(2)})`);
-      if (curConduct < neededConduct) reasons.push(`điểm rèn luyện ≥ 80 (hiện tại: ${curConduct})`);
-      return `💡 Để nâng lên mức Giỏi (1.25x), bạn cần: ${reasons.join(' và ')}.`;
-    }
-
-    // Chưa đạt
-    return '💡 Cần đạt tối thiểu Điểm xét ≥ 2.56, Học tập ≥ 2.50 và Rèn luyện ≥ 70 để đạt học bổng Khá.';
-  }, [result, numConduct]);
-
   return (
-    <div className="page-container tool-page">
-      {/* Header with Title & Badges */}
-      <div className="page-header">
-        <h1 className="page-title-with-icon">
-          <Award aria-hidden="true" />
-          <span>Tính điểm học bổng</span>
-        </h1>
-        <p>
-          Tính điểm xét học bổng khuyến khích học tập và ước tính số tiền theo quy chế HCMUE.
-        </p>
-        <PageContextBadges
-          schoolYear={schoolYear || undefined}
-          source="Công thức học bổng & bảng học phí"
-          advisory
-        />
-      </div>
+    <div className="page-container tool-page simplified">
+      <ToolPageHeader
+        icon={Award}
+        title="Tính điểm học bổng"
+        description="Xem bạn đạt học bổng khuyến khích học tập mức nào và ước tính số tiền nhận được."
+      />
 
-      {/* Top Mobile Hero Card (Mobile only <= 960px, pinned to top, instant feedback) */}
-      <section
-        className="gpa-mobile-hero-card scholarship-mobile-hero"
-        aria-label="Kết quả xét học bổng"
-      >
-        <div className="gpa-mobile-hero-top">
-          <div className="gpa-result-tag-wrap">
-            <span className="gpa-live-dot" aria-hidden="true" />
-            <span className="gpa-hero-tag">KẾT QUẢ XÉT HỌC BỔNG</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            {result?.classification ? (
-              <span
-                className={`gpa-tier-pill ${
-                  result.classification === 'Xuất sắc'
-                    ? 'tier-excellent'
-                    : result.classification === 'Giỏi'
-                    ? 'tier-good'
-                    : 'tier-fair'
-                }`}
-              >
-                {result.classification === 'Xuất sắc' && '🏆 '}
-                {result.classification === 'Giỏi' && '⭐ '}
-                {result.classification === 'Khá' && '✨ '}
-                Loại {result.classification} ({result.multiplier}x)
-              </span>
-            ) : (
-              <span className="gpa-tier-pill gpa-tier-unranked">Chưa xếp loại</span>
-            )}
-            <button
-              type="button"
-              className="course-target-ref-icon-btn"
-              onClick={() => setShowRulesModal(true)}
-              title="Xem quy chế & điều kiện xét học bổng"
-              aria-label="Xem quy chế & điều kiện xét học bổng"
-            >
-              <Info size={13} />
-            </button>
-          </div>
-        </div>
-
-        <div className="gpa-mobile-hero-middle">
-          <div className="gpa-hero-score">
-            <span className="gpa-score-num text-gradient">
-              {result ? result.score.toFixed(3) : '--'}
-            </span>
-            <span className="gpa-score-den">/ 4.000</span>
-          </div>
-
-          <div className="gpa-mobile-stats-chips">
-            <span className="gpa-stat-chip">
-              GPA <strong>{academicScore || '--'}</strong>
-            </span>
-            <span className="gpa-stat-chip">
-              ĐRL <strong>{conductScore || '--'}</strong>
-            </span>
-            {scholarshipAmount !== null && !isCreditsBelowMinimum ? (
-              <span className="gpa-stat-chip text-success" style={{ fontWeight: 700 }}>
-                {new Intl.NumberFormat('vi-VN', {
-                  style: 'currency',
-                  currency: 'VND',
-                  maximumFractionDigits: 0,
-                }).format(scholarshipAmount)}
-              </span>
-            ) : isCreditsBelowMinimum && result?.classification ? (
-              <span className="gpa-stat-chip" style={{ color: '#d97706', fontWeight: 600 }}>
-                &lt; 15 TC
-              </span>
-            ) : credits ? (
-              <span className="gpa-stat-chip">
-                <strong>{credits}</strong> TC
-              </span>
-            ) : null}
-          </div>
-        </div>
-
-        {/* Mini progress bar */}
-        <div className="gpa-progress-track">
-          <div
-            className={`gpa-progress-fill ${
-              result?.classification === 'Xuất sắc'
-                ? 'tier-excellent'
-                : result?.classification === 'Giỏi'
-                ? 'tier-good'
-                : result?.classification === 'Khá'
-                ? 'tier-fair'
-                : ''
-            }`}
-            style={{
-              width: `${result ? Math.min(100, Math.max(0, (result.score / 4) * 100)) : 0}%`,
-            }}
-          />
-        </div>
-      </section>
-
-      {/* Main Split Layout */}
-      <div className="scholarship-split-layout">
-        {/* Left Column: Input Form */}
-        {/* Left Column: Input Form Card */}
-        <section className="scholarship-main-column">
-          <div className="scholarship-form-card">
-            {/* Unified Top Header matching Right Card */}
-            <div className="gpa-result-top scholarship-card-top">
-              <div className="gpa-result-tag-wrap">
-                <span className="gpa-live-dot" />
-                <span className="gpa-result-tag">THÔNG TIN XÉT HỌC BỔNG</span>
-              </div>
-              <button
-                type="button"
-                className="tool-btn gpa-reset-btn gpa-btn-sm"
-                onClick={handleReset}
-                title="Khôi phục mặc định"
-              >
-                <RotateCcw size={13} />
-                <span>Làm mới</span>
-              </button>
-            </div>
-
-            {/* Section 1: Điểm học tập & Rèn luyện */}
-            <div className="scholarship-section-block">
-              <div className="scholarship-block-title-row">
-                <span className="scholarship-step-num">1</span>
-                <div>
-                  <h2 className="scholarship-block-title">Điểm học tập & Điểm rèn luyện</h2>
-                  <p className="scholarship-block-subtitle">
-                    Tỷ lệ xét: 80% Điểm học tập (GPA) + 20% Điểm rèn luyện quy đổi
-                  </p>
-                </div>
-              </div>
-
-              <div className="scholarship-inputs-grid">
-                {/* Điểm học tập */}
-                <div className="scholarship-input-group">
-                  <label className="scholarship-input-label">
-                    <span>
-                      <span className="scholarship-label-full">Điểm học tập (GPA)</span>
-                      <span className="scholarship-label-short">Điểm GPA</span>
-                    </span>
-                    <span className="scholarship-sub-label weight-tag">80%</span>
-                  </label>
-                  <div className="course-target-input-wrap">
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      value={academicScore}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(',', '.');
-                        if (val === '' || /^[0-9.]*$/.test(val)) setAcademicScore(val);
-                      }}
-                      className={`course-target-input ${isAcademicInvalid ? 'input-error' : ''}`}
-                      placeholder="VD: 3.50"
-                    />
-                    <span className="course-target-affix">/ 4.0</span>
-                  </div>
-                  {isAcademicInvalid && (
-                    <span className="scholarship-field-error">Điểm phải từ 0.0 đến 4.0</span>
-                  )}
-                </div>
-
-                {/* Điểm rèn luyện */}
-                <div className="scholarship-input-group">
-                  <label className="scholarship-input-label">
-                    <span>
-                      <span className="scholarship-label-full">Điểm rèn luyện (ĐRL)</span>
-                      <span className="scholarship-label-short">Điểm ĐRL</span>
-                    </span>
-                    <span className="scholarship-sub-label weight-tag">20%</span>
-                  </label>
-                  <div className="course-target-input-wrap">
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={conductScore}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(',', '.');
-                        if (val === '' || /^[0-9]*$/.test(val)) setConductScore(val);
-                      }}
-                      className={`course-target-input ${isConductInvalid ? 'input-error' : ''}`}
-                      placeholder="VD: 85"
-                    />
-                    <span className="course-target-affix">/ 100</span>
-                  </div>
-                  {isConductInvalid && (
-                    <span className="scholarship-field-error">Điểm rèn luyện từ 0 đến 100</span>
-                  )}
-                </div>
+      <div className="tool-grid">
+        <div className="tool-main">
+          <ToolSection id="scholarship-input" title="Thông tin xét học bổng" action={<ResetButton onClick={handleReset} />}>
+            <div className="tool-group">
+              <h3>Điểm học kỳ xét</h3>
+              <div className="tool-fields">
+                <TextField
+                  id="scholarship-gpa"
+                  label="GPA học kỳ"
+                  value={academicScore}
+                  onChange={(value) => setAcademicScore(sanitizeDecimal(value))}
+                  suffix="/ 4.0"
+                  placeholder="VD: 3.50"
+                  error={academicError}
+                  hint="Chiếm 80% điểm xét."
+                />
+                <TextField
+                  id="scholarship-conduct"
+                  label="Điểm rèn luyện"
+                  value={conductScore}
+                  onChange={(value) => setConductScore(sanitizeInteger(value))}
+                  inputMode="numeric"
+                  suffix="/ 100"
+                  placeholder="VD: 85"
+                  error={conductError}
+                  hint="Quy đổi sang thang 4, chiếm 20%."
+                />
               </div>
             </div>
 
-            {/* Section Divider */}
-            <hr className="scholarship-section-divider" />
-
-            {/* Section 2: Ước tính số tiền học bổng */}
-            <div className="scholarship-section-block">
-              <div className="scholarship-block-title-row">
-                <span className="scholarship-step-num">2</span>
-                <div>
-                  <h2 className="scholarship-block-title">Ước tính số tiền học bổng</h2>
-                  <p className="scholarship-block-subtitle">
-                    Học bổng = Đơn giá tín chỉ × Số tín chỉ × Hệ số mức thưởng
-                  </p>
-                </div>
+            <div className="tool-group">
+              <h3>
+                Số tiền học bổng <small>không bắt buộc</small>
+              </h3>
+              <ProgramSearch
+                id="scholarship-program"
+                label="Ngành đào tạo"
+                hint="Dùng để tra đơn giá tín chỉ."
+                query={query}
+                selectedProgram={selectedProgram}
+                onQueryChange={handleQueryChange}
+                onSelect={selectProgram}
+                onClear={clearProgram}
+              />
+              <div className="tool-fields">
+                <SelectField
+                  id="scholarship-year"
+                  label="Năm học"
+                  value={schoolYear}
+                  options={YEAR_OPTIONS}
+                  onChange={setSchoolYear}
+                />
+                <NumberStepper
+                  id="scholarship-credits"
+                  label="Số tín chỉ học kỳ"
+                  hint="Cần tối thiểu 15 TC (học kỳ tốt nghiệp: 6 TC)."
+                  value={credits}
+                  min={1}
+                  fallback={15}
+                  onChange={setCredits}
+                />
               </div>
-
-              {/* Autocomplete ngành học */}
-              <div className="scholarship-input-group">
-                <label className="scholarship-input-label">
-                  <span>Tìm ngành học để tra đơn giá tín chỉ</span>
-                </label>
-                <div className="scholarship-search-box">
-                  <Search size={16} className="scholarship-search-icon" />
-                  <input
-                    type="text"
-                    className="scholarship-search-input"
-                    value={query}
-                    onChange={(e) => {
-                      handleQueryChange(e.target.value);
-                      setFocusedIndex(-1);
-                    }}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Tìm theo tên hoặc mã ngành (VD: Toán, CNTT)..."
-                  />
-                  {query && (
-                    <button
-                      type="button"
-                      className="scholarship-clear-btn"
-                      onClick={clearProgram}
-                      aria-label="Xóa tìm kiếm"
-                    >
-                      <X size={14} />
-                    </button>
-                  )}
-                </div>
-
-                {query && !selectedProgram && (
-                  <div className="scholarship-autocomplete-dropdown">
-                    {suggestions.length > 0 ? (
-                      suggestions.map((prog, idx) => (
-                        <button
-                          key={`${prog.code}-${prog.name}`}
-                          type="button"
-                          className={`scholarship-suggestion-item ${
-                            idx === focusedIndex ? 'focused' : ''
-                          }`}
-                          onClick={() => selectProgram(prog)}
-                        >
-                          <span className="prog-name">{prog.name}</span>
-                          <span className="prog-code">{prog.code}</span>
-                        </button>
-                      ))
-                    ) : (
-                      <div className="scholarship-suggestion-empty">
-                        Không tìm thấy ngành phù hợp. Vui lòng chọn ngành trong danh sách gợi ý.
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Form grid: Năm học & Tín chỉ */}
-              <div className="scholarship-inputs-grid">
-                <div className="scholarship-input-group">
-                  <label className="scholarship-input-label">
-                    <span>
-                      <span className="scholarship-label-full">Năm học áp dụng</span>
-                      <span className="scholarship-label-short">Năm học</span>
-                    </span>
-                  </label>
-                  <select
-                    className="course-target-select"
-                    value={schoolYear}
-                    onChange={(e) => setSchoolYear(e.target.value as SchoolYear)}
-                  >
-                    {SCHOOL_YEARS.map((y) => (
-                      <option key={y} value={y}>
-                        Năm học {y}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="scholarship-input-group">
-                  <label className="scholarship-input-label">
-                    <span>
-                      <span className="scholarship-label-full">Số tín chỉ học kỳ</span>
-                      <span className="scholarship-label-short">Số tín chỉ</span>
-                    </span>
-                    <div className="scholarship-label-badges">
-                      <span className="scholarship-highlight-badge">
-                        ≥ 15 TC
-                      </span>
-                      <button
-                        type="button"
-                        className="course-target-ref-icon-btn scholarship-info-btn"
-                        onClick={() => setShowRulesModal(true)}
-                        title="Xem chi tiết quy định tín chỉ & điều kiện học bổng"
-                        aria-label="Xem chi tiết quy định tín chỉ & điều kiện học bổng"
-                      >
-                        <Info size={13} />
-                      </button>
-                    </div>
-                  </label>
-                  <div className="course-target-input-wrap">
-                    <input
-                      type="number"
-                      min="1"
-                      value={credits}
-                      onChange={(e) => setCredits(e.target.value)}
-                      className={`course-target-input ${
-                        isCreditsInvalid || isCreditsBelowMinimum ? 'input-warning' : ''
-                      }`}
-                      placeholder="15"
-                    />
-                    <span className="course-target-affix">TC</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dynamic Warning Only when below minimum */}
-              {isCreditsBelowMinimum && (
-                <div className="scholarship-credits-rule-note warning">
-                  <AlertTriangle size={14} />
-                  <span>Dưới 15 tín chỉ: Không đủ điều kiện xét học bổng (trừ HK tốt nghiệp tối thiểu 6 TC).</span>
-                </div>
-              )}
-
-              {/* Tuition Rate Display Strip */}
-              {selectedProgram && schoolYear && (
-                <div className="scholarship-tuition-strip">
-                  <span className="strip-label">Đơn giá 1 tín chỉ ({schoolYear}):</span>
-                  <strong className="strip-value">
-                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
-                      tuitionFee
-                    )}
-                  </strong>
-                </div>
+              {isBelowMinimum && (
+                <p className="tool-inline-warning">
+                  <AlertTriangle size={15} aria-hidden="true" />
+                  Dưới 15 tín chỉ thì không đủ điều kiện xét học bổng, trừ học kỳ tốt nghiệp (tối thiểu 6 TC).
+                </p>
               )}
             </div>
-          </div>
-        </section>
+          </ToolSection>
+        </div>
 
-        {/* Right Column: Sticky Scholarship Result Card */}
-        <aside className="scholarship-summary-card">
-          {/* Desktop Only: Header & Primary Stat Boxes (Shown in Top Hero Card on mobile) */}
-          <div className="scholarship-desktop-only-result">
-            <div className="gpa-result-top">
-              <div className="gpa-result-tag-wrap">
-                <span className="gpa-live-dot" />
-                <span className="gpa-result-tag">KẾT QUẢ XÉT HỌC BỔNG</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <span
-                  className={`gpa-cohort-pill ${
-                    result?.classification ? 'scholarship-badge-active' : ''
+        <ResultCard
+          id="scholarship-result"
+          tone={result ? (classified ? 'success' : 'warning') : null}
+          chip={result ? (classified ? 'Đạt học bổng' : 'Chưa đạt') : null}
+        >
+          {result ? (
+            <>
+              <div aria-live="polite">
+                <p className="tool-big-label">Xếp loại dự kiến</p>
+                <p
+                  className={`tool-big text ${
+                    result.classification ? `grade-tone-${TIER_TONES[result.classification]}` : 'is-muted'
                   }`}
                 >
-                  {result?.multiplier ? `Hệ số: ${result.multiplier}x` : 'Chưa xếp loại'}
-                </span>
-                <button
-                  type="button"
-                  className="course-target-ref-icon-btn"
-                  onClick={() => setShowRulesModal(true)}
-                  title="Xem quy chế & điều kiện xét học bổng"
-                  aria-label="Xem quy chế & điều kiện xét học bổng"
-                >
-                  <Info size={14} />
-                </button>
+                  <strong>{result.classification ?? 'Chưa đạt'}</strong>
+                  {result.classification && <span>hệ số {result.multiplier}</span>}
+                </p>
               </div>
-            </div>
 
-            {/* Symmetrical Stat Grid */}
-            <div className="course-target-stats-grid">
-              <div className="gpa-stat-box">
-                <span className="gpa-stat-label">Điểm xét học bổng</span>
-                <strong className="gpa-stat-val">
-                  {result ? result.score.toFixed(3) : '--'}
-                </strong>
-              </div>
-              <div className="gpa-stat-box">
-                <span className="gpa-stat-label">Xếp loại dự kiến</span>
-                <strong
-                  className="gpa-stat-val"
-                  style={{
-                    color:
-                      result?.classification === 'Xuất sắc'
-                        ? '#ec4899'
-                        : result?.classification === 'Giỏi'
-                        ? '#8b5cf6'
-                        : result?.classification === 'Khá'
-                        ? '#3b82f6'
-                        : undefined,
-                  }}
-                >
-                  {result?.classification ? `Loại ${result.classification}` : 'Chưa đạt'}
-                </strong>
-              </div>
-            </div>
-          </div>
+              <TierLadder tiers={result.tierDetails} current={result.classification} />
 
-          {/* Amount Estimated Banner */}
-          {isCreditsBelowMinimum && result?.classification ? (
-            <div className="scholarship-amount-card warning">
-              <span className="amount-label">Số tiền học bổng</span>
-              <strong className="amount-warning-text">Chưa đủ 15 tín chỉ</strong>
-              <span className="amount-formula">
-                Quy chế HCMUE yêu cầu tối thiểu 15 TC trong học kỳ xét (trừ HK cuối: 6 TC)
-              </span>
-            </div>
-          ) : scholarshipAmount !== null ? (
-            <div className="scholarship-amount-card">
-              <span className="amount-label">Số tiền học bổng dự kiến</span>
-              <strong className="amount-value">
-                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
-                  scholarshipAmount
-                )}
-              </strong>
-              <span className="amount-formula">
-                {credits} TC ×{' '}
-                {new Intl.NumberFormat('vi-VN').format(tuitionFee)} đ × {result?.multiplier}x
-              </span>
-            </div>
+              {targetTier && (
+                <CriteriaProgress
+                  tier={targetTier}
+                  heading={criteriaHeading}
+                  score={result.score}
+                  gpa={gpa ?? 0}
+                  conduct={conduct ?? 0}
+                />
+              )}
+
+              {classified && (
+                <div className="tool-amount">
+                  {amount !== null && result.classification ? (
+                    <>
+                      <span>Số tiền dự kiến</span>
+                      <strong>{formatVnd(amount)}</strong>
+                      <small>
+                        {creditCount} TC × {formatVnd(perCredit)} × hệ số {result.multiplier}
+                      </small>
+                    </>
+                  ) : isBelowMinimum ? (
+                    <span className="tool-amount-warning">
+                      Chưa tính số tiền vì học kỳ dưới <strong>15 tín chỉ</strong>.
+                    </span>
+                  ) : !selectedProgram ? (
+                    <span>Chọn ngành đào tạo để ước tính số tiền.</span>
+                  ) : (
+                    <span>Nhập số tín chỉ học kỳ để ước tính số tiền.</span>
+                  )}
+                </div>
+              )}
+            </>
           ) : (
-            selectedProgram &&
-            schoolYear &&
-            result?.classification && (
-              <div className="scholarship-amount-placeholder">
-                <span>Nhập số tín chỉ để tính số tiền dự kiến.</span>
-              </div>
-            )
+            <p className="tool-empty">Nhập GPA và điểm rèn luyện để xem xếp loại học bổng.</p>
           )}
 
-          {/* Criteria Checklist Matrix Table */}
-          <div className="scholarship-matrix-wrapper">
-            <div className="scholarship-matrix-header">
-              <span className="matrix-title">TIÊU CHUẨN XÉT THEO QUY CHẾ</span>
-            </div>
-            <div className="scholarship-table-container">
-              <div className="scholarship-table-head">
-                <span className="th-tier">Mức</span>
-                <span className="th-stat">Đ.Xét</span>
-                <span className="th-stat">GPA</span>
-                <span className="th-stat">ĐRL</span>
-                <span className="th-status">Kết quả</span>
-              </div>
-              <div className="scholarship-table-body">
-                {tierDetails.map((tier) => (
-                  <div
-                    key={tier.label}
-                    className={`scholarship-table-row ${
-                      result?.classification === tier.label ? 'achieved' : ''
-                    }`}
-                  >
-                    <div className="td-tier">
-                      <span
-                        className="tier-mini-badge"
-                        style={{ backgroundColor: tier.badgeColor }}
-                      >
-                        {tier.label.charAt(0)}
-                      </span>
-                      <div className="tier-meta">
-                        <strong className="tier-name">{tier.label}</strong>
-                        <span className="tier-mult">{tier.multiplier}x</span>
-                      </div>
-                    </div>
-
-                    <div className={`td-stat ${tier.isScoreMet ? 'met' : ''}`}>
-                      {tier.isScoreMet ? (
-                        <span className="stat-met">
-                          <Check size={10} /> {tier.minScholarshipScore.toFixed(2)}
-                        </span>
-                      ) : (
-                        <span className="stat-req">≥ {tier.minScholarshipScore.toFixed(2)}</span>
-                      )}
-                    </div>
-
-                    <div className={`td-stat ${tier.isAcademicMet ? 'met' : ''}`}>
-                      {tier.isAcademicMet ? (
-                        <span className="stat-met">
-                          <Check size={10} /> {tier.minAcademicScore.toFixed(2)}
-                        </span>
-                      ) : (
-                        <span className="stat-req">≥ {tier.minAcademicScore.toFixed(2)}</span>
-                      )}
-                    </div>
-
-                    <div className={`td-stat ${tier.isConductMet ? 'met' : ''}`}>
-                      {tier.isConductMet ? (
-                        <span className="stat-met">
-                          <Check size={10} /> {tier.minConductScore}
-                        </span>
-                      ) : (
-                        <span className="stat-req">≥ {tier.minConductScore}</span>
-                      )}
-                    </div>
-
-                    <div className="td-status">
-                      {tier.isFullyMet ? (
-                        <span className="tier-tag achieved">ĐẠT 🎉</span>
-                      ) : (
-                        <span className="tier-tag unmet">Chưa đủ</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="tool-source">
+            <span>Kết quả chỉ để tham khảo.</span>
+            <button type="button" className="tool-text-btn" onClick={() => setShowRulesModal(true)}>
+              Xem quy chế học bổng
+            </button>
           </div>
-
-          {/* Actionable Advice Message */}
-          {nextTierAdvice && (
-            <div className="scholarship-advice-box">
-              <span className="advice-text">{nextTierAdvice}</span>
-            </div>
-          )}
-        </aside>
+        </ResultCard>
       </div>
 
-      {/* Rules & Credit Regulations Modal */}
-      <ScholarshipRulesModal
-        isOpen={showRulesModal}
-        onClose={() => setShowRulesModal(false)}
-      />
+      <ScholarshipRulesModal isOpen={showRulesModal} onClose={() => setShowRulesModal(false)} />
     </div>
   );
 }
-

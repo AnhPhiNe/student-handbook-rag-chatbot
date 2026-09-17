@@ -25,7 +25,7 @@ const HOME_ACTIONS: HomeAction[] = [
   {
     id: 'chat',
     title: 'Hỏi AI',
-    description: 'Tra quy chế, học bổng, điểm rèn luyện và xem nguồn từ Sổ tay sinh viên.',
+    description: 'Chức năng này đang bảo trì, vui lòng thử lại sau.',
     icon: MessageSquare,
     tone: 'blue',
   },

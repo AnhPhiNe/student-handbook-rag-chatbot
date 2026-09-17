@@ -18,10 +18,10 @@ const CreditsPage = React.lazy(() => import('./components/pages/CreditsPage').th
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
 import { BottomTabBar } from './components/BottomTabBar';
-import { ToastProvider } from './components/Toast';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { CohortSelectionModal } from './components/CohortSelectionModal';
+import { ChatMaintenanceModal } from './components/ChatMaintenanceModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
 import { MobileScrollAffordance } from './components/MobileScrollAffordance';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
@@ -50,6 +50,7 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isCohortModalDismissed, setIsCohortModalDismissed] = useState(false);
+  const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false);
   const contentAreaRef = useRef<HTMLDivElement>(null);
   
   const isMobile = useMediaQuery('(max-width: 900px)');
@@ -65,13 +66,16 @@ function App() {
   };
 
   const handleNavigate = (nextTab: string) => {
+    if (nextTab === 'chat') {
+      setIsMaintenanceModalOpen(true);
+      return;
+    }
     setActiveTab(nextTab);
   };
 
   return (
     <ErrorBoundary>
-      <ToastProvider>
-        <div className="app-container">
+      <div className="app-container">
           {isMobile && (
             <MobileHeader 
               onMenuToggle={() => setIsMobileMenuOpen(true)} 
@@ -198,8 +202,16 @@ function App() {
               onDismiss={() => setIsCohortModalDismissed(true)}
             />
           )}
+
+          <ChatMaintenanceModal
+            isOpen={isMaintenanceModalOpen}
+            onClose={() => setIsMaintenanceModalOpen(false)}
+            onExploreTools={() => {
+              setIsMaintenanceModalOpen(false);
+              setActiveTab('tools');
+            }}
+          />
         </div>
-      </ToastProvider>
     </ErrorBoundary>
   );
 }

@@ -26,7 +26,8 @@ export function BottomTabBar({ activeTab, onTabChange }: BottomTabBarProps) {
             key={tab.id}
             className={`tab-btn ${isActive ? 'active' : ''}`}
             onClick={() => onTabChange(tab.id)}
-            aria-label={tab.label}
+            aria-label={tab.id === 'chat' ? `${tab.label} (Đang bảo trì)` : tab.label}
+            title={tab.id === 'chat' ? 'Chức năng này đang bảo trì, vui lòng thử lại sau' : undefined}
           >
             <Icon size={22} />
             <span>{tab.label}</span>

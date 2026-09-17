@@ -49,10 +49,16 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onC
               <Home size={18} />
               <span>Trang chủ</span>
             </button>
-            <button className={`nav-item ${activeTab === 'chat' ? 'active' : ''}`} onClick={() => handleTabClick('chat')} aria-label="Chat">
+            <button
+              className={`nav-item ${activeTab === 'chat' ? 'active' : ''}`}
+              onClick={() => handleTabClick('chat')}
+              aria-label="Chat (Đang bảo trì)"
+              title="Chức năng này đang bảo trì, vui lòng thử lại sau"
+            >
               {activeTab === 'chat' && <div className="active-indicator" />}
               <MessageSquare size={18} />
               <span>Chat</span>
+              <span className="sidebar-maintenance-badge">Bảo trì</span>
             </button>
           </div>
 

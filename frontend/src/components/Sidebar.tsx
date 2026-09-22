@@ -1,6 +1,7 @@
 import { Award, Calculator, FileText, GraduationCap, HelpCircle, MessageSquare, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Sparkles } from 'lucide-react';
 const logoHcmue = '/logo_hcmue.png?v=2';
 import { VisitorCounter } from './VisitorCounter';
+import { IS_CHAT_MAINTENANCE } from '../config/features';
 
 interface SidebarProps {
   activeTab: string;
@@ -52,13 +53,13 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onC
             <button
               className={`nav-item ${activeTab === 'chat' ? 'active' : ''}`}
               onClick={() => handleTabClick('chat')}
-              aria-label="Chat (Đang bảo trì)"
-              title="Chức năng này đang bảo trì, vui lòng thử lại sau"
+              aria-label={IS_CHAT_MAINTENANCE ? "Chat (Đang bảo trì)" : "Chat"}
+              title={IS_CHAT_MAINTENANCE ? "Chức năng này đang bảo trì, vui lòng thử lại sau" : undefined}
             >
               {activeTab === 'chat' && <div className="active-indicator" />}
               <MessageSquare size={18} />
               <span>Chat</span>
-              <span className="sidebar-maintenance-badge">Bảo trì</span>
+              {IS_CHAT_MAINTENANCE && <span className="sidebar-maintenance-badge">Bảo trì</span>}
             </button>
           </div>
 

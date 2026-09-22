@@ -7,8 +7,9 @@ import type { Message } from '../hooks/useChat';
 import type { Cohort } from '../utils/gradeScale';
 import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import { OwlMascot } from './OwlMascot';
+import { IS_CHAT_MAINTENANCE } from '../config/features';
 
-const IS_MAINTENANCE_MODE = true;
+const IS_MAINTENANCE_MODE = IS_CHAT_MAINTENANCE;
 const CHAT_TIPS_STORAGE_KEY = 'hcmue-chat-question-tips-seen';
 
 

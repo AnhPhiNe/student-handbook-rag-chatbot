@@ -6,6 +6,7 @@ import {
   Sparkles,
   type LucideIcon,
 } from 'lucide-react';
+import { IS_CHAT_MAINTENANCE } from '../../config/features';
 
 const logoHcmue = '/logo_hcmue.png?v=2';
 
@@ -25,7 +26,9 @@ const HOME_ACTIONS: HomeAction[] = [
   {
     id: 'chat',
     title: 'Hỏi AI',
-    description: 'Chức năng này đang bảo trì, vui lòng thử lại sau.',
+    description: IS_CHAT_MAINTENANCE
+      ? 'Chức năng này đang bảo trì, vui lòng thử lại sau.'
+      : 'Đặt câu hỏi và nhận câu trả lời tức thì từ Sổ tay sinh viên.',
     icon: MessageSquare,
     tone: 'blue',
   },

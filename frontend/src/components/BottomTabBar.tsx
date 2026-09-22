@@ -1,4 +1,5 @@
 import { MessageSquare, FileText, BookOpen, Wrench, Home, Sparkles } from 'lucide-react';
+import { IS_CHAT_MAINTENANCE } from '../config/features';
 
 interface BottomTabBarProps {
   activeTab: string;
@@ -26,8 +27,8 @@ export function BottomTabBar({ activeTab, onTabChange }: BottomTabBarProps) {
             key={tab.id}
             className={`tab-btn ${isActive ? 'active' : ''}`}
             onClick={() => onTabChange(tab.id)}
-            aria-label={tab.id === 'chat' ? `${tab.label} (Đang bảo trì)` : tab.label}
-            title={tab.id === 'chat' ? 'Chức năng này đang bảo trì, vui lòng thử lại sau' : undefined}
+            aria-label={tab.id === 'chat' && IS_CHAT_MAINTENANCE ? `${tab.label} (Đang bảo trì)` : tab.label}
+            title={tab.id === 'chat' && IS_CHAT_MAINTENANCE ? 'Chức năng này đang bảo trì, vui lòng thử lại sau' : undefined}
           >
             <Icon size={22} />
             <span>{tab.label}</span>

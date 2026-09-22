@@ -25,6 +25,7 @@ import { ChatMaintenanceModal } from './components/ChatMaintenanceModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
 import { MobileScrollAffordance } from './components/MobileScrollAffordance';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
+import { IS_CHAT_MAINTENANCE } from './config/features';
 
 const COHORT_SELECTOR_TABS = new Set([
   'home',
@@ -66,7 +67,7 @@ function App() {
   };
 
   const handleNavigate = (nextTab: string) => {
-    if (nextTab === 'chat') {
+    if (IS_CHAT_MAINTENANCE && nextTab === 'chat') {
       setIsMaintenanceModalOpen(true);
       return;
     }

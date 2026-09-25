@@ -140,7 +140,7 @@ class GeminiClient:
                     continue
 
                 self.key_pool.record_failure(key_id, last_error_type)
-                if not self._should_retry(last_error_type):
+                if not self._should_retry(last_error_type) or attempts >= max_attempts:
                     break
 
                 delay = self._retry_delay(attempts)
@@ -286,6 +286,8 @@ class GeminiClient:
                 self.key_pool.record_failure(key_id, error_type)
                 if emitted_any or not self._should_retry(error_type):
                     raise
+                if attempts >= max_attempts:
+                    break
                 delay = self._retry_delay(attempts)
                 print(
                     f"[GeminiClient] Streaming retryable error ({error_type}) on "

@@ -36,6 +36,13 @@ from .query_plan import (
 
 
 DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
+# Environment variables holding each provider's comma-separated key pool, in
+# lookup order. DeepSeek serves an OpenAI-compatible API at its base URL.
+_PROVIDER_KEY_ENVS = {
+    "groq": ("GROQ_ROUTER_API_KEYS", "GROQ_API_KEYS"),
+    "deepseek": ("DEEPSEEK_API_KEYS", "DEEPSEEK_API_KEY"),
+}
+_DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 # 256 truncated planner reasoning mid-task and produced canonical codes in
 # slot_spans; 1024 completed naturally (~820 reasoning tokens) in probes.
 ROUTER_PROMPT_VERSION = "structured-regulation-v43-no-catalog-hint"
@@ -371,15 +378,24 @@ không trả lời.
 
 
 def router_key_pool_config(config: dict[str, Any] | None) -> KeyPoolConfig:
-    """Groq planner key limits from the key_pool section of configs/ai_router.yaml."""
+    """Planner key limits from the key_pool section of the router config.
+
+    Defaults are Groq's free-tier limits. A limit set to null is not enforced,
+    for providers such as DeepSeek that cap concurrency rather than tokens.
+    """
 
     config = config or {}
+
+    def limit(name: str, default: int) -> int | None:
+        value = config.get(name, default)
+        return None if value is None else max(1, int(value))
+
     return KeyPoolConfig(
         name="ai_router",
         rpm_limit_per_key=max(1, int(config.get("rpm_limit_per_key", 30))),
-        rpd_limit_per_key=max(1, int(config.get("rpd_limit_per_key", 1000))),
-        tpm_limit_per_key=max(1, int(config.get("tpm_limit_per_key", 8000))),
-        tpd_limit_per_key=max(1, int(config.get("tpd_limit_per_key", 200000))),
+        rpd_limit_per_key=limit("rpd_limit_per_key", 1000),
+        tpm_limit_per_key=limit("tpm_limit_per_key", 8000),
+        tpd_limit_per_key=limit("tpd_limit_per_key", 200000),
         cooldown_seconds=max(1.0, float(config.get("cooldown_seconds", 65.0))),
         state_path=str(config.get("state_path", "data/cache/qwen_router_key_state.json")),
         wait_when_limited=bool(config.get("wait_when_limited", False)),
@@ -451,18 +467,21 @@ class AIRouter:
         cache_enabled: bool = True,
         output_tokens_per_task: int = 640,
         hard_max_output_tokens: int = 2048,
+        provider: str = "groq",
     ) -> None:
         load_project_env()
-        keys_value = (
-            os.environ.get("GROQ_ROUTER_API_KEYS")
-            or os.environ.get("GROQ_API_KEYS")
-            or ""
+        self.provider = str(provider or "groq").strip().lower()
+        if self.provider not in _PROVIDER_KEY_ENVS:
+            raise ValueError(f"Unsupported planner provider: {self.provider}")
+        key_envs = _PROVIDER_KEY_ENVS[self.provider]
+        keys_value = next(
+            (os.environ[name] for name in key_envs if os.environ.get(name)), ""
         )
         self.available_keys = [
             key.strip() for key in keys_value.split(",") if key.strip()
         ]
         if not self.available_keys:
-            raise RuntimeError("Missing GROQ_ROUTER_API_KEYS or GROQ_API_KEYS.")
+            raise RuntimeError(f"Missing {' or '.join(key_envs)}.")
         self.model_name = model_name
         self.temperature = float(temperature)
         self.max_output_tokens = max(64, int(max_output_tokens))
@@ -481,9 +500,18 @@ class AIRouter:
         self.cache = RouterDecisionCache(cache_path) if cache_enabled else None
 
     @classmethod
-    def from_config(cls, path: str | Path = "configs/ai_router.yaml") -> "AIRouter":
-        """Build the planner client from its YAML and environment settings."""
+    def from_config(cls, path: str | Path | None = None) -> "AIRouter":
+        """Build the planner client from its YAML and environment settings.
 
+        STUDENT_RAG_ROUTER_CONFIG points at another YAML, e.g. an experiment
+        config for a different planner provider.
+        """
+
+        path = (
+            path
+            or os.environ.get("STUDENT_RAG_ROUTER_CONFIG")
+            or "configs/ai_router.yaml"
+        )
         try:
             config = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
         except OSError:
@@ -511,6 +539,7 @@ class AIRouter:
             or 256
         )
         return cls(
+            provider=str(config.get("provider") or "groq"),
             model_name=model_name,
             temperature=float(config.get("temperature", 0.0)),
             max_output_tokens=max_output_tokens,
@@ -562,8 +591,15 @@ class AIRouter:
         max_output_tokens: int,
         response_format: dict[str, Any],
     ) -> _RouterCompletion:
-        """Send one planner request to Groq."""
+        """Send one planner request to the configured provider."""
 
+        if self.provider == "deepseek":
+            return self._deepseek_chat_completion(
+                api_key=api_key,
+                messages=messages,
+                max_output_tokens=max_output_tokens,
+                response_format=response_format,
+            )
         client = Groq(
             api_key=api_key,
             timeout=self.request_timeout_seconds,
@@ -576,6 +612,47 @@ class AIRouter:
             max_tokens=max_output_tokens,
             reasoning_effort=self._resolved_reasoning_effort(),
             response_format=response_format,
+        )
+        return _RouterCompletion(
+            text=response.choices[0].message.content or "",
+            usage=self._usage(response),
+        )
+
+    def _deepseek_chat_completion(
+        self,
+        *,
+        api_key: str,
+        messages: list[dict[str, str]],
+        max_output_tokens: int,
+        response_format: dict[str, Any],
+    ) -> _RouterCompletion:
+        """Send one planner request to DeepSeek's OpenAI-compatible API.
+
+        DeepSeek thinks by default; effort "none" turns thinking off, and
+        low/high/max set how much it thinks before answering.
+        """
+
+        from openai import OpenAI
+
+        effort = self._resolved_reasoning_effort()
+        thinking = (
+            {"thinking": {"type": "disabled"}}
+            if effort == "none"
+            else {"reasoning_effort": effort}
+        )
+        client = OpenAI(
+            api_key=api_key,
+            base_url=_DEEPSEEK_BASE_URL,
+            timeout=self.request_timeout_seconds,
+            max_retries=0,
+        )
+        response = client.chat.completions.create(
+            model=self.model_name,
+            messages=messages,
+            temperature=self.temperature,
+            max_tokens=max_output_tokens,
+            response_format=response_format,
+            extra_body=thinking,
         )
         return _RouterCompletion(
             text=response.choices[0].message.content or "",
@@ -976,6 +1053,12 @@ class AIRouter:
         if isinstance(exc, TimeoutError):
             return "timeout"
         text = f"{type(exc).__name__}: {exc}".lower()
+        # A rejected key fails the same way on every retry.
+        if any(
+            token in text
+            for token in ("401", "403", "authentication", "permissiondenied")
+        ):
+            return "auth_error"
         if any(token in text for token in ("429", "rate limit", "ratelimit", "quota")):
             return "rate_limit"
         if any(token in text for token in ("timeout", "timed out", "deadline")):

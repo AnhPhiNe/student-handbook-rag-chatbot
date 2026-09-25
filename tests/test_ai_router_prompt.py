@@ -716,3 +716,97 @@ def test_router_normalization_preserves_grounded_student_service_span() -> None:
     assert decision["slots"]["service"] == "mượn phòng học"
     assert decision["slot_spans"]["service"] == "mượn phòng học"
     assert validate_structured_task(decision, query=query) == []
+
+
+def test_router_config_can_select_the_deepseek_provider(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("DEEPSEEK_API_KEYS", "test-deepseek-key")
+    # conftest pins the Qwen planner through environment overrides, which win over YAML.
+    for name in ("MODEL", "REASONING_EFFORT", "RESPONSE_FORMAT"):
+        monkeypatch.delenv(f"STUDENT_RAG_ROUTER_{name}", raising=False)
+    config = tmp_path / "router.yaml"
+    config.write_text(
+        "provider: deepseek\nmodel_name: deepseek-flash\nreasoning_effort: none\n"
+        "response_format: json_object\ncache_enabled: false\n"
+        f"key_pool:\n  tpm_limit_per_key: null\n  state_path: {tmp_path / 'state.json'}\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("STUDENT_RAG_ROUTER_CONFIG", str(config))
+
+    router = AIRouter.from_config()
+
+    assert router.provider == "deepseek"
+    assert router.model_name == "deepseek-flash"
+    assert router._resolved_reasoning_effort() == "none"
+    assert router.available_keys == ["test-deepseek-key"]
+    assert router.key_pool.config.tpm_limit_per_key is None
+    assert router._plan_response_format_payload() == {"type": "json_object"}
+
+
+def test_deepseek_provider_requires_its_own_keys(monkeypatch) -> None:
+    monkeypatch.setenv("GROQ_API_KEYS", "test-router-key")
+    monkeypatch.delenv("DEEPSEEK_API_KEYS", raising=False)
+    monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
+    # The router reloads .env, which may hold a real DeepSeek key on this machine.
+    monkeypatch.setattr(ai_router_module, "load_project_env", lambda *args, **kwargs: None)
+
+    with pytest.raises(RuntimeError, match="DEEPSEEK_API_KEYS"):
+        AIRouter(provider="deepseek", model_name="deepseek-flash", cache_enabled=False)
+
+
+@pytest.mark.parametrize(
+    ("effort", "thinking"),
+    [
+        ("none", {"thinking": {"type": "disabled"}}),
+        ("low", {"reasoning_effort": "low"}),
+    ],
+)
+def test_deepseek_request_sets_thinking_from_reasoning_effort(
+    monkeypatch, tmp_path: Path, effort: str, thinking: dict
+) -> None:
+    monkeypatch.setenv("DEEPSEEK_API_KEYS", "test-deepseek-key")
+    router = AIRouter(
+        provider="deepseek",
+        model_name="deepseek-flash",
+        reasoning_effort=effort,
+        response_format="json_object",
+        cache_enabled=False,
+        key_pool_config={"state_path": str(tmp_path / "state.json")},
+    )
+    sent: dict = {}
+
+    class _FakeCompletions:
+        def create(self, **kwargs):
+            sent.update(kwargs)
+            return SimpleNamespace(
+                choices=[SimpleNamespace(message=SimpleNamespace(content='{"tasks": []}'))],
+                usage=SimpleNamespace(prompt_tokens=10, completion_tokens=5, total_tokens=15),
+            )
+
+    class _FakeOpenAI:
+        def __init__(self, **kwargs):
+            sent["client"] = kwargs
+            self.chat = SimpleNamespace(completions=_FakeCompletions())
+
+    monkeypatch.setattr("openai.OpenAI", _FakeOpenAI)
+
+    completion = router._chat_completion(
+        api_key="test-deepseek-key",
+        messages=[{"role": "user", "content": "json"}],
+        max_output_tokens=64,
+        response_format={"type": "json_object"},
+    )
+
+    assert sent["client"]["base_url"] == "https://api.deepseek.com"
+    assert sent["model"] == "deepseek-flash"
+    assert sent["response_format"] == {"type": "json_object"}
+    assert sent["extra_body"] == thinking
+    assert completion.usage == {"input": 10, "output": 5, "total": 15}
+
+
+def test_rejected_key_is_not_retried() -> None:
+    error = RuntimeError(
+        "Error code: 401 - {'error': {'message': 'Authentication Fails, "
+        "Your api key: ****833c is invalid', 'type': 'authentication_error'}}"
+    )
+
+    assert AIRouter._classify_error(error) == "auth_error"

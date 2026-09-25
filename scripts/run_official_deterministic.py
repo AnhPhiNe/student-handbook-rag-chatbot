@@ -70,7 +70,7 @@ def main():
     from src.retrieval.core.ai_router import AIRouter
     from src.retrieval.core.query_plan import QUERY_PLAN_NORMALIZER_VERSION
     router = AIRouter.from_config()
-    planner = {"provider": "groq", "model": router.model_name,
+    planner = {"provider": router.provider, "model": router.model_name,
                "response_format": router._resolved_response_format(),
                "reasoning_effort": router._resolved_reasoning_effort(),
                "normalizer_version": QUERY_PLAN_NORMALIZER_VERSION}

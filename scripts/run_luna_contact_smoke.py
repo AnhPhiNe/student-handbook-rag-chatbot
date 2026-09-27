@@ -6,6 +6,7 @@ owner approval for a new trial. --regrade reuses saved plans without inference.
 import argparse
 import hashlib
 import json
+import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,7 +18,7 @@ from src.retrieval.core.structured_routing import load_lookup_registry
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ROOT / "data/eval/development/prompt_v47_contact_intent_cases.yaml"
-CONFIG = ROOT / "configs/experiments/ai_router_openai_luna_medium.yaml"
+CONFIG = ROOT / "configs/ai_router.yaml"
 
 
 def grade_contact(case, plan):
@@ -112,21 +113,21 @@ def main():
     if not args.run:
         print("Prepared 8 contact-intent probes; no inference.")
         return
+    os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
     router = AIRouter.from_config(args.config)
-    assert (router.provider, router.model_name, router._resolved_reasoning_effort(),
+    assert (router.provider, router.model_name, router.reasoning_effort,
             router.cache, router.max_retries,
             router.request_timeout_seconds, router.max_output_tokens) == (
         "openai", "gpt-6-luna", "medium", None, 1, 20, 8192)
-    assert router._resolved_response_format() in {"json_object", "json_schema"}
     files = [*ROOT.glob("src/**/*.py"), *ROOT.glob("configs/**/*.yaml"), CASES, Path(__file__)]
     hashes = {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
-    output = ROOT / "data/eval/reports" / ("luna_v49_medium_contact_" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"))
+    output = ROOT / "data/eval/reports" / ("luna_contact_" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"))
     output.mkdir(parents=True, exist_ok=False)
     report = {"scope": "contact_intent_only_not_answer_or_execution_accuracy", "requested_n": 8,
               "rubric_version": yaml.safe_load(CASES.read_text(encoding="utf-8"))["rubric_version"],
               "independent_holdout": False, "pre_run_hashes": hashes, "rows": [],
               "planner": {"provider": router.provider, "model": router.model_name,
-                          "reasoning_effort": router._resolved_reasoning_effort(),
+                          "reasoning_effort": router.reasoning_effort,
                           "response_format": router._plan_response_format_payload()}}
     (output / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Output: {output}", flush=True)

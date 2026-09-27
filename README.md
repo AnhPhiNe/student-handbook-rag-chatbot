@@ -62,7 +62,7 @@ The web app also includes a GPA calculator, credit and tuition tools, scholarshi
 
 ## Highlights
 
-- **The LLM plans and the code verifies.** Qwen3 on Groq returns a JSON-schema `QueryPlan`: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer drops any slot value that does not appear in the question, checks lookup types and cohorts against the registry, and turns a task it cannot trust into a clarifying question or a RAG task. The plan is never trusted blindly.
+- **The LLM plans and the code verifies.** OpenAI `gpt-6-luna` returns a `QueryPlan` under a strict JSON schema: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer drops any slot value that does not appear in the question, checks lookup types and cohorts against the registry, and turns a task it cannot trust into a clarifying question or a RAG task. The plan is never trusted blindly.
 - **Exact facts come from tables, not from generation.** Nine lookup capabilities run over reviewed JSON catalogs: grading scales, foreign-language equivalency, scholarship classification, study duration, formulas, and office, faculty, program and student-service directories. A unique match becomes a `resolved_result` that the writer is instructed to keep verbatim.
 - **Hybrid retrieval.** `BAAI/bge-m3` dense search in Qdrant and in-process BM25 are fused with reciprocal rank fusion (k = 60). An optional Cohere `rerank-v4.0-fast` pass reorders the top 16 children. Children then expand to their full parent article from MongoDB. An offline cross-reference graph adds related-article links for the UI.
 - **Cohort isolation end to end.** Every task runs per cohort, and retrieved sources and citations are filtered to the cohort that was asked for.
@@ -76,7 +76,7 @@ The web app also includes a GPA calculator, credit and tuition tools, scholarshi
 flowchart TD
     UI["React + Vite client"] -->|"HTTP / SSE"| API["FastAPI<br/>validation, admission control, rate limits"]
     API --> Pipeline["AnswerPipeline"]
-    Pipeline --> Planner["Planner: Qwen3 on Groq<br/>typed QueryPlan (JSON schema)"]
+    Pipeline --> Planner["Planner: gpt-6-luna<br/>typed QueryPlan (strict JSON schema)"]
     Planner --> Normalizer["Normalizer<br/>grounding and cohort checks"]
     Normalizer -->|structured task| Lookup["Structured lookup<br/>reviewed JSON tables and directories"]
     Normalizer -->|RAG task| Retrieve["Hybrid retrieval<br/>bge-m3 dense + BM25, RRF k=60"]
@@ -170,8 +170,8 @@ flowchart TD
     Q["Question + cohort + recent history"] --> Slang["Expand student slang and abbreviations"]
     Slang --> Hit{"Router cache hit?"}
     Hit -->|yes| Done["Validated plan"]
-    Hit -->|no| Key["Take a Groq key from the quota-aware pool"]
-    Key --> LLM["Qwen3: QueryPlan as native JSON schema<br/>lookup registry and cohort years in the prompt"]
+    Hit -->|no| Key["Take an OpenAI key from the rate-limited pool"]
+    Key --> LLM["gpt-6-luna: QueryPlan under a strict JSON schema<br/>lookup registry and cohort years in the prompt"]
     LLM -.->|429| Next["Cool that key down, try the next key"]
     Next -.-> Key
     LLM -.->|timeout or 5xx after retries| Safe["Safe RAG plan"]
@@ -311,7 +311,7 @@ sequenceDiagram
     participant C as Client
     participant A as FastAPI /chat/stream
     participant P as AnswerPipeline
-    participant G as Groq planner
+    participant G as Luna planner
     participant S as Qdrant, BM25, MongoDB
     participant R as Response cache
     participant M as Gemini composer
@@ -541,7 +541,7 @@ Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`.
 
 - Python 3.11 and Node.js 20
 - A Qdrant collection and a MongoDB database loaded from the v33 build (see [Offline build](#offline-build))
-- API keys for Groq (planner) and Gemini (composer). Cohere (reranker), Redis (shared cache) and LangSmith (tracing) are optional.
+- API keys for OpenAI (planner) and Gemini (composer). Cohere (reranker), Redis (shared cache) and LangSmith (tracing) are optional.
 
 ### Backend
 
@@ -559,7 +559,8 @@ Interactive API docs are then served at `http://127.0.0.1:8000/docs`.
 |---|:---:|---|
 | `QDRANT_URL`, `QDRANT_API_KEY`, `QDRANT_COLLECTION_NAME` | yes | Vector store for narrative children |
 | `MONGODB_URL`, `MONGODB_DB_NAME`, `MONGODB_PARENT_COLLECTION` | yes | Parent articles |
-| `GROQ_API_KEYS` | yes | Planner key pool (comma-separated); `GROQ_ROUTER_API_KEYS` can give the planner its own keys |
+| `OPENAI_API_KEY` | yes | Planner (`gpt-6-luna`, strict QueryPlan schema; settings in `configs/ai_router.yaml`) |
+| `GROQ_API_KEYS` | no | Evaluation judge only |
 | `GEMINI_API_KEYS` | yes | Composer key pool (comma-separated) |
 | `COHERE_API_KEYS` | no | Reranker key pool; without it retrieval uses the RRF order |
 | `REDIS_URL` | no | Shared response cache; without it an in-memory cache is used |

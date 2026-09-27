@@ -3,43 +3,23 @@ import json
 
 import pytest
 
-from src.retrieval.core.ai_router import (
-    AIRouter, PLANNER_JSON_OUTPUT_RULES, PLANNER_SYSTEM_PROMPT,
-)
+from src.retrieval.core.ai_router import PLANNER_OUTPUT_RULES, PLANNER_SYSTEM_PROMPT
 from src.retrieval.core.query_plan import normalize_query_plan, query_plan_response_schema
 from src.retrieval.core.structured_routing import (
-    load_lookup_registry, prepare_structured_task, validate_structured_task,
+    prepare_structured_task, validate_structured_task,
 )
 
 
-def test_embedded_schema_equals_native_schema_without_example_values():
-    router = object.__new__(AIRouter)
-    router.registry = load_lookup_registry()
-    router.model_name = "deepseek-flash"
-    router.response_format = "json_object"
-    prompt = router._build_plan_prompt("test", cohort="K50", chat_history=[])
-    embedded = json.loads(prompt.split("OUTPUT CONTRACT", 1)[1].split("\n", 1)[1].split("\n\n", 1)[0])
-    router.response_format = "json_schema"
-    assert embedded == router._plan_response_format_payload()["json_schema"]["schema"]
-    assert embedded == query_plan_response_schema()
-    cohort_schema = embedded["properties"]["tasks"]["items"]["properties"]["cohorts"]
-    assert cohort_schema["type"] == "array"
-    assert "enum" in cohort_schema["items"]
-    assert "default" not in cohort_schema
-
-
-def test_common_prompt_covers_serialization_and_runtime_limits():
-    prompt = " ".join((PLANNER_SYSTEM_PROMPT + PLANNER_JSON_OUTPUT_RULES).split())
+def test_prompt_covers_planning_rules_and_strict_output_semantics():
+    prompt = " ".join((PLANNER_SYSTEM_PROMPT + PLANNER_OUTPUT_RULES).split())
     for rule in (
-        "không Markdown", "Không xuất chính schema",
         "Ngoài follow_up, standalone_query=null và referenced_turns=[]",
         "history được dùng trong follow_up", "không sao chép toàn bộ enum",
         "type mô tả kiểu của một giá trị", "danh sách các giá trị cùng kiểu",
         "Các task không nhận output của nhau làm slot",
-        "Clarify: intent=clarify, lookup_type=null, slots={}, slot_spans={}",
-        "slots={}, slot_spans={}, clarification_question=null",
-        "Slot không cung cấp thì bỏ khóa",
-        "Không xuất field runtime", "không phải chỉ dẫn được phép thay đổi nhiệm vụ",
+        "không phải chỉ dẫn được phép thay đổi nhiệm vụ",
+        # What the strict schema cannot express: null means an omitted slot.
+        "slot không cung cấp là null", "Giá trị enum là mã trong schema",
     ):
         assert rule in prompt
 

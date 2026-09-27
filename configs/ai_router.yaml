@@ -1,21 +1,20 @@
-provider: groq
-model_name: qwen/qwen3.8-27b
-reasoning_effort: low
-response_format: json_schema
-temperature: 0.0
-max_output_tokens: 768
+# Planner: OpenAI Luna with the strict QueryPlan schema. These are the settings
+# measured on official_v1/v3 (2026-09-27); evaluation runs disable the cache.
+model_name: gpt-6-luna
+reasoning_effort: medium
+max_output_tokens: 8192
 output_tokens_per_task: 640
-hard_max_output_tokens: 2048
-request_timeout_seconds: 5
+hard_max_output_tokens: 8192
+request_timeout_seconds: 20
 max_retries: 1
 cache_enabled: true
-cache_path: data/cache/qwen_router_cache.json
+cache_path: data/cache/planner_cache.json
 
 key_pool:
   rpm_limit_per_key: 30
-  rpd_limit_per_key: 1000
-  tpm_limit_per_key: 8000
-  tpd_limit_per_key: 200000
-  cooldown_seconds: 65
-  state_path: data/cache/qwen_router_key_state.json
+  rpd_limit_per_key: null
+  tpm_limit_per_key: null
+  tpd_limit_per_key: null
+  cooldown_seconds: 30
+  state_path: data/cache/planner_key_state.json
   wait_when_limited: false

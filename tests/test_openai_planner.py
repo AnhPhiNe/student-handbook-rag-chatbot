@@ -16,8 +16,7 @@ def router(monkeypatch, tmp_path):
     monkeypatch.setattr(module, "load_project_env", lambda: None)
     monkeypatch.setenv("OPENAI_API_KEY", "offline-openai-key")
     return AIRouter(
-        provider="openai", model_name="gpt-6-luna", cache_enabled=False,
-        response_format="json_object",
+        cache_enabled=False,
         max_output_tokens=8192, hard_max_output_tokens=8192,
         request_timeout_seconds=20, max_retries=1,
         key_pool_config={"state_path": str(tmp_path / "keys.json"),
@@ -76,11 +75,10 @@ def test_responses_request_and_usage(router, monkeypatch, effort):
     request = calls[0]["request"]
     assert request["model"] == "gpt-6-luna"
     assert request["reasoning"] == {"effort": effort}
-    assert request["text"] == {"format": {"type": "json_object"}}
+    assert request["text"] == {"format": router._plan_response_format_payload()}
     assert request["store"] is False
     assert request["max_output_tokens"] == 8192
     assert not {"temperature", "max_tokens", "response_format", "tools"} & request.keys()
-    assert "OUTPUT CONTRACT" in request["input"][1]["content"]
     assert calls[0]["client"] == {
         "api_key": "offline-openai-key", "base_url": "https://api.openai.com/v1",
         "timeout": 20, "max_retries": 0,
@@ -135,39 +133,36 @@ def test_missing_key_does_not_use_groq_or_deepseek(router, monkeypatch):
     monkeypatch.setenv("GROQ_API_KEYS", "not-openai")
     monkeypatch.setenv("DEEPSEEK_API_KEY", "not-openai")
     with pytest.raises(RuntimeError, match="Missing OPENAI_API_KEY"):
-        AIRouter(provider="openai", model_name="gpt-6-luna")
+        AIRouter()
 
 
 @pytest.mark.parametrize("kwargs", [{"model_name": "qwen/qwen3.8-27b"},
-                                    {"response_format": "text"},
                                     {"reasoning_effort": "minimal"}])
 def test_reject_stale_or_unsupported_config(router, kwargs):
-    options = {"provider": "openai", "model_name": "gpt-6-luna"}
-    options.update(kwargs)
     with pytest.raises(ValueError):
-        AIRouter(**options)
+        AIRouter(**kwargs)
 
 
-def test_experiment_config_and_metadata(router, monkeypatch, tmp_path):
-    from scripts.run_official_deterministic import planner_output_metadata
+def test_production_config_is_the_measured_luna_setup(monkeypatch, tmp_path):
     from dataclasses import replace
     original_pool = module.KeyPool
     monkeypatch.setattr(module, "KeyPool", lambda keys, config, **kwargs: original_pool(
-        keys, replace(config, state_path=str(tmp_path / "experiment_keys.json")), **kwargs))
+        keys, replace(config, state_path=str(tmp_path / "keys.json")), **kwargs))
     for name in list(module.os.environ):
         if name.startswith("STUDENT_RAG_ROUTER_"):
             monkeypatch.delenv(name)
-    experiment = AIRouter.from_config("configs/experiments/ai_router_openai_luna.yaml")
-    assert experiment.provider == "openai"
-    assert experiment.model_name == "gpt-6-luna"
-    assert experiment._resolved_reasoning_effort() == "low"
-    assert experiment.cache is None
-    assert experiment._planner_output_token_limit(3) == 8192
-    metadata = planner_output_metadata(experiment)
-    assert metadata["max_output_tokens_sent"] is True
-    assert metadata["max_tokens_sent"] is False
-    assert metadata["temperature_effective"] is False
-    assert metadata["documented_default_max_tokens"] is None
+    monkeypatch.setenv("STUDENT_RAG_DISABLE_ROUTER_CACHE", "1")
+    router = AIRouter.from_config("configs/ai_router.yaml")
+    assert (router.provider, router.model_name, router.reasoning_effort) == (
+        "openai", "gpt-6-luna", "medium")
+    assert router.cache is None
+    assert router.max_retries == 1 and router.request_timeout_seconds == 20
+    assert router._planner_output_token_limit(3) == 8192
+    assert router._plan_response_format_payload()["strict"] is True
+    # Production keeps the decision cache; evaluation runs disable it.
+    monkeypatch.delenv("STUDENT_RAG_DISABLE_ROUTER_CACHE")
+    monkeypatch.setattr(module, "RouterDecisionCache", lambda path: ("cache", path))
+    assert AIRouter.from_config("configs/ai_router.yaml").cache == ("cache", "data/cache/planner_cache.json")
 
 
 def test_two_timeouts_stop_at_retry_limit(router, monkeypatch):
@@ -203,7 +198,7 @@ def test_repair_reuses_responses_contract_and_sums_usage(router, monkeypatch):
 
 def test_cache_isolates_model_configuration(router):
     key = router._cache_key("test", cohort="K51", chat_history=[])
-    for field, value in [("reasoning_effort", "none"), ("provider", "groq"),
+    for field, value in [("reasoning_effort", "none"),
                          ("max_output_tokens", 4096), ("hard_max_output_tokens", 4096),
                          ("output_tokens_per_task", 2048)]:
         old = getattr(router, field)
@@ -225,11 +220,9 @@ def test_rendered_registry_explains_fields_not_specific_cases():
         assert text not in rendered
 
 
-@pytest.mark.parametrize("format_name", ["json_object", "json_schema"])
-def test_actual_sdk_serializes_responses_without_network(router, monkeypatch, format_name):
+def test_actual_sdk_serializes_responses_without_network(router, monkeypatch):
     """Exercise installed SDK, not just a fake client's keyword arguments."""
     sent = []
-    router.response_format = format_name
     def handle(request):
         sent.append(json.loads(request.content))
         return httpx.Response(200, json={
@@ -247,14 +240,12 @@ def test_actual_sdk_serializes_responses_without_network(router, monkeypatch, fo
     assert not result.get("planner_fallback")
     assert result["usage"]["total"] == 135
     assert sent[0]["text"]["format"] == router._plan_response_format_payload()
-    if format_name == "json_schema":
-        assert sent[0]["text"]["format"]["strict"] is True
-        assert "json_schema" not in sent[0]["text"]["format"]
+    assert sent[0]["text"]["format"]["strict"] is True
+    assert "json_schema" not in sent[0]["text"]["format"]
 
 
 def test_strict_requests_keep_validation_and_incomplete_response_handling(router, monkeypatch):
     from src.retrieval.core.query_plan import query_plan_strict_response_schema
-    router.response_format = "json_schema"
     router.reasoning_effort = "medium"
     calls = _fake(monkeypatch, [_response("incomplete", "max_output_tokens")])
     result = router.plan("Quy định học vụ?", cohort="K51")
@@ -266,41 +257,14 @@ def test_strict_requests_keep_validation_and_incomplete_response_handling(router
     assert request["reasoning"] == {"effort": "medium"}
     # Strict output rules sit in the cached system prompt, not the per-query message.
     assert "slot không cung cấp là null" in request["input"][0]["content"]
-    assert "Xuất đúng một JSON object" not in request["input"][0]["content"]
     assert "slot không cung cấp là null" not in request["input"][1]["content"]
     assert "OUTPUT CONTRACT" not in request["input"][1]["content"]
     assert result["planner_fallback"]
     assert result["planner_error_type"] == "invalid_response"
 
 
-def test_strict_trial_config_and_format_cache_identity(router, monkeypatch, tmp_path):
-    from dataclasses import replace
-    original_pool = module.KeyPool
-    monkeypatch.setattr(module, "KeyPool", lambda keys, config, **kwargs: original_pool(
-        keys, replace(config, state_path=str(tmp_path / "strict_keys.json")), **kwargs))
-    for name in list(module.os.environ):
-        if name.startswith("STUDENT_RAG_ROUTER_"):
-            monkeypatch.delenv(name)
-    experiment = AIRouter.from_config("configs/experiments/ai_router_openai_luna_medium_strict.yaml")
-    assert experiment._resolved_reasoning_effort() == "medium"
-    assert experiment._resolved_response_format() == "json_schema"
-    assert experiment._plan_response_format_payload()["strict"] is True
-    assert experiment.cache is None
-    assert experiment.max_retries == 1 and experiment.request_timeout_seconds == 20
-    assert experiment._planner_output_token_limit(3) == 8192
-    experiment.response_format = "auto"
-    assert experiment._resolved_response_format() == "json_schema"
-    old = router._cache_key("test", cohort="K51", chat_history=[])
-    router.response_format = "json_schema"
-    assert router._cache_key("test", cohort="K51", chat_history=[]) != old
-
-
 def test_strict_prompt_moves_slot_descriptions_into_the_schema(router):
     description = "Dịch vụ cần hỗ trợ, không phải tên đơn vị."
-    router.response_format = "json_schema"
     assert description not in router._build_plan_prompt("Hỏi?", cohort="K51", chat_history=[])
     assert description in json.dumps(router._plan_response_format_payload(), ensure_ascii=False)
     assert "slot không cung cấp là null" in router._planner_system_prompt()
-    router.response_format = "json_object"
-    assert description in router._build_plan_prompt("Hỏi?", cohort="K51", chat_history=[])
-    assert "Slot không cung cấp thì bỏ khóa" in router._planner_system_prompt()

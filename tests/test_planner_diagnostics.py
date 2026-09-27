@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
@@ -12,6 +11,7 @@ from src.evaluation.deterministic import evaluate_deterministic
 from src.retrieval.core.ai_router import (
     AIRouter,
     PLANNER_DIAGNOSTIC_SCHEMA_VERSION,
+    _RouterCompletion,
     _build_planner_diagnostics,
     _planner_decision_snapshot,
     planner_diagnostics_scope,
@@ -62,17 +62,16 @@ def _raw_payload(label: str) -> dict:
 
 
 def _fake_router(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> AIRouter:
-    monkeypatch.setenv("GROQ_API_KEYS", "diagnostic-test-key")
+    monkeypatch.setenv("OPENAI_API_KEY", "diagnostic-test-key")
     return AIRouter(
-        model_name="qwen/qwen3.8-27b",
         cache_enabled=False,
-        # One fake key: Groq's 8K TPM default would block the second plan call
-        # of the full prompt. This test is about diagnostics, not quota.
-        key_pool_config={
-            "state_path": str(tmp_path / "router-state.json"),
-            "tpm_limit_per_key": None,
-        },
+        key_pool_config={"state_path": str(tmp_path / "router-state.json")},
     )
+
+
+def _completion(payload: dict) -> _RouterCompletion:
+    return _RouterCompletion(json.dumps(payload, ensure_ascii=False),
+                             {"input": 0, "output": 0, "total": 0}, "stop")
 
 
 def test_planner_diagnostic_snapshot_is_whitelisted_and_detached() -> None:
@@ -153,25 +152,8 @@ def test_airouter_planner_diagnostics_are_opt_in(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     payload = _raw_payload("A")
-
-    class _FakeGroq:
-        def __init__(self, **_kwargs) -> None:
-            self.chat = SimpleNamespace(
-                completions=SimpleNamespace(
-                    create=lambda **_create_kwargs: SimpleNamespace(
-                        choices=[
-                            SimpleNamespace(
-                                message=SimpleNamespace(
-                                    content=json.dumps(payload, ensure_ascii=False)
-                                )
-                            )
-                        ],
-                        usage=None,
-                    )
-                )
-            )
-
-    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
+    monkeypatch.setattr(AIRouter, "_chat_completion",
+                        lambda self, **_kwargs: _completion(payload))
     router = _fake_router(monkeypatch, tmp_path)
 
     default_result = router.plan("synthetic diagnostic query", cohort="K51")
@@ -192,33 +174,15 @@ def test_airouter_planner_diagnostics_are_opt_in(
 def test_airouter_diagnostics_are_request_isolated_under_concurrency(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    class _Completions:
-        @staticmethod
-        def create(**kwargs):
-            prompt = str(kwargs["messages"][1]["content"])
-            label = "A" if "SYNTHETIC_A" in prompt else "B"
-            payload = _raw_payload(label)
-            return SimpleNamespace(
-                choices=[
-                    SimpleNamespace(
-                        message=SimpleNamespace(
-                            content=json.dumps(payload, ensure_ascii=False)
-                        )
-                    )
-                ],
-                usage=None,
-            )
+    def request(self, **kwargs):
+        prompt = str(kwargs["messages"][1]["content"])
+        return _completion(_raw_payload("A" if "SYNTHETIC_A" in prompt else "B"))
 
-    class _FakeGroq:
-        def __init__(self, **_kwargs) -> None:
-            self.chat = SimpleNamespace(completions=_Completions())
-
-    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
-    monkeypatch.setenv("GROQ_API_KEYS", "diagnostic-test-key")
+    monkeypatch.setattr(AIRouter, "_chat_completion", request)
+    monkeypatch.setenv("OPENAI_API_KEY", "diagnostic-test-key")
 
     def run(label: str) -> dict:
         router = AIRouter(
-            model_name="qwen/qwen3.8-27b",
             cache_enabled=False,
             key_pool_config={"state_path": str(tmp_path / f"{label}.json")},
         )

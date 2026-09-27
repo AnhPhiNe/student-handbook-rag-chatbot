@@ -40,7 +40,7 @@ def _snapshot(suite: str, case_path) -> dict:
         "cohere_reranker": {"enabled": bool(reranker.get("enabled")), "model": reranker.get("model")},
         "planner": {"provider": router.provider, "model": router.model_name,
                     "prompt_version": ROUTER_PROMPT_VERSION,
-                    "reasoning_effort": router._resolved_reasoning_effort(),
+                    "reasoning_effort": router.reasoning_effort,
                     "normalizer_version": QUERY_PLAN_NORMALIZER_VERSION},
         "composer": {"model": answer_llm.get("model_name"), "prompt_version": ANSWER_PROMPT_VERSION},
         "storage": {key: os.environ.get(key) for key in

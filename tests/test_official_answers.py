@@ -110,12 +110,12 @@ def test_official_run_snapshot_records_the_planner_identity(monkeypatch):
     from scripts.run_official_answers import _snapshot
     from src.common.key_pool import KeyPoolConfig
 
-    monkeypatch.setenv("GROQ_ROUTER_API_KEYS", "test-key")
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
     # Keep the throwaway key out of the local key-state file.
     monkeypatch.setattr("src.retrieval.core.ai_router.router_key_pool_config",
                         lambda _config: KeyPoolConfig(name="ai_router", rpm_limit_per_key=1))
     snapshot = _snapshot("retrieval", BUNDLE / "retrieval_cases.json")
 
-    assert snapshot["planner"]["provider"] == "groq"
+    assert snapshot["planner"]["provider"] == "openai"
     assert snapshot["planner"]["model"]
     assert snapshot["dataset"] == "data/eval/official_v1/retrieval_cases.json"

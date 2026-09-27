@@ -1,4 +1,4 @@
-"""Offline regressions for the failed DeepSeek eval; never call a provider."""
+"""Offline regressions for planner operational failures; never call a provider."""
 import json
 from types import SimpleNamespace
 
@@ -13,10 +13,9 @@ from src.retrieval.core.ai_router import AIRouter, _RouterCompletion, planner_di
 @pytest.fixture
 def router(monkeypatch):
     monkeypatch.setattr(router_module, "load_project_env", lambda: None)
-    monkeypatch.setenv("DEEPSEEK_API_KEYS", "offline-dummy-key")
+    monkeypatch.setenv("OPENAI_API_KEY", "offline-dummy-key")
     return AIRouter(
-        provider="deepseek", model_name="deepseek-flash", cache_enabled=False,
-        max_retries=1, reasoning_effort="low", response_format="json_object",
+        cache_enabled=False, max_retries=1, reasoning_effort="low",
         key_pool_config=KeyPoolConfig(name="test", rpm_limit_per_key=600, state_path=None),
     )
 
@@ -65,18 +64,6 @@ def test_one_key_retries_timeout_then_succeeds(router, monkeypatch):
     assert "secret-key" not in json.dumps(diagnostic)
     assert diagnostic["attempts"][1]["response"]["finish_reason"] == "stop"
     assert diagnostic["attempts"][1]["response"]["usage"]["total"] == 2
-
-
-def test_provider_token_counters_do_not_capture_reasoning_text():
-    response = SimpleNamespace(usage=SimpleNamespace(
-        completion_tokens_details=SimpleNamespace(reasoning_tokens=17),
-        prompt_cache_hit_tokens=0, prompt_cache_miss_tokens=100,
-    ), reasoning_content="private reasoning")
-    assert AIRouter._token_details(response) == {
-        "reasoning_tokens": 17, "prompt_cache_hit_tokens": 0, "prompt_cache_miss_tokens": 100,
-    }
-    assert AIRouter._token_details(SimpleNamespace(usage=None)) == {}
-    assert "private reasoning" not in json.dumps(AIRouter._token_details(response))
 
 
 def test_successful_completion_saves_optional_counts_only_in_diagnostics(router, monkeypatch):

@@ -349,13 +349,10 @@ def test_raw_task_tolerance_is_not_execution_limit(validator):
 @pytest.fixture
 def offline_router(monkeypatch):
     monkeypatch.setattr(router_module, "load_project_env", lambda: None)
-    monkeypatch.setenv("DEEPSEEK_API_KEYS", "offline-dummy")
+    monkeypatch.setenv("OPENAI_API_KEY", "offline-dummy")
     router = AIRouter(
-        provider="deepseek",
-        model_name="offline-model",
         cache_enabled=False,
         max_retries=0,
-        response_format="json_object",
         key_pool_config=KeyPoolConfig(
             name="audit", rpm_limit_per_key=600, state_path=None
         ),

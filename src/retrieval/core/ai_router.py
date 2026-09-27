@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from groq import Groq
 import yaml
 
 from src.common.cohort import cohort_admission_years
@@ -30,23 +29,16 @@ from .query_plan import (
     QUERY_PLAN_SCHEMA_VERSION,
     safe_rag_fallback_plan,
     normalize_query_plan,
-    query_plan_response_schema,
     query_plan_strict_response_schema,
     QUERY_PLAN_STRICT_SCHEMA_VERSION,
 )
 
 
-DEFAULT_ROUTER_MODEL = "qwen/qwen3.8-27b"
-# Environment variables holding each provider's comma-separated key pool, in
-# lookup order. DeepSeek serves an OpenAI-compatible API at its base URL.
-_PROVIDER_KEY_ENVS = {
-    "groq": ("GROQ_ROUTER_API_KEYS", "GROQ_API_KEYS"),
-    "deepseek": ("DEEPSEEK_API_KEYS", "DEEPSEEK_API_KEY"),
-    "openai": ("OPENAI_API_KEY",),
-}
-_DEEPSEEK_BASE_URL = "https://api.deepseek.com"
-# 256 truncated planner reasoning mid-task and produced canonical codes in
-# slot_spans; 1024 completed naturally (~820 reasoning tokens) in probes.
+# The planner prompt and strict schema were measured with this model only.
+DEFAULT_ROUTER_MODEL = "gpt-6-luna"
+# Comma-separated OpenAI keys for the planner's key pool.
+_PLANNER_KEY_ENV = "OPENAI_API_KEY"
+_REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
 ROUTER_PROMPT_VERSION = "structured-regulation-v53-restore-conditions"
 PLANNER_DIAGNOSTIC_SCHEMA_VERSION = "planner-decision-diagnostics-v2"
 _planner_diagnostics_scope: ContextVar[bool] = ContextVar(
@@ -466,26 +458,8 @@ BƯỚC 6. TỰ KIỂM TRA
 - normalized_query là QUERY đã sửa nhẹ hoặc giữ nguyên; id task lần lượt là t1, t2, t3.
 """
 
-# Serialization rules for providers without a strict schema. A strict schema
-# enforces all of them token by token, so strict requests do not carry them.
-PLANNER_JSON_OUTPUT_RULES = """
-OUTPUT
-- Xuất đúng một JSON object, không Markdown, không giải thích trước/sau, không
-  comment hoặc dấu phẩy cuối. Dùng true/false/null đúng kiểu JSON, không đặt chúng
-  trong dấu nháy. Không xuất chính schema hoặc chuỗi lựa chọn như "rag|clarify".
-- Điền đủ field required ở cấp plan và task; schema_version="v1"; out_of_domain
-  là boolean. Plan tối đa 3 task dù schema nhận nhiều hơn.
-- RAG: intent=open_question, lookup_type=null, slots={}, slot_spans={},
-  clarification_question=null. Clarify: intent=clarify, lookup_type=null,
-  slots={}, slot_spans={}. Structured: clarification_question=null.
-- Slot không cung cấp thì bỏ khóa khỏi slots và slot_spans. slot_spans là chuỗi
-  nguyên văn hoặc danh sách chuỗi; không xuất `{start,end}`.
-- Với structured, chỉ dùng lookup_type, intent và slots khai báo trong TOOLS.
-  Không xuất field runtime như validation_errors, usage, source_ids hoặc resolved_result.
-"""
-
-# The strict schema fixes the shape; only what it cannot express is stated.
-PLANNER_STRICT_OUTPUT_RULES = """
+# The strict schema fixes the plan's shape; only what it cannot express is stated.
+PLANNER_OUTPUT_RULES = """
 OUTPUT
 - Schema strict quy định hình dạng plan. Mọi khóa slots/slot_spans của tool đều
   có mặt: slot không cung cấp là null, và null nghĩa là không có dữ kiện.
@@ -497,24 +471,24 @@ OUTPUT
 def router_key_pool_config(config: dict[str, Any] | None) -> KeyPoolConfig:
     """Planner key limits from the key_pool section of the router config.
 
-    Defaults are Groq's free-tier limits. A limit set to null is not enforced,
-    for providers such as DeepSeek that cap concurrency rather than tokens.
+    A limit set to null is not enforced. By default only the request rate is
+    limited; token and daily limits apply when the config sets them.
     """
 
     config = config or {}
 
-    def limit(name: str, default: int) -> int | None:
+    def limit(name: str, default: int | None) -> int | None:
         value = config.get(name, default)
         return None if value is None else max(1, int(value))
 
     return KeyPoolConfig(
         name="ai_router",
         rpm_limit_per_key=max(1, int(config.get("rpm_limit_per_key", 30))),
-        rpd_limit_per_key=limit("rpd_limit_per_key", 1000),
-        tpm_limit_per_key=limit("tpm_limit_per_key", 8000),
-        tpd_limit_per_key=limit("tpd_limit_per_key", 200000),
-        cooldown_seconds=max(1.0, float(config.get("cooldown_seconds", 65.0))),
-        state_path=str(config.get("state_path", "data/cache/qwen_router_key_state.json")),
+        rpd_limit_per_key=limit("rpd_limit_per_key", None),
+        tpm_limit_per_key=limit("tpm_limit_per_key", None),
+        tpd_limit_per_key=limit("tpd_limit_per_key", None),
+        cooldown_seconds=max(1.0, float(config.get("cooldown_seconds", 30.0))),
+        state_path=str(config.get("state_path", "data/cache/planner_key_state.json")),
         wait_when_limited=bool(config.get("wait_when_limited", False)),
     )
 
@@ -570,43 +544,37 @@ class _RouterCompletion:
 
 
 class AIRouter:
-    """Provider-backed QueryPlan planner with a shared validated JSON contract."""
+    """QueryPlan planner on the OpenAI Responses API with a strict JSON schema."""
+
+    provider = "openai"
 
     def __init__(
         self,
         model_name: str = DEFAULT_ROUTER_MODEL,
-        temperature: float = 0.0,
-        max_output_tokens: int = 256,
-        request_timeout_seconds: float = 5.0,
+        max_output_tokens: int = 8192,
+        request_timeout_seconds: float = 20.0,
         max_retries: int = 1,
-        reasoning_effort: str = "auto",
-        response_format: str = "auto",
+        reasoning_effort: str = "medium",
         key_pool_config: KeyPoolConfig | dict[str, Any] | None = None,
-        cache_path: str = "data/cache/qwen_router_cache.json",
+        cache_path: str = "data/cache/planner_cache.json",
         cache_enabled: bool = True,
         output_tokens_per_task: int = 640,
-        hard_max_output_tokens: int = 2048,
-        provider: str = "groq",
-        omit_max_tokens: bool = False,
+        hard_max_output_tokens: int = 8192,
     ) -> None:
         load_project_env()
-        self.provider = str(provider or "groq").strip().lower()
-        if self.provider not in _PROVIDER_KEY_ENVS:
-            raise ValueError(f"Unsupported planner provider: {self.provider}")
-        if omit_max_tokens and self.provider != "deepseek":
-            raise ValueError("omit_max_tokens is supported only for DeepSeek")
-        self.omit_max_tokens = bool(omit_max_tokens)
-        key_envs = _PROVIDER_KEY_ENVS[self.provider]
-        keys_value = next(
-            (os.environ[name] for name in key_envs if os.environ.get(name)), ""
-        )
         self.available_keys = [
-            key.strip() for key in keys_value.split(",") if key.strip()
+            key.strip()
+            for key in os.environ.get(_PLANNER_KEY_ENV, "").split(",")
+            if key.strip()
         ]
         if not self.available_keys:
-            raise RuntimeError(f"Missing {' or '.join(key_envs)}.")
+            raise RuntimeError(f"Missing {_PLANNER_KEY_ENV}.")
+        # Reject a stale model override instead of sending it an untested prompt.
+        if model_name != DEFAULT_ROUTER_MODEL:
+            raise ValueError(
+                f"The planner supports {DEFAULT_ROUTER_MODEL}; check STUDENT_RAG_ROUTER_MODEL"
+            )
         self.model_name = model_name
-        self.temperature = float(temperature)
         self.max_output_tokens = max(64, int(max_output_tokens))
         self.output_tokens_per_task = max(64, int(output_tokens_per_task))
         self.hard_max_output_tokens = max(
@@ -614,17 +582,9 @@ class AIRouter:
         )
         self.request_timeout_seconds = max(1.0, float(request_timeout_seconds))
         self.max_retries = max(0, int(max_retries))
-        self.reasoning_effort = str(reasoning_effort or "auto").strip().lower()
-        self.response_format = str(response_format or "auto").strip().lower()
-        if self.provider == "openai":
-            # This integration is verified offline for Luna's Responses contract.
-            # Reject stale Groq environment overrides instead of sending them.
-            if self.model_name != "gpt-6-luna":
-                raise ValueError("OpenAI planner currently supports gpt-6-luna; check STUDENT_RAG_ROUTER_MODEL")
-            if self.response_format not in {"auto", "json_object", "json_schema"}:
-                raise ValueError("OpenAI planner requires json_object or json_schema")
-            if self.reasoning_effort not in {"auto", "none", "low", "medium", "high", "xhigh", "max"}:
-                raise ValueError("Unsupported OpenAI planner reasoning effort")
+        self.reasoning_effort = str(reasoning_effort or "medium").strip().lower()
+        if self.reasoning_effort not in _REASONING_EFFORTS:
+            raise ValueError(f"Unsupported planner reasoning effort: {self.reasoning_effort}")
         self.registry = load_lookup_registry()
         if not isinstance(key_pool_config, KeyPoolConfig):
             key_pool_config = router_key_pool_config(key_pool_config)
@@ -635,8 +595,7 @@ class AIRouter:
     def from_config(cls, path: str | Path | None = None) -> "AIRouter":
         """Build the planner client from its YAML and environment settings.
 
-        STUDENT_RAG_ROUTER_CONFIG points at another YAML, e.g. an experiment
-        config for a different planner provider.
+        STUDENT_RAG_ROUTER_CONFIG points at another YAML.
         """
 
         path = (
@@ -660,48 +619,36 @@ class AIRouter:
                 "yes",
                 "on",
             }
-        model_name = str(
-            os.environ.get("STUDENT_RAG_ROUTER_MODEL")
-            or config.get("model_name")
-            or DEFAULT_ROUTER_MODEL
-        )
-        max_output_tokens = int(
-            os.environ.get("STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS")
-            or config.get("max_output_tokens")
-            or 256
-        )
         return cls(
-            provider=str(config.get("provider") or "groq"),
-            omit_max_tokens=bool(config.get("omit_max_tokens", False)),
-            model_name=model_name,
-            temperature=float(config.get("temperature", 0.0)),
-            max_output_tokens=max_output_tokens,
+            model_name=str(
+                os.environ.get("STUDENT_RAG_ROUTER_MODEL")
+                or config.get("model_name")
+                or DEFAULT_ROUTER_MODEL
+            ),
+            max_output_tokens=int(
+                os.environ.get("STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS")
+                or config.get("max_output_tokens")
+                or 8192
+            ),
             output_tokens_per_task=int(config.get("output_tokens_per_task", 640)),
             hard_max_output_tokens=int(
                 os.environ.get("STUDENT_RAG_ROUTER_HARD_MAX_OUTPUT_TOKENS")
                 or config.get("hard_max_output_tokens")
-                or 2048
+                or 8192
             ),
             request_timeout_seconds=float(
                 os.environ.get("STUDENT_RAG_ROUTER_REQUEST_TIMEOUT_SECONDS")
                 or config.get("request_timeout_seconds")
-                or 5.0
+                or 20.0
             ),
             max_retries=int(config.get("max_retries", 1)),
             reasoning_effort=str(
                 os.environ.get("STUDENT_RAG_ROUTER_REASONING_EFFORT")
                 or config.get("reasoning_effort")
-                or "auto"
-            ),
-            response_format=str(
-                os.environ.get("STUDENT_RAG_ROUTER_RESPONSE_FORMAT")
-                or config.get("response_format")
-                or "auto"
+                or "medium"
             ),
             key_pool_config=key_pool_config,
-            cache_path=str(
-                config.get("cache_path", "data/cache/qwen_router_cache.json")
-            ),
+            cache_path=str(config.get("cache_path", "data/cache/planner_cache.json")),
             cache_enabled=bool(config.get("cache_enabled", True))
             and not cache_disabled,
         )
@@ -724,103 +671,16 @@ class AIRouter:
         max_output_tokens: int,
         response_format: dict[str, Any],
     ) -> _RouterCompletion:
-        """Send one planner request to the configured provider."""
-
-        if self.provider == "openai":
-            return self._openai_response(
-                api_key=api_key, messages=messages,
-                max_output_tokens=max_output_tokens, response_format=response_format,
-            )
-        if self.provider == "deepseek":
-            return self._deepseek_chat_completion(
-                api_key=api_key,
-                messages=messages,
-                max_output_tokens=max_output_tokens,
-                response_format=response_format,
-            )
-        client = Groq(
-            api_key=api_key,
-            timeout=self.request_timeout_seconds,
-            max_retries=0,
-        )
-        response = client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=self.temperature,
-            max_tokens=max_output_tokens,
-            reasoning_effort=self._resolved_reasoning_effort(),
-            response_format=response_format,
-        )
-        return _RouterCompletion(
-            text=response.choices[0].message.content or "",
-            usage=self._usage(response),
-            finish_reason=getattr(response.choices[0], "finish_reason", None),
-            token_details=self._token_details(response),
-        )
-
-    def _deepseek_chat_completion(
-        self,
-        *,
-        api_key: str,
-        messages: list[dict[str, str]],
-        max_output_tokens: int,
-        response_format: dict[str, Any],
-    ) -> _RouterCompletion:
-        """Send one planner request to DeepSeek's OpenAI-compatible API.
-
-        DeepSeek thinks by default; effort "none" turns thinking off, and
-        low/high/max set how much it thinks before answering.
-        """
-
+        """Send one planner request and adapt Responses output to validation."""
         from openai import OpenAI
 
-        effort = self._resolved_reasoning_effort()
-        thinking = (
-            {"thinking": {"type": "disabled"}}
-            if effort == "none"
-            else {"reasoning_effort": effort}
-        )
-        client = OpenAI(
-            api_key=api_key,
-            base_url=_DEEPSEEK_BASE_URL,
-            timeout=self.request_timeout_seconds,
-            max_retries=0,
-        )
-        response = client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=self.temperature,
-            response_format=response_format,
-            extra_body=thinking,
-            **({} if self.omit_max_tokens else {"max_tokens": max_output_tokens}),
-        )
-        return _RouterCompletion(
-            text=response.choices[0].message.content or "",
-            usage=self._usage(response),
-            finish_reason=getattr(response.choices[0], "finish_reason", None),
-            token_details=self._token_details(response),
-        )
-
-    def _openai_response(
-        self,
-        *,
-        api_key: str,
-        messages: list[dict[str, str]],
-        max_output_tokens: int,
-        response_format: dict[str, Any],
-    ) -> _RouterCompletion:
-        """Adapt Responses structured output to planner validation."""
-        from openai import OpenAI
-
-        if response_format.get("type") not in {"json_object", "json_schema"}:
-            raise ValueError("OpenAI planner requires json_object or json_schema")
         # Pin the endpoint: an OPENAI_BASE_URL used for another provider must
         # not receive the user's OpenAI credential. The router owns retries.
         with OpenAI(api_key=api_key, base_url="https://api.openai.com/v1",
                     timeout=self.request_timeout_seconds, max_retries=0) as client:
             response = client.responses.create(
                 model=self.model_name, input=messages,
-                reasoning={"effort": self._resolved_reasoning_effort()},
+                reasoning={"effort": self.reasoning_effort},
                 text={"format": response_format},
                 max_output_tokens=max_output_tokens, store=False,
             )
@@ -1149,22 +1009,6 @@ class AIRouter:
             for index, (role, content) in _visible_history_turns(chat_history).items()
         ]
         history = "\n".join(history_lines) or "none"
-        strict = self._uses_strict_schema()
-        if strict:
-            # The strict output rules live in the cached system prompt.
-            output_guidance = ""
-        elif self._resolved_response_format() == "json_schema":
-            output_guidance = (
-                "OUTPUT: tuân theo native JSON Schema; các quy tắc trên quyết định "
-                "ngữ nghĩa từng field.\n"
-            )
-        else:
-            schema = json.dumps(
-                query_plan_response_schema(), ensure_ascii=False, separators=(",", ":")
-            )
-            output_guidance = (
-                f"OUTPUT CONTRACT (JSON Schema, không phải mẫu câu trả lời):\n{schema}\n\n"
-            )
         cohort_years = json.dumps(
             cohort_admission_years(),
             ensure_ascii=False,
@@ -1173,8 +1017,8 @@ class AIRouter:
         explicit_request_count = _explicit_request_count(query)
         return (
             "TOOLS:\n"
-            f"{compact_registry_for_prompt(self.registry, slot_descriptions=not strict)}\n\n"
-            f"{output_guidance}"
+            # The strict schema carries the slot descriptions.
+            f"{compact_registry_for_prompt(self.registry, slot_descriptions=False)}\n\n"
             f"COHORT: {cohort or 'unknown'}\n"
             f"COHORT_ADMISSION_YEARS: {cohort_years}\n"
             f"EXPLICIT_REQUEST_COUNT: {explicit_request_count or 'not_declared'}\n"
@@ -1182,54 +1026,14 @@ class AIRouter:
             f"QUERY: {query}"
         )
 
-    def _uses_strict_schema(self) -> bool:
-        return (getattr(self, "provider", None) == "openai"
-                and self._resolved_response_format() == "json_schema")
-
     def _planner_system_prompt(self) -> str:
-        """Shared planning rules plus the output rules of this request format."""
-        output_rules = (PLANNER_STRICT_OUTPUT_RULES if self._uses_strict_schema()
-                        else PLANNER_JSON_OUTPUT_RULES)
-        return PLANNER_SYSTEM_PROMPT.strip() + "\n\n" + output_rules.strip()
-
-    def _resolved_reasoning_effort(self) -> str:
-        if self.reasoning_effort != "auto":
-            return self.reasoning_effort
-        if self.provider == "openai":
-            return "low"
-        if "qwen3.8" in self.model_name.lower():
-            return "low"
-        return "low" if "gpt-oss" in self.model_name.lower() else "none"
-
-    def _resolved_response_format(self) -> str:
-        if self.response_format != "auto":
-            return self.response_format
-        if self.provider == "openai":
-            return "json_schema"
-        model_name = self.model_name.lower()
-        return (
-            "json_schema"
-            if "gpt-oss" in model_name or "qwen3.8" in model_name
-            else "json_object"
-        )
+        """Planning rules plus the output rules the strict schema cannot express."""
+        return PLANNER_SYSTEM_PROMPT.strip() + "\n\n" + PLANNER_OUTPUT_RULES.strip()
 
     def _plan_response_format_payload(self) -> dict[str, Any]:
-        if self._resolved_response_format() == "text":
-            return {}
-        if self._resolved_response_format() == "json_schema":
-            if self._uses_strict_schema():
-                # Responses uses text.format directly, unlike Chat Completions.
-                return {"type": "json_schema", "name": "query_plan",
-                        "strict": True, "schema": query_plan_strict_response_schema(self.registry)}
-            return {
-                "type": "json_schema",
-                "json_schema": {
-                    "name": "query_plan",
-                    "strict": False,
-                    "schema": query_plan_response_schema(),
-                },
-            }
-        return {"type": "json_object"}
+        # Responses takes the format directly under text.format.
+        return {"type": "json_schema", "name": "query_plan", "strict": True,
+                "schema": query_plan_strict_response_schema(self.registry)}
 
     @staticmethod
     def _prompt_stats_for_system(
@@ -1263,18 +1067,14 @@ class AIRouter:
             "cohort": cohort,
             "history": (chat_history or [])[-4:],
             "model": self.model_name,
-            "provider": self.provider,
-            "reasoning_effort": self._resolved_reasoning_effort(),
-            "response_format": self._resolved_response_format(),
-            "strict_schema_version": QUERY_PLAN_STRICT_SCHEMA_VERSION
-            if self._uses_strict_schema() else None,
+            "reasoning_effort": self.reasoning_effort,
+            "strict_schema_version": QUERY_PLAN_STRICT_SCHEMA_VERSION,
             "max_output_tokens": self.max_output_tokens,
             "hard_max_output_tokens": self.hard_max_output_tokens,
             "output_tokens_per_task": self.output_tokens_per_task,
             "prompt_version": ROUTER_PROMPT_VERSION,
             "plan_normalizer_version": QUERY_PLAN_NORMALIZER_VERSION,
             "registry": registry_digest(self.registry),
-            "output_token_policy": "provider_default" if self.omit_max_tokens else "explicit",
         }
         raw = json.dumps(
             payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -1292,28 +1092,6 @@ class AIRouter:
         if not isinstance(value, dict):
             raise ValueError("AI router JSON must be an object.")
         return value
-
-    @staticmethod
-    def _usage(response: Any) -> dict[str, int]:
-        usage = getattr(response, "usage", None)
-        return {
-            "input": int(getattr(usage, "prompt_tokens", 0) or 0),
-            "output": int(getattr(usage, "completion_tokens", 0) or 0),
-            "total": int(getattr(usage, "total_tokens", 0) or 0),
-        }
-
-    @staticmethod
-    def _token_details(response: Any) -> dict[str, int]:
-        """Optional provider counters, not reasoning text; absent is not zero."""
-        usage = getattr(response, "usage", None)
-        completion = getattr(usage, "completion_tokens_details", None)
-        fields = {
-            "reasoning_tokens": getattr(completion, "reasoning_tokens", None),
-            "prompt_cache_hit_tokens": getattr(usage, "prompt_cache_hit_tokens", None),
-            "prompt_cache_miss_tokens": getattr(usage, "prompt_cache_miss_tokens", None),
-        }
-        return {key: value for key, value in fields.items()
-                if isinstance(value, int) and not isinstance(value, bool) and value >= 0}
 
     @staticmethod
     def _completion_diagnostic(response: _RouterCompletion) -> dict[str, Any]:
@@ -1379,15 +1157,6 @@ class AIRouter:
         if any(
             token in text
             for token in (
-                "json_validate_failed",
-                "failed to generate json",
-                "failed_generation",
-            )
-        ):
-            return "transient_error"
-        if any(
-            token in text
-            for token in (
                 "disconnected",
                 "connecterror",
                 "connection reset",
@@ -1396,6 +1165,6 @@ class AIRouter:
             )
         ):
             return "transient_error"
-        if any(token in text for token in ("groq", "api", "connection")):
+        if any(token in text for token in ("api", "connection")):
             return "api_error"
         return "invalid_response"

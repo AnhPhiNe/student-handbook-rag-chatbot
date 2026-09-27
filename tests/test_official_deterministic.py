@@ -381,25 +381,6 @@ def test_runner_selects_exact_ids_in_dataset_order():
         select_case_ids(cases, [])
 
 
-def test_runner_records_mode_specific_defaults_not_identical_budgets():
-    from types import SimpleNamespace
-    from scripts.run_official_deterministic import planner_output_metadata
-
-    def metadata(effort, omit=True):
-        return planner_output_metadata(SimpleNamespace(
-            provider="deepseek", omit_max_tokens=omit,
-            _resolved_reasoning_effort=lambda: effort,
-        ))
-
-    assert metadata("none")["documented_default_max_tokens"] == 8192
-    assert metadata("low")["documented_default_max_tokens"] == 65536
-    assert metadata("max")["documented_default_max_tokens"] == 131072
-    assert metadata("none")["temperature_effective"] is True
-    assert metadata("low")["temperature_effective"] is False
-    assert metadata("low")["max_tokens_sent"] is False
-    assert metadata("low", False)["documented_default_max_tokens"] is None
-
-
 def test_experiment_freeze_rejects_changed_or_missing_files(tmp_path, monkeypatch):
     import hashlib
     import json

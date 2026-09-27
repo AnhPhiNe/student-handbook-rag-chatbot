@@ -55,25 +55,6 @@ def select_case_ids(cases, requested_ids=None):
     return [case for case in cases if case["id"] in requested]
 
 
-def planner_output_metadata(router):
-    """Document provider defaults without treating them as sent/used tokens."""
-    effort = router._resolved_reasoning_effort()
-    deepseek_default = router.provider == "deepseek" and router.omit_max_tokens
-    documented_limit = (8192 if effort == "none" else 131072 if effort == "max" else 65536)
-    return {
-        "output_token_policy": "provider_default" if router.omit_max_tokens else "explicit",
-        "max_tokens_sent": not router.omit_max_tokens and router.provider != "openai",
-        "max_output_tokens_sent": router.provider == "openai",
-        "documented_default_max_tokens": documented_limit if deepseek_default else None,
-        "provider_defaults_source": "https://api-docs.deepseek.com/api/create-chat-completion/"
-        if deepseek_default else None,
-        "provider_defaults_checked_on": "2026-09-26" if deepseek_default else None,
-        "temperature_effective": router.provider != "openai" and not (router.provider == "deepseek" and effort != "none"),
-        "comparison_scope": "operational_configurations_not_reasoning_only"
-        if router.provider == "deepseek" else "single_configuration",
-    }
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--current-worktree", action="store_true")
@@ -85,18 +66,12 @@ def main():
     parser.add_argument("--limit", type=int, help="Run only the first N cases for an operational smoke test.")
     parser.add_argument("--case-ids", nargs="+",
                         help="Run only these exact case IDs, in dataset order.")
-    parser.add_argument("--experiment-freeze", type=Path,
-                        help="Verify a separate experiment snapshot before any inference.")
     parser.add_argument("--max-consecutive-runtime-failures", type=int, default=3,
                         help="Stop after this many request/runtime failures; must be positive.")
     args = parser.parse_args()
     if args.max_consecutive_runtime_failures < 1 or (args.limit is not None and args.limit < 1):
         parser.error("limit and max-consecutive-runtime-failures must be positive")
     bundle = BUNDLE.parent / args.bundle
-    experiment = None
-    if args.experiment_freeze:
-        from scripts.prepare_deepseek_v48_smoke import verify_freeze
-        experiment = verify_freeze(args.experiment_freeze)
     baseline = verify_runtime(bundle, args.current_worktree)
     from src.common.env_loader import load_project_env
     load_project_env()
@@ -119,23 +94,18 @@ def main():
     actual = {key: os.environ.get(key) for key in expected}
     if actual != expected:
         raise ValueError(f"Storage configuration mismatch: {actual}")
-    from src.retrieval.core.ai_router import AIRouter
-    from src.retrieval.core.query_plan import QUERY_PLAN_NORMALIZER_VERSION
+    from src.retrieval.core.ai_router import ROUTER_PROMPT_VERSION, AIRouter
+    from src.retrieval.core.query_plan import (
+        QUERY_PLAN_NORMALIZER_VERSION, QUERY_PLAN_STRICT_SCHEMA_VERSION,
+    )
     router = AIRouter.from_config()
-    if experiment:
-        if any(getattr(router, key) != value for key, value in experiment["planner_common"].items()):
-            raise ValueError("Planner configuration differs from experiment freeze")
-        if router._resolved_reasoning_effort() not in experiment["allowed_reasoning_efforts"]:
-            raise ValueError("Reasoning effort not approved by experiment freeze")
-        if [case["id"] for case in cases[:args.limit]] != experiment["smoke_case_ids"]:
-            raise ValueError("Case selection differs from approved smoke")
     planner = {"provider": router.provider, "model": router.model_name,
-               "response_format": router._resolved_response_format(),
-               "reasoning_effort": router._resolved_reasoning_effort(),
+               "prompt_version": ROUTER_PROMPT_VERSION,
+               "response_format": f"strict_json_schema_{QUERY_PLAN_STRICT_SCHEMA_VERSION}",
+               "reasoning_effort": router.reasoning_effort,
                "normalizer_version": QUERY_PLAN_NORMALIZER_VERSION}
-    planner.update(planner_output_metadata(router))
     planner.update({name: getattr(router, name) for name in (
-        "temperature", "max_output_tokens", "output_tokens_per_task",
+        "max_output_tokens", "output_tokens_per_task",
         "hard_max_output_tokens", "request_timeout_seconds", "max_retries")})
     planner["key_pool"] = {name: getattr(router.key_pool.config, name) for name in (
         "rpm_limit_per_key", "rpd_limit_per_key", "tpm_limit_per_key", "tpd_limit_per_key",
@@ -168,12 +138,6 @@ def main():
                 "approved_runtime_change": ("Current working tree; see runtime_base_commit and planner"
                                             if args.current_worktree else "Composer timeout 60 -> 20 seconds"),
                 "response_cache": "not used: retrieval-only deterministic execution"}
-    if experiment:
-        snapshot["experiment_freeze"] = {
-            "path": args.experiment_freeze.as_posix(),
-            "sha256": hashlib.sha256(args.experiment_freeze.read_bytes()).hexdigest(),
-            "comparison_scope": experiment["comparison_scope"],
-        }
     (output / "run_snapshot.json").write_text(json.dumps(snapshot, indent=2), encoding="utf-8")
     print(f"Output: {output}", flush=True)
     report = evaluate_deterministic(cases, limit=args.limit,

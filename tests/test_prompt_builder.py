@@ -1146,3 +1146,38 @@ def test_prompt_distinguishes_external_referral_from_direct_answer() -> None:
     assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
     assert "nguồn chỉ dẫn chiếu sang văn bản khác" in prompt
     assert "không trình bày câu dẫn chiếu như thể đã trả lời danh sách" in prompt
+
+
+def test_prompt_describes_candidate_as_the_default_role() -> None:
+    """Retrieved evidence is candidate unless the question names one matching Điều.
+
+    v3.25 told the composer to answer every candidate-only unit cautiously,
+    but candidate is what nearly every unit receives, so answers hedged before
+    a supported conclusion.
+    """
+    from src.generation.prompt_builder import _assign_evidence_roles
+
+    sources = [{"article_label": "Điều 14"}, {"article_label": "Điều 30"}]
+    roles = _assign_evidence_roles(sources, unit_question="Nghỉ học tạm thời cần gì?",
+                                   original_query="Nghỉ học tạm thời cần gì?")
+    assert {source["role"] for source in roles} == {"candidate"}
+    named = _assign_evidence_roles(sources, unit_question="Điều 30 quy định gì?",
+                                   original_query="Điều 30 quy định gì?")
+    assert [source["role"] for source in named] == ["candidate", "target"]
+
+    prompt = _build_prompt_text(query="Nghỉ học tạm thời cần gì?", retrieval_result={})
+    assert "role=candidate là mặc định" in prompt
+    assert "role=target chỉ có khi câu hỏi nêu đích danh một Điều" in prompt
+    assert "trả lời thận trọng" not in prompt
+    assert "dùng nguồn để trả lời bình thường khi nội dung trực tiếp trả lời ý được hỏi" in prompt
+
+
+def test_prompt_scopes_the_hedge_and_yes_no_polarity() -> None:
+    prompt = _build_prompt_text(query="Có được không?", retrieval_result={})
+    assert "Chỉ dùng câu đó cho đúng ý thiếu căn cứ" in prompt
+    assert "không mở đầu bằng câu rào đón" in prompt
+    assert 'Chữ "có" hoặc "không" phải trả lời đúng câu hỏi như người dùng đặt ra' in prompt
+    # v3.6 removed a forced direct-answer lead because answers can be conditional.
+    assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
+    for field in ("mode=structured", "coverage=covered", "needs_clarification", "primary_evidence"):
+        assert field in prompt

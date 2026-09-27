@@ -1181,3 +1181,16 @@ def test_prompt_scopes_the_hedge_and_yes_no_polarity() -> None:
     assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
     for field in ("mode=structured", "coverage=covered", "needs_clarification", "primary_evidence"):
         assert field in prompt
+
+
+def test_rules_are_grouped_by_the_composer_task_in_order() -> None:
+    """v3.27 groups each concern in one place; every v3.26 clause is kept."""
+    prompt = _build_prompt_text(query="Hỏi?", retrieval_result={})
+    headings = ["ĐẦU VÀO", "1. PHẠM VI TRẢ LỜI", "2. KẾT LUẬN VÀ ĐIỀU KIỆN",
+                "3. KHI THIẾU CĂN CỨ HOẶC CẦN HỎI LẠI", "4. BẢNG VÀ SỐ LIỆU", "5. TRÌNH BÀY",
+                "\nAUTHORIZED_EVIDENCE_BY_UNIT\n", "FINAL_INSTRUCTIONS"]
+    positions = [prompt.index(heading) for heading in headings]
+    assert positions == sorted(positions)
+    assert "Mọi mục dưới đây là bắt buộc." in prompt
+    # The stock phrase stays scoped to yes/no questions, as it was inside rule 6.
+    assert 'Với câu hỏi có/không, nếu thiếu căn cứ trực tiếp, nói "Nguồn hiện có chưa trực tiếp xác lập..."' in prompt

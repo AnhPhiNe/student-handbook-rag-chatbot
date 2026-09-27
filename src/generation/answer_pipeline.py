@@ -101,6 +101,38 @@ class PreparedAnswer:
     query_type_override: str | None = None
 
 
+
+def create_composer_client(llm_config: dict[str, Any]) -> Any:
+    """Build the configured composer client (shared by the pipeline and replays)."""
+    provider = llm_config.get("provider", "gemini")
+    if provider == "gemini":
+        return GeminiClient(
+            model_name=llm_config["model_name"],
+            temperature=llm_config.get("temperature", 0.2),
+            max_output_tokens=llm_config.get("max_output_tokens", 1024),
+            max_retries=llm_config.get("max_retries", 3),
+            retry_base_delay_seconds=llm_config.get("retry_base_delay_seconds", 2),
+            retry_max_delay_seconds=llm_config.get("retry_max_delay_seconds", 20),
+            request_timeout_seconds=llm_config.get("request_timeout_seconds", 60),
+            api_keys_env_var=llm_config.get("api_keys_env_var", "GEMINI_API_KEYS"),
+            key_pool_config=llm_config.get("key_pool"),
+        )
+    if provider == "deepseek":
+        return DeepSeekClient(
+            model_name=llm_config["model_name"],
+            reasoning_effort=llm_config.get("reasoning_effort", "none"),
+            temperature=llm_config.get("temperature", 0.0),
+            max_output_tokens=llm_config.get("max_output_tokens", 8192),
+            max_retries=llm_config.get("max_retries", 2),
+            retry_base_delay_seconds=llm_config.get("retry_base_delay_seconds", 2),
+            retry_max_delay_seconds=llm_config.get("retry_max_delay_seconds", 20),
+            request_timeout_seconds=llm_config.get("request_timeout_seconds", 30),
+            api_keys_env_var=llm_config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
+            key_pool_config=llm_config.get("key_pool"),
+        )
+    raise ValueError(f"Unsupported composer provider: {provider}")
+
+
 class AnswerPipeline:
     """Orchestrate planning, retrieval, generation, citations, caching, and telemetry."""
 
@@ -989,51 +1021,7 @@ class AnswerPipeline:
         if self._llm_client is None:
             with self._component_init_lock:
                 if self._llm_client is None:
-                    llm_config = self.config["llm"]
-                    provider = llm_config.get("provider", "gemini")
-                    if provider == "gemini":
-                        self._llm_client = GeminiClient(
-                            model_name=llm_config["model_name"],
-                            temperature=llm_config.get("temperature", 0.2),
-                            max_output_tokens=llm_config.get(
-                                "max_output_tokens", 1024
-                            ),
-                            max_retries=llm_config.get("max_retries", 3),
-                            retry_base_delay_seconds=llm_config.get(
-                                "retry_base_delay_seconds", 2
-                            ),
-                            retry_max_delay_seconds=llm_config.get(
-                                "retry_max_delay_seconds", 20
-                            ),
-                            request_timeout_seconds=llm_config.get(
-                                "request_timeout_seconds", 60
-                            ),
-                            api_keys_env_var=llm_config.get(
-                                "api_keys_env_var", "GEMINI_API_KEYS"
-                            ),
-                            key_pool_config=llm_config.get("key_pool"),
-                        )
-                    elif provider == "deepseek":
-                        self._llm_client = DeepSeekClient(
-                            model_name=llm_config["model_name"],
-                            reasoning_effort=llm_config.get("reasoning_effort", "none"),
-                            temperature=llm_config.get("temperature", 0.0),
-                            max_output_tokens=llm_config.get("max_output_tokens", 8192),
-                            max_retries=llm_config.get("max_retries", 2),
-                            retry_base_delay_seconds=llm_config.get(
-                                "retry_base_delay_seconds", 2
-                            ),
-                            retry_max_delay_seconds=llm_config.get(
-                                "retry_max_delay_seconds", 20
-                            ),
-                            request_timeout_seconds=llm_config.get(
-                                "request_timeout_seconds", 30
-                            ),
-                            api_keys_env_var=llm_config.get(
-                                "api_keys_env_var", "DEEPSEEK_API_KEY"
-                            ),
-                            key_pool_config=llm_config.get("key_pool"),
-                        )
+                    self._llm_client = create_composer_client(self.config["llm"])
         return self._llm_client
 
     def _throttle_llm_call(self) -> None:

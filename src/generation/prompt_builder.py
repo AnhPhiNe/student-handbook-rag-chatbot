@@ -45,6 +45,15 @@ def build_answer_prompt_bundle(
         fallback_cohort=cohort,
         max_context_chars=max_context_chars,
     )
+    return render_answer_prompt(query, packet)
+
+
+def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
+    """Render the Composer prompt for one authorized evidence packet.
+
+    The pipeline builds the packet from retrieval; a composer replay renders a
+    recorded packet through this same function, so both prompts are identical.
+    """
     required_units = [
         {
             "task_id": unit["task_id"],

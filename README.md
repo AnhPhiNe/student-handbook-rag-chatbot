@@ -562,6 +562,7 @@ Interactive API docs are then served at `http://127.0.0.1:8000/docs`.
 | `OPENAI_API_KEY` | yes | Planner (`gpt-6-luna`, strict QueryPlan schema; settings in `configs/ai_router.yaml`) |
 | `GROQ_API_KEYS` | no | Evaluation judge only |
 | `GEMINI_API_KEYS` | yes | Composer key pool (comma-separated) |
+| `DEEPSEEK_API_KEY` | yes | Directory selector: picks the service, office, faculty or program a student names when no name matches exactly (`directory_selector` in `configs/answer_generation.yaml`) |
 | `COHERE_API_KEYS` | no | Reranker key pool; without it retrieval uses the RRF order |
 | `REDIS_URL` | no | Shared response cache; without it an in-memory cache is used |
 | `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT` | no | Request tracing and user feedback |

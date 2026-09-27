@@ -1,14 +1,14 @@
-# Labeled cases for calibrating student-service matching thresholds.
+# Labeled cases for student-service matching (lookup_type: student_service).
 #
-# Development data, not a hold-out: thresholds are chosen on the "dev" split
-# and checked on the "test" split. The official_v1 service cases are added by
-# the calibration script from their planner outputs.
+# Development data, not a hold-out; measured with
+# scripts/eval_directory_matching.py. The official_v1 service cases are added
+# by that script from their planner outputs.
 #
 # Written 2026-09-27 from the K51 student-service directory and reviewed against
 # its full service texts (one label moved to ambiguous, three cases added). They avoid every
 # service that official_v3 asks about (lending a microphone, health insurance
 # cards, paying tuition, emergency care, student loans, wifi) and the whole
-# Trạm Y tế catalog, so calibrating on them cannot tune the system to the
+# Trạm Y tế catalog, so measuring on them cannot tune the system to the
 # hold-out.
 #
 # service: what the planner puts in the service slot (the matcher's input).

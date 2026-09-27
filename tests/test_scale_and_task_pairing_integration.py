@@ -58,7 +58,7 @@ def _run(query, tasks, *, catalogs=None, cohort="K50", grounding_context="",
     executor = PlanExecutor(
         router=SimpleNamespace(plan=lambda *_args, **_kwargs: copy.deepcopy(plan)),
         slang_normalizer=SlangNormalizer(), catalogs=catalogs or _catalogs(),
-        parent_sources_by_id={}, top_k=5, public_source_limit=10, model=None,
+        parent_sources_by_id={}, top_k=5, public_source_limit=10, directory_selector=None,
         graph=SimpleNamespace(expand_context=lambda *_args, **_kwargs: []),
     )
     result = executor.run(query=query, cohort=cohort, chat_history=None)

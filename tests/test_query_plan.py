@@ -269,7 +269,6 @@ def test_office_lookup_never_falls_back_to_another_cohort() -> None:
             [record],
             cohort="K51",
             candidate_text="Phòng Đào tạo",
-            require_confident_match=True,
         )
         is None
     )
@@ -289,7 +288,6 @@ def test_office_lookup_accepts_only_validated_cross_cohort_source() -> None:
             [base],
             cohort="K51",
             candidate_text="Phòng Đào tạo",
-            require_confident_match=True,
         )
         is None
     )
@@ -298,7 +296,6 @@ def test_office_lookup_accepts_only_validated_cross_cohort_source() -> None:
         [{**base, "applicability_validated": True}],
         cohort="K51",
         candidate_text="Phòng Đào tạo",
-        require_confident_match=True,
     )
     assert result is not None
     assert result["result"][0]["unit_name"] == "Phòng Đào tạo"
@@ -317,7 +314,6 @@ def test_office_lookup_keeps_explicit_shared_source() -> None:
         ],
         cohort="K51",
         candidate_text="Trung tâm dùng chung",
-        require_confident_match=True,
     )
     assert result is not None
 

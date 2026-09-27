@@ -28,6 +28,21 @@ llm:
     cooldown_on_rate_limit_seconds: 30
     wait_when_all_keys_limited: false
 
+# Picks the directory records (service, office, faculty, program) a student
+# names when no name matches exactly; see src/retrieval/core/directory_selector.py.
+directory_selector:
+  provider: deepseek
+  model_name: deepseek-flash
+  reasoning_effort: none
+  api_keys_env_var: DEEPSEEK_API_KEY
+  max_output_tokens: 200
+  max_retries: 1
+  request_timeout_seconds: 15
+  # DeepSeek limits concurrency, not a request rate; this is only a local
+  # guard. A limited key fails fast and the student is asked instead.
+  key_pool:
+    rpm_limit_per_key: 300
+
 cache:
   enabled: true
   ttl_seconds: 86400

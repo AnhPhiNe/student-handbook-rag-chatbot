@@ -161,7 +161,7 @@ def _resolve(task, query):
         student_faculty_profiles=[],
         structured_tables_registry=[],
         program_directory=[],
-        model=None,
+        directory_selector=None,
     )
 
 

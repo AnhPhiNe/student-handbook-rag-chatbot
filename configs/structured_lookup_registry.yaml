@@ -234,9 +234,6 @@ tools:
     strategy: student_service_lookup
     response_intent: office_query
     target_chunk_types: [office_directory]
-    matching:
-      min_confidence: 0.62
-      ambiguity_margin: 0.08
 
   office:
     data_category: directory_table
@@ -266,9 +263,6 @@ tools:
     strategy: office_lookup
     response_intent: office_query
     target_chunk_types: [office_directory]
-    matching:
-      min_confidence: 0.72
-      ambiguity_margin: 0.08
 
   faculty:
     data_category: directory_table
@@ -297,9 +291,6 @@ tools:
     strategy: faculty_lookup
     response_intent: faculty_query
     target_chunk_types: [faculty_program_directory]
-    matching:
-      min_confidence: 0.72
-      ambiguity_margin: 0.08
 
   program:
     data_category: directory_table

@@ -36,8 +36,9 @@ REQUIRED_ENV_VARS = (
     "QDRANT_COLLECTION_NAME",
     "MONGODB_URL",
     "MONGODB_PARENT_COLLECTION",
-    "GROQ_API_KEYS",
-    "GEMINI_API_KEYS",
+    "OPENAI_API_KEY",  # planner
+    "GEMINI_API_KEYS",  # composer
+    "DEEPSEEK_API_KEY",  # directory selector
 )
 
 

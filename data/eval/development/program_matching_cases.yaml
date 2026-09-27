@@ -1,0 +1,60 @@
+# Labeled cases for program matching (lookup_type: program).
+#
+# Development data, not a hold-out. Written 2026-09-28 from the K51 program
+# directory. official_v3 asks which faculty runs Công nghệ Giáo dục, Hoá học,
+# Ngôn ngữ Nhật, Quốc tế học, Sinh học ứng dụng, Sư phạm Tin học, Sư phạm Địa
+# lý and Tâm lý học giáo dục; no case here asks for any of them. The official_v1
+# program tasks are added by the script from their planner outputs.
+#
+# text:    what the planner puts in program_or_faculty (the matcher's input)
+# action:  resolve -> which faculty runs the program (action resolve_faculty)
+#          exists  -> does the cohort have this program
+#          list    -> programs of a faculty or a field (action list, scope faculty)
+# expect:  one  -> exactly the listed program
+#          any  -> one or more of the listed programs, or a clarification
+#          all  -> exactly the listed programs; `faculty` lists every program of it
+#          none -> no program in the catalog; clarification is safe
+version: 1
+cohort: K51
+cases:
+  # ---- one program, full or shortened name
+  - {id: prg_01, action: resolve, text: "sư phạm toán", expect: one, programs: ["Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)"]}
+  - {id: prg_02, action: resolve, text: "SP Văn", expect: one, programs: ["Sư phạm Ngữ văn"]}
+  - {id: prg_03, action: resolve, text: "ngôn ngữ Hàn", expect: one, programs: ["Ngôn ngữ Hàn Quốc"]}
+  - {id: prg_04, action: resolve, text: "toán ứng dụng", expect: one, programs: ["Toán ứng dụng"]}
+  - {id: prg_05, action: resolve, text: "ngành CNTT", expect: one, programs: ["Công nghệ Thông tin"]}
+  - {id: prg_06, action: resolve, text: "cong nghe thong tin", expect: one, programs: ["Công nghệ Thông tin"]}
+  - {id: prg_07, action: resolve, text: "giáo dục mầm non", expect: one, programs: ["Giáo dục Mầm non (trình độ cao đẳng và đại học)"]}
+  - {id: prg_08, action: resolve, text: "GD tiểu học", expect: one, programs: ["Giáo dục Tiểu học"]}
+  - {id: prg_09, action: resolve, text: "quốc phòng an ninh", expect: one, programs: ["Giáo dục Quốc phòng – An ninh"]}
+  - {id: prg_10, action: resolve, text: "ngành du lịch", expect: one, programs: ["Du lịch"]}
+  - {id: prg_11, action: resolve, text: "sư phạm sử địa", expect: one, programs: ["Sư phạm Lịch sử – Địa lý"]}
+  - {id: prg_12, action: resolve, text: "ngành dạy tiếng Việt cho người nước ngoài", expect: one, programs: ["Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)"]}
+  - {id: prg_13, action: resolve, text: "tâm lý học", expect: one, programs: ["Tâm lý học"]}
+  - {id: prg_14, action: resolve, text: "sư phạm khoa học tự nhiên", expect: one, programs: ["Sư phạm Khoa học tự nhiên"]}
+
+  # ---- the name fits several programs (all in one faculty here, so either answer helps)
+  - {id: prg_15, action: resolve, text: "ngành Anh", expect: any, programs: ["Ngôn ngữ Anh", "Sư phạm tiếng Anh"]}
+  - {id: prg_16, action: resolve, text: "tiếng Trung", expect: any, programs: ["Ngôn ngữ Trung Quốc", "Sư phạm tiếng Trung Quốc"]}
+  - {id: prg_17, action: resolve, text: "vật lý", expect: any, programs: ["Vật lý học", "Sư phạm Vật lý"]}
+
+  # ---- does the cohort have it
+  - {id: prg_18, action: exists, text: "sư phạm tiếng Nga", expect: one, programs: ["Sư phạm tiếng Nga"]}
+  - {id: prg_19, action: exists, text: "Việt Nam học", expect: one, programs: ["Việt Nam học"]}
+  - {id: prg_20, action: exists, text: "ngành công tác xã hội", expect: one, programs: ["Công tác xã hội"]}
+  - {id: prg_21, action: exists, text: "ngành tiếng Hàn", expect: one, programs: ["Ngôn ngữ Hàn Quốc"]}
+  - {id: prg_22, action: exists, text: "sư phạm tiếng Hàn", expect: none}
+  - {id: prg_23, action: exists, text: "ngành Kế toán", expect: none}
+  - {id: prg_24, action: exists, text: "sư phạm âm nhạc", expect: none}
+  - {id: prg_25, action: exists, text: "ngành Luật", expect: none}
+  - {id: prg_26, action: resolve, text: "ngành Y đa khoa", expect: none}
+  - {id: prg_27, action: resolve, text: "kiến trúc", expect: none}
+
+  # ---- every program of a faculty or a field
+  - {id: prg_28, action: list, text: "khoa Vật lý", expect: all, faculty: "Khoa Vật lý"}
+  - {id: prg_29, action: list, text: "khoa Toán", expect: all, faculty: "Khoa Toán – Tin học"}
+  - {id: prg_30, action: list, text: "khoa Giáo dục Chính trị", expect: all, faculty: "Khoa Giáo dục Chính trị"}
+  - {id: prg_31, action: list, text: "khoa KHGD", expect: all, faculty: "Khoa Khoa học Giáo dục"}
+  - {id: prg_32, action: list, text: "khoa tiếng Pháp", expect: all, faculty: "Khoa Tiếng Pháp"}
+  - {id: prg_33, action: list, text: "các ngành sư phạm ngoại ngữ", expect: all, programs: ["Sư phạm tiếng Anh", "Sư phạm tiếng Nga", "Sư phạm tiếng Pháp", "Sư phạm tiếng Trung Quốc"]}
+  - {id: prg_34, action: list, text: "các ngành ngôn ngữ", expect: all, programs: ["Ngôn ngữ Anh", "Ngôn ngữ Hàn Quốc", "Ngôn ngữ Nga", "Ngôn ngữ Nhật", "Ngôn ngữ Pháp", "Ngôn ngữ Trung Quốc"]}

@@ -10,6 +10,7 @@ import pytest
 
 from src.retrieval.core.office_lookup import normalize_text, office_lookup
 from src.retrieval.core.query_plan import normalize_query_plan
+from tests.scripted_selector import scripted_selector
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,10 +62,10 @@ def office_profiles() -> list[dict[str, Any]]:
 
 @pytest.fixture(scope="module")
 def production_directory(
-    services: list[dict[str, Any]], office_profiles: list[dict[str, Any]]
+    services: list[dict[str, Any]]
 ) -> list[dict[str, Any]]:
-    """Mirror the student-service production pool used by the dispatcher."""
-    return services + office_profiles
+    """Mirror the student-service pool the dispatcher selects from."""
+    return services
 
 
 @pytest.mark.parametrize("alias", sorted(EXPECTED_UNITS))
@@ -154,8 +155,7 @@ def test_service_alias_lookup_accepts_natural_case_and_accent_variants(
         production_directory,
         cohort=cohort,
         candidate_text=candidate_text,
-        require_confident_match=True,
-        min_confidence=0.62,
+        lookup_type="student_service",
     )
 
     assert result is not None
@@ -168,20 +168,22 @@ def test_service_alias_lookup_accepts_natural_case_and_accent_variants(
 def test_generic_service_phrase_stays_ambiguous_when_candidate_is_generic(
     production_directory: list[dict[str, Any]],
 ) -> None:
-    # This deliberately exercises only the existing ambiguity contract; the
-    # matcher does not claim to interpret negation semantics.
+    # A generic phrase matches no single name exactly, so the selector
+    # decides; its ambiguous reply becomes a clarification over both units.
+    units = ("Phòng Khảo thí và Đảm bảo chất lượng", "Phòng Công tác chính trị và Học sinh, sinh viên")
     result = office_lookup(
         "Không cần giấy chứng nhận",
         production_directory,
         cohort="K51",
         candidate_text="giấy chứng nhận",
-        require_confident_match=True,
-        min_confidence=0.62,
+        lookup_type="student_service",
+        selector=scripted_selector({"giấy chứng nhận": units}),
     )
 
     assert result is not None
     assert result["resolution_status"] == "ambiguous"
-    assert result["clarification_options"]
+    assert set(result["candidate_units"]) == set(units)
+    assert len(result["clarification_options"]) == 2
 
 
 def _plan(tasks: list[dict[str, Any]]) -> dict[str, Any]:
@@ -262,8 +264,7 @@ def test_compound_service_tasks_keep_local_aliases_across_cohorts(
             production_directory,
             cohort=task_cohort,
             candidate_text=task["slots"]["service"],
-            require_confident_match=True,
-            min_confidence=0.62,
+            lookup_type="student_service",
         )
         assert result is not None
         assert result["cohort"] == task_cohort

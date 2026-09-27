@@ -44,7 +44,7 @@ def _structured_executor():
     )
     executor = PlanExecutor(
         router=None, slang_normalizer=SlangNormalizer(), catalogs=catalogs,
-        parent_sources_by_id={}, top_k=5, public_source_limit=10, model=None,
+        parent_sources_by_id={}, top_k=5, public_source_limit=10, directory_selector=None,
         graph=SimpleNamespace(expand_context=lambda *_args, **_kwargs: []),
     )
     paths["plan_executor"] = ROOT / "src/generation/plan_executor.py"

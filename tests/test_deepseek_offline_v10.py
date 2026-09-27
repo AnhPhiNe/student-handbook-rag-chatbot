@@ -15,7 +15,7 @@ from src.retrieval.core.catalog_relationship import (
     _declared_alias_span, _keys, identity, resolve_relationship,
 )
 from src.retrieval.core.citation_builder import build_citation_from_lookup
-from src.retrieval.core.office_lookup import office_lookup
+from src.retrieval.core.office_lookup import directory_result
 from src.retrieval.core.structured_dispatcher import resolve_structured_task
 from src.retrieval.core.query_plan import normalize_query_plan
 
@@ -43,7 +43,7 @@ def resolve(task, cohort):
         student_service_directory=data["student_service"],
         student_faculty_profiles=data["faculty"],
         structured_tables_registry=data["tables"],
-        program_directory=data["program"], model=None,
+        program_directory=data["program"], directory_selector=None,
     )
 
 
@@ -218,8 +218,7 @@ def test_office_to_services_returns_multiple_targets_not_clarification():
     data = catalogs()
     office = next(item for item in data["office"] if len(item.get("service_ids") or []) > 1)
     cohort = office["cohort"]
-    source = office_lookup(office["unit_name"], [office],
-                           candidate_text=office["unit_name"], cohort=cohort, top_k=1)
+    source = directory_result(office["unit_name"], [office], cohort=cohort)
     from src.retrieval.core.structured_dispatcher import _RELATIONSHIPS
     result = resolve_relationship(source, source_lookup="office", requested_field="services",
                                   cohort=cohort, relationships=_RELATIONSHIPS,

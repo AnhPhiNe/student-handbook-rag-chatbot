@@ -29,7 +29,7 @@ def deepseek_key_pool_config(config: dict[str, Any] | None) -> KeyPoolConfig:
 
 
 class DeepSeekClient(PooledLLMClient):
-    """Generate grounded answers with DeepSeek's OpenAI-compatible Chat API."""
+    """Call DeepSeek's OpenAI-compatible Chat API (composer and directory selector)."""
 
     provider_label = "DeepSeek"
 
@@ -45,6 +45,7 @@ class DeepSeekClient(PooledLLMClient):
         request_timeout_seconds: float = 30,
         api_keys_env_var: str = "DEEPSEEK_API_KEY",
         key_pool_config: KeyPoolConfig | dict[str, Any] | None = None,
+        response_format: dict[str, Any] | None = None,
     ) -> None:
         load_project_env()
         self.available_keys = [
@@ -53,7 +54,7 @@ class DeepSeekClient(PooledLLMClient):
             if key.strip()
         ]
         if not self.available_keys:
-            raise RuntimeError(f"Missing {api_keys_env_var} for the DeepSeek composer.")
+            raise RuntimeError(f"Missing {api_keys_env_var} for DeepSeek.")
         effort = str(reasoning_effort or "none").strip().lower()
         if effort not in REASONING_EFFORTS:
             raise ValueError(f"Unsupported DeepSeek reasoning effort: {effort}")
@@ -65,6 +66,8 @@ class DeepSeekClient(PooledLLMClient):
         self.retry_base_delay_seconds = float(retry_base_delay_seconds)
         self.retry_max_delay_seconds = float(retry_max_delay_seconds)
         self.request_timeout_seconds = float(request_timeout_seconds)
+        # {"type": "json_object"} makes DeepSeek return one JSON object.
+        self.response_format = response_format
         if not isinstance(key_pool_config, KeyPoolConfig):
             key_pool_config = deepseek_key_pool_config(key_pool_config)
         self.key_pool = KeyPool(self.available_keys, key_pool_config, scope=self.model_name)
@@ -92,6 +95,7 @@ class DeepSeekClient(PooledLLMClient):
             temperature=self.temperature,
             max_tokens=self.max_output_tokens,
             extra_body=thinking,
+            **({"response_format": self.response_format} if self.response_format else {}),
             **options,
         )
 

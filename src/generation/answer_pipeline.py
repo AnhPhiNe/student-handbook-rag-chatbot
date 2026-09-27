@@ -11,6 +11,7 @@ from typing import Any
 from src.common.cohort import resolve_cohort_from_query
 from src.common.env_loader import env_bool
 from src.common.io import load_json, load_yaml
+from src.retrieval.core.directory_selector import DirectorySelector
 from src.retrieval.core.slang_normalizer import SlangNormalizer
 from src.retrieval.core.embedding_model import (
     load_embedding_model,
@@ -133,6 +134,23 @@ def create_composer_client(llm_config: dict[str, Any]) -> Any:
     raise ValueError(f"Unsupported composer provider: {provider}")
 
 
+def create_directory_selector(selector_config: dict[str, Any]) -> DirectorySelector:
+    """Build the selector that picks directory records a student names (DeepSeek, JSON output)."""
+    if selector_config.get("provider") != "deepseek":
+        raise ValueError(f"Unsupported directory selector provider: {selector_config.get('provider')}")
+    return DirectorySelector(DeepSeekClient(
+        model_name=selector_config["model_name"],
+        reasoning_effort=selector_config.get("reasoning_effort", "none"),
+        temperature=0.0,
+        max_output_tokens=selector_config.get("max_output_tokens", 200),
+        max_retries=selector_config.get("max_retries", 1),
+        request_timeout_seconds=selector_config.get("request_timeout_seconds", 15),
+        api_keys_env_var=selector_config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
+        key_pool_config=selector_config.get("key_pool"),
+        response_format={"type": "json_object"},
+    ))
+
+
 class AnswerPipeline:
     """Orchestrate planning, retrieval, generation, citations, caching, and telemetry."""
 
@@ -198,6 +216,8 @@ class AnswerPipeline:
             program_directory=self.program_directory,
         )
 
+        # Warm-up only: the dense retriever reuses this cached instance, so the
+        # first question does not pay the model load.
         self.model = load_embedding_model(
             self.retrieval_config["embedding"]["model_name"]
         )
@@ -1012,7 +1032,7 @@ class AnswerPipeline:
                 parent_sources_by_id=self.parent_sources_by_id,
                 top_k=self._retrieval_top_k(),
                 public_source_limit=self._public_source_limit(),
-                model=self.model,
+                directory_selector=create_directory_selector(self.config["directory_selector"]),
             )
         return self._plan_executor
 

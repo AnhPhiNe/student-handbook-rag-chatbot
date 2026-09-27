@@ -92,7 +92,7 @@ class PlanExecutor:
         parent_sources_by_id: dict[str, dict[str, Any]],
         top_k: int,
         public_source_limit: int,
-        model: Any | None = None,
+        directory_selector: Any | None = None,
         graph: Any | None = None,
     ) -> None:
         self.router = router
@@ -101,7 +101,7 @@ class PlanExecutor:
         self.parent_sources_by_id = parent_sources_by_id
         self.top_k = top_k
         self.public_source_limit = public_source_limit
-        self.model = model
+        self.directory_selector = directory_selector
         self._graph = graph
 
     def run(
@@ -469,7 +469,7 @@ class PlanExecutor:
             student_faculty_profiles=self.catalogs.student_faculty_profiles,
             structured_tables_registry=self.catalogs.structured_tables_registry,
             program_directory=self.catalogs.program_directory,
-            model=self.model,
+            directory_selector=self.directory_selector,
         )
         if not resolution or not resolution.result:
             return {

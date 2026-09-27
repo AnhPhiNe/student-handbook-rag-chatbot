@@ -10,10 +10,12 @@ from src.common.cohort import (
     normalize_cohort,
 )
 from src.common.score import grounded_score, parse_score
+from src.common.text import slot_values
 
 from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
 from .catalog_relationship import resolve_relationship
+from .directory_selector import DirectorySelector
 from .office_lookup import normalize_text, office_lookup
 from .program_lookup import program_lookup
 from .scholarship_lookup import scholarship_table_lookup
@@ -51,18 +53,16 @@ class StructuredResolution:
         return "resolved" if self.result.get("resolved_result") else "evidence_only"
 
 
-def _slot_text(task: dict[str, Any], *names: str) -> str:
+def _slot_value(task: dict[str, Any], *names: str) -> str | list[str]:
+    """The first non-empty slot among `names` (literal span first); a list of names stays a list."""
     spans = task.get("slot_spans") or {}
     slots = task.get("slots") or {}
     for name in names:
         for source in (spans, slots):
             value = source.get(name)
-            if isinstance(value, str) and value.strip():
-                return value.strip()
-            if isinstance(value, list) and value:
-                joined = " ".join(str(v).strip() for v in value if str(v).strip())
-                if joined:
-                    return joined
+            values = [str(item).strip() for item in slot_values(value) if str(item).strip()]
+            if values:
+                return values if isinstance(value, list) else values[0]
     return ""
 
 
@@ -579,7 +579,7 @@ def _resolve_single_lookup(
     student_faculty_profiles: list[dict[str, Any]] | None,
     structured_tables_registry: list[dict[str, Any]],
     program_directory: list[dict[str, Any]],
-    model: Any | None = None,
+    directory_selector: DirectorySelector | None = None,
 ) -> StructuredResolution | None:
     """Dispatch one validated lookup and package only grounded results.
 
@@ -687,42 +687,41 @@ def _resolve_single_lookup(
         )
 
     if lookup_type in {"student_service", "office", "faculty"}:
-        matching_config = _LOOKUP_TOOL_SPECS.get(lookup_type, {}).get("matching") or {}
         candidate_slot = {
             "student_service": "service",
             "office": "office",
             "faculty": "faculty",
         }[lookup_type]
         candidate_text = (
-            _slot_text(task, candidate_slot)
-            or _slot_text(task, "faculty")
-            or _slot_text(task, "office")
-            or _slot_text(task, "program_or_faculty")
+            _slot_value(task, candidate_slot, "faculty", "office", "program_or_faculty")
             or query
         )
-        if lookup_type == "student_service":
-            directory = student_service_directory + office_directory
-        elif lookup_type == "office":
-            directory = office_directory
-        else:
-            directory = student_faculty_profiles or []
+        directory = {
+            "student_service": student_service_directory,
+            "office": office_directory,
+            "faculty": student_faculty_profiles or [],
+        }[lookup_type]
 
         result = office_lookup(
             query,
             directory,
-            cohort=effective_cohort,
             candidate_text=candidate_text,
-            require_confident_match=True,
-            model=model if lookup_type == "student_service" else None,
-            min_confidence=float(matching_config.get("min_confidence", 0.72)),
-            ambiguity_margin=float(matching_config.get("ambiguity_margin", 0.08)),
+            lookup_type=lookup_type,
+            cohort=effective_cohort,
+            selector=directory_selector,
         )
-        if result is not None and result.get("resolution_status") == "ambiguous":
+        if result is not None and result.get("resolution_status") in {"ambiguous", "unresolved"}:
             options = result.get("clarification_options") or []
-            result["clarification_question"] = (
-                "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n"
-                + "\n".join(options)
-            )
+            if options:
+                result["clarification_question"] = (
+                    "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n"
+                    + "\n".join(options)
+                )
+            else:
+                result["clarification_question"] = (
+                    f"Mình chưa xác định được đơn vị ứng với \"{result.get('candidate_text')}\". "
+                    "Bạn ghi rõ tên đơn vị hoặc việc cần hỗ trợ giúp mình nhé."
+                )
             return _resolution(
                 lookup_type,
                 "office_lookup_clarification",
@@ -771,7 +770,7 @@ def _resolve_single_lookup(
         )
 
     if lookup_type == "program":
-        candidate_text = _slot_text(task, "program_or_faculty") or query
+        candidate_text = _slot_value(task, "program_or_faculty") or query
         intent = task.get("intent")
         scope = str(slots.get("scope") or "school")
         requested_field = slots.get("requested_field") or ""
@@ -790,6 +789,7 @@ def _resolve_single_lookup(
             cohort=effective_cohort,
             action=action,
             scope=scope,
+            selector=directory_selector,
         )
         if result is not None:
             result = resolve_relationship(
@@ -836,7 +836,7 @@ def resolve_structured_task(
     student_faculty_profiles: list[dict[str, Any]] | None,
     structured_tables_registry: list[dict[str, Any]],
     program_directory: list[dict[str, Any]],
-    model: Any | None = None,
+    directory_selector: DirectorySelector | None = None,
 ) -> StructuredResolution | None:
     """Dispatch a validated structured task to its lookup handler."""
 
@@ -853,7 +853,7 @@ def resolve_structured_task(
         "student_faculty_profiles": student_faculty_profiles,
         "structured_tables_registry": structured_tables_registry,
         "program_directory": program_directory,
-        "model": model,
+        "directory_selector": directory_selector,
     }
 
     return _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None

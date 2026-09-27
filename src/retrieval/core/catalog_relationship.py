@@ -8,7 +8,7 @@ from typing import Any
 
 from src.common.cohort import is_validated_source_applicable, normalize_cohort
 
-from .office_lookup import office_lookup
+from .office_lookup import directory_result
 
 
 def identity(value: Any) -> str:
@@ -153,13 +153,10 @@ def resolve_relationship(
         }
     # Matching was completed above by exact catalog identities. Formatting
     # each single-record result cannot introduce another target.
-    targets = [office_lookup(
+    targets = [directory_result(
         str(source_item.get("unit_name") or source_item.get("faculty_name") or "catalog"),
-        [match], candidate_text=str(match.get("unit_name") or match.get("service") or
-                                    match.get("service_id") or "catalog"),
-        cohort=cohort, top_k=1, model=None,
+        [match], cohort=cohort,
     ) for match in matches]
-    targets = [target for target in targets if target is not None]
     return {
         "lookup_type": source_lookup,
         "relationship_status": "resolved",

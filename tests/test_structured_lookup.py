@@ -7,6 +7,7 @@ from pathlib import Path
 from src.extraction.scoring_tables import build_scoring_tables
 from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.program_lookup import program_lookup
+from tests.scripted_selector import scripted_selector
 from src.retrieval.core.scholarship_lookup import scholarship_table_lookup
 from src.retrieval.core.structured_lookup import structured_lookup_from_slots
 
@@ -114,38 +115,6 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertEqual(result["lookup_type"], "conduct_classification")
         self.assertEqual(result["result"]["range"], "80-duoi 90")
 
-    def test_program_topic_faculty_lookup_lists_matching_programs(self) -> None:
-        programs = [
-            {
-                "program_name": "Su pham Tin hoc",
-                "faculty_name": "Khoa Cong nghe Thong tin",
-                "cohort": "K50",
-                "document_id": "handbook",
-                "source_section": "program_directory",
-            },
-            {
-                "program_name": "Cong nghe Thong tin",
-                "faculty_name": "Khoa Cong nghe Thong tin",
-                "cohort": "K50",
-                "document_id": "handbook",
-                "source_section": "program_directory",
-            },
-        ]
-
-        result = program_lookup(
-            programs,
-            candidate_text="cac nganh su pham do khoa nao quan ly",
-            cohort="K50",
-            action="list",
-            scope="faculty",
-        )
-
-        self.assertIsNotNone(result)
-        self.assertEqual(result["lookup_scope"], "program_topic_faculty")
-        self.assertEqual(result["source_lookup_type"], "faculty")
-        self.assertEqual(result["program_count"], 1)
-        self.assertEqual(result["result"][0]["program_name"], "Su pham Tin hoc")
-
     def test_program_lookup_accepts_shared_directory_for_selected_cohort(self) -> None:
         programs = [
             {
@@ -160,7 +129,7 @@ class StructuredLookupTest(unittest.TestCase):
 
         result = program_lookup(
             programs,
-            candidate_text="nganh cong nghe thong tin o khoa nao",
+            candidate_text="Cong nghe Thong tin",
             cohort="K51",
             action="resolve_faculty",
             scope="school",
@@ -1529,12 +1498,17 @@ class StructuredLookupTest(unittest.TestCase):
             },
         ]
 
+        # The selector names every program of the faculty; each cohort's
+        # catalog only offers its own programs.
+        selector = scripted_selector({"Khoa Công nghệ Thông tin": [
+            "Công nghệ Giáo dục", "Công nghệ Thông tin", "Sư phạm Tin học"]})
         res_k49 = program_lookup(
             programs,
             candidate_text="Khoa Công nghệ Thông tin",
             cohort="K48-K49",
             action="list",
             scope="faculty",
+            selector=selector,
         )
         self.assertIsNotNone(res_k49)
         self.assertEqual(res_k49["program_count"], 2)
@@ -1547,6 +1521,7 @@ class StructuredLookupTest(unittest.TestCase):
             cohort="K51",
             action="list",
             scope="faculty",
+            selector=selector,
         )
         self.assertIsNotNone(res_k51)
         self.assertEqual(res_k51["program_count"], 3)
@@ -1561,10 +1536,10 @@ class StructuredLookupTest(unittest.TestCase):
             {"program_name": "Sư phạm Toán học", "faculty_name": "Khoa Toán - Tin học", "cohort": "K51"},
         ]
 
-        query = "cơ hội việc làm của ngành Công nghệ Giáo dục, Công nghệ Thông tin, Sư phạm Tin học"
+        # The planner passes the named programs as a list; each is selected.
         res = program_lookup(
             programs,
-            candidate_text=query,
+            candidate_text=["Công nghệ Giáo dục", "Công nghệ Thông tin", "Sư phạm Tin học"],
             cohort="K51",
             action="resolve_faculty",
             scope="school",
@@ -1574,20 +1549,6 @@ class StructuredLookupTest(unittest.TestCase):
         names = {p["program_name"] for p in res["result"]}
         self.assertEqual(names, {"Công nghệ Giáo dục", "Công nghệ Thông tin", "Sư phạm Tin học"})
 
-    def test_program_lookup_subsumption_protection(self):
-        programs = [
-            {"program_name": "Tin học", "faculty_name": "Khoa CNTT", "cohort": "K51"},
-            {"program_name": "Sư phạm Tin học", "faculty_name": "Khoa CNTT", "cohort": "K51"},
-        ]
-        query = "ngành Sư phạm Tin học"
-        res = program_lookup(
-            programs,
-            candidate_text=query,
-            cohort="K51",
-            action="resolve_faculty",
-            scope="school",
-        )
-        self.assertIsNotNone(res)
     def test_multi_entity_office_and_faculty_lookup_all_matched(self):
         units = [
             {
@@ -1603,13 +1564,11 @@ class StructuredLookupTest(unittest.TestCase):
                 "cohort": "K51",
             },
         ]
-        query = "email của khoa cntt và phòng cntt là gì"
         res = office_lookup(
-            query,
+            "email của khoa cntt và phòng cntt là gì",
             units,
             cohort="K51",
-            candidate_text=query,
-            require_confident_match=True,
+            candidate_text=["khoa cntt", "phòng cntt"],
         )
         self.assertIsNotNone(res)
         self.assertEqual(len(res["result"]), 2)
@@ -1631,13 +1590,11 @@ class StructuredLookupTest(unittest.TestCase):
                 "cohort": "K51",
             },
         ]
-        query = "email của phòng đào tạo và phòng công tác chính trị học sinh sinh viên"
         res = office_lookup(
-            query,
+            "email của phòng đào tạo và phòng công tác chính trị học sinh sinh viên",
             units,
             cohort="K51",
-            candidate_text=query,
-            require_confident_match=True,
+            candidate_text=["phòng đào tạo", "phòng công tác chính trị học sinh sinh viên"],
         )
         self.assertIsNotNone(res)
         self.assertNotEqual(res.get("resolution_status"), "ambiguous")
@@ -1654,18 +1611,17 @@ class StructuredLookupTest(unittest.TestCase):
             [record],
             cohort="K51",
             candidate_text="PAB",
-            require_confident_match=True,
         )
         with_alias = office_lookup(
             "PAB",
             [{**record, "aliases": ["PAB"]}],
             cohort="K51",
             candidate_text="PAB",
-            require_confident_match=True,
         )
 
-        self.assertIsNone(without_alias)
-        self.assertIsNotNone(with_alias)
+        # Without a selector, an undeclared acronym is never matched.
+        self.assertNotIn("result", without_alias)
+        self.assertEqual(with_alias["result"][0]["unit_name"], "Phòng Alpha Beta")
 
     def test_office_lookup_exposes_accented_vietnamese_display_metadata(self):
         cases = [
@@ -1703,8 +1659,7 @@ class StructuredLookupTest(unittest.TestCase):
                     ],
                     cohort="K51",
                     candidate_text=unit_name,
-                    require_confident_match=True,
-                )
+                        )
 
                 self.assertIsNotNone(result)
                 self.assertEqual(result["table_name"], table_name)

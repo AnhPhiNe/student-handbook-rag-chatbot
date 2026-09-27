@@ -48,7 +48,7 @@ def _execute(query, task, cohort):
     executor = PlanExecutor(
         router=ScriptedRouter(), slang_normalizer=SlangNormalizer(),
         catalogs=_catalogs(), parent_sources_by_id={}, top_k=5,
-        public_source_limit=5, model=None,
+        public_source_limit=5, directory_selector=None,
         graph=SimpleNamespace(expand_context=lambda *_args, **_kwargs: []),
     )
     return executor.run(query=query, cohort=cohort, chat_history=None)

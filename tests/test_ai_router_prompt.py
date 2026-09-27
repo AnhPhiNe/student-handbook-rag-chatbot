@@ -203,9 +203,9 @@ def test_planner_prompt_stays_within_budget(
     # reads the rules in decision order, and spells out terse rules in full. Keep a measured input ceiling. These are
     # character-based estimates, not provider tokenizer/billing counts or
     # runtime output-token limits.
-    assert stats["total_chars"] <= 19000
-    assert stats["estimated_input_tokens"] <= 4750
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v52-v1-review"
+    assert stats["total_chars"] <= 19500
+    assert stats["estimated_input_tokens"] <= 4875
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v53-restore-conditions"
     assert ("OUTPUT CONTRACT" in dynamic_prompt) == (response_format == "json_object")
     assert ("native JSON Schema" in dynamic_prompt) == (response_format == "json_schema")
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
@@ -224,9 +224,9 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
         router._build_plan_prompt("So sánh hai khóa về thời gian học.", cohort="K51", chat_history=[]),
         router._plan_response_format_payload(),
     )
-    # v52 adds the v1-review rules (score format, faculty vs office, needless clarify).
-    assert stats["total_chars"] <= 33000
-    assert stats["estimated_input_tokens"] <= 8250
+    # v52 adds the v1-review rules; v53 restores the v49 only-if conditions verbatim.
+    assert stats["total_chars"] <= 33500
+    assert stats["estimated_input_tokens"] <= 8375
 
 
 def test_dynamic_prompt_preserves_explicit_three_request_count(
@@ -415,6 +415,22 @@ def test_prompt_development_rubrics_are_valid_but_not_holdout() -> None:
         )
         assert validate_structured_task(decision, query=case["query"]) == [], case["id"]
         assert decision["slots"] == expected["slots"], case["id"]
+
+
+def test_planner_prompt_keeps_merge_and_rag_as_only_if_conditions() -> None:
+    """Merging and RAG are restricted exceptions, not sufficient conditions.
+
+    A readability rewrite once turned "Chỉ gộp ... khi" into "Một task khi" and
+    "Chỉ chọn RAG khi" into "rag: khi", which licensed merging two regulation
+    questions on one topic and routing table questions to RAG.
+    """
+    assert "Chỉ gộp các khía cạnh bổ sung khi chúng cùng đối tượng, mode, lookup và phạm vi nguồn để tạo một answer target" in PLANNER_PROMPT_TEXT
+    assert "Mặc định mỗi yêu cầu là một task" in PLANNER_PROMPT_TEXT
+    assert "Hai yêu cầu cần hai đáp án khác nhau là hai task" in PLANNER_PROMPT_TEXT
+    assert "chỉ chọn RAG khi cần đọc quy định" in PLANNER_PROMPT_TEXT
+    assert "bảng tham chiếu không tự xác lập mức nào là bắt buộc" in PLANNER_PROMPT_TEXT
+    assert "Một task khi các phần" not in PLANNER_PROMPT_TEXT
+    assert "cần đạt điều kiện gì là hỏi chính sách" not in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_splits_independent_answer_targets() -> None:

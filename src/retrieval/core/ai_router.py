@@ -47,7 +47,7 @@ _PROVIDER_KEY_ENVS = {
 _DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 # 256 truncated planner reasoning mid-task and produced canonical codes in
 # slot_spans; 1024 completed naturally (~820 reasoning tokens) in probes.
-ROUTER_PROMPT_VERSION = "structured-regulation-v52-v1-review"
+ROUTER_PROMPT_VERSION = "structured-regulation-v53-restore-conditions"
 PLANNER_DIAGNOSTIC_SCHEMA_VERSION = "planner-decision-diagnostics-v2"
 _planner_diagnostics_scope: ContextVar[bool] = ContextVar(
     "planner_diagnostics_scope", default=False
@@ -340,21 +340,26 @@ BƯỚC 1. NGỮ CẢNH
   entity, cohort, số liệu, phủ định, chủ đề hoặc ý định.
 
 BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
-- Liệt kê mọi yêu cầu trong QUERY. Nếu QUERY trộn trong/ngoài phạm vi Sổ tay, giữ
+- Trước khi chọn mode, xác định mọi yêu cầu trong phạm vi có thể thực thi độc
+  lập. Nếu QUERY trộn trong/ngoài phạm vi Sổ tay, giữ
   các target trong phạm vi và bỏ phần ngoài. EXPLICIT_REQUEST_COUNT là số marker
   để rà soát bỏ sót, không phải số task bắt buộc.
 - Mỗi task.question chứa một yêu cầu độc lập và tự đủ nghĩa. Mỗi task chỉ có một
   mode và tối đa một lookup_type.
-- Một task khi các phần cùng đối tượng, mode, lookup và phạm vi nguồn:
+- Mặc định mỗi yêu cầu là một task. Hai yêu cầu cần hai đáp án khác nhau là hai
+  task, kể cả khi cùng chủ đề, cùng mode hoặc cùng một điều quy chế.
+- Chỉ gộp các khía cạnh bổ sung khi chúng cùng đối tượng, mode, lookup và phạm vi
+  nguồn để tạo một answer target. Các trường hợp gộp:
   • Nhiều trường của cùng một đối tượng (vd. email và số điện thoại của một
     phòng) → một task, requested_field là danh sách.
   • Hỏi đơn vị/khoa rồi hỏi tiếp liên hệ của chính đơn vị/khoa đó (đơn vị phụ
     trách một dịch vụ rồi email của đơn vị đó; khoa của một ngành rồi email khoa
     đó) không phải phụ thuộc giữa task: runtime tự nối sang liên hệ, nên dùng một
     task, requested_field là danh sách.
-  • Nhiều entity cùng hỏi một kết quả, không kèm giá trị riêng, trong cùng lookup
-    hỗ trợ danh sách → một task với danh sách entity; giữ đủ entity và ý so sánh
-    trong task.question.
+  • Chỉ gộp nhiều entity khi lookup hỗ trợ danh sách, cùng phép tra và không làm
+    mất cặp entity–dữ kiện: nhiều entity cùng hỏi một kết quả, không kèm giá trị
+    riêng, trong cùng lookup hỗ trợ danh sách → một task với danh sách entity;
+    giữ đủ entity và ý so sánh trong task.question.
 - Tách task khi các phần hỏi về đối tượng/chủ đề độc lập hoặc cần mode/lookup
   khác nhau. Structured target và RAG target luôn là hai task; composer mới kết
   hợp kết quả. Ngoài ra:
@@ -383,11 +388,12 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   có từ "bảng", "tra cứu" hoặc "công thức". Phạm vi và loại trừ ghi trong TOOLS.use
   là bắt buộc: nếu TOOLS.use chỉ định một loại yêu cầu phải dùng RAG thì không
   chọn structured tool đó. Không chọn structured chỉ vì trùng từ chủ đề.
-- rag: khi cần đọc quy định, thủ tục, điều kiện áp dụng, ngoại lệ, hậu quả,
-  trách nhiệm theo quy chế/chính sách, hoặc khi tool chỉ trùng chủ đề nhưng không
-  trực tiếp trả được kết quả. Bảng chỉ cho giá trị quy đổi hoặc xếp loại; hỏi
-  mức nào là bắt buộc, ai phải áp dụng hoặc cần đạt điều kiện gì là hỏi chính
-  sách → RAG, trừ khi TOOLS.use nói rõ có chứa. Hỏi thông tin riêng mà chỉ hệ thống
+- rag: chỉ chọn RAG khi cần đọc quy định, thủ tục, điều kiện áp dụng, ngoại lệ,
+  hậu quả, trách nhiệm theo quy chế/chính sách, hoặc khi tool chỉ trùng chủ đề nhưng không
+  trực tiếp trả được kết quả. Phân biệt giá trị trong bảng với chính sách sử
+  dụng giá trị đó: bảng tham chiếu không tự xác lập mức nào là bắt buộc, ai phải
+  áp dụng hoặc điều kiện nào cần đạt. Các kết luận chính sách này dùng RAG, trừ
+  khi TOOLS.use nói rõ có chứa. Hỏi thông tin riêng mà chỉ hệ thống
   nhà trường có, không nằm trong Sổ tay (vd. điểm đã công bố, kết quả xét duyệt,
   tình trạng đơn) → RAG để báo Sổ tay không có thông tin này.
 - clarify: khi task thiếu slot required, có tham chiếu thật sự mơ hồ, hoặc người

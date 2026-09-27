@@ -18,6 +18,7 @@ from src.retrieval.core.embedding_model import (
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 
 from .answer_formatter import (
+    clean_answer,
     clean_stream_fragment,
     clean_stream_start,
     format_final_answer,
@@ -47,7 +48,7 @@ from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 
-PIPELINE_VERSION = "v76-structured-resolution-contract"
+PIPELINE_VERSION = "v77-online-answer-boundaries"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
@@ -396,7 +397,11 @@ class AnswerPipeline:
             pipeline_version=PIPELINE_VERSION,
             answer_prompt_version=ANSWER_PROMPT_VERSION,
         )
-        prepared.cached = self.response_cache.get(prepared.cache_key)
+        cached = self.response_cache.get(prepared.cache_key)
+        # Older runtimes could cache a successful but empty stream.
+        prepared.cached = (
+            cached if cached and str(cached.get("answer") or "").strip() else None
+        )
         return prepared
 
     def answer(
@@ -535,6 +540,20 @@ class AnswerPipeline:
                 end_time=end_time_llm,
             )
 
+        final_answer = ""
+        if llm_result.get("ok"):
+            final_answer = format_final_response(
+                str(llm_result.get("text") or "").strip(),
+                primary_citations=selected_citations,
+            )
+            if not final_answer.strip():
+                llm_result = {
+                    **llm_result,
+                    "ok": False,
+                    "error_type": "api_error",
+                    "error_message": "Empty answer after output cleanup.",
+                }
+
         if not llm_result.get("ok"):
             error_type = llm_result.get("error_type") or "api_error"
             logger.warning(
@@ -566,12 +585,6 @@ class AnswerPipeline:
                 tracker=tracker,
             )
 
-        llm_text = str(llm_result.get("text") or "").strip()
-
-        final_answer = format_final_response(
-            llm_text,
-            primary_citations=selected_citations,
-        )
         public_citations = prioritize_citations_by_answer_anchors(
             all_citations,
             final_answer,
@@ -818,7 +831,12 @@ class AnswerPipeline:
                 pending_stream_text += chunk_text
                 if not stream_prefix_emitted:
                     pending_stream_text = clean_stream_start(pending_stream_text)
-                source_start = sources_section_start(pending_stream_text)
+                source_start = sources_section_start(
+                    pending_stream_text,
+                    at_line_start=(
+                        not emitted_answer_parts or emitted_answer_parts[-1].endswith("\n")
+                    ),
+                )
                 if source_start is not None:
                     pending_stream_text = pending_stream_text[:source_start]
                     suppress_source_tail = True
@@ -836,14 +854,15 @@ class AnswerPipeline:
                         yield {"type": "token", "text": safe_text}
 
             if pending_stream_text:
-                final_tail = format_final_response(
-                    pending_stream_text,
-                    primary_citations=selected_citations,
-                )
+                # Source footers were removed with the real stream line boundary
+                # above; do not reinterpret a mid-sentence tail as a new heading.
+                final_tail = clean_answer(pending_stream_text)
                 if final_tail:
                     emitted_answer_parts.append(final_tail)
                     yield {"type": "token", "text": final_tail}
             final_answer_for_citations = "".join(emitted_answer_parts)
+            if not final_answer_for_citations.strip():
+                raise RuntimeError("Empty answer after output cleanup.")
             end_time_llm = datetime.now(timezone.utc).isoformat()
             self._last_llm_call_at = time.monotonic()
 

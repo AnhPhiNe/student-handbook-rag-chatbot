@@ -9,6 +9,7 @@ Dependencies are explicit constructor arguments so the pipeline stays the caller
 from __future__ import annotations
 
 import json
+import time
 from dataclasses import dataclass
 from typing import Any
 
@@ -112,11 +113,20 @@ class PlanExecutor:
     ) -> dict[str, Any]:
         """Plan and execute at most three independent, non-recursive tasks."""
         router_input_query = self.slang_normalizer.replace_for_router(query)
-        raw_plan = self.router.plan(
-            router_input_query,
-            chat_history=chat_history,
-            cohort=cohort,
-        )
+        planner_started = time.perf_counter()
+        try:
+            raw_plan = self.router.plan(
+                router_input_query,
+                chat_history=chat_history,
+                cohort=cohort,
+            )
+        except Exception as exc:
+            try:
+                exc.planner_latency_ms = (time.perf_counter() - planner_started) * 1000
+            except (AttributeError, TypeError):
+                pass
+            raise
+        planner_latency_ms = (time.perf_counter() - planner_started) * 1000
 
         plan_keys = (
             "schema_version",
@@ -164,6 +174,10 @@ class PlanExecutor:
             "planner_fallback": planner_fallback,
             "router_usage": raw_plan.get("usage"),
             "router_model": raw_plan.get("model_used"),
+            # Full call duration, including key wait, retries and backoff.
+            "planner_latency_ms": planner_latency_ms,
+            # Category only; raw exception strings may contain credentials/body text.
+            "planner_error_type": raw_plan.get("planner_error_type"),
         }
         if raw_plan.get("planner_diagnostics") is not None:
             base_result["planner_diagnostics"] = raw_plan["planner_diagnostics"]
@@ -185,19 +199,32 @@ class PlanExecutor:
                 "out_of_domain": True,
             }
 
-        task_executions = [
-            self.execute_task(
-                task=task,
-                task_index=index,
-                default_cohort=cohort,
+        try:
+            task_executions = [
+                self.execute_task(
+                    task=task,
+                    task_index=index,
+                    default_cohort=cohort,
+                )
+                for index, task in enumerate(plan.get("tasks") or [])
+            ]
+            return self.aggregate_results(
+                base_result=base_result,
+                plan=plan,
+                task_executions=task_executions,
             )
-            for index, task in enumerate(plan.get("tasks") or [])
-        ]
-        return self.aggregate_results(
-            base_result=base_result,
-            plan=plan,
-            task_executions=task_executions,
-        )
+        except Exception as exc:
+            # Preserve the planner trace across failures in retrieval/execution.
+            try:
+                exc.planner_latency_ms = planner_latency_ms
+            except (AttributeError, TypeError):
+                pass
+            if raw_plan.get("planner_diagnostics") is not None:
+                try:
+                    exc.planner_diagnostics = raw_plan["planner_diagnostics"]
+                except (AttributeError, TypeError):
+                    pass
+            raise
 
     def execute_task(
         self,
@@ -353,7 +380,13 @@ class PlanExecutor:
             coverage_by_task,
             max_sources=self.public_source_limit,
         )
-        covered_any = any(value == "covered" for value in coverage_by_task.values())
+        # Task summaries deliberately remain conservative. A partially covered
+        # multi-cohort task can still contribute an answerable composition unit.
+        covered_any = any(
+            result["coverage"] == "covered"
+            or "covered" in (result.get("coverage_by_cohort") or {}).values()
+            for result in task_results
+        )
         clarify_any = any(
             value == "needs_clarification" for value in coverage_by_task.values()
         )
@@ -425,9 +458,10 @@ class PlanExecutor:
 
         resolution = resolve_structured_task(
             task,
-            query=self.slang_normalizer.normalize_for_retrieval(
-                str(task.get("question") or "")
-            ),
+            # Slot spans refer to the task's literal text. Retrieval expansion
+            # may insert words inside a valid span (e.g. GPA), so it must not
+            # become the source against which structured grounding is checked.
+            query=str(task.get("question") or ""),
             cohort=cohort,
             formula_rules=self.catalogs.formula_rules,
             office_directory=self.catalogs.office_directory,

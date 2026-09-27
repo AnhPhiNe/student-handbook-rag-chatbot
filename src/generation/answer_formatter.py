@@ -2,7 +2,9 @@ import re
 from typing import Any
 
 SOURCE_SECTION_PATTERN = re.compile(
-    r"(?ims)\n?\s*(?:#+\s*)?(?:nguồn|nguon|tham khảo|tham khao|sources?)\s*:\s*.*$"
+    r"(?ims)^[ \t]*(?:#{1,6}[ \t]+)?(?:\*{1,2}|_{1,2})?\(?[ \t]*"
+    r"(?:nguồn|nguon|tham khảo|tham khao|sources?)[ \t]*"
+    r"(?:(?:\*{1,2}|_{1,2})[ \t]*)?:[ \t]*.*$"
 )
 UNNUMBERED_FIRST_THREE_PATTERN = re.compile(
     r"\b(?:các\s+)?trường\s+hợp\s+(?:tại\s+)?mục\s+1\s*,\s*2\s*(?:,|và)\s*3(?:\s+nêu\s+trên)?\b",
@@ -46,11 +48,14 @@ def clean_stream_start(text: str) -> str:
     return re.sub(r"^```(?:\w+)?\s*", "", text or "", count=1)
 
 
-def sources_section_start(text: str) -> int | None:
+def sources_section_start(text: str, *, at_line_start: bool = True) -> int | None:
     """Return the start of a model-generated source section, if present."""
 
-    match = SOURCE_SECTION_PATTERN.search(text or "")
-    return match.start() if match else None
+    # A rolling stream buffer may start in the middle of a sentence. Preserve
+    # that boundary so an inline source word cannot become a fake heading.
+    prefix = "" if at_line_start else "continuation "
+    match = SOURCE_SECTION_PATTERN.search(prefix + (text or ""))
+    return match.start() - len(prefix) if match else None
 
 
 def clean_answer(text: str) -> str:

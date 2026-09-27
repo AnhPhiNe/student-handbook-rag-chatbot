@@ -113,7 +113,7 @@ class GeminiClient:
                     prompt,
                     client=request_client,
                 )
-                if not text:
+                if not text.strip():
                     raise RuntimeError("Gemini API returned an empty response.")
 
                 self.key_pool.record_success(key_id)
@@ -248,6 +248,7 @@ class GeminiClient:
             current_key, key_id, key_index = self.key_pool.acquire()
             attempts += 1
             emitted_any = False
+            has_text = False
             try:
                 request_client = self._create_client(current_key)
                 request_stream = self._generate_stream_once(
@@ -263,7 +264,10 @@ class GeminiClient:
                             usage = completed.value
                         break
                     emitted_any = True
+                    has_text = has_text or bool(chunk.strip())
                     yield chunk
+                if not has_text:
+                    raise RuntimeError("Gemini API returned an empty response.")
                 self.key_pool.record_success(key_id)
                 return {
                     "model_used": self.model_name,

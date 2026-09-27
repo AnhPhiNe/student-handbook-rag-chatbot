@@ -1,4 +1,4 @@
-version: 9
+version: 10
 
 tools:
   foreign_language:
@@ -111,7 +111,7 @@ tools:
       score_or_label:
         type: [string, number]
         verification_role: result_input
-        description: Điểm hoặc tên mức xếp loại được hỏi.
+        description: Điểm hoặc tên loại học bổng được hỏi (vd. Khá, Giỏi), dùng cho cả amount và classification; điền khi người hỏi nêu.
     table_selector:
       slot: aspect
       values:

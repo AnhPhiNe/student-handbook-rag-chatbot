@@ -47,7 +47,7 @@ _PROVIDER_KEY_ENVS = {
 _DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 # 256 truncated planner reasoning mid-task and produced canonical codes in
 # slot_spans; 1024 completed naturally (~820 reasoning tokens) in probes.
-ROUTER_PROMPT_VERSION = "structured-regulation-v51-decision-steps"
+ROUTER_PROMPT_VERSION = "structured-regulation-v52-v1-review"
 PLANNER_DIAGNOSTIC_SCHEMA_VERSION = "planner-decision-diagnostics-v2"
 _planner_diagnostics_scope: ContextVar[bool] = ContextVar(
     "planner_diagnostics_scope", default=False
@@ -394,7 +394,8 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   hỏi muốn tra kết quả của chính mình nhưng chưa nêu giá trị họ tự biết (vd. hỏi
   xếp loại của mình mà không nêu điểm) → hỏi đúng giá trị còn thiếu. Chỉ clarify
   task bị thiếu thông tin. Không dùng vì slot tùy chọn hay vì target rõ nhưng
-  nguồn có thể thiếu dữ liệu.
+  nguồn có thể thiếu dữ liệu. Không hỏi thêm chi tiết mà lookup không cần: dữ
+  kiện đã nêu đủ để tra thì tra luôn.
 - Câu so sánh hoặc liệt kê mà một từ ứng với nhiều giá trị của một slot tùy
   chọn dùng để lọc hàng (vd. một từ chung bao nhiều loại chương trình): bảng trả
   được mọi cách hiểu, nên không clarify; không cung cấp slot đó để runtime trả
@@ -402,7 +403,9 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   nhất cho trường hợp của chính mình.
 - Chọn lookup:
   • Đơn vị nêu đích danh + yêu cầu email/điện thoại/website/địa chỉ/văn phòng →
-    directory office/faculty; không clarify/OOD chỉ vì tên thiếu tiền tố Phòng/Khoa.
+    directory office/faculty: khoa đào tạo (vd. Khoa Ngữ văn, kể cả "văn phòng
+    khoa …") dùng faculty; phòng ban, trung tâm và đơn vị khác dùng office.
+    Không clarify/OOD chỉ vì tên thiếu tiền tố Phòng/Khoa.
   • student_service chỉ dùng khi QUERY mô tả việc cần hỗ trợ và hỏi đơn vị phụ
     trách hoặc thông tin liên hệ của đơn vị đó; không cần biết trước tên đơn vị.
   • Yêu cầu về cách tính hoặc quan hệ toán học giữa các thành phần dùng formula
@@ -430,8 +433,11 @@ BƯỚC 4. ĐIỀN SLOT
 - Khi người dùng nêu thang điểm, giữ cả giá trị và thang điểm trong score_or_grade
   và span nguyên văn, vd. "3,6/4" hoặc "3,6/10"; không rút thành số 3.6, không
   cắt mẫu số khỏi span và không tự quy đổi điểm sang thang khác.
-- Khi người dùng không nêu thang điểm, giữ nguyên con số như họ viết; không
-  clarify chỉ vì thiếu thang. Slot operation đã chọn cho biết thang cần tra.
+- Giá trị điểm chỉ gồm con số hoặc điểm chữ, kèm thang nếu người hỏi nêu;
+  không kèm chữ như "điểm" (điền 7,3 chứ không điền "7,3 điểm"), còn slot_span
+  vẫn là cụm nguyên văn. Khi người dùng không nêu thang điểm, điền đúng con số
+  họ viết, không quy đổi; không clarify chỉ vì thiếu thang. Slot operation đã
+  chọn cho biết thang cần tra.
 
 BƯỚC 5. COHORT
 - Ưu tiên QUERY rồi history được dùng trong follow_up. COHORT từ UI chỉ điền cho

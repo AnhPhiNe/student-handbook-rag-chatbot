@@ -51,7 +51,7 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert "values" in prompt_registry
     assert 'formula_type":{"type":"string","values":["scholarship_score","gpa_weighted_average"]}' in prompt_registry
     assert "điểm học bổng từ điểm học tập và rèn luyện=scholarship_score" in prompt_registry
-    assert "Điểm hoặc tên mức xếp loại được hỏi" in prompt_registry
+    assert "Điểm hoặc tên loại học bổng được hỏi" in prompt_registry
     assert '"aspect":{"type":"string"' in prompt_registry
     assert '"values":{"amount":"mức tiền","classification":"xếp loại"}' in prompt_registry
     assert '"secondary_bridge":"liên thông từ trung cấp"' in prompt_registry
@@ -203,9 +203,9 @@ def test_planner_prompt_stays_within_budget(
     # reads the rules in decision order, and spells out terse rules in full. Keep a measured input ceiling. These are
     # character-based estimates, not provider tokenizer/billing counts or
     # runtime output-token limits.
-    assert stats["total_chars"] <= 18500
-    assert stats["estimated_input_tokens"] <= 4625
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v51-decision-steps"
+    assert stats["total_chars"] <= 19000
+    assert stats["estimated_input_tokens"] <= 4750
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v52-v1-review"
     assert ("OUTPUT CONTRACT" in dynamic_prompt) == (response_format == "json_object")
     assert ("native JSON Schema" in dynamic_prompt) == (response_format == "json_schema")
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
@@ -224,8 +224,9 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
         router._build_plan_prompt("So sánh hai khóa về thời gian học.", cohort="K51", chat_history=[]),
         router._plan_response_format_payload(),
     )
-    assert stats["total_chars"] <= 32500
-    assert stats["estimated_input_tokens"] <= 8125
+    # v52 adds the v1-review rules (score format, faculty vs office, needless clarify).
+    assert stats["total_chars"] <= 33000
+    assert stats["estimated_input_tokens"] <= 8250
 
 
 def test_dynamic_prompt_preserves_explicit_three_request_count(
@@ -436,7 +437,11 @@ def test_planner_prompt_splits_independent_answer_targets() -> None:
 
 def test_prompt_keeps_unscaled_scores_and_whole_table_comparisons():
     # A missing scale is not missing input; the operation decides the scale.
-    assert "Khi người dùng không nêu thang điểm, giữ nguyên con số" in PLANNER_PROMPT_TEXT
+    assert "Khi người dùng không nêu thang điểm, điền đúng con số" in PLANNER_PROMPT_TEXT
+    # The value is a parseable score; the literal wording stays in the span.
+    assert 'không kèm chữ như "điểm"' in PLANNER_PROMPT_TEXT
+    assert "khoa đào tạo" in PLANNER_PROMPT_TEXT
+    assert "Không hỏi thêm chi tiết mà lookup không cần" in PLANNER_PROMPT_TEXT
     assert "không clarify chỉ vì thiếu thang" in PLANNER_PROMPT_TEXT
     # A comparison over values the table holds is answered with every row.
     assert "bảng trả được mọi cách hiểu, nên không clarify" in PLANNER_PROMPT_TEXT

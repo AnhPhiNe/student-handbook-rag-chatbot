@@ -1,0 +1,75 @@
+# Labeled cases for calibrating student-service matching thresholds.
+#
+# Development data, not a hold-out: thresholds are chosen on the "dev" split
+# and checked on the "test" split. The official_v1 service cases are added by
+# the calibration script from their planner outputs.
+#
+# Written 2026-09-27 from the K51 student-service directory and reviewed against
+# its full service texts (one label moved to ambiguous, three cases added). They avoid every
+# service that official_v3 asks about (lending a microphone, health insurance
+# cards, paying tuition, emergency care, student loans, wifi) and the whole
+# Trạm Y tế catalog, so calibrating on them cannot tune the system to the
+# hold-out.
+#
+# service: what the planner puts in the service slot (the matcher's input).
+# expect: unit      -> the named unit must be the top match
+#         one_of    -> clarification, or any listed unit as the top match
+#         none      -> no unit (a nonexistent service); clarification is safe
+version: 1
+cohort: K51
+cases:
+  # ---- literal: close to the directory's own wording
+  - {id: lit_01, service: "in ấn giáo trình", expect: unit, units: ["Nhà xuất bản Đại học Sư phạm Thành phố Hồ Chí Minh"]}
+  - {id: lit_02, service: "quản lý email sinh viên", expect: unit, units: ["Phòng Công nghệ Thông tin"]}
+  - {id: lit_03, service: "tổ chức giao lưu văn hóa", expect: unit, units: ["Phòng Hợp tác Quốc tế"]}
+  - {id: lit_04, service: "cấp giấy chứng nhận điểm", expect: unit, units: ["Phòng Khảo thí và Đảm bảo chất lượng"]}
+  - {id: lit_05, service: "giải quyết đơn thư khiếu nại, tố cáo", expect: unit, units: ["Phòng Thanh tra Đào tạo"]}
+  - {id: lit_06, service: "bố trí chỗ ở nội trú", expect: unit, units: ["Ký túc xá"]}
+  - {id: lit_07, service: "quản lý tạp chí khoa học", expect: unit, units: ["Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học"]}
+  - {id: lit_08, service: "tổ chức ngày hội việc làm", expect: unit, units: ["Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp"]}
+  - {id: lit_09, service: "giảng dạy tin học cơ bản cho sinh viên năm 1", expect: unit, units: ["Trung tâm Tin học"]}
+  - {id: lit_10, service: "hướng dẫn sử dụng thư viện", expect: unit, units: ["Thư viện"]}
+
+  # ---- paraphrase: a student's own words for a listed service
+  - {id: par_01, service: "xin phòng ở ký túc xá", expect: unit, units: ["Ký túc xá"]}
+  - {id: par_02, service: "mua sách do trường xuất bản", expect: unit, units: ["Nhà xuất bản Đại học Sư phạm Thành phố Hồ Chí Minh"]}
+  - {id: par_03, service: "quên mật khẩu email trường", expect: unit, units: ["Phòng Công nghệ Thông tin"]}
+  - {id: par_04, service: "không đăng nhập được tài khoản đăng ký môn học", expect: unit, units: ["Phòng Công nghệ Thông tin"]}
+  - {id: par_05, service: "trang web của trường bị lỗi", expect: unit, units: ["Phòng Công nghệ Thông tin"]}
+  - {id: par_07, service: "xin hỗ trợ cho dự án khởi nghiệp", expect: unit, units: ["Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp"]}
+  - {id: par_08, service: "nộp bằng IELTS để được miễn học tiếng Anh", expect: unit, units: ["Phòng Khảo thí và Đảm bảo chất lượng"]}
+  - {id: par_09, service: "xin bảng điểm", expect: unit, units: ["Phòng Khảo thí và Đảm bảo chất lượng"]}
+  - {id: par_10, service: "đăng ký học song ngành", expect: unit, units: ["Phòng Đào tạo"]}
+  - {id: par_11, service: "lấy bằng tốt nghiệp", expect: unit, units: ["Phòng Đào tạo"]}
+  - {id: par_12, service: "xem thời khóa biểu", expect: unit, units: ["Phòng Đào tạo"]}
+  - {id: par_13, service: "học luyện thi TOEIC", expect: unit, units: ["Trung tâm Ngoại ngữ"]}
+  - {id: par_14, service: "thi lấy chứng chỉ tiếng Anh bậc 3", expect: unit, units: ["Trung tâm Ngoại ngữ"]}
+  - {id: par_15, service: "học tin học văn phòng", expect: unit, units: ["Trung tâm Tin học"]}
+  - {id: par_16, service: "mượn sách tham khảo", expect: unit, units: ["Thư viện"]}
+  - {id: par_17, service: "gửi xe máy ở trường", expect: unit, units: ["Phòng Quản trị – Thiết bị"]}
+  - {id: par_18, service: "đặt phòng họp cho câu lạc bộ", expect: unit, units: ["Phòng Quản trị – Thiết bị"]}
+  - {id: par_19, service: "làm đề tài nghiên cứu khoa học sinh viên", expect: unit, units: ["Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học"]}
+  - {id: par_20, service: "tham gia hoạt động Đoàn", expect: unit, units: ["Đoàn Thanh niên và Hội Sinh viên Trường"]}
+  - {id: par_21, service: "xin giấy xác nhận đang là sinh viên", expect: unit, units: ["Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  - {id: par_22, service: "đi tập giảng trực tuyến", expect: unit, units: ["Trung tâm Phát triển kỹ năng sư phạm"]}
+  - {id: par_23, service: "lấy giấy xác nhận sv để làm hồ sơ", expect: unit, units: ["Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  - {id: par_24, service: "nhờ dịch thuật giấy tờ tiếng Anh", expect: unit, units: ["Phòng Hợp tác Quốc tế"]}
+  - {id: par_25, service: "xin tài liệu để làm khóa luận", expect: unit, units: ["Thư viện"]}
+
+  # ---- ambiguous: two units genuinely offer related services
+  - {id: amb_01, service: "học kỹ năng mềm", expect: one_of, units: ["Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp", "Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  - {id: amb_02, service: "khiếu nại điểm thi", expect: one_of, units: ["Phòng Thanh tra Đào tạo", "Phòng Khảo thí và Đảm bảo chất lượng"]}
+  - {id: amb_03, service: "đi thực tập sư phạm", expect: one_of, units: ["Phòng Đào tạo", "Trung tâm Phát triển kỹ năng sư phạm"]}
+  # Trung tâm introduces jobs; Phòng CTCT-HSSV coordinates career and job advice.
+  - {id: amb_05, service: "tìm việc làm thêm", expect: one_of, units: ["Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp", "Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  - {id: amb_04, service: "tìm học bổng", expect: one_of, units: ["Phòng Hợp tác Quốc tế", "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp", "Phòng Công tác chính trị và Học sinh, sinh viên", "Phòng Kế hoạch – Tài chính"]}
+
+  # ---- none: not a service of any listed unit
+  - {id: neg_01, service: "đăng ký thi bằng lái xe máy", expect: none}
+  - {id: neg_02, service: "thuê xe đạp", expect: none}
+  - {id: neg_03, service: "sửa điện thoại", expect: none}
+  - {id: neg_04, service: "đặt vé máy bay", expect: none}
+  - {id: neg_05, service: "nạp tiền điện thoại", expect: none}
+  - {id: neg_06, service: "đổi ngoại tệ", expect: none}
+  - {id: neg_07, service: "gửi thư chuyển phát nhanh", expect: none}
+  - {id: neg_08, service: "làm hộ chiếu", expect: none}

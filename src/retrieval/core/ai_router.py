@@ -403,8 +403,8 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   nhất cho trường hợp của chính mình.
 - Chọn lookup:
   • Đơn vị nêu đích danh + yêu cầu email/điện thoại/website/địa chỉ/văn phòng →
-    directory office/faculty: khoa đào tạo (vd. Khoa Ngữ văn, kể cả "văn phòng
-    khoa …") dùng faculty; phòng ban, trung tâm và đơn vị khác dùng office.
+    directory office/faculty: khoa đào tạo (kể cả khi hỏi "văn phòng khoa")
+    dùng faculty; phòng ban, trung tâm và đơn vị khác dùng office.
     Không clarify/OOD chỉ vì tên thiếu tiền tố Phòng/Khoa.
   • student_service chỉ dùng khi QUERY mô tả việc cần hỗ trợ và hỏi đơn vị phụ
     trách hoặc thông tin liên hệ của đơn vị đó; không cần biết trước tên đơn vị.
@@ -434,7 +434,7 @@ BƯỚC 4. ĐIỀN SLOT
   và span nguyên văn, vd. "3,6/4" hoặc "3,6/10"; không rút thành số 3.6, không
   cắt mẫu số khỏi span và không tự quy đổi điểm sang thang khác.
 - Giá trị điểm chỉ gồm con số hoặc điểm chữ, kèm thang nếu người hỏi nêu;
-  không kèm chữ như "điểm" (điền 7,3 chứ không điền "7,3 điểm"), còn slot_span
+  không kèm chữ như "điểm" (điền 8 chứ không điền "8 điểm"), còn slot_span
   vẫn là cụm nguyên văn. Khi người dùng không nêu thang điểm, điền đúng con số
   họ viết, không quy đổi; không clarify chỉ vì thiếu thang. Slot operation đã
   chọn cho biết thang cần tra.

@@ -10,6 +10,7 @@ import yaml
 import src.retrieval.core.ai_router as ai_router_module
 from src.retrieval.core.ai_router import (
     AIRouter,
+    PLANNER_JSON_OUTPUT_RULES,
     PLANNER_SYSTEM_PROMPT,
     ROUTER_PROMPT_VERSION,
 )
@@ -24,6 +25,7 @@ from src.retrieval.core.structured_routing import (
 )
 
 PLANNER_PROMPT_TEXT = " ".join(PLANNER_SYSTEM_PROMPT.split())
+JSON_OUTPUT_TEXT = " ".join(PLANNER_JSON_OUTPUT_RULES.split())
 
 
 def _router(monkeypatch, tmp_path: Path, *, model_name: str) -> AIRouter:
@@ -192,7 +194,7 @@ def test_planner_prompt_stays_within_budget(
         chat_history=[],
     )
     stats = AIRouter._prompt_stats_for_system(
-        PLANNER_SYSTEM_PROMPT,
+        router._planner_system_prompt(),
         dynamic_prompt,
         router._plan_response_format_payload(),
     )
@@ -203,7 +205,7 @@ def test_planner_prompt_stays_within_budget(
     # provider tokenizer/billing counts or runtime output-token limits.
     assert stats["total_chars"] <= 17000
     assert stats["estimated_input_tokens"] <= 4250
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v49-field-semantics"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v50-strict-output"
     assert ("OUTPUT CONTRACT" in dynamic_prompt) == (response_format == "json_object")
     assert ("native JSON Schema" in dynamic_prompt) == (response_format == "json_schema")
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
@@ -264,7 +266,10 @@ def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
 
 def test_prompt_clarifies_selectors_without_weakening_grounding() -> None:
     assert "nếu đã xác định rõ giá trị thì phải điền" in PLANNER_PROMPT_TEXT
-    assert "Để trống khi chưa xác định được" in PLANNER_PROMPT_TEXT
+    assert "Không cung cấp slot khi chưa xác định được" in PLANNER_PROMPT_TEXT
+    # One wording for an omitted slot; its encoding belongs to the output rules.
+    assert "Để trống" not in PLANNER_PROMPT_TEXT
+    assert "Để trống" not in compact_registry_for_prompt()
     assert "hoặc thông tin liên hệ của đơn vị đó" in PLANNER_PROMPT_TEXT
     registry = compact_registry_for_prompt()
     assert "Chọn theo kết quả cần tra, không theo riêng tên loại học bổng" in registry
@@ -401,12 +406,23 @@ def test_planner_prompt_splits_independent_answer_targets() -> None:
     assert "Từ nối \"và\" hoặc \"so sánh\" không tự quyết định" in PLANNER_PROMPT_TEXT
     assert "Chỉ gộp nhiều entity khi lookup hỗ trợ danh sách" in PLANNER_PROMPT_TEXT
     assert "không làm mất cặp entity–dữ kiện" in PLANNER_PROMPT_TEXT
-    assert "Có giá trị riêng cho từng entity → tách task" in PLANNER_PROMPT_TEXT
+    assert "Mỗi entity đi kèm giá trị đầu vào riêng do người hỏi nêu → tách task" in PLANNER_PROMPT_TEXT
+    assert "không kèm giá trị riêng, trong cùng lookup hỗ trợ danh sách → một task" in PLANNER_PROMPT_TEXT
+    assert "không phải phụ thuộc giữa task: dùng một task, requested_field là danh sách" in PLANNER_PROMPT_TEXT
     assert "mỗi source một task độc lập" in PLANNER_PROMPT_TEXT
     assert "không áp dụng cho lookup danh sách trực tiếp" in PLANNER_PROMPT_TEXT
     assert "Mỗi task chỉ có một mode" in PLANNER_PROMPT_TEXT
     assert "mỗi yêu cầu độc lập xuất hiện đúng một lần" in PLANNER_PROMPT_TEXT
     assert "composer mới kết hợp" in PLANNER_PROMPT_TEXT
+
+
+def test_prompt_keeps_unscaled_scores_and_whole_table_comparisons():
+    # A missing scale is not missing input; the operation decides the scale.
+    assert "Khi người dùng không nêu thang điểm, giữ nguyên con số" in PLANNER_PROMPT_TEXT
+    assert "không clarify chỉ vì thiếu thang" in PLANNER_PROMPT_TEXT
+    # A comparison over values the table holds is answered with every row.
+    assert "bảng trả được mọi cách hiểu, nên không clarify" in PLANNER_PROMPT_TEXT
+    assert "để runtime trả đủ các hàng" in PLANNER_PROMPT_TEXT
 
 
 def test_prompt_preserves_explicit_score_scale_and_grounded_history():
@@ -426,8 +442,7 @@ def test_planner_prompt_defines_registry_grounded_cohort_conflict() -> None:
 
 
 def test_planner_limits_tool_contract_to_structured_tasks() -> None:
-    assert "Với structured, chỉ dùng lookup_type, intent và slots" in PLANNER_PROMPT_TEXT
-    assert "RAG và clarify tuân theo quy tắc riêng ở phần MODE" in PLANNER_PROMPT_TEXT
+    assert "Với structured, chỉ dùng lookup_type, intent và slots" in JSON_OUTPUT_TEXT
     assert "Chỉ dùng lookup_type, intent, slots khai báo trong TOOLS" not in PLANNER_PROMPT_TEXT
 
 
@@ -452,7 +467,7 @@ def test_planner_prompt_defines_context_precedence_once() -> None:
 def test_planner_prompt_matches_global_context_and_rag_contract() -> None:
     assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc có hơn 3" in PLANNER_PROMPT_TEXT
     assert "clarify cho riêng task đó" in PLANNER_PROMPT_TEXT
-    assert "Mọi RAG task dùng intent=open_question" in PLANNER_PROMPT_TEXT
+    assert "RAG: intent=open_question, lookup_type=null" in JSON_OUTPUT_TEXT
     assert "Chỉ đặt out_of_domain=true khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
     assert "khi đó tasks=[]" in PLANNER_PROMPT_TEXT
     assert "giữ các target trong phạm vi" in PLANNER_PROMPT_TEXT

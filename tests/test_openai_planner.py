@@ -264,7 +264,10 @@ def test_strict_requests_keep_validation_and_incomplete_response_handling(router
         "schema": query_plan_strict_response_schema(router.registry),
     }
     assert request["reasoning"] == {"effort": "medium"}
-    assert "dùng null" in request["input"][1]["content"]
+    # Strict output rules sit in the cached system prompt, not the per-query message.
+    assert "slot không cung cấp là null" in request["input"][0]["content"]
+    assert "Xuất đúng một JSON object" not in request["input"][0]["content"]
+    assert "slot không cung cấp là null" not in request["input"][1]["content"]
     assert "OUTPUT CONTRACT" not in request["input"][1]["content"]
     assert result["planner_fallback"]
     assert result["planner_error_type"] == "invalid_response"
@@ -290,3 +293,14 @@ def test_strict_trial_config_and_format_cache_identity(router, monkeypatch, tmp_
     old = router._cache_key("test", cohort="K51", chat_history=[])
     router.response_format = "json_schema"
     assert router._cache_key("test", cohort="K51", chat_history=[]) != old
+
+
+def test_strict_prompt_moves_slot_descriptions_into_the_schema(router):
+    description = "Dịch vụ cần hỗ trợ, không phải tên đơn vị."
+    router.response_format = "json_schema"
+    assert description not in router._build_plan_prompt("Hỏi?", cohort="K51", chat_history=[])
+    assert description in json.dumps(router._plan_response_format_payload(), ensure_ascii=False)
+    assert "slot không cung cấp là null" in router._planner_system_prompt()
+    router.response_format = "json_object"
+    assert description in router._build_plan_prompt("Hỏi?", cohort="K51", chat_history=[])
+    assert "Slot không cung cấp thì bỏ khóa" in router._planner_system_prompt()

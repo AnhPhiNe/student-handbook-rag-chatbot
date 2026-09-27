@@ -144,8 +144,14 @@ def load_lookup_registry(path: str | Path = DEFAULT_REGISTRY_PATH) -> dict[str, 
     return data
 
 
-def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
-    """Project lookup capabilities into a compact planner prompt."""
+def compact_registry_for_prompt(
+    registry: dict[str, Any] | None = None, *, slot_descriptions: bool = True,
+) -> str:
+    """Project lookup capabilities into a compact planner prompt.
+
+    A strict response schema carries the slot descriptions itself, so the
+    prompt can leave them out instead of sending them twice.
+    """
 
     registry = registry or load_lookup_registry()
     lines: list[str] = []
@@ -157,7 +163,7 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
             compact_spec: dict[str, Any] = {}
             if slot_spec.get("type") is not None:
                 compact_spec["type"] = slot_spec["type"]
-            if slot_spec.get("description"):
+            if slot_descriptions and slot_spec.get("description"):
                 compact_spec["description"] = slot_spec["description"]
             allowed_values = (
                 slot_spec.get("enum") or slot_spec.get("canonical_values") or []

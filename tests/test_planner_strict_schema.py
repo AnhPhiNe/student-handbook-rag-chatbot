@@ -158,3 +158,24 @@ def test_unknown_null_slot_is_not_silently_discarded():
     task["slots"]["invented"] = None
     _, errors = normalize_query_plan(_payload(task, query), query=query, selected_cohort="K51")
     assert "t1:unknown_slot:invented" in errors
+
+
+def test_schema_caps_tasks_at_the_plan_limit_and_carries_slot_descriptions():
+    from src.retrieval.core.query_plan import MAX_QUERY_TASKS
+    registry = load_lookup_registry()
+    schema = query_plan_strict_response_schema()
+    assert schema["properties"]["tasks"]["maxItems"] == MAX_QUERY_TASKS
+    branches = schema["properties"]["tasks"]["items"]["anyOf"]
+    for name, spec in registry["tools"].items():
+        branch = next(b for b in branches if b["properties"]["lookup_type"].get("enum") == [name])
+        slots = branch["properties"]["slots"]["properties"]
+        for slot, slot_spec in spec["slot_schema"].items():
+            # The description sits beside the enum the model is choosing from.
+            assert slots[slot].get("description") == slot_spec.get("description")
+    validator = Draft202012Validator(schema)
+    rag = {"id": "t1", "question": "Quy định?", "mode": "rag", "intent": "open_question",
+           "lookup_type": None, "slots": {}, "slot_spans": {}, "cohorts": ["K51"],
+           "clarification_question": None}
+    payload = _payload(rag)
+    payload["tasks"] = [dict(rag, id=f"t{i}") for i in range(1, MAX_QUERY_TASKS + 2)]
+    assert not validator.is_valid(payload)

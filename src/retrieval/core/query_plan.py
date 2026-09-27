@@ -22,7 +22,7 @@ from .structured_routing import (
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
 QUERY_PLAN_NORMALIZER_VERSION = "v31-null-slot-omission"
-QUERY_PLAN_STRICT_SCHEMA_VERSION = "v1"
+QUERY_PLAN_STRICT_SCHEMA_VERSION = "v2-field-descriptions"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -266,6 +266,8 @@ def query_plan_strict_response_schema(
     A structured branch belongs to exactly one lookup. Registry values remain
     scalar or homogeneous lists, as accepted by the runtime validator. Every
     declared slot/span key is required by the provider; null means omitted.
+    Slot descriptions travel with their enums, where the model picks a value,
+    and the task list is capped at the plan limit rather than the raw one.
     Required business inputs and grounding still belong to runtime validation.
     """
     registry = registry if registry is not None else load_lookup_registry()
@@ -288,7 +290,10 @@ def query_plan_strict_response_schema(
             variants.extend([scalar, {"type": "array", "minItems": 1,
                                       "items": deepcopy(scalar)}])
         variants.append({"type": "null"})
-        return {"anyOf": variants}
+        value = {"anyOf": variants}
+        if slot_spec.get("description"):
+            value["description"] = slot_spec["description"]
+        return value
 
     schema = query_plan_response_schema()
     common = schema["properties"]["tasks"]["items"]["properties"]
@@ -318,6 +323,7 @@ def query_plan_strict_response_schema(
         )
         branches.append(closed_object(properties))
     schema["properties"]["tasks"]["items"] = {"anyOf": branches}
+    schema["properties"]["tasks"]["maxItems"] = MAX_QUERY_TASKS
     return schema
 
 

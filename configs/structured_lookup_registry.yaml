@@ -1,4 +1,4 @@
-version: 8
+version: 9
 
 tools:
   foreign_language:
@@ -104,7 +104,7 @@ tools:
         type: string
         verification_role: reading_intent
         enum: [amount, classification]
-        description: "Bảng được hỏi: amount=mức tiền, công thức tiền, hệ số, căn cứ học phí; classification=mức điểm học tập và rèn luyện của từng loại. Chọn theo kết quả cần tra, không theo riêng tên loại học bổng. Để trống khi hỏi tổng quan."
+        description: "Bảng được hỏi: amount=mức tiền, công thức tiền, hệ số, căn cứ học phí; classification=mức điểm học tập và rèn luyện của từng loại. Chọn theo kết quả cần tra, không theo riêng tên loại học bổng. Không cung cấp khi hỏi tổng quan."
         span_aliases:
           amount: [mức tiền, mức học bổng, hệ số]
           classification: [xếp loại, loại học bổng]
@@ -217,7 +217,8 @@ tools:
         description: >-
           unit=tên đơn vị phụ trách; office=địa chỉ hoặc vị trí làm việc;
           all=thông tin liên hệ tổng hợp. Hỏi ai/đơn vị nào phụ trách hoặc hỗ trợ
-          một việc → unit. Hỏi nơi làm việc, tòa nhà/tầng/số phòng, hoặc một đơn
+          một việc → unit; hỏi làm một việc 'ở phòng nào', 'đơn vị nào' hay 'gặp
+          ai' khi chưa biết tên đơn vị cũng là unit. Hỏi nơi làm việc, tòa nhà/tầng/số phòng, hoặc một đơn
           vị đã nêu tên 'ở đâu' → office, không cần nêu số phòng. Hỏi cả đơn vị
           và vị trí → [unit, office] hoặc all. Phân biệt theo mục đích câu hỏi,
           không chỉ theo từ 'phòng'.

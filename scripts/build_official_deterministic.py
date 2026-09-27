@@ -393,6 +393,13 @@ def build(bundle: Path = BUNDLE, *, contract: str = CONTRACT):
     return result
 
 
+def refuse_frozen_overwrite(bundle: Path, target: Path) -> None:
+    """A frozen bundle keeps every compiled file; a new contract may add its own."""
+    frozen = any((bundle / name).exists() for name in ("manifest.json", "deterministic_manifest.json"))
+    if frozen and target.exists():
+        raise RuntimeError(f"{bundle.name} is frozen; refusing to overwrite {target.name}")
+
+
 if __name__ == "__main__":
     import argparse
 
@@ -401,9 +408,8 @@ if __name__ == "__main__":
     parser.add_argument("--contract", choices=("v9", "v10"), default="v9")
     args = parser.parse_args()
     bundle = ROOT / "data/eval" / args.bundle
-    if args.contract == "v9" and any((bundle / name).exists() for name in ("manifest.json", "deterministic_manifest.json")):
-        raise RuntimeError("Deterministic suite already frozen; refusing to rebuild")
-    cases = build(bundle, contract=CONTRACT_V10 if args.contract == "v10" else CONTRACT)
     target = bundle / ("deterministic_tool_cases_v10.json" if args.contract == "v10" else "deterministic_tool_cases.json")
+    refuse_frozen_overwrite(bundle, target)
+    cases = build(bundle, contract=CONTRACT_V10 if args.contract == "v10" else CONTRACT)
     target.write_text(json.dumps(cases, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Compiled {len(cases)} source-backed contracts; no inference executed.")

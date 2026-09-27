@@ -1,5 +1,6 @@
 """Offline contract self-tests. Never instantiate the system under evaluation."""
 import copy
+import pytest
 import time
 from collections import Counter
 
@@ -419,3 +420,15 @@ def test_experiment_freeze_rejects_changed_or_missing_files(tmp_path, monkeypatc
     source.unlink()
     with pytest.raises(ValueError, match="freeze drift"):
         preparation.verify_freeze(freeze)
+
+
+def test_frozen_bundle_refuses_to_overwrite_a_compiled_contract(tmp_path) -> None:
+    from scripts.build_official_deterministic import refuse_frozen_overwrite
+
+    target = tmp_path / "deterministic_tool_cases_v10.json"
+    refuse_frozen_overwrite(tmp_path, target)  # not frozen: rebuilding is allowed
+    (tmp_path / "deterministic_manifest.json").write_text("{}", encoding="utf-8")
+    refuse_frozen_overwrite(tmp_path, target)  # frozen, but a new contract may add its file
+    target.write_text("[]", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="refusing to overwrite"):
+        refuse_frozen_overwrite(tmp_path, target)

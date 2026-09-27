@@ -199,16 +199,33 @@ def test_planner_prompt_stays_within_budget(
         router._plan_response_format_payload(),
     )
 
-    # The user approved a small input-prompt increase for clearer semantics.
-    # v49 adds field semantics after the v48 scale/entity pairing rules. Keep a measured
-    # input ceiling. These are character-based estimates, not
-    # provider tokenizer/billing counts or runtime output-token limits.
-    assert stats["total_chars"] <= 17000
-    assert stats["estimated_input_tokens"] <= 4250
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v50-strict-output"
+    # v51 adds role, input and definition sections (~0.9K chars) so the planner
+    # reads the rules in decision order. Keep a measured input ceiling. These are
+    # character-based estimates, not provider tokenizer/billing counts or
+    # runtime output-token limits.
+    assert stats["total_chars"] <= 18000
+    assert stats["estimated_input_tokens"] <= 4500
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v51-decision-steps"
     assert ("OUTPUT CONTRACT" in dynamic_prompt) == (response_format == "json_object")
     assert ("native JSON Schema" in dynamic_prompt) == (response_format == "json_schema")
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
+
+
+def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
+    """The production path: OpenAI strict schema, which also carries slot descriptions."""
+    monkeypatch.setenv("OPENAI_API_KEY", "test-openai-key")
+    router = AIRouter(
+        provider="openai", model_name="gpt-6-luna", cache_enabled=False,
+        response_format="json_schema",
+        key_pool_config={"state_path": str(tmp_path / "luna.json"), "tpm_limit_per_key": None},
+    )
+    stats = AIRouter._prompt_stats_for_system(
+        router._planner_system_prompt(),
+        router._build_plan_prompt("So sánh hai khóa về thời gian học.", cohort="K51", chat_history=[]),
+        router._plan_response_format_payload(),
+    )
+    assert stats["total_chars"] <= 32500
+    assert stats["estimated_input_tokens"] <= 8125
 
 
 def test_dynamic_prompt_preserves_explicit_three_request_count(
@@ -225,7 +242,7 @@ def test_dynamic_prompt_preserves_explicit_three_request_count(
 
 
 def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
-    assert "TASK IDENTITY không phụ thuộc cohort" in PLANNER_PROMPT_TEXT
+    assert "Cohort không làm tăng số task" in PLANNER_PROMPT_TEXT
     assert "không tạo M×N tasks" in PLANNER_PROMPT_TEXT
     assert "COHORT từ UI chỉ điền cho task vẫn chưa có cohort" in PLANNER_PROMPT_TEXT
     assert "không ghi đè" in PLANNER_PROMPT_TEXT
@@ -431,11 +448,10 @@ def test_prompt_preserves_explicit_score_scale_and_grounded_history():
     assert "không cắt mẫu số khỏi span" in PLANNER_PROMPT_TEXT
     assert "không tự quy đổi điểm sang thang khác" in PLANNER_PROMPT_TEXT
     assert "không thêm thông tin không có căn cứ trong QUERY hoặc history hợp lệ" in PLANNER_PROMPT_TEXT
-    assert "Cohort UI và chuẩn hóa alias theo registry" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_defines_registry_grounded_cohort_conflict() -> None:
-    assert "COHORT_ADMISSION_YEARS là metadata xác thực từ registry" in PLANNER_PROMPT_TEXT
+    assert "COHORT_ADMISSION_YEARS: năm tuyển sinh của từng khóa, là metadata xác thực từ registry" in PLANNER_PROMPT_TEXT
     assert "khóa và năm tuyển sinh cho cùng một đối tượng" in PLANNER_PROMPT_TEXT
     assert "nêu đúng hai giá trị cần xác nhận" in PLANNER_PROMPT_TEXT
     assert "Không áp dụng cho câu so sánh nhiều khóa" in PLANNER_PROMPT_TEXT
@@ -468,7 +484,7 @@ def test_planner_prompt_matches_global_context_and_rag_contract() -> None:
     assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc có hơn 3" in PLANNER_PROMPT_TEXT
     assert "clarify cho riêng task đó" in PLANNER_PROMPT_TEXT
     assert "RAG: intent=open_question, lookup_type=null" in JSON_OUTPUT_TEXT
-    assert "Chỉ đặt out_of_domain=true khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
+    assert "chỉ đặt out_of_domain=true khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
     assert "khi đó tasks=[]" in PLANNER_PROMPT_TEXT
     assert "giữ các target trong phạm vi" in PLANNER_PROMPT_TEXT
     assert "thiếu evidence" not in PLANNER_PROMPT_TEXT

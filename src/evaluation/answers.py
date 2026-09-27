@@ -40,8 +40,16 @@ def generate_answers(
     limit: int | None = None,
     pipeline_factory: Callable[[], Any] | None = None,
     checkpoint_context: dict[str, Any] | None = None,
+    answer_config: str | Path | None = None,
+    shared_plans: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Generate answer artifacts for the evaluation dataset."""
+    """Generate answer artifacts for the evaluation dataset.
+
+    `answer_config` selects the composer configuration. `shared_plans` names a
+    planner decision cache shared by several runs: the first run fills it and
+    later runs reuse the same QueryPlans, so a composer comparison is not
+    confounded by planner variation.
+    """
 
     from src.retrieval.core.hybrid_pipeline import initialize_hybrid_retriever
 
@@ -56,19 +64,28 @@ def generate_answers(
     if pipeline_factory is None:
         from src.generation.answer_pipeline import AnswerPipeline
 
-        pipeline_factory = AnswerPipeline
+        if answer_config is None:
+            pipeline_factory = AnswerPipeline
+        else:
+            def pipeline_factory() -> Any:
+                return AnswerPipeline(config_path=answer_config)
     previous_offline = os.environ.get("STUDENT_RAG_OFFLINE_EVAL")
     previous_quality = os.environ.get("STUDENT_RAG_QUALITY_EVAL")
     previous_runtime_retrieval_mode = os.environ.get("STUDENT_RAG_RETRIEVAL_MODE")
     previous_retrieval_mode = os.environ.get("STUDENT_RAG_EVAL_RETRIEVAL_MODE")
     previous_router_cache = os.environ.get("STUDENT_RAG_DISABLE_ROUTER_CACHE")
+    previous_router_cache_path = os.environ.get("STUDENT_RAG_ROUTER_CACHE_PATH")
     os.environ.pop("STUDENT_RAG_OFFLINE_EVAL", None)
     os.environ["STUDENT_RAG_QUALITY_EVAL"] = "1"
     # Answer-quality evaluation must exercise the configured production retrieval
     # contract instead of inheriting an ablation mode from the ambient environment.
     os.environ["STUDENT_RAG_RETRIEVAL_MODE"] = DEFAULT_RETRIEVAL_MODE
     os.environ["STUDENT_RAG_EVAL_RETRIEVAL_MODE"] = DEFAULT_RETRIEVAL_MODE
-    os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
+    if shared_plans is None:
+        os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
+    else:
+        os.environ.pop("STUDENT_RAG_DISABLE_ROUTER_CACHE", None)
+        os.environ["STUDENT_RAG_ROUTER_CACHE_PATH"] = str(shared_plans)
     by_id = {row["id"]: row for row in existing}
     try:
         pipeline = pipeline_factory()
@@ -128,6 +145,7 @@ def generate_answers(
             previous_runtime_retrieval_mode,
         )
         restore_env("STUDENT_RAG_DISABLE_ROUTER_CACHE", previous_router_cache)
+        restore_env("STUDENT_RAG_ROUTER_CACHE_PATH", previous_router_cache_path)
         restore_env(
             "STUDENT_RAG_EVAL_RETRIEVAL_MODE",
             previous_retrieval_mode,

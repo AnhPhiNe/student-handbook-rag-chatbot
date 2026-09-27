@@ -648,7 +648,10 @@ class AIRouter:
                 or "medium"
             ),
             key_pool_config=key_pool_config,
-            cache_path=str(config.get("cache_path", "data/cache/planner_cache.json")),
+            cache_path=str(
+                os.environ.get("STUDENT_RAG_ROUTER_CACHE_PATH")
+                or config.get("cache_path", "data/cache/planner_cache.json")
+            ),
             cache_enabled=bool(config.get("cache_enabled", True))
             and not cache_disabled,
         )

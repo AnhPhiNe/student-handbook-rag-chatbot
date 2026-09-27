@@ -235,7 +235,7 @@ class GeminiClientTest(unittest.TestCase):
             raise RuntimeError("Server disconnected without sending a response.")
 
         client._generate_once = generate_once
-        with mock.patch("src.generation.gemini_client.time.sleep") as sleep:
+        with mock.patch("src.generation.llm_client.time.sleep") as sleep:
             result = client.generate("prompt")
 
         self.assertFalse(result["ok"])
@@ -251,7 +251,7 @@ class GeminiClientTest(unittest.TestCase):
             yield
 
         client._generate_stream_once = stream_once
-        with mock.patch("src.generation.gemini_client.time.sleep") as sleep:
+        with mock.patch("src.generation.llm_client.time.sleep") as sleep:
             with self.assertRaises(RuntimeError):
                 list(client.generate_stream("prompt"))
 

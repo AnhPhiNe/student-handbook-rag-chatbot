@@ -36,6 +36,7 @@ from .citation_formatter import (
     prioritize_citations_by_answer_anchors,
     select_relevant_citations,
 )
+from .deepseek_client import DeepSeekClient
 from .gemini_client import GeminiClient
 from .prompt_builder import (
     ANSWER_PROMPT_VERSION,
@@ -47,6 +48,7 @@ from .response_cache import get_response_cache
 from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
+COMPOSER_PROVIDERS = {"gemini", "deepseek"}
 
 PIPELINE_VERSION = "v77-online-answer-boundaries"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
@@ -170,8 +172,10 @@ class AnswerPipeline:
 
         llm_config = self.config.get("llm", {})
         self.llm_config = llm_config
-        if llm_config.get("provider") != "gemini":
-            raise ValueError("AnswerPipeline requires llm.provider='gemini'.")
+        if llm_config.get("provider") not in COMPOSER_PROVIDERS:
+            raise ValueError(
+                f"AnswerPipeline requires llm.provider in {sorted(COMPOSER_PROVIDERS)}."
+            )
         self.model_name = str(llm_config.get("model_name") or "").strip()
         if not self.model_name:
             raise ValueError("AnswerPipeline requires llm.model_name.")
@@ -523,7 +527,7 @@ class AnswerPipeline:
         llm_result = llm_client.generate(prompt)
         end_time_llm = datetime.now(timezone.utc).isoformat()
         if telemetry is not None:
-            telemetry["gemini_ms"] = (time.monotonic() - llm_started) * 1000
+            telemetry["llm_ms"] = (time.monotonic() - llm_started) * 1000
             telemetry["key_fingerprint"] = llm_result.get("key_fingerprint")
             telemetry["retry_count"] = max(0, int(llm_result.get("attempts") or 1) - 1)
         self._last_llm_call_at = time.monotonic()
@@ -1006,6 +1010,27 @@ class AnswerPipeline:
                             ),
                             api_keys_env_var=llm_config.get(
                                 "api_keys_env_var", "GEMINI_API_KEYS"
+                            ),
+                            key_pool_config=llm_config.get("key_pool"),
+                        )
+                    elif provider == "deepseek":
+                        self._llm_client = DeepSeekClient(
+                            model_name=llm_config["model_name"],
+                            reasoning_effort=llm_config.get("reasoning_effort", "none"),
+                            temperature=llm_config.get("temperature", 0.0),
+                            max_output_tokens=llm_config.get("max_output_tokens", 8192),
+                            max_retries=llm_config.get("max_retries", 2),
+                            retry_base_delay_seconds=llm_config.get(
+                                "retry_base_delay_seconds", 2
+                            ),
+                            retry_max_delay_seconds=llm_config.get(
+                                "retry_max_delay_seconds", 20
+                            ),
+                            request_timeout_seconds=llm_config.get(
+                                "request_timeout_seconds", 30
+                            ),
+                            api_keys_env_var=llm_config.get(
+                                "api_keys_env_var", "DEEPSEEK_API_KEY"
                             ),
                             key_pool_config=llm_config.get("key_pool"),
                         )

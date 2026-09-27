@@ -14,7 +14,7 @@ settings:
     Held-out: written after official_v1 and official_v2 were frozen, screened against
     both for near-duplicate queries, frozen before the planner prompt and model changes
     of 2026-09 were made, and never used to tune prompts or code.
-  expected: {cases: 102, per_cohort: 34}
+  expected: {cases: 132, per_cohort: 44}
 
 cases:
   # ================================================================ single.structured
@@ -822,3 +822,249 @@ cases:
       - {table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 65}}
     alternative_tasks:
       - [{table: [conduct_classification, all, conduct_classification], output_rows: [3, 2]}]
+
+  # ================================================================ multi_intent.three_plus
+  # three independent requests, and more than three (must ask the student to choose)
+  - query: "Cho em hỏi: điểm 6,5 là điểm chữ gì, email Khoa Lịch sử là gì, và bị kỷ luật cảnh cáo thì hạng tốt nghiệp có bị giảm không?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K48-K49
+    stress: true
+    stress_type: dense_request
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [grade_scale, 3, grade_10_to_letter], input_slots: {score_or_grade: 6.5}}
+      - {faculty: [Khoa Lịch sử, email]}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu15, "Sinh viên đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học"], fact: "Có: hạng tốt nghiệp loại xuất sắc, giỏi bị giảm một mức nếu sinh viên đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học."}
+  - query: "GPA 3,0 xếp loại gì, học bổng khá được tính tiền thế nào, và chấm khóa luận tốt nghiệp cần mấy giảng viên?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K50
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [academic_classification, 2, academic_classification], input_slots: {score_or_grade: 3.0}}
+      - {scholarship: [scholarship_amount, 0]}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu10, "Việc đánh giá mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do ít nhất 2 giảng viên đảm nhiệm"], fact: "Mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do ít nhất 2 giảng viên đánh giá."}
+  - query: "Em hỏi 3 ý: HSK cần mức nào để tương đương bậc 3, ngành Sinh học ứng dụng thuộc khoa nào, và hệ vừa làm vừa học một năm xét tốt nghiệp mấy đợt?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K51
+    stress: true
+    stress_type: dense_request
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {foreign: [Hanyu Shuiping Kaoshi (HSK), equivalent_level_3]}
+      - {program: Sinh học ứng dụng}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu15, "có 05 đợt xét tốt nghiệp chính thức"], fact: "Hệ vừa làm vừa học có 05 đợt xét tốt nghiệp chính thức, thường vào tháng 3, 5, 8, 10 và 12."}
+  - query: "Rèn luyện 48 điểm là loại gì, Thư viện nằm ở đâu, và học cùng lúc hai chương trình thì rèn luyện được đánh giá theo chương trình nào?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K48-K49
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [conduct_classification, 4, conduct_classification], input_slots: {score_or_grade: 48}}
+      - {office: [Thư viện, office]}
+      - {policy: [QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10, "Sinh viên đồng thời học hai chương trình đào tạo sẽ được đánh giá kết quả rèn luyện tại đơn vị quản lý chương trình thứ nhất"], fact: "Được đánh giá tại đơn vị quản lý chương trình thứ nhất, có tham khảo nhận xét của đơn vị quản lý chương trình thứ hai."}
+  - query: "em hoi 3 y: 4,5 diem quy ra chu gi, so dien thoai Phong Dao tao, voi lai danh bac thi co bi xu ly khong?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K50
+    stress: true
+    stress_type: informal_spelling
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [grade_scale, 6, grade_10_to_letter], input_slots: {score_or_grade: 4.5}}
+      - {office: [Phòng Đào tạo, phone]}
+      - {policy: [QuyCheCongTacSinhVien_Chuong3_Dieu10, "Tổ chức hoặc tham gia đánh bạc dưới mọi hình thức"], fact: "Có: tổ chức hoặc tham gia đánh bạc dưới mọi hình thức là hành vi sinh viên không được làm."}
+  - query: "Điểm A đổi ra hệ 4 là mấy, rèn luyện 55 điểm là loại gì, và lớp phải thế nào mới đạt danh hiệu lớp tiên tiến?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K51
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [letter_to_grade4, 0, letter_to_grade_4], input_slots: {score_or_grade: A}}
+      - {table: [conduct_classification, 3, conduct_classification], input_slots: {score_or_grade: 55}}
+      - {policy: [QuyCheCongTacSinhVien_Chuong6_Dieu32, "Có từ 25% sinh viên đạt danh hiệu sinh viên Khá trở lên"], fact: "Lớp tiên tiến cần từ 25% sinh viên đạt danh hiệu Khá trở lên, có cá nhân đạt Giỏi trở lên, không có ai học tập hoặc rèn luyện kém hay bị kỷ luật từ Cảnh cáo trở lên, và tập thể đoàn kết, thi đua tích cực."}
+  - query: "Cho em hỏi: email Phòng Đào tạo, GPA 2,4 loại gì, rèn luyện 77 loại gì, TOEIC bao nhiêu thì đạt bậc 3, và nợ bao nhiêu tín chỉ thì bị cảnh báo?"
+    category: compound
+    slice: multi_intent.over_limit
+    selected_cohort: K48-K49
+    stress: true
+    stress_type: dense_request
+    clarify: "Năm yêu cầu độc lập; yêu cầu sinh viên chọn tối đa 3 nội dung."
+  - query: "1) Khoa Sinh học ở đâu 2) IELTS mấy điểm thì bậc 4 3) học bổng xuất sắc cần điều kiện gì 4) nghỉ học tạm thời nộp hồ sơ khi nào"
+    category: compound
+    slice: multi_intent.over_limit
+    selected_cohort: K50
+    stress: true
+    stress_type: dense_request
+    clarify: "Bốn yêu cầu độc lập được đánh số; yêu cầu sinh viên chọn tối đa 3 nội dung."
+  - query: "Em muốn hỏi ngành Việt Nam học thuộc khoa nào, điểm C+ ra hệ 4 là mấy, làm thẻ bảo hiểm y tế ở đâu và bị khiển trách bao lâu thì hết?"
+    category: compound
+    slice: multi_intent.over_limit
+    selected_cohort: K51
+    stress: true
+    stress_type: dense_request
+    clarify: "Bốn yêu cầu độc lập; yêu cầu sinh viên chọn tối đa 3 nội dung."
+  - query: "Hỏi nhanh: 7,9 là điểm chữ gì; 90 điểm rèn luyện loại gì; công thức tính điểm học bổng; website Trung tâm Tin học"
+    category: compound
+    slice: multi_intent.over_limit
+    selected_cohort: K51
+    stress: true
+    stress_type: dense_request
+    clarify: "Bốn yêu cầu độc lập; yêu cầu sinh viên chọn tối đa 3 nội dung."
+
+  # ================================================================ memory
+  # follow-ups: earlier turns supply the missing entity or value; traps must not leak
+  - query: "Vậy K51 thì sao?"
+    category: memory
+    slice: memory.cohort_switch
+    selected_cohort: K50
+    stress: true
+    stress_type: cohort_difference
+    history:
+      - {role: user, content: "Học phần chuyên ngành được 5,0 điểm thì có đạt không?"}
+      - {role: assistant, content: "Theo sổ tay K50, 5,0 điểm thuộc mức D+ và được tính là Đạt."}
+    table: [grade_scale, 5, pass_threshold, remaining]
+    cohort: K51
+    input_slots: {score_or_grade: 5.0}
+  - query: "Thế K51 thì hệ số bao nhiêu?"
+    category: memory
+    slice: memory.cohort_switch
+    selected_cohort: K48-K49
+    history:
+      - {role: user, content: "Học bổng loại giỏi tính tiền theo hệ số mấy?"}
+      - {role: assistant, content: "Với K48-K49, học bổng Giỏi bằng số tín chỉ nhân định mức học phí 01 tín chỉ nhân 1,25."}
+    scholarship: [scholarship_amount, 1]
+    cohort: K51
+  - query: "Còn Khoa Hóa học?"
+    category: memory
+    slice: memory.entity_switch
+    selected_cohort: K51
+    history:
+      - {role: user, content: "Email Khoa Ngữ văn là gì?"}
+      - {role: assistant, content: "Email Khoa Ngữ văn là khoanguvan@hcmue.edu.vn."}
+    faculty: [Khoa Hóa học, email]
+  - query: "Thế TOPIK II thì sao?"
+    category: memory
+    slice: memory.entity_switch
+    selected_cohort: K48-K49
+    history:
+      - {role: user, content: "TOEFL ITP cần bao nhiêu điểm để tương đương bậc 3?"}
+      - {role: assistant, content: "TOEFL ITP từ 450 đến 499 điểm tương đương bậc 3."}
+    foreign: [TOPIK II, equivalent_level_3]
+  - query: "Vậy khoa ấy liên hệ qua email nào ạ?"
+    category: memory
+    slice: memory.pronoun
+    selected_cohort: K50
+    history:
+      - {role: user, content: "Ngành Việt Nam học thuộc khoa nào?"}
+      - {role: assistant, content: "Ngành Việt Nam học thuộc Khoa Ngữ văn."}
+    faculty: [Khoa Ngữ văn, email]
+  - query: "Phòng đó nằm ở chỗ nào vậy?"
+    category: memory
+    slice: memory.pronoun
+    selected_cohort: K48-K49
+    history:
+      - {role: user, content: "Muốn mượn máy chiếu cho lớp thì liên hệ đâu?"}
+      - {role: assistant, content: "Phòng Quản trị – Thiết bị quản lý thiết bị trình chiếu và máy vi tính lớp học."}
+    office: [Phòng Quản trị – Thiết bị, office]
+  - query: "Thế xếp loại học lực của em là gì?"
+    category: memory
+    slice: memory.topic_switch
+    selected_cohort: K51
+    stress: true
+    stress_type: context_trap
+    history:
+      - {role: user, content: "Điểm C+ quy ra hệ 4 là mấy?"}
+      - {role: assistant, content: "Điểm C+ tương đương 2,5 trên thang điểm 4."}
+    clarify: "Thiếu điểm trung bình; không dùng 2,5 của một học phần C+ làm điểm trung bình."
+  - query: "Mỗi học kỳ trường tổ chức mấy kỳ thi chính vậy?"
+    category: memory
+    slice: memory.topic_switch
+    selected_cohort: K50
+    history:
+      - {role: user, content: "Email Phòng Khảo thí và Đảm bảo chất lượng là gì?"}
+      - {role: assistant, content: "Email là phongkhaothi@hcmue.edu.vn."}
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính"]
+    fact: "Cuối mỗi học kỳ có một kỳ thi chính; Hiệu trưởng quyết định tổ chức các kỳ thi phụ tùy điều kiện từng năm học."
+
+  # ================================================================ boundary
+  - query: "Em muốn biết môn đó quy ra điểm chữ là gì?"
+    category: insufficient_input
+    slice: boundary.clarify
+    selected_cohort: K48-K49
+    clarify: "Thiếu điểm hệ 10 của học phần; không tự chọn hàng trong bảng."
+  - query: "Tổng điểm học bổng của em thì được xếp vào loại học bổng nào?"
+    category: insufficient_input
+    slice: boundary.clarify
+    selected_cohort: K50
+    clarify: "Thiếu điểm học bổng; không tự chọn loại học bổng."
+  - query: "Trạm Y tế có số điện thoại nào, và điểm thi của em ra điểm chữ gì?"
+    category: insufficient_input
+    slice: boundary.partial_clarify
+    selected_cohort: K48-K49
+    stress: true
+    stress_type: partial_missing_input
+    partial_clarification: true
+    tasks: [{office: [Trạm Y tế, phone]}, {clarify_task: "Thiếu điểm hệ 10 cần quy đổi"}]
+  - query: "Email Khoa Tiếng Nhật là gì, còn GPA của em thì xếp loại gì?"
+    category: insufficient_input
+    slice: boundary.partial_clarify
+    selected_cohort: K51
+    stress: true
+    stress_type: partial_missing_input
+    partial_clarification: true
+    tasks: [{faculty: [Khoa Tiếng Nhật, email]}, {clarify_task: "Thiếu điểm trung bình"}]
+  - query: "Gợi ý giúp em vài quán cà phê yên tĩnh gần trường để ôn thi."
+    category: out_of_domain
+    slice: boundary.out_of_domain
+    selected_cohort: K50
+    stress: true
+    stress_type: domain_vocabulary
+    out_of_domain: true
+  - query: "Cho em email Phòng Hợp tác Quốc tế, tiện thể xem giúp thời tiết TP.HCM ngày mai luôn."
+    category: compound
+    slice: boundary.mixed_domain
+    selected_cohort: K51
+    stress: true
+    stress_type: domain_vocabulary
+    tasks: [{office: [Phòng Hợp tác Quốc tế, email]}]
+
+  # ================================================================ relation
+  # a contact of the faculty or unit named by the first part (program -> faculty,
+  # service -> unit contact); v10 accepts one relation task or two tasks
+  - query: "Ngành Sư phạm Địa lý thuộc khoa nào, và email khoa đó là gì?"
+    category: compound
+    slice: relation.program_faculty
+    selected_cohort: K48-K49
+    tasks: [{program: Sư phạm Địa lý}, {faculty: [Khoa Địa lí, email]}]
+    v10_program_faculty_contact: {program: Sư phạm Địa lý, faculty: Khoa Địa lí}
+  - query: "Em học ngành Hoá học, cho em email của khoa quản lý ngành em."
+    category: compound
+    slice: relation.program_faculty
+    selected_cohort: K50
+    tasks: [{program: Hoá học}, {faculty: [Khoa Hóa học, email]}]
+    v10_program_faculty_contact: {program: Hoá học, faculty: Khoa Hóa học}
+  - query: "Sinh viên Ngôn ngữ Nhật muốn liên hệ khoa qua email thì gửi địa chỉ nào?"
+    category: compound
+    slice: relation.program_faculty
+    selected_cohort: K51
+    tasks: [{program: Ngôn ngữ Nhật}, {faculty: [Khoa Tiếng Nhật, email]}]
+    v10_program_faculty_contact: {program: Ngôn ngữ Nhật, faculty: Khoa Tiếng Nhật}
+  - query: "Ngành Tâm lý học giáo dục thuộc khoa nào, cho em luôn email khoa đó."
+    category: compound
+    slice: relation.program_faculty
+    selected_cohort: K51
+    tasks: [{program: Tâm lý học giáo dục}, {faculty: [Khoa Tâm lý học, email]}]
+    v10_program_faculty_contact: {program: Tâm lý học giáo dục, faculty: Khoa Tâm lý học}
+  - query: "Hỏi về vay vốn tín dụng sinh viên thì gặp phòng nào, cho em số điện thoại phòng đó luôn."
+    category: compound
+    slice: relation.service_contact
+    selected_cohort: K48-K49
+    service: [Hỗ trợ thủ tục vay vốn tín dụng, phone]
+  - query: "Cần hỗ trợ kết nối wifi thì tìm đơn vị nào, và email của họ là gì?"
+    category: compound
+    slice: relation.service_contact
+    selected_cohort: K50
+    service: [Hỗ trợ kết nối mạng và wifi sinh viên, email]

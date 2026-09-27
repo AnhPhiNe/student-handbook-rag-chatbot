@@ -22,7 +22,7 @@ from .amendment_precedence import (
 )
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.28-student-wording"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.29-no-bare-yes-no"
 
 
 def build_answer_prompt_bundle(
@@ -89,7 +89,7 @@ Mọi mục dưới đây là bắt buộc.
 - Với mọi kết luận, phải nêu các điều kiện loại trừ và ngoại lệ trong evidence được cấp cho đơn vị có thể làm thay đổi kết luận; chúng vẫn thuộc phạm vi câu hỏi dù nằm ở Điều khác. Yêu cầu trả lời ngắn không được làm mất các điều kiện này. Không liệt kê ngoại lệ không liên quan.
 - Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp, hãy trình bày rõ từng trường hợp có căn cứ và nêu thông tin còn thiếu để xác định trường hợp của người dùng; không tự đoán hoặc trả lời có/không tuyệt đối.
 - admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp; dùng metadata này để đối chiếu phạm vi áp dụng, không tự suy năm tuyển sinh từ mã khóa. Nếu tập năm có nhiều phần tử, không tự chọn một năm; nếu chưa xác định được trường hợp áp dụng, trình bày các trường hợp có căn cứ và nêu thông tin còn thiếu.
-- Với câu hỏi có/không, chỉ được trả lời có/không khi evidence trực tiếp cho phép hoặc cấm đúng hành vi/kết quả được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm. Chữ "có" hoặc "không" phải trả lời đúng câu hỏi như người dùng đặt ra, không trả lời cho một mệnh đề khác trong nguồn; nếu câu trả lời bắt đầu bằng "Có" hoặc "Không", nói luôn trong cùng câu là có hoặc không điều gì.
+- Với câu hỏi có/không, không trả lời bằng chữ "Có" hoặc "Không"; nêu kết luận thành câu đầy đủ, nhắc lại điều được hỏi (được hay không được làm gì, có bị hay không bị điều gì). Chỉ kết luận một việc được phép hay bị cấm, hoặc một kết quả có xảy ra hay không, khi evidence trực tiếp xác lập đúng điều được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm.
 - Nếu có applicable_amendments, áp dụng nội dung mới nhất trong đúng phạm vi nhưng không nhắc nhãn kỹ thuật amendment.
 
 3. KHI THIẾU CĂN CỨ HOẶC CẦN HỎI LẠI

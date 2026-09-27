@@ -205,7 +205,7 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
     assert "không tự đoán hoặc trả lời có/không tuyệt đối" in prompt
     assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
-    assert "chỉ được trả lời có/không khi evidence trực tiếp" in prompt
+    assert "khi evidence trực tiếp xác lập đúng điều được hỏi" in prompt
     assert "việc nguồn không nói \"được phép\"" in prompt
     assert "nêu đúng article_label" in prompt
     assert "in đậm kết luận chính" in prompt
@@ -1176,7 +1176,7 @@ def test_prompt_scopes_the_hedge_and_yes_no_polarity() -> None:
     prompt = _build_prompt_text(query="Có được không?", retrieval_result={})
     assert "Chỉ dùng câu đó cho đúng ý thiếu căn cứ" in prompt
     assert "không mở đầu bằng câu rào đón" in prompt
-    assert 'Chữ "có" hoặc "không" phải trả lời đúng câu hỏi như người dùng đặt ra' in prompt
+    assert 'không trả lời bằng chữ "Có" hoặc "Không"' in prompt
     # v3.6 removed a forced direct-answer lead because answers can be conditional.
     assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
     for field in ("mode=structured", "coverage=covered", "needs_clarification", "primary_evidence"):
@@ -1203,7 +1203,11 @@ def test_prompt_asks_for_student_wording_and_explicit_yes_no() -> None:
     assert "cohort, evidence, source_ref hoặc role" in prompt
     # "đơn vị" is also plain Vietnamese for an office, so it is not banned.
     assert "role hoặc đơn vị" not in prompt
-    assert 'nói luôn trong cùng câu là có hoặc không điều gì' in prompt
+    # v3.29: a bare "Có." could answer another proposition than the one asked
+    # ("có trừ … không?" answered "Có." then "không tính…"), so the answer
+    # states the conclusion in full instead; no forced first-sentence lead.
+    assert 'không trả lời bằng chữ "Có" hoặc "Không"; nêu kết luận thành câu đầy đủ' in prompt
+    assert "nói luôn trong cùng câu" not in prompt
     # admission_years keeps its v3.26 role: scope matching, not an input to restate.
     assert "dùng metadata này để đối chiếu phạm vi áp dụng" in prompt
     assert "- admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp.\n" not in prompt

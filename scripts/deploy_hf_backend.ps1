@@ -189,7 +189,7 @@ license: mit
 
 Backend-only deployment for the HCMUE AI student handbook assistant.
 
-Runtime: FastAPI, OpenAI Luna planner, BGE-M3, Qdrant, BM25, optional fail-open Cohere Fast reranking, MongoDB, and Gemini 3.1 Flash-Lite.
+Runtime: FastAPI, OpenAI Luna planner, BGE-M3, Qdrant, BM25, optional fail-open Cohere Fast reranking, MongoDB, and a DeepSeek composer.
 
 Source repository: https://github.com/AnhPhiNe/student-handbook-rag-chatbot
 "@ | Set-Content -LiteralPath (Join-Path $TempDir "README.md") -Encoding utf8

@@ -1,3 +1,6 @@
+# Composer A/B arm: Gemini 3.1 Flash-Lite, the composer before 2026-09-27.
+# Everything outside llm matches configs/answer_generation.yaml; select with
+# scripts/run_official_answers.py --answer-config configs/experiments/answer_gemini_flash_lite.yaml
 input:
   formula_rules: data/processed/tables/formula_rules.json
   student_service_directory: data/processed/directories/student_service_directory.json
@@ -7,26 +10,23 @@ input:
   parent_docstore: data/processed/chunks/all_docstore_items.json
   program_directory: data/processed/directories/program_directory.json
 
-# Composer: DeepSeek flash with thinking off, chosen on 2026-09-27 over
-# Gemini 3.1 Flash-Lite (same quality on official_v1, no failed calls);
-# configs/experiments/answer_gemini_flash_lite.yaml keeps the Gemini arm.
 llm:
-  provider: deepseek
-  model_name: deepseek-flash
-  reasoning_effort: none
-  api_keys_env_var: DEEPSEEK_API_KEY
+  provider: gemini
+  model_name: gemini-3.1-flash-lite
+  api_keys_env_var: GEMINI_API_KEYS
   temperature: 0.0
-  max_output_tokens: 8192
-  max_retries: 2
+  max_output_tokens: 4096
+  max_retries: 3
   retry_base_delay_seconds: 2
   retry_max_delay_seconds: 20
-  request_timeout_seconds: 60
+  request_timeout_seconds: 20
   request_sleep_seconds: 0
   max_context_chars: 160000
-  # DeepSeek limits concurrency, not a request rate; this is only a local guard.
   key_pool:
-    rpm_limit_per_key: 300
-    cooldown_on_rate_limit_seconds: 30
+    rpm_limit_per_key: 12
+    rpd_limit_per_key: 450
+    cooldown_on_rate_limit_seconds: 65
+    state_path: data/cache/gemini_key_state.json
     wait_when_all_keys_limited: false
 
 # Picks the directory records (service, office, faculty, program) a student

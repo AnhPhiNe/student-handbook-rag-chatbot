@@ -259,3 +259,10 @@ def test_push_trace_uses_task_tags_and_compact_root_outputs() -> None:
     assert root["outputs"]["citations"][0]["chunk_id"] == "K50_Dieu1"
     assert "content" not in root["outputs"]["citations"][0]
     assert root["outputs"]["structured_results"][0]["row_count"] == 2
+
+
+def test_llm_runs_name_the_provider_of_each_model() -> None:
+    providers = {model: langsmith_helper._llm_run_extra(model, {})["metadata"]["ls_provider"]
+                 for model in ("deepseek-flash", "gemini-3.1-flash-lite", "openai/gpt-oss-120b")}
+    assert providers == {"deepseek-flash": "deepseek", "gemini-3.1-flash-lite": "google_genai",
+                         "openai/gpt-oss-120b": "groq"}

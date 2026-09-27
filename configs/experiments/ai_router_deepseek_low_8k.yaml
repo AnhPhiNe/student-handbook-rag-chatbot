@@ -1,0 +1,35 @@
+# DeepSeek low planner experiment with an explicit generated-token ceiling.
+# Select with:
+#   STUDENT_RAG_ROUTER_CONFIG=configs/experiments/ai_router_deepseek_low_8k.yaml
+provider: deepseek
+model_name: deepseek-flash
+reasoning_effort: low
+
+# DeepSeek JSON mode guarantees valid JSON syntax; the prompt and normalizer
+# continue to enforce the QueryPlan contract used by every planner provider.
+response_format: json_object
+temperature: 0.0
+
+# Send an explicit 8K completion ceiling instead of DeepSeek's 64K default for
+# thinking mode. Both values must be 8192 because AIRouter applies the hard cap
+# after calculating its task-scaled output budget.
+omit_max_tokens: false
+max_output_tokens: 8192
+output_tokens_per_task: 640
+hard_max_output_tokens: 8192
+
+# Timeout is per provider attempt. One transient retry can therefore make the
+# end-to-end planner latency exceed 20 seconds.
+request_timeout_seconds: 20
+max_retries: 1
+cache_enabled: false
+cache_path: data/cache/deepseek_router_cache.json
+
+key_pool:
+  rpm_limit_per_key: 600
+  rpd_limit_per_key: null
+  tpm_limit_per_key: null
+  tpd_limit_per_key: null
+  cooldown_seconds: 30
+  state_path: data/cache/deepseek_router_key_state.json
+  wait_when_limited: false

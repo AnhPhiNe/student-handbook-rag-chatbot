@@ -1,0 +1,50 @@
+# Development smoke only, authored before new inference. Not a holdout.
+# The other 12 cases are copied unchanged from the V10 regression contracts.
+settings:
+  expected: {cases: 6}
+  id_prefix: v48_dev
+  independent_holdout: false
+  overlap_policy: "Development probes derived from offline safety/intent tests; no generalization claim."
+cases:
+  - query: "Môn tính GPA em được 3,60/10 thì ra điểm chữ gì?"
+    selected_cohort: K50
+    category: scoring
+    table: [grade_scale, 7, grade_10_to_letter, graded]
+    input_slots: {score_or_grade: "3,60/10"}
+    coverage_features: [explicit_score_scale]
+  - query: "Môn tính GPA em được 3,6/4 thì có qua không?"
+    selected_cohort: K50
+    category: scoring
+    table: [grade_scale, all, pass_threshold, graded]
+    coverage_features: [incompatible_score_scale]
+    # No arithmetic row is a valid answer: clarify or retain source evidence.
+    allow_safe_clarification: true
+  - query: "Môn tính GPA Alpha được 3,6/10, còn môn tính GPA Beta được 7,6/10; điểm chữ từng môn là gì?"
+    selected_cohort: K50
+    category: compound
+    tasks:
+      - {table: [grade_scale, 7, grade_10_to_letter, graded], input_slots: {score_or_grade: "3,6/10"}}
+      - {table: [grade_scale, 2, grade_10_to_letter, graded], input_slots: {score_or_grade: "7,6/10"}}
+    coverage_features: [multi_entity_distinct_values, structured_structured]
+  - query: "Môn nền tảng Alpha được 5,2/10, môn còn lại Beta được 7,6/10; cho biết điểm chữ từng môn."
+    selected_cohort: K51
+    category: compound
+    tasks:
+      - {table: [grade_scale, 5, grade_10_to_letter, foundation], input_slots: {score_or_grade: "5,2/10"}}
+      - {table: [grade_scale, 2, grade_10_to_letter, remaining], input_slots: {score_or_grade: "7,6/10"}}
+    coverage_features: [multi_entity_distinct_scopes, structured_structured]
+  - query: "Cho em email của Khoa Tiếng Anh và Khoa Tiếng Pháp."
+    selected_cohort: K50
+    category: compound
+    tasks: [{faculty: [Khoa Tiếng Anh, email]}, {faculty: [Khoa Tiếng Pháp, email]}]
+    alternative_tasks:
+      - [{directory_group: [{faculty: [Khoa Tiếng Anh, email]}, {faculty: [Khoa Tiếng Pháp, email]}]}]
+    coverage_features: [multi_entity_same_type, direct_directory_list]
+  - query: "So sánh K50 và K51: môn nền tảng được 7,6/10 thì điểm chữ là gì?"
+    selected_cohort: K51
+    category: compound
+    tasks:
+      - execution_units:
+          - {cohort: K50, table: [grade_scale, 2, grade_10_to_letter, foundation], input_slots: {score_or_grade: "7,6/10"}}
+          - {cohort: K51, table: [grade_scale, 2, grade_10_to_letter, foundation], input_slots: {score_or_grade: "7,6/10"}}
+    coverage_features: [multi_cohort_one_target]

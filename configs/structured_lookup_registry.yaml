@@ -1,4 +1,4 @@
-version: 7
+version: 8
 
 tools:
   foreign_language:
@@ -104,7 +104,7 @@ tools:
         type: string
         verification_role: reading_intent
         enum: [amount, classification]
-        description: "Bảng được hỏi: amount=mức tiền, hệ số, căn cứ học phí; classification=mức điểm học tập và rèn luyện của từng loại. Để trống khi hỏi tổng quan."
+        description: "Bảng được hỏi: amount=mức tiền, công thức tiền, hệ số, căn cứ học phí; classification=mức điểm học tập và rèn luyện của từng loại. Chọn theo kết quả cần tra, không theo riêng tên loại học bổng. Để trống khi hỏi tổng quan."
         span_aliases:
           amount: [mức tiền, mức học bổng, hệ số]
           classification: [xếp loại, loại học bổng]
@@ -153,10 +153,12 @@ tools:
       course_scope:
         type: string
         verification_role: result_input
-        enum: [foundation, remaining, pass_fail_ungraded]
+        enum: [foundation, remaining, graded, pass_fail_ungraded]
+        description: graded=môn tính GPA, chưa xác định foundation/remaining; không tự suy phạm vi còn thiếu. pass_fail_ungraded=môn không tính GPA.
         span_aliases:
           foundation: [học phần nền tảng, học phần chung, học phần giáo dục đại cương]
           remaining: [học phần còn lại, các học phần còn lại, môn còn lại, các môn còn lại]
+          graded: [môn tính GPA, học phần tính GPA, tính vào điểm trung bình học tập]
           pass_fail_ungraded: [học phần đạt không phân mức, học phần chỉ yêu cầu đạt, không tính vào điểm trung bình]
     table_selector:
       slot: operation
@@ -186,6 +188,8 @@ tools:
           table_id_suffixes: [grade_scale_foundation, grade_scale_general]
         remaining:
           table_id_suffixes: [grade_scale_remaining, grade_scale_general]
+        graded:
+          table_subtypes: [grade_scale]
         pass_fail_ungraded:
           table_id_suffixes: [pass_fail_ungraded]
     strategy: structured_lookup
@@ -210,6 +214,15 @@ tools:
         type: string
         verification_role: reading_intent
         enum: [unit, phone, email, office, website, all]
+        description: >-
+          unit=tên đơn vị phụ trách; office=địa chỉ hoặc vị trí làm việc;
+          all=thông tin liên hệ tổng hợp. Hỏi ai/đơn vị nào phụ trách hoặc hỗ trợ
+          một việc → unit. Hỏi nơi làm việc, tòa nhà/tầng/số phòng, hoặc một đơn
+          vị đã nêu tên 'ở đâu' → office, không cần nêu số phòng. Hỏi cả đơn vị
+          và vị trí → [unit, office] hoặc all. Phân biệt theo mục đích câu hỏi,
+          không chỉ theo từ 'phòng'.
+          Chọn theo loại đáp án cần trả: tên đơn vị hay vị trí vật lý;
+          nếu mục đích vẫn mơ hồ sau history hợp lệ thì clarify, không dùng all để né chọn field.
         span_aliases:
           unit: [đơn vị, don vi, bộ phận, bo phan]
           phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
@@ -236,10 +249,12 @@ tools:
       office:
         type: string
         verification_role: directory_entity
+        description: Tên đơn vị/phòng ban đầu vào, không phải địa chỉ, tầng hoặc số phòng.
       requested_field:
         type: string
         verification_role: reading_intent
         enum: [phone, email, office, website, services, all]
+        description: Trường đầu ra; office=địa chỉ/vị trí, services=danh sách dịch vụ của đơn vị, all=thông tin liên hệ tổng hợp.
         span_aliases:
           phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
           email: [email, thư điện tử, thu dien tu]
@@ -266,10 +281,12 @@ tools:
       faculty:
         type: string
         verification_role: directory_entity
+        description: Tên khoa đã nêu; nếu chỉ biết ngành và hỏi liên hệ khoa phụ trách thì dùng program.
       requested_field:
         type: string
         verification_role: reading_intent
         enum: [phone, email, office, website, all]
+        description: Trường liên hệ của khoa; office=địa chỉ/vị trí, all=thông tin liên hệ tổng hợp.
         span_aliases:
           phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
           email: [email, thư điện tử, thu dien tu]
@@ -286,7 +303,7 @@ tools:
   program:
     data_category: directory_table
     presentation_type: table
-    description: Tra ngành đào tạo, khoa phụ trách, danh sách ngành, mô tả chương trình và đầu ra/cơ hội nghề nghiệp.
+    description: Tra ngành, khoa phụ trách và liên hệ khoa; ngành kèm email khoa là một task.
     intents: [direct_value, list_items, exists]
     required_slots:
       direct_value: [program_or_faculty, requested_field]
@@ -296,14 +313,17 @@ tools:
       program_or_faculty:
         type: string
         verification_role: directory_entity
+        description: Tên ngành cần tìm khoa/liên hệ, hoặc tên khoa cần liệt kê ngành; không tự đoán khoa từ ngành.
       requested_field:
         type: string
         verification_role: reading_intent
-        enum: [faculty, programs, exists, all]
+        enum: [faculty, programs, exists, email, phone, website, office, all]
+        description: faculty=khoa phụ trách ngành; programs=danh sách ngành; exists=kiểm tra tồn tại; email/phone/website/office/all=liên hệ khoa phụ trách ngành qua relationship, office là địa chỉ. Không tạo task phụ thuộc để tra khoa chưa biết tên.
       scope:
         type: string
         verification_role: reading_intent
         enum: [school, faculty]
+        description: "Phạm vi danh sách ngành: school=toàn trường; faculty=theo khoa đã nêu, không phải field khoa phụ trách ngành."
         grounding_intents: [list_items]
         span_aliases:
           school: [các ngành của trường, cac nganh cua truong, những ngành của trường, nhung nganh cua truong, toàn trường, toan truong, trường có những ngành, truong co nhung nganh]
@@ -333,3 +353,24 @@ rag_intents:
   consequence_or_exception: [regulation]
   open_question: [regulation, office_directory, program_directory]
   mixed: [regulation, office_directory]
+
+# Only reviewed catalog keys participate. No regulation table has a business join.
+relationships:
+  program:
+    target: faculty
+    source_key: faculty_name
+    target_keys: [unit_name, faculty_name, aliases]
+    cardinality: one
+    requested_fields: [email, phone, website, office, all]
+  student_service:
+    target: office
+    source_key: unit_name
+    target_keys: [unit_name, aliases]
+    cardinality: one
+    requested_fields: [phone, email, website, office, all]
+  office:
+    target: student_service
+    source_key: service_ids
+    target_keys: [service_id]
+    cardinality: many
+    requested_fields: [services, all]

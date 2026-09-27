@@ -4,6 +4,7 @@ against each case's accepted outcomes (V9 contract)."""
 from __future__ import annotations
 
 import os
+import math
 import re
 import time
 import traceback
@@ -11,7 +12,10 @@ import unicodedata
 from pathlib import Path
 from typing import Any, Callable
 
-from .dataset import DETERMINISTIC_CONTRACT
+from src.common.score import parse_score, scores_equal
+from src.retrieval.core.structured_routing import load_lookup_registry
+
+from .dataset import DETERMINISTIC_CONTRACT, SUPPORTED_DETERMINISTIC_CONTRACTS
 from .metrics import (
     safe_mean,
 )
@@ -25,6 +29,11 @@ from .shared import (
     save_eval_checkpoint,
     wait_for_bm25_ready,
 )
+
+
+# Gold/outcome shape remains V9/V10. Version the changed matching algorithm
+# separately so new reports and checkpoints cannot silently reuse old scores.
+DETERMINISTIC_EVALUATOR_REVISION = "r2-requested-field-coverage"
 
 
 def _structured_citations(structured: dict[str, Any]) -> list[dict[str, Any]]:
@@ -105,6 +114,38 @@ def _normalized_contract_value(value: Any) -> Any:
     return value
 
 
+def _requested_field_covers(
+    actual: Any, alternatives: list[Any], *, lookup_type: str | None,
+) -> bool:
+    """Accept declared field coverage, not a different tool, entity or fact.
+
+    Alternatives remain OR choices; a list inside an alternative requires all
+    its fields. Extra fields must be valid for this lookup. `all` is accepted
+    only when gold explicitly allows it, not as an implicit universal wildcard.
+    Execution checks still bind the selected task to the required evidence.
+    """
+    spec = (load_lookup_registry()["tools"].get(lookup_type) or {}).get(
+        "slot_schema", {}
+    ).get("requested_field", {})
+    allowed = set(spec.get("enum") or spec.get("canonical_values") or [])
+    if spec.get("verification_role") != "reading_intent" or not allowed:
+        return _normalized_contract_value(actual) in [
+            _normalized_contract_value(value) for value in alternatives
+        ]
+
+    def fields(value: Any) -> set[str]:
+        values = value if isinstance(value, list) else [value]
+        if not values or any(not isinstance(item, str) or item not in allowed for item in values):
+            return set()
+        return set(values)
+
+    actual_fields = fields(actual)
+    return bool(actual_fields) and any(
+        bool(required := fields(value)) and required <= actual_fields
+        for value in alternatives
+    )
+
+
 def _task_matches(gold: dict[str, Any], actual: dict[str, Any]) -> bool:
     """Match only architecture-significant task fields declared by the gold."""
 
@@ -122,7 +163,22 @@ def _task_matches(gold: dict[str, Any], actual: dict[str, Any]) -> bool:
     for key, alternatives in (gold.get("slot_value_alternatives") or {}).items():
         if not isinstance(alternatives, list):
             alternatives = [alternatives]
-        if key not in slots or _normalized_contract_value(slots[key]) not in [
+        if key not in slots:
+            return False
+        if key == "requested_field":
+            if not _requested_field_covers(
+                slots[key], alternatives, lookup_type=actual.get("lookup_type"),
+            ):
+                return False
+        elif (key == "score_or_grade" and actual.get("lookup_type") == "scoring"
+                and any(parse_score(item) is not None for item in alternatives)):
+            operation = str(slots.get("operation") or "")
+            scale = 10 if operation in {
+                "grade_10_to_letter", "pass_threshold", "pass_fail_ungraded"
+            } else None
+            if not any(scores_equal(slots[key], item, expected_scale=scale) for item in alternatives):
+                return False
+        elif _normalized_contract_value(slots[key]) not in [
             _normalized_contract_value(item) for item in alternatives
         ]:
             return False
@@ -332,6 +388,38 @@ def _structured_source_identities(value: Any) -> set[str]:
     return identities
 
 
+def _relationship_evidence_matches(value: Any, expected: dict[str, Any]) -> bool:
+    """Require both reviewed records, separately sourced, in the same join."""
+
+    if not isinstance(value, dict) or value.get("relationship_status") != "resolved":
+        return False
+    parts = value.get("sub_lookups") or []
+    if not isinstance(parts, list):
+        return False
+    cohort = expected["cohort"]
+
+    def matching_part(content_type: str, fields: dict[str, Any]) -> list[dict[str, Any]]:
+        matches = []
+        for part in parts:
+            if not isinstance(part, dict) or part.get("content_type") != content_type:
+                continue
+            rows = part.get("result") or []
+            if (part.get("cohort") != cohort or not isinstance(rows, list)
+                    or len(rows) != 1 or not part.get("document_id")
+                    or not part.get("source_section")):
+                continue
+            row = rows[0]
+            if (isinstance(row, dict) and row.get("cohort") == cohort
+                    and _mapping_contains_fields(row, fields)):
+                matches.append(row)
+        return matches
+
+    sources = matching_part(expected["source_content_type"], expected["source_fields"])
+    targets = matching_part(expected["target_content_type"], expected["target_fields"])
+    return (len(sources) == len(targets) == 1
+            and _contract_values_equal(sources[0].get("faculty_name"), targets[0].get("unit_name")))
+
+
 def _task_execution_checks(
     expected: dict[str, Any], task_results: list[dict[str, Any]]
 ) -> dict[str, bool | None]:
@@ -360,7 +448,7 @@ def _task_execution_checks(
             checks.append(_task_execution_checks(unit, scoped_results))
         return {
             key: (all(values) if values else None)
-            for key in ("source", "evidence_fields", "resolved_result")
+            for key in ("source", "evidence_fields", "resolved_result", "relationship")
             for values in [[c[key] for c in checks if c[key] is not None]]
         }
 
@@ -369,14 +457,16 @@ def _task_execution_checks(
     evidence_rows = expected.get("expected_evidence_rows") or []
     resolved_fields = expected.get("expected_resolved_fields")
     resolved_required = expected.get("resolved_result_required")
+    relationship = expected.get("expected_relationship")
     if expected.get("fact_lock_applicable") is False:
         resolved_fields = None
         resolved_required = None
     applicable = bool(
-        source_ids or evidence_fields or evidence_rows or resolved_fields
+        source_ids or evidence_fields or evidence_rows or resolved_fields or relationship
     ) or (resolved_required is not None)
     if not applicable:
-        return {"source": None, "evidence_fields": None, "resolved_result": None}
+        return {"source": None, "evidence_fields": None, "resolved_result": None,
+                "relationship": None}
 
     candidates = [
         task
@@ -456,6 +546,11 @@ def _task_execution_checks(
         "source": source_ok,
         "evidence_fields": evidence_ok,
         "resolved_result": resolved_ok,
+        "relationship": (
+            any(_relationship_evidence_matches(evidence, relationship)
+                for task in candidates for evidence in task.get("evidence") or [])
+            if relationship else None
+        ),
     }
 
 
@@ -638,6 +733,7 @@ def _evaluate_outcome_case(
             "structured_source": combined_check("source"),
             "structured_row": combined_check("evidence_fields"),
             "resolved_result": combined_check("resolved_result"),
+            "relationship": combined_check("relationship"),
             "clarification_question": (
                 has_clarification_question
                 if outcome.get("clarification_question_required")
@@ -681,6 +777,8 @@ def _evaluate_outcome_case(
         **case,
         "query_plan": plan,
         "router_usage": result.get("router_usage"),
+        "planner_latency_ms": result.get("planner_latency_ms"),
+        "planner_error_type": result.get("planner_error_type"),
         "task_results": task_results,
         "structured_result": structured,
         "citations": citations,
@@ -709,8 +807,12 @@ def _evaluate_outcome_case(
         "structured_source_correct": checks.get("structured_source"),
         "structured_row_correct": checks.get("structured_row"),
         "resolved_result_correct": checks.get("resolved_result"),
+        "relationship_correct": checks.get("relationship"),
         "outcome_contract_correct": bool(selected),
-        "passed": bool(selected) and not bool(result.get("planner_fallback")),
+        "passed": (bool(selected) and not bool(result.get("planner_fallback"))
+                   and not bool(result.get("planner_error_type"))),
+        "execution_error_type": None,
+        "evaluation_failure": not bool(selected) and not bool(result.get("planner_error_type")),
         "latency_ms": (time.perf_counter() - started) * 1000,
     }
 
@@ -727,7 +829,7 @@ def _evaluate_deterministic_uncached(
 ) -> dict[str, Any]:
     unsupported = sorted(
         {str(case.get("contract_version")) for case in cases[:limit]}
-        - {DETERMINISTIC_CONTRACT}
+        - SUPPORTED_DETERMINISTIC_CONTRACTS
     )
     if unsupported:
         raise ValueError(f"Unsupported deterministic contract(s): {unsupported}")
@@ -742,6 +844,7 @@ def _evaluate_deterministic_uncached(
             suite="deterministic",
             context=checkpoint_context,
             evaluation_contract=evaluation_contract,
+            evaluator_revision=DETERMINISTIC_EVALUATOR_REVISION,
         )
         if checkpoint_path
         else None
@@ -752,7 +855,13 @@ def _evaluate_deterministic_uncached(
     capture_planner_diagnostics = bool(
         (checkpoint_context or {}).get("capture_planner_diagnostics")
     )
-    from src.retrieval.core.ai_router import planner_diagnostics_scope
+    from src.retrieval.core.ai_router import AIRouter, planner_diagnostics_scope
+
+    failure_limit = int((checkpoint_context or {}).get("max_consecutive_runtime_failures", 0))
+    if failure_limit < 0:
+        raise ValueError("max_consecutive_runtime_failures must be nonnegative")
+    consecutive_failures = 0
+    stopped_reason = None
 
     if uses_default_pipeline:
         from src.retrieval.core.hybrid_pipeline import initialize_hybrid_retriever
@@ -766,6 +875,7 @@ def _evaluate_deterministic_uncached(
             continue
         started = time.perf_counter()
         result = None
+        capture_case_diagnostics = False
         try:
             retrieval_kwargs = {
                 "cohort": case.get("cohort"),
@@ -789,24 +899,42 @@ def _evaluate_deterministic_uncached(
                 refresh=False,
             )
         except Exception as exc:
+            error_stage = "execution" if result is None else "evaluator"
             rows.append(
                 {
                     **case,
                     "passed": False,
-                    "error": str(exc),
+                    "error": AIRouter._classify_error(exc),
                     "error_type": type(exc).__name__,
-                    "error_stage": "runtime" if result is None else "evaluator",
+                    "error_diagnostic": AIRouter.error_diagnostic(exc),
+                    "planner_latency_ms": getattr(exc, "planner_latency_ms", None),
+                    "error_stage": error_stage,
+                    "execution_error_type": type(exc).__name__ if result is None else None,
+                    "evaluation_error_type": type(exc).__name__ if result is not None else None,
+                    "evaluation_failure": False,
                     "raw_result": result,
-                    "traceback": traceback.format_exc(),
+                    # Frame locations only: no exception body or source-line text.
+                    "traceback": "\n".join(
+                        f"{frame.filename}:{frame.lineno}:{frame.name}"
+                        for frame in traceback.extract_tb(exc.__traceback__)
+                    ) + f"\n{type(exc).__name__}",
                     "latency_ms": (time.perf_counter() - started) * 1000,
                 }
             )
+            if capture_case_diagnostics and getattr(exc, "planner_diagnostics", None) is not None:
+                rows[-1]["planner_diagnostics"] = exc.planner_diagnostics
             progress.set_postfix(
                 {"case": case.get("id"), "pass": 0, "error": type(exc).__name__},
                 refresh=False,
             )
         finally:
             save_eval_checkpoint(checkpoint_path, rows, identity=identity)
+
+        operational_failure = bool(rows[-1].get("error_type") or rows[-1].get("planner_error_type"))
+        consecutive_failures = consecutive_failures + 1 if operational_failure else 0
+        if failure_limit and consecutive_failures >= failure_limit:
+            stopped_reason = "consecutive_runtime_failures"
+            break
 
     rows_by_id = {row["id"]: row for row in rows}
     rows = [
@@ -829,6 +957,12 @@ def _evaluate_deterministic_uncached(
     true_positive_n = sum(expects_structured(row) for row in predicted_structured)
     false_positive_n = sum(not expects_structured(row) for row in predicted_structured)
     passed_n = sum(bool(row.get("passed")) for row in rows)
+    planner_latencies = sorted(
+        float(row["planner_latency_ms"])
+        for row in rows
+        if isinstance(row.get("planner_latency_ms"), (int, float))
+        and not isinstance(row["planner_latency_ms"], bool)
+    )
 
     def assertion_accuracy(field: str) -> float | None:
         values = [row[field] for row in rows if row.get(field) is not None]
@@ -848,6 +982,32 @@ def _evaluate_deterministic_uncached(
     }
     summary = {
         "n": len(rows),
+        "requested_n": len(cases[:limit]),
+        "not_run_n": len(cases[:limit]) - len(rows),
+        "completed": len(rows) == len(cases[:limit]),
+        "stopped_reason": stopped_reason,
+        "runtime_error_n": sum(bool(row.get("error_type")) for row in rows),
+        "planner_request_failure_n": sum(bool(row.get("planner_error_type")) for row in rows),
+        "execution_error_n": sum(bool(row.get("execution_error_type")) for row in rows),
+        "evaluation_error_n": sum(bool(row.get("evaluation_error_type")) for row in rows),
+        "evaluation_failure_n": sum(bool(row.get("evaluation_failure")) for row in rows),
+        "request_success_after_retry": (
+            sum(not row.get("planner_error_type") and not row.get("error_type") for row in rows)
+            / len(rows) if rows else 0.0
+        ),
+        "semantic_accuracy": (
+            sum(bool(row.get("passed")) for row in rows
+                if not row.get("planner_error_type") and not row.get("error_type"))
+            / sum(not row.get("planner_error_type") and not row.get("error_type")
+                  for row in rows)
+            if any(not row.get("planner_error_type") and not row.get("error_type")
+                   for row in rows) else None
+        ),
+        "planner_latency_p95_ms": (
+            planner_latencies[math.ceil(0.95 * len(planner_latencies)) - 1]
+            if planner_latencies else None
+        ),
+        "planner_latency_support_n": len(planner_latencies),
         "passed": passed_n,
         "accuracy": passed_n / len(rows) if rows else 0.0,
         "precision": (
@@ -897,12 +1057,15 @@ def _evaluate_deterministic_uncached(
             name: sum(row.get(field) is not None for row in rows)
             for name, field in assertion_fields.items()
         },
-        "planner_fallback_rate": 1.0
-        - safe_mean([float(bool(row.get("planner_fallback_free"))) for row in rows]),
+        "planner_fallback_rate": safe_mean([
+            float(not row["planner_fallback_free"])
+            for row in rows if row.get("planner_fallback_free") is not None
+        ]),
     }
     return {
         "suite": "deterministic",
         "evaluation_contract": evaluation_contract,
+        "evaluator_revision": DETERMINISTIC_EVALUATOR_REVISION,
         "summary": summary,
         "cases": rows,
     }

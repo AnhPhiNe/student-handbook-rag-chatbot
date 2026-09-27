@@ -9,9 +9,11 @@ from src.common.cohort import (
     is_validated_source_applicable,
     normalize_cohort,
 )
+from src.common.score import grounded_score, parse_score
 
 from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
+from .catalog_relationship import resolve_relationship
 from .office_lookup import normalize_text, office_lookup
 from .program_lookup import program_lookup
 from .scholarship_lookup import scholarship_table_lookup
@@ -26,7 +28,9 @@ _REFERENCE_TABLE_TYPES: dict[str, set[str]] = {
     "study_duration": {"study_duration"},
     "scoring": {"scoring", "conduct"},
 }
-_LOOKUP_TOOL_SPECS = load_lookup_registry().get("tools", {})
+_REGISTRY = load_lookup_registry()
+_LOOKUP_TOOL_SPECS = _REGISTRY.get("tools", {})
+_RELATIONSHIPS = _REGISTRY.get("relationships", {})
 
 
 @dataclass(frozen=True)
@@ -544,6 +548,13 @@ def _has_multiple_result_choices(
         }
         if (
             lookup_type == "foreign_language"
+            and slot_name == "certificate_or_language"
+        ):
+            # Multiple certificate names may identify one combined catalog
+            # row. The foreign-language resolver checks actual row cardinality.
+            continue
+        if (
+            lookup_type == "foreign_language"
             and slot_name == "score_or_level"
             and choices
             and choices <= {"bac 3", "bac 4"}
@@ -583,6 +594,31 @@ def _resolve_single_lookup(
         slots = {}
 
     if lookup_type in _REFERENCE_TABLE_TYPES:
+        resolution_slots = slots
+        if lookup_type == "scoring" and slots.get("score_or_grade") is not None:
+            operands = slots["score_or_grade"]
+            values = operands if isinstance(operands, list) else [operands]
+            grounded_values = []
+            for value in values:
+                if parse_score(value) is None:
+                    grounded_values.append(value)
+                    continue
+                score = grounded_score(
+                    value, (task.get("slot_spans") or {}).get("score_or_grade"), query,
+                )
+                if score is None:
+                    grounded_values = []
+                    break
+                grounded_values.append(
+                    f"{score.value}/{score.scale}" if score.scale is not None else str(score.value)
+                )
+            # Keep tables as evidence, but never calculate rows from ungrounded
+            # values or discard a denominator present in the original task.
+            resolution_slots = (
+                {**slots, "score_or_grade": grounded_values
+                 if isinstance(operands, list) else grounded_values[0]}
+                if grounded_values else {}
+            )
         candidates = _select_reference_tables(lookup_type, slots, [
             table for table in structured_tables_registry
             if table.get("data_category") == "regulation_table"
@@ -595,7 +631,7 @@ def _resolve_single_lookup(
             query=query,
             candidates=candidates,
             cohort=effective_cohort,
-            slots=slots,
+            slots=resolution_slots,
         )
         # Keep the complete reference table for UI rendering, but expose a
         # deterministic fact lock when an existing domain resolver identifies
@@ -609,7 +645,7 @@ def _resolve_single_lookup(
             resolved_result = _unique_reference_resolution(
                 lookup_type,
                 query=query,
-                slots=slots,
+                slots=resolution_slots,
                 cohort=effective_cohort,
                 selected_tables=candidates,
             )
@@ -694,13 +730,26 @@ def _resolve_single_lookup(
                 result_kind="clarification",
                 target_chunk_types=[],
             )
-        requested_field = str(slots.get("requested_field") or "")
+        requested_field = slots.get("requested_field") or ""
         # A grounded directory record remains valid structured evidence even
         # when it does not contain the optional field requested by the user.
         # The Composer receives the record and must state that the available
         # evidence does not provide that field instead of inventing a value.
         if result is not None:
-            result["requested_field"] = requested_field
+            result["requested_field"] = (
+                list(requested_field) if isinstance(requested_field, list)
+                else str(requested_field)
+            )
+            result = resolve_relationship(
+                result, source_lookup=lookup_type,
+                requested_field=requested_field, cohort=effective_cohort,
+                relationships=_RELATIONSHIPS,
+                catalogs={
+                    "student_service": student_service_directory,
+                    "office": office_directory,
+                    "faculty": student_faculty_profiles or [],
+                },
+            )
         strategies = {
             "student_service": "student_service_lookup",
             "office": "office_lookup",
@@ -715,6 +764,7 @@ def _resolve_single_lookup(
             lookup_type,
             strategies[lookup_type],
             result,
+            result_kind="clarification" if result and result.get("needs_clarification") else "structured",
             target_chunk_types=target_content_types.get(
                 lookup_type, ["student_office_profile"]
             ),
@@ -724,12 +774,13 @@ def _resolve_single_lookup(
         candidate_text = _slot_text(task, "program_or_faculty") or query
         intent = task.get("intent")
         scope = str(slots.get("scope") or "school")
-        requested_field = str(slots.get("requested_field") or "")
-        if requested_field == "faculty":
+        requested_field = slots.get("requested_field") or ""
+        requested = set(requested_field) if isinstance(requested_field, list) else {str(requested_field)}
+        if "faculty" in requested or requested & {"email", "phone", "website", "office", "all"}:
             action = "resolve_faculty"
-        elif intent == "exists" or requested_field == "exists":
+        elif intent == "exists" or "exists" in requested:
             action = "exists"
-        elif intent == "list_items" or requested_field == "programs":
+        elif intent == "list_items" or "programs" in requested:
             action = "list"
         else:
             action = "resolve_faculty"
@@ -740,7 +791,17 @@ def _resolve_single_lookup(
             action=action,
             scope=scope,
         )
-        return _resolution(lookup_type, "program_lookup", result)
+        if result is not None:
+            result = resolve_relationship(
+                result, source_lookup="program", requested_field=requested_field,
+                cohort=effective_cohort, relationships=_RELATIONSHIPS,
+                catalogs={"faculty": student_faculty_profiles or [],
+                          "program": program_directory},
+            )
+        return _resolution(
+            lookup_type, "program_lookup", result,
+            result_kind="clarification" if result and result.get("needs_clarification") else "structured",
+        )
 
     if lookup_type == "formula":
         result = formula_lookup(

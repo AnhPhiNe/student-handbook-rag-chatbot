@@ -66,7 +66,12 @@ def _fake_router(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> AIRouter:
     return AIRouter(
         model_name="qwen/qwen3.8-27b",
         cache_enabled=False,
-        key_pool_config={"state_path": str(tmp_path / "router-state.json")},
+        # One fake key: Groq's 8K TPM default would block the second plan call
+        # of the full prompt. This test is about diagnostics, not quota.
+        key_pool_config={
+            "state_path": str(tmp_path / "router-state.json"),
+            "tpm_limit_per_key": None,
+        },
     )
 
 

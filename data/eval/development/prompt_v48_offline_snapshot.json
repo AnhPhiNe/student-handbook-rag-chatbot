@@ -1,0 +1,70 @@
+{
+  "checkpoint": "offline_pre_api_v48_20260926",
+  "release_frozen": false,
+  "production_approved": false,
+  "new_api_calls": 0,
+  "prompt_version": "structured-regulation-v48-scale-task-pairing",
+  "normalizer_version": "v30-score-scale-grounding",
+  "deterministic_contract": "query-plan-grounded-outcome-v10",
+  "evaluator_revision": "r2-requested-field-coverage",
+  "verification": {
+    "repository_tests_passed": 1131,
+    "dependency_warnings": 2,
+    "scripted_fixtures_not_model_outputs": true,
+    "structured_saved_plan_replay": {
+      "passed": 11,
+      "n": 12,
+      "failed_case_ids": [
+        "official_det_096"
+      ],
+      "no_new_planning_or_composition": true,
+      "report": "data/eval/reports/deepseek_v10_v48_structured_replay_20260926/deterministic.json"
+    }
+  },
+  "prompt_stats_empty_history": {
+    "json_schema": {
+      "total_chars": 14909,
+      "estimated_input_tokens": 3727
+    },
+    "json_object": {
+      "total_chars": 14821,
+      "estimated_input_tokens": 3705
+    },
+    "estimated_tokens_are_character_based_not_billing": true
+  },
+  "notes": [
+    "Hashes identify the local files checked, not a repository-wide immutable release.",
+    "The replay report retains original v46 plans; v48 prompt is not exercised by new inference.",
+    "Runtime replay's original manifest hashes only catalogs and plan_executor; this sidecar additionally records score validation, resolver and prompt sources.",
+    "API/production/README/source data/gold facts were not changed by this follow-up."
+  ],
+  "sha256": {
+    "src/common/score.py": "9fef1d395de7a67b6296d8f7204dccc1b112e0b03a15a19c3939bfc10582249b",
+    "src/retrieval/core/query_plan.py": "14a8707c025d00a919b0cc6846e4ddcf39e6a6bf2e2cee4e112a623300467581",
+    "tests/test_scale_and_task_pairing_integration.py": "d9bbfebc089a6a6cdb328eec58044484cdf8d804e4e453531902a779fc06333a",
+    "tests/test_ai_router_prompt.py": "8af8430d663e4b8f731e5b820e15442f5149b4e4c6367d927ea72cf6f20bff63",
+    "data/processed/tables/structured_tables_registry.json": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
+    "configs/structured_lookup_registry.yaml": "90efe8ddb60fc67992e931f775a47f8fd5ee3c6a8b5c29a42c700161e11f1b19",
+    "src/retrieval/core/structured_dispatcher.py": "2e22191bea6aa039ddec0a037dc9fced581663df533eb2a414f7854f94ba984d",
+    "src/generation/prompt_builder.py": "0da5532fe72c7ca3a4e7115013ddad08cbb2180fbfc5d04a394d4f179b9ecd2e",
+    "configs/office_aliases.yaml": "a0e1b4c3bfd6c8ac517e11294dca3a4bbbfdd2f43e039b17593afc60e7a2d853",
+    "data/eval/official_v1/deterministic_tool_cases_v10.json": "99eb05c3a4ddc9d7059c9ecd6e676e7c7e859f77a7906b5141ad80a16002fd42",
+    "tests/test_deepseek_offline_v10.py": "1ed7799c0d86ae1939a62148fd9162258b46264d97cc36702370dff9072f60c1",
+    "data/eval/reports/official_v1_deterministic_20260926T072715Z/deterministic.json": "6515645c846f7c392c30de86c8255feecb27adc18463c63b792080847de8cd96",
+    "data/processed/directories/program_directory.json": "d5a6c4c9a9e7ae6cf9f2b8c93d0696d44e97153188cbe83fdf133e192489d0aa",
+    "data/eval/reports/deepseek_v10_v48_structured_replay_20260926/deterministic.json": "73863f84309f77dfdc36da66d576cc20b77ebcb1e96e57fbfae2a0255a8deca6",
+    "src/retrieval/core/ai_router.py": "ec29d52c139d07913c2383a2085aedb3497fdc1e1a008988726ae3ed95d3d2e0",
+    "src/retrieval/core/structured_routing.py": "ead485dc67af2621753be5502065789b26821cec1027397ff575de301f1b1478",
+    "src/retrieval/core/catalog_relationship.py": "dfa74595746b7133417fc7ae29d9a7c0bfed7d09f473ac7f93c2053554d2a222",
+    "tests/test_structured_grounding_and_field_coverage.py": "4830c750111f196b636e1bb38cb3e4764b68ace47776ad52148aa19d21d282d0",
+    "data/eval/reports/official_v1_deterministic_20260926T132645Z/deterministic.json": "6387a8bd5bd85802b7e3fac0af09840f0e891d0b90366fe860471dcb238e0262",
+    "data/processed/directories/student_faculty_profiles.json": "da557ddeea4df1930aaec4a6536d92ecc2006ecca94a2f7a373c75b96b206257",
+    "src/retrieval/core/citation_builder.py": "bb92b0ac46e5e42d57f6956364722767f0c616e5a5595a8a7adc27b8f963bf6f",
+    "data/processed/directories/student_office_profiles.json": "252d00810163280cef0d269a1be774eba6c40e37264d10b0e6b63613df305554",
+    "tests/test_structured_layer_integration.py": "5a7cc4b0ae379d27aa63dc20bdfe71d9f7f252046e0298d5d55a4cc99b3fed82",
+    "src/generation/plan_executor.py": "074f4fac4ab3b921947d1a7eb0bf369dbdf6728012b28ceffb11fba8ed12575d",
+    "data/eval/official_v1/deterministic_tool_cases.json": "36d43a79f5b6e97e3aa88c11735ce42966e952750c89b3bc9e411b23790cabfd",
+    "data/processed/directories/student_service_directory.json": "95c993f8e828098dbe3076cf4c81106e81c26708976d08ff1e2c21a239d2b1ff",
+    "src/retrieval/core/structured_lookup.py": "943e19451fdf5e816bc3d96e359e7dc440c6f868469b0e2c6fa47b3d5314145f"
+  }
+}

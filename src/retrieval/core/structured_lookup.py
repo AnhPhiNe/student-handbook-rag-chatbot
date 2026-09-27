@@ -3,6 +3,7 @@ from functools import partial
 from typing import Any, Optional
 
 from src.common.cohort import is_validated_source_applicable, normalize_cohort
+from src.common.score import parse_score
 from src.common.text import fold_text
 
 
@@ -23,19 +24,12 @@ def extract_numbers_from_text(text: str) -> list[float]:
 
 
 def _parse_scoring_operand(value: Any) -> float | None:
-    """Parse one score, optionally followed by an explicit numeric scale."""
+    """Parse a ten-point score while rejecting an incompatible scale."""
 
-    if isinstance(value, bool):
+    score = parse_score(value)
+    if score is None or (score.scale is not None and score.scale != 10):
         return None
-    if isinstance(value, int | float):
-        return float(value)
-    match = re.fullmatch(
-        r"\s*([-+]?\d+(?:[,.]\d+)?)\s*(?:/\s*10(?:[,.]0+)?)?\s*",
-        str(value or ""),
-    )
-    if not match:
-        return None
-    return float(match.group(1).replace(",", "."))
+    return float(score.value)
 
 
 def find_table(tables: list[dict[str, Any]], table_id: str) -> Optional[dict[str, Any]]:
@@ -292,6 +286,21 @@ def scoring_lookup_from_reference(
     """
     if not is_validated_source_applicable(table, cohort):
         return None
+    # Input scales belong to the selected table, not to the output scale or
+    # the numeric value alone (3.6/4 must never be treated as 3.6/10).
+    input_scale = {
+        "grade_scale": 10, "pass_fail_ungraded": 10,
+        "academic_classification": 4, "conduct_classification": 100,
+    }.get(table.get("table_subtype"))
+    operand = _single_slot_value(slots.get("score_or_grade"))
+    score = parse_score(operand)
+    if input_scale is not None and (
+        (score is not None and score.scale is not None and score.scale != input_scale)
+        # Do not fall back to taking the first number of an unparsed phrase.
+        # Pure classification/letter labels keep their existing lookup path.
+        or (score is None and re.search(r"\d", str(operand)))
+    ):
+        return None
     layouts = {
         "grade_scale": ("grade_10_to_letter", {
             "Loại": "status", "Thang điểm 10": "score_10_range", "Thang điểm chữ": "letter_grade"}),
@@ -388,6 +397,8 @@ def structured_lookup_from_slots(
     if canonical == "grade_10_to_letter":
         score = _parse_scoring_operand(value)
         if score is None:
+            if parse_score(value) is not None:
+                return None
             return lookup_grade_10_to_letter(value_text, tables)
         return _lookup_grade_10_value(score, tables)
 
@@ -397,6 +408,8 @@ def structured_lookup_from_slots(
     if canonical == "pass_threshold":
         score = _parse_scoring_operand(value)
         if score is None:
+            if parse_score(value) is not None:
+                return None
             return lookup_grade_10_to_letter(value_text, tables)
         return _lookup_grade_10_value(score, tables)
 

@@ -5,6 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+import yaml
 
 import src.retrieval.core.ai_router as ai_router_module
 from src.retrieval.core.ai_router import (
@@ -12,7 +13,10 @@ from src.retrieval.core.ai_router import (
     PLANNER_SYSTEM_PROMPT,
     ROUTER_PROMPT_VERSION,
 )
-from src.retrieval.core.query_plan import QUERY_PLAN_NORMALIZER_VERSION
+from src.retrieval.core.query_plan import (
+    QUERY_PLAN_NORMALIZER_VERSION,
+    normalize_query_plan,
+)
 from src.retrieval.core.structured_routing import (
     compact_registry_for_prompt,
     prepare_structured_task,
@@ -29,6 +33,9 @@ def _router(monkeypatch, tmp_path: Path, *, model_name: str) -> AIRouter:
         cache_enabled=False,
         key_pool_config={
             "state_path": str(tmp_path / f"{model_name.replace('/', '-')}.json"),
+            # One fake key: Groq's 8K TPM default would block a second call of
+            # the full prompt. These tests are not about quota.
+            "tpm_limit_per_key": None,
         },
     )
 
@@ -173,8 +180,12 @@ def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path)
     assert changed_key != key
 
 
-def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
+@pytest.mark.parametrize("response_format", ["json_schema", "json_object"])
+def test_planner_prompt_stays_within_budget(
+    monkeypatch, tmp_path: Path, response_format: str
+) -> None:
     router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    router.response_format = response_format
     dynamic_prompt = router._build_plan_prompt(
         "So sánh hai khóa về thời gian học và một quy định học vụ.",
         cohort="K51",
@@ -186,13 +197,15 @@ def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None
         router._plan_response_format_payload(),
     )
 
-    # Control-value meanings and the clarify-vs-RAG boundary cost ~240 tokens
-    # over v41; keep the cap tight so the prompt cannot creep.
-    assert stats["total_chars"] <= 12000
-    assert stats["estimated_input_tokens"] <= 3000
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v43-no-catalog-hint"
-    assert "OUTPUT CONTRACT" not in dynamic_prompt
-    assert "native JSON Schema" in dynamic_prompt
+    # The user approved a small input-prompt increase for clearer semantics.
+    # v49 adds field semantics after the v48 scale/entity pairing rules. Keep a measured
+    # input ceiling. These are character-based estimates, not
+    # provider tokenizer/billing counts or runtime output-token limits.
+    assert stats["total_chars"] <= 17000
+    assert stats["estimated_input_tokens"] <= 4250
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v49-field-semantics"
+    assert ("OUTPUT CONTRACT" in dynamic_prompt) == (response_format == "json_object")
+    assert ("native JSON Schema" in dynamic_prompt) == (response_format == "json_schema")
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 
 
@@ -219,7 +232,7 @@ def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
 
 def test_planner_prompt_keeps_exactly_three_answer_targets() -> None:
     assert "Với 1–3 yêu cầu" in PLANNER_PROMPT_TEXT
-    assert "EXPLICIT_REQUEST_COUNT=2/3" in PLANNER_PROMPT_TEXT
+    assert "EXPLICIT_REQUEST_COUNT là số marker để rà soát bỏ sót" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_routes_named_unit_contacts_to_directory() -> None:
@@ -249,15 +262,160 @@ def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
     assert "vì target rõ nhưng nguồn có thể thiếu dữ liệu" in PLANNER_PROMPT_TEXT
 
 
+def test_prompt_clarifies_selectors_without_weakening_grounding() -> None:
+    assert "nếu đã xác định rõ giá trị thì phải điền" in PLANNER_PROMPT_TEXT
+    assert "Để trống khi chưa xác định được" in PLANNER_PROMPT_TEXT
+    assert "hoặc thông tin liên hệ của đơn vị đó" in PLANNER_PROMPT_TEXT
+    registry = compact_registry_for_prompt()
+    assert "Chọn theo kết quả cần tra, không theo riêng tên loại học bổng" in registry
+    assert "unit=tên đơn vị phụ trách; office=địa chỉ hoặc vị trí làm việc" in registry
+    assert "không chỉ theo từ 'phòng'" in registry
+
+
+@pytest.mark.parametrize("query", [
+    "Việc mượn sách thư viện do bộ phận nào phụ trách?",
+    "Thư viện ở đâu?",
+    "Đơn vị nào hỗ trợ mượn sách thư viện và địa chỉ làm việc ở đâu?",
+])
+def test_providers_receive_the_same_tool_semantics(
+    monkeypatch, tmp_path: Path, query: str,
+) -> None:
+    monkeypatch.setattr(ai_router_module, "load_project_env", lambda: None)
+    monkeypatch.setenv("GROQ_API_KEYS", "test-router-key")
+    monkeypatch.setenv("DEEPSEEK_API_KEYS", "test-deepseek-key")
+    monkeypatch.setenv("OPENAI_API_KEY", "test-openai-key")
+    prompts = []
+    for provider, model, response_format in (
+        ("groq", "qwen/qwen3.8-27b", "json_schema"),
+        ("deepseek", "deepseek-flash", "json_object"),
+        ("openai", "gpt-6-luna", "json_object"),
+    ):
+        router = AIRouter(
+            provider=provider, model_name=model, response_format=response_format,
+            reasoning_effort="low", cache_enabled=False,
+            key_pool_config={"state_path": str(tmp_path / f"{provider}.json")},
+        )
+        prompts.append(router._build_plan_prompt(
+            query, cohort="K50", chat_history=[]
+        ))
+    for prompt in prompts[1:]:
+        assert prompts[0].split("\n\nOUTPUT", 1)[0] == prompt.split("\n\nOUTPUT", 1)[0]
+        assert prompts[0].split("COHORT: ", 1)[1] == prompt.split("COHORT: ", 1)[1]
+    for prompt in prompts:
+        assert "phụ trách hoặc hỗ trợ một việc → unit" in prompt
+        assert "tòa nhà/tầng/số phòng" in prompt
+        assert "một đơn vị đã nêu tên 'ở đâu' → office" in prompt
+        assert "không cần nêu số phòng" in prompt
+        assert "Hỏi cả đơn vị và vị trí → [unit, office] hoặc all" in prompt
+        assert "không chỉ theo từ 'phòng'" in prompt
+
+
+def test_contact_intent_description_has_no_benchmark_specific_rule() -> None:
+    registry = compact_registry_for_prompt()
+    service_contract = registry.split("student_service|", 1)[1].split("\n", 1)[0]
+    description = json.loads(service_contract.split("|slots=", 1)[1])[
+        "requested_field"
+    ]["description"]
+    assert "một đơn vị đã nêu tên 'ở đâu' → office" in description
+    # Genuinely ambiguous inputs already use the shared clarification rule.
+    assert "tham chiếu thật sự mơ hồ" in PLANNER_PROMPT_TEXT
+    for benchmark_phrase in ("nhận bằng", "tốt nghiệp", "096", "DeepSeek", "Qwen"):
+        assert benchmark_phrase not in description
+
+
+def test_contact_intent_development_rubrics_preserve_authored_fields() -> None:
+    # These are hand-authored plans, not outputs from either live model.
+    path = Path(__file__).resolve().parents[1] / "data/eval/development/prompt_v47_contact_intent_cases.yaml"
+    bundle = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert bundle["independent_holdout"] is False
+    cases = bundle["cases"]
+    assert len(cases) == len({case["id"] for case in cases}) == 8
+    for case in cases:
+        expected = case["expected"]
+        decision = prepare_structured_task(
+            case["query"], lookup_type=expected["lookup_type"],
+            intent=expected["intent"], slots=expected["slots"],
+            slot_spans=expected["slot_spans"], cohort=case["cohort"],
+        )
+        assert validate_structured_task(decision, query=case["query"]) == [], case["id"]
+        assert decision["slots"] == expected["slots"], case["id"]
+        assert decision["slot_spans"] == expected["slot_spans"], case["id"]
+        payload = {
+            "schema_version": "v1", "context_mode": "standalone",
+            "normalized_query": case["query"], "standalone_query": None,
+            "referenced_turns": [], "out_of_domain": False,
+            "tasks": [{
+                "id": "t1", "question": case["query"], "mode": "structured",
+                "intent": expected["intent"], "lookup_type": expected["lookup_type"],
+                "slots": expected["slots"], "slot_spans": expected["slot_spans"],
+                "cohorts": [case["cohort"]], "clarification_question": None,
+            }],
+        }
+        plan, errors = normalize_query_plan(
+            payload, query=case["query"], selected_cohort=case["cohort"],
+        )
+        assert errors == [], case["id"]
+        assert len(plan["tasks"]) == 1, case["id"]
+        assert plan["tasks"][0]["mode"] == "structured", case["id"]
+        assert plan["tasks"][0]["slots"] == expected["slots"], case["id"]
+
+
+def test_contact_intent_normalizer_does_not_override_a_present_field() -> None:
+    # Improving instructions must not introduce a query-keyword correction.
+    query = "Việc mượn sách thư viện do bộ phận nào phụ trách?"
+    decision = prepare_structured_task(
+        query, lookup_type="student_service", intent="contact",
+        slots={"service": "mượn sách thư viện", "requested_field": "office"},
+        slot_spans={"service": "mượn sách thư viện", "requested_field": "bộ phận nào"},
+        cohort="K50",
+    )
+    assert decision["slots"]["requested_field"] == "office"
+    assert decision["slot_spans"]["requested_field"] == "bộ phận nào"
+
+
+def test_prompt_development_rubrics_are_valid_but_not_holdout() -> None:
+    # Validate authored intent fixtures only. This is NOT a model-quality test.
+    path = Path(__file__).resolve().parents[1] / "data/eval/development/prompt_v44_cases.yaml"
+    bundle = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert bundle["independent_holdout"] is False
+    cases = bundle["cases"]
+    assert len(cases) == len({case["id"] for case in cases}) == 10
+    for case in cases:
+        expected = case["expected"]
+        assert expected["mode"] in {"structured", "rag", "clarify"}
+        if expected["mode"] != "structured":
+            continue
+        decision = prepare_structured_task(
+            case["query"], lookup_type=expected["lookup_type"],
+            intent=expected["intent"], slots=expected["slots"],
+            slot_spans=expected.get("slot_spans", {}), cohort=case["cohort"],
+        )
+        assert validate_structured_task(decision, query=case["query"]) == [], case["id"]
+        assert decision["slots"] == expected["slots"], case["id"]
+
+
 def test_planner_prompt_splits_independent_answer_targets() -> None:
     assert "Mỗi task.question chứa một yêu cầu độc lập" in PLANNER_PROMPT_TEXT
     assert "Chỉ gộp các khía cạnh bổ sung" in PLANNER_PROMPT_TEXT
     assert "Tách task khi các phần hỏi về đối tượng/chủ đề độc lập" in PLANNER_PROMPT_TEXT
     assert "Từ nối \"và\" hoặc \"so sánh\" không tự quyết định" in PLANNER_PROMPT_TEXT
-    assert "Nhiều entity dùng cùng một structured lookup" in PLANNER_PROMPT_TEXT
+    assert "Chỉ gộp nhiều entity khi lookup hỗ trợ danh sách" in PLANNER_PROMPT_TEXT
+    assert "không làm mất cặp entity–dữ kiện" in PLANNER_PROMPT_TEXT
+    assert "Có giá trị riêng cho từng entity → tách task" in PLANNER_PROMPT_TEXT
+    assert "mỗi source một task độc lập" in PLANNER_PROMPT_TEXT
+    assert "không áp dụng cho lookup danh sách trực tiếp" in PLANNER_PROMPT_TEXT
     assert "Mỗi task chỉ có một mode" in PLANNER_PROMPT_TEXT
     assert "mỗi yêu cầu độc lập xuất hiện đúng một lần" in PLANNER_PROMPT_TEXT
     assert "composer mới kết hợp" in PLANNER_PROMPT_TEXT
+
+
+def test_prompt_preserves_explicit_score_scale_and_grounded_history():
+    assert '"3,6/4" hoặc "3,6/10"' in PLANNER_PROMPT_TEXT
+    assert "không rút thành số 3.6" in PLANNER_PROMPT_TEXT
+    assert "không cắt mẫu số khỏi span" in PLANNER_PROMPT_TEXT
+    assert "không tự quy đổi điểm sang thang khác" in PLANNER_PROMPT_TEXT
+    assert "không thêm thông tin không có căn cứ trong QUERY hoặc history hợp lệ" in PLANNER_PROMPT_TEXT
+    assert "Cohort UI và chuẩn hóa alias theo registry" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_defines_registry_grounded_cohort_conflict() -> None:
@@ -460,7 +618,7 @@ def test_planner_repairs_an_explicit_numbered_task_count_once(
     assert not plan.get("planner_fallback")
 
 
-def test_planner_never_executes_a_persistently_incomplete_numbered_plan(
+def test_planner_count_discrepancy_is_rechecked_but_not_a_hard_execution_gate(
     monkeypatch, tmp_path,
 ) -> None:
     query = (
@@ -479,13 +637,13 @@ def test_planner_never_executes_a_persistently_incomplete_numbered_plan(
     plan = router.plan(query, cohort="K51")
 
     assert len(calls) == 2
-    assert [task["mode"] for task in plan["tasks"]] == ["rag"]
-    assert plan["tasks"][0]["question"] == query
-    assert plan["planner_fallback"] == "planner_task_count_mismatch"
-    assert any(
-        "explicit_task_count_mismatch" in error
-        for error in plan["planner_validation_errors"]
-    )
+    # Counts alone cannot distinguish an omitted target from legal grouping or
+    # OOD removal. This fixture remains semantically incomplete: the new policy
+    # does not claim that a second model answer proves complete target coverage.
+    assert len(plan["tasks"]) == 2
+    assert plan["planner_repairs"] == 1
+    assert not plan.get("planner_fallback")
+    assert "không thêm task chỉ để khớp số marker" in calls[1]["messages"][-1]["content"]
 
 
 @pytest.mark.parametrize(
@@ -760,14 +918,16 @@ def test_deepseek_provider_requires_its_own_keys(monkeypatch) -> None:
         ("low", {"reasoning_effort": "low"}),
     ],
 )
+@pytest.mark.parametrize("omit_max_tokens", [False, True])
 def test_deepseek_request_sets_thinking_from_reasoning_effort(
-    monkeypatch, tmp_path: Path, effort: str, thinking: dict
+    monkeypatch, tmp_path: Path, effort: str, thinking: dict, omit_max_tokens: bool
 ) -> None:
     monkeypatch.setenv("DEEPSEEK_API_KEYS", "test-deepseek-key")
     router = AIRouter(
         provider="deepseek",
         model_name="deepseek-flash",
         reasoning_effort=effort,
+        omit_max_tokens=omit_max_tokens,
         response_format="json_object",
         cache_enabled=False,
         key_pool_config={"state_path": str(tmp_path / "state.json")},
@@ -800,7 +960,30 @@ def test_deepseek_request_sets_thinking_from_reasoning_effort(
     assert sent["model"] == "deepseek-flash"
     assert sent["response_format"] == {"type": "json_object"}
     assert sent["extra_body"] == thinking
+    if omit_max_tokens:
+        assert "max_tokens" not in sent
+    else:
+        assert sent["max_tokens"] == 64
     assert completion.usage == {"input": 10, "output": 5, "total": 15}
+
+
+def test_provider_default_limit_is_deepseek_only(monkeypatch, tmp_path):
+    monkeypatch.setattr(ai_router_module, "load_project_env", lambda: None)
+    with pytest.raises(ValueError, match="only for DeepSeek"):
+        AIRouter(provider="groq", omit_max_tokens=True)
+    monkeypatch.setenv("DEEPSEEK_API_KEYS", "test-deepseek-key")
+    for name in ("MODEL", "REASONING_EFFORT", "RESPONSE_FORMAT"):
+        monkeypatch.delenv(f"STUDENT_RAG_ROUTER_{name}", raising=False)
+    config = tmp_path / "router.yaml"
+    config.write_text(
+        "provider: deepseek\nmodel_name: deepseek-flash\nomit_max_tokens: true\n"
+        "cache_enabled: false\nkey_pool:\n  state_path: ''\n", encoding="utf-8",
+    )
+    router = AIRouter.from_config(config)
+    assert router.omit_max_tokens is True
+    key = router._cache_key("test", cohort="K51", chat_history=[])
+    router.omit_max_tokens = False
+    assert key != router._cache_key("test", cohort="K51", chat_history=[])
 
 
 def test_rejected_key_is_not_retried() -> None:

@@ -8,10 +8,14 @@ reasoning_effort: none
 # prompt, and normalize_query_plan validates the result as it does for Groq.
 response_format: json_object
 temperature: 0.0
+# Experiment only: omit max_tokens in the DeepSeek API request. The provider
+# applies its own default, NOT an unlimited output budget. The numeric token
+# settings below remain local estimates and apply only when this flag is false.
+omit_max_tokens: true
 max_output_tokens: 768
 output_tokens_per_task: 640
 hard_max_output_tokens: 2048
-# Same generous timeout as the baseline run, so neither model loses cases to it.
+# Keep the timeout fixed for the token-policy comparison; timeouts remain possible.
 request_timeout_seconds: 20
 max_retries: 1
 cache_enabled: false

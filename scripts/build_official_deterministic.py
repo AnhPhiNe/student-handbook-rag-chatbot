@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "data/eval/official_v1"
 COHORTS = ("K48-K49", "K50", "K51")
 CONTRACT = "query-plan-grounded-outcome-v9"
+CONTRACT_V10 = "query-plan-grounded-outcome-v10"
 # Size and balance checks used when an authoring file declares no `settings.expected`.
 V1_EXPECTED = {"cases": 135, "per_cohort": 45, "styles": {"realistic": 108, "stress": 27}}
 V1_OVERLAP_POLICY = "Historical overlap screening not performed by owner decision. No independent holdout claim."
@@ -247,14 +248,16 @@ def compile_task(spec, cohort, catalogs):
     return task, gold
 
 
-def build(bundle: Path = BUNDLE):
-    """Compile `<bundle>/deterministic_authoring.yaml` into V9 case contracts.
+def build(bundle: Path = BUNDLE, *, contract: str = CONTRACT):
+    """Compile `<bundle>/deterministic_authoring.yaml` into case contracts.
 
     Optional `settings` in the authoring file name the id prefix, the holdout claim and
     the expected size and balance. Optional per-case fields: `selected_cohort` (the cohort
     picked in the UI; otherwise cohorts rotate in file order), `history` (earlier turns as
     role/content items) and the metadata in CASE_METADATA_FIELDS.
     """
+    if contract not in {CONTRACT, CONTRACT_V10}:
+        raise ValueError(f"Unsupported contract: {contract}")
     authoring = yaml.safe_load((bundle / "deterministic_authoring.yaml").read_text(encoding="utf-8"))
     definitions = authoring["cases"]
     settings = authoring.get("settings") or {}
@@ -290,7 +293,7 @@ def build(bundle: Path = BUNDLE):
             "coverage_features": definition.get("coverage_features", []),
             "expected_intent": "query_plan", "expected_strategy": "query_plan_execution",
             "expected_path": state if state != "answer" else "mixed" if len(modes) > 1 else "regulation_rag" if modes == ["rag"] else "structured",
-            "contract_version": CONTRACT, "accepted_outcomes": [outcome],
+            "contract_version": contract, "accepted_outcomes": [outcome],
             "bind_execution_to_plan": True,
             "gold_evidence": gold, "author_review_state": "ai_reviewed_pending_owner_approval",
             "query_origin": f"{bundle.name}_hand_authored", "frozen": False,
@@ -344,6 +347,37 @@ def build(bundle: Path = BUNDLE):
             if "structured" in alternative_modes:
                 alternative["structured_evidence"] = "required"
             case["accepted_outcomes"].append(alternative)
+        if contract == CONTRACT_V10 and definition.get("v10_program_faculty_contact"):
+            relation = definition["v10_program_faculty_contact"]
+            program = one([r for r in catalogs["program"] if r["cohort"] == cohort
+                           and r["program_name"] == relation["program"]])
+            faculty = one([r for r in catalogs["faculty"] if r["cohort"] == cohort
+                           and r["unit_name"] == relation["faculty"]])
+            assert program["faculty_name"] == faculty["unit_name"]
+            case["accepted_outcomes"].append({
+                "name": "one-hop-program-faculty-contact",
+                "state": "answer", "allowed_modes": ["structured"],
+                "task_count": {"min": 1, "max": 1},
+                "structured_evidence": "required",
+                "required_tasks": [{
+                    "mode": "structured", "lookup_type": "program", "cohorts": [cohort],
+                    "slot_value_alternatives": {"requested_field": ["email", "all", ["faculty", "email"]]},
+                    "fact_lock_applicable": False,
+                    "expected_relationship": {
+                        "source_content_type": "program_directory",
+                        "target_content_type": "student_faculty_profile",
+                        "cohort": cohort,
+                        "source_fields": {"program_name": program["program_name"],
+                                          "faculty_name": program["faculty_name"]},
+                        "target_fields": {"unit_name": faculty["unit_name"],
+                                          "email": one(faculty["emails"])},
+                    },
+                }],
+            })
+            for item in ({"catalog": "program", "record": program},
+                         {"catalog": "faculty", "record": faculty}):
+                if item not in gold:
+                    gold.append(item)
         if state != "answer":
             case["gold_rationale"] = definition.get("clarify", "Outside the student-handbook assistant domain; do not fabricate an answer from handbook sources.")
         targets = {c for t in tasks for c in t.get("cohorts", [])}
@@ -364,10 +398,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle", default=BUNDLE.name, help="Folder under data/eval, e.g. official_v2.")
-    bundle = ROOT / "data/eval" / parser.parse_args().bundle
-    if any((bundle / name).exists() for name in ("manifest.json", "deterministic_manifest.json")):
+    parser.add_argument("--contract", choices=("v9", "v10"), default="v9")
+    args = parser.parse_args()
+    bundle = ROOT / "data/eval" / args.bundle
+    if args.contract == "v9" and any((bundle / name).exists() for name in ("manifest.json", "deterministic_manifest.json")):
         raise RuntimeError("Deterministic suite already frozen; refusing to rebuild")
-    cases = build(bundle)
-    target = bundle / "deterministic_tool_cases.json"
+    cases = build(bundle, contract=CONTRACT_V10 if args.contract == "v10" else CONTRACT)
+    target = bundle / ("deterministic_tool_cases_v10.json" if args.contract == "v10" else "deterministic_tool_cases.json")
     target.write_text(json.dumps(cases, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Compiled {len(cases)} source-backed contracts; no inference executed.")

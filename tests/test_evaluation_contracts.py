@@ -771,7 +771,9 @@ def test_deterministic_counts_compound_structured_and_preserves_failed_checkpoin
         deterministic_suite.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint)
     resumed = deterministic_suite.evaluate_deterministic(cases, pipeline_factory=Pipeline, checkpoint_path=checkpoint, resume=True)
     assert len(calls) == 2
-    assert resumed["cases"][1]["error"] == "test failure"
+    # Persist safe categories, not arbitrary provider exception bodies.
+    assert resumed["cases"][1]["error"] == "timeout"
+    assert resumed["cases"][1]["error_diagnostic"]["exception_class"] == "TimeoutError"
 
 
 def test_retrieval_checkpoint_and_history_do_not_repeat_failures(tmp_path: Path) -> None:

@@ -4,3 +4,4 @@
 # Offline checks and CI helpers.
 pytest==8.4.2
 ruff==0.15.21
+jsonschema==4.25.1

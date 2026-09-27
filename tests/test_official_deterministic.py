@@ -363,3 +363,59 @@ def test_runner_requires_current_worktree_for_a_bundle_without_runtime_freeze(tm
 
     with pytest.raises(ValueError, match="pass --current-worktree"):
         verify_runtime(tmp_path, current_worktree=False)
+
+
+def test_runner_selects_exact_ids_in_dataset_order():
+    import pytest
+    from scripts.run_official_deterministic import select_case_ids
+
+    cases = [{"id": "case_001"}, {"id": "case_013"}, {"id": "case_033"}]
+    assert select_case_ids(cases, ["case_033", "case_013"]) == cases[1:]
+    assert select_case_ids(cases) is cases
+    with pytest.raises(ValueError, match="Unknown case IDs"):
+        select_case_ids(cases, ["case_999"])
+    with pytest.raises(ValueError, match="unique"):
+        select_case_ids(cases, ["case_013", "case_013"])
+    with pytest.raises(ValueError, match="non-empty"):
+        select_case_ids(cases, [])
+
+
+def test_runner_records_mode_specific_defaults_not_identical_budgets():
+    from types import SimpleNamespace
+    from scripts.run_official_deterministic import planner_output_metadata
+
+    def metadata(effort, omit=True):
+        return planner_output_metadata(SimpleNamespace(
+            provider="deepseek", omit_max_tokens=omit,
+            _resolved_reasoning_effort=lambda: effort,
+        ))
+
+    assert metadata("none")["documented_default_max_tokens"] == 8192
+    assert metadata("low")["documented_default_max_tokens"] == 65536
+    assert metadata("max")["documented_default_max_tokens"] == 131072
+    assert metadata("none")["temperature_effective"] is True
+    assert metadata("low")["temperature_effective"] is False
+    assert metadata("low")["max_tokens_sent"] is False
+    assert metadata("low", False)["documented_default_max_tokens"] is None
+
+
+def test_experiment_freeze_rejects_changed_or_missing_files(tmp_path, monkeypatch):
+    import hashlib
+    import json
+    import pytest
+    from scripts import prepare_deepseek_v48_smoke as preparation
+
+    monkeypatch.setattr(preparation, "ROOT", tmp_path)
+    source = tmp_path / "source.py"
+    source.write_text("original", encoding="utf-8")
+    freeze = tmp_path / "freeze.json"
+    freeze.write_text(json.dumps({"sha256": {
+        "source.py": hashlib.sha256(source.read_bytes()).hexdigest(),
+    }}), encoding="utf-8")
+    assert preparation.verify_freeze(freeze)["sha256"]
+    source.write_text("changed", encoding="utf-8")
+    with pytest.raises(ValueError, match="freeze drift"):
+        preparation.verify_freeze(freeze)
+    source.unlink()
+    with pytest.raises(ValueError, match="freeze drift"):
+        preparation.verify_freeze(freeze)

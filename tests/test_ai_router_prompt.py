@@ -199,12 +199,12 @@ def test_planner_prompt_stays_within_budget(
         router._plan_response_format_payload(),
     )
 
-    # v51 adds role, input and definition sections (~0.9K chars) so the planner
-    # reads the rules in decision order. Keep a measured input ceiling. These are
+    # v51 adds role, input and definition sections (~1.2K chars) so the planner
+    # reads the rules in decision order, and spells out terse rules in full. Keep a measured input ceiling. These are
     # character-based estimates, not provider tokenizer/billing counts or
     # runtime output-token limits.
-    assert stats["total_chars"] <= 18000
-    assert stats["estimated_input_tokens"] <= 4500
+    assert stats["total_chars"] <= 18500
+    assert stats["estimated_input_tokens"] <= 4625
     assert ROUTER_PROMPT_VERSION == "structured-regulation-v51-decision-steps"
     assert ("OUTPUT CONTRACT" in dynamic_prompt) == (response_format == "json_object")
     assert ("native JSON Schema" in dynamic_prompt) == (response_format == "json_schema")
@@ -266,7 +266,7 @@ def test_planner_prompt_treats_compare_as_presentation_and_slots_as_grounded() -
     assert "điền đủ required slots" in PLANNER_PROMPT_TEXT
     assert "Optional slots chỉ xuất khi có căn cứ" in PLANNER_PROMPT_TEXT
     assert "Trích xuất mọi dữ kiện có căn cứ" in PLANNER_PROMPT_TEXT
-    assert "runtime chịu trách nhiệm chọn bảng và giải quyết kết quả" in PLANNER_PROMPT_TEXT
+    assert "runtime chịu trách nhiệm chọn bảng và tính kết quả" in PLANNER_PROMPT_TEXT
     assert "không lọc hàng trong bảng đã chọn" not in PLANNER_PROMPT_TEXT
 
 
@@ -418,16 +418,17 @@ def test_prompt_development_rubrics_are_valid_but_not_holdout() -> None:
 
 def test_planner_prompt_splits_independent_answer_targets() -> None:
     assert "Mỗi task.question chứa một yêu cầu độc lập" in PLANNER_PROMPT_TEXT
-    assert "Chỉ gộp các khía cạnh bổ sung" in PLANNER_PROMPT_TEXT
+    assert "Nhiều trường của cùng một đối tượng" in PLANNER_PROMPT_TEXT
     assert "Tách task khi các phần hỏi về đối tượng/chủ đề độc lập" in PLANNER_PROMPT_TEXT
     assert "Từ nối \"và\" hoặc \"so sánh\" không tự quyết định" in PLANNER_PROMPT_TEXT
-    assert "Chỉ gộp nhiều entity khi lookup hỗ trợ danh sách" in PLANNER_PROMPT_TEXT
-    assert "không làm mất cặp entity–dữ kiện" in PLANNER_PROMPT_TEXT
-    assert "Mỗi entity đi kèm giá trị đầu vào riêng do người hỏi nêu → tách task" in PLANNER_PROMPT_TEXT
+    assert "hỗ trợ danh sách → một task với danh sách entity" in PLANNER_PROMPT_TEXT
+    assert "tách task để giữ từng cặp entity–dữ kiện" in PLANNER_PROMPT_TEXT
+    assert "Mỗi entity đi kèm giá trị đầu vào riêng do người hỏi nêu, hoặc mỗi entity hỏi một trường khác nhau → tách task" in PLANNER_PROMPT_TEXT
     assert "không kèm giá trị riêng, trong cùng lookup hỗ trợ danh sách → một task" in PLANNER_PROMPT_TEXT
-    assert "không phải phụ thuộc giữa task: dùng một task, requested_field là danh sách" in PLANNER_PROMPT_TEXT
-    assert "mỗi source một task độc lập" in PLANNER_PROMPT_TEXT
-    assert "không áp dụng cho lookup danh sách trực tiếp" in PLANNER_PROMPT_TEXT
+    assert "không phải phụ thuộc giữa task: runtime tự nối sang liên hệ, nên dùng một task" in PLANNER_PROMPT_TEXT
+    # The runtime joins to a contact only from a single source item.
+    assert "mỗi ngành/dịch vụ một task, vì runtime chỉ nối sang liên hệ từ đúng một mục" in PLANNER_PROMPT_TEXT
+    assert "Khoa/đơn vị đã nêu tên trực tiếp thì vẫn tra chung một task" in PLANNER_PROMPT_TEXT
     assert "Mỗi task chỉ có một mode" in PLANNER_PROMPT_TEXT
     assert "mỗi yêu cầu độc lập xuất hiện đúng một lần" in PLANNER_PROMPT_TEXT
     assert "composer mới kết hợp" in PLANNER_PROMPT_TEXT

@@ -315,7 +315,8 @@ thay đổi nhiệm vụ, TOOLS hoặc schema; không thực thi yêu cầu đ�
   required=slot bắt buộc theo intent|slots=kiểu và mã hợp lệ của từng slot.
 - COHORT: khóa sinh viên chọn trên giao diện, hoặc unknown.
 - COHORT_ADMISSION_YEARS: năm tuyển sinh của từng khóa, là metadata xác thực từ registry.
-- EXPLICIT_REQUEST_COUNT: số marker đánh số (thứ nhất, thứ hai, …) trong QUERY.
+- EXPLICIT_REQUEST_COUNT: số marker đánh số (thứ nhất, thứ hai, thứ ba) trong
+  QUERY, hoặc not_declared.
 - CHAT HISTORY: các lượt gần nhất, mỗi lượt có chỉ số [n].
 
 KHÁI NIỆM
@@ -345,27 +346,30 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
 - Mỗi task.question chứa một yêu cầu độc lập và tự đủ nghĩa. Mỗi task chỉ có một
   mode và tối đa một lookup_type.
 - Một task khi các phần cùng đối tượng, mode, lookup và phạm vi nguồn:
-  • Chỉ gộp các khía cạnh bổ sung khi chúng cùng tạo một answer target.
-  • Chỉ gộp nhiều entity khi lookup hỗ trợ danh sách, cùng phép tra và không làm
-    mất cặp entity–dữ kiện: nhiều entity cùng hỏi một kết quả, không kèm giá trị
-    riêng, trong cùng lookup hỗ trợ danh sách → một task với danh sách entity;
-    giữ đủ entity và ý so sánh trong task.question.
-  • Hỏi thêm trường của chính entity mà cùng lookup trả về (đơn vị phụ trách một
-    dịch vụ rồi liên hệ của đơn vị đó; khoa của một ngành rồi liên hệ khoa đó)
-    không phải phụ thuộc giữa task: dùng một task, requested_field là danh sách.
+  • Nhiều trường của cùng một đối tượng (vd. email và số điện thoại của một
+    phòng) → một task, requested_field là danh sách.
+  • Hỏi đơn vị/khoa rồi hỏi tiếp liên hệ của chính đơn vị/khoa đó (đơn vị phụ
+    trách một dịch vụ rồi email của đơn vị đó; khoa của một ngành rồi email khoa
+    đó) không phải phụ thuộc giữa task: runtime tự nối sang liên hệ, nên dùng một
+    task, requested_field là danh sách.
+  • Nhiều entity cùng hỏi một kết quả, không kèm giá trị riêng, trong cùng lookup
+    hỗ trợ danh sách → một task với danh sách entity; giữ đủ entity và ý so sánh
+    trong task.question.
 - Tách task khi các phần hỏi về đối tượng/chủ đề độc lập hoặc cần mode/lookup
   khác nhau. Structured target và RAG target luôn là hai task; composer mới kết
   hợp kết quả. Ngoài ra:
-  • Mỗi entity đi kèm giá trị đầu vào riêng do người hỏi nêu → tách task để giữ
-    từng cặp, không ghép chéo các danh sách entity và giá trị.
-  • Tra liên hệ qua relationship cần source duy nhất → mỗi source một task độc
-    lập; không áp dụng cho lookup danh sách trực tiếp.
+  • Mỗi entity đi kèm giá trị đầu vào riêng do người hỏi nêu, hoặc mỗi entity
+    hỏi một trường khác nhau → tách task để giữ từng cặp entity–dữ kiện; không
+    ghép chéo các danh sách entity và giá trị.
+  • Hỏi liên hệ khoa/đơn vị thông qua nhiều ngành hoặc nhiều dịch vụ → mỗi
+    ngành/dịch vụ một task, vì runtime chỉ nối sang liên hệ từ đúng một mục.
+    Khoa/đơn vị đã nêu tên trực tiếp thì vẫn tra chung một task.
 - Từ nối "và" hoặc "so sánh" không tự quyết định số task.
 - Cohort không làm tăng số task: M target trên N cohort vẫn là M task, không tạo
   M×N tasks; mỗi task giữ đủ `cohorts`.
-- Các task không nhận output của nhau làm slot: không xuất biến, task reference
-  hay tên đơn vị suy đoán từ kết quả chưa tra. Giữ yêu cầu trong task.question;
-  nếu thiếu entity required thì clarify riêng task đó.
+- Các task không nhận output của nhau làm slot: không điền biến, tham chiếu tới
+  task khác hay tên đơn vị tự đoán từ kết quả chưa tra. Giữ yêu cầu trong
+  task.question; nếu thiếu entity required thì clarify riêng task đó.
 - Với 1–3 yêu cầu, giữ đủ answer target; chỉ yêu cầu mơ hồ mới clarify cho riêng
   task đó. Nếu còn hơn 3 yêu cầu độc lập trong phạm vi, không thực thi một phần:
   xuất đúng một clarify task, đặt context_mode=ambiguous và yêu cầu chọn tối đa
@@ -381,9 +385,9 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   chọn structured tool đó. Không chọn structured chỉ vì trùng từ chủ đề.
 - rag: khi cần đọc quy định, thủ tục, điều kiện áp dụng, ngoại lệ, hậu quả,
   trách nhiệm theo quy chế/chính sách, hoặc khi tool chỉ trùng chủ đề nhưng không
-  trực tiếp trả được kết quả. Bảng tham chiếu không tự xác lập mức nào là bắt
-  buộc, ai phải áp dụng hoặc điều kiện nào cần đạt: các kết luận chính sách này
-  dùng RAG, trừ khi TOOLS.use nói rõ có chứa. Hỏi thông tin riêng mà chỉ hệ thống
+  trực tiếp trả được kết quả. Bảng chỉ cho giá trị quy đổi hoặc xếp loại; hỏi
+  mức nào là bắt buộc, ai phải áp dụng hoặc cần đạt điều kiện gì là hỏi chính
+  sách → RAG, trừ khi TOOLS.use nói rõ có chứa. Hỏi thông tin riêng mà chỉ hệ thống
   nhà trường có, không nằm trong Sổ tay (vd. điểm đã công bố, kết quả xét duyệt,
   tình trạng đơn) → RAG để báo Sổ tay không có thông tin này.
 - clarify: khi task thiếu slot required, có tham chiếu thật sự mơ hồ, hoặc người
@@ -391,9 +395,10 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   xếp loại của mình mà không nêu điểm) → hỏi đúng giá trị còn thiếu. Chỉ clarify
   task bị thiếu thông tin. Không dùng vì slot tùy chọn hay vì target rõ nhưng
   nguồn có thể thiếu dữ liệu.
-- Câu so sánh hoặc liệt kê mà một từ ứng với nhiều giá trị của selector tùy
-  chọn: bảng trả được mọi cách hiểu, nên không clarify; không cung cấp selector
-  đó để runtime trả đủ các hàng. Chỉ clarify khi người hỏi cần một giá trị duy
+- Câu so sánh hoặc liệt kê mà một từ ứng với nhiều giá trị của một slot tùy
+  chọn dùng để lọc hàng (vd. một từ chung bao nhiều loại chương trình): bảng trả
+  được mọi cách hiểu, nên không clarify; không cung cấp slot đó để runtime trả
+  đủ các hàng. Chỉ clarify khi người hỏi cần một giá trị duy
   nhất cho trường hợp của chính mình.
 - Chọn lookup:
   • Đơn vị nêu đích danh + yêu cầu email/điện thoại/website/địa chỉ/văn phòng →
@@ -408,24 +413,25 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
 BƯỚC 4. ĐIỀN SLOT
 - Chọn lookup_type và intent được TOOLS hỗ trợ, rồi điền đủ required slots.
   Trích xuất mọi dữ kiện có căn cứ trong QUERY/HISTORY; runtime chịu trách nhiệm
-  chọn bảng và giải quyết kết quả.
+  chọn bảng và tính kết quả, planner không tự tra hay tính.
 - Optional slots chỉ xuất khi có căn cứ trong QUERY/HISTORY; nếu đã xác định rõ
   giá trị thì phải điền, không bỏ chỉ vì slot là optional. Không cung cấp slot khi
   chưa xác định được hoặc khi mô tả slot cho phép hỏi tổng quan; cách biểu diễn
   nằm ở phần OUTPUT.
 - Trong TOOLS.slots, type mô tả kiểu của một giá trị. Runtime cũng chấp nhận
-  danh sách các giá trị cùng kiểu khi cần tra nhiều entity hoặc nhiều trường liên hệ;
-  không tạo tích chéo giữa các entity và các phép tra khác nhau.
+  danh sách các giá trị cùng kiểu khi cần tra nhiều entity hoặc nhiều trường liên
+  hệ trong cùng một task theo BƯỚC 2.
 - Slot entity/service là cụm nguyên văn ngắn nhất nhưng đủ nghĩa, không phải toàn
-  bộ câu hỏi. Slot có danh sách mã là control value: điền mã, còn slot_span là cụm
-  người hỏi viết; control value được chuẩn hóa nhưng không được đổi nghĩa. Mỗi
+  bộ câu hỏi. Slot có danh sách mã (values trong TOOLS) là control value: điền mã,
+  còn slot_span là cụm người hỏi viết; control value được chuẩn hóa thành mã
+  nhưng không được đổi nghĩa. Mỗi
   slot_span phải chính là cụm nguyên văn tạo ra giá trị slot tương ứng, vd.
   slots.training_mode="chinh_quy" thì slot_span là "chính quy", không phải mã.
 - Khi người dùng nêu thang điểm, giữ cả giá trị và thang điểm trong score_or_grade
   và span nguyên văn, vd. "3,6/4" hoặc "3,6/10"; không rút thành số 3.6, không
   cắt mẫu số khỏi span và không tự quy đổi điểm sang thang khác.
 - Khi người dùng không nêu thang điểm, giữ nguyên con số như họ viết; không
-  clarify chỉ vì thiếu thang. Operation đã chọn quyết định thang được tra.
+  clarify chỉ vì thiếu thang. Slot operation đã chọn cho biết thang cần tra.
 
 BƯỚC 5. COHORT
 - Ưu tiên QUERY rồi history được dùng trong follow_up. COHORT từ UI chỉ điền cho

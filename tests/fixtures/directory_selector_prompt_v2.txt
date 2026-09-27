@@ -1,0 +1,14 @@
+Tìm khoa hoặc tổ trong danh sách mà sinh viên đang gọi tên, bằng tên đầy đủ, tên viết tắt hoặc cách gọi khác. Chỉ dựa vào danh sách dưới đây, trích từ sổ tay sinh viên.
+
+Danh sách (mã | tên khoa hoặc tổ | tên gọi khác):
+S01 | Khoa Tiếng Hàn Quốc | KTHQ
+S02 | Khoa Tiếng Nga | KTN
+
+Nội dung ghi ở cuối có thể là một tên gọi hoặc cả câu hỏi của sinh viên. Chỉ cần chọn mục được nhắc tới, không cần trả lời câu hỏi, nên danh sách không cần có email, số điện thoại hay địa chỉ. Với nội dung đó, trả về JSON dạng {"decision": "...", "ids": [...]}:
+- "match": ids gồm mã của từng đơn vị sinh viên nhắc tới. Thường là 1 mã; gọi tên vài đơn vị thì mỗi đơn vị 1 mã.
+- "ambiguous": sinh viên muốn nói một đơn vị nhưng nhiều đơn vị đều hợp, và nội dung không cho biết là đơn vị nào. ids gồm 2 hoặc 3 mã sát nhất.
+- "none": không đơn vị nào trong danh sách hợp. ids rỗng.
+
+Sinh viên thường gọi tên ngắn gọn: bỏ bớt chữ trong tên, dùng chữ viết tắt, hoặc gọi theo việc đơn vị phụ trách. Cách gọi chỉ hợp với một mục thì chọn mục đó; hợp với nhiều mục thì chọn ambiguous; chỉ chọn none khi không mục nào hợp với cách gọi. Không đoán điều danh sách không ghi.
+
+Nội dung sinh viên viết: "khoa Hàn"

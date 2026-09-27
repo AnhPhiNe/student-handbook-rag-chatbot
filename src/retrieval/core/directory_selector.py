@@ -17,7 +17,7 @@ from typing import Any, Callable
 
 from src.common.text import fold_text
 
-SELECTOR_PROMPT_VERSION = "directory-selector-v1"
+SELECTOR_PROMPT_VERSION = "directory-selector-v2-whole-question"
 
 MATCH = "match"
 AMBIGUOUS = "ambiguous"
@@ -30,9 +30,13 @@ _NAME_RULE = (
     "ambiguous; chỉ chọn none khi không mục nào hợp với cách gọi. Không đoán điều danh sách không ghi."
 )
 
-_DIRECTORY_DECISIONS = """- "match": có một mục trong danh sách khớp. ids gồm đúng 1 mã, là mục sát nhất.
+_SERVICE_DECISIONS = """- "match": có một mục trong danh sách khớp. ids gồm đúng 1 mã, là mục sát nhất.
 - "ambiguous": nhiều mục thuộc các đơn vị khác nhau đều khớp, và nội dung không cho biết là mục nào. ids gồm 2 hoặc 3 mã sát nhất.
 - "none": không mục nào trong danh sách khớp. ids rỗng."""
+
+_NAME_DECISIONS = """- "match": ids gồm mã của từng đơn vị sinh viên nhắc tới. Thường là 1 mã; gọi tên vài đơn vị thì mỗi đơn vị 1 mã.
+- "ambiguous": sinh viên muốn nói một đơn vị nhưng nhiều đơn vị đều hợp, và nội dung không cho biết là đơn vị nào. ids gồm 2 hoặc 3 mã sát nhất.
+- "none": không đơn vị nào trong danh sách hợp. ids rỗng."""
 
 _PROGRAM_DECISIONS = """- "match": ids gồm mọi ngành sinh viên nhắc tới. Gọi tên một ngành thì 1 mã; gọi tên vài ngành thì các mã đó; hỏi theo một khoa hoặc một nhóm ngành thì đủ mọi ngành thuộc khoa hoặc nhóm đó.
 - "ambiguous": sinh viên muốn nói một ngành nhưng nhiều ngành đều hợp, và nội dung không cho biết là ngành nào. ids gồm 2 hoặc 3 mã sát nhất.
@@ -43,7 +47,7 @@ _PROMPT = """{task} Chỉ dựa vào danh sách dưới đây, trích từ sổ 
 Danh sách ({columns}):
 {catalog}
 
-Với nội dung ghi ở cuối, trả về JSON dạng {{"decision": "...", "ids": [...]}}:
+Nội dung ghi ở cuối có thể là một tên gọi hoặc cả câu hỏi của sinh viên. Chỉ cần chọn mục được nhắc tới, không cần trả lời câu hỏi, nên danh sách không cần có email, số điện thoại hay địa chỉ. Với nội dung đó, trả về JSON dạng {{"decision": "...", "ids": [...]}}:
 {decisions}
 
 {rule}
@@ -78,7 +82,7 @@ class LookupSpec:
     decisions: str
     names: Callable[[dict[str, Any]], list[str]]
     entity: Callable[[dict[str, Any]], str]
-    many: bool = False  # one text may name several records (programs of a faculty)
+    many: bool = False  # one text may name several entities (two offices, a faculty's programs)
 
 
 LOOKUPS: dict[str, LookupSpec] = {
@@ -86,9 +90,9 @@ LOOKUPS: dict[str, LookupSpec] = {
         task="Tìm công việc trong danh sách trực tiếp giải quyết nhu cầu của sinh viên.",
         columns="mã | đơn vị | công việc đơn vị làm cho sinh viên",
         line=lambda r: f"{_unit(r)} | {r.get('service')}",
-        input_label="Nhu cầu của sinh viên",
+        input_label="Nội dung sinh viên viết",
         rule="Không chọn một công việc chỉ vì trùng vài từ với nhu cầu, và không đoán việc mà danh sách không ghi.",
-        decisions=_DIRECTORY_DECISIONS,
+        decisions=_SERVICE_DECISIONS,
         names=lambda r: [_unit(r), str(r.get("service") or ""), *map(str, r.get("aliases") or [])],
         entity=_unit,
     ),
@@ -96,27 +100,29 @@ LOOKUPS: dict[str, LookupSpec] = {
         task="Tìm đơn vị trong danh sách mà sinh viên đang gọi tên, bằng tên đầy đủ, tên viết tắt hoặc cách gọi khác.",
         columns="mã | tên đơn vị | tên gọi khác | việc đơn vị phụ trách",
         line=lambda r: f"{_unit(r)} | {_aliases(r)} | {'; '.join(r.get('services') or []) or '-'}",
-        input_label="Tên sinh viên gọi",
+        input_label="Nội dung sinh viên viết",
         rule=_NAME_RULE,
-        decisions=_DIRECTORY_DECISIONS,
+        decisions=_NAME_DECISIONS,
         names=lambda r: [_unit(r), *map(str, r.get("aliases") or [])],
         entity=_unit,
+        many=True,
     ),
     "faculty": LookupSpec(
         task="Tìm khoa hoặc tổ trong danh sách mà sinh viên đang gọi tên, bằng tên đầy đủ, tên viết tắt hoặc cách gọi khác.",
         columns="mã | tên khoa hoặc tổ | tên gọi khác",
         line=lambda r: f"{_unit(r)} | {_aliases(r)}",
-        input_label="Tên sinh viên gọi",
+        input_label="Nội dung sinh viên viết",
         rule=_NAME_RULE,
-        decisions=_DIRECTORY_DECISIONS,
+        decisions=_NAME_DECISIONS,
         names=lambda r: [_unit(r), *map(str, r.get("aliases") or [])],
         entity=_unit,
+        many=True,
     ),
     "program": LookupSpec(
         task="Tìm các ngành trong danh sách mà sinh viên đang nhắc tới.",
         columns="mã | ngành | khoa phụ trách",
         line=lambda r: f"{r.get('program_name')} | {r.get('faculty_name')}",
-        input_label="Sinh viên nhắc tới",
+        input_label="Nội dung sinh viên viết",
         rule=('Sinh viên thường gọi tên ngắn gọn: bỏ bớt chữ trong tên, dùng chữ viết tắt như "SP" cho sư phạm, '
               "hoặc gọi theo khoa. Chỉ chọn none khi không ngành nào hợp với cách gọi. "
               "Không đoán điều danh sách không ghi."),

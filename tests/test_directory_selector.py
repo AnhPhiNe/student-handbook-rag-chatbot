@@ -13,7 +13,7 @@ from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.program_lookup import program_lookup
 from tests.scripted_selector import ScriptedClient, scripted_selector
 
-FIXTURE = Path(__file__).parent / "fixtures" / "directory_selector_prompt_v1.txt"
+FIXTURE = Path(__file__).parent / "fixtures" / "directory_selector_prompt_v2.txt"
 
 FACULTIES = [
     {"unit_name": "Khoa Tiếng Hàn Quốc", "aliases": ["Khoa Tiếng Hàn Quốc", "KTHQ"], "cohort": "K51",
@@ -37,7 +37,7 @@ def _faculty(text: str, client: ScriptedClient) -> dict | None:
 
 def test_prompt_is_pinned_to_its_version() -> None:
     prompt, ids = render_prompt("faculty", "khoa Hàn", FACULTIES[:2])
-    assert SELECTOR_PROMPT_VERSION == "directory-selector-v1"
+    assert SELECTOR_PROMPT_VERSION == "directory-selector-v2-whole-question"
     assert list(ids) == ["S01", "S02"]
     assert prompt == FIXTURE.read_text(encoding="utf-8")
 
@@ -73,12 +73,18 @@ def test_malformed_reply_unknown_id_or_api_failure_asks_instead_of_guessing() ->
     for client in (
         ScriptedClient(raw="Khoa Tiếng Hàn Quốc"),
         ScriptedClient(raw='{"decision": "match", "ids": ["S99"]}'),
-        ScriptedClient(raw='{"decision": "match", "ids": ["S01", "S02"]}'),
+        ScriptedClient(raw='{"decision": "match", "ids": []}'),
         ScriptedClient(fail=True),
     ):
         result = _faculty("khoa Hàn", client)
         assert result["resolution_status"] == "unresolved"
         assert "result" not in result
+
+
+def test_a_question_naming_two_units_selects_both() -> None:
+    question = "Cho em email khoa Hàn và khoa Nga"
+    result = _faculty(question, ScriptedClient({question: ["Khoa Tiếng Hàn Quốc", "Khoa Tiếng Nga"]}))
+    assert [item["unit_name"] for item in result["result"]] == ["Khoa Tiếng Hàn Quốc", "Khoa Tiếng Nga"]
 
 
 def test_each_listed_name_is_selected_on_its_own() -> None:

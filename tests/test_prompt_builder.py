@@ -1194,3 +1194,16 @@ def test_rules_are_grouped_by_the_composer_task_in_order() -> None:
     assert "Mọi mục dưới đây là bắt buộc." in prompt
     # The stock phrase stays scoped to yes/no questions, as it was inside rule 6.
     assert 'Với câu hỏi có/không, nếu thiếu căn cứ trực tiếp, nói "Nguồn hiện có chưa trực tiếp xác lập..."' in prompt
+
+
+def test_prompt_asks_for_student_wording_and_explicit_yes_no() -> None:
+    """DeepSeek echoed input terms (cohort, evidence) and opened with a bare "Có."."""
+    prompt = _build_prompt_text(query="Hỏi?", retrieval_result={})
+    assert 'Dùng từ ngữ của sinh viên, vd. "khóa K51"' in prompt
+    assert "cohort, evidence, source_ref hoặc role" in prompt
+    # "đơn vị" is also plain Vietnamese for an office, so it is not banned.
+    assert "role hoặc đơn vị" not in prompt
+    assert 'nói luôn trong cùng câu là có hoặc không điều gì' in prompt
+    # admission_years keeps its v3.26 role: scope matching, not an input to restate.
+    assert "dùng metadata này để đối chiếu phạm vi áp dụng" in prompt
+    assert "- admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp.\n" not in prompt

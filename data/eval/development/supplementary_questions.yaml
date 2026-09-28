@@ -1,0 +1,108 @@
+# Development questions for the handbook texts without articles (notices,
+# conduct score framework, guides, dormitory procedure, link pages, forms).
+#
+# Development data, not a hold-out: written 2026-09-28 from the supplementary
+# parents built by src/chunking/supplementary_parents.py, to check that the
+# planner routes these questions to RAG, retrieval finds the right parent and
+# the answer states the handbook facts. Measured with
+# scripts/eval_supplementary_questions.py.
+#
+# gold_parent: the parent that holds the answer (<cohort>_<doc id>_Phan<n>)
+# must_include: facts the answer must state (checked case-insensitively)
+version: 1
+cases:
+  - id: sup_01
+    cohort: K51
+    query: "Con của thương binh có được miễn học phí không, cần nộp những giấy tờ gì?"
+    gold_parent: K51_ThongBaoMienGiamHocPhi_Phan4
+    must_include: ["100%", "giấy khai sinh", "thẻ thương binh"]
+  - id: sup_02
+    cohort: K51
+    query: "Sinh viên dân tộc thiểu số ở xã khu vực III được giảm bao nhiêu phần trăm học phí?"
+    gold_parent: K51_ThongBaoMienGiamHocPhi_Phan4
+    must_include: ["70%"]
+  - id: sup_03
+    cohort: K51
+    query: "Đăng ký miễn giảm học phí trực tuyến ở trang nào?"
+    gold_parent: K51_ThongBaoMienGiamHocPhi_Phan2
+    must_include: ["dichvucong.hcmue.edu.vn"]
+  - id: sup_04
+    cohort: K51
+    query: "Không mang thẻ sinh viên hay đi học trễ bị trừ bao nhiêu điểm rèn luyện?"
+    gold_parent: K51_KhungDiemDanhGiaRenLuyen_Phan3
+    must_include: ["3 điểm"]
+  - id: sup_05
+    cohort: K51
+    query: "Bị cảnh cáo khi thi lần đầu thì bị trừ mấy điểm rèn luyện?"
+    gold_parent: K51_KhungDiemDanhGiaRenLuyen_Phan2
+    must_include: ["3 điểm"]
+  - id: sup_06
+    cohort: K51
+    query: "Đi hiến máu được cộng mấy điểm rèn luyện?"
+    gold_parent: K51_KhungDiemDanhGiaRenLuyen_Phan4
+    must_include: ["3 điểm"]
+  - id: sup_07
+    cohort: K51
+    query: "Hồ sơ đăng ký ở nội trú ký túc xá gồm những gì?"
+    gold_parent: K51_QuyTrinhXetVaoKyTucXa_Phan1
+    must_include: ["Đơn xin ở nội trú", "Hợp đồng ở nội trú"]
+  - id: sup_08
+    cohort: K51
+    query: "Em tải biểu mẫu, mẫu đơn công tác sinh viên ở đâu?"
+    gold_parent: K51_QuyTrinhBieuMauCoSoChinh_Phan1
+    must_include: ["tracuu.hcmue.edu.vn/bieumauctsv"]
+  - id: sup_09
+    cohort: K51
+    query: "Sinh viên dân tộc thiểu số rất ít người được hỗ trợ chi phí học tập bao nhiêu?"
+    gold_parent: K51_ThongBaoHoTroChiPhiHocTap_Phan5
+    must_include: ["100% mức lương cơ sở", "12 tháng"]
+  - id: sup_10
+    cohort: K51
+    query: "Sinh viên tự đánh giá điểm rèn luyện trên hệ thống nào?"
+    gold_parent: K51_HuongDanDanhGiaRenLuyenTrucTuyen_Phan1
+    must_include: ["drl.hcmue.edu.vn"]
+  - id: sup_11
+    cohort: K50
+    query: "Không tham gia bảo hiểm y tế thì bị trừ bao nhiêu điểm rèn luyện?"
+    gold_parent: K50_KhungDiemDanhGiaRenLuyen_Phan3
+    must_include: ["5 điểm"]
+  - id: sup_12
+    cohort: K50
+    query: "Sinh viên khuyết tật muốn được miễn học phí thì cần nộp hồ sơ gì?"
+    gold_parent: K50_ThongBaoMienGiamHocPhi_Phan4
+    must_include: ["giấy chứng nhận người khuyết tật"]
+  - id: sup_13
+    cohort: K50
+    query: "Xin vào ở ký túc xá thì phải qua những bước nào?"
+    gold_parent: K50_QuyTrinhXetVaoKyTucXa_Phan1
+    must_include: ["Bước 1", "Hội đồng"]
+  - id: sup_14
+    cohort: K50
+    query: "Hồ sơ đánh giá rèn luyện cấp lớp gồm những gì?"
+    gold_parent: K50_HuongDanLapHoSoRenLuyen_Phan2
+    must_include: ["Biên bản họp", "Minh chứng"]
+  - id: sup_15
+    cohort: K48-K49
+    query: "Đơn xin tạm nghỉ học gửi cho ai?"
+    gold_parent: K48-K49_MauDonBieuMau_Phan1
+    must_include: ["Hiệu trưởng"]
+  - id: sup_16
+    cohort: K48-K49
+    query: "Quy tắc ứng xử của sinh viên trường gồm những gì?"
+    gold_parent: K48-K49_QuyTacUngXuSinhVien_Phan1
+    must_include: ["Tôn trọng thầy cô"]
+  - id: sup_17
+    cohort: K48-K49
+    query: "Đạt danh hiệu Sinh viên 5 tốt cấp Trường được cộng mấy điểm rèn luyện?"
+    gold_parent: K48-K49_PhieuDanhGiaRenLuyen_Phan6
+    must_include: ["điểm"]
+  - id: sup_18
+    cohort: K48-K49
+    query: "Con liệt sĩ có được miễn học phí không?"
+    gold_parent: K48-K49_ThongBaoMienGiamHocPhi_Phan2
+    must_include: ["miễn học phí"]
+  - id: sup_19
+    cohort: K48-K49
+    query: "Những ai được ưu tiên xét vào ở ký túc xá?"
+    gold_parent: K48-K49_QuyTrinhXetVaoKyTucXa_Phan1
+    must_include: ["dân tộc thiểu số"]

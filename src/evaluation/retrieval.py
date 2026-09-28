@@ -98,7 +98,7 @@ def _run_pure_regulation_retrieval(
     retrieval_query = pipeline.slang_normalizer.normalize_for_retrieval(query)
     result = run_hybrid_retrieval_pipeline(
         query=query,
-        top_k=pipeline.config["retrieval"]["default_top_k"],
+        top_k=pipeline._retrieval_top_k(),
         cohort=cohort,
         intent="open_question",
         strategy="regulation",

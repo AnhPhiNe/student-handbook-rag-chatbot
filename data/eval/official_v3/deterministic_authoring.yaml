@@ -1,0 +1,1070 @@
+# official_v3: planner hold-out written from handbook content in student phrasing.
+# Six families of 17 questions each: single structured, single regulation, and the three
+# two-request pairings (structured+regulation, regulation+regulation, structured+structured),
+# plus comparisons (across cohorts, or between two values or levels in one cohort).
+# Gold comes from catalog selectors (see scripts/build_official_deterministic.py),
+# never from system output. Every case names its UI cohort (`selected_cohort`) and its
+# `slice` (`family.detail`). Multi-request questions only combine independent requests:
+# a request that needs the answer of another ("khoa đó") is a known executor limit,
+# not what this bundle measures.
+settings:
+  id_prefix: official_v3_det
+  independent_holdout: true
+  overlap_policy: >-
+    Held-out: written after official_v1 and official_v2 were frozen, screened against
+    both for near-duplicate queries, frozen before the planner prompt and model changes
+    of 2026-09 were made, and never used to tune prompts or code.
+  expected: {cases: 132, per_cohort: 44}
+
+cases:
+  # ================================================================ single.structured
+  - query: "Môn Tâm lý học đại cương em được 7,3 thì quy ra điểm chữ là gì ạ?"
+    category: scoring
+    slice: single.structured
+    selected_cohort: K48-K49
+    table: [grade_scale, 2, grade_10_to_letter]
+    input_slots: {score_or_grade: 7.3}
+  - query: "Điểm D+ quy sang thang điểm 4 được mấy điểm?"
+    category: scoring
+    slice: single.structured
+    selected_cohort: K50
+    table: [letter_to_grade4, 5, letter_to_grade_4]
+    input_slots: {score_or_grade: D+}
+  - query: "Học phần chuyên ngành 5,1 điểm thì em có phải học lại không ạ?"
+    category: scoring
+    slice: single.structured
+    selected_cohort: K51
+    table: [grade_scale, 5, pass_threshold, remaining]
+    input_slots: {score_or_grade: 5.1}
+  - query: "GPA học kỳ 3,3 thì xếp loại học lực gì?"
+    category: scoring
+    slice: single.structured
+    selected_cohort: K48-K49
+    table: [academic_classification, 1, academic_classification]
+    input_slots: {score_or_grade: 3.3}
+  - query: "ren luyen ky nay dc 57d, vay la loai trung binh hay kha"
+    category: conduct
+    slice: single.structured
+    selected_cohort: K50
+    stress: true
+    stress_type: informal_spelling
+    table: [conduct_classification, 3, conduct_classification]
+    input_slots: {score_or_grade: 57}
+  - query: "IELTS bao nhiêu thì được tính tương đương bậc 4?"
+    category: foreign_language
+    slice: single.structured
+    selected_cohort: K51
+    foreign: [IELTS, equivalent_level_4]
+  - query: "Em thi Linguaskill thì cần bao nhiêu điểm để đạt chuẩn bậc 3?"
+    category: foreign_language
+    slice: single.structured
+    selected_cohort: K48-K49
+    foreign: [Cambridge Assessment English / Linguaskill, equivalent_level_3]
+  - query: "Học vừa làm vừa học thì thời gian học chuẩn là mấy năm?"
+    category: study_duration
+    slice: single.structured
+    selected_cohort: K50
+    # No program type is named, so every row of the table answers the question.
+    duration: [vua_lam_vua_hoc, all]
+  - query: "Hệ chính quy khóa em được kéo dài thời gian học tối đa bao lâu?"
+    category: study_duration
+    slice: single.structured
+    selected_cohort: K51
+    duration: [chinh_quy, 0]
+    resolved_output_fields: [Thời gian học tập tối đa]
+  - query: "Mức học bổng xuất sắc nhân với hệ số mấy lần học phí một tín chỉ?"
+    category: scholarship
+    slice: single.structured
+    selected_cohort: K48-K49
+    scholarship: [scholarship_amount, 2]
+  - query: "Muốn được học bổng loại khá thì điểm rèn luyện phải từ bao nhiêu?"
+    category: scholarship
+    slice: single.structured
+    selected_cohort: K50
+    scholarship: [scholarship_classification, 0]
+    resolved_output_fields: [label, conduct_score_condition]
+  - query: "Công thức quy đổi ra điểm học bổng là gì ạ?"
+    category: formula
+    slice: single.structured
+    selected_cohort: K51
+    formula: scholarship_score
+  - query: "Email của Phòng Khảo thí và Đảm bảo chất lượng là gì?"
+    category: office
+    slice: single.structured
+    selected_cohort: K48-K49
+    office: [Phòng Khảo thí và Đảm bảo chất lượng, email]
+  - query: "Cho em xin số điện thoại văn phòng Khoa Ngữ văn."
+    category: faculty
+    slice: single.structured
+    selected_cohort: K50
+    faculty: [Khoa Ngữ văn, phone]
+  - query: "Sinh viên ngành Quốc tế học thì trực thuộc khoa nào?"
+    category: program
+    slice: single.structured
+    selected_cohort: K51
+    program: Quốc tế học
+  - query: "Lớp em cần mượn micro để thuyết trình thì liên hệ phòng nào?"
+    category: student_service
+    slice: single.structured
+    selected_cohort: K48-K49
+    service: ["Cho mượn amply, micro lớp học", unit_name]
+  - query: "Trang web của Trung tâm Ngoại ngữ là gì?"
+    category: office
+    slice: single.structured
+    selected_cohort: K50
+    office: [Trung tâm Ngoại ngữ, website]
+
+  # ================================================================ single.regulation
+  - query: "Hạn chót nộp hồ sơ xin nghỉ học tạm thời là khi nào?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K48-K49
+    policy: [QuyCheCongTacSinhVien_Chuong5_Dieu31, "trước khi thi học kỳ 04 tuần"]
+    fact: "Hồ sơ xin nghỉ học tạm thời phải nộp chậm nhất 04 tuần trước khi thi học kỳ."
+  - query: "Em đạt giải khuyến khích Olympic tiếng Anh cấp trường thì có được công nhận chuẩn đầu ra ngoại ngữ không?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K50
+    policy: [QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4, "Đạt giải khuyến khích cấp Trường trở lên trong các kỳ thi Olympic ngoại ngữ"]
+    fact: "Có, nếu em không thuộc nhóm ngành ngôn ngữ nước ngoài và đạt giải khi đang học tại Trường; em phải làm thủ tục theo Điều 5 để được xét."
+  - query: "Sinh viên có bài báo đăng tạp chí WoS hoặc Scopus thì được trường thưởng thế nào?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K51
+    policy: [QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6, "được Trường chi thưởng bằng 50% mức chi thưởng cho cán bộ, giảng viên Trường"]
+    fact: "Tác giả đứng đầu hoặc tác giả liên hệ, dùng email tên miền của Trường, được thưởng bằng 50% mức chi thưởng cho cán bộ, giảng viên."
+  - query: "ko tu danh gia diem ren luyen thi bi sao a"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K48-K49
+    stress: true
+    stress_type: informal_spelling
+    policy: [QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10, "sẽ nhận điểm 0 và xếp loại rèn luyện kém"]
+    fact: "Sinh viên không tự đánh giá kết quả rèn luyện nhận điểm 0 và bị xếp loại rèn luyện kém trong học kỳ đó."
+  - query: "Sau khi có điểm thi bao lâu thì khoa bắt đầu đánh giá điểm rèn luyện?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K50
+    policy: [RenLuyen_Chuong4_Dieu13, "Sau 2 tuần tính từ thời điểm công bố kết quả thi"]
+    fact: "Sau 2 tuần tính từ thời điểm công bố kết quả thi, Trưởng khoa hoặc Giám đốc phân hiệu triển khai đánh giá kết quả rèn luyện."
+  - query: "Cho bạn mượn thẻ sinh viên có được không ạ?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K51
+    policy: [QuyDinhQuyTacUngXu_Chuong3_Dieu12, "không cho người khác mượn thẻ"]
+    fact: "Không: người học phải bảo quản thẻ và không cho người khác mượn thẻ."
+  - query: "Nghỉ học tạm thời rồi quay lại thì kết quả rèn luyện của em được xử lý thế nào?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K48-K49
+    policy: [QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10, "Sinh viên nghỉ học tạm thời được bảo lưu kết quả rèn luyện sẽ được đánh giá kết quả rèn luyện khi tiếp tục trở lại học tập"]
+    fact: "Kết quả rèn luyện được bảo lưu và sinh viên tiếp tục được đánh giá rèn luyện khi trở lại học tập."
+  - query: "Bài thi cuối kỳ tự luận có phải do hai giảng viên cùng chấm không?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K50
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "phải do tối thiểu hai giảng viên đảm nhiệm"]
+    fact: "Có: chấm thi kết thúc học phần phải do tối thiểu hai giảng viên đảm nhiệm, trừ khi chấm theo hình thức trắc nghiệm."
+  - query: "Một năm trường xét tốt nghiệp mấy đợt, thường vào tháng nào?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K51
+    policy: [QuyCheDaoTao_Chuong3_Dieu15, "có 03 đợt xét tốt nghiệp chính thức, thường được tổ chức vào tháng 5, tháng 8 và tháng 10"]
+    fact: "Hệ chính quy có 03 đợt xét tốt nghiệp chính thức, thường vào tháng 5, tháng 8 và tháng 10."
+  - query: "Làm nghiên cứu khoa học thì sinh viên có được dùng thiết bị của trường không?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K48-K49
+    policy: [QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12, "Được sử dụng các thiết bị sẵn có của Trường để tiến hành NCKH"]
+    fact: "Có: sinh viên được sử dụng các thiết bị sẵn có của Trường để tiến hành nghiên cứu khoa học."
+  - query: "Viết vẽ lên bàn trong phòng học có bị tính là vi phạm không?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K50
+    policy: [QuyCheCongTacSinhVien_Chuong3_Dieu10, "Bôi xóa, viết vẽ lên bàn, tường trong phòng học"]
+    fact: "Có: bôi xóa, viết vẽ lên bàn, tường trong phòng học là hành vi sinh viên không được làm."
+  - query: "Cuối năm học trường xét những danh hiệu cá nhân nào cho sinh viên?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K51
+    policy: [QuyCheCongTacSinhVien_Chuong6_Dieu32, "Danh hiệu cá nhân gồm 3 loại: Khá, Giỏi, Xuất sắc"]
+    fact: "Danh hiệu cá nhân xét cuối năm học gồm 3 loại: sinh viên Khá, Giỏi, Xuất sắc."
+  - query: "Buổi họp lớp với cố vấn học tập có phải lập biên bản không?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K48-K49
+    policy: [QuyDinhCongTacCoVanHocTap_Chuong3_Dieu6, "Các buổi họp lớp phải ghi biên bản và báo cáo với Trưởng khoa"]
+    fact: "Có: các buổi họp lớp phải ghi biên bản và báo cáo với Trưởng khoa."
+  - query: "Nếu điểm học bổng bằng nhau mà quỹ không đủ thì trường ưu tiên ai?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K50
+    policy: [QuyCheCongTacSinhVien_Chuong5_Dieu28, "Trường sẽ ưu tiên xét cấp cho sinh viên có điểm học tập cao hơn"]
+    fact: "Trường ưu tiên sinh viên có điểm học tập cao hơn."
+  - query: "Chính sách phát triển người học tài năng có những hình thức khuyến khích nào?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K51
+    policy: [QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong1_Dieu5, "Học bổng hỗ trợ phát triển tài năng"]
+    fact: "Gồm khen thưởng thành tích xuất sắc, học bổng hỗ trợ phát triển tài năng và ưu tiên giao thực hiện nhiệm vụ, đề tài nghiên cứu."
+  - query: "Chuyển từ ngành khác sang thì được công nhận chuyển đổi tối đa bao nhiêu khối lượng học?"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K48-K49
+    policy: [QuyCheDaoTao_Chuong3_Dieu14, "không vượt quá 50% khối lượng học tập tối thiểu của CTĐT"]
+    fact: "Không vượt quá 50% khối lượng học tập tối thiểu của chương trình đào tạo; riêng ngành đào tạo giáo viên thực hiện theo hướng dẫn của Bộ Giáo dục và Đào tạo."
+  - query: "lich dang ky hoc phan duoc thong bao truoc may ngay vay"
+    category: policy
+    slice: single.regulation
+    selected_cohort: K51
+    stress: true
+    stress_type: informal_spelling
+    policy: [QuyCheDaoTao_Chuong2_Dieu9, "Lịch đăng ký học phần được công bố chậm nhất 01 tuần trước khi bắt đầu mở hệ thống đăng ký"]
+    fact: "Lịch đăng ký học phần được công bố chậm nhất 01 tuần trước khi mở hệ thống đăng ký."
+
+  # ================================================================ multi_intent.struct_regu
+  - query: "GPA tích lũy của em 1,8 là loại gì, năm hai mà dưới mấy thì bị cảnh báo học tập?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K48-K49
+    coverage_features: [structured_regulation]
+    tasks:
+      - {table: [academic_classification, 4, academic_classification], input_slots: {score_or_grade: 1.8}}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu12, "dưới 1,4 đối với sinh viên trình độ năm thứ hai"], fact: "Sinh viên năm thứ hai bị cảnh báo khi điểm trung bình tích lũy dưới 1,4."}
+  - query: "Môn này em được 6,1 là điểm chữ gì, còn điểm quá trình thấp thì có xin phúc khảo được không?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K50
+    coverage_features: [structured_regulation]
+    tasks:
+      - {table: [grade_scale, 4, grade_10_to_letter], input_slots: {score_or_grade: 6.1}}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu10, "Điểm đánh giá quá trình không được bảo lưu và không được phúc khảo"], fact: "Không: điểm đánh giá quá trình không được phúc khảo."}
+  - query: "Tích lũy 3,7 thì xếp loại gì, mà học lại nhiều môn có bị hạ hạng tốt nghiệp không?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K51
+    coverage_features: [structured_regulation]
+    tasks:
+      - {table: [academic_classification, 0, academic_classification], input_slots: {score_or_grade: 3.7}}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu15, "vượt quá 5% so với tổng số tín chỉ"], fact: "Có: hạng tốt nghiệp loại xuất sắc, giỏi bị giảm một mức nếu khối lượng học lại vượt quá 5% tổng số tín chỉ của chương trình."}
+  - query: "Rèn luyện 92 điểm là loại gì, được loại đó thì có được trường khen thưởng không?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K48-K49
+    coverage_features: [structured_regulation]
+    tasks:
+      - {table: [conduct_classification, 0, conduct_classification], input_slots: {score_or_grade: 92}}
+      - {policy: [QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14, "Sinh viên có kết quả rèn luyện xuất sắc được nhà trường xem xét biểu dương, khen thưởng"], fact: "Có: sinh viên có kết quả rèn luyện xuất sắc được nhà trường xem xét biểu dương, khen thưởng."}
+  - query: "TOEFL ITP cần bao nhiêu điểm để đạt bậc 3, ngoài nộp chứng chỉ ra còn cách nào được công nhận chuẩn ngoại ngữ không?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K50
+    coverage_features: [structured_regulation]
+    tasks:
+      - {foreign: [TOEFL ITP, equivalent_level_3]}
+      - {policy: [QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4, "Đạt yêu cầu kỳ thi kết thúc chương trình ngoại ngữ"], fact: "Có: đạt kỳ thi kết thúc chương trình ngoại ngữ của Trường, có bằng đại học ngành ngôn ngữ nước ngoài, đạt giải Olympic hoặc hùng biện ngoại ngữ cấp Trường trở lên, hoặc trường hợp đặc biệt do Hiệu trưởng quyết định."}
+  - query: "Em muốn rút bớt học phần đã đăng ký thì làm trong thời hạn nào, và email Phòng Đào tạo là gì?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K51
+    coverage_features: [structured_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong2_Dieu9, "Việc rút bớt học phần đã đăng ký được thực hiện trong thời hạn theo thông báo của Trường"], fact: "Rút bớt học phần trong thời hạn theo thông báo của Trường và phải bảo đảm khối lượng tối thiểu."}
+      - {office: [Phòng Đào tạo, email]}
+  - query: "Em học liên thông từ trung cấp hệ chính quy thì hạn chót hoàn thành là mấy năm, trễ hơn thì có bị cho thôi học không?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K48-K49
+    coverage_features: [structured_regulation]
+    tasks:
+      - {duration: [chinh_quy, 2], resolved_output_fields: [Thời gian học tập tối đa]}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu12, "Thời gian học tập vượt quá giới hạn tối đa quy định tại Điều 3"], fact: "Sinh viên bị buộc thôi học khi thời gian học tập vượt quá giới hạn tối đa."}
+  - query: "Học bổng giỏi cần điểm học tập bao nhiêu, và tiền học bổng được trả bằng cách nào?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K50
+    coverage_features: [structured_regulation]
+    tasks:
+      - {scholarship: [scholarship_classification, 1], resolved_output_fields: [label, academic_score_range]}
+      - {policy: [QuyCheCongTacSinhVien_Chuong5_Dieu28, "qua tài khoản cá nhân sinh viên đã đăng ký"], fact: "Học bổng được chi trả theo quyết định của Hiệu trưởng qua tài khoản cá nhân sinh viên đã đăng ký, do Phòng Kế hoạch – Tài chính thực hiện."}
+  - query: "Làm thẻ bảo hiểm y tế thì liên hệ đơn vị nào, và lên trường có bắt buộc đeo thẻ sinh viên không?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K51
+    coverage_features: [structured_regulation]
+    tasks:
+      - {service: [Làm thẻ và phát thẻ bảo hiểm y tế, unit_name]}
+      - {policy: [QuyDinhQuyTacUngXu_Chuong3_Dieu12, "Người học đeo đúng thẻ sinh viên/học viên của mình"], fact: "Có: người học phải đeo đúng thẻ sinh viên của mình khi đến lớp, sinh hoạt lớp, đoàn thể và làm việc với các đơn vị trong Trường."}
+  - query: "Điểm C đổi ra hệ 4 là mấy, điểm trung bình học kỳ được làm tròn đến mấy chữ số?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K48-K49
+    coverage_features: [structured_regulation]
+    tasks:
+      - {table: [letter_to_grade4, 4, letter_to_grade_4], input_slots: {score_or_grade: C}}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu11, "được làm tròn đến 2 chữ số thập phân"], fact: "Điểm trung bình được làm tròn đến 2 chữ số thập phân."}
+  - query: "Năm nhất có được chuyển ngành không, và email Khoa Công nghệ Thông tin là gì?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K50
+    coverage_features: [structured_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu17, "Không đang là sinh viên trình độ năm thứ nhất hoặc năm cuối khóa"], fact: "Không: sinh viên trình độ năm thứ nhất hoặc năm cuối khóa không được xem xét chuyển ngành."}
+      - {faculty: [Khoa Công nghệ Thông tin, email]}
+  - query: "Môn giáo dục thể chất chỉ xét đạt, em được 4,8 thì sao, nếu hết thời gian học mà vẫn chưa xong môn này thì còn được xét tốt nghiệp không?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K51
+    stress: true
+    stress_type: dense_request
+    coverage_features: [structured_regulation]
+    tasks:
+      - {table: [pass_fail_ungraded, 1, pass_fail_ungraded, pass_fail_ungraded], input_slots: {score_or_grade: 4.8}}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu15, "giáo dục thể chất hoặc chưa đạt chuẩn đầu ra về ngoại ngữ, công nghệ thông tin, trong thời hạn 03 năm"], fact: "Có: trong 03 năm kể từ khi thôi học, sinh viên được hoàn thiện học phần giáo dục thể chất còn thiếu và đề nghị xét công nhận tốt nghiệp."}
+  - query: "Sư phạm Tin học do khoa nào quản lý, và sinh viên năm cuối có được chuyển sang ngành khác không?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K48-K49
+    coverage_features: [structured_regulation]
+    tasks:
+      - {program: Sư phạm Tin học}
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu17, "Không đang là sinh viên trình độ năm thứ nhất hoặc năm cuối khóa"], fact: "Không: sinh viên năm cuối khóa không được xem xét chuyển ngành."}
+  - query: "Điểm trung bình học kỳ tính theo công thức nào, và bỏ thi không có lý do thì môn đó bị mấy điểm?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K50
+    coverage_features: [structured_regulation]
+    tasks:
+      - {formula: gpa_weighted_average}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu10, "Sinh viên vắng mặt trong buổi thi, đánh giá không có lý do chính đáng phải nhận điểm 0"], fact: "Vắng thi không có lý do chính đáng phải nhận điểm 0."}
+  - query: "Kỳ này em được 68 điểm rèn luyện là loại gì, điểm rèn luyện cả năm thì tính sao?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K51
+    coverage_features: [structured_regulation]
+    tasks:
+      - {table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 68}}
+      - {policy: [RenLuyen_Chuong4_Dieu13, "Điểm rèn luyện của năm học là trung bình cộng của điểm rèn luyện các học kỳ của năm học đó"], fact: "Điểm rèn luyện năm học là trung bình cộng điểm rèn luyện các học kỳ của năm học đó."}
+  - query: "Đang học chính quy có được chuyển sang vừa làm vừa học không, và hệ vừa làm vừa học được học tối đa bao lâu?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K50
+    coverage_features: [structured_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu17, "Sinh viên được xem xét chuyển từ đào tạo theo hình thức chính quy sang hình thức vừa làm vừa học của Trường"], fact: "Có: nếu còn đủ thời gian học tập theo quy định đối với hình thức chuyển đến."}
+      - {duration: [vua_lam_vua_hoc, all]}
+  - query: "Học bổng giỏi được tính tiền thế nào, và học kỳ cuối khóa thì cần tích lũy bao nhiêu tín chỉ mới được xét?"
+    category: compound
+    slice: multi_intent.struct_regu
+    selected_cohort: K51
+    coverage_features: [structured_regulation]
+    tasks:
+      - {scholarship: [scholarship_amount, 1]}
+      - {policy: [QuyCheCongTacSinhVien_Chuong5_Dieu27, "sinh viên phải tích luỹ từ 11 tín chỉ trở lên"], fact: "Học kỳ cuối theo chương trình chuẩn: khóa tuyển sinh từ 2022 về sau phải tích lũy từ 11 tín chỉ, khóa từ 2021 về trước từ 06 tín chỉ."}
+
+  # ================================================================ multi_intent.regu_regu
+  - query: "Xin nghỉ học tạm thời cần điều kiện gì về học phí, và muốn quay lại học thì phải làm thủ tục trước bao lâu?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K48-K49
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheCongTacSinhVien_Chuong5_Dieu31, "Sinh viên không nợ học phí và được Phòng Kế hoạch – Tài chính xác nhận"], fact: "Sinh viên không được nợ học phí và phải được Phòng Kế hoạch – Tài chính xác nhận."}
+      - {policy: [QuyCheCongTacSinhVien_Chuong5_Dieu31, "trước thời điểm đăng ký học phần (của học kỳ sinh viên muốn trở lại học) ít nhất 2 tuần"], fact: "Hoàn tất thủ tục xin học lại trước thời điểm đăng ký học phần của học kỳ muốn trở lại ít nhất 2 tuần."}
+  - query: "Bị nhắc nhở mấy lần trong một học kỳ thì bị khiển trách, và khiển trách bao lâu thì hết hiệu lực?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K50
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheCongTacSinhVien_Chuong6_Dieu34, "sinh viên bị nhắc nhở 3 lần trong 1 học kỳ"], fact: "Bị nhắc nhở 3 lần trong 1 học kỳ thì bị khiển trách."}
+      - {policy: [QuyCheCongTacSinhVien_Chuong6_Dieu36, "Sau 3 tháng kể từ ngày quyết định kỷ luật có hiệu lực"], fact: "Khiển trách hết hiệu lực sau 3 tháng kể từ ngày quyết định có hiệu lực nếu không tái phạm."}
+  - query: "Nợ bao nhiêu tín chỉ từ đầu khóa thì bị cảnh báo, và bị cảnh báo đến lần thứ mấy thì bị buộc thôi học?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K51
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu12, "tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24"], fact: "Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24."}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu12, "Bị cảnh báo học tập đến lần thứ tư tính từ đầu khóa"], fact: "Bị buộc thôi học khi bị cảnh báo 03 lần liên tiếp hoặc đến lần thứ tư tính từ đầu khóa."}
+  - query: "Đang trong thời gian bị cảnh cáo thì rèn luyện được xếp tối đa loại gì, mấy tháng sau mới được gỡ?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K48-K49
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10, "không được vượt quá loại trung bình"], fact: "Trong thời gian bị cảnh cáo, kết quả rèn luyện không được vượt quá loại trung bình."}
+      - {policy: [QuyCheCongTacSinhVien_Chuong6_Dieu37, "Đối với trường hợp bị cảnh cáo: sau 6 tháng"], fact: "Kỷ luật cảnh cáo hết hiệu lực sau 6 tháng kể từ ngày quyết định có hiệu lực nếu không tái phạm."}
+  - query: "Bài kiểm tra ngoại ngữ đầu vào gồm những kỹ năng nào, và em đã có bằng đại học ngôn ngữ Anh thì có được công nhận chuẩn đầu ra không?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K50
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu2, "gồm kỹ năng nghe và kỹ năng đọc"], fact: "Bài kiểm tra đầu vào gồm kỹ năng nghe và kỹ năng đọc."}
+      - {policy: [QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu4, "Có bằng tốt nghiệp trình độ đại học trở lên ngành ngôn ngữ nước ngoài"], fact: "Có: người có bằng đại học trở lên ngành ngôn ngữ nước ngoài được công nhận, nhưng phải làm thủ tục theo Điều 5."}
+  - query: "Trên mạng xã hội sinh viên nên chia sẻ thông tin thế nào, và đăng bài xúc phạm người khác có bị cấm không?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K51
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyDinhQuyTacUngXu_Chuong4_Dieu16, "Chỉ chia sẻ những thông tin có nguồn chính thống, đáng tin cậy"], fact: "Chỉ chia sẻ thông tin có nguồn chính thống, đáng tin cậy."}
+      - {policy: [QuyCheCongTacSinhVien_Chuong3_Dieu10, "Đăng tải, bình luận, chia sẻ bài viết"], fact: "Có: đăng tải, bình luận, chia sẻ nội dung xúc phạm danh dự, nhân phẩm cá nhân trên không gian mạng là hành vi sinh viên không được làm."}
+  - query: "Học ở trường đối tác thì có được học môn giáo dục thể chất bên đó không, và chuyển đổi tín chỉ từ ngành cũ tối đa bao nhiêu?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K48-K49
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu18, "không bao gồm các học phần giáo dục thể chất và giáo dục quốc phòng – an ninh"], fact: "Không: học phần giáo dục thể chất và giáo dục quốc phòng – an ninh không thuộc diện học tại cơ sở đào tạo khác."}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu14, "không vượt quá 50% khối lượng học tập tối thiểu của CTĐT"], fact: "Không vượt quá 50% khối lượng học tập tối thiểu của chương trình; riêng ngành đào tạo giáo viên theo hướng dẫn của Bộ Giáo dục và Đào tạo."}
+  - query: "Hút thuốc trong khuôn viên trường có bị cấm không, và bị kỷ luật thì có bị ghi vào hồ sơ không?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K50
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheCongTacSinhVien_Chuong3_Dieu10, "Hút thuốc, uống rượu, bia trong trường học"], fact: "Có: hút thuốc, uống rượu, bia trong trường học là hành vi sinh viên không được làm."}
+      - {policy: [QuyCheCongTacSinhVien_Chuong6_Dieu34, "Hình thức kỷ luật của sinh viên từ cảnh cáo trở lên phải được ghi vào hồ sơ sinh viên"], fact: "Kỷ luật từ mức cảnh cáo trở lên được ghi vào hồ sơ sinh viên."}
+  - query: "Đủ điều kiện tốt nghiệp rồi thì bao lâu mới có bằng, và cố vấn học tập hỗ trợ sinh viên những gì?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K51
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu15, "trong thời hạn 03 tháng tính từ thời điểm sinh viên đáp ứng đầy đủ điều kiện tốt nghiệp"], fact: "Quyết định công nhận và cấp bằng trong thời hạn 03 tháng từ khi đáp ứng đủ điều kiện và hoàn thành nghĩa vụ với Trường."}
+      - {policy: [QuyDinhCongTacCoVanHocTap_Chuong1_Dieu3, "Hướng dẫn sinh viên xây dựng kế hoạch học tập và rèn luyện"], fact: "Cố vấn học tập hướng dẫn xây dựng kế hoạch học tập và rèn luyện, tư vấn định hướng và phối hợp giải quyết các vấn đề đào tạo, quản lý sinh viên."}
+  - query: "Làm đề tài được cấp kinh phí mà không nộp sản phẩm thì sao, và điểm rèn luyện có ảnh hưởng tới việc xét ở ký túc xá không?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K48-K49
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12, "sẽ phải hoàn lại kinh phí đã nhận"], fact: "Sinh viên phải hoàn lại kinh phí đã nhận."}
+      - {policy: [QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14, "xét lưu trú KTX"], fact: "Có: kết quả rèn luyện được dùng khi xét lưu trú ký túc xá."}
+  - query: "Thi online được tính tối đa bao nhiêu phần trăm điểm học phần, và điểm đề tài nghiên cứu có thay được điểm thi không?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K50
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu10, "đóng góp không quá 50% trọng số điểm học phần"], fact: "Đánh giá trực tuyến đóng góp không quá 50% trọng số điểm học phần."}
+      - {policy: [QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14, "thay thế cho điểm thi kết thúc học phần (không quá 3 tín chỉ)"], fact: "Có: đề tài đạt loại Khá trở lên có thể thay điểm thi kết thúc học phần liên quan, không quá 3 tín chỉ."}
+  - query: "Đơn xin tạm nghỉ học cần ai xác nhận, và học phí mỗi kỳ được tính theo cái gì?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K51
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheCongTacSinhVien_Chuong5_Dieu30, "Trưởng khoa hoặc Giám đốc phân hiệu xác nhận đồng ý"], fact: "Đơn phải được Trưởng khoa hoặc Giám đốc phân hiệu xác nhận đồng ý."}
+      - {policy: [QuyCheCongTacSinhVien_Chuong5_Dieu29, "Học phí được quy định đóng theo số tín chỉ đăng ký theo từng học kỳ"], fact: "Học phí đóng theo số tín chỉ đăng ký của từng học kỳ."}
+  - query: "Sổ tay sinh viên bao lâu phát hành một lần, và cố vấn học tập làm việc với ban cán sự lớp định kỳ thế nào?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K48-K49
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheCongTacSinhVien_Chuong3_Dieu11, "do Trường phát hành mỗi năm học"], fact: "Sổ tay sinh viên do Trường phát hành mỗi năm học."}
+      - {policy: [QuyDinhCongTacCoVanHocTap_Chuong3_Dieu6, "Định kì làm việc với ban cán sự lớp (1 lần/ tháng)"], fact: "Cố vấn học tập làm việc với ban cán sự lớp 1 lần mỗi tháng."}
+  - query: "Điểm rèn luyện toàn khóa tính thế nào, và một học kỳ phải tích lũy bao nhiêu tín chỉ mới được xét học bổng?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K50
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [RenLuyen_Chuong4_Dieu13, "Điểm rèn luyện toàn khóa học là trung bình cộng của điểm rèn luyện các học kỳ"], fact: "Điểm rèn luyện toàn khóa là trung bình cộng điểm rèn luyện các học kỳ thực tế sinh viên tham gia đánh giá."}
+      - {policy: [QuyCheCongTacSinhVien_Chuong5_Dieu27, "phải lớn hơn hoặc bằng 15 tín chỉ theo kế hoạch"], fact: "Phải tích lũy từ 15 tín chỉ trở lên theo kế hoạch trong học kỳ, không tính tín chỉ trả nợ, cải thiện."}
+  - query: "Đạt huy chương vàng thể thao cấp quốc gia thì trường thưởng bao nhiêu, và muốn đạt danh hiệu sinh viên giỏi cần gì?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K51
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6, "Trường chi thưởng khuyến khích cá nhân là 1.000.000đ"], fact: "Giải Nhất cá nhân hoặc Huy chương Vàng cấp quốc gia được Trường thưởng khuyến khích 1.000.000đ."}
+      - {policy: [QuyCheCongTacSinhVien_Chuong6_Dieu32, "Đạt danh hiệu sinh viên Giỏi: nếu xếp loại học tập từ giỏi trở lên và xếp loại rèn luyện tốt trở lên"], fact: "Danh hiệu sinh viên Giỏi cần xếp loại học tập từ giỏi và rèn luyện từ tốt trở lên."}
+  - query: "Muốn chuyển sang trường khác cần sự đồng ý của ai, và chuyển trường thì kết quả rèn luyện cũ có được giữ không?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K50
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong4_Dieu17, "Được sự đồng ý của Hiệu trưởng cơ sở đào tạo xin chuyển đến và cơ sở đào tạo xin chuyển đi"], fact: "Cần sự đồng ý của Hiệu trưởng cả nơi chuyển đến và nơi chuyển đi."}
+      - {policy: [RenLuyen_Chuong3_Dieu10, "bảo lưu kết quả rèn luyện của trường cũ"], fact: "Có: sinh viên chuyển trường được bảo lưu kết quả rèn luyện của trường cũ."}
+  - query: "Bị cảnh báo học tập mấy lần liên tiếp thì bị buộc thôi học, và khi nào thì bị tạm dừng tiến độ học tập?"
+    category: compound
+    slice: multi_intent.regu_regu
+    selected_cohort: K48-K49
+    coverage_features: [regulation_regulation]
+    tasks:
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu12, "Bị cảnh báo học tập 03 lần liên tiếp trong một khóa học"], fact: "Bị buộc thôi học khi bị cảnh báo học tập 03 lần liên tiếp trong một khóa học."}
+      - {policy: [QuyCheCongTacSinhVien_Chuong5_Dieu31, "Bị xếp loại rèn luyện yếu, kém trong hai học kỳ liên tiếp"], fact: "Bị tạm dừng tiến độ học tập khi bị kỷ luật ở mức buộc nghỉ học tạm thời hoặc xếp loại rèn luyện yếu, kém hai học kỳ liên tiếp."}
+
+  # ================================================================ multi_intent.struct_struct
+  - query: "Điểm 8,6 là điểm chữ gì, và điểm B quy sang hệ 4 là mấy?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K48-K49
+    coverage_features: [structured_structured]
+    tasks:
+      - {table: [grade_scale, 0, grade_10_to_letter], input_slots: {score_or_grade: 8.6}}
+      - {table: [letter_to_grade4, 2, letter_to_grade_4], input_slots: {score_or_grade: B}}
+  - query: "Học kỳ này em có GPA 2,7 và 83 điểm rèn luyện, hai kết quả này xếp loại gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K50
+    coverage_features: [structured_structured]
+    tasks:
+      - {table: [academic_classification, 2, academic_classification], input_slots: {score_or_grade: 2.7}}
+      - {table: [conduct_classification, 1, conduct_classification], input_slots: {score_or_grade: 83}}
+  - query: "IELTS mấy điểm thì đạt bậc 3, và học chính quy thời gian chuẩn là mấy năm?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K51
+    coverage_features: [structured_structured]
+    tasks:
+      - {foreign: [IELTS, equivalent_level_3]}
+      - {duration: [chinh_quy, 0], resolved_output_fields: [Thời gian học tập chuẩn]}
+  - query: "Trạm Y tế nằm ở đâu, và email Khoa Hóa học là gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K48-K49
+    coverage_features: [structured_structured]
+    tasks: [{office: [Trạm Y tế, office]}, {faculty: [Khoa Hóa học, email]}]
+  - query: "Học bổng xuất sắc cần điểm học bổng trong khoảng nào, và điểm học bổng tính theo công thức gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K50
+    coverage_features: [structured_structured]
+    tasks:
+      - {scholarship: [scholarship_classification, 2], resolved_output_fields: [label, scholarship_score_range]}
+      - {formula: scholarship_score}
+  - query: "Ngành Công nghệ Giáo dục thuộc khoa nào, và email Phòng Công tác chính trị và Học sinh, sinh viên là gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K51
+    coverage_features: [structured_structured]
+    tasks: [{program: Công nghệ Giáo dục}, {office: ["Phòng Công tác chính trị và Học sinh, sinh viên", email]}]
+  - query: "Môn chỉ xét đạt hay không đạt mà em được 5,5 thì sao, còn rèn luyện 36 điểm là loại gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K48-K49
+    coverage_features: [structured_structured]
+    tasks:
+      - {table: [pass_fail_ungraded, 0, pass_fail_ungraded, pass_fail_ungraded], input_slots: {score_or_grade: 5.5}}
+      - {table: [conduct_classification, 4, conduct_classification], input_slots: {score_or_grade: 36}}
+  - query: "Đóng học phí ở phòng nào, và số điện thoại Thư viện là gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K50
+    coverage_features: [structured_structured]
+    tasks: [{service: [Thu học phí, unit_name]}, {office: [Thư viện, phone]}]
+  - query: "Điểm B+ đổi ra thang 4 là mấy, và rèn luyện 91 điểm là loại gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K51
+    coverage_features: [structured_structured]
+    tasks:
+      - {table: [letter_to_grade4, 1, letter_to_grade_4], input_slots: {score_or_grade: B+}}
+      - {table: [conduct_classification, 0, conduct_classification], input_slots: {score_or_grade: 91}}
+  - query: "Liên thông từ trung cấp theo hệ vừa làm vừa học thì học tối đa mấy năm, và học bổng loại khá được tính tiền thế nào?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K48-K49
+    coverage_features: [structured_structured]
+    tasks:
+      - {duration: [vua_lam_vua_hoc, 2], resolved_output_fields: [Thời gian học tập tối đa]}
+      - {scholarship: [scholarship_amount, 0]}
+  - query: "Văn phòng Khoa Giáo dục Tiểu học ở đâu, và email Ký túc xá là gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K50
+    coverage_features: [structured_structured]
+    tasks: [{faculty: [Khoa Giáo dục Tiểu học, office]}, {office: [Ký túc xá, email]}]
+  - query: "Điểm trung bình tích lũy tính như thế nào, và 2,3 thì xếp loại gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K51
+    coverage_features: [structured_structured]
+    tasks:
+      - {formula: gpa_weighted_average}
+      - {table: [academic_classification, 3, academic_classification], input_slots: {score_or_grade: 2.3}}
+  - query: "JLPT phải đạt mức nào mới tương đương bậc 4, và số điện thoại Trung tâm Ngoại ngữ là gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K48-K49
+    coverage_features: [structured_structured]
+    tasks: [{foreign: [Japanese Language Proficiency Test (JLPT), equivalent_level_4]}, {office: [Trung tâm Ngoại ngữ, phone]}]
+  - query: "Điểm F+ quy ra hệ 4 là bao nhiêu, và người đã có một bằng đại học học chính quy thì thời gian chuẩn là mấy năm?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K50
+    coverage_features: [structured_structured]
+    tasks:
+      - {table: [letter_to_grade4, 7, letter_to_grade_4], input_slots: {score_or_grade: F+}}
+      - {duration: [chinh_quy, 3], resolved_output_fields: [Thời gian học tập chuẩn]}
+  - query: "Bị ốm cần khám cấp cứu ở trường thì tìm đơn vị nào, và ngành Tâm lý học giáo dục thuộc khoa nào?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K51
+    coverage_features: [structured_structured]
+    tasks: [{service: [Khám cấp cứu, unit_name]}, {program: Tâm lý học giáo dục}]
+  - query: "Email Phòng Tổ chức – Hành chính là gì, và rèn luyện 79 điểm xếp loại gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K48-K49
+    coverage_features: [structured_structured]
+    tasks:
+      - {office: [Phòng Tổ chức – Hành chính, email]}
+      - {table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 79}}
+  - query: "Học bổng xuất sắc yêu cầu kết quả học tập loại gì, và website Trung tâm Tin học là gì?"
+    category: compound
+    slice: multi_intent.struct_struct
+    selected_cohort: K51
+    coverage_features: [structured_structured]
+    tasks:
+      - {scholarship: [scholarship_classification, 0], resolved_output_fields: [scholarship_level, academic_classification]}
+      - {office: [Trung tâm Tin học, website]}
+
+  # ================================================================ compare
+  # across cohorts: structured
+  - query: "Hệ vừa làm vừa học thì K49 với K51 được học tối đa bao nhiêu năm?"
+    category: compound
+    slice: compare.multi_cohort_structured
+    selected_cohort: K51
+    stress: true
+    stress_type: cohort_difference
+    coverage_features: [multi_cohort]
+    tasks:
+      - {cohort: K48-K49, duration: [vua_lam_vua_hoc, all]}
+      - {cohort: K51, duration: [vua_lam_vua_hoc, 0], resolved_output_fields: [Thời gian học tập tối đa]}
+    alternative_tasks:
+      - - execution_units:
+            - {cohort: K48-K49, duration: [vua_lam_vua_hoc, all]}
+            - {cohort: K51, duration: [vua_lam_vua_hoc, 0], resolved_output_fields: [Thời gian học tập tối đa]}
+  - query: "GPA 3,2 thì K49 và K51 cùng xếp loại giỏi hay khác nhau?"
+    category: compound
+    slice: compare.multi_cohort_structured
+    selected_cohort: K48-K49
+    coverage_features: [multi_cohort]
+    tasks:
+      - {cohort: K48-K49, table: [academic_classification, 1, academic_classification], input_slots: {score_or_grade: 3.2}}
+      - {cohort: K51, table: [academic_classification, 1, academic_classification], input_slots: {score_or_grade: 3.2}}
+    alternative_tasks:
+      - - execution_units:
+            - {cohort: K48-K49, table: [academic_classification, 1, academic_classification], input_slots: {score_or_grade: 3.2}}
+            - {cohort: K51, table: [academic_classification, 1, academic_classification], input_slots: {score_or_grade: 3.2}}
+  - query: "Điểm 4,9 môn chuyên ngành thì K50 và K51 xử lý khác nhau thế nào?"
+    category: compound
+    slice: compare.multi_cohort_structured
+    selected_cohort: K51
+    stress: true
+    stress_type: cohort_difference
+    coverage_features: [multi_cohort]
+    tasks:
+      - {cohort: K50, table: [grade_scale, 5, pass_threshold], input_slots: {score_or_grade: 4.9}}
+      - {cohort: K51, table: [grade_scale, 5, pass_threshold, remaining], input_slots: {score_or_grade: 4.9}}
+    alternative_tasks:
+      - - execution_units:
+            - {cohort: K50, table: [grade_scale, 5, pass_threshold], input_slots: {score_or_grade: 4.9}}
+            - {cohort: K51, table: [grade_scale, 5, pass_threshold, remaining], input_slots: {score_or_grade: 4.9}}
+  - query: "Hệ số tiền học bổng loại giỏi của K49 với K51 có khác nhau không?"
+    category: compound
+    slice: compare.multi_cohort_structured
+    selected_cohort: K50
+    coverage_features: [multi_cohort]
+    tasks:
+      - {cohort: K48-K49, scholarship: [scholarship_amount, 1]}
+      - {cohort: K51, scholarship: [scholarship_amount, 1]}
+    alternative_tasks:
+      - - execution_units:
+            - {cohort: K48-K49, scholarship: [scholarship_amount, 1]}
+            - {cohort: K51, scholarship: [scholarship_amount, 1]}
+  - query: "80 điểm rèn luyện ở K50 và K51 đều là loại tốt phải không?"
+    category: compound
+    slice: compare.multi_cohort_structured
+    selected_cohort: K51
+    coverage_features: [multi_cohort]
+    tasks:
+      - {cohort: K50, table: [conduct_classification, 1, conduct_classification], input_slots: {score_or_grade: 80}}
+      - {cohort: K51, table: [conduct_classification, 1, conduct_classification], input_slots: {score_or_grade: 80}}
+    alternative_tasks:
+      - - execution_units:
+            - {cohort: K50, table: [conduct_classification, 1, conduct_classification], input_slots: {score_or_grade: 80}}
+            - {cohort: K51, table: [conduct_classification, 1, conduct_classification], input_slots: {score_or_grade: 80}}
+  - query: "Nếu học chậm thì sinh viên chính quy K48 và K51 được phép kéo dài đến tối đa bao lâu?"
+    category: compound
+    slice: compare.multi_cohort_structured
+    selected_cohort: K48-K49
+    stress: true
+    stress_type: cohort_difference
+    coverage_features: [multi_cohort]
+    tasks:
+      - {cohort: K48-K49, duration: [chinh_quy, all]}
+      - {cohort: K51, duration: [chinh_quy, 0], resolved_output_fields: [Thời gian học tập tối đa]}
+    alternative_tasks:
+      - - execution_units:
+            - {cohort: K48-K49, duration: [chinh_quy, all]}
+            - {cohort: K51, duration: [chinh_quy, 0], resolved_output_fields: [Thời gian học tập tối đa]}
+  - query: "Môn chỉ chấm đạt hay chưa đạt, được 4,7 điểm thì K49 và K51 có giống nhau không?"
+    category: compound
+    slice: compare.multi_cohort_structured
+    selected_cohort: K50
+    coverage_features: [multi_cohort]
+    tasks:
+      - {cohort: K48-K49, table: [pass_fail_ungraded, 1, pass_fail_ungraded, pass_fail_ungraded], input_slots: {score_or_grade: 4.7}}
+      - {cohort: K51, table: [pass_fail_ungraded, 1, pass_fail_ungraded, pass_fail_ungraded], input_slots: {score_or_grade: 4.7}}
+    alternative_tasks:
+      - - execution_units:
+            - {cohort: K48-K49, table: [pass_fail_ungraded, 1, pass_fail_ungraded, pass_fail_ungraded], input_slots: {score_or_grade: 4.7}}
+            - {cohort: K51, table: [pass_fail_ungraded, 1, pass_fail_ungraded, pass_fail_ungraded], input_slots: {score_or_grade: 4.7}}
+  # across cohorts: regulation
+  - query: "Muốn chuyển ngành thì K49 và K50 có cùng điều kiện về năm đang học không?"
+    category: compound
+    slice: compare.multi_cohort_regulation
+    selected_cohort: K48-K49
+    coverage_features: [multi_cohort, regulation_regulation]
+    tasks:
+      - {cohort: K48-K49, policy: [QuyCheDaoTao_Chuong4_Dieu17, "Không đang là sinh viên trình độ năm thứ nhất hoặc năm cuối khóa"], fact: "Không được chuyển ngành khi đang là sinh viên năm thứ nhất hoặc năm cuối khóa."}
+      - {cohort: K50, policy: [QuyCheDaoTao_Chuong4_Dieu17, "Không đang là sinh viên trình độ năm thứ nhất hoặc năm cuối khóa"], fact: "Không được chuyển ngành khi đang là sinh viên năm thứ nhất hoặc năm cuối khóa."}
+    alternative_tasks:
+      - [{cohorts: [K48-K49, K50], policy: [QuyCheDaoTao_Chuong4_Dieu17, "Không đang là sinh viên trình độ năm thứ nhất hoặc năm cuối khóa"]}]
+  - query: "Học lại quá 5% tín chỉ thì hạng tốt nghiệp của K50 và K51 có bị giảm như nhau không?"
+    category: compound
+    slice: compare.multi_cohort_regulation
+    selected_cohort: K50
+    coverage_features: [multi_cohort, regulation_regulation]
+    tasks:
+      - {cohort: K50, policy: [QuyCheDaoTao_Chuong3_Dieu15, "vượt quá 5% so với tổng số tín chỉ"], fact: "Hạng tốt nghiệp xuất sắc, giỏi bị giảm một mức nếu học lại vượt quá 5% tổng số tín chỉ."}
+      - {cohort: K51, policy: [QuyCheDaoTao_Chuong3_Dieu15, "vượt quá 5% so với tổng số tín chỉ"], fact: "Hạng tốt nghiệp xuất sắc, giỏi bị giảm một mức nếu học lại vượt quá 5% tổng số tín chỉ."}
+    alternative_tasks:
+      - [{cohorts: [K50, K51], policy: [QuyCheDaoTao_Chuong3_Dieu15, "vượt quá 5% so với tổng số tín chỉ"]}]
+  - query: "Điểm rèn luyện cả năm học của K50 và K51 được tính giống nhau không?"
+    category: compound
+    slice: compare.multi_cohort_regulation
+    selected_cohort: K51
+    coverage_features: [multi_cohort, regulation_regulation]
+    tasks:
+      - {cohort: K50, policy: [RenLuyen_Chuong4_Dieu13, "Điểm rèn luyện của năm học là trung bình cộng của điểm rèn luyện các học kỳ của năm học đó"], fact: "Điểm rèn luyện năm học là trung bình cộng điểm rèn luyện các học kỳ."}
+      - {cohort: K51, policy: [RenLuyen_Chuong4_Dieu13, "Điểm rèn luyện của năm học là trung bình cộng của điểm rèn luyện các học kỳ của năm học đó"], fact: "Điểm rèn luyện năm học là trung bình cộng điểm rèn luyện các học kỳ."}
+    alternative_tasks:
+      - [{cohorts: [K50, K51], policy: [RenLuyen_Chuong4_Dieu13, "Điểm rèn luyện của năm học là trung bình cộng của điểm rèn luyện các học kỳ của năm học đó"]}]
+  - query: "Nợ tín chỉ quá bao nhiêu thì bị cảnh báo học tập, K49 và K50 có khác nhau không?"
+    category: compound
+    slice: compare.multi_cohort_regulation
+    selected_cohort: K50
+    coverage_features: [multi_cohort, regulation_regulation]
+    tasks:
+      - {cohort: K48-K49, policy: [QuyCheDaoTao_Chuong3_Dieu12, "tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24"], fact: "Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24."}
+      - {cohort: K50, policy: [QuyCheDaoTao_Chuong3_Dieu12, "tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24"], fact: "Bị cảnh báo khi tổng số tín chỉ nợ đọng từ đầu khóa vượt quá 24."}
+    alternative_tasks:
+      - [{cohorts: [K48-K49, K50], policy: [QuyCheDaoTao_Chuong3_Dieu12, "tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24"]}]
+  - query: "Mỗi học kỳ đăng ký tối đa được bao nhiêu, K50 với K51 có khác nhau không?"
+    category: compound
+    slice: compare.multi_cohort_regulation
+    selected_cohort: K51
+    coverage_features: [multi_cohort, regulation_regulation]
+    tasks:
+      - {cohort: K50, policy: [QuyCheDaoTao_Chuong2_Dieu9, "Khối lượng tối đa không vượt quá 3/2 khối lượng trung bình một học kỳ"], fact: "Khối lượng tối đa không vượt quá 3/2 khối lượng trung bình một học kỳ theo kế hoạch chuẩn."}
+      - {cohort: K51, policy: [QuyCheDaoTao_Chuong2_Dieu9, "Khối lượng tối đa không vượt quá 3/2 khối lượng trung bình một học kỳ"], fact: "Khối lượng tối đa không vượt quá 3/2 khối lượng trung bình một học kỳ theo kế hoạch chuẩn."}
+    alternative_tasks:
+      - [{cohorts: [K50, K51], policy: [QuyCheDaoTao_Chuong2_Dieu9, "Khối lượng tối đa không vượt quá 3/2 khối lượng trung bình một học kỳ"]}]
+  # within one cohort: two values or levels from the same table
+  - query: "Học bổng khá và học bổng giỏi khác nhau thế nào về điều kiện rèn luyện?"
+    category: compound
+    slice: compare.same_table
+    selected_cohort: K50
+    coverage_features: [multi_entity_same_type]
+    tasks:
+      - {scholarship: [scholarship_classification, 0], resolved_output_fields: [label, conduct_score_condition]}
+      - {scholarship: [scholarship_classification, 1], resolved_output_fields: [label, conduct_score_condition]}
+    alternative_tasks:
+      - [{scholarship: [scholarship_classification, all]}]
+  - query: "Điểm chữ C+ và B chênh nhau bao nhiêu trên thang điểm 4?"
+    category: compound
+    slice: compare.same_table
+    selected_cohort: K51
+    coverage_features: [multi_entity_same_type]
+    tasks:
+      - {table: [letter_to_grade4, 3, letter_to_grade_4], input_slots: {score_or_grade: C+}}
+      - {table: [letter_to_grade4, 2, letter_to_grade_4], input_slots: {score_or_grade: B}}
+    alternative_tasks:
+      - [{table: [letter_to_grade4, all, letter_to_grade_4], output_rows: [3, 2]}]
+  - query: "Hệ chính quy và vừa làm vừa học, thời gian học chuẩn chênh nhau mấy năm?"
+    category: compound
+    slice: compare.same_table
+    selected_cohort: K48-K49
+    coverage_features: [multi_entity_same_type]
+    tasks:
+      - {duration: [chinh_quy, all]}
+      - {duration: [vua_lam_vua_hoc, all]}
+    alternative_tasks:
+      - - execution_units:
+            - {duration: [chinh_quy, all]}
+            - {duration: [vua_lam_vua_hoc, all]}
+  - query: "Để đạt bậc 4 thì chứng chỉ TOEFL iBT và IELTS mỗi cái cần mức nào?"
+    category: compound
+    slice: compare.same_table
+    selected_cohort: K50
+    coverage_features: [multi_entity_same_type]
+    tasks: [{foreign: [TOEFL iBT, equivalent_level_4]}, {foreign: [IELTS, equivalent_level_4]}]
+    alternative_tasks:
+      - [{foreign: [all, all]}]
+  - query: "Rèn luyện 64 điểm với 65 điểm thì xếp loại có khác nhau không?"
+    category: compound
+    slice: compare.same_table
+    selected_cohort: K48-K49
+    stress: true
+    stress_type: boundary_value
+    coverage_features: [multi_entity_same_type]
+    tasks:
+      - {table: [conduct_classification, 3, conduct_classification], input_slots: {score_or_grade: 64}}
+      - {table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 65}}
+    alternative_tasks:
+      - [{table: [conduct_classification, all, conduct_classification], output_rows: [3, 2]}]
+
+  # ================================================================ multi_intent.three_plus
+  # three independent requests, and more than three (must ask the student to choose)
+  - query: "Cho em hỏi: điểm 6,5 là điểm chữ gì, email Khoa Lịch sử là gì, và bị kỷ luật cảnh cáo thì hạng tốt nghiệp có bị giảm không?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K48-K49
+    stress: true
+    stress_type: dense_request
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [grade_scale, 3, grade_10_to_letter], input_slots: {score_or_grade: 6.5}}
+      - {faculty: [Khoa Lịch sử, email]}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu15, "Sinh viên đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học"], fact: "Có: hạng tốt nghiệp loại xuất sắc, giỏi bị giảm một mức nếu sinh viên đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học."}
+  - query: "GPA 3,0 xếp loại gì, học bổng khá được tính tiền thế nào, và chấm khóa luận tốt nghiệp cần mấy giảng viên?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K50
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [academic_classification, 2, academic_classification], input_slots: {score_or_grade: 3.0}}
+      - {scholarship: [scholarship_amount, 0]}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu10, "Việc đánh giá mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do ít nhất 2 giảng viên đảm nhiệm"], fact: "Mỗi đồ án, khóa luận, tiểu luận tốt nghiệp phải do ít nhất 2 giảng viên đánh giá."}
+  - query: "Em hỏi 3 ý: HSK cần mức nào để tương đương bậc 3, ngành Sinh học ứng dụng thuộc khoa nào, và hệ vừa làm vừa học một năm xét tốt nghiệp mấy đợt?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K51
+    stress: true
+    stress_type: dense_request
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {foreign: [Hanyu Shuiping Kaoshi (HSK), equivalent_level_3]}
+      - {program: Sinh học ứng dụng}
+      - {policy: [QuyCheDaoTao_Chuong3_Dieu15, "có 05 đợt xét tốt nghiệp chính thức"], fact: "Hệ vừa làm vừa học có 05 đợt xét tốt nghiệp chính thức, thường vào tháng 3, 5, 8, 10 và 12."}
+  - query: "Rèn luyện 48 điểm là loại gì, Thư viện nằm ở đâu, và học cùng lúc hai chương trình thì rèn luyện được đánh giá theo chương trình nào?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K48-K49
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [conduct_classification, 4, conduct_classification], input_slots: {score_or_grade: 48}}
+      - {office: [Thư viện, office]}
+      - {policy: [QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10, "Sinh viên đồng thời học hai chương trình đào tạo sẽ được đánh giá kết quả rèn luyện tại đơn vị quản lý chương trình thứ nhất"], fact: "Được đánh giá tại đơn vị quản lý chương trình thứ nhất, có tham khảo nhận xét của đơn vị quản lý chương trình thứ hai."}
+  - query: "em hoi 3 y: 4,5 diem quy ra chu gi, so dien thoai Phong Dao tao, voi lai danh bac thi co bi xu ly khong?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K50
+    stress: true
+    stress_type: informal_spelling
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [grade_scale, 6, grade_10_to_letter], input_slots: {score_or_grade: 4.5}}
+      - {office: [Phòng Đào tạo, phone]}
+      - {policy: [QuyCheCongTacSinhVien_Chuong3_Dieu10, "Tổ chức hoặc tham gia đánh bạc dưới mọi hình thức"], fact: "Có: tổ chức hoặc tham gia đánh bạc dưới mọi hình thức là hành vi sinh viên không được làm."}
+  - query: "Điểm A đổi ra hệ 4 là mấy, rèn luyện 55 điểm là loại gì, và lớp phải thế nào mới đạt danh hiệu lớp tiên tiến?"
+    category: compound
+    slice: multi_intent.three_plus
+    selected_cohort: K51
+    coverage_features: [three_requests, structured_structured_regulation]
+    tasks:
+      - {table: [letter_to_grade4, 0, letter_to_grade_4], input_slots: {score_or_grade: A}}
+      - {table: [conduct_classification, 3, conduct_classification], input_slots: {score_or_grade: 55}}
+      - {policy: [QuyCheCongTacSinhVien_Chuong6_Dieu32, "Có từ 25% sinh viên đạt danh hiệu sinh viên Khá trở lên"], fact: "Lớp tiên tiến cần từ 25% sinh viên đạt danh hiệu Khá trở lên, có cá nhân đạt Giỏi trở lên, không có ai học tập hoặc rèn luyện kém hay bị kỷ luật từ Cảnh cáo trở lên, và tập thể đoàn kết, thi đua tích cực."}
+  - query: "Cho em hỏi: email Phòng Đào tạo, GPA 2,4 loại gì, rèn luyện 77 loại gì, TOEIC bao nhiêu thì đạt bậc 3, và nợ bao nhiêu tín chỉ thì bị cảnh báo?"
+    category: compound
+    slice: multi_intent.over_limit
+    selected_cohort: K48-K49
+    stress: true
+    stress_type: dense_request
+    clarify: "Năm yêu cầu độc lập; yêu cầu sinh viên chọn tối đa 3 nội dung."
+  - query: "1) Khoa Sinh học ở đâu 2) IELTS mấy điểm thì bậc 4 3) học bổng xuất sắc cần điều kiện gì 4) nghỉ học tạm thời nộp hồ sơ khi nào"
+    category: compound
+    slice: multi_intent.over_limit
+    selected_cohort: K50
+    stress: true
+    stress_type: dense_request
+    clarify: "Bốn yêu cầu độc lập được đánh số; yêu cầu sinh viên chọn tối đa 3 nội dung."
+  - query: "Em muốn hỏi ngành Việt Nam học thuộc khoa nào, điểm C+ ra hệ 4 là mấy, làm thẻ bảo hiểm y tế ở đâu và bị khiển trách bao lâu thì hết?"
+    category: compound
+    slice: multi_intent.over_limit
+    selected_cohort: K51
+    stress: true
+    stress_type: dense_request
+    clarify: "Bốn yêu cầu độc lập; yêu cầu sinh viên chọn tối đa 3 nội dung."
+  - query: "Hỏi nhanh: 7,9 là điểm chữ gì; 90 điểm rèn luyện loại gì; công thức tính điểm học bổng; website Trung tâm Tin học"
+    category: compound
+    slice: multi_intent.over_limit
+    selected_cohort: K51
+    stress: true
+    stress_type: dense_request
+    clarify: "Bốn yêu cầu độc lập; yêu cầu sinh viên chọn tối đa 3 nội dung."
+
+  # ================================================================ memory
+  # follow-ups: earlier turns supply the missing entity or value; traps must not leak
+  - query: "Vậy K51 thì sao?"
+    category: memory
+    slice: memory.cohort_switch
+    selected_cohort: K50
+    stress: true
+    stress_type: cohort_difference
+    history:
+      - {role: user, content: "Học phần chuyên ngành được 5,0 điểm thì có đạt không?"}
+      - {role: assistant, content: "Theo sổ tay K50, 5,0 điểm thuộc mức D+ và được tính là Đạt."}
+    table: [grade_scale, 5, pass_threshold, remaining]
+    cohort: K51
+    input_slots: {score_or_grade: 5.0}
+  - query: "Thế K51 thì hệ số bao nhiêu?"
+    category: memory
+    slice: memory.cohort_switch
+    selected_cohort: K48-K49
+    history:
+      - {role: user, content: "Học bổng loại giỏi tính tiền theo hệ số mấy?"}
+      - {role: assistant, content: "Với K48-K49, học bổng Giỏi bằng số tín chỉ nhân định mức học phí 01 tín chỉ nhân 1,25."}
+    scholarship: [scholarship_amount, 1]
+    cohort: K51
+  - query: "Còn Khoa Hóa học?"
+    category: memory
+    slice: memory.entity_switch
+    selected_cohort: K51
+    history:
+      - {role: user, content: "Email Khoa Ngữ văn là gì?"}
+      - {role: assistant, content: "Email Khoa Ngữ văn là khoanguvan@hcmue.edu.vn."}
+    faculty: [Khoa Hóa học, email]
+  - query: "Thế TOPIK II thì sao?"
+    category: memory
+    slice: memory.entity_switch
+    selected_cohort: K48-K49
+    history:
+      - {role: user, content: "TOEFL ITP cần bao nhiêu điểm để tương đương bậc 3?"}
+      - {role: assistant, content: "TOEFL ITP từ 450 đến 499 điểm tương đương bậc 3."}
+    foreign: [TOPIK II, equivalent_level_3]
+  - query: "Vậy khoa ấy liên hệ qua email nào ạ?"
+    category: memory
+    slice: memory.pronoun
+    selected_cohort: K50
+    history:
+      - {role: user, content: "Ngành Việt Nam học thuộc khoa nào?"}
+      - {role: assistant, content: "Ngành Việt Nam học thuộc Khoa Ngữ văn."}
+    faculty: [Khoa Ngữ văn, email]
+  - query: "Phòng đó nằm ở chỗ nào vậy?"
+    category: memory
+    slice: memory.pronoun
+    selected_cohort: K48-K49
+    history:
+      - {role: user, content: "Muốn mượn máy chiếu cho lớp thì liên hệ đâu?"}
+      - {role: assistant, content: "Phòng Quản trị – Thiết bị quản lý thiết bị trình chiếu và máy vi tính lớp học."}
+    office: [Phòng Quản trị – Thiết bị, office]
+  - query: "Thế xếp loại học lực của em là gì?"
+    category: memory
+    slice: memory.topic_switch
+    selected_cohort: K51
+    stress: true
+    stress_type: context_trap
+    history:
+      - {role: user, content: "Điểm C+ quy ra hệ 4 là mấy?"}
+      - {role: assistant, content: "Điểm C+ tương đương 2,5 trên thang điểm 4."}
+    clarify: "Thiếu điểm trung bình; không dùng 2,5 của một học phần C+ làm điểm trung bình."
+  - query: "Mỗi học kỳ trường tổ chức mấy kỳ thi chính vậy?"
+    category: memory
+    slice: memory.topic_switch
+    selected_cohort: K50
+    history:
+      - {role: user, content: "Email Phòng Khảo thí và Đảm bảo chất lượng là gì?"}
+      - {role: assistant, content: "Email là phongkhaothi@hcmue.edu.vn."}
+    policy: [QuyCheDaoTao_Chuong3_Dieu10, "Cuối mỗi học kỳ, Trường tổ chức một kỳ thi chính"]
+    fact: "Cuối mỗi học kỳ có một kỳ thi chính; Hiệu trưởng quyết định tổ chức các kỳ thi phụ tùy điều kiện từng năm học."
+
+  # ================================================================ boundary
+  - query: "Em muốn biết môn đó quy ra điểm chữ là gì?"
+    category: insufficient_input
+    slice: boundary.clarify
+    selected_cohort: K48-K49
+    clarify: "Thiếu điểm hệ 10 của học phần; không tự chọn hàng trong bảng."
+  - query: "Tổng điểm học bổng của em thì được xếp vào loại học bổng nào?"
+    category: insufficient_input
+    slice: boundary.clarify
+    selected_cohort: K50
+    clarify: "Thiếu điểm học bổng; không tự chọn loại học bổng."
+  - query: "Trạm Y tế có số điện thoại nào, và điểm thi của em ra điểm chữ gì?"
+    category: insufficient_input
+    slice: boundary.partial_clarify
+    selected_cohort: K48-K49
+    stress: true
+    stress_type: partial_missing_input
+    partial_clarification: true
+    tasks: [{office: [Trạm Y tế, phone]}, {clarify_task: "Thiếu điểm hệ 10 cần quy đổi"}]
+  - query: "Email Khoa Tiếng Nhật là gì, còn GPA của em thì xếp loại gì?"
+    category: insufficient_input
+    slice: boundary.partial_clarify
+    selected_cohort: K51
+    stress: true
+    stress_type: partial_missing_input
+    partial_clarification: true
+    tasks: [{faculty: [Khoa Tiếng Nhật, email]}, {clarify_task: "Thiếu điểm trung bình"}]
+  - query: "Gợi ý giúp em vài quán cà phê yên tĩnh gần trường để ôn thi."
+    category: out_of_domain
+    slice: boundary.out_of_domain
+    selected_cohort: K50
+    stress: true
+    stress_type: domain_vocabulary
+    out_of_domain: true
+  - query: "Cho em email Phòng Hợp tác Quốc tế, tiện thể xem giúp thời tiết TP.HCM ngày mai luôn."
+    category: compound
+    slice: boundary.mixed_domain
+    selected_cohort: K51
+    stress: true
+    stress_type: domain_vocabulary
+    tasks: [{office: [Phòng Hợp tác Quốc tế, email]}]
+
+  # ================================================================ relation
+  # a contact of the faculty or unit named by the first part (program -> faculty,
+  # service -> unit contact); v10 accepts one relation task or two tasks
+  - query: "Ngành Sư phạm Địa lý thuộc khoa nào, và email khoa đó là gì?"
+    category: compound
+    slice: relation.program_faculty
+    selected_cohort: K48-K49
+    tasks: [{program: Sư phạm Địa lý}, {faculty: [Khoa Địa lí, email]}]
+    v10_program_faculty_contact: {program: Sư phạm Địa lý, faculty: Khoa Địa lí}
+  - query: "Em học ngành Hoá học, cho em email của khoa quản lý ngành em."
+    category: compound
+    slice: relation.program_faculty
+    selected_cohort: K50
+    tasks: [{program: Hoá học}, {faculty: [Khoa Hóa học, email]}]
+    v10_program_faculty_contact: {program: Hoá học, faculty: Khoa Hóa học}
+  - query: "Sinh viên Ngôn ngữ Nhật muốn liên hệ khoa qua email thì gửi địa chỉ nào?"
+    category: compound
+    slice: relation.program_faculty
+    selected_cohort: K51
+    tasks: [{program: Ngôn ngữ Nhật}, {faculty: [Khoa Tiếng Nhật, email]}]
+    v10_program_faculty_contact: {program: Ngôn ngữ Nhật, faculty: Khoa Tiếng Nhật}
+  - query: "Ngành Tâm lý học giáo dục thuộc khoa nào, cho em luôn email khoa đó."
+    category: compound
+    slice: relation.program_faculty
+    selected_cohort: K51
+    tasks: [{program: Tâm lý học giáo dục}, {faculty: [Khoa Tâm lý học, email]}]
+    v10_program_faculty_contact: {program: Tâm lý học giáo dục, faculty: Khoa Tâm lý học}
+  - query: "Hỏi về vay vốn tín dụng sinh viên thì gặp phòng nào, cho em số điện thoại phòng đó luôn."
+    category: compound
+    slice: relation.service_contact
+    selected_cohort: K48-K49
+    service: [vay vốn tín dụng, phone]  # corrected 2026-09-28: handbook record, not the added duplicate
+  - query: "Cần hỗ trợ kết nối wifi thì tìm đơn vị nào, và email của họ là gì?"
+    category: compound
+    slice: relation.service_contact
+    selected_cohort: K50
+    service: [Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm, email]  # corrected 2026-09-28: the handbook lists no wifi service

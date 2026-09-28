@@ -6,10 +6,9 @@ from unittest.mock import patch
 def mock_env_vars():
     """Mock essential environment variables for testing isolation."""
     env_vars = {
-        "STUDENT_RAG_ROUTER_MODEL": "qwen/qwen3.8-27b",
-        "STUDENT_RAG_ROUTER_REASONING_EFFORT": "low",
-        "STUDENT_RAG_ROUTER_RESPONSE_FORMAT": "json_schema",
-        "STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS": "384",
+        "STUDENT_RAG_ROUTER_MODEL": "gpt-6-luna",
+        "OPENAI_API_KEY": "test_openai_key",
+        # Groq still serves the evaluation judge.
         "GROQ_API_KEY": "test_groq_key",
         "GEMINI_API_KEY": "test_gemini_key",
         "MONGO_URI": "mongodb://localhost:27017/",

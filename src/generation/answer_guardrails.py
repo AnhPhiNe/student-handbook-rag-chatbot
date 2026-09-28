@@ -22,12 +22,16 @@ def is_low_confidence(retrieval_result: dict[str, Any]) -> bool:
     if _has_validated_non_rag_outcome(retrieval_result):
         return False
 
-    # QueryPlan coverage is computed after task-level source binding. A covered
-    # task with citations is usable even when top-level retrieval context is empty.
+    # QueryPlan coverage is computed after source binding. The executor's
+    # needs_llm_answer also includes covered units within a partially covered
+    # multi-cohort task; their citations remain usable for composition.
     coverage = retrieval_result.get("coverage_by_task") or {}
     if (
         isinstance(coverage, dict)
-        and "covered" in coverage.values()
+        and (
+            "covered" in coverage.values()
+            or retrieval_result.get("needs_llm_answer") is True
+        )
         and bool(retrieval_result.get("citations"))
     ):
         return False

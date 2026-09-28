@@ -1,0 +1,58 @@
+# Labeled cases for office-name matching (lookup_type: office).
+#
+# Development data, not a hold-out. Written 2026-09-27 from the K51 office
+# profiles. They avoid every office that official_v3 asks about (Ký túc xá,
+# Phòng CTCT-HSSV, Phòng Hợp tác Quốc tế, Phòng Khảo thí, Phòng Quản trị –
+# Thiết bị, Phòng Tổ chức – Hành chính, Phòng Đào tạo, Thư viện, Trung tâm
+# Ngoại ngữ, Trung tâm Tin học, Trạm Y tế), so measuring on them cannot tune
+# the system to the hold-out. The official_v1 office tasks are added by the
+# script from their planner outputs.
+#
+# office: what the planner puts in the office slot (the matcher's input).
+# expect: unit     -> the named unit must be the match
+#         clarify  -> the name fits several units; only a clarification is right
+#         none     -> no such unit in the catalog; clarification is safe
+version: 1
+cohort: K51
+cases:
+  # ---- full or near-full names
+  - {id: off_01, office: "Phòng Kế hoạch – Tài chính", expect: unit, units: ["Phòng Kế hoạch – Tài chính"]}
+  - {id: off_02, office: "phòng kế hoạch tài chính", expect: unit, units: ["Phòng Kế hoạch – Tài chính"]}
+  - {id: off_03, office: "phong ke hoach tai chinh", expect: unit, units: ["Phòng Kế hoạch – Tài chính"]}
+  - {id: off_04, office: "phòng sau đại học", expect: unit, units: ["Phòng Sau Đại học"]}
+  - {id: off_05, office: "Viện nghiên cứu giáo dục", expect: unit, units: ["Viện Nghiên cứu Giáo dục"]}
+  - {id: off_06, office: "phòng công nghệ thông tin", expect: unit, units: ["Phòng Công nghệ Thông tin"]}
+  - {id: off_07, office: "phòng thanh tra đào tạo", expect: unit, units: ["Phòng Thanh tra Đào tạo"]}
+  - {id: off_08, office: "trường trung học thực hành", expect: unit, units: ["Trường Trung học Thực hành – Đại học Sư phạm"]}
+
+  # ---- abbreviations and short names
+  - {id: off_09, office: "phòng KHTC", expect: unit, units: ["Phòng Kế hoạch – Tài chính"]}
+  - {id: off_10, office: "phòng tài chính", expect: unit, units: ["Phòng Kế hoạch – Tài chính"]}
+  - {id: off_11, office: "phòng SĐH", expect: unit, units: ["Phòng Sau Đại học"]}
+  - {id: off_12, office: "phòng CNTT", expect: unit, units: ["Phòng Công nghệ Thông tin"]}
+  - {id: off_13, office: "phòng IT", expect: unit, units: ["Phòng Công nghệ Thông tin"]}
+  - {id: off_14, office: "NXB ĐHSP", expect: unit, units: ["Nhà xuất bản Đại học Sư phạm Thành phố Hồ Chí Minh"]}
+  - {id: off_15, office: "phòng thanh tra", expect: unit, units: ["Phòng Thanh tra Đào tạo"]}
+  - {id: off_16, office: "phòng khoa học công nghệ", expect: unit, units: ["Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học"]}
+
+  # ---- a student's own name for the unit
+  - {id: off_17, office: "nhà xuất bản của trường", expect: unit, units: ["Nhà xuất bản Đại học Sư phạm Thành phố Hồ Chí Minh"]}
+  - {id: off_18, office: "đoàn trường", expect: unit, units: ["Đoàn Thanh niên và Hội Sinh viên Trường"]}
+  - {id: off_19, office: "hội sinh viên", expect: unit, units: ["Đoàn Thanh niên và Hội Sinh viên Trường"]}
+  - {id: off_20, office: "trung tâm hỗ trợ sinh viên", expect: unit, units: ["Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp"]}
+  - {id: off_21, office: "trung tâm khởi nghiệp", expect: unit, units: ["Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp"]}
+  - {id: off_22, office: "trung tâm kỹ năng sư phạm", expect: unit, units: ["Trung tâm Phát triển kỹ năng sư phạm"]}
+  - {id: off_23, office: "trường thực hành sư phạm", expect: unit, units: ["Trường Trung học Thực hành – Đại học Sư phạm"]}
+  - {id: off_24, office: "tạp chí khoa học của trường", expect: unit, units: ["Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học"]}
+  - {id: off_25, office: "phòng lo đào tạo thạc sĩ", expect: unit, units: ["Phòng Sau Đại học"]}
+  - {id: off_27, office: "phòng đào tạo sau đại học", expect: unit, units: ["Phòng Sau Đại học"]}
+
+  # ---- too vague: several units fit
+  - {id: off_26, office: "trung tâm", expect: clarify}
+
+  # ---- not a unit in the catalog
+  - {id: off_28, office: "phòng bảo vệ", expect: none}
+  - {id: off_29, office: "ngân hàng trong trường", expect: none}
+  - {id: off_30, office: "phòng Công đoàn", expect: none}
+  - {id: off_31, office: "văn phòng Đảng ủy", expect: none}
+  - {id: off_32, office: "phòng tuyển dụng giảng viên", expect: none}

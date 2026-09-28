@@ -54,8 +54,10 @@ EXPECTED_ANSWER_BEHAVIORS = {
     "abstain",
 }
 
-# The only deterministic gold contract official_v1 uses.
+# V9 remains readable and immutable; new outcomes are compiled into V10.
 DETERMINISTIC_CONTRACT = "query-plan-grounded-outcome-v9"
+DETERMINISTIC_CONTRACT_V10 = "query-plan-grounded-outcome-v10"
+SUPPORTED_DETERMINISTIC_CONTRACTS = {DETERMINISTIC_CONTRACT, DETERMINISTIC_CONTRACT_V10}
 
 COMMON_REQUIRED_FIELDS = {
     "id",
@@ -408,10 +410,10 @@ def _validate_outcome_gold(case: dict[str, Any], errors: list[str]) -> None:
 
     case_id = str(case.get("id") or "<missing-id>")
     contract = str(case.get("contract_version") or "").strip()
-    if contract != DETERMINISTIC_CONTRACT:
+    if contract not in SUPPORTED_DETERMINISTIC_CONTRACTS:
         errors.append(
             f"{case_id}: invalid deterministic contract={contract!r}; "
-            f"expected {DETERMINISTIC_CONTRACT!r}"
+            f"expected one of {sorted(SUPPORTED_DETERMINISTIC_CONTRACTS)!r}"
         )
 
     outcomes = case.get("accepted_outcomes")
@@ -536,6 +538,17 @@ def validate_deterministic_case(case: dict[str, Any], errors: list[str]) -> None
                     not isinstance(task.get(field), dict) or not task[field]
                 ):
                     errors.append(f"{prefix}.{field} must be a non-empty object")
+            if "expected_relationship" in task:
+                relation = task["expected_relationship"]
+                if (case.get("contract_version") != DETERMINISTIC_CONTRACT_V10
+                        or task.get("mode") != "structured"
+                        or not isinstance(relation, dict)
+                        or any(not relation.get(key) for key in (
+                            "source_content_type", "target_content_type", "cohort",
+                            "source_fields", "target_fields"))
+                        or not isinstance(relation.get("source_fields"), dict)
+                        or not isinstance(relation.get("target_fields"), dict)):
+                    errors.append(f"{prefix}.expected_relationship must be a V10 structured relation contract")
             if "expected_evidence_rows" in task and (
                 not isinstance(task["expected_evidence_rows"], list)
                 or not task["expected_evidence_rows"]

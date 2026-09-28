@@ -9,9 +9,13 @@ from src.common.cohort import (
     is_validated_source_applicable,
     normalize_cohort,
 )
+from src.common.score import grounded_score, parse_score
+from src.common.text import slot_values
 
 from .formula_lookup import formula_lookup
 from .foreign_language_lookup import foreign_language_lookup
+from .catalog_relationship import resolve_relationship
+from .directory_selector import DirectorySelector
 from .office_lookup import normalize_text, office_lookup
 from .program_lookup import program_lookup
 from .scholarship_lookup import scholarship_table_lookup
@@ -26,7 +30,9 @@ _REFERENCE_TABLE_TYPES: dict[str, set[str]] = {
     "study_duration": {"study_duration"},
     "scoring": {"scoring", "conduct"},
 }
-_LOOKUP_TOOL_SPECS = load_lookup_registry().get("tools", {})
+_REGISTRY = load_lookup_registry()
+_LOOKUP_TOOL_SPECS = _REGISTRY.get("tools", {})
+_RELATIONSHIPS = _REGISTRY.get("relationships", {})
 
 
 @dataclass(frozen=True)
@@ -47,18 +53,16 @@ class StructuredResolution:
         return "resolved" if self.result.get("resolved_result") else "evidence_only"
 
 
-def _slot_text(task: dict[str, Any], *names: str) -> str:
+def _slot_value(task: dict[str, Any], *names: str) -> str | list[str]:
+    """The first non-empty slot among `names` (literal span first); a list of names stays a list."""
     spans = task.get("slot_spans") or {}
     slots = task.get("slots") or {}
     for name in names:
         for source in (spans, slots):
             value = source.get(name)
-            if isinstance(value, str) and value.strip():
-                return value.strip()
-            if isinstance(value, list) and value:
-                joined = " ".join(str(v).strip() for v in value if str(v).strip())
-                if joined:
-                    return joined
+            values = [str(item).strip() for item in slot_values(value) if str(item).strip()]
+            if values:
+                return values if isinstance(value, list) else values[0]
     return ""
 
 
@@ -544,6 +548,13 @@ def _has_multiple_result_choices(
         }
         if (
             lookup_type == "foreign_language"
+            and slot_name == "certificate_or_language"
+        ):
+            # Multiple certificate names may identify one combined catalog
+            # row. The foreign-language resolver checks actual row cardinality.
+            continue
+        if (
+            lookup_type == "foreign_language"
             and slot_name == "score_or_level"
             and choices
             and choices <= {"bac 3", "bac 4"}
@@ -568,7 +579,7 @@ def _resolve_single_lookup(
     student_faculty_profiles: list[dict[str, Any]] | None,
     structured_tables_registry: list[dict[str, Any]],
     program_directory: list[dict[str, Any]],
-    model: Any | None = None,
+    directory_selector: DirectorySelector | None = None,
 ) -> StructuredResolution | None:
     """Dispatch one validated lookup and package only grounded results.
 
@@ -583,6 +594,31 @@ def _resolve_single_lookup(
         slots = {}
 
     if lookup_type in _REFERENCE_TABLE_TYPES:
+        resolution_slots = slots
+        if lookup_type == "scoring" and slots.get("score_or_grade") is not None:
+            operands = slots["score_or_grade"]
+            values = operands if isinstance(operands, list) else [operands]
+            grounded_values = []
+            for value in values:
+                if parse_score(value) is None:
+                    grounded_values.append(value)
+                    continue
+                score = grounded_score(
+                    value, (task.get("slot_spans") or {}).get("score_or_grade"), query,
+                )
+                if score is None:
+                    grounded_values = []
+                    break
+                grounded_values.append(
+                    f"{score.value}/{score.scale}" if score.scale is not None else str(score.value)
+                )
+            # Keep tables as evidence, but never calculate rows from ungrounded
+            # values or discard a denominator present in the original task.
+            resolution_slots = (
+                {**slots, "score_or_grade": grounded_values
+                 if isinstance(operands, list) else grounded_values[0]}
+                if grounded_values else {}
+            )
         candidates = _select_reference_tables(lookup_type, slots, [
             table for table in structured_tables_registry
             if table.get("data_category") == "regulation_table"
@@ -595,7 +631,7 @@ def _resolve_single_lookup(
             query=query,
             candidates=candidates,
             cohort=effective_cohort,
-            slots=slots,
+            slots=resolution_slots,
         )
         # Keep the complete reference table for UI rendering, but expose a
         # deterministic fact lock when an existing domain resolver identifies
@@ -609,7 +645,7 @@ def _resolve_single_lookup(
             resolved_result = _unique_reference_resolution(
                 lookup_type,
                 query=query,
-                slots=slots,
+                slots=resolution_slots,
                 cohort=effective_cohort,
                 selected_tables=candidates,
             )
@@ -651,42 +687,41 @@ def _resolve_single_lookup(
         )
 
     if lookup_type in {"student_service", "office", "faculty"}:
-        matching_config = _LOOKUP_TOOL_SPECS.get(lookup_type, {}).get("matching") or {}
         candidate_slot = {
             "student_service": "service",
             "office": "office",
             "faculty": "faculty",
         }[lookup_type]
         candidate_text = (
-            _slot_text(task, candidate_slot)
-            or _slot_text(task, "faculty")
-            or _slot_text(task, "office")
-            or _slot_text(task, "program_or_faculty")
+            _slot_value(task, candidate_slot, "faculty", "office", "program_or_faculty")
             or query
         )
-        if lookup_type == "student_service":
-            directory = student_service_directory + office_directory
-        elif lookup_type == "office":
-            directory = office_directory
-        else:
-            directory = student_faculty_profiles or []
+        directory = {
+            "student_service": student_service_directory,
+            "office": office_directory,
+            "faculty": student_faculty_profiles or [],
+        }[lookup_type]
 
         result = office_lookup(
             query,
             directory,
-            cohort=effective_cohort,
             candidate_text=candidate_text,
-            require_confident_match=True,
-            model=model if lookup_type == "student_service" else None,
-            min_confidence=float(matching_config.get("min_confidence", 0.72)),
-            ambiguity_margin=float(matching_config.get("ambiguity_margin", 0.08)),
+            lookup_type=lookup_type,
+            cohort=effective_cohort,
+            selector=directory_selector,
         )
-        if result is not None and result.get("resolution_status") == "ambiguous":
+        if result is not None and result.get("resolution_status") in {"ambiguous", "unresolved"}:
             options = result.get("clarification_options") or []
-            result["clarification_question"] = (
-                "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n"
-                + "\n".join(options)
-            )
+            if options:
+                result["clarification_question"] = (
+                    "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n"
+                    + "\n".join(options)
+                )
+            else:
+                result["clarification_question"] = (
+                    f"Mình chưa xác định được đơn vị ứng với \"{result.get('candidate_text')}\". "
+                    "Bạn ghi rõ tên đơn vị hoặc việc cần hỗ trợ giúp mình nhé."
+                )
             return _resolution(
                 lookup_type,
                 "office_lookup_clarification",
@@ -694,13 +729,26 @@ def _resolve_single_lookup(
                 result_kind="clarification",
                 target_chunk_types=[],
             )
-        requested_field = str(slots.get("requested_field") or "")
+        requested_field = slots.get("requested_field") or ""
         # A grounded directory record remains valid structured evidence even
         # when it does not contain the optional field requested by the user.
         # The Composer receives the record and must state that the available
         # evidence does not provide that field instead of inventing a value.
         if result is not None:
-            result["requested_field"] = requested_field
+            result["requested_field"] = (
+                list(requested_field) if isinstance(requested_field, list)
+                else str(requested_field)
+            )
+            result = resolve_relationship(
+                result, source_lookup=lookup_type,
+                requested_field=requested_field, cohort=effective_cohort,
+                relationships=_RELATIONSHIPS,
+                catalogs={
+                    "student_service": student_service_directory,
+                    "office": office_directory,
+                    "faculty": student_faculty_profiles or [],
+                },
+            )
         strategies = {
             "student_service": "student_service_lookup",
             "office": "office_lookup",
@@ -715,21 +763,23 @@ def _resolve_single_lookup(
             lookup_type,
             strategies[lookup_type],
             result,
+            result_kind="clarification" if result and result.get("needs_clarification") else "structured",
             target_chunk_types=target_content_types.get(
                 lookup_type, ["student_office_profile"]
             ),
         )
 
     if lookup_type == "program":
-        candidate_text = _slot_text(task, "program_or_faculty") or query
+        candidate_text = _slot_value(task, "program_or_faculty") or query
         intent = task.get("intent")
         scope = str(slots.get("scope") or "school")
-        requested_field = str(slots.get("requested_field") or "")
-        if requested_field == "faculty":
+        requested_field = slots.get("requested_field") or ""
+        requested = set(requested_field) if isinstance(requested_field, list) else {str(requested_field)}
+        if "faculty" in requested or requested & {"email", "phone", "website", "office", "all"}:
             action = "resolve_faculty"
-        elif intent == "exists" or requested_field == "exists":
+        elif intent == "exists" or "exists" in requested:
             action = "exists"
-        elif intent == "list_items" or requested_field == "programs":
+        elif intent == "list_items" or "programs" in requested:
             action = "list"
         else:
             action = "resolve_faculty"
@@ -739,8 +789,19 @@ def _resolve_single_lookup(
             cohort=effective_cohort,
             action=action,
             scope=scope,
+            selector=directory_selector,
         )
-        return _resolution(lookup_type, "program_lookup", result)
+        if result is not None:
+            result = resolve_relationship(
+                result, source_lookup="program", requested_field=requested_field,
+                cohort=effective_cohort, relationships=_RELATIONSHIPS,
+                catalogs={"faculty": student_faculty_profiles or [],
+                          "program": program_directory},
+            )
+        return _resolution(
+            lookup_type, "program_lookup", result,
+            result_kind="clarification" if result and result.get("needs_clarification") else "structured",
+        )
 
     if lookup_type == "formula":
         result = formula_lookup(
@@ -775,7 +836,7 @@ def resolve_structured_task(
     student_faculty_profiles: list[dict[str, Any]] | None,
     structured_tables_registry: list[dict[str, Any]],
     program_directory: list[dict[str, Any]],
-    model: Any | None = None,
+    directory_selector: DirectorySelector | None = None,
 ) -> StructuredResolution | None:
     """Dispatch a validated structured task to its lookup handler."""
 
@@ -792,7 +853,7 @@ def resolve_structured_task(
         "student_faculty_profiles": student_faculty_profiles,
         "structured_tables_registry": structured_tables_registry,
         "program_directory": program_directory,
-        "model": model,
+        "directory_selector": directory_selector,
     }
 
     return _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None

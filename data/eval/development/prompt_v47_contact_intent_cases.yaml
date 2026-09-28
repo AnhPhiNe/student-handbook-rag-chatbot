@@ -1,0 +1,87 @@
+# Hand-authored intent/serialization rubrics for a shared prompt clarification.
+# These are not model outputs, source-backed answer gold, or an independent
+# holdout. Offline checks validate their contract shape, not model accuracy.
+# Contact rubric v2 accepts both registry intents for student_service, whose
+# required inputs and dispatch are equivalent. Expected fields are unchanged.
+rubric_version: contact-routing-v2
+independent_holdout: false
+purpose: contrastive_contact_intent_prompt_development
+cases:
+  - id: service_responsible_unit
+    accepted_intents: [contact, direct_value]
+    query: "Việc mượn sách thư viện do bộ phận nào phụ trách?"
+    cohort: K50
+    expected:
+      lookup_type: student_service
+      intent: contact
+      slots: {service: "mượn sách thư viện", requested_field: unit}
+      slot_spans: {service: "mượn sách thư viện", requested_field: "bộ phận nào"}
+    rationale: "Hỏi bộ phận chịu trách nhiệm, không hỏi vị trí."
+  - id: service_support_unit
+    accepted_intents: [contact, direct_value]
+    query: "Đơn vị nào hỗ trợ đăng ký mượn sách?"
+    cohort: K51
+    expected:
+      lookup_type: student_service
+      intent: contact
+      slots: {service: "đăng ký mượn sách", requested_field: unit}
+      slot_spans: {service: "đăng ký mượn sách", requested_field: "Đơn vị nào"}
+    rationale: "Hỏi đơn vị qua nhu cầu dịch vụ; không cần đoán tên đơn vị."
+  - id: named_unit_plain_where
+    query: "Thư viện ở đâu?"
+    cohort: K50
+    expected:
+      lookup_type: office
+      intent: contact
+      slots: {office: "Thư viện", requested_field: office}
+      slot_spans: {office: "Thư viện", requested_field: "ở đâu"}
+    rationale: "Đơn vị đã nêu tên; hỏi vị trí dù không nhắc tầng hoặc số phòng."
+  - id: named_unit_floor
+    query: "Phòng Công tác sinh viên làm việc ở tầng nào?"
+    cohort: K51
+    expected:
+      lookup_type: office
+      intent: contact
+      slots: {office: "Phòng Công tác sinh viên", requested_field: office}
+      slot_spans: {office: "Phòng Công tác sinh viên", requested_field: "tầng nào"}
+    rationale: "Từ phòng trong tên đơn vị không làm thay đổi yêu cầu hỏi vị trí."
+  - id: service_physical_location
+    accepted_intents: [contact, direct_value]
+    query: "Đơn vị hỗ trợ mượn sách thư viện có địa chỉ làm việc ở đâu?"
+    cohort: K50
+    expected:
+      lookup_type: student_service
+      intent: contact
+      slots: {service: "mượn sách thư viện", requested_field: office}
+      slot_spans: {service: "mượn sách thư viện", requested_field: "địa chỉ làm việc"}
+    rationale: "Tìm địa chỉ qua dịch vụ, không suy unit chỉ từ chữ đơn vị."
+  - id: service_unit_and_location
+    accepted_intents: [contact, direct_value]
+    query: "Đơn vị nào hỗ trợ mượn sách thư viện và địa chỉ làm việc ở đâu?"
+    cohort: K51
+    expected:
+      lookup_type: student_service
+      intent: contact
+      slots: {service: "mượn sách thư viện", requested_field: [unit, office]}
+      slot_spans: {service: "mượn sách thư viện", requested_field: ["Đơn vị nào", "địa chỉ làm việc"]}
+    rationale: "Một dịch vụ, hai trường được hỏi; không bỏ một trường hoặc tạo task phụ thuộc."
+  - id: service_unit_and_email
+    accepted_intents: [contact, direct_value]
+    query: "Bộ phận nào phụ trách mượn sách thư viện và email liên hệ là gì?"
+    cohort: K50
+    expected:
+      lookup_type: student_service
+      intent: contact
+      slots: {service: "mượn sách thư viện", requested_field: [unit, email]}
+      slot_spans: {service: "mượn sách thư viện", requested_field: ["Bộ phận nào", "email"]}
+    rationale: "Danh sách trường cùng kiểu đã được schema/normalizer hỗ trợ; không sửa official evaluator ở đây."
+  - id: service_contact_overview
+    accepted_intents: [contact, direct_value]
+    query: "Cho tôi thông tin liên hệ tổng hợp của đơn vị hỗ trợ mượn sách thư viện."
+    cohort: K51
+    expected:
+      lookup_type: student_service
+      intent: contact
+      slots: {service: "mượn sách thư viện", requested_field: all}
+      slot_spans: {service: "mượn sách thư viện", requested_field: "thông tin liên hệ tổng hợp"}
+    rationale: "Yêu cầu tổng hợp liên hệ, không ép chọn chỉ tên đơn vị hay địa chỉ."

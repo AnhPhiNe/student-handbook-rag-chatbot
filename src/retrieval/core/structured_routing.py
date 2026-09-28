@@ -9,6 +9,7 @@ from typing import Any
 import yaml
 
 from src.common.cohort import build_cohort_token_regex, normalize_cohort
+from src.common.score import grounded_score, parse_score
 from src.common.text import fold_text
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -143,8 +144,14 @@ def load_lookup_registry(path: str | Path = DEFAULT_REGISTRY_PATH) -> dict[str, 
     return data
 
 
-def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
-    """Project lookup capabilities into a compact planner prompt."""
+def compact_registry_for_prompt(
+    registry: dict[str, Any] | None = None, *, slot_descriptions: bool = True,
+) -> str:
+    """Project lookup capabilities into a compact planner prompt.
+
+    A strict response schema carries the slot descriptions itself, so the
+    prompt can leave them out instead of sending them twice.
+    """
 
     registry = registry or load_lookup_registry()
     lines: list[str] = []
@@ -156,7 +163,7 @@ def compact_registry_for_prompt(registry: dict[str, Any] | None = None) -> str:
             compact_spec: dict[str, Any] = {}
             if slot_spec.get("type") is not None:
                 compact_spec["type"] = slot_spec["type"]
-            if slot_spec.get("description"):
+            if slot_descriptions and slot_spec.get("description"):
                 compact_spec["description"] = slot_spec["description"]
             allowed_values = (
                 slot_spec.get("enum") or slot_spec.get("canonical_values") or []
@@ -295,18 +302,9 @@ def _normalized_phrase_in_text(phrase: Any, text: Any) -> bool:
 
 
 def _numeric_value_matches_span(value: Any, span: Any) -> bool:
-    """Treat Vietnamese decimal commas and decimal points as equivalent."""
+    """Compare whole numeric expressions, never a fraction's denominator."""
 
-    if isinstance(value, bool):
-        return False
-    raw_value = str(value).strip()
-    if not re.fullmatch(r"[-+]?\d+(?:[.,]\d+)?", raw_value):
-        return False
-    expected = float(raw_value.replace(",", "."))
-    for token in re.findall(r"[-+]?\d+(?:[.,]\d+)?", str(span)):
-        if float(token.replace(",", ".")) == expected:
-            return True
-    return False
+    return grounded_score(value, span, str(span)) is not None
 
 
 def _span_matches_slot_value(value: Any, span: Any, schema: dict[str, Any]) -> bool:
@@ -356,6 +354,19 @@ def _slot_span_error(
     if not _span_satisfies_source_contract(value, span, schema):
         return "slot_span_mismatch"
     return None
+
+
+def _score_span_matches_source(value: Any, span: Any, source_text: str) -> bool:
+    """Numeric spans must not abbreviate an explicit source scale."""
+
+    span_text = "\n".join(str(item) for item in _as_values(span))
+    for item in _as_values(value):
+        if parse_score(item) is None:
+            continue  # Letter grades retain the existing literal contract.
+        source_score = grounded_score(item, span, source_text)
+        if source_score is None or source_score != grounded_score(item, span, span_text):
+            return False
+    return True
 
 
 def _matches_type(value: Any, expected: str) -> bool:
@@ -460,6 +471,9 @@ def validate_fact_lock_inputs(
         )
         if span_error:
             errors.append(f"{span_error}:{slot_name}")
+        elif lookup_type == "scoring" and slot_name == "score_or_grade":
+            if not _score_span_matches_source(value, span, query):
+                errors.append(f"slot_span_mismatch:{slot_name}")
     if grounded_value_slots == 0:
         errors.append("missing_fact_lock_value")
     return list(dict.fromkeys(errors))
@@ -542,6 +556,13 @@ def validate_structured_task(
             errors.append(f"{span_error}:{slot_name}")
 
     errors.extend(_validate_slot_contract(slots, spec))
+
+    if (lookup_type == "scoring" and _is_present(slots.get("score_or_grade"))
+            and not _score_span_matches_source(slots["score_or_grade"],
+                                              spans.get("score_or_grade"), source_text)):
+        error = "slot_span_mismatch:score_or_grade"
+        if error not in errors:
+            errors.append(error)
 
     return errors
 

@@ -4,6 +4,7 @@ import time
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier, Lock
+from unittest import mock
 
 from src.common.key_pool import KeyPool
 from src.generation.gemini_client import GeminiClient, gemini_key_pool_config
@@ -62,7 +63,7 @@ class _FakePool:
         self.failures: list[tuple[str, str | None]] = []
 
     def acquire(self):
-        key = self.keys[self.index]
+        key = self.keys[self.index % len(self.keys)]
         self.index += 1
         return key
 
@@ -211,6 +212,51 @@ class GeminiClientTest(unittest.TestCase):
             next(stream)
         self.assertEqual(fake_pool.index, 1)
         self.assertEqual(fake_pool.failures, [("fp-one", "transient_error")])
+
+    @staticmethod
+    def _retrying_client(max_retries: int) -> GeminiClient:
+        client = object.__new__(GeminiClient)
+        client.available_keys = ["secret-one", "secret-two"]
+        client.model_name = "fake-model"
+        client.max_retries = max_retries
+        client.retry_base_delay_seconds = 2
+        client.retry_max_delay_seconds = 20
+        client.key_pool = _FakePool()
+        client._genai = _FakeGenAI()
+        client._types = _FakeTypes()
+        client.request_timeout_seconds = 1
+        client._config = object()
+        return client
+
+    def test_generate_does_not_sleep_after_the_last_attempt(self) -> None:
+        client = self._retrying_client(max_retries=2)
+
+        def generate_once(prompt: str, *, client=None):
+            raise RuntimeError("Server disconnected without sending a response.")
+
+        client._generate_once = generate_once
+        with mock.patch("src.generation.llm_client.time.sleep") as sleep:
+            result = client.generate("prompt")
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["attempts"], 3)
+        # Three attempts need two waits between them, none after the last.
+        self.assertEqual([call.args[0] for call in sleep.call_args_list], [2, 4])
+
+    def test_generate_stream_does_not_sleep_after_the_last_attempt(self) -> None:
+        client = self._retrying_client(max_retries=2)
+
+        def stream_once(prompt: str, *, client=None):
+            raise RuntimeError("Server disconnected without sending a response.")
+            yield
+
+        client._generate_stream_once = stream_once
+        with mock.patch("src.generation.llm_client.time.sleep") as sleep:
+            with self.assertRaises(RuntimeError):
+                list(client.generate_stream("prompt"))
+
+        self.assertEqual(client.key_pool.index, 3)
+        self.assertEqual([call.args[0] for call in sleep.call_args_list], [2, 4])
 
     def test_generate_returns_structured_failure_when_all_keys_are_exhausted(
         self,

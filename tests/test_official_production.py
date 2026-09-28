@@ -100,7 +100,7 @@ def test_official_runner_production_suite_attaches_release_gates(tmp_path, monke
         return {"summary": {"success_rate": 1.0, "http_429_rate": 0.0}}
 
     monkeypatch.setattr(runner, "ROOT", tmp_path)
-    monkeypatch.setattr(runner, "_snapshot", lambda suite, case_path: {"suite": suite})
+    monkeypatch.setattr(runner, "_snapshot", lambda suite, case_path, *_options: {"suite": suite})
     monkeypatch.setattr(production_suite, "evaluate_production", fake_evaluate_production)
     monkeypatch.setattr(sys, "argv", ["run_official_answers", "--suite", "production",
                                       "--limit", "2", "--base-url", "http://example.test"])

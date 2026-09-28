@@ -5,6 +5,7 @@ import json
 import os
 import subprocess
 from datetime import datetime, timezone
+from pathlib import Path
 
 import yaml
 
@@ -17,7 +18,7 @@ CASE_FILES = {
 }
 
 
-def _snapshot(suite: str, case_path) -> dict:
+def _snapshot(suite: str, case_path, answer_config=None, shared_plans=None) -> dict:
     from src.generation.answer_pipeline import PIPELINE_VERSION
     from src.generation.prompt_builder import ANSWER_PROMPT_VERSION
     from src.retrieval.core.ai_router import ROUTER_PROMPT_VERSION, AIRouter
@@ -25,7 +26,8 @@ def _snapshot(suite: str, case_path) -> dict:
     from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
 
     router = AIRouter.from_config()
-    answer_llm = yaml.safe_load((ROOT / "configs/answer_generation.yaml").read_text(encoding="utf-8"))["llm"]
+    answer_config = Path(answer_config or "configs/answer_generation.yaml")
+    answer_llm = yaml.safe_load((ROOT / answer_config).read_text(encoding="utf-8"))["llm"]
     reranker = yaml.safe_load((ROOT / "configs/retrieval.yaml").read_text(encoding="utf-8")).get("cohere_reranker", {})
     return {
         "suite": suite,
@@ -38,11 +40,14 @@ def _snapshot(suite: str, case_path) -> dict:
         "pipeline_version": PIPELINE_VERSION,
         "retrieval_mode": DEFAULT_RETRIEVAL_MODE,
         "cohere_reranker": {"enabled": bool(reranker.get("enabled")), "model": reranker.get("model")},
-        "planner": {"provider": "groq", "model": router.model_name,
+        "planner": {"provider": router.provider, "model": router.model_name,
                     "prompt_version": ROUTER_PROMPT_VERSION,
-                    "reasoning_effort": router._resolved_reasoning_effort(),
+                    "reasoning_effort": router.reasoning_effort,
                     "normalizer_version": QUERY_PLAN_NORMALIZER_VERSION},
-        "composer": {"model": answer_llm.get("model_name"), "prompt_version": ANSWER_PROMPT_VERSION},
+        "composer": {"provider": answer_llm.get("provider"), "model": answer_llm.get("model_name"),
+                     "reasoning_effort": answer_llm.get("reasoning_effort"),
+                     "config": answer_config.as_posix(), "prompt_version": ANSWER_PROMPT_VERSION},
+        "shared_plans": Path(shared_plans).as_posix() if shared_plans else None,
         "storage": {key: os.environ.get(key) for key in
                     ("QDRANT_COLLECTION_NAME", "STUDENT_RAG_HYBRID_COLLECTION", "MONGODB_PARENT_COLLECTION")},
     }
@@ -63,10 +68,16 @@ def main():
                         help="Deployed API to send the production suite requests to.")
     parser.add_argument("--retrieval-mode", help="Retrieval suite only: run an ablation mode "
                         "(no_graph, vector_only) instead of the default.")
+    parser.add_argument("--answer-config", help="Answers suite only: composer config, "
+                        "default configs/answer_generation.yaml.")
+    parser.add_argument("--shared-plans", help="Answers suite only: planner decision cache shared "
+                        "across runs, so composer comparisons use identical QueryPlans.")
     args = parser.parse_args()
     from src.common.env_loader import load_project_env
     load_project_env()
     os.environ["STUDENT_RAG_DISABLE_ROUTER_CACHE"] = "1"
+    # Per-case composer timing (llm_ms) stays comparable when plans are shared.
+    os.environ["STUDENT_RAG_EVAL_TELEMETRY"] = "1"
     from src.evaluation.gates import production_gates
     from src.evaluation.answers import generate_answers, judge_answers, load_answer_checkpoint
     from src.evaluation.production import evaluate_production
@@ -83,7 +94,8 @@ def main():
         smoke = f"_smoke{args.limit}" if args.limit else ""
         output = ROOT / "data/eval/reports" / f"{args.bundle}_{args.suite}{smoke}_{stamp}"
         output.mkdir(parents=True, exist_ok=False)
-        snapshot = {**_snapshot(args.suite, case_path), "limit": args.limit}
+        snapshot = {**_snapshot(args.suite, case_path, args.answer_config, args.shared_plans),
+                    "limit": args.limit}
         if args.suite == "production":
             snapshot["base_url"] = args.base_url
         if args.retrieval_mode:
@@ -110,7 +122,9 @@ def main():
 
     answer_cache = output / "answer_cache.json"
     generation = generate_answers(cases, cache_path=answer_cache, resume=resume, limit=snapshot["limit"],
-                                  checkpoint_context=snapshot)
+                                  checkpoint_context=snapshot,
+                                  answer_config=snapshot["composer"]["config"],
+                                  shared_plans=snapshot.get("shared_plans"))
     generation["run_snapshot"] = snapshot
     _write(generation, output / "answer_generation.json")
     judged = judge_answers(cases, load_answer_checkpoint(cases, answer_cache, checkpoint_context=snapshot),

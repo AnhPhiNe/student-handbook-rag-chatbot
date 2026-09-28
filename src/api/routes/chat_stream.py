@@ -47,13 +47,13 @@ def chat_stream(
     def event_generator():
         """Coordinate capacity, pipeline streaming, tracing, and logging."""
         events = StreamEventBuilder(request_id, include_debug=include_debug)
+        ticket = None
 
         try:
             settings = chat_capacity_settings()
             max_concurrent, _, timeout_seconds = settings
 
             acquired = False
-            ticket = None
             limiter = None
 
             if max_concurrent > 0:
@@ -129,8 +129,6 @@ def chat_stream(
                         )
                         yield events.done(latency_ms=latency_ms)
             finally:
-                if ticket:
-                    ticket.leave_queue()
                 if acquired and limiter:
                     limiter.release()
         except ChatCapacityError as exc:
@@ -153,6 +151,11 @@ def chat_stream(
                 error_type=type(exc).__name__,
                 error_message="Internal chatbot service error",
             )
+        finally:
+            # Also runs when the generator is closed at a queued event, before
+            # it has entered the active-slot cleanup block above.
+            if ticket is not None:
+                ticket.leave_queue()
 
     return StreamingResponse(
         event_generator(),

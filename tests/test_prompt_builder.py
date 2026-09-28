@@ -205,7 +205,7 @@ def test_prompt_requires_complete_cited_markdown_and_preserves_scope() -> None:
     assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
     assert "không tự đoán hoặc trả lời có/không tuyệt đối" in prompt
     assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
-    assert "chỉ được trả lời có/không khi evidence trực tiếp" in prompt
+    assert "khi evidence trực tiếp xác lập đúng điều được hỏi" in prompt
     assert "việc nguồn không nói \"được phép\"" in prompt
     assert "nêu đúng article_label" in prompt
     assert "in đậm kết luận chính" in prompt
@@ -1146,3 +1146,68 @@ def test_prompt_distinguishes_external_referral_from_direct_answer() -> None:
     assert "Nếu kết quả phụ thuộc thông tin câu hỏi chưa cung cấp" in prompt
     assert "nguồn chỉ dẫn chiếu sang văn bản khác" in prompt
     assert "không trình bày câu dẫn chiếu như thể đã trả lời danh sách" in prompt
+
+
+def test_prompt_describes_candidate_as_the_default_role() -> None:
+    """Retrieved evidence is candidate unless the question names one matching Điều.
+
+    v3.25 told the composer to answer every candidate-only unit cautiously,
+    but candidate is what nearly every unit receives, so answers hedged before
+    a supported conclusion.
+    """
+    from src.generation.prompt_builder import _assign_evidence_roles
+
+    sources = [{"article_label": "Điều 14"}, {"article_label": "Điều 30"}]
+    roles = _assign_evidence_roles(sources, unit_question="Nghỉ học tạm thời cần gì?",
+                                   original_query="Nghỉ học tạm thời cần gì?")
+    assert {source["role"] for source in roles} == {"candidate"}
+    named = _assign_evidence_roles(sources, unit_question="Điều 30 quy định gì?",
+                                   original_query="Điều 30 quy định gì?")
+    assert [source["role"] for source in named] == ["candidate", "target"]
+
+    prompt = _build_prompt_text(query="Nghỉ học tạm thời cần gì?", retrieval_result={})
+    assert "role=candidate là mặc định" in prompt
+    assert "role=target chỉ có khi câu hỏi nêu đích danh một Điều" in prompt
+    assert "trả lời thận trọng" not in prompt
+    assert "dùng nguồn để trả lời bình thường khi nội dung trực tiếp trả lời ý được hỏi" in prompt
+
+
+def test_prompt_scopes_the_hedge_and_yes_no_polarity() -> None:
+    prompt = _build_prompt_text(query="Có được không?", retrieval_result={})
+    assert "Chỉ dùng câu đó cho đúng ý thiếu căn cứ" in prompt
+    assert "không mở đầu bằng câu rào đón" in prompt
+    assert 'không trả lời bằng chữ "Có" hoặc "Không"' in prompt
+    # v3.6 removed a forced direct-answer lead because answers can be conditional.
+    assert "Mở đầu bằng câu trả lời trực tiếp" not in prompt
+    for field in ("mode=structured", "coverage=covered", "needs_clarification", "primary_evidence"):
+        assert field in prompt
+
+
+def test_rules_are_grouped_by_the_composer_task_in_order() -> None:
+    """v3.27 groups each concern in one place; every v3.26 clause is kept."""
+    prompt = _build_prompt_text(query="Hỏi?", retrieval_result={})
+    headings = ["ĐẦU VÀO", "1. PHẠM VI TRẢ LỜI", "2. KẾT LUẬN VÀ ĐIỀU KIỆN",
+                "3. KHI THIẾU CĂN CỨ HOẶC CẦN HỎI LẠI", "4. BẢNG VÀ SỐ LIỆU", "5. TRÌNH BÀY",
+                "\nAUTHORIZED_EVIDENCE_BY_UNIT\n", "FINAL_INSTRUCTIONS"]
+    positions = [prompt.index(heading) for heading in headings]
+    assert positions == sorted(positions)
+    assert "Mọi mục dưới đây là bắt buộc." in prompt
+    # The stock phrase stays scoped to yes/no questions, as it was inside rule 6.
+    assert 'Với câu hỏi có/không, nếu thiếu căn cứ trực tiếp, nói "Nguồn hiện có chưa trực tiếp xác lập..."' in prompt
+
+
+def test_prompt_asks_for_student_wording_and_explicit_yes_no() -> None:
+    """DeepSeek echoed input terms (cohort, evidence) and opened with a bare "Có."."""
+    prompt = _build_prompt_text(query="Hỏi?", retrieval_result={})
+    assert 'Dùng từ ngữ của sinh viên, vd. "khóa K51"' in prompt
+    assert "cohort, evidence, source_ref hoặc role" in prompt
+    # "đơn vị" is also plain Vietnamese for an office, so it is not banned.
+    assert "role hoặc đơn vị" not in prompt
+    # v3.29: a bare "Có." could answer another proposition than the one asked
+    # ("có trừ … không?" answered "Có." then "không tính…"), so the answer
+    # states the conclusion in full instead; no forced first-sentence lead.
+    assert 'không trả lời bằng chữ "Có" hoặc "Không"; nêu kết luận thành câu đầy đủ' in prompt
+    assert "nói luôn trong cùng câu" not in prompt
+    # admission_years keeps its v3.26 role: scope matching, not an input to restate.
+    assert "dùng metadata này để đối chiếu phạm vi áp dụng" in prompt
+    assert "- admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp.\n" not in prompt

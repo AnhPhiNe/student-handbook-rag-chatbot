@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 import re
 from functools import partial
 from typing import Any
@@ -20,7 +21,8 @@ from .structured_routing import (
 )
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v28-resolver-owned-directory-fallback"
+QUERY_PLAN_NORMALIZER_VERSION = "v31-null-slot-omission"
+QUERY_PLAN_STRICT_SCHEMA_VERSION = "v2-field-descriptions"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
@@ -136,7 +138,7 @@ def _bare_article_reference(query: str) -> str | None:
 
 
 def query_plan_json_schema() -> dict[str, Any]:
-    """Return the strict JSON schema accepted from the planner model."""
+    """Return a compact example of the planner payload, not a JSON Schema."""
 
     tools = list(load_lookup_registry().get("tools", {}).keys())
     cohorts = list(valid_cohorts())
@@ -164,7 +166,7 @@ def query_plan_json_schema() -> dict[str, Any]:
 
 
 def query_plan_response_schema() -> dict[str, Any]:
-    """Return the provider response-format wrapper for QueryPlan."""
+    """Return the shared, permissive QueryPlan JSON Schema."""
 
     tools = list(load_lookup_registry().get("tools", {}).keys())
     cohorts = list(valid_cohorts())
@@ -256,6 +258,75 @@ def query_plan_response_schema() -> dict[str, Any]:
     }
 
 
+def query_plan_strict_response_schema(
+    registry: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Close each task's slots using the registry for strict structured output.
+
+    A structured branch belongs to exactly one lookup. Registry values remain
+    scalar or homogeneous lists, as accepted by the runtime validator. Every
+    declared slot/span key is required by the provider; null means omitted.
+    Slot descriptions travel with their enums, where the model picks a value,
+    and the task list is capped at the plan limit rather than the raw one.
+    Required business inputs and grounding still belong to runtime validation.
+    """
+    registry = registry if registry is not None else load_lookup_registry()
+
+    def closed_object(properties: dict[str, Any]) -> dict[str, Any]:
+        return {"type": "object", "properties": properties,
+                "required": list(properties), "additionalProperties": False}
+
+    def nullable_value(slot_spec: dict[str, Any]) -> dict[str, Any]:
+        types = slot_spec.get("type")
+        types = [types] if isinstance(types, str) else types
+        if not types or any(kind not in {"string", "number"} for kind in types):
+            raise ValueError("Strict planner schema supports scalar string/number registry slots")
+        allowed = slot_spec.get("enum") or slot_spec.get("canonical_values") or []
+        variants: list[dict[str, Any]] = []
+        for kind in types:
+            scalar: dict[str, Any] = {"type": kind}
+            if allowed:
+                scalar["enum"] = list(allowed)
+            variants.extend([scalar, {"type": "array", "minItems": 1,
+                                      "items": deepcopy(scalar)}])
+        variants.append({"type": "null"})
+        value = {"anyOf": variants}
+        if slot_spec.get("description"):
+            value["description"] = slot_spec["description"]
+        return value
+
+    schema = query_plan_response_schema()
+    common = schema["properties"]["tasks"]["items"]["properties"]
+    branches = []
+    span = {"anyOf": [{"type": "string"}, {"type": "array", "minItems": 1,
+                      "items": {"type": "string"}}, {"type": "null"}]}
+    for name, spec in registry["tools"].items():
+        properties = deepcopy(common)
+        properties.update(
+            mode={"type": "string", "enum": ["structured"]},
+            lookup_type={"type": "string", "enum": [name]},
+            intent={"type": "string", "enum": list(spec["intents"])},
+            slots=closed_object({key: nullable_value(value)
+                                 for key, value in spec["slot_schema"].items()}),
+            slot_spans=closed_object({key: deepcopy(span) for key in spec["slot_schema"]}),
+            clarification_question={"type": "null"},
+        )
+        branches.append(closed_object(properties))
+    for mode, intent in (("rag", "open_question"), ("clarify", "clarify")):
+        properties = deepcopy(common)
+        properties.update(
+            mode={"type": "string", "enum": [mode]},
+            intent={"type": "string", "enum": [intent]},
+            lookup_type={"type": "null"},
+            slots=closed_object({}), slot_spans=closed_object({}),
+            clarification_question={"type": "string" if mode == "clarify" else "null"},
+        )
+        branches.append(closed_object(properties))
+    schema["properties"]["tasks"]["items"] = {"anyOf": branches}
+    schema["properties"]["tasks"]["maxItems"] = MAX_QUERY_TASKS
+    return schema
+
+
 def safe_rag_fallback_plan(
     query: str,
     cohort: str | None = None,
@@ -301,8 +372,14 @@ def normalize_query_plan(
     selected_cohort: str | None = None,
     grounding_context: str = "",
     registry: dict[str, Any] | None = None,
+    visible_history: dict[int, str] | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
-    """Validate and normalize a raw planner decision."""
+    """Validate a raw plan; the router supplies exactly the displayed history.
+
+    ``grounding_context`` remains available to trusted offline callers. Runtime
+    callers pass ``visible_history`` so references and grounding share one view.
+    Standalone/ambiguous plans never use either history source for grounding.
+    """
 
     registry = registry or load_lookup_registry()
     query_cohorts = extract_cohorts_from_query(query)
@@ -313,6 +390,55 @@ def normalize_query_plan(
         for value in (query_cohorts or [selected_cohort])
         if (normalized := normalize_cohort(value)) in supported_cohorts
     ]
+    raw_ood = payload.get("out_of_domain")
+    if raw_ood is not None and not isinstance(raw_ood, bool):
+        errors = ["invalid_out_of_domain_type"]
+        plan = safe_rag_fallback_plan(
+            query, default_cohort, reason="invalid_plan_control"
+        )
+        plan["planner_validation_errors"] = errors
+        return plan, errors
+    out_of_domain = raw_ood is True
+    context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
+    if context_mode not in {"standalone", "follow_up", "ambiguous"}:
+        context_mode = "ambiguous"
+    normalized_query = str(payload.get("normalized_query") or query).strip() or query
+    standalone_query = str(payload.get("standalone_query") or "").strip() or None
+    raw_references = payload.get("referenced_turns") or []
+    referenced_turns = list(dict.fromkeys(
+        value
+        for value in (raw_references if isinstance(raw_references, list) else [])
+        if isinstance(value, int) and not isinstance(value, bool) and value >= 0
+    ))
+    if context_mode != "follow_up":
+        standalone_query, referenced_turns, grounding_context = None, [], ""
+    elif visible_history is not None:
+        if (
+            not isinstance(payload.get("standalone_query"), str)
+            or not standalone_query
+            or not referenced_turns
+            or not isinstance(raw_references, list)
+            or any(
+                type(value) is not int or value not in visible_history
+                for value in raw_references
+            )
+        ):
+            errors = ["invalid_history_reference"]
+            return {
+                "schema_version": QUERY_PLAN_SCHEMA_VERSION,
+                "context_mode": "ambiguous",
+                "normalized_query": query,
+                "standalone_query": None,
+                "referenced_turns": [],
+                "out_of_domain": False,
+                "tasks": [_clarify_task(
+                    "t1", query,
+                    clarification="Bạn có thể nêu lại nội dung hoặc đối tượng đang muốn hỏi không?",
+                )],
+                "planner_fallback": "invalid_history_reference",
+                "planner_validation_errors": errors,
+            }, errors
+        grounding_context = "\n".join(visible_history[index] for index in referenced_turns)
     if conflict := _cohort_admission_year_conflict(query, selected_cohort):
         cohort, year = conflict
         expected_years = ", ".join(
@@ -364,28 +490,19 @@ def normalize_query_plan(
             "planner_fallback": "bare_article_requires_document_or_topic",
             "planner_validation_errors": [],
         }, []
-    if bool(payload.get("out_of_domain")) and _has_handbook_domain_signal(query):
+    if out_of_domain and _has_handbook_domain_signal(query):
         return safe_rag_fallback_plan(
             query,
             default_cohort,
             reason="domain_signal_overrides_out_of_domain",
         ), []
-    if bool(payload.get("out_of_domain")):
-        context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
-        if context_mode not in {"standalone", "follow_up", "ambiguous"}:
-            context_mode = "standalone"
+    if out_of_domain:
         return {
             "schema_version": QUERY_PLAN_SCHEMA_VERSION,
             "context_mode": context_mode,
-            "normalized_query": str(payload.get("normalized_query") or query).strip()
-            or query,
-            "standalone_query": str(payload.get("standalone_query") or "").strip()
-            or None,
-            "referenced_turns": [
-                value
-                for value in (payload.get("referenced_turns") or [])
-                if isinstance(value, int) and not isinstance(value, bool) and value >= 0
-            ],
+            "normalized_query": normalized_query,
+            "standalone_query": standalone_query,
+            "referenced_turns": referenced_turns,
             "out_of_domain": True,
             "tasks": [],
             "planner_fallback": payload.get("planner_fallback"),
@@ -400,23 +517,20 @@ def normalize_query_plan(
     if len(raw_tasks) > MAX_RAW_QUERY_TASKS:
         return _too_many_tasks_plan(query, default_cohort), []
 
-    context_mode = str(payload.get("context_mode") or "standalone").strip().lower()
-    if context_mode not in {"standalone", "follow_up", "ambiguous"}:
-        context_mode = "ambiguous"
-    normalized_query = str(payload.get("normalized_query") or query).strip() or query
-    standalone_query = str(payload.get("standalone_query") or "").strip() or None
-    referenced_turns = [
-        value
-        for value in (payload.get("referenced_turns") or [])
-        if isinstance(value, int) and not isinstance(value, bool) and value >= 0
-    ]
-
     errors: list[str] = []
     tasks: list[dict[str, Any]] = []
     for index, raw_task in enumerate(raw_tasks, start=1):
         if not isinstance(raw_task, dict):
             errors.append(f"task_{index}:invalid_object")
             continue
+        # Only the unambiguous standalone, one-task/one-explicit-cohort case.
+        # Do not globally overwrite task scopes in multi-target or follow-up plans.
+        if (
+            context_mode == "standalone"
+            and len(raw_tasks) == 1
+            and len(query_cohorts) == 1
+        ):
+            raw_task = {**raw_task, "cohorts": query_cohorts}
         task, task_errors = _normalize_task(
             raw_task,
             task_id=f"t{index}",
@@ -457,7 +571,7 @@ def normalize_query_plan(
         "normalized_query": normalized_query,
         "standalone_query": standalone_query,
         "referenced_turns": referenced_turns,
-        "out_of_domain": bool(payload.get("out_of_domain")),
+        "out_of_domain": out_of_domain,
         "tasks": tasks,
         "planner_fallback": payload.get("planner_fallback"),
         "planner_validation_errors": errors,
@@ -533,6 +647,12 @@ def _normalize_task(
     slots = (
         dict(raw_task.get("slots")) if isinstance(raw_task.get("slots"), dict) else {}
     )
+    # Strict structured output must serialize every declared key. Its nullable
+    # placeholders mean absent inputs, never selector values for the executor.
+    # Keep unknown keys (even null) so the contract validator can reject them.
+    declared_slots = (registry.get("tools", {}).get(lookup_type) or {}).get("slot_schema", {})
+    slots = {key: value for key, value in slots.items()
+             if value is not None or key not in declared_slots}
     raw_spans = (
         dict(raw_task.get("slot_spans"))
         if isinstance(raw_task.get("slot_spans"), dict)

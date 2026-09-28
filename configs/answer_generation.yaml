@@ -7,24 +7,42 @@ input:
   parent_docstore: data/processed/chunks/all_docstore_items.json
   program_directory: data/processed/directories/program_directory.json
 
+# Composer: DeepSeek flash with thinking off, chosen on 2026-09-27 over
+# Gemini 3.1 Flash-Lite (same quality on official_v1, no failed calls);
+# configs/experiments/answer_gemini_flash_lite.yaml keeps the Gemini arm.
 llm:
-  provider: gemini
-  model_name: gemini-3.1-flash-lite
-  api_keys_env_var: GEMINI_API_KEYS
+  provider: deepseek
+  model_name: deepseek-flash
+  reasoning_effort: none
+  api_keys_env_var: DEEPSEEK_API_KEY
   temperature: 0.0
-  max_output_tokens: 4096
-  max_retries: 3
+  max_output_tokens: 8192
+  max_retries: 2
   retry_base_delay_seconds: 2
   retry_max_delay_seconds: 20
-  request_timeout_seconds: 20
+  request_timeout_seconds: 60
   request_sleep_seconds: 0
   max_context_chars: 160000
+  # DeepSeek limits concurrency, not a request rate; this is only a local guard.
   key_pool:
-    rpm_limit_per_key: 12
-    rpd_limit_per_key: 450
-    cooldown_on_rate_limit_seconds: 65
-    state_path: data/cache/gemini_key_state.json
+    rpm_limit_per_key: 300
+    cooldown_on_rate_limit_seconds: 30
     wait_when_all_keys_limited: false
+
+# Picks the directory records (service, office, faculty, program) a student
+# names when no name matches exactly; see src/retrieval/core/directory_selector.py.
+directory_selector:
+  provider: deepseek
+  model_name: deepseek-flash
+  reasoning_effort: none
+  api_keys_env_var: DEEPSEEK_API_KEY
+  max_output_tokens: 200
+  max_retries: 1
+  request_timeout_seconds: 15
+  # DeepSeek limits concurrency, not a request rate; this is only a local
+  # guard. A limited key fails fast and the student is asked instead.
+  key_pool:
+    rpm_limit_per_key: 300
 
 cache:
   enabled: true

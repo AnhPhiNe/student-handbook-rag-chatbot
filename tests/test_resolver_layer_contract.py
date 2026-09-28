@@ -15,6 +15,7 @@ from src.retrieval.core.structured_dispatcher import (
     resolve_structured_task,
 )
 from src.retrieval.core.structured_lookup import structured_lookup_from_slots
+from tests.scripted_selector import scripted_selector
 
 
 def _foreign_tables() -> list[dict]:
@@ -102,6 +103,7 @@ def _resolve_student_service(
     query: str,
     cohort: str,
     directory: list[dict],
+    selector=None,
 ) -> StructuredResolution | None:
     return resolve_structured_task(
         {
@@ -118,6 +120,7 @@ def _resolve_student_service(
         student_faculty_profiles=[],
         structured_tables_registry=[],
         program_directory=[],
+        directory_selector=selector,
     )
 
 
@@ -246,7 +249,6 @@ def test_directory_selection_uses_only_validated_candidate_text() -> None:
         ],
         candidate_text="Phòng Đào tạo",
         cohort="K51",
-        require_confident_match=True,
     )
 
     assert result is not None
@@ -356,10 +358,14 @@ def test_student_service_query_fallback_is_task_local_and_cohort_scoped() -> Non
         },
     ]
 
+    # Without a service slot the whole question is the selector's input. The
+    # model is told to pick both publishers; only the K50 one is on its list.
+    question = "Muốn in giáo trình thì liên hệ đơn vị nào?"
     resolution = _resolve_student_service(
-        "Muốn in giáo trình thì liên hệ đơn vị nào?",
+        question,
         "K50",
         directory,
+        scripted_selector({question: ["Nhà xuất bản K50", "Nhà xuất bản K51"]}),
     )
 
     assert resolution is not None
@@ -390,10 +396,12 @@ def test_student_service_query_fallback_preserves_ambiguity_clarification() -> N
         },
     ]
 
+    question = "Xin giấy chứng nhận thì liên hệ đơn vị nào?"
     resolution = _resolve_student_service(
-        "Xin giấy chứng nhận thì liên hệ đơn vị nào?",
+        question,
         "K51",
         directory,
+        scripted_selector({question: ("Phòng Khảo thí", "Phòng Công tác sinh viên")}),
     )
 
     assert resolution is not None

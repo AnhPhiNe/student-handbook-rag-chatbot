@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 
 from src.extraction.program_parser import extract_program_directory
-from src.retrieval.core.program_lookup import program_lookup
 
 
 def _page(page_number: int, text: str, *, detection_source: str = "config_only") -> dict:
@@ -64,37 +63,6 @@ def test_program_parser_ignores_pattern_only_false_positive(monkeypatch) -> None
     assert records == []
 
 
-def test_faculty_alias_lists_all_programs_for_that_faculty() -> None:
-    programs = [
-        {
-            "program_name": "Sư phạm Toán học",
-            "faculty_name": "Khoa Toán – Tin học",
-            "faculty_aliases": ["Toán", "Khoa Toán"],
-            "cohort": "K51",
-        },
-        {
-            "program_name": "Toán ứng dụng",
-            "faculty_name": "Khoa Toán – Tin học",
-            "faculty_aliases": ["Toán", "Khoa Toán"],
-            "cohort": "K51",
-        },
-    ]
-
-    result = program_lookup(
-        programs,
-        candidate_text="Khoa Toán có những ngành nào?",
-        cohort="K51",
-        action="list",
-        scope="faculty",
-    )
-
-    assert result is not None
-    assert {item["program_name"] for item in result["result"]} == {
-        "Sư phạm Toán học",
-        "Toán ứng dụng",
-    }
-
-
 def test_processed_program_catalog_has_source_audited_cohort_differences() -> None:
     records = json.loads(
         Path("data/processed/directories/program_directory.json").read_text(
@@ -132,26 +100,3 @@ def test_processed_program_catalog_has_source_audited_cohort_differences() -> No
         for programs in by_cohort.values()
         for record in programs.values()
     )
-
-
-def test_faculty_lookup_prefers_long_alias_over_overlapping_short_alias() -> None:
-    programs = [
-        {"program_name": "Địa lý học", "faculty_name": "Khoa Địa lý", "cohort": "K51"},
-        {"program_name": "Sư phạm Địa lý", "faculty_name": "Khoa Địa lý", "cohort": "K51"},
-        {"program_name": "Sư phạm Vật lý", "faculty_name": "Khoa Vật lý", "cohort": "K51"},
-        {"program_name": "Tâm lý học", "faculty_name": "Khoa Tâm lý học", "cohort": "K51"},
-    ]
-
-    result = program_lookup(
-        programs,
-        candidate_text="Khoa Địa lý có những ngành nào?",
-        cohort="K51",
-        action="list",
-        scope="faculty",
-    )
-
-    assert result is not None
-    assert {item["program_name"] for item in result["result"]} == {
-        "Địa lý học",
-        "Sư phạm Địa lý",
-    }

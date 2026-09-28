@@ -1,0 +1,90 @@
+# Development intent rubrics, authored alongside v44. Not a frozen evaluation
+# suite or source-backed answer gold. Do not feed this file to the official V9
+# runner. Review returned plans manually against these rubrics in a future run.
+independent_holdout: false
+purpose: contrastive_prompt_development
+cases:
+  - id: selector_amount
+    query: "Hệ số nhân tiền học bổng loại khá là bao nhiêu vậy?"
+    cohort: K50
+    expected:
+      mode: structured
+      lookup_type: scholarship_classification
+      intent: direct_value
+      slots: {aspect: amount, score_or_label: khá}
+      slot_spans: {aspect: "Hệ số nhân tiền", score_or_label: khá}
+    rationale: "Tra tiền, không dùng formula tính điểm học bổng."
+  - id: selector_classification
+    query: "Mức điểm học tập của học bổng loại khá nằm trong khoảng nào?"
+    cohort: K50
+    expected:
+      mode: structured
+      lookup_type: scholarship_classification
+      intent: direct_value
+      slots: {aspect: classification, score_or_label: khá}
+      slot_spans: {aspect: "Mức điểm học tập", score_or_label: khá}
+    rationale: "Tra ngưỡng trong bảng, không suy điều kiện cá nhân được cấp học bổng."
+  - id: selector_overview
+    query: "Cho mình xem tổng quan các bảng học bổng khuyến khích học tập."
+    cohort: K50
+    expected:
+      mode: structured
+      lookup_type: scholarship_classification
+      intent: list_items
+      slots: {}
+    rationale: "Không bắt buộc chọn một aspect khi thật sự hỏi tổng quan."
+  - id: scholarship_policy
+    query: "Sinh viên đang bị kỷ luật có được xét học bổng không?"
+    cohort: K50
+    expected: {mode: rag}
+    rationale: "Điều kiện áp dụng chính sách, không chỉ tra ngưỡng xếp loại."
+  - id: scholarship_score_formula
+    query: "Công thức tính điểm học bổng từ điểm học tập và điểm rèn luyện là gì?"
+    cohort: K50
+    expected:
+      mode: structured
+      lookup_type: formula
+      intent: formula
+      slots: {formula_type: scholarship_score}
+      slot_spans: {formula_type: "điểm học bổng"}
+    rationale: "Điểm học bổng khác tiền học bổng."
+  - id: service_unit
+    query: "Đơn vị nào phụ trách cho sinh viên mượn micro?"
+    cohort: K48-K49
+    expected:
+      mode: structured
+      lookup_type: student_service
+      intent: contact
+      slots: {service: "mượn micro", requested_field: unit}
+      slot_spans: {service: "mượn micro", requested_field: "Đơn vị nào"}
+    rationale: "Hỏi tên đơn vị, chưa hỏi địa chỉ."
+  - id: service_location
+    query: "Địa chỉ của đơn vị hỗ trợ mượn micro là gì?"
+    cohort: K48-K49
+    expected:
+      mode: structured
+      lookup_type: student_service
+      intent: contact
+      slots: {service: "mượn micro", requested_field: office}
+      slot_spans: {service: "mượn micro", requested_field: "Địa chỉ"}
+    rationale: "Có thể tìm địa chỉ bằng nhu cầu dịch vụ, không cần đoán tên đơn vị."
+  - id: named_unit_location
+    query: "Phòng Đào tạo có địa chỉ làm việc ở đâu?"
+    cohort: K51
+    expected:
+      mode: structured
+      lookup_type: office
+      intent: contact
+      slots: {office: "Phòng Đào tạo", requested_field: office}
+      slot_spans: {office: "Phòng Đào tạo", requested_field: "địa chỉ"}
+    rationale: "Đơn vị đã nêu tên; không suy unit chỉ từ chữ phòng."
+  - id: service_policy
+    query: "Quy định về trách nhiệm bảo quản thiết bị khi sinh viên mượn là gì?"
+    cohort: K48-K49
+    expected: {mode: rag}
+    rationale: "Hỏi quy định, không hỏi đơn vị hỗ trợ."
+  - id: missing_personal_score
+    query: "Điểm rèn luyện của mình được xếp loại nào?"
+    cohort: K51
+    expected: {mode: clarify}
+    rationale: "Thiếu điểm của người hỏi; không tự thêm số hoặc chọn ngẫu nhiên một hàng."

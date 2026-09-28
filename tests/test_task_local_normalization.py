@@ -61,7 +61,7 @@ def _normalize(tasks: list[dict[str, Any]], query: str) -> dict[str, Any]:
 def test_registry_declares_slot_verification_roles_without_name_allowlist() -> None:
     registry = load_lookup_registry()
 
-    assert registry["version"] == 7
+    assert registry["version"] == 10
     assert registry["tools"]["scholarship_classification"]["slot_schema"]["aspect"][
         "verification_role"
     ] == "reading_intent"

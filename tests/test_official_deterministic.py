@@ -1,5 +1,6 @@
 """Offline contract self-tests. Never instantiate the system under evaluation."""
 import copy
+import pytest
 import time
 from collections import Counter
 
@@ -363,3 +364,52 @@ def test_runner_requires_current_worktree_for_a_bundle_without_runtime_freeze(tm
 
     with pytest.raises(ValueError, match="pass --current-worktree"):
         verify_runtime(tmp_path, current_worktree=False)
+
+
+def test_runner_selects_exact_ids_in_dataset_order():
+    import pytest
+    from scripts.run_official_deterministic import select_case_ids
+
+    cases = [{"id": "case_001"}, {"id": "case_013"}, {"id": "case_033"}]
+    assert select_case_ids(cases, ["case_033", "case_013"]) == cases[1:]
+    assert select_case_ids(cases) is cases
+    with pytest.raises(ValueError, match="Unknown case IDs"):
+        select_case_ids(cases, ["case_999"])
+    with pytest.raises(ValueError, match="unique"):
+        select_case_ids(cases, ["case_013", "case_013"])
+    with pytest.raises(ValueError, match="non-empty"):
+        select_case_ids(cases, [])
+
+
+def test_experiment_freeze_rejects_changed_or_missing_files(tmp_path, monkeypatch):
+    import hashlib
+    import json
+    import pytest
+    from scripts import prepare_deepseek_v48_smoke as preparation
+
+    monkeypatch.setattr(preparation, "ROOT", tmp_path)
+    source = tmp_path / "source.py"
+    source.write_text("original", encoding="utf-8")
+    freeze = tmp_path / "freeze.json"
+    freeze.write_text(json.dumps({"sha256": {
+        "source.py": hashlib.sha256(source.read_bytes()).hexdigest(),
+    }}), encoding="utf-8")
+    assert preparation.verify_freeze(freeze)["sha256"]
+    source.write_text("changed", encoding="utf-8")
+    with pytest.raises(ValueError, match="freeze drift"):
+        preparation.verify_freeze(freeze)
+    source.unlink()
+    with pytest.raises(ValueError, match="freeze drift"):
+        preparation.verify_freeze(freeze)
+
+
+def test_frozen_bundle_refuses_to_overwrite_a_compiled_contract(tmp_path) -> None:
+    from scripts.build_official_deterministic import refuse_frozen_overwrite
+
+    target = tmp_path / "deterministic_tool_cases_v10.json"
+    refuse_frozen_overwrite(tmp_path, target)  # not frozen: rebuilding is allowed
+    (tmp_path / "deterministic_manifest.json").write_text("{}", encoding="utf-8")
+    refuse_frozen_overwrite(tmp_path, target)  # frozen, but a new contract may add its file
+    target.write_text("[]", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="refusing to overwrite"):
+        refuse_frozen_overwrite(tmp_path, target)

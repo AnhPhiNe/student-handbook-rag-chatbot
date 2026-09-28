@@ -2,17 +2,21 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
+import yaml
 
 import src.retrieval.core.ai_router as ai_router_module
 from src.retrieval.core.ai_router import (
     AIRouter,
     PLANNER_SYSTEM_PROMPT,
+    _RouterCompletion,
     ROUTER_PROMPT_VERSION,
 )
-from src.retrieval.core.query_plan import QUERY_PLAN_NORMALIZER_VERSION
+from src.retrieval.core.query_plan import (
+    QUERY_PLAN_NORMALIZER_VERSION,
+    normalize_query_plan,
+)
 from src.retrieval.core.structured_routing import (
     compact_registry_for_prompt,
     prepare_structured_task,
@@ -22,14 +26,11 @@ from src.retrieval.core.structured_routing import (
 PLANNER_PROMPT_TEXT = " ".join(PLANNER_SYSTEM_PROMPT.split())
 
 
-def _router(monkeypatch, tmp_path: Path, *, model_name: str) -> AIRouter:
-    monkeypatch.setenv("GROQ_API_KEYS", "test-router-key")
+def _router(monkeypatch, tmp_path: Path) -> AIRouter:
+    monkeypatch.setenv("OPENAI_API_KEY", "test-router-key")
     return AIRouter(
-        model_name=model_name,
         cache_enabled=False,
-        key_pool_config={
-            "state_path": str(tmp_path / f"{model_name.replace('/', '-')}.json"),
-        },
+        key_pool_config={"state_path": str(tmp_path / "planner.json")},
     )
 
 
@@ -42,7 +43,7 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert "values" in prompt_registry
     assert 'formula_type":{"type":"string","values":["scholarship_score","gpa_weighted_average"]}' in prompt_registry
     assert "điểm học bổng từ điểm học tập và rèn luyện=scholarship_score" in prompt_registry
-    assert "Điểm hoặc tên mức xếp loại được hỏi" in prompt_registry
+    assert "Điểm hoặc tên loại học bổng được hỏi" in prompt_registry
     assert '"aspect":{"type":"string"' in prompt_registry
     assert '"values":{"amount":"mức tiền","classification":"xếp loại"}' in prompt_registry
     assert '"secondary_bridge":"liên thông từ trung cấp"' in prompt_registry
@@ -152,7 +153,7 @@ def test_scholarship_policy_question_does_not_infer_structured_aspect() -> None:
 
 
 def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path) -> None:
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    router = _router(monkeypatch, tmp_path)
     key = router._cache_key(
         "So sánh K50 và K51",
         cohort="K51",
@@ -173,33 +174,30 @@ def test_plan_cache_key_includes_normalizer_version(monkeypatch, tmp_path: Path)
     assert changed_key != key
 
 
-def test_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) -> None:
+    """The production path: OpenAI strict schema, which also carries slot descriptions."""
+    router = _router(monkeypatch, tmp_path)
     dynamic_prompt = router._build_plan_prompt(
-        "So sánh hai khóa về thời gian học và một quy định học vụ.",
-        cohort="K51",
-        chat_history=[],
+        "So sánh hai khóa về thời gian học.", cohort="K51", chat_history=[]
     )
     stats = AIRouter._prompt_stats_for_system(
-        PLANNER_SYSTEM_PROMPT,
+        router._planner_system_prompt(),
         dynamic_prompt,
         router._plan_response_format_payload(),
     )
-
-    # Control-value meanings and the clarify-vs-RAG boundary cost ~240 tokens
-    # over v41; keep the cap tight so the prompt cannot creep.
-    assert stats["total_chars"] <= 12000
-    assert stats["estimated_input_tokens"] <= 3000
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v43-no-catalog-hint"
+    # v52 adds the v1-review rules; v53 restores the v49 only-if conditions verbatim.
+    # Character-based estimates, not provider tokenizer or billing counts.
+    assert stats["total_chars"] <= 33500
+    assert stats["estimated_input_tokens"] <= 8375
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v53-restore-conditions"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
-    assert "native JSON Schema" in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 
 
 def test_dynamic_prompt_preserves_explicit_three_request_count(
     monkeypatch, tmp_path: Path
 ) -> None:
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    router = _router(monkeypatch, tmp_path)
     dynamic_prompt = router._build_plan_prompt(
         "Thứ nhất: hỏi A. Thứ hai: hỏi B. Thứ ba: hỏi C.",
         cohort="K51",
@@ -210,7 +208,7 @@ def test_dynamic_prompt_preserves_explicit_three_request_count(
 
 
 def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
-    assert "TASK IDENTITY không phụ thuộc cohort" in PLANNER_PROMPT_TEXT
+    assert "Cohort không làm tăng số task" in PLANNER_PROMPT_TEXT
     assert "không tạo M×N tasks" in PLANNER_PROMPT_TEXT
     assert "COHORT từ UI chỉ điền cho task vẫn chưa có cohort" in PLANNER_PROMPT_TEXT
     assert "không ghi đè" in PLANNER_PROMPT_TEXT
@@ -219,7 +217,7 @@ def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
 
 def test_planner_prompt_keeps_exactly_three_answer_targets() -> None:
     assert "Với 1–3 yêu cầu" in PLANNER_PROMPT_TEXT
-    assert "EXPLICIT_REQUEST_COUNT=2/3" in PLANNER_PROMPT_TEXT
+    assert "EXPLICIT_REQUEST_COUNT là số marker để rà soát bỏ sót" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_routes_named_unit_contacts_to_directory() -> None:
@@ -234,7 +232,7 @@ def test_planner_prompt_treats_compare_as_presentation_and_slots_as_grounded() -
     assert "điền đủ required slots" in PLANNER_PROMPT_TEXT
     assert "Optional slots chỉ xuất khi có căn cứ" in PLANNER_PROMPT_TEXT
     assert "Trích xuất mọi dữ kiện có căn cứ" in PLANNER_PROMPT_TEXT
-    assert "runtime chịu trách nhiệm chọn bảng và giải quyết kết quả" in PLANNER_PROMPT_TEXT
+    assert "runtime chịu trách nhiệm chọn bảng và tính kết quả" in PLANNER_PROMPT_TEXT
     assert "không lọc hàng trong bảng đã chọn" not in PLANNER_PROMPT_TEXT
 
 
@@ -249,27 +247,166 @@ def test_planner_only_clarifies_genuinely_ambiguous_input() -> None:
     assert "vì target rõ nhưng nguồn có thể thiếu dữ liệu" in PLANNER_PROMPT_TEXT
 
 
+def test_prompt_clarifies_selectors_without_weakening_grounding() -> None:
+    assert "nếu đã xác định rõ giá trị thì phải điền" in PLANNER_PROMPT_TEXT
+    assert "Không cung cấp slot khi chưa xác định được" in PLANNER_PROMPT_TEXT
+    # One wording for an omitted slot; its encoding belongs to the output rules.
+    assert "Để trống" not in PLANNER_PROMPT_TEXT
+    assert "Để trống" not in compact_registry_for_prompt()
+    assert "hoặc thông tin liên hệ của đơn vị đó" in PLANNER_PROMPT_TEXT
+    registry = compact_registry_for_prompt()
+    assert "Chọn theo kết quả cần tra, không theo riêng tên loại học bổng" in registry
+    assert "unit=tên đơn vị phụ trách; office=địa chỉ hoặc vị trí làm việc" in registry
+    assert "không chỉ theo từ 'phòng'" in registry
+
+
+def test_contact_intent_description_has_no_benchmark_specific_rule() -> None:
+    registry = compact_registry_for_prompt()
+    service_contract = registry.split("student_service|", 1)[1].split("\n", 1)[0]
+    description = json.loads(service_contract.split("|slots=", 1)[1])[
+        "requested_field"
+    ]["description"]
+    assert "một đơn vị đã nêu tên 'ở đâu' → office" in description
+    # Genuinely ambiguous inputs already use the shared clarification rule.
+    assert "tham chiếu thật sự mơ hồ" in PLANNER_PROMPT_TEXT
+    for benchmark_phrase in ("nhận bằng", "tốt nghiệp", "096", "DeepSeek", "Qwen"):
+        assert benchmark_phrase not in description
+
+
+def test_contact_intent_development_rubrics_preserve_authored_fields() -> None:
+    # These are hand-authored plans, not outputs from either live model.
+    path = Path(__file__).resolve().parents[1] / "data/eval/development/prompt_v47_contact_intent_cases.yaml"
+    bundle = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert bundle["independent_holdout"] is False
+    cases = bundle["cases"]
+    assert len(cases) == len({case["id"] for case in cases}) == 8
+    for case in cases:
+        expected = case["expected"]
+        decision = prepare_structured_task(
+            case["query"], lookup_type=expected["lookup_type"],
+            intent=expected["intent"], slots=expected["slots"],
+            slot_spans=expected["slot_spans"], cohort=case["cohort"],
+        )
+        assert validate_structured_task(decision, query=case["query"]) == [], case["id"]
+        assert decision["slots"] == expected["slots"], case["id"]
+        assert decision["slot_spans"] == expected["slot_spans"], case["id"]
+        payload = {
+            "schema_version": "v1", "context_mode": "standalone",
+            "normalized_query": case["query"], "standalone_query": None,
+            "referenced_turns": [], "out_of_domain": False,
+            "tasks": [{
+                "id": "t1", "question": case["query"], "mode": "structured",
+                "intent": expected["intent"], "lookup_type": expected["lookup_type"],
+                "slots": expected["slots"], "slot_spans": expected["slot_spans"],
+                "cohorts": [case["cohort"]], "clarification_question": None,
+            }],
+        }
+        plan, errors = normalize_query_plan(
+            payload, query=case["query"], selected_cohort=case["cohort"],
+        )
+        assert errors == [], case["id"]
+        assert len(plan["tasks"]) == 1, case["id"]
+        assert plan["tasks"][0]["mode"] == "structured", case["id"]
+        assert plan["tasks"][0]["slots"] == expected["slots"], case["id"]
+
+
+def test_contact_intent_normalizer_does_not_override_a_present_field() -> None:
+    # Improving instructions must not introduce a query-keyword correction.
+    query = "Việc mượn sách thư viện do bộ phận nào phụ trách?"
+    decision = prepare_structured_task(
+        query, lookup_type="student_service", intent="contact",
+        slots={"service": "mượn sách thư viện", "requested_field": "office"},
+        slot_spans={"service": "mượn sách thư viện", "requested_field": "bộ phận nào"},
+        cohort="K50",
+    )
+    assert decision["slots"]["requested_field"] == "office"
+    assert decision["slot_spans"]["requested_field"] == "bộ phận nào"
+
+
+def test_prompt_development_rubrics_are_valid_but_not_holdout() -> None:
+    # Validate authored intent fixtures only. This is NOT a model-quality test.
+    path = Path(__file__).resolve().parents[1] / "data/eval/development/prompt_v44_cases.yaml"
+    bundle = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert bundle["independent_holdout"] is False
+    cases = bundle["cases"]
+    assert len(cases) == len({case["id"] for case in cases}) == 10
+    for case in cases:
+        expected = case["expected"]
+        assert expected["mode"] in {"structured", "rag", "clarify"}
+        if expected["mode"] != "structured":
+            continue
+        decision = prepare_structured_task(
+            case["query"], lookup_type=expected["lookup_type"],
+            intent=expected["intent"], slots=expected["slots"],
+            slot_spans=expected.get("slot_spans", {}), cohort=case["cohort"],
+        )
+        assert validate_structured_task(decision, query=case["query"]) == [], case["id"]
+        assert decision["slots"] == expected["slots"], case["id"]
+
+
+def test_planner_prompt_keeps_merge_and_rag_as_only_if_conditions() -> None:
+    """Merging and RAG are restricted exceptions, not sufficient conditions.
+
+    A readability rewrite once turned "Chỉ gộp ... khi" into "Một task khi" and
+    "Chỉ chọn RAG khi" into "rag: khi", which licensed merging two regulation
+    questions on one topic and routing table questions to RAG.
+    """
+    assert "Chỉ gộp các khía cạnh bổ sung khi chúng cùng đối tượng, mode, lookup và phạm vi nguồn để tạo một answer target" in PLANNER_PROMPT_TEXT
+    assert "Mặc định mỗi yêu cầu là một task" in PLANNER_PROMPT_TEXT
+    assert "Hai yêu cầu cần hai đáp án khác nhau là hai task" in PLANNER_PROMPT_TEXT
+    assert "chỉ chọn RAG khi cần đọc quy định" in PLANNER_PROMPT_TEXT
+    assert "bảng tham chiếu không tự xác lập mức nào là bắt buộc" in PLANNER_PROMPT_TEXT
+    assert "Một task khi các phần" not in PLANNER_PROMPT_TEXT
+    assert "cần đạt điều kiện gì là hỏi chính sách" not in PLANNER_PROMPT_TEXT
+
+
 def test_planner_prompt_splits_independent_answer_targets() -> None:
     assert "Mỗi task.question chứa một yêu cầu độc lập" in PLANNER_PROMPT_TEXT
-    assert "Chỉ gộp các khía cạnh bổ sung" in PLANNER_PROMPT_TEXT
+    assert "Nhiều trường của cùng một đối tượng" in PLANNER_PROMPT_TEXT
     assert "Tách task khi các phần hỏi về đối tượng/chủ đề độc lập" in PLANNER_PROMPT_TEXT
     assert "Từ nối \"và\" hoặc \"so sánh\" không tự quyết định" in PLANNER_PROMPT_TEXT
-    assert "Nhiều entity dùng cùng một structured lookup" in PLANNER_PROMPT_TEXT
+    assert "hỗ trợ danh sách → một task với danh sách entity" in PLANNER_PROMPT_TEXT
+    assert "tách task để giữ từng cặp entity–dữ kiện" in PLANNER_PROMPT_TEXT
+    assert "Mỗi entity đi kèm giá trị đầu vào riêng do người hỏi nêu, hoặc mỗi entity hỏi một trường khác nhau → tách task" in PLANNER_PROMPT_TEXT
+    assert "không kèm giá trị riêng, trong cùng lookup hỗ trợ danh sách → một task" in PLANNER_PROMPT_TEXT
+    assert "không phải phụ thuộc giữa task: runtime tự nối sang liên hệ, nên dùng một task" in PLANNER_PROMPT_TEXT
+    # The runtime joins to a contact only from a single source item.
+    assert "mỗi ngành/dịch vụ một task, vì runtime chỉ nối sang liên hệ từ đúng một mục" in PLANNER_PROMPT_TEXT
+    assert "Khoa/đơn vị đã nêu tên trực tiếp thì vẫn tra chung một task" in PLANNER_PROMPT_TEXT
     assert "Mỗi task chỉ có một mode" in PLANNER_PROMPT_TEXT
     assert "mỗi yêu cầu độc lập xuất hiện đúng một lần" in PLANNER_PROMPT_TEXT
     assert "composer mới kết hợp" in PLANNER_PROMPT_TEXT
 
 
+def test_prompt_keeps_unscaled_scores_and_whole_table_comparisons():
+    # A missing scale is not missing input; the operation decides the scale.
+    assert "Khi người dùng không nêu thang điểm, điền đúng con số" in PLANNER_PROMPT_TEXT
+    # The value is a parseable score; the literal wording stays in the span.
+    assert 'không kèm chữ như "điểm"' in PLANNER_PROMPT_TEXT
+    assert "khoa đào tạo" in PLANNER_PROMPT_TEXT
+    assert "Không hỏi thêm chi tiết mà lookup không cần" in PLANNER_PROMPT_TEXT
+    assert "không clarify chỉ vì thiếu thang" in PLANNER_PROMPT_TEXT
+    # A comparison over values the table holds is answered with every row.
+    assert "bảng trả được mọi cách hiểu, nên không clarify" in PLANNER_PROMPT_TEXT
+    assert "để runtime trả đủ các hàng" in PLANNER_PROMPT_TEXT
+
+
+def test_prompt_preserves_explicit_score_scale_and_grounded_history():
+    assert '"3,6/4" hoặc "3,6/10"' in PLANNER_PROMPT_TEXT
+    assert "không rút thành số 3.6" in PLANNER_PROMPT_TEXT
+    assert "không cắt mẫu số khỏi span" in PLANNER_PROMPT_TEXT
+    assert "không tự quy đổi điểm sang thang khác" in PLANNER_PROMPT_TEXT
+    assert "không thêm thông tin không có căn cứ trong QUERY hoặc history hợp lệ" in PLANNER_PROMPT_TEXT
+
+
 def test_planner_prompt_defines_registry_grounded_cohort_conflict() -> None:
-    assert "COHORT_ADMISSION_YEARS là metadata xác thực từ registry" in PLANNER_PROMPT_TEXT
+    assert "COHORT_ADMISSION_YEARS: năm tuyển sinh của từng khóa, là metadata xác thực từ registry" in PLANNER_PROMPT_TEXT
     assert "khóa và năm tuyển sinh cho cùng một đối tượng" in PLANNER_PROMPT_TEXT
     assert "nêu đúng hai giá trị cần xác nhận" in PLANNER_PROMPT_TEXT
     assert "Không áp dụng cho câu so sánh nhiều khóa" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_limits_tool_contract_to_structured_tasks() -> None:
-    assert "Với structured, chỉ dùng lookup_type, intent và slots" in PLANNER_PROMPT_TEXT
-    assert "RAG và clarify tuân theo quy tắc riêng ở phần MODE" in PLANNER_PROMPT_TEXT
     assert "Chỉ dùng lookup_type, intent, slots khai báo trong TOOLS" not in PLANNER_PROMPT_TEXT
 
 
@@ -294,27 +431,10 @@ def test_planner_prompt_defines_context_precedence_once() -> None:
 def test_planner_prompt_matches_global_context_and_rag_contract() -> None:
     assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc có hơn 3" in PLANNER_PROMPT_TEXT
     assert "clarify cho riêng task đó" in PLANNER_PROMPT_TEXT
-    assert "Mọi RAG task dùng intent=open_question" in PLANNER_PROMPT_TEXT
-    assert "Chỉ đặt out_of_domain=true khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
+    assert "chỉ đặt out_of_domain=true khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
     assert "khi đó tasks=[]" in PLANNER_PROMPT_TEXT
     assert "giữ các target trong phạm vi" in PLANNER_PROMPT_TEXT
     assert "thiếu evidence" not in PLANNER_PROMPT_TEXT
-
-
-def test_json_object_planner_keeps_embedded_output_contract(
-    monkeypatch,
-    tmp_path: Path,
-) -> None:
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
-
-    dynamic_prompt = router._build_plan_prompt(
-        "K50 học gì?",
-        cohort="K50",
-        chat_history=[],
-    )
-
-    assert "OUTPUT CONTRACT" in dynamic_prompt
-    assert "native JSON Schema" not in dynamic_prompt
 
 
 def test_planner_prompt_protects_normalized_query_semantics() -> None:
@@ -323,26 +443,15 @@ def test_planner_prompt_protects_normalized_query_semantics() -> None:
         assert protected_value in PLANNER_PROMPT_TEXT
 
 
-def test_model_defaults_select_supported_reasoning_and_format(
-    monkeypatch,
-    tmp_path: Path,
-) -> None:
-    qwen_36 = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.6-27b")
-    qwen_38 = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
-    gpt_oss = _router(monkeypatch, tmp_path, model_name="openai/gpt-oss-20b")
-
-    assert qwen_36._resolved_reasoning_effort() == "none"
-    assert qwen_36._plan_response_format_payload() == {"type": "json_object"}
-    assert qwen_38._resolved_reasoning_effort() == "low"
-    assert qwen_38._plan_response_format_payload()["type"] == "json_schema"
-    assert gpt_oss._resolved_reasoning_effort() == "low"
-    assert gpt_oss._plan_response_format_payload()["type"] == "json_schema"
-
-
 def test_router_treats_upstream_disconnect_as_transient() -> None:
     error = RuntimeError("Server disconnected without sending a response.")
 
     assert AIRouter._classify_error(error) == "transient_error"
+
+
+def _completion(payload: dict) -> _RouterCompletion:
+    return _RouterCompletion(json.dumps(payload, ensure_ascii=False),
+                             {"input": 0, "output": 0, "total": 0}, "stop")
 
 
 def _mock_plan_response(monkeypatch, tasks: list) -> None:
@@ -352,24 +461,12 @@ def _mock_plan_response(monkeypatch, tasks: list) -> None:
         "out_of_domain": False,
         "tasks": tasks,
     }
-
-    class _FakeGroq:
-        def __init__(self, **_kwargs) -> None:
-            self.chat = SimpleNamespace(
-                completions=SimpleNamespace(
-                    create=lambda **kwargs: SimpleNamespace(
-                        choices=[SimpleNamespace(message=SimpleNamespace(
-                            content=json.dumps(payload, ensure_ascii=False),
-                        ))],
-                        usage=None,
-                    ),
-                ),
-            )
-
-    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
+    monkeypatch.setattr(AIRouter, "_chat_completion",
+                        lambda self, **_kwargs: _completion(payload))
 
 
 def _mock_plan_response_sequence(monkeypatch, task_sequences: list[list]) -> list[dict]:
+    """Serve one plan per planner request and record each request's arguments."""
     calls: list[dict] = []
     payloads = [
         {
@@ -381,27 +478,11 @@ def _mock_plan_response_sequence(monkeypatch, task_sequences: list[list]) -> lis
         for tasks in task_sequences
     ]
 
-    class _Completions:
-        @staticmethod
-        def create(**kwargs):
-            calls.append(kwargs)
-            payload = payloads[min(len(calls) - 1, len(payloads) - 1)]
-            return SimpleNamespace(
-                choices=[
-                    SimpleNamespace(
-                        message=SimpleNamespace(
-                            content=json.dumps(payload, ensure_ascii=False),
-                        )
-                    )
-                ],
-                usage=None,
-            )
+    def request(self, **kwargs):
+        calls.append(kwargs)
+        return _completion(payloads[min(len(calls) - 1, len(payloads) - 1)])
 
-    class _FakeGroq:
-        def __init__(self, **_kwargs) -> None:
-            self.chat = SimpleNamespace(completions=_Completions())
-
-    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
+    monkeypatch.setattr(AIRouter, "_chat_completion", request)
     return calls
 
 
@@ -447,20 +528,20 @@ def test_planner_repairs_an_explicit_numbered_task_count_once(
             ],
         ],
     )
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    router = _router(monkeypatch, tmp_path)
 
     plan = router.plan(query, cohort="K51")
 
     assert len(calls) == 2
-    assert calls[0]["max_tokens"] == 1920
-    assert calls[1]["max_tokens"] == 1920
+    assert calls[0]["max_output_tokens"] == 8192
+    assert calls[1]["max_output_tokens"] == 8192
     assert len(plan["tasks"]) == 3
     assert plan["planner_repairs"] == 1
     assert "VALIDATION_FEEDBACK" in calls[1]["messages"][-1]["content"]
     assert not plan.get("planner_fallback")
 
 
-def test_planner_never_executes_a_persistently_incomplete_numbered_plan(
+def test_planner_count_discrepancy_is_rechecked_but_not_a_hard_execution_gate(
     monkeypatch, tmp_path,
 ) -> None:
     query = (
@@ -474,18 +555,18 @@ def test_planner_never_executes_a_persistently_incomplete_numbered_plan(
             [_rag_task("Điều 1 nói gì?"), _rag_task("Điều 2 nói gì?")],
         ],
     )
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    router = _router(monkeypatch, tmp_path)
 
     plan = router.plan(query, cohort="K51")
 
     assert len(calls) == 2
-    assert [task["mode"] for task in plan["tasks"]] == ["rag"]
-    assert plan["tasks"][0]["question"] == query
-    assert plan["planner_fallback"] == "planner_task_count_mismatch"
-    assert any(
-        "explicit_task_count_mismatch" in error
-        for error in plan["planner_validation_errors"]
-    )
+    # Counts alone cannot distinguish an omitted target from legal grouping or
+    # OOD removal. This fixture remains semantically incomplete: the new policy
+    # does not claim that a second model answer proves complete target coverage.
+    assert len(plan["tasks"]) == 2
+    assert plan["planner_repairs"] == 1
+    assert not plan.get("planner_fallback")
+    assert "không thêm task chỉ để khớp số marker" in calls[1]["messages"][-1]["content"]
 
 
 @pytest.mark.parametrize(
@@ -509,7 +590,7 @@ def test_planner_preserves_siblings_after_safe_task_repair(
             "cohorts": ["K51"],
         },
     ])
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    router = _router(monkeypatch, tmp_path)
     plan = router.plan(
         "IELTS 6.0 tương đương bậc mấy và quy định học vụ thế nào?", cohort="K51",
     )
@@ -523,7 +604,7 @@ def test_planner_preserves_siblings_after_safe_task_repair(
 
 def test_planner_does_not_execute_partial_plan_after_unreadable_task(monkeypatch, tmp_path) -> None:
     _mock_plan_response(monkeypatch, [_valid_plan_task(), "not a task object"])
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    router = _router(monkeypatch, tmp_path)
     plan = router.plan("IELTS 6.0 tương đương bậc mấy và quy định học vụ thế nào?", cohort="K51")
 
     assert plan["planner_fallback"] == "safe_rag"
@@ -538,34 +619,22 @@ def test_planner_still_blocks_unrepaired_structured_contract_errors(monkeypatch,
         ai_router_module, "normalize_query_plan",
         lambda *args, **kwargs: ({"tasks": [task]}, ["t1:missing_slot_span:score_or_level"]),
     )
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    router = _router(monkeypatch, tmp_path)
     plan = router.plan("IELTS 6.0 tương đương bậc mấy?", cohort="K51")
 
     assert plan["planner_fallback"] == "safe_rag"
     assert [task["mode"] for task in plan["tasks"]] == ["rag"]
 
 
-def test_router_treats_provider_json_validation_failure_as_transient() -> None:
-    error = RuntimeError("json_validate_failed: Failed to generate JSON.")
-
-    assert AIRouter._classify_error(error) == "transient_error"
-
-
 def test_router_falls_back_to_regulation_rag_after_provider_error(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    class _Completions:
-        @staticmethod
-        def create(**_kwargs):
-            raise RuntimeError("json_validate_failed: Failed to generate JSON.")
+    def unavailable(self, **_kwargs):
+        raise RuntimeError("Service temporarily unavailable.")
 
-    class _FakeGroq:
-        def __init__(self, **_kwargs) -> None:
-            self.chat = SimpleNamespace(completions=_Completions())
-
-    monkeypatch.setattr(ai_router_module, "Groq", _FakeGroq)
-    router = _router(monkeypatch, tmp_path, model_name="qwen/qwen3.8-27b")
+    monkeypatch.setattr(AIRouter, "_chat_completion", unavailable)
+    router = _router(monkeypatch, tmp_path)
 
     decision = router.plan(
         "K48-K49: co duoc xin nang diem ren luyen neu thieu minh chung khong?",
@@ -577,21 +646,20 @@ def test_router_falls_back_to_regulation_rag_after_provider_error(
     assert decision["planner_fallback"] == "safe_rag"
 
 
-def test_from_config_accepts_model_environment_override(
+def test_from_config_accepts_environment_overrides(
     monkeypatch,
     tmp_path: Path,
 ) -> None:
-    monkeypatch.setenv("GROQ_API_KEYS", "test-router-key")
-    monkeypatch.setenv("STUDENT_RAG_ROUTER_MODEL", "openai/gpt-oss-20b")
+    monkeypatch.setenv("OPENAI_API_KEY", "test-router-key")
+    monkeypatch.setenv("STUDENT_RAG_ROUTER_REASONING_EFFORT", "low")
     monkeypatch.setenv("STUDENT_RAG_ROUTER_MAX_OUTPUT_TOKENS", "1024")
     config_path = tmp_path / "router.yaml"
     state_path = tmp_path / "router-state.json"
     config_path.write_text(
         "\n".join(
             (
-                "model_name: qwen/qwen3.8-27b",
-                "reasoning_effort: auto",
-                "response_format: auto",
+                "model_name: gpt-6-luna",
+                "reasoning_effort: medium",
                 "cache_enabled: false",
                 "key_pool:",
                 f"  state_path: {json.dumps(str(state_path))}",
@@ -602,9 +670,13 @@ def test_from_config_accepts_model_environment_override(
 
     router = AIRouter.from_config(config_path)
 
-    assert router.model_name == "openai/gpt-oss-20b"
-    assert router._resolved_reasoning_effort() == "low"
+    assert router.model_name == "gpt-6-luna"
+    assert router.reasoning_effort == "low"
     assert router.max_output_tokens == 1024
+    # A stale model override is rejected rather than sent an untested prompt.
+    monkeypatch.setenv("STUDENT_RAG_ROUTER_MODEL", "qwen/qwen3.8-27b")
+    with pytest.raises(ValueError):
+        AIRouter.from_config(config_path)
 
 
 def test_router_normalization_does_not_infer_missing_jlpt_level_slot() -> None:
@@ -716,3 +788,20 @@ def test_router_normalization_preserves_grounded_student_service_span() -> None:
     assert decision["slots"]["service"] == "mượn phòng học"
     assert decision["slot_spans"]["service"] == "mượn phòng học"
     assert validate_structured_task(decision, query=query) == []
+
+
+def test_rejected_key_is_not_retried() -> None:
+    error = RuntimeError(
+        "Error code: 401 - {'error': {'message': 'Authentication Fails, "
+        "Your api key: ****833c is invalid', 'type': 'authentication_error'}}"
+    )
+
+    assert AIRouter._classify_error(error) == "auth_error"
+
+
+def test_unit_and_office_semantics_reach_the_model_in_the_schema(monkeypatch, tmp_path: Path) -> None:
+    router = _router(monkeypatch, tmp_path)
+    schema = json.dumps(router._plan_response_format_payload(), ensure_ascii=False)
+    for rule in ("phụ trách hoặc hỗ trợ một việc → unit", "tòa nhà/tầng/số phòng",
+                 "một đơn vị đã nêu tên 'ở đâu' → office"):
+        assert rule in schema

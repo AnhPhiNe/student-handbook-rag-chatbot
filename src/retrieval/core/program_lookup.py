@@ -1,10 +1,18 @@
+"""Program-directory lookups: list, existence and the faculty that runs a program.
+
+Which programs a text refers to (by name, shortened name, faculty or field) is
+decided by the directory selector; this module applies the requested action to
+the chosen records of one cohort.
+"""
 import re
 from collections import defaultdict
 from functools import partial
 from typing import Any
 
 from src.common.cohort import is_cohort_applicable, normalize_cohort
-from src.common.text import fold_text
+from src.common.text import fold_text, slot_values
+
+from .directory_selector import AMBIGUOUS, UNAVAILABLE, DirectorySelector, select_records
 
 normalize_text = partial(fold_text, keep="")
 
@@ -86,249 +94,6 @@ def _filter_by_cohort(
     ]
 
 
-def _infer_faculty_names_from_query(
-    records: list[dict[str, Any]], query: str
-) -> set[str]:
-    query_text = normalize_text(query)
-    matched_spans: list[tuple[str, int, int, int]] = []
-    for record in records:
-        faculty_name = _normalize_faculty_name(record.get("faculty_name"))
-        if not faculty_name:
-            continue
-        core_name = re.sub(r"^khoa\s+", "", faculty_name).strip()
-        words = [word for word in core_name.split() if word]
-        acronym = "".join(word[0] for word in words)
-        name_forms = {core_name}
-        for alias in record.get("faculty_aliases") or []:
-            normalized_alias = _normalize_faculty_name(alias)
-            normalized_alias = re.sub(r"^khoa\s+", "", normalized_alias).strip()
-            if normalized_alias:
-                name_forms.add(normalized_alias)
-        if words and words[-1] == "hoc":
-            name_forms.add(" ".join(words[:-1]))
-        for name_form in name_forms:
-            if not name_form:
-                continue
-            token_count = len(name_form.split())
-            pattern = rf"(?<![a-z0-9]){re.escape(name_form)}(?![a-z0-9])"
-            matched_spans.extend(
-                (faculty_name, match.start(), match.end(), token_count)
-                for match in re.finditer(pattern, query_text)
-            )
-        if len(acronym) >= 2:
-            matched_spans.extend(
-                (faculty_name, match.start(), match.end(), 1)
-                for match in re.finditer(
-                    rf"(?<!\w){re.escape(acronym)}(?!\w)", query_text
-                )
-            )
-
-        # A short alias helps when it is the only signal, but must not override
-        # a query containing a longer, more specific program name.
-    # Keep non-overlapping matches and let the longest phrase claim its span.
-    matched: set[str] = set()
-    accepted_spans: list[tuple[int, int, int]] = []
-    for faculty_name, start, end, token_count in sorted(
-        matched_spans,
-        key=lambda item: (-item[3], item[1], item[2] - item[1]),
-    ):
-        contained = any(
-            start >= accepted_start
-            and end <= accepted_end
-            and token_count < accepted_tokens
-            for accepted_start, accepted_end, accepted_tokens in accepted_spans
-        )
-        if contained:
-            continue
-        accepted_spans.append((start, end, token_count))
-        matched.add(faculty_name)
-    return matched
-
-
-def _filter_by_faculty_names(
-    records: list[dict[str, Any]], faculty_names: set[str]
-) -> list[dict[str, Any]]:
-    return [
-        record
-        for record in records
-        if _normalize_faculty_name(record.get("faculty_name")) in faculty_names
-    ]
-
-
-def _get_program_name_forms(raw_name: Any) -> set[str]:
-    """Derive general parenthetical, suffix, prefix, and acronym name forms."""
-    forms = set()
-    norm_full = normalize_text(raw_name)
-    if norm_full:
-        forms.add(norm_full)
-
-    base = re.sub(r"\(.*?\)", "", str(raw_name or "")).strip()
-    norm_base = normalize_text(base)
-    if not norm_base:
-        return forms
-    forms.add(norm_base)
-
-    words = norm_base.split()
-
-    # Derive acronyms from initial letters for names with at least three words.
-    if len(words) >= 3:
-        forms.add("".join(w[0] for w in words))
-    elif len(words) == 2 and "thong tin" in norm_base:
-        forms.add("".join(w[0] for w in words))
-
-    # Derive aliases by removing the common academic suffix.
-    if (
-        len(words) > 1
-        and words[-1] == "hoc"
-        and words[-2] not in {"tieu", "trung", "dai", "cao"}
-    ):
-        base_no_hoc = " ".join(words[:-1])
-        forms.add(base_no_hoc)
-        if len(words[:-1]) >= 3:
-            forms.add("".join(w[0] for w in words[:-1]))
-
-    # Derive aliases by removing the country/language qualifier.
-    if len(words) > 1 and words[-1] == "quoc":
-        base_no_quoc = " ".join(words[:-1])
-        forms.add(base_no_quoc)
-        if len(words[:-1]) >= 3:
-            forms.add("".join(w[0] for w in words[:-1]))
-
-    # Normalize the teacher-training prefix to its canonical abbreviation.
-    if norm_base.startswith("su pham "):
-        rem = norm_base[8:]
-        forms.add("sp " + rem)
-        rem_words = rem.split()
-        if (
-            len(rem_words) > 1
-            and rem_words[-1] == "hoc"
-            and rem_words[-2] not in {"tieu", "trung", "dai", "cao"}
-        ):
-            forms.add("sp " + " ".join(rem_words[:-1]))
-        if len(rem_words) > 1 and rem_words[-1] == "quoc":
-            forms.add("sp " + " ".join(rem_words[:-1]))
-        if len(rem_words) >= 2:
-            forms.add("sp" + "".join(w[0] for w in rem_words))
-
-    return forms
-
-
-def _filter_by_program_name(
-    records: list[dict[str, Any]],
-    query: str,
-) -> list[dict[str, Any]]:
-    text = normalize_text(query)
-    found_matches: list[tuple[int, int, dict[str, Any]]] = []
-    for record in records:
-        raw_name = record.get("program_name")
-        forms = _get_program_name_forms(raw_name)
-        for form in forms:
-            if not form:
-                continue
-            if len(form) <= 4:
-                for m in re.finditer(
-                    rf"(?<![a-z0-9]){re.escape(form)}(?![a-z0-9])", text
-                ):
-                    found_matches.append((m.start(), m.end(), record))
-            else:
-                start = 0
-                while True:
-                    idx = text.find(form, start)
-                    if idx == -1:
-                        break
-                    end = idx + len(form)
-                    found_matches.append((idx, end, record))
-                    start = idx + 1
-
-    if not found_matches:
-        return []
-
-    found_matches.sort(key=lambda item: item[1] - item[0], reverse=True)
-
-    kept_records: list[dict[str, Any]] = []
-    accepted_spans: list[tuple[int, int]] = []
-
-    for start, end, record in found_matches:
-        is_subsumed = any(
-            acc_start <= start and end <= acc_end
-            for acc_start, acc_end in accepted_spans
-        )
-        if not is_subsumed:
-            accepted_spans.append((start, end))
-            if record not in kept_records:
-                kept_records.append(record)
-
-    return kept_records
-
-
-def _filter_by_program_topic(
-    records: list[dict[str, Any]],
-    query: str,
-) -> list[dict[str, Any]]:
-    text = normalize_text(query)
-    grammar_stopwords = {
-        "cac",
-        "cho",
-        "cua",
-        "danh",
-        "do",
-        "em",
-        "gi",
-        "khoa",
-        "la",
-        "nao",
-        "nganh",
-        "nhung",
-        "sach",
-        "tra",
-        "ve",
-        "hoi",
-        "hoc",
-        "truong",
-        "co",
-        "trong",
-        "tai",
-        "theo",
-        "voi",
-        "nhu",
-        "the",
-    }
-    query_tokens = [
-        token
-        for token in text.split()
-        if token not in grammar_stopwords and len(token) >= 2
-    ]
-    if not query_tokens:
-        return []
-
-    query_token_set = set(query_tokens)
-    scored_candidates: list[tuple[float, dict[str, Any]]] = []
-
-    for record in records:
-        prog_tokens = set(normalize_text(record.get("program_name")).split())
-        prog_tokens_clean = {
-            t for t in prog_tokens if t not in grammar_stopwords and len(t) >= 2
-        }
-        if not prog_tokens_clean:
-            continue
-        overlap = len(query_token_set & prog_tokens_clean)
-        if overlap >= 1:
-            score = overlap / len(prog_tokens_clean)
-            if (
-                overlap >= 2
-                or score >= 0.5
-                or query_token_set.issubset(prog_tokens_clean)
-            ):
-                scored_candidates.append((score, record))
-
-    if not scored_candidates:
-        return []
-
-    scored_candidates.sort(key=lambda item: item[0], reverse=True)
-    best_score = scored_candidates[0][0]
-    return [record for score, record in scored_candidates if score >= best_score * 0.8]
-
-
 def _group_counts(records: list[dict[str, Any]]) -> dict[str, int]:
     counts: dict[str, int] = defaultdict(int)
     for record in records:
@@ -340,122 +105,106 @@ def _group_counts(records: list[dict[str, Any]]) -> dict[str, int]:
 def program_lookup(
     program_directory: list[dict[str, Any]],
     *,
-    candidate_text: str,
+    candidate_text: str | list[str],
     cohort: str | None = None,
     action: str,
     scope: str,
+    selector: DirectorySelector | None = None,
 ) -> dict[str, Any] | None:
-    """Execute a validated program-directory action within one scope."""
+    """Execute a validated program-directory action within one cohort."""
 
     action = str(action or "").strip()
     scope = str(scope or "").strip()
     if action not in {"list", "resolve_faculty", "exists"}:
         return None
-
-    resolves_faculty = action == "resolve_faculty"
-    checks_exists = action == "exists"
-    asks_school_programs = scope == "school"
-    asks_faculty_programs = scope == "faculty"
-
-    if (
-        not asks_school_programs
-        and not asks_faculty_programs
-        and not resolves_faculty
-        and not checks_exists
-    ):
+    if action == "list" and scope not in {"school", "faculty"}:
         return None
 
-    candidates = _filter_by_cohort(program_directory, cohort)
     normalized_cohort = normalize_cohort(cohort)
-    topic_filtered_for_faculty = False
-    if checks_exists:
-        if not normalized_cohort or not candidates:
-            return None
-        cohort_catalog = _sort_programs(_dedupe_programs(candidates))
-        matched = _sort_programs(
-            _dedupe_programs(_filter_by_program_name(cohort_catalog, candidate_text))
-        )
-        result = [_program_summary(record) for record in matched]
-        document_ids = {
-            str(record.get("document_id"))
-            for record in cohort_catalog
-            if record.get("document_id")
-        }
-        return {
-            "lookup_type": "program_directory",
-            "lookup_scope": "program_exists",
-            "input_value": candidate_text,
-            "searched_program": candidate_text,
-            "exists": bool(result),
-            "result": result,
-            "program_count": len(result),
-            "faculty_counts": _group_counts(result),
-            "source_pages": _source_pages(cohort_catalog),
-            "table_name": "Danh sach nganh dao tao",
-            "source_label": "Danh muc nganh dao tao trong So tay sinh vien HCMUE",
-            "cohort": normalized_cohort,
-            "document_id": next(iter(document_ids)) if len(document_ids) == 1 else None,
-            "source_section": "program_directory",
-            "content_type": "program_directory",
-        }
-
-    inferred_faculty_names: set[str] = set()
-    if scope == "faculty":
-        inferred_faculty_names = _infer_faculty_names_from_query(
-            candidates,
-            candidate_text,
-        )
-        if not inferred_faculty_names:
-            topic_matches = _filter_by_program_topic(candidates, candidate_text)
-            if not topic_matches:
-                return None
-            candidates = topic_matches
-            topic_filtered_for_faculty = True
-    lookup_scope = "school"
-    if resolves_faculty:
-        candidates = _filter_by_program_name(
-            candidates,
-            candidate_text,
-        ) or _filter_by_program_topic(candidates, candidate_text)
-        lookup_scope = "program"
-        if not candidates:
-            return None
-
-    if (
-        asks_faculty_programs
-        and not asks_school_programs
-        and not resolves_faculty
-        and not topic_filtered_for_faculty
-    ):
-        candidates = _filter_by_faculty_names(candidates, inferred_faculty_names)
-        lookup_scope = "faculty"
-    elif topic_filtered_for_faculty:
-        lookup_scope = "program_topic_faculty"
-
-    candidates = _sort_programs(_dedupe_programs(candidates))
-    if not candidates:
+    catalog = _sort_programs(_dedupe_programs(_filter_by_cohort(program_directory, cohort)))
+    if not catalog:
+        return None
+    if action == "list" and scope == "school":
+        return _program_result(candidate_text, catalog, cohort=normalized_cohort, lookup_scope="school")
+    if action == "exists" and not normalized_cohort:
         return None
 
-    result = [_program_summary(record) for record in candidates]
-    document_ids = {
-        str(item.get("document_id")) for item in result if item.get("document_id")
+    chosen: list[dict[str, Any]] = []
+    traces: list[dict[str, Any]] = []
+    for name in (str(value).strip() for value in slot_values(candidate_text)):
+        if not name:
+            continue
+        selection = select_records(selector, "program", name, catalog)
+        traces.append({"text": name, **selection.trace()})
+        if selection.status in {AMBIGUOUS, UNAVAILABLE}:
+            # Undecided is not "no such program": ask rather than deny it.
+            return _program_clarification(name, selection.records, cohort=normalized_cohort, selection=traces)
+        chosen.extend(record for record in selection.records if record not in chosen)
+    chosen = _sort_programs(chosen)
+
+    if action == "exists":
+        result = _program_result(candidate_text, chosen, cohort=normalized_cohort,
+                                 lookup_scope="program_exists", selection=traces)
+        result.update(searched_program=candidate_text, exists=bool(chosen),
+                      source_pages=_source_pages(catalog))
+        if not chosen:
+            result["not_found_note"] = "Không có trong danh sách ngành đào tạo của khóa trong sổ tay sinh viên."
+        return result
+    if not chosen:
+        return None
+    lookup_scope = "faculty" if action == "list" else "program"
+    return _program_result(candidate_text, chosen, cohort=normalized_cohort,
+                           lookup_scope=lookup_scope, selection=traces)
+
+
+def _program_clarification(
+    candidate_text: str,
+    records: list[dict[str, Any]],
+    *,
+    cohort: str | None,
+    selection: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Ask which program was meant, listing the selector's candidates when it has them."""
+    options = [f"- **{record.get('program_name')}** ({record.get('faculty_name')})" for record in records[:3]]
+    if options:
+        question = "Bạn muốn hỏi ngành nào dưới đây?\n\n" + "\n".join(options)
+    else:
+        question = f"Mình chưa xác định được ngành ứng với \"{candidate_text}\". Bạn ghi rõ tên ngành giúp mình nhé."
+    return {
+        "lookup_type": "program_directory",
+        "needs_clarification": True,
+        "clarification_question": question,
+        "candidate_text": candidate_text,
+        "candidate_programs": [record.get("program_name") for record in records[:3]],
+        "content_type": "structured_lookup_clarification",
+        "cohort": cohort,
+        "selection": selection,
     }
 
+
+def _program_result(
+    candidate_text: str | list[str],
+    records: list[dict[str, Any]],
+    *,
+    cohort: str | None,
+    lookup_scope: str,
+    selection: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    result = [_program_summary(record) for record in records]
+    document_ids = {str(item.get("document_id")) for item in result if item.get("document_id")}
     return {
         "lookup_type": "program_directory",
         "lookup_scope": lookup_scope,
-        "source_lookup_type": (
-            "faculty" if lookup_scope == "program_topic_faculty" else None
-        ),
         "input_value": candidate_text,
         "result": result,
         "program_count": len(result),
-        "faculty_counts": _group_counts(result),
-        "source_pages": _source_pages(result),
+        "faculty_counts": _group_counts(records),
+        "source_pages": _source_pages(records),
         "table_name": "Danh sach nganh dao tao",
         "source_label": "Danh muc nganh dao tao trong So tay sinh vien HCMUE",
-        "cohort": normalized_cohort,
+        "cohort": cohort,
         "document_id": next(iter(document_ids)) if len(document_ids) == 1 else None,
         "source_section": "program_directory",
         "content_type": "program_directory",
+        "selection": selection or [],
     }

@@ -1,0 +1,57 @@
+# Composer A/B arm: Gemini 3.1 Flash-Lite, the composer before 2026-09-27.
+# Everything outside llm matches configs/answer_generation.yaml; select with
+# scripts/run_official_answers.py --answer-config configs/experiments/answer_gemini_flash_lite.yaml
+input:
+  formula_rules: data/processed/tables/formula_rules.json
+  student_service_directory: data/processed/directories/student_service_directory.json
+  student_office_profiles: data/processed/directories/student_office_profiles.json
+  student_faculty_profiles: data/processed/directories/student_faculty_profiles.json
+  structured_tables_registry: data/processed/tables/structured_tables_registry.json
+  parent_docstore: data/processed/chunks/all_docstore_items.json
+  program_directory: data/processed/directories/program_directory.json
+
+llm:
+  provider: gemini
+  model_name: gemini-3.1-flash-lite
+  api_keys_env_var: GEMINI_API_KEYS
+  temperature: 0.0
+  max_output_tokens: 4096
+  max_retries: 3
+  retry_base_delay_seconds: 2
+  retry_max_delay_seconds: 20
+  request_timeout_seconds: 20
+  request_sleep_seconds: 0
+  max_context_chars: 160000
+  key_pool:
+    rpm_limit_per_key: 12
+    rpd_limit_per_key: 450
+    cooldown_on_rate_limit_seconds: 65
+    state_path: data/cache/gemini_key_state.json
+    wait_when_all_keys_limited: false
+
+# Picks the directory records (service, office, faculty, program) a student
+# names when no name matches exactly; see src/retrieval/core/directory_selector.py.
+directory_selector:
+  provider: deepseek
+  model_name: deepseek-flash
+  reasoning_effort: none
+  api_keys_env_var: DEEPSEEK_API_KEY
+  max_output_tokens: 200
+  max_retries: 1
+  request_timeout_seconds: 15
+  # DeepSeek limits concurrency, not a request rate; this is only a local
+  # guard. A limited key fails fast and the student is asked instead.
+  key_pool:
+    rpm_limit_per_key: 300
+
+cache:
+  enabled: true
+  ttl_seconds: 86400
+  max_entries: 1000
+
+citations:
+  selection_max_sources: 5
+  public_max_sources: 10
+
+guardrails:
+  skip_llm_on_low_confidence: true

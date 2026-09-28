@@ -1,0 +1,60 @@
+# Labeled cases for faculty-name matching (lookup_type: faculty).
+#
+# Development data, not a hold-out. Written 2026-09-27 from the K51 faculty
+# profiles. They avoid every faculty that official_v3 asks about (Công nghệ
+# Thông tin, Giáo dục Tiểu học, Hóa học, Lịch sử, Ngữ văn, Tiếng Nhật, Tâm lý
+# học, Địa lý), so measuring on them cannot tune the system to the hold-out.
+# The official_v1 faculty tasks are added by the script from their planner
+# outputs.
+#
+# faculty: what the planner puts in the faculty slot (the matcher's input).
+# expect: unit     -> the named unit must be the match
+#         clarify  -> the name fits several units; only a clarification is right
+#         none     -> no such unit in the catalog; clarification is safe
+version: 1
+cohort: K51
+cases:
+  # ---- full names, casing and missing diacritics
+  - {id: fac_01, faculty: "Khoa Giáo dục Mầm non", expect: unit, units: ["Khoa Giáo dục Mầm non"]}
+  - {id: fac_02, faculty: "khoa giáo dục thể chất", expect: unit, units: ["Khoa Giáo dục Thể chất"]}
+  - {id: fac_03, faculty: "khoa tieng phap", expect: unit, units: ["Khoa Tiếng Pháp"]}
+  - {id: fac_04, faculty: "khoa khoa học giáo dục", expect: unit, units: ["Khoa Khoa học Giáo dục"]}
+  - {id: fac_05, faculty: "khoa giáo dục đặc biệt", expect: unit, units: ["Khoa Giáo dục Đặc biệt"]}
+
+  # ---- short names and abbreviations
+  - {id: fac_06, faculty: "khoa Toán", expect: unit, units: ["Khoa Toán – Tin học"]}
+  - {id: fac_07, faculty: "khoa toán tin", expect: unit, units: ["Khoa Toán – Tin học"]}
+  - {id: fac_08, faculty: "khoa Anh", expect: unit, units: ["Khoa Tiếng Anh"]}
+  - {id: fac_09, faculty: "khoa Hàn", expect: unit, units: ["Khoa Tiếng Hàn Quốc"]}
+  - {id: fac_10, faculty: "khoa tiếng Trung Quốc", expect: unit, units: ["Khoa Tiếng Trung"]}
+  - {id: fac_11, faculty: "khoa Nga", expect: unit, units: ["Khoa Tiếng Nga"]}
+  - {id: fac_12, faculty: "khoa Lý", expect: unit, units: ["Khoa Vật lý"]}
+  - {id: fac_13, faculty: "khoa vật lí", expect: unit, units: ["Khoa Vật lý"]}
+  - {id: fac_14, faculty: "khoa Sinh", expect: unit, units: ["Khoa Sinh học"]}
+  - {id: fac_15, faculty: "khoa GDMN", expect: unit, units: ["Khoa Giáo dục Mầm non"]}
+  - {id: fac_16, faculty: "khoa quốc phòng", expect: unit, units: ["Khoa Giáo dục Quốc phòng"]}
+  - {id: fac_17, faculty: "khoa chính trị", expect: unit, units: ["Khoa Giáo dục Chính trị"]}
+
+  # ---- a student's own name for the unit
+  - {id: fac_18, faculty: "khoa thể dục", expect: unit, units: ["Khoa Giáo dục Thể chất"]}
+  - {id: fac_19, faculty: "khoa tiếng Hàn", expect: unit, units: ["Khoa Tiếng Hàn Quốc"]}
+  - {id: fac_20, faculty: "tổ nữ công", expect: unit, units: ["Tổ Giáo dục Nữ công"]}
+
+  # ---- branch campuses: the campus decides the unit
+  - {id: fac_21, faculty: "khoa Khoa học Tự nhiên phân hiệu Long An", expect: unit, units: ["Khoa Khoa học – Tự nhiên (Phân hiệu Long An)"]}
+  - {id: fac_22, faculty: "khoa tự nhiên ở Gia Lai", expect: unit, units: ["Khoa Khoa học Tự nhiên (Phân hiệu Gia Lai)"]}
+  - {id: fac_23, faculty: "tổ ngoại ngữ Long An", expect: unit, units: ["Tổ Ngoại ngữ (Phân hiệu Long An)"]}
+  - {id: fac_24, faculty: "khoa giáo dục đặc thù", expect: unit, units: ["Khoa Giáo dục đặc thù (Phân hiệu Gia Lai)"]}
+
+  # ---- too vague: several units fit
+  - {id: fac_25, faculty: "khoa Khoa học Tự nhiên", expect: clarify}
+  - {id: fac_26, faculty: "tổ hành chính quản trị", expect: clarify}
+  - {id: fac_27, faculty: "tổ đào tạo khảo thí công tác sinh viên", expect: clarify}
+  - {id: fac_28, faculty: "khoa tiếng", expect: clarify}
+
+  # ---- not a unit in the catalog
+  - {id: fac_29, faculty: "khoa Y", expect: none}
+  - {id: fac_30, faculty: "khoa Kinh tế", expect: none}
+  - {id: fac_31, faculty: "khoa Luật", expect: none}
+  - {id: fac_32, faculty: "khoa Dược", expect: none}
+  - {id: fac_33, faculty: "khoa Kiến trúc", expect: none}

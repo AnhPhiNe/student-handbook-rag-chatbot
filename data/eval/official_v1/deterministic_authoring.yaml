@@ -423,6 +423,7 @@ cases:
     category: compound
     stress: true
     tasks: [{program: Công tác xã hội}, {faculty: [Khoa Tâm lý học, email]}]
+    v10_program_faculty_contact: {program: Công tác xã hội, faculty: Khoa Tâm lý học}
   - query: "Cho em email trung tâm ngoại ngữ, địa chỉ thư viện và số điện thoại khoa Tiếng Anh."
     category: compound
     stress: true
@@ -446,6 +447,7 @@ cases:
     category: compound
     stress: true
     tasks: [{program: Ngôn ngữ Pháp}, {faculty: [Khoa Tiếng Pháp, email]}]
+    v10_program_faculty_contact: {program: Ngôn ngữ Pháp, faculty: Khoa Tiếng Pháp}
   - query: "Điểm chữ C đổi ra hệ 4 là bao nhiêu, còn GPA 2,83 thì xếp loại học lực gì?"
     category: compound
     stress: true

@@ -245,7 +245,7 @@ def test_program_lookup_preserves_mapping_provenance_for_the_presenter() -> None
                 "source_pages": [178, 179],
             }
         ],
-        candidate_text="Công nghệ Thông tin thuộc khoa nào?",
+        candidate_text="Công nghệ Thông tin",
         cohort="K51",
         action="resolve_faculty",
         scope="school",
@@ -397,7 +397,7 @@ def test_current_structured_assets_project_across_supported_domains() -> None:
         ),
         program_lookup(
             programs,
-            candidate_text="Công nghệ Thông tin thuộc khoa nào?",
+            candidate_text="Công nghệ Thông tin",
             cohort="K51",
             action="resolve_faculty",
             scope="school",
@@ -407,7 +407,6 @@ def test_current_structured_assets_project_across_supported_domains() -> None:
             offices,
             cohort="K51",
             candidate_text="Phòng Đào tạo",
-            require_confident_match=True,
         ),
     ]
 

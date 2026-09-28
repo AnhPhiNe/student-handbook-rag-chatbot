@@ -11,6 +11,7 @@ from typing import Any
 from src.common.cohort import resolve_cohort_from_query
 from src.common.env_loader import env_bool
 from src.common.io import load_json, load_yaml
+from src.retrieval.core.directory_selector import DirectorySelector
 from src.retrieval.core.slang_normalizer import SlangNormalizer
 from src.retrieval.core.embedding_model import (
     load_embedding_model,
@@ -18,6 +19,7 @@ from src.retrieval.core.embedding_model import (
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 
 from .answer_formatter import (
+    clean_answer,
     clean_stream_fragment,
     clean_stream_start,
     format_final_answer,
@@ -35,6 +37,7 @@ from .citation_formatter import (
     prioritize_citations_by_answer_anchors,
     select_relevant_citations,
 )
+from .deepseek_client import DeepSeekClient
 from .gemini_client import GeminiClient
 from .prompt_builder import (
     ANSWER_PROMPT_VERSION,
@@ -46,8 +49,9 @@ from .response_cache import get_response_cache
 from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
+COMPOSER_PROVIDERS = {"gemini", "deepseek"}
 
-PIPELINE_VERSION = "v76-structured-resolution-contract"
+PIPELINE_VERSION = "v77-online-answer-boundaries"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
@@ -96,6 +100,55 @@ class PreparedAnswer:
     error_message: str | None = None
     clarification_needed: bool = False
     query_type_override: str | None = None
+
+
+
+def create_composer_client(llm_config: dict[str, Any]) -> Any:
+    """Build the configured composer client (shared by the pipeline and replays)."""
+    provider = llm_config.get("provider", "gemini")
+    if provider == "gemini":
+        return GeminiClient(
+            model_name=llm_config["model_name"],
+            temperature=llm_config.get("temperature", 0.2),
+            max_output_tokens=llm_config.get("max_output_tokens", 1024),
+            max_retries=llm_config.get("max_retries", 3),
+            retry_base_delay_seconds=llm_config.get("retry_base_delay_seconds", 2),
+            retry_max_delay_seconds=llm_config.get("retry_max_delay_seconds", 20),
+            request_timeout_seconds=llm_config.get("request_timeout_seconds", 60),
+            api_keys_env_var=llm_config.get("api_keys_env_var", "GEMINI_API_KEYS"),
+            key_pool_config=llm_config.get("key_pool"),
+        )
+    if provider == "deepseek":
+        return DeepSeekClient(
+            model_name=llm_config["model_name"],
+            reasoning_effort=llm_config.get("reasoning_effort", "none"),
+            temperature=llm_config.get("temperature", 0.0),
+            max_output_tokens=llm_config.get("max_output_tokens", 8192),
+            max_retries=llm_config.get("max_retries", 2),
+            retry_base_delay_seconds=llm_config.get("retry_base_delay_seconds", 2),
+            retry_max_delay_seconds=llm_config.get("retry_max_delay_seconds", 20),
+            request_timeout_seconds=llm_config.get("request_timeout_seconds", 30),
+            api_keys_env_var=llm_config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
+            key_pool_config=llm_config.get("key_pool"),
+        )
+    raise ValueError(f"Unsupported composer provider: {provider}")
+
+
+def create_directory_selector(selector_config: dict[str, Any]) -> DirectorySelector:
+    """Build the selector that picks directory records a student names (DeepSeek, JSON output)."""
+    if selector_config.get("provider") != "deepseek":
+        raise ValueError(f"Unsupported directory selector provider: {selector_config.get('provider')}")
+    return DirectorySelector(DeepSeekClient(
+        model_name=selector_config["model_name"],
+        reasoning_effort=selector_config.get("reasoning_effort", "none"),
+        temperature=0.0,
+        max_output_tokens=selector_config.get("max_output_tokens", 200),
+        max_retries=selector_config.get("max_retries", 1),
+        request_timeout_seconds=selector_config.get("request_timeout_seconds", 15),
+        api_keys_env_var=selector_config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
+        key_pool_config=selector_config.get("key_pool"),
+        response_format={"type": "json_object"},
+    ))
 
 
 class AnswerPipeline:
@@ -163,14 +216,18 @@ class AnswerPipeline:
             program_directory=self.program_directory,
         )
 
+        # Warm-up only: the dense retriever reuses this cached instance, so the
+        # first question does not pay the model load.
         self.model = load_embedding_model(
             self.retrieval_config["embedding"]["model_name"]
         )
 
         llm_config = self.config.get("llm", {})
         self.llm_config = llm_config
-        if llm_config.get("provider") != "gemini":
-            raise ValueError("AnswerPipeline requires llm.provider='gemini'.")
+        if llm_config.get("provider") not in COMPOSER_PROVIDERS:
+            raise ValueError(
+                f"AnswerPipeline requires llm.provider in {sorted(COMPOSER_PROVIDERS)}."
+            )
         self.model_name = str(llm_config.get("model_name") or "").strip()
         if not self.model_name:
             raise ValueError("AnswerPipeline requires llm.model_name.")
@@ -396,7 +453,11 @@ class AnswerPipeline:
             pipeline_version=PIPELINE_VERSION,
             answer_prompt_version=ANSWER_PROMPT_VERSION,
         )
-        prepared.cached = self.response_cache.get(prepared.cache_key)
+        cached = self.response_cache.get(prepared.cache_key)
+        # Older runtimes could cache a successful but empty stream.
+        prepared.cached = (
+            cached if cached and str(cached.get("answer") or "").strip() else None
+        )
         return prepared
 
     def answer(
@@ -518,7 +579,7 @@ class AnswerPipeline:
         llm_result = llm_client.generate(prompt)
         end_time_llm = datetime.now(timezone.utc).isoformat()
         if telemetry is not None:
-            telemetry["gemini_ms"] = (time.monotonic() - llm_started) * 1000
+            telemetry["llm_ms"] = (time.monotonic() - llm_started) * 1000
             telemetry["key_fingerprint"] = llm_result.get("key_fingerprint")
             telemetry["retry_count"] = max(0, int(llm_result.get("attempts") or 1) - 1)
         self._last_llm_call_at = time.monotonic()
@@ -534,6 +595,20 @@ class AnswerPipeline:
                 start_time=start_time_llm,
                 end_time=end_time_llm,
             )
+
+        final_answer = ""
+        if llm_result.get("ok"):
+            final_answer = format_final_response(
+                str(llm_result.get("text") or "").strip(),
+                primary_citations=selected_citations,
+            )
+            if not final_answer.strip():
+                llm_result = {
+                    **llm_result,
+                    "ok": False,
+                    "error_type": "api_error",
+                    "error_message": "Empty answer after output cleanup.",
+                }
 
         if not llm_result.get("ok"):
             error_type = llm_result.get("error_type") or "api_error"
@@ -566,12 +641,6 @@ class AnswerPipeline:
                 tracker=tracker,
             )
 
-        llm_text = str(llm_result.get("text") or "").strip()
-
-        final_answer = format_final_response(
-            llm_text,
-            primary_citations=selected_citations,
-        )
         public_citations = prioritize_citations_by_answer_anchors(
             all_citations,
             final_answer,
@@ -818,7 +887,12 @@ class AnswerPipeline:
                 pending_stream_text += chunk_text
                 if not stream_prefix_emitted:
                     pending_stream_text = clean_stream_start(pending_stream_text)
-                source_start = sources_section_start(pending_stream_text)
+                source_start = sources_section_start(
+                    pending_stream_text,
+                    at_line_start=(
+                        not emitted_answer_parts or emitted_answer_parts[-1].endswith("\n")
+                    ),
+                )
                 if source_start is not None:
                     pending_stream_text = pending_stream_text[:source_start]
                     suppress_source_tail = True
@@ -836,14 +910,15 @@ class AnswerPipeline:
                         yield {"type": "token", "text": safe_text}
 
             if pending_stream_text:
-                final_tail = format_final_response(
-                    pending_stream_text,
-                    primary_citations=selected_citations,
-                )
+                # Source footers were removed with the real stream line boundary
+                # above; do not reinterpret a mid-sentence tail as a new heading.
+                final_tail = clean_answer(pending_stream_text)
                 if final_tail:
                     emitted_answer_parts.append(final_tail)
                     yield {"type": "token", "text": final_tail}
             final_answer_for_citations = "".join(emitted_answer_parts)
+            if not final_answer_for_citations.strip():
+                raise RuntimeError("Empty answer after output cleanup.")
             end_time_llm = datetime.now(timezone.utc).isoformat()
             self._last_llm_call_at = time.monotonic()
 
@@ -957,7 +1032,7 @@ class AnswerPipeline:
                 parent_sources_by_id=self.parent_sources_by_id,
                 top_k=self._retrieval_top_k(),
                 public_source_limit=self._public_source_limit(),
-                model=self.model,
+                directory_selector=create_directory_selector(self.config["directory_selector"]),
             )
         return self._plan_executor
 
@@ -966,30 +1041,7 @@ class AnswerPipeline:
         if self._llm_client is None:
             with self._component_init_lock:
                 if self._llm_client is None:
-                    llm_config = self.config["llm"]
-                    provider = llm_config.get("provider", "gemini")
-                    if provider == "gemini":
-                        self._llm_client = GeminiClient(
-                            model_name=llm_config["model_name"],
-                            temperature=llm_config.get("temperature", 0.2),
-                            max_output_tokens=llm_config.get(
-                                "max_output_tokens", 1024
-                            ),
-                            max_retries=llm_config.get("max_retries", 3),
-                            retry_base_delay_seconds=llm_config.get(
-                                "retry_base_delay_seconds", 2
-                            ),
-                            retry_max_delay_seconds=llm_config.get(
-                                "retry_max_delay_seconds", 20
-                            ),
-                            request_timeout_seconds=llm_config.get(
-                                "request_timeout_seconds", 60
-                            ),
-                            api_keys_env_var=llm_config.get(
-                                "api_keys_env_var", "GEMINI_API_KEYS"
-                            ),
-                            key_pool_config=llm_config.get("key_pool"),
-                        )
+                    self._llm_client = create_composer_client(self.config["llm"])
         return self._llm_client
 
     def _throttle_llm_call(self) -> None:

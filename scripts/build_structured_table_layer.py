@@ -191,9 +191,9 @@ def save_json(path: Path, value: Any) -> None:
 @lru_cache(maxsize=1)
 def load_office_alias_config() -> dict[str, Any]:
     if not OFFICE_ALIAS_CONFIG_PATH.is_file():
-        return {"unit_aliases": {}, "service_aliases": []}
+        return {"unit_aliases": {}}
     value = yaml.safe_load(OFFICE_ALIAS_CONFIG_PATH.read_text(encoding="utf-8")) or {}
-    return value if isinstance(value, dict) else {"unit_aliases": {}, "service_aliases": []}
+    return value if isinstance(value, dict) else {"unit_aliases": {}}
 
 
 def normalize_text(value: Any) -> str:
@@ -911,26 +911,6 @@ def load_primary_office_records() -> list[dict[str, Any]]:
     return records
 
 
-def aliases_for_service(service: str) -> list[str]:
-    norm = normalize_text(service)
-    aliases: list[str] = []
-    for rule in load_office_alias_config().get("service_aliases") or []:
-        keyword = str(rule.get("match") or "")
-        keyword_aliases = [str(alias) for alias in rule.get("aliases") or []]
-        if normalize_text(keyword) in norm or any(
-            normalize_text(alias) in norm for alias in keyword_aliases
-        ):
-            aliases.extend([keyword, *keyword_aliases])
-    deduped = []
-    seen = set()
-    for alias in aliases:
-        key = normalize_text(alias)
-        if key and key not in seen:
-            deduped.append(alias)
-            seen.add(key)
-    return deduped
-
-
 def build_student_service_directory(
     directory_dir: Path = DIRECTORY_DIR,
     source_records: list[dict[str, Any]] | None = None,
@@ -963,7 +943,6 @@ def build_student_service_directory(
             source_by_unit.setdefault(normalize_text(unit), []).append(record)
             for index, responsibility in enumerate(responsibilities, start=1):
                 service_id = f"{cohort}_{record.get('record_id')}_service_{index}"
-                aliases = aliases_for_service(responsibility)
                 service_text = compact_text(responsibility)
                 summary = f"{service_text} - đơn vị phụ trách: {unit}"
                 services.append(
@@ -971,7 +950,7 @@ def build_student_service_directory(
                         "service_id": service_id,
                         "cohort": cohort,
                         "service": service_text,
-                        "aliases": aliases,
+                        "aliases": [],
                         "unit": unit,
                         "unit_name": unit,
                         "phone": "; ".join(extract_phones(raw_text)),
@@ -993,56 +972,6 @@ def build_student_service_directory(
                             [
                                 f"Dịch vụ: {service_text}",
                                 f"Đơn vị: {unit}",
-                                f"Alias: {', '.join(aliases)}",
-                                raw_text,
-                            ]
-                        ),
-                    }
-                )
-    unit_bindings = load_office_alias_config().get("unit_service_aliases") or {}
-    for configured_unit, bindings in unit_bindings.items():
-        for record in source_by_unit.get(normalize_text(configured_unit), []):
-            raw_text = trim_cross_unit_leak(
-                trim_service_source(str(record.get("raw_text") or ""))
-            )
-            cohort = str(record.get("cohort") or "")
-            unit = strip_order_prefix(record.get("unit_name"))
-            for index, binding in enumerate(bindings or [], start=1):
-                service_text = compact_text(binding.get("service"))
-                aliases = _dedupe(
-                    [service_text, *(binding.get("aliases") or [])]
-                )
-                if not service_text or not aliases:
-                    continue
-                services.append(
-                    {
-                        "service_id": (
-                            f"{cohort}_{record.get('record_id')}_catalog_service_{index}"
-                        ),
-                        "cohort": cohort,
-                        "service": service_text,
-                        "aliases": aliases,
-                        "unit": unit,
-                        "unit_name": unit,
-                        "phone": "; ".join(extract_phones(raw_text)),
-                        "phones": extract_phones(raw_text),
-                        "internal_numbers": extract_internal_numbers(raw_text),
-                        "email": "; ".join(extract_emails(raw_text)),
-                        "emails": extract_emails(raw_text),
-                        "website": "; ".join(extract_websites(raw_text)),
-                        "websites": extract_websites(raw_text),
-                        "office": extract_office(raw_text),
-                        "source_pages": record.get("source_pages") or [],
-                        "source_record_id": record.get("record_id"),
-                        "document_id": record.get("document_id"),
-                        "source_section": "student_service_directory",
-                        "content_type": "student_service_directory",
-                        "summary": f"{service_text} - đơn vị phụ trách: {unit}",
-                        "raw_text": "\n".join(
-                            [
-                                f"Dịch vụ: {service_text}",
-                                f"Đơn vị: {unit}",
-                                f"Alias: {', '.join(aliases)}",
                                 raw_text,
                             ]
                         ),
@@ -1070,38 +999,6 @@ def _extend_unique(target: list[Any], values: Any) -> None:
         target.append(values)
 
 
-def _generated_unit_aliases(unit: str) -> list[str]:
-    normalized = normalize_text(unit)
-    tokens = [token for token in normalized.split() if token not in {"va", "cua"}]
-    aliases = [unit, normalized]
-    if len(tokens) >= 2:
-        aliases.append("".join(token[0] for token in tokens).upper())
-
-    prefix_lengths = {
-        ("phong",): 1,
-        ("ban",): 1,
-        ("tram",): 1,
-        ("vien",): 1,
-        ("truong",): 1,
-        ("doan",): 1,
-        ("khoa",): 1,
-        ("trung", "tam"): 2,
-        ("nha", "xuat", "ban"): 3,
-    }
-    for prefix, length in prefix_lengths.items():
-        if tuple(tokens[:length]) != prefix or len(tokens) <= length:
-            continue
-        remainder = tokens[length:]
-        aliases.extend(
-            [
-                " ".join(remainder),
-                "".join(token[0] for token in remainder).upper(),
-                " ".join(prefix).capitalize() + " " + "".join(token[0] for token in remainder).upper(),
-            ]
-        )
-    return _dedupe(aliases)
-
-
 def _curated_unit_aliases(unit: str) -> list[str]:
     unit_norm = normalize_text(unit).replace("-", " ")
     unit_norm = re.sub(r"\s+", " ", unit_norm).strip()
@@ -1112,13 +1009,6 @@ def _curated_unit_aliases(unit: str) -> list[str]:
         if configured_norm == unit_norm:
             return [str(value) for value in values or []]
     return []
-
-
-def _office_aliases(unit: str, services: list[str]) -> list[str]:
-    aliases = [*_generated_unit_aliases(unit), *_curated_unit_aliases(unit)]
-    for service in services:
-        aliases.extend(aliases_for_service(service))
-    return _dedupe(aliases)
 
 
 def build_student_office_profiles(services: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1180,7 +1070,7 @@ def build_student_office_profiles(services: list[dict[str, Any]]) -> list[dict[s
             }
         )
         profile["document_ids"] = _dedupe(profile["document_ids"])
-        profile["aliases"] = _office_aliases(profile["unit"], profile["services"])
+        profile["aliases"] = _dedupe(_curated_unit_aliases(profile["unit"]))
         profile["phone"] = "; ".join(profile["phones"])
         profile["email"] = "; ".join(profile["emails"])
         profile["website"] = "; ".join(profile["websites"])
@@ -1227,10 +1117,13 @@ def build_student_faculty_profiles(
         else:
             campus = None
         display_unit = f"{faculty} ({campus})" if campus else faculty
-        aliases = [*_generated_unit_aliases(faculty), *_curated_unit_aliases(faculty)]
+        aliases = _curated_unit_aliases(faculty)
         if campus:
+            # The unit is named with its campus; the plain faculty name is kept
+            # so a name shared by two campuses is recognized, then clarified.
             aliases = _dedupe(
                 [
+                    faculty,
                     *aliases,
                     display_unit,
                     f"{faculty} {campus}",

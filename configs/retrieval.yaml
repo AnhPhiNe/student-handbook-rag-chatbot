@@ -4,7 +4,12 @@ embedding:
   normalize_embeddings: true
 
 retrieval:
+  # Parents handed to the composer.
   default_top_k: 5
+  # Child chunks taken from dense search and from BM25, kept after RRF fusion
+  # and all sent to the reranker. On official_v1 (RRF only) 24 holds a gold
+  # child for 155/155 queries, 16 for 154/155; 40 adds nothing.
+  candidate_children: 24
 
 runtime:
   qdrant_timeout_seconds: 60
@@ -13,7 +18,6 @@ runtime:
 cohere_reranker:
   enabled: true
   model: rerank-v4.0-fast
-  candidate_count: 16
   max_tokens_per_doc: 4096
   timeout_seconds: 5
   key_pool:

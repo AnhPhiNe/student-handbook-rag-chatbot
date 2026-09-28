@@ -31,8 +31,10 @@ def title_query_match_priority(query: str, chunk: dict[str, Any]) -> int:
         str(metadata.get("title") or metadata.get("source_section") or "")
     )
     query_text = fold_text(query)
-    # Single-token headings are too broad to use as lexical anchors.
-    if len(title.split()) < 2:
+    # Headings under three words ("Sinh viên", "Học bổng") occur in most
+    # questions, so they are too broad to use as lexical anchors: on official_v1
+    # they fired on 32/155 queries and lowered hybrid hit@1 from 0.832 to 0.813.
+    if len(title.split()) < 3:
         return 0
     return int(
         bool(title and re.search(rf"(?:^| )({re.escape(title)})(?: |$)", query_text))

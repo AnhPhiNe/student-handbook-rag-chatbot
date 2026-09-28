@@ -241,3 +241,29 @@ def test_bm25_title_priority_is_accent_insensitive(tmp_path) -> None:
     )
 
     assert results[0][1]["chunk_id"] == "expected"
+
+
+def test_bm25_two_word_title_gets_no_priority(tmp_path) -> None:
+    retriever = BM25Retriever(
+        vocabulary_path=tmp_path / "missing.yaml",
+        program_directory_path=tmp_path / "missing.json",
+    )
+    generic = _chunk("generic", "Nội dung chi tiết.", cohort="K51")
+    generic["metadata"]["title"] = "Sinh viên"
+    relevant = _chunk(
+        "relevant",
+        "Sinh viên bị cảnh báo học tập khi điểm trung bình học kỳ dưới mức quy định.",
+        cohort="K51",
+    )
+    retriever.build_bm25_index(
+        [
+            generic,
+            relevant,
+            _chunk("other-1", "Quy định đăng ký học tập.", cohort="K51"),
+            _chunk("other-2", "Quy định đánh giá rèn luyện.", cohort="K51"),
+        ]
+    )
+
+    results = retriever.search_bm25("Vì sao sinh viên bị cảnh báo học tập?", top_k=4)
+
+    assert results[0][1]["chunk_id"] == "relevant"

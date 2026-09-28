@@ -238,7 +238,6 @@ def test_default_retrieval_groups_twenty_four_vector_chunks_before_graph() -> No
         ChildParentHybridRetriever.retrieve(
             retriever,
             "dieu kien hoc bong",
-            top_k_vector=12,
             top_k_final=5,
             graph_depth=2,
             cohort="K50",
@@ -288,7 +287,6 @@ def test_retrieval_reranks_children_before_grouping_by_parent() -> None:
         result = ChildParentHybridRetriever.retrieve(
             retriever,
             "dieu kien hoc bong",
-            top_k_vector=12,
             top_k_final=5,
             graph_depth=2,
             cohort="K50",
@@ -326,7 +324,6 @@ def test_no_graph_ablation_keeps_rrf_without_a_reranker() -> None:
         ChildParentHybridRetriever.retrieve(
             retriever,
             "dieu kien hoc bong",
-            top_k_vector=12,
             top_k_final=5,
             graph_depth=2,
             cohort="K50",
@@ -427,7 +424,6 @@ def test_vector_only_ablation_fuses_no_bm25_candidates() -> None:
         ChildParentHybridRetriever.retrieve(
             retriever,
             "dieu kien hoc bong",
-            top_k_vector=12,
             top_k_final=5,
             graph_depth=2,
             cohort="K50",

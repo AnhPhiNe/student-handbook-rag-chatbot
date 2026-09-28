@@ -22,7 +22,7 @@ from .amendment_precedence import (
 )
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.29-no-bare-yes-no"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.30-table-rows-verbatim-document"
 
 
 def build_answer_prompt_bundle(
@@ -71,7 +71,7 @@ def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
 
 ĐẦU VÀO
 - AUTHORIZED_EVIDENCE_BY_UNIT gồm các đơn vị cần trả lời; mỗi đơn vị là một ý của câu hỏi cho một cohort.
-- Trong mỗi đơn vị: question là ý cần trả lời; mode=structured (kết quả tra bảng, danh bạ), rag (đoạn quy chế) hoặc clarify; coverage=covered (có căn cứ), uncovered (chưa tìm thấy căn cứ) hoặc needs_clarification (cần hỏi lại); primary_evidence là các nguồn được phép dùng, mỗi nguồn có source_ref, article_label, content và role.
+- Trong mỗi đơn vị: question là ý cần trả lời; mode=structured (kết quả tra bảng, danh bạ), rag (đoạn quy chế) hoặc clarify; coverage=covered (có căn cứ), uncovered (chưa tìm thấy căn cứ) hoặc needs_clarification (cần hỏi lại); primary_evidence là các nguồn được phép dùng, mỗi nguồn có source_ref, document_title (tên văn bản), article_label (Điều, nếu văn bản chia theo Điều), content và role.
 - role=candidate là mặc định: nguồn hệ thống tìm được cho đơn vị, có thể chỉ liên quan một phần. role=target chỉ có khi câu hỏi nêu đích danh một Điều khớp với nguồn đó.
 
 Mọi mục dưới đây là bắt buộc.
@@ -91,22 +91,25 @@ Mọi mục dưới đây là bắt buộc.
 - admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp; dùng metadata này để đối chiếu phạm vi áp dụng, không tự suy năm tuyển sinh từ mã khóa. Nếu tập năm có nhiều phần tử, không tự chọn một năm; nếu chưa xác định được trường hợp áp dụng, trình bày các trường hợp có căn cứ và nêu thông tin còn thiếu.
 - Với câu hỏi có/không, không trả lời bằng chữ "Có" hoặc "Không"; nêu kết luận thành câu đầy đủ, nhắc lại điều được hỏi (được hay không được làm gì, có bị hay không bị điều gì). Chỉ kết luận một việc được phép hay bị cấm, hoặc một kết quả có xảy ra hay không, khi evidence trực tiếp xác lập đúng điều được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm.
 - Nếu có applicable_amendments, áp dụng nội dung mới nhất trong đúng phạm vi nhưng không nhắc nhãn kỹ thuật amendment.
+- Khi document_title nêu năm học mà văn bản áp dụng (vd. một thông báo cho một năm học), nêu năm học đó cùng kết luận để người đọc biết phạm vi thời gian của nội dung.
 
 3. KHI THIẾU CĂN CỨ HOẶC CẦN HỎI LẠI
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
-- Với các đơn vị không cần clarification: nếu coverage=uncovered hoặc không có source_ref được phép, nói chưa tìm thấy căn cứ cho đúng ý đó.
-- Nếu evidence không đủ cho một ý thực sự được hỏi, nói chưa tìm thấy căn cứ cho đúng ý đó; không đổi target và không suy "Sổ tay không quy định" chỉ vì packet không chứa thông tin ngoài target.
+- Với các đơn vị không cần clarification: nếu coverage=uncovered, không có source_ref được phép, hoặc evidence không đủ cho một ý thực sự được hỏi, nói chưa tìm thấy căn cứ cho đúng ý đó; không đổi target và không suy "Sổ tay không quy định" chỉ vì packet không chứa thông tin ngoài target.
 - Với câu hỏi có/không, nếu thiếu căn cứ trực tiếp, nói "Nguồn hiện có chưa trực tiếp xác lập..."; không thay câu trả lời bằng một chính sách khác chỉ vì cùng chủ đề. Chỉ dùng câu đó cho đúng ý thiếu căn cứ; ý có căn cứ thì trả lời thẳng, không mở đầu bằng câu rào đón.
 - Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
 
 4. BẢNG VÀ SỐ LIỆU
 - Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vào Markdown vì giao diện đã hiển thị dữ liệu đó riêng.
-- Hệ thống tra sẵn hàng cho bạn bất cứ khi nào tra được, và bạn phải dùng đúng hàng đó, không chọn lại hàng hay dò lại khoảng giá trị: resolved_result là kết quả đã chốt khi chỉ một phạm vi áp dụng, còn resolved_rows trong từng bảng là kết quả riêng của phạm vi bảng đó khi nhiều phạm vi cùng áp dụng — khi ấy nêu từng trường hợp kèm phạm vi, không gộp thành một kết quả duy nhất.
+- Hệ thống tra sẵn hàng cho bạn bất cứ khi nào tra được (resolved_result, resolved_rows); phải dùng đúng hàng đó, không chọn lại hàng hay dò lại khoảng giá trị. resolved_result là kết quả đã chốt khi chỉ một phạm vi áp dụng.
+- resolved_rows trong từng bảng là kết quả riêng của phạm vi bảng đó khi nhiều phạm vi cùng áp dụng; nêu từng trường hợp kèm phạm vi, không gộp thành một kết quả duy nhất.
 - Chỉ khi evidence không có resolved_result lẫn resolved_rows thì mới tự đọc bảng: chọn bảng đúng phạm vi áp dụng rồi lấy kết quả từ đúng hàng và cột tương ứng, giữ nguyên quan hệ giữa các giá trị và nhãn kết quả. Không ghép giá trị giữa các bảng hoặc hàng. Nếu còn nhiều bảng hoặc hàng áp dụng, trình bày các trường hợp có căn cứ, không tự chọn một kết quả duy nhất.
+- Nội dung rag có thể chứa bảng đã được chuyển thành dòng, mỗi dòng dạng "- Tên bảng › nhóm › mục: giá trị" (dấu "–" cũng dùng để nối các phần). Mỗi dòng là một hàng độc lập; các dòng liền nhau thường có chung phần đầu và chỉ khác nhãn mục ở cuối. Chỉ lấy giá trị từ dòng có nhãn mục khớp đúng điều được hỏi, không lấy giá trị của dòng kề bên có nhãn khác.
 - Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
+- Chép nguyên văn từng ký tự mọi email, số điện thoại, đường link, mã số và số hiệu văn bản từ evidence; không sửa, rút gọn hay tự điền phần còn thiếu.
 
 5. TRÌNH BÀY
-- Khi evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
+- Khi evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Khi nguồn không có article_label (thông báo, hướng dẫn, quy trình, biểu mẫu), nêu tên văn bản theo document_title. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
 - Dùng Markdown có chọn lọc: in đậm kết luận chính, số liệu, thời hạn và điều kiện quan trọng; dùng danh sách khi có nhiều bước, điều kiện hoặc trường hợp. Không in đậm cả đoạn.
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
 - Không hiển thị quá trình suy luận, metadata kỹ thuật hoặc tự tạo mục nguồn.
@@ -402,6 +405,7 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
         "source_ref": f"S{index}",
         "source_id": source_id,
         "title": citation.get("title") or metadata.get("title"),
+        "document_title": citation.get("document_identity") or metadata.get("document_title"),
         "article_label": article_label,
         "source_cohort": (
             citation.get("source_cohort")

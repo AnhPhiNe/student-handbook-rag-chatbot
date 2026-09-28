@@ -268,7 +268,8 @@ def build(bundle: Path = BUNDLE, *, contract: str = CONTRACT):
     for index, definition in enumerate(definitions, 1):
         cohort = definition.get("selected_cohort") or COHORTS[(index - 1) % 3]
         tasks, gold = [], []
-        state = "clarify" if "clarify" in definition else "out_of_domain" if definition.get("out_of_domain") else "answer"
+        state = ("clarify" if "clarify" in definition else "out_of_domain" if definition.get("out_of_domain")
+                 else "safe_unavailable" if definition.get("not_in_handbook") else "answer")
         if state == "answer":
             for spec in definition.get("tasks", [definition]):
                 task, evidence = compile_task(spec, cohort, catalogs)
@@ -281,6 +282,11 @@ def build(bundle: Path = BUNDLE, *, contract: str = CONTRACT):
             outcome["state"] = "clarify"
         if state == "clarify":
             outcome.update(allowed_modes=["clarify", "structured"], task_count={"min": 1, "max": 1})
+        if state == "safe_unavailable":
+            # The handbook has no record for this: any route passes if it
+            # returns no directory record or regulation evidence (or asks).
+            outcome.update(name="not-in-handbook", allowed_modes=["structured", "rag", "clarify"],
+                           task_count={"min": 0, "max": 1})
         if "structured" in modes:
             outcome["structured_evidence"] = "required"
         # Retrieval quality belongs to the retrieval suite. Here only routing is asserted.
@@ -292,7 +298,8 @@ def build(bundle: Path = BUNDLE, *, contract: str = CONTRACT):
             "topic": "khac", "question_style": style, "eval_split": style,
             "coverage_features": definition.get("coverage_features", []),
             "expected_intent": "query_plan", "expected_strategy": "query_plan_execution",
-            "expected_path": state if state != "answer" else "mixed" if len(modes) > 1 else "regulation_rag" if modes == ["rag"] else "structured",
+            "expected_path": ("structured" if state == "safe_unavailable" else state if state != "answer"
+                              else "mixed" if len(modes) > 1 else "regulation_rag" if modes == ["rag"] else "structured"),
             "contract_version": contract, "accepted_outcomes": [outcome],
             "bind_execution_to_plan": True,
             "gold_evidence": gold, "author_review_state": "ai_reviewed_pending_owner_approval",
@@ -379,11 +386,14 @@ def build(bundle: Path = BUNDLE, *, contract: str = CONTRACT):
                 if item not in gold:
                     gold.append(item)
         if state != "answer":
-            case["gold_rationale"] = definition.get("clarify", "Outside the student-handbook assistant domain; do not fabricate an answer from handbook sources.")
+            case["gold_rationale"] = definition.get("clarify") or definition.get("not_in_handbook") or (
+                "Outside the student-handbook assistant domain; do not fabricate an answer from handbook sources.")
         targets = {c for t in tasks for c in t.get("cohorts", [])}
         case["cohort_sensitivity"] = "multi_cohort_risk" if len(targets) > 1 else "single_cohort"
-        case["question_specificity"] = "ambiguous" if state == "clarify" else "specific"
-        case["expected_answer_behavior"] = "clarify_or_scope" if state == "clarify" else "abstain" if state == "out_of_domain" else "direct_answer"
+        case["question_specificity"] = ("ambiguous" if state == "clarify" else "unanswerable"
+                                        if state == "safe_unavailable" else "specific")
+        case["expected_answer_behavior"] = ("clarify_or_scope" if state == "clarify" else "abstain"
+                                            if state in {"out_of_domain", "safe_unavailable"} else "direct_answer")
         case.update({key: definition[key] for key in CASE_METADATA_FIELDS if key in definition})
         result.append(case)
     if expected.get("per_cohort"):

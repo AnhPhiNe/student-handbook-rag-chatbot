@@ -1996,25 +1996,8 @@
           "unit": "Phòng Khảo thí và Đảm bảo chất lượng",
           "unit_name": "Phòng Khảo thí và Đảm bảo chất lượng",
           "aliases": [
-            "Phòng Khảo thí và Đảm bảo chất lượng",
-            "PKTDBCL",
-            "khao thi dam bao chat luong",
-            "KTDBCL",
-            "Phong KTDBCL",
             "KT&ĐBCL",
-            "phòng khảo thí",
-            "giấy chứng nhận điểm",
-            "chứng nhận điểm",
-            "phúc khảo",
-            "phúc khảo điểm",
-            "điểm thi",
-            "kết quả thi",
-            "bảng điểm",
-            "in bảng điểm",
-            "đăng ký học phần",
-            "đăng ký môn",
-            "đăng ký tín chỉ",
-            "học phần"
+            "phòng khảo thí"
           ],
           "services": [
             "Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của Nhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục tiêu, chiến lược đề ra",
@@ -2065,7 +2048,7 @@
           "website": "phongkhaothi.hcmue.edu.vn",
           "office": "Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Phòng Khảo thí và Đảm bảo chất lượng phu trach: Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của Nhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục tiêu, chiến lược đề ra; Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập; Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên; Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học",
-          "raw_text": "Don vi: Phòng Khảo thí và Đảm bảo chất lượng\nAlias: Phòng Khảo thí và Đảm bảo chất lượng, PKTDBCL, khao thi dam bao chat luong, KTDBCL, Phong KTDBCL, KT&ĐBCL, phòng khảo thí, giấy chứng nhận điểm, chứng nhận điểm, phúc khảo, phúc khảo điểm, điểm thi, kết quả thi, bảng điểm, in bảng điểm, đăng ký học phần, đăng ký môn, đăng ký tín chỉ, học phần\nDich vu phu trach: Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của Nhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục tiêu, chiến lược đề ra; Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập; Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên; Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học\nEmail: phongkhaothi@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "raw_text": "Don vi: Phòng Khảo thí và Đảm bảo chất lượng\nAlias: KT&ĐBCL, phòng khảo thí\nDich vu phu trach: Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của Nhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục tiêu, chiến lược đề ra; Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập; Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên; Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học\nEmail: phongkhaothi@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -2165,11 +2148,6 @@
           "faculty_name": "Khoa Ngữ văn",
           "campus": null,
           "aliases": [
-            "Khoa Ngữ văn",
-            "KNV",
-            "ngu van",
-            "NV",
-            "Khoa NV",
             "Văn"
           ],
           "phones": [
@@ -2308,12 +2286,8 @@
           "source_record_id": "program_22",
           "faculty_name_source": "matched_existing_program",
           "faculty_aliases": [
-            "Khoa Lịch sử",
-            "KLS",
-            "lich su",
-            "LS",
-            "Khoa LS",
-            "Sử"
+            "Sử",
+            "Lịch sử"
           ],
           "data_category": "directory_table",
           "quality_status": "approved",
@@ -2433,7 +2407,7 @@
           "source_section": "office_directory",
           "content_type": "student_service_directory",
           "summary": "Cho mượn amply, micro lớp học - đơn vị phụ trách: Phòng Quản trị – Thiết bị",
-          "raw_text": "Dịch vụ: Cho mượn amply, micro lớp học\nĐơn vị: Phòng Quản trị – Thiết bị\nAlias: \n7. Phòng Quản trị – Thiết bị\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 197, 198\nEmail\n: phongqttb@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng trệt, P.004, P.005, P.006,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Quản lý lớp học, giảng đường, phòng họp;\n− Cho mượn amply, micro lớp học;\n− Quản lý thiết bị trình chiếu, máy vi tính lớp học;\n− Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương,\nQuận 5 và 222 Lê Văn Sỹ, Quận 3.",
+          "raw_text": "Dịch vụ: Cho mượn amply, micro lớp học\nĐơn vị: Phòng Quản trị – Thiết bị\n7. Phòng Quản trị – Thiết bị\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 197, 198\nEmail\n: phongqttb@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà C, tầng trệt, P.004, P.005, P.006,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Quản lý lớp học, giảng đường, phòng họp;\n− Cho mượn amply, micro lớp học;\n− Quản lý thiết bị trình chiếu, máy vi tính lớp học;\n− Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương,\nQuận 5 và 222 Lê Văn Sỹ, Quận 3.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -2530,13 +2504,7 @@
           "cohort": "K50",
           "unit": "Trung tâm Ngoại ngữ",
           "unit_name": "Trung tâm Ngoại ngữ",
-          "aliases": [
-            "Trung tâm Ngoại ngữ",
-            "TTNN",
-            "ngoai ngu",
-            "NN",
-            "Trung tam NN"
-          ],
+          "aliases": [],
           "services": [
             "Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao",
             "Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam",
@@ -2576,7 +2544,7 @@
           "website": "ttnnsp.edu.vn",
           "office": "",
           "summary": "Trung tâm Ngoại ngữ phu trach: Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1 – N5,… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên",
-          "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: Trung tâm Ngoại ngữ, TTNN, ngoai ngu, NN, Trung tam NN\nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1 – N5,… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: ",
+          "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: \nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1 – N5,… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: ",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -4722,22 +4690,8 @@
           "unit": "Phòng Đào tạo",
           "unit_name": "Phòng Đào tạo",
           "aliases": [
-            "Phòng Đào tạo",
-            "PDT",
-            "dao tao",
-            "DT",
-            "Phong DT",
-            "học vụ",
-            "đăng ký học phần",
-            "đăng ký môn",
-            "đăng ký tín chỉ",
-            "học phần",
-            "thời khóa biểu",
-            "lịch học",
-            "kế hoạch học kỳ",
-            "xét tốt nghiệp",
-            "công nhận tốt nghiệp",
-            "bằng tốt nghiệp"
+            "PĐT",
+            "học vụ"
           ],
           "services": [
             "Tổ chức tuyển sinh các hệ",
@@ -4794,7 +4748,7 @@
           "website": "",
           "office": "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
           "summary": "Phòng Đào tạo phu trach: Tổ chức tuyển sinh các hệ; Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ; xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo dõi, giám sát hoạt động dạy và học của giảng viên và sinh viên; Xây dựng và triển khai kế hoạch thực tập, thực tế năm học; Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương trình (song ngành) cho sinh viên đang theo học tại Trường; Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học; Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp; Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến",
-          "raw_text": "Don vi: Phòng Đào tạo\nAlias: Phòng Đào tạo, PDT, dao tao, DT, Phong DT, học vụ, đăng ký học phần, đăng ký môn, đăng ký tín chỉ, học phần, thời khóa biểu, lịch học, kế hoạch học kỳ, xét tốt nghiệp, công nhận tốt nghiệp, bằng tốt nghiệp\nDich vu phu trach: Tổ chức tuyển sinh các hệ; Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ; xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo dõi, giám sát hoạt động dạy và học của giảng viên và sinh viên; Xây dựng và triển khai kế hoạch thực tập, thực tế năm học; Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương trình (song ngành) cho sinh viên đang theo học tại Trường; Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học; Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp; Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến\nEmail: phongdt@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+          "raw_text": "Don vi: Phòng Đào tạo\nAlias: PĐT, học vụ\nDich vu phu trach: Tổ chức tuyển sinh các hệ; Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ; xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo dõi, giám sát hoạt động dạy và học của giảng viên và sinh viên; Xây dựng và triển khai kế hoạch thực tập, thực tế năm học; Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương trình (song ngành) cho sinh viên đang theo học tại Trường; Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học; Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp; Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến\nEmail: phongdt@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -5229,7 +5183,7 @@
           "source_section": "office_directory",
           "content_type": "student_service_directory",
           "summary": "Làm thẻ và phát thẻ bảo hiểm y tế - đơn vị phụ trách: Trạm Y tế",
-          "raw_text": "Dịch vụ: Làm thẻ và phát thẻ bảo hiểm y tế\nĐơn vị: Trạm Y tế\nAlias: \n12. Trạm Y tế\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 152\nEmail\n: tramyte@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.011,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên;\n– Khám cấp cứu;\n– Khám bệnh, cấp phát thuốc thông thường;\n– Làm thẻ và phát thẻ bảo hiểm y tế.",
+          "raw_text": "Dịch vụ: Làm thẻ và phát thẻ bảo hiểm y tế\nĐơn vị: Trạm Y tế\n12. Trạm Y tế\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 152\nEmail\n: tramyte@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.011,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên;\n– Khám cấp cứu;\n– Khám bệnh, cấp phát thuốc thông thường;\n– Làm thẻ và phát thẻ bảo hiểm y tế.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -5524,11 +5478,6 @@
           "faculty_name": "Khoa Công nghệ Thông tin",
           "campus": null,
           "aliases": [
-            "Khoa Công nghệ Thông tin",
-            "KCNTT",
-            "cong nghe thong tin",
-            "CNTT",
-            "Khoa CNTT",
             "CNTT",
             "IT"
           ],
@@ -5842,11 +5791,7 @@
           "content_mode": "rag_index",
           "source_record_id": "program_1",
           "faculty_aliases": [
-            "Khoa Công nghệ – Thông tin",
-            "KCNTT",
-            "cong nghe thong tin",
             "CNTT",
-            "Khoa CNTT",
             "IT"
           ],
           "data_category": "directory_table",
@@ -8780,11 +8725,7 @@
           "unit": "Trạm Y tế",
           "unit_name": "Trạm Y tế",
           "aliases": [
-            "Trạm Y tế",
             "TYT",
-            "y te",
-            "YT",
-            "Tram YT",
             "phòng y tế",
             "y tế trường"
           ],
@@ -8832,7 +8773,7 @@
           "website": "",
           "office": "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Trạm Y tế phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
-          "raw_text": "Don vi: Trạm Y tế\nAlias: Trạm Y tế, TYT, y te, YT, Tram YT, phòng y tế, y tế trường\nDich vu phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -8859,11 +8800,6 @@
           "faculty_name": "Khoa Hóa học",
           "campus": null,
           "aliases": [
-            "Khoa Hóa học",
-            "KHH",
-            "hoa hoc",
-            "HH",
-            "Khoa HH",
             "Hóa",
             "Hóa học"
           ],
@@ -9210,11 +9146,7 @@
           "content_mode": "rag_index",
           "source_record_id": "program_1",
           "faculty_aliases": [
-            "Khoa Công nghệ Thông tin",
-            "KCNTT",
-            "cong nghe thong tin",
             "CNTT",
-            "Khoa CNTT",
             "IT"
           ],
           "data_category": "directory_table",
@@ -9239,41 +9171,11 @@
           "unit": "Phòng Công tác chính trị và Học sinh, sinh viên",
           "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
           "aliases": [
-            "Phòng Công tác chính trị và Học sinh, sinh viên",
-            "PCTCTHSSV",
-            "cong tac chinh tri hoc sinh sinh vien",
-            "CTCTHSSV",
-            "Phong CTCTHSSV",
             "CTCT&HSSV",
             "CTCT-HSSV",
             "CTSV",
             "HSSV",
-            "Phòng Công tác sinh viên",
-            "xác nhận",
-            "giấy xác nhận sinh viên",
-            "giấy xác nhận đang học",
-            "giấy đang học",
-            "xác nhận sinh viên",
-            "chứng thực",
-            "thẻ sinh viên",
-            "cấp thẻ sinh viên",
-            "làm thẻ sinh viên",
-            "mất thẻ sinh viên",
-            "học bổng",
-            "học bổng khuyến khích học tập",
-            "HBKKHT",
-            "xét học bổng",
-            "miễn giảm học phí",
-            "miễn học phí",
-            "giảm học phí",
-            "hỗ trợ học phí",
-            "học phí",
-            "đóng học phí",
-            "thu học phí",
-            "biên lai học phí",
-            "vay vốn",
-            "vay vốn tín dụng",
-            "vay vốn sinh viên"
+            "Phòng Công tác sinh viên"
           ],
           "services": [
             "Công tác giáo dục chính trị, tư tưởng",
@@ -9282,8 +9184,7 @@
             "Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường",
             "Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên",
             "Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên",
-            "Tiếp nhận thông tin phản ánh của sinh viên",
-            "Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên"
+            "Tiếp nhận thông tin phản ánh của sinh viên"
           ],
           "service_ids": [
             "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_1",
@@ -9292,8 +9193,7 @@
             "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_4",
             "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_5",
             "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_6",
-            "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_7",
-            "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_catalog_service_1"
+            "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_7"
           ],
           "phones": [
             "(028) 38352020"
@@ -9323,8 +9223,7 @@
             "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_4",
             "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_5",
             "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_6",
-            "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_7",
-            "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_catalog_service_1"
+            "K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_7"
           ],
           "document_ids": [
             "so_tay_sinh_vien_khoa_51"
@@ -9335,8 +9234,8 @@
           "email": "hopthusinhvien@hcmue.edu.vn",
           "website": "ctsv.hcmue.edu.vn",
           "office": "Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
-          "summary": "Phòng Công tác chính trị và Học sinh, sinh viên phu trach: Công tác giáo dục chính trị, tư tưởng; Công tác giáo dục pháp luật; Công tác giáo dục đạo đức, lối sống, kỹ năng sống; Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường; Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên; Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên; Tiếp nhận thông tin phản ánh của sinh viên; Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên",
-          "raw_text": "Don vi: Phòng Công tác chính trị và Học sinh, sinh viên\nAlias: Phòng Công tác chính trị và Học sinh, sinh viên, PCTCTHSSV, cong tac chinh tri hoc sinh sinh vien, CTCTHSSV, Phong CTCTHSSV, CTCT&HSSV, CTCT-HSSV, CTSV, HSSV, Phòng Công tác sinh viên, xác nhận, giấy xác nhận sinh viên, giấy xác nhận đang học, giấy đang học, xác nhận sinh viên, chứng thực, thẻ sinh viên, cấp thẻ sinh viên, làm thẻ sinh viên, mất thẻ sinh viên, học bổng, học bổng khuyến khích học tập, HBKKHT, xét học bổng, miễn giảm học phí, miễn học phí, giảm học phí, hỗ trợ học phí, học phí, đóng học phí, thu học phí, biên lai học phí, vay vốn, vay vốn tín dụng, vay vốn sinh viên\nDich vu phu trach: Công tác giáo dục chính trị, tư tưởng; Công tác giáo dục pháp luật; Công tác giáo dục đạo đức, lối sống, kỹ năng sống; Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường; Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên; Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên; Tiếp nhận thông tin phản ánh của sinh viên; Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên\nEmail: hopthusinhvien@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+          "summary": "Phòng Công tác chính trị và Học sinh, sinh viên phu trach: Công tác giáo dục chính trị, tư tưởng; Công tác giáo dục pháp luật; Công tác giáo dục đạo đức, lối sống, kỹ năng sống; Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường; Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên; Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên; Tiếp nhận thông tin phản ánh của sinh viên",
+          "raw_text": "Don vi: Phòng Công tác chính trị và Học sinh, sinh viên\nAlias: CTCT&HSSV, CTCT-HSSV, CTSV, HSSV, Phòng Công tác sinh viên\nDich vu phu trach: Công tác giáo dục chính trị, tư tưởng; Công tác giáo dục pháp luật; Công tác giáo dục đạo đức, lối sống, kỹ năng sống; Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường; Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên; Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên; Tiếp nhận thông tin phản ánh của sinh viên\nEmail: hopthusinhvien@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -9695,12 +9594,7 @@
           "service_id": "K50_K50_phong_ke_hoach_tai_chinh_service_1",
           "cohort": "K50",
           "service": "Thu học phí, lệ phí các hệ đào tạo",
-          "aliases": [
-            "học phí",
-            "đóng học phí",
-            "thu học phí",
-            "biên lai học phí"
-          ],
+          "aliases": [],
           "unit": "Phòng Kế hoạch – Tài chính",
           "unit_name": "Phòng Kế hoạch – Tài chính",
           "phone": "(028) 38352020",
@@ -9732,7 +9626,7 @@
           "source_section": "office_directory",
           "content_type": "student_service_directory",
           "summary": "Thu học phí, lệ phí các hệ đào tạo - đơn vị phụ trách: Phòng Kế hoạch – Tài chính",
-          "raw_text": "Dịch vụ: Thu học phí, lệ phí các hệ đào tạo\nĐơn vị: Phòng Kế hoạch – Tài chính\nAlias: học phí, đóng học phí, thu học phí, biên lai học phí\n6. Phòng Kế hoạch – Tài chính\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 136, 137, 138, 139, 140\nEmail\n: phongkhtc@hcmue.edu.vn,\nhocphi@hcmue.edu.vn\nWebsite\n: phongkhtc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.205,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Thu học phí, lệ phí các hệ đào tạo;\n– Cấp phát HBKKHT và trợ cấp các loại chế độ chính sách cho sinh\nviên các hệ đào tạo.",
+          "raw_text": "Dịch vụ: Thu học phí, lệ phí các hệ đào tạo\nĐơn vị: Phòng Kế hoạch – Tài chính\n6. Phòng Kế hoạch – Tài chính\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 136, 137, 138, 139, 140\nEmail\n: phongkhtc@hcmue.edu.vn,\nhocphi@hcmue.edu.vn\nWebsite\n: phongkhtc.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.205,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Thu học phí, lệ phí các hệ đào tạo;\n– Cấp phát HBKKHT và trợ cấp các loại chế độ chính sách cho sinh\nviên các hệ đào tạo.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -9756,10 +9650,7 @@
           "cohort": "K50",
           "unit": "Thư viện",
           "unit_name": "Thư viện",
-          "aliases": [
-            "Thư viện",
-            "TV"
-          ],
+          "aliases": [],
           "services": [
             "Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu",
             "Hướng dẫn sinh viên sử dụng thư viện",
@@ -9814,7 +9705,7 @@
           "website": "https://www.facebook.com/lib.hcmue.edu.vn; lib.hcmue.edu.vn",
           "office": "Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 1 – 7, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Thư viện phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên",
-          "raw_text": "Don vi: Thư viện\nAlias: Thư viện, TV\nDich vu phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên\nEmail: thuvien@hcmue.edu.vn\nDien thoai: (028) 35261042; (028) 38308905; (028) 38352020\nDia diem: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 1 – 7, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "raw_text": "Don vi: Thư viện\nAlias: \nDich vu phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên\nEmail: thuvien@hcmue.edu.vn\nDien thoai: (028) 35261042; (028) 38308905; (028) 38352020\nDia diem: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 1 – 7, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -10409,13 +10300,7 @@
           "unit_name": "Khoa Giáo dục Tiểu học",
           "faculty_name": "Khoa Giáo dục Tiểu học",
           "campus": null,
-          "aliases": [
-            "Khoa Giáo dục Tiểu học",
-            "KGDTH",
-            "giao duc tieu hoc",
-            "GDTH",
-            "Khoa GDTH"
-          ],
+          "aliases": [],
           "phones": [
             "(028) 38352020"
           ],
@@ -10463,7 +10348,6 @@
           "unit": "Ký túc xá",
           "unit_name": "Ký túc xá",
           "aliases": [
-            "Ký túc xá",
             "KTX",
             "nội trú"
           ],
@@ -10503,7 +10387,7 @@
           "website": "",
           "office": "351A Lạc Long Quân, Phường 5, Quận 11, TP. HCM.",
           "summary": "Ký túc xá phu trach: Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú; Tổ chức các hoạt động ngoại khóa trong và ngoài khu nội trú giúp sinh viên rèn luyện kỹ năng",
-          "raw_text": "Don vi: Ký túc xá\nAlias: Ký túc xá, KTX, nội trú\nDich vu phu trach: Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú; Tổ chức các hoạt động ngoại khóa trong và ngoài khu nội trú giúp sinh viên rèn luyện kỹ năng\nEmail: ktx@hcmue.edu.vn\nDien thoai: (028) 38650758\nDia diem: 351A Lạc Long Quân, Phường 5, Quận 11, TP. HCM.",
+          "raw_text": "Don vi: Ký túc xá\nAlias: KTX, nội trú\nDich vu phu trach: Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú; Tổ chức các hoạt động ngoại khóa trong và ngoài khu nội trú giúp sinh viên rèn luyện kỹ năng\nEmail: ktx@hcmue.edu.vn\nDien thoai: (028) 38650758\nDia diem: 351A Lạc Long Quân, Phường 5, Quận 11, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -10980,13 +10864,7 @@
           "cohort": "K48-K49",
           "unit": "Trung tâm Ngoại ngữ",
           "unit_name": "Trung tâm Ngoại ngữ",
-          "aliases": [
-            "Trung tâm Ngoại ngữ",
-            "TTNN",
-            "ngoai ngu",
-            "NN",
-            "Trung tam NN"
-          ],
+          "aliases": [],
           "services": [
             "Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao",
             "Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam",
@@ -11026,7 +10904,7 @@
           "website": "ttnnsp.edu.vn",
           "office": "",
           "summary": "Trung tâm Ngoại ngữ phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên",
-          "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: Trung tâm Ngoại ngữ, TTNN, ngoai ngu, NN, Trung tam NN\nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: ",
+          "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: \nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: ",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -11413,7 +11291,7 @@
           "source_section": "office_directory",
           "content_type": "student_service_directory",
           "summary": "Khám cấp cứu - đơn vị phụ trách: Trạm Y tế",
-          "raw_text": "Dịch vụ: Khám cấp cứu\nĐơn vị: Trạm Y tế\nAlias: \n12. Trạm Y tế\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 152\nEmail\n: tramyte@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.011,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên;\n– Khám cấp cứu;\n– Khám bệnh, cấp phát thuốc thông thường;\n– Làm thẻ và phát thẻ bảo hiểm y tế.",
+          "raw_text": "Dịch vụ: Khám cấp cứu\nĐơn vị: Trạm Y tế\n12. Trạm Y tế\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 152\nEmail\n: tramyte@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.011,\nsố 280 An Dương Vương,\nphường Chợ Quán, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên;\n– Khám cấp cứu;\n– Khám bệnh, cấp phát thuốc thông thường;\n– Làm thẻ và phát thẻ bảo hiểm y tế.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -11452,11 +11330,6 @@
           "content_mode": "rag_index",
           "source_record_id": "program_40",
           "faculty_aliases": [
-            "Khoa Tâm lý học",
-            "KTLH",
-            "tam ly hoc",
-            "TLH",
-            "Khoa TLH",
             "Tâm lý"
           ],
           "data_category": "directory_table",
@@ -11590,13 +11463,7 @@
           "cohort": "K48-K49",
           "unit": "Phòng Tổ chức – Hành chính",
           "unit_name": "Phòng Tổ chức – Hành chính",
-          "aliases": [
-            "Phòng Tổ chức – Hành chính",
-            "PTCHC",
-            "to chuc hanh chinh",
-            "TCHC",
-            "Phong TCHC"
-          ],
+          "aliases": [],
           "services": [
             "Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền",
             "Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên"
@@ -11639,7 +11506,7 @@
           "website": "phongtchc.hcmue.edu.vn",
           "office": "Nhà A, tầng 1, P.104, P.105, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Phòng Tổ chức – Hành chính phu trach: Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền; Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên",
-          "raw_text": "Don vi: Phòng Tổ chức – Hành chính\nAlias: Phòng Tổ chức – Hành chính, PTCHC, to chuc hanh chinh, TCHC, Phong TCHC\nDich vu phu trach: Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền; Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên\nEmail: phongtchc@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.104, P.105, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "raw_text": "Don vi: Phòng Tổ chức – Hành chính\nAlias: \nDich vu phu trach: Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền; Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên\nEmail: phongtchc@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.104, P.105, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -11885,13 +11752,7 @@
           "cohort": "K51",
           "unit": "Trung tâm Tin học",
           "unit_name": "Trung tâm Tin học",
-          "aliases": [
-            "Trung tâm Tin học",
-            "TTTH",
-            "tin hoc",
-            "TH",
-            "Trung tam TH"
-          ],
+          "aliases": [],
           "services": [
             "Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của toàn Trường",
             "Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường"
@@ -11931,7 +11792,7 @@
           "website": "thsp.hcmue.edu.vn",
           "office": "Dãy A, tầng trệt, P.004, P.005 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
           "summary": "Trung tâm Tin học phu trach: Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của toàn Trường; Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường",
-          "raw_text": "Don vi: Trung tâm Tin học\nAlias: Trung tâm Tin học, TTTH, tin hoc, TH, Trung tam TH\nDich vu phu trach: Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của toàn Trường; Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường\nEmail: trungtamtinhoc@hcmue.edu.vn\nDien thoai: (028) 38392549\nDia diem: Dãy A, tầng trệt, P.004, P.005 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+          "raw_text": "Don vi: Trung tâm Tin học\nAlias: \nDich vu phu trach: Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của toàn Trường; Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường\nEmail: trungtamtinhoc@hcmue.edu.vn\nDien thoai: (028) 38392549\nDia diem: Dãy A, tầng trệt, P.004, P.005 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -17326,11 +17187,6 @@
           "faculty_name": "Khoa Lịch sử",
           "campus": null,
           "aliases": [
-            "Khoa Lịch sử",
-            "KLS",
-            "lich su",
-            "LS",
-            "Khoa LS",
             "Sử",
             "Lịch sử"
           ],
@@ -17911,12 +17767,8 @@
           "content_mode": "rag_index",
           "source_record_id": "program_23",
           "faculty_aliases": [
-            "Khoa Sinh học",
-            "KSH",
-            "sinh hoc",
-            "SH",
-            "Khoa SH",
-            "Sinh"
+            "Sinh",
+            "Sinh học"
           ],
           "data_category": "directory_table",
           "quality_status": "approved",
@@ -18122,10 +17974,7 @@
           "cohort": "K48-K49",
           "unit": "Thư viện",
           "unit_name": "Thư viện",
-          "aliases": [
-            "Thư viện",
-            "TV"
-          ],
+          "aliases": [],
           "services": [
             "Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu",
             "Hướng dẫn sinh viên sử dụng thư viện",
@@ -18179,7 +18028,7 @@
           "website": "https://www.facebook.com/lib.hcmue.edu.vn; lib.hcmue.edu.vn",
           "office": "Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM.",
           "summary": "Thư viện phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên",
-          "raw_text": "Don vi: Thư viện\nAlias: Thư viện, TV\nDich vu phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên\nEmail: thuvien@hcmue.edu.vn\nDien thoai: (028) 35260834; (028) 35261043; (028) 38308905\nDia diem: Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM.",
+          "raw_text": "Don vi: Thư viện\nAlias: \nDich vu phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên\nEmail: thuvien@hcmue.edu.vn\nDien thoai: (028) 35260834; (028) 35261043; (028) 38308905\nDia diem: Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -18416,22 +18265,8 @@
           "unit": "Phòng Đào tạo",
           "unit_name": "Phòng Đào tạo",
           "aliases": [
-            "Phòng Đào tạo",
-            "PDT",
-            "dao tao",
-            "DT",
-            "Phong DT",
-            "học vụ",
-            "đăng ký học phần",
-            "đăng ký môn",
-            "đăng ký tín chỉ",
-            "học phần",
-            "thời khóa biểu",
-            "lịch học",
-            "kế hoạch học kỳ",
-            "xét tốt nghiệp",
-            "công nhận tốt nghiệp",
-            "bằng tốt nghiệp"
+            "PĐT",
+            "học vụ"
           ],
           "services": [
             "Tổ chức tuyển sinh các hệ",
@@ -18488,7 +18323,7 @@
           "website": "",
           "office": "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Phòng Đào tạo phu trach: Tổ chức tuyển sinh các hệ; Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ; xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo dõi, giám sát hoạt động dạy và học của giảng viên và sinh viên; Xây dựng và triển khai kế hoạch thực tập, thực tế năm học; Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương trình (song ngành) cho sinh viên đang theo học tại Trường; Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học; Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp; Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến",
-          "raw_text": "Don vi: Phòng Đào tạo\nAlias: Phòng Đào tạo, PDT, dao tao, DT, Phong DT, học vụ, đăng ký học phần, đăng ký môn, đăng ký tín chỉ, học phần, thời khóa biểu, lịch học, kế hoạch học kỳ, xét tốt nghiệp, công nhận tốt nghiệp, bằng tốt nghiệp\nDich vu phu trach: Tổ chức tuyển sinh các hệ; Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ; xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo dõi, giám sát hoạt động dạy và học của giảng viên và sinh viên; Xây dựng và triển khai kế hoạch thực tập, thực tế năm học; Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương trình (song ngành) cho sinh viên đang theo học tại Trường; Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học; Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp; Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến\nEmail: phongdt@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "raw_text": "Don vi: Phòng Đào tạo\nAlias: PĐT, học vụ\nDich vu phu trach: Tổ chức tuyển sinh các hệ; Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ; xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theo dõi, giám sát hoạt động dạy và học của giảng viên và sinh viên; Xây dựng và triển khai kế hoạch thực tập, thực tế năm học; Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương trình (song ngành) cho sinh viên đang theo học tại Trường; Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học; Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp; Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến\nEmail: phongdt@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -19414,11 +19249,6 @@
           "faculty_name": "Khoa Hóa học",
           "campus": null,
           "aliases": [
-            "Khoa Hóa học",
-            "KHH",
-            "hoa hoc",
-            "HH",
-            "Khoa HH",
             "Hóa",
             "Hóa học"
           ],
@@ -19794,11 +19624,6 @@
           "faculty_name": "Khoa Ngữ văn",
           "campus": null,
           "aliases": [
-            "Khoa Ngữ văn",
-            "KNV",
-            "ngu van",
-            "NV",
-            "Khoa NV",
             "Văn"
           ],
           "phones": [
@@ -19931,13 +19756,7 @@
           "cohort": "K48-K49",
           "unit": "Phòng Quản trị – Thiết bị",
           "unit_name": "Phòng Quản trị – Thiết bị",
-          "aliases": [
-            "Phòng Quản trị – Thiết bị",
-            "PQTTB",
-            "quan tri thiet bi",
-            "QTTB",
-            "Phong QTTB"
-          ],
+          "aliases": [],
           "services": [
             "Quản lý lớp học, giảng đường, phòng họp",
             "Cho mượn amply, micro lớp học",
@@ -19983,7 +19802,7 @@
           "website": "",
           "office": "Nhà C, tầng trệt, P.004, P.005, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Phòng Quản trị – Thiết bị phu trach: Quản lý lớp học, giảng đường, phòng họp; Cho mượn amply, micro lớp học; Quản lý thiết bị trình chiếu, máy vi tính lớp học; Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương, Quận 5 và 222 Lê Văn Sỹ, Quận 3",
-          "raw_text": "Don vi: Phòng Quản trị – Thiết bị\nAlias: Phòng Quản trị – Thiết bị, PQTTB, quan tri thiet bi, QTTB, Phong QTTB\nDich vu phu trach: Quản lý lớp học, giảng đường, phòng họp; Cho mượn amply, micro lớp học; Quản lý thiết bị trình chiếu, máy vi tính lớp học; Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương, Quận 5 và 222 Lê Văn Sỹ, Quận 3\nEmail: phongqttb@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà C, tầng trệt, P.004, P.005, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "raw_text": "Don vi: Phòng Quản trị – Thiết bị\nAlias: \nDich vu phu trach: Quản lý lớp học, giảng đường, phòng họp; Cho mượn amply, micro lớp học; Quản lý thiết bị trình chiếu, máy vi tính lớp học; Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương, Quận 5 và 222 Lê Văn Sỹ, Quận 3\nEmail: phongqttb@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà C, tầng trệt, P.004, P.005, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -20328,11 +20147,7 @@
           "unit": "Trạm Y tế",
           "unit_name": "Trạm Y tế",
           "aliases": [
-            "Trạm Y tế",
             "TYT",
-            "y te",
-            "YT",
-            "Tram YT",
             "phòng y tế",
             "y tế trường"
           ],
@@ -20380,7 +20195,7 @@
           "website": "",
           "office": "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Trạm Y tế phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
-          "raw_text": "Don vi: Trạm Y tế\nAlias: Trạm Y tế, TYT, y te, YT, Tram YT, phòng y tế, y tế trường\nDich vu phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -20487,13 +20302,7 @@
           "unit_name": "Khoa Tiếng Nhật",
           "faculty_name": "Khoa Tiếng Nhật",
           "campus": null,
-          "aliases": [
-            "Khoa Tiếng Nhật",
-            "KTN",
-            "tieng nhat",
-            "TN",
-            "Khoa TN"
-          ],
+          "aliases": [],
           "phones": [
             "(028) 38352020"
           ],
@@ -20663,17 +20472,7 @@
           "cohort": "K51",
           "unit": "Phòng Hợp tác Quốc tế",
           "unit_name": "Phòng Hợp tác Quốc tế",
-          "aliases": [
-            "Phòng Hợp tác Quốc tế",
-            "PHTQT",
-            "hop tac quoc te",
-            "HTQT",
-            "Phong HTQT",
-            "học bổng",
-            "học bổng khuyến khích học tập",
-            "HBKKHT",
-            "xét học bổng"
-          ],
+          "aliases": [],
           "services": [
             "Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước",
             "Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác nước ngoài",
@@ -20718,7 +20517,7 @@
           "website": "phonghtqt.hcmue.edu.vn",
           "office": "Nhà A, tầng 1, P.111, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
           "summary": "Phòng Hợp tác Quốc tế phu trach: Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước; Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác nước ngoài; Tổ chức giao lưu văn hóa – trao đổi học thuật",
-          "raw_text": "Don vi: Phòng Hợp tác Quốc tế\nAlias: Phòng Hợp tác Quốc tế, PHTQT, hop tac quoc te, HTQT, Phong HTQT, học bổng, học bổng khuyến khích học tập, HBKKHT, xét học bổng\nDich vu phu trach: Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước; Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác nước ngoài; Tổ chức giao lưu văn hóa – trao đổi học thuật\nEmail: phonghtqt@hcmue.edu.vn\nDien thoai: (028) 3891080\nDia diem: Nhà A, tầng 1, P.111, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+          "raw_text": "Don vi: Phòng Hợp tác Quốc tế\nAlias: \nDich vu phu trach: Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước; Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác nước ngoài; Tổ chức giao lưu văn hóa – trao đổi học thuật\nEmail: phonghtqt@hcmue.edu.vn\nDien thoai: (028) 3891080\nDia diem: Nhà A, tầng 1, P.111, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -20897,12 +20696,8 @@
           "content_mode": "rag_index",
           "source_record_id": "program_17",
           "faculty_aliases": [
-            "Khoa Địa lí",
-            "KDL",
-            "dia li",
-            "DL",
-            "Khoa DL",
-            "Địa"
+            "Địa",
+            "Địa lí"
           ],
           "data_category": "directory_table",
           "quality_status": "approved",
@@ -20928,11 +20723,6 @@
           "faculty_name": "Khoa Địa lí",
           "campus": null,
           "aliases": [
-            "Khoa Địa lí",
-            "KDL",
-            "dia li",
-            "DL",
-            "Khoa DL",
             "Địa",
             "Địa lí"
           ],
@@ -21138,12 +20928,8 @@
           "content_mode": "rag_index",
           "source_record_id": "program_8",
           "faculty_aliases": [
-            "Khoa Hóa học",
-            "KHH",
-            "hoa hoc",
-            "HH",
-            "Khoa HH",
-            "Hóa"
+            "Hóa",
+            "Hóa học"
           ],
           "data_category": "directory_table",
           "quality_status": "approved",
@@ -21169,11 +20955,6 @@
           "faculty_name": "Khoa Hóa học",
           "campus": null,
           "aliases": [
-            "Khoa Hóa học",
-            "KHH",
-            "hoa hoc",
-            "HH",
-            "Khoa HH",
             "Hóa",
             "Hóa học"
           ],
@@ -21407,13 +21188,7 @@
           "unit_name": "Khoa Tiếng Nhật",
           "faculty_name": "Khoa Tiếng Nhật",
           "campus": null,
-          "aliases": [
-            "Khoa Tiếng Nhật",
-            "KTN",
-            "tieng nhat",
-            "TN",
-            "Khoa TN"
-          ],
+          "aliases": [],
           "phones": [
             "(028) 38352020"
           ],
@@ -21612,11 +21387,6 @@
           "content_mode": "rag_index",
           "source_record_id": "program_40",
           "faculty_aliases": [
-            "Khoa Tâm lý học",
-            "KTLH",
-            "tam ly hoc",
-            "TLH",
-            "Khoa TLH",
             "Tâm lý"
           ],
           "data_category": "directory_table",
@@ -21643,11 +21413,6 @@
           "faculty_name": "Khoa Tâm lý học",
           "campus": null,
           "aliases": [
-            "Khoa Tâm lý học",
-            "KTLH",
-            "tam ly hoc",
-            "TLH",
-            "Khoa TLH",
             "Tâm lý"
           ],
           "phones": [
@@ -21763,15 +21528,10 @@
       {
         "catalog": "service",
         "record": {
-          "service_id": "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_catalog_service_1",
+          "service_id": "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
           "cohort": "K48-K49",
-          "service": "Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên",
-          "aliases": [
-            "Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên",
-            "vay vốn sinh viên",
-            "vay vốn tín dụng",
-            "hồ sơ vay vốn"
-          ],
+          "service": "Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên",
+          "aliases": [],
           "unit": "Phòng Công tác chính trị và Học sinh, sinh viên",
           "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
           "phone": "(028) 38352020",
@@ -21799,17 +21559,17 @@
           ],
           "source_record_id": "K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien",
           "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_section": "student_service_directory",
+          "source_section": "office_directory",
           "content_type": "student_service_directory",
-          "summary": "Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên - đơn vị phụ trách: Phòng Công tác chính trị và Học sinh, sinh viên",
-          "raw_text": "Dịch vụ: Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên\nĐơn vị: Phòng Công tác chính trị và Học sinh, sinh viên\nAlias: Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên, vay vốn sinh viên, vay vốn tín dụng, hồ sơ vay vốn\n2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: phongctct@hcmue.edu.vn\nhopthusinhvien@hcmue.edu.vn\nWebsite\n: phongctct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Công tác giáo dục chính trị tư tưởng;\n− Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n− Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh\nviên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên\nquan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng\ntiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến\nsinh viên; theo dõi phát triển Đảng trong sinh viên;\n− Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên.",
+          "summary": "Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên - đơn vị phụ trách: Phòng Công tác chính trị và Học sinh, sinh viên",
+          "raw_text": "Dịch vụ: Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên\nĐơn vị: Phòng Công tác chính trị và Học sinh, sinh viên\n2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: phongctct@hcmue.edu.vn\nhopthusinhvien@hcmue.edu.vn\nWebsite\n: phongctct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Công tác giáo dục chính trị tư tưởng;\n− Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n− Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh\nviên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên\nquan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng\ntiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến\nsinh viên; theo dõi phát triển Đảng trong sinh viên;\n− Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_service_directory",
-            "record_id": "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_catalog_service_1",
+            "record_id": "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
             "cohort": "K48-K49",
             "document_id": "so_tay_sinh_vien_khoa_48_49",
             "source_pages": [
@@ -21896,16 +21656,10 @@
       {
         "catalog": "service",
         "record": {
-          "service_id": "K50_K50_phong_cong_nghe_thong_tin_catalog_service_1",
+          "service_id": "K50_K50_phong_cong_nghe_thong_tin_service_5",
           "cohort": "K50",
-          "service": "Hỗ trợ kết nối mạng và wifi sinh viên",
-          "aliases": [
-            "Hỗ trợ kết nối mạng và wifi sinh viên",
-            "wifi",
-            "mạng wifi",
-            "kết nối wifi",
-            "mạng không dây"
-          ],
+          "service": "Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường",
+          "aliases": [],
           "unit": "Phòng Công nghệ Thông tin",
           "unit_name": "Phòng Công nghệ Thông tin",
           "phone": "(028) 38352020",
@@ -21927,17 +21681,17 @@
           ],
           "source_record_id": "K50_phong_cong_nghe_thong_tin",
           "document_id": "so_tay_sinh_vien_khoa_50",
-          "source_section": "student_service_directory",
+          "source_section": "office_directory",
           "content_type": "student_service_directory",
-          "summary": "Hỗ trợ kết nối mạng và wifi sinh viên - đơn vị phụ trách: Phòng Công nghệ Thông tin",
-          "raw_text": "Dịch vụ: Hỗ trợ kết nối mạng và wifi sinh viên\nĐơn vị: Phòng Công nghệ Thông tin\nAlias: Hỗ trợ kết nối mạng và wifi sinh viên, wifi, mạng wifi, kết nối wifi, mạng không dây\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến công nghệ thông tin.",
+          "summary": "Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường - đơn vị phụ trách: Phòng Công nghệ Thông tin",
+          "raw_text": "Dịch vụ: Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường\nĐơn vị: Phòng Công nghệ Thông tin\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến công nghệ thông tin.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_service_directory",
-            "record_id": "K50_K50_phong_cong_nghe_thong_tin_catalog_service_1",
+            "record_id": "K50_K50_phong_cong_nghe_thong_tin_service_5",
             "cohort": "K50",
             "document_id": "so_tay_sinh_vien_khoa_50",
             "source_pages": [

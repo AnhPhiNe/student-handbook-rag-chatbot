@@ -7,11 +7,6 @@
     "faculty_name": "Khoa Công nghệ – Thông tin",
     "campus": null,
     "aliases": [
-      "Khoa Công nghệ – Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
-      "CNTT",
-      "Khoa CNTT",
       "CNTT",
       "IT"
     ],
@@ -62,13 +57,7 @@
     "unit_name": "Khoa Giáo dục Chính trị",
     "faculty_name": "Khoa Giáo dục Chính trị",
     "campus": null,
-    "aliases": [
-      "Khoa Giáo dục Chính trị",
-      "KGDCT",
-      "giao duc chinh tri",
-      "GDCT",
-      "Khoa GDCT"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -115,11 +104,6 @@
     "faculty_name": "Khoa Giáo dục Mầm non",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Mầm non",
-      "KGDMN",
-      "giao duc mam non",
-      "GDMN",
-      "Khoa GDMN",
       "Mầm non",
       "GDMN"
     ],
@@ -170,11 +154,6 @@
     "faculty_name": "Khoa Giáo dục Quốc phòng",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Quốc phòng",
-      "KGDQP",
-      "giao duc quoc phong",
-      "GDQP",
-      "Khoa GDQP",
       "Quốc phòng",
       "GDQP"
     ],
@@ -224,11 +203,6 @@
     "faculty_name": "Khoa Giáo dục Thể chất",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Thể chất",
-      "KGDTC",
-      "giao duc the chat",
-      "GDTC",
-      "Khoa GDTC",
       "Thể chất",
       "GDTC"
     ],
@@ -277,13 +251,7 @@
     "unit_name": "Khoa Giáo dục Tiểu học",
     "faculty_name": "Khoa Giáo dục Tiểu học",
     "campus": null,
-    "aliases": [
-      "Khoa Giáo dục Tiểu học",
-      "KGDTH",
-      "giao duc tieu hoc",
-      "GDTH",
-      "Khoa GDTH"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -330,11 +298,6 @@
     "faculty_name": "Khoa Giáo dục Đặc biệt",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Đặc biệt",
-      "KGDDB",
-      "giao duc dac biet",
-      "GDDB",
-      "Khoa GDDB",
       "Đặc biệt",
       "GDĐB"
     ],
@@ -386,11 +349,6 @@
     "faculty_name": "Khoa Hóa học",
     "campus": null,
     "aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
       "Hóa",
       "Hóa học"
     ],
@@ -441,13 +399,7 @@
     "unit_name": "Khoa Khoa học Giáo dục",
     "faculty_name": "Khoa Khoa học Giáo dục",
     "campus": null,
-    "aliases": [
-      "Khoa Khoa học Giáo dục",
-      "KKHGD",
-      "khoa hoc giao duc",
-      "KHGD",
-      "Khoa KHGD"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -496,11 +448,6 @@
     "faculty_name": "Khoa Lịch sử",
     "campus": null,
     "aliases": [
-      "Khoa Lịch sử",
-      "KLS",
-      "lich su",
-      "LS",
-      "Khoa LS",
       "Sử",
       "Lịch sử"
     ],
@@ -552,11 +499,6 @@
     "faculty_name": "Khoa Ngữ văn",
     "campus": null,
     "aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "phones": [
@@ -607,11 +549,6 @@
     "faculty_name": "Khoa Sinh học",
     "campus": null,
     "aliases": [
-      "Khoa Sinh học",
-      "KSH",
-      "sinh hoc",
-      "SH",
-      "Khoa SH",
       "Sinh",
       "Sinh học"
     ],
@@ -663,11 +600,6 @@
     "faculty_name": "Khoa Tiếng Anh",
     "campus": null,
     "aliases": [
-      "Khoa Tiếng Anh",
-      "KTA",
-      "tieng anh",
-      "TA",
-      "Khoa TA",
       "Tiếng Anh",
       "Anh văn"
     ],
@@ -718,13 +650,7 @@
     "unit_name": "Khoa Tiếng Hàn Quốc",
     "faculty_name": "Khoa Tiếng Hàn Quốc",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Hàn Quốc",
-      "KTHQ",
-      "tieng han quoc",
-      "THQ",
-      "Khoa THQ"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38303247"
     ],
@@ -770,13 +696,7 @@
     "unit_name": "Khoa Tiếng Nga",
     "faculty_name": "Khoa Tiếng Nga",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Nga",
-      "KTN",
-      "tieng nga",
-      "TN",
-      "Khoa TN"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38390273"
     ],
@@ -825,13 +745,7 @@
     "unit_name": "Khoa Tiếng Nhật",
     "faculty_name": "Khoa Tiếng Nhật",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Nhật",
-      "KTN",
-      "tieng nhat",
-      "TN",
-      "Khoa TN"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -876,13 +790,7 @@
     "unit_name": "Khoa Tiếng Pháp",
     "faculty_name": "Khoa Tiếng Pháp",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Pháp",
-      "KTP",
-      "tieng phap",
-      "TP",
-      "Khoa TP"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -929,13 +837,7 @@
     "unit_name": "Khoa Tiếng Trung Quốc",
     "faculty_name": "Khoa Tiếng Trung Quốc",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Trung Quốc",
-      "KTTQ",
-      "tieng trung quoc",
-      "TTQ",
-      "Khoa TTQ"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -985,11 +887,6 @@
     "faculty_name": "Khoa Toán – Tin học",
     "campus": null,
     "aliases": [
-      "Khoa Toán – Tin học",
-      "KTTH",
-      "toan tin hoc",
-      "TTH",
-      "Khoa TTH",
       "Toán"
     ],
     "phones": [
@@ -1037,11 +934,6 @@
     "faculty_name": "Khoa Tâm lí học",
     "campus": null,
     "aliases": [
-      "Khoa Tâm lí học",
-      "KTLH",
-      "tam li hoc",
-      "TLH",
-      "Khoa TLH",
       "Tâm lí",
       "Tâm lý"
     ],
@@ -1093,11 +985,6 @@
     "faculty_name": "Khoa Vật lí",
     "campus": null,
     "aliases": [
-      "Khoa Vật lí",
-      "KVL",
-      "vat li",
-      "VL",
-      "Khoa VL",
       "Lí",
       "Vật lí"
     ],
@@ -1149,11 +1036,6 @@
     "faculty_name": "Khoa Địa lí",
     "campus": null,
     "aliases": [
-      "Khoa Địa lí",
-      "KDL",
-      "dia li",
-      "DL",
-      "Khoa DL",
       "Địa",
       "Địa lí"
     ],
@@ -1204,10 +1086,7 @@
     "unit_name": "Tổ Giáo dục Nữ công",
     "faculty_name": "Tổ Giáo dục Nữ công",
     "campus": null,
-    "aliases": [
-      "Tổ Giáo dục Nữ công",
-      "TGDNC"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -1263,11 +1142,6 @@
     "faculty_name": "Khoa Công nghệ Thông tin",
     "campus": null,
     "aliases": [
-      "Khoa Công nghệ Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
-      "CNTT",
-      "Khoa CNTT",
       "CNTT",
       "IT"
     ],
@@ -1318,13 +1192,7 @@
     "unit_name": "Khoa Giáo dục Chính trị",
     "faculty_name": "Khoa Giáo dục Chính trị",
     "campus": null,
-    "aliases": [
-      "Khoa Giáo dục Chính trị",
-      "KGDCT",
-      "giao duc chinh tri",
-      "GDCT",
-      "Khoa GDCT"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -1371,11 +1239,6 @@
     "faculty_name": "Khoa Giáo dục Mầm non",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Mầm non",
-      "KGDMN",
-      "giao duc mam non",
-      "GDMN",
-      "Khoa GDMN",
       "Mầm non",
       "GDMN"
     ],
@@ -1424,11 +1287,6 @@
     "faculty_name": "Khoa Giáo dục Quốc phòng",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Quốc phòng",
-      "KGDQP",
-      "giao duc quoc phong",
-      "GDQP",
-      "Khoa GDQP",
       "Quốc phòng",
       "GDQP"
     ],
@@ -1478,11 +1336,6 @@
     "faculty_name": "Khoa Giáo dục Thể chất",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Thể chất",
-      "KGDTC",
-      "giao duc the chat",
-      "GDTC",
-      "Khoa GDTC",
       "Thể chất",
       "GDTC"
     ],
@@ -1531,13 +1384,7 @@
     "unit_name": "Khoa Giáo dục Tiểu học",
     "faculty_name": "Khoa Giáo dục Tiểu học",
     "campus": null,
-    "aliases": [
-      "Khoa Giáo dục Tiểu học",
-      "KGDTH",
-      "giao duc tieu hoc",
-      "GDTH",
-      "Khoa GDTH"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -1584,11 +1431,6 @@
     "faculty_name": "Khoa Giáo dục Đặc biệt",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Đặc biệt",
-      "KGDDB",
-      "giao duc dac biet",
-      "GDDB",
-      "Khoa GDDB",
       "Đặc biệt",
       "GDĐB"
     ],
@@ -1640,11 +1482,6 @@
     "faculty_name": "Khoa Hóa học",
     "campus": null,
     "aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
       "Hóa",
       "Hóa học"
     ],
@@ -1695,13 +1532,7 @@
     "unit_name": "Khoa Khoa học Giáo dục",
     "faculty_name": "Khoa Khoa học Giáo dục",
     "campus": null,
-    "aliases": [
-      "Khoa Khoa học Giáo dục",
-      "KKHGD",
-      "khoa hoc giao duc",
-      "KHGD",
-      "Khoa KHGD"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -1750,11 +1581,6 @@
     "faculty_name": "Khoa Lịch sử",
     "campus": null,
     "aliases": [
-      "Khoa Lịch sử",
-      "KLS",
-      "lich su",
-      "LS",
-      "Khoa LS",
       "Sử",
       "Lịch sử"
     ],
@@ -1804,11 +1630,6 @@
     "faculty_name": "Khoa Ngữ văn",
     "campus": null,
     "aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "phones": [
@@ -1859,11 +1680,6 @@
     "faculty_name": "Khoa Sinh học",
     "campus": null,
     "aliases": [
-      "Khoa Sinh học",
-      "KSH",
-      "sinh hoc",
-      "SH",
-      "Khoa SH",
       "Sinh",
       "Sinh học"
     ],
@@ -1915,11 +1731,6 @@
     "faculty_name": "Khoa Tiếng Anh",
     "campus": null,
     "aliases": [
-      "Khoa Tiếng Anh",
-      "KTA",
-      "tieng anh",
-      "TA",
-      "Khoa TA",
       "Tiếng Anh",
       "Anh văn"
     ],
@@ -1970,13 +1781,7 @@
     "unit_name": "Khoa Tiếng Hàn Quốc",
     "faculty_name": "Khoa Tiếng Hàn Quốc",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Hàn Quốc",
-      "KTHQ",
-      "tieng han quoc",
-      "THQ",
-      "Khoa THQ"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38303247"
     ],
@@ -2022,13 +1827,7 @@
     "unit_name": "Khoa Tiếng Nga",
     "faculty_name": "Khoa Tiếng Nga",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Nga",
-      "KTN",
-      "tieng nga",
-      "TN",
-      "Khoa TN"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -2076,13 +1875,7 @@
     "unit_name": "Khoa Tiếng Nhật",
     "faculty_name": "Khoa Tiếng Nhật",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Nhật",
-      "KTN",
-      "tieng nhat",
-      "TN",
-      "Khoa TN"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -2127,13 +1920,7 @@
     "unit_name": "Khoa Tiếng Pháp",
     "faculty_name": "Khoa Tiếng Pháp",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Pháp",
-      "KTP",
-      "tieng phap",
-      "TP",
-      "Khoa TP"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -2183,11 +1970,6 @@
     "faculty_name": "Khoa Tiếng Trung",
     "campus": null,
     "aliases": [
-      "Khoa Tiếng Trung",
-      "KTT",
-      "tieng trung",
-      "TT",
-      "Khoa TT",
       "Khoa Tiếng Trung Quốc"
     ],
     "phones": [
@@ -2239,11 +2021,6 @@
     "faculty_name": "Khoa Toán – Tin học",
     "campus": null,
     "aliases": [
-      "Khoa Toán – Tin học",
-      "KTTH",
-      "toan tin hoc",
-      "TTH",
-      "Khoa TTH",
       "Toán"
     ],
     "phones": [
@@ -2291,11 +2068,6 @@
     "faculty_name": "Khoa Tâm lý học",
     "campus": null,
     "aliases": [
-      "Khoa Tâm lý học",
-      "KTLH",
-      "tam ly hoc",
-      "TLH",
-      "Khoa TLH",
       "Tâm lý"
     ],
     "phones": [
@@ -2346,11 +2118,6 @@
     "faculty_name": "Khoa Vật lý",
     "campus": null,
     "aliases": [
-      "Khoa Vật lý",
-      "KVL",
-      "vat ly",
-      "VL",
-      "Khoa VL",
       "Lý",
       "Vật lý"
     ],
@@ -2402,11 +2169,6 @@
     "faculty_name": "Khoa Địa lý",
     "campus": null,
     "aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
       "Địa",
       "Địa lý"
     ],
@@ -2459,10 +2221,7 @@
     "unit_name": "Tổ Giáo dục Nữ công",
     "faculty_name": "Tổ Giáo dục Nữ công",
     "campus": null,
-    "aliases": [
-      "Tổ Giáo dục Nữ công",
-      "TGDNC"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -2506,11 +2265,6 @@
     "faculty_name": "Khoa Công nghệ Thông tin",
     "campus": null,
     "aliases": [
-      "Khoa Công nghệ Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
-      "CNTT",
-      "Khoa CNTT",
       "CNTT",
       "IT"
     ],
@@ -2559,13 +2313,7 @@
     "unit_name": "Khoa Giáo dục Chính trị",
     "faculty_name": "Khoa Giáo dục Chính trị",
     "campus": null,
-    "aliases": [
-      "Khoa Giáo dục Chính trị",
-      "KGDCT",
-      "giao duc chinh tri",
-      "GDCT",
-      "Khoa GDCT"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -2612,11 +2360,6 @@
     "faculty_name": "Khoa Giáo dục Mầm non",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Mầm non",
-      "KGDMN",
-      "giao duc mam non",
-      "GDMN",
-      "Khoa GDMN",
       "Mầm non",
       "GDMN"
     ],
@@ -2665,11 +2408,6 @@
     "faculty_name": "Khoa Giáo dục Quốc phòng",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Quốc phòng",
-      "KGDQP",
-      "giao duc quoc phong",
-      "GDQP",
-      "Khoa GDQP",
       "Quốc phòng",
       "GDQP"
     ],
@@ -2719,11 +2457,6 @@
     "faculty_name": "Khoa Giáo dục Thể chất",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Thể chất",
-      "KGDTC",
-      "giao duc the chat",
-      "GDTC",
-      "Khoa GDTC",
       "Thể chất",
       "GDTC"
     ],
@@ -2774,13 +2507,7 @@
     "unit_name": "Khoa Giáo dục Tiểu học",
     "faculty_name": "Khoa Giáo dục Tiểu học",
     "campus": null,
-    "aliases": [
-      "Khoa Giáo dục Tiểu học",
-      "KGDTH",
-      "giao duc tieu hoc",
-      "GDTH",
-      "Khoa GDTH"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -2827,11 +2554,6 @@
     "faculty_name": "Khoa Giáo dục Đặc biệt",
     "campus": null,
     "aliases": [
-      "Khoa Giáo dục Đặc biệt",
-      "KGDDB",
-      "giao duc dac biet",
-      "GDDB",
-      "Khoa GDDB",
       "Đặc biệt",
       "GDĐB"
     ],
@@ -2882,10 +2604,6 @@
     "campus": "Phân hiệu Gia Lai",
     "aliases": [
       "Khoa Giáo dục đặc thù",
-      "KGDDT",
-      "giao duc dac thu",
-      "GDDT",
-      "Khoa GDDT",
       "Khoa Giáo dục đặc thù (Phân hiệu Gia Lai)",
       "Khoa Giáo dục đặc thù Gia Lai"
     ],
@@ -2930,11 +2648,6 @@
     "faculty_name": "Khoa Hóa học",
     "campus": null,
     "aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
       "Hóa",
       "Hóa học"
     ],
@@ -2985,13 +2698,7 @@
     "unit_name": "Khoa Khoa học Giáo dục",
     "faculty_name": "Khoa Khoa học Giáo dục",
     "campus": null,
-    "aliases": [
-      "Khoa Khoa học Giáo dục",
-      "KKHGD",
-      "khoa hoc giao duc",
-      "KHGD",
-      "Khoa KHGD"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -3041,10 +2748,7 @@
     "campus": "Phân hiệu Gia Lai",
     "aliases": [
       "Khoa Khoa học Tự nhiên",
-      "KKHTN",
-      "khoa hoc tu nhien",
       "KHTN",
-      "Khoa KHTN",
       "Tự nhiên",
       "Khoa Khoa học Tự nhiên (Phân hiệu Gia Lai)",
       "Khoa Khoa học Tự nhiên Gia Lai"
@@ -3091,10 +2795,7 @@
     "campus": "Phân hiệu Long An",
     "aliases": [
       "Khoa Khoa học – Tự nhiên",
-      "KKHTN",
-      "khoa hoc tu nhien",
       "KHTN",
-      "Khoa KHTN",
       "Tự nhiên",
       "Khoa Khoa học – Tự nhiên (Phân hiệu Long An)",
       "Khoa Khoa học – Tự nhiên Long An"
@@ -3138,11 +2839,6 @@
     "faculty_name": "Khoa Lịch sử",
     "campus": null,
     "aliases": [
-      "Khoa Lịch sử",
-      "KLS",
-      "lich su",
-      "LS",
-      "Khoa LS",
       "Sử",
       "Lịch sử"
     ],
@@ -3192,11 +2888,6 @@
     "faculty_name": "Khoa Ngữ văn",
     "campus": null,
     "aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "phones": [
@@ -3245,11 +2936,6 @@
     "faculty_name": "Khoa Sinh học",
     "campus": null,
     "aliases": [
-      "Khoa Sinh học",
-      "KSH",
-      "sinh hoc",
-      "SH",
-      "Khoa SH",
       "Sinh",
       "Sinh học"
     ],
@@ -3299,11 +2985,6 @@
     "faculty_name": "Khoa Tiếng Anh",
     "campus": null,
     "aliases": [
-      "Khoa Tiếng Anh",
-      "KTA",
-      "tieng anh",
-      "TA",
-      "Khoa TA",
       "Tiếng Anh",
       "Anh văn"
     ],
@@ -3352,13 +3033,7 @@
     "unit_name": "Khoa Tiếng Hàn Quốc",
     "faculty_name": "Khoa Tiếng Hàn Quốc",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Hàn Quốc",
-      "KTHQ",
-      "tieng han quoc",
-      "THQ",
-      "Khoa THQ"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38303247"
     ],
@@ -3404,13 +3079,7 @@
     "unit_name": "Khoa Tiếng Nga",
     "faculty_name": "Khoa Tiếng Nga",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Nga",
-      "KTN",
-      "tieng nga",
-      "TN",
-      "Khoa TN"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -3458,13 +3127,7 @@
     "unit_name": "Khoa Tiếng Nhật",
     "faculty_name": "Khoa Tiếng Nhật",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Nhật",
-      "KTN",
-      "tieng nhat",
-      "TN",
-      "Khoa TN"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -3509,13 +3172,7 @@
     "unit_name": "Khoa Tiếng Pháp",
     "faculty_name": "Khoa Tiếng Pháp",
     "campus": null,
-    "aliases": [
-      "Khoa Tiếng Pháp",
-      "KTP",
-      "tieng phap",
-      "TP",
-      "Khoa TP"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -3561,11 +3218,6 @@
     "faculty_name": "Khoa Tiếng Trung",
     "campus": null,
     "aliases": [
-      "Khoa Tiếng Trung",
-      "KTT",
-      "tieng trung",
-      "TT",
-      "Khoa TT",
       "Khoa Tiếng Trung Quốc"
     ],
     "phones": [
@@ -3615,11 +3267,6 @@
     "faculty_name": "Khoa Toán – Tin học",
     "campus": null,
     "aliases": [
-      "Khoa Toán – Tin học",
-      "KTTH",
-      "toan tin hoc",
-      "TTH",
-      "Khoa TTH",
       "Toán"
     ],
     "phones": [
@@ -3667,11 +3314,6 @@
     "faculty_name": "Khoa Tâm lý học",
     "campus": null,
     "aliases": [
-      "Khoa Tâm lý học",
-      "KTLH",
-      "tam ly hoc",
-      "TLH",
-      "Khoa TLH",
       "Tâm lý"
     ],
     "phones": [
@@ -3718,11 +3360,6 @@
     "faculty_name": "Khoa Vật lý",
     "campus": null,
     "aliases": [
-      "Khoa Vật lý",
-      "KVL",
-      "vat ly",
-      "VL",
-      "Khoa VL",
       "Lý",
       "Vật lý"
     ],
@@ -3772,11 +3409,6 @@
     "faculty_name": "Khoa Địa lý",
     "campus": null,
     "aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
       "Địa",
       "Địa lý"
     ],
@@ -3825,10 +3457,7 @@
     "unit_name": "Tổ Giáo dục Nữ công",
     "faculty_name": "Tổ Giáo dục Nữ công",
     "campus": null,
-    "aliases": [
-      "Tổ Giáo dục Nữ công",
-      "TGDNC"
-    ],
+    "aliases": [],
     "phones": [
       "(028) 38352020"
     ],
@@ -3875,7 +3504,6 @@
     "campus": "Phân hiệu Gia Lai",
     "aliases": [
       "Tổ Hành chính – Quản trị",
-      "THCQT",
       "Tổ Hành chính – Quản trị (Phân hiệu Gia Lai)",
       "Tổ Hành chính – Quản trị Gia Lai"
     ],
@@ -3923,7 +3551,6 @@
     "campus": "Phân hiệu Long An",
     "aliases": [
       "Tổ Hành chính – Quản trị",
-      "THCQT",
       "Tổ Hành chính – Quản trị (Phân hiệu Long An)",
       "Tổ Hành chính – Quản trị Long An"
     ],
@@ -3972,7 +3599,6 @@
     "campus": "Phân hiệu Long An",
     "aliases": [
       "Tổ Khoa học cơ bản",
-      "TKHCB",
       "Tổ Khoa học cơ bản (Phân hiệu Long An)",
       "Tổ Khoa học cơ bản Long An"
     ],
@@ -4016,7 +3642,6 @@
     "campus": "Phân hiệu Long An",
     "aliases": [
       "Tổ Ngoại ngữ",
-      "TNN",
       "Tổ Ngoại ngữ (Phân hiệu Long An)",
       "Tổ Ngoại ngữ Long An"
     ],
@@ -4062,7 +3687,6 @@
     "campus": "Phân hiệu Gia Lai",
     "aliases": [
       "Tổ Đào tạo – Khảo thí – Công tác sinh viên",
-      "TDTKTCTSV",
       "Tổ Đào tạo – Khảo thí – Công tác sinh viên (Phân hiệu Gia Lai)",
       "Tổ Đào tạo – Khảo thí – Công tác sinh viên Gia Lai"
     ],
@@ -4110,7 +3734,6 @@
     "campus": "Phân hiệu Long An",
     "aliases": [
       "Tổ Đào tạo – Khảo thí – Công tác sinh viên",
-      "TDTKTCTSV",
       "Tổ Đào tạo – Khảo thí – Công tác sinh viên (Phân hiệu Long An)",
       "Tổ Đào tạo – Khảo thí – Công tác sinh viên Long An"
     ],

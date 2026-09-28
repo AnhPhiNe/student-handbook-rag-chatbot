@@ -7,5 +7,11 @@
     "answers": 154,
     "retrieval": 93
   },
-  "integrity": "The git commit that adds this file is the frozen version; see README, Protocol step 2."
+  "integrity": "The git commit that adds this file is the frozen version; see README, Protocol step 2.",
+  "corrections": [
+    {
+      "date": "2026-09-28",
+      "change": "Recompiled against directory catalogs rebuilt without guessed keyword aliases and without two service records the catalog build had added. Gold changes: det/ans 039 (wifi) now cites Phòng CNTT's handbook duty 'Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm'; det/ans 040 (student loans, K50) expects the answer that the K50 handbook has no such information; det/ans 106 cites the K48-K49 handbook's Phòng CTCT duty line instead of the added duplicate; one conversation-history turn no longer claims a wifi service. Other cases changed only in their catalog record snapshots."
+    }
+  ]
 }

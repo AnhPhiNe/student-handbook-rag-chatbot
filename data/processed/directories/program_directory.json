@@ -24,11 +24,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_2",
     "faculty_aliases": [
-      "Khoa Công nghệ – Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
       "CNTT",
-      "Khoa CNTT",
       "IT"
     ],
     "data_category": "directory_table",
@@ -176,12 +172,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_39",
     "faculty_aliases": [
-      "Khoa Giáo dục Mầm non",
-      "KGDMN",
-      "giao duc mam non",
-      "GDMN",
-      "Khoa GDMN",
-      "Mầm non"
+      "Mầm non",
+      "GDMN"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -216,12 +208,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_40",
     "faculty_aliases": [
-      "Khoa Giáo dục Quốc phòng",
-      "KGDQP",
-      "giao duc quoc phong",
-      "GDQP",
-      "Khoa GDQP",
-      "Quốc phòng"
+      "Quốc phòng",
+      "GDQP"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -255,12 +243,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_41",
     "faculty_aliases": [
-      "Khoa Giáo dục Thể chất",
-      "KGDTC",
-      "giao duc the chat",
-      "GDTC",
-      "Khoa GDTC",
-      "Thể chất"
+      "Thể chất",
+      "GDTC"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -373,12 +357,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_37",
     "faculty_aliases": [
-      "Khoa Giáo dục Đặc biệt",
-      "KGDDB",
-      "giao duc dac biet",
-      "GDDB",
-      "Khoa GDDB",
-      "Đặc biệt"
+      "Đặc biệt",
+      "GDĐB"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -415,12 +395,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_8",
     "faculty_aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
-      "Hóa"
+      "Hóa",
+      "Hóa học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -457,11 +433,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_21",
     "faculty_aliases": [
-      "Khoa Tiếng Anh",
-      "KTA",
-      "tieng anh",
-      "TA",
-      "Khoa TA",
+      "Tiếng Anh",
       "Anh văn"
     ],
     "data_category": "directory_table",
@@ -739,12 +711,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_16",
     "faculty_aliases": [
-      "Khoa Lịch sử",
-      "KLS",
-      "lich su",
-      "LS",
-      "Khoa LS",
-      "Sử"
+      "Sử",
+      "Lịch sử"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -780,12 +748,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_6",
     "faculty_aliases": [
-      "Khoa Vật lí",
-      "KVL",
-      "vat li",
-      "VL",
-      "Khoa VL",
-      "Lí"
+      "Lí",
+      "Vật lí"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -822,12 +786,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_7",
     "faculty_aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
-      "Hóa"
+      "Hóa",
+      "Hóa học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -864,12 +824,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_9",
     "faculty_aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
-      "Hóa"
+      "Hóa",
+      "Hóa học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -905,12 +861,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_15",
     "faculty_aliases": [
-      "Khoa Lịch sử",
-      "KLS",
-      "lich su",
-      "LS",
-      "Khoa LS",
-      "Sử"
+      "Sử",
+      "Lịch sử"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -946,12 +898,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_19",
     "faculty_aliases": [
-      "Khoa Địa lí",
-      "KDL",
-      "dia li",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lí"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -987,11 +935,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_11",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -1027,12 +970,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_10",
     "faculty_aliases": [
-      "Khoa Sinh học",
-      "KSH",
-      "sinh hoc",
-      "SH",
-      "Khoa SH",
-      "Sinh"
+      "Sinh",
+      "Sinh học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -1069,11 +1008,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_1",
     "faculty_aliases": [
-      "Khoa Công nghệ – Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
       "CNTT",
-      "Khoa CNTT",
       "IT"
     ],
     "data_category": "directory_table",
@@ -1108,11 +1043,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_3",
     "faculty_aliases": [
-      "Khoa Toán – Tin học",
-      "KTTH",
-      "toan tin hoc",
-      "TTH",
-      "Khoa TTH",
       "Toán"
     ],
     "data_category": "directory_table",
@@ -1150,12 +1080,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_4",
     "faculty_aliases": [
-      "Khoa Vật lí",
-      "KVL",
-      "vat li",
-      "VL",
-      "Khoa VL",
-      "Lí"
+      "Lí",
+      "Vật lí"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -1192,11 +1118,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_20",
     "faculty_aliases": [
-      "Khoa Tiếng Anh",
-      "KTA",
-      "tieng anh",
-      "TA",
-      "Khoa TA",
+      "Tiếng Anh",
       "Anh văn"
     ],
     "data_category": "directory_table",
@@ -1357,12 +1279,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_17",
     "faculty_aliases": [
-      "Khoa Địa lí",
-      "KDL",
-      "dia li",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lí"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -1398,11 +1316,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_14",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -1507,11 +1420,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_12",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -1549,11 +1457,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_13",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -1591,12 +1494,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_5",
     "faculty_aliases": [
-      "Khoa Vật lí",
-      "KVL",
-      "vat li",
-      "VL",
-      "Khoa VL",
-      "Lí"
+      "Lí",
+      "Vật lí"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -1633,12 +1532,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_18",
     "faculty_aliases": [
-      "Khoa Địa lí",
-      "KDL",
-      "dia li",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lí"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -1676,11 +1571,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_2",
     "faculty_aliases": [
-      "Khoa Công nghệ Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
       "CNTT",
-      "Khoa CNTT",
       "IT"
     ],
     "data_category": "directory_table",
@@ -1719,11 +1610,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_36",
     "faculty_aliases": [
-      "Khoa Tâm lý học",
-      "KTLH",
-      "tam ly hoc",
-      "TLH",
-      "Khoa TLH",
       "Tâm lý"
     ],
     "data_category": "directory_table",
@@ -1762,12 +1648,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_21",
     "faculty_aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -1878,12 +1760,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_41",
     "faculty_aliases": [
-      "Khoa Giáo dục Mầm non",
-      "KGDMN",
-      "giao duc mam non",
-      "GDMN",
-      "Khoa GDMN",
-      "Mầm non"
+      "Mầm non",
+      "GDMN"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -1917,12 +1795,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_42",
     "faculty_aliases": [
-      "Khoa Giáo dục Quốc phòng",
-      "KGDQP",
-      "giao duc quoc phong",
-      "GDQP",
-      "Khoa GDQP",
-      "Quốc phòng"
+      "Quốc phòng",
+      "GDQP"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -1956,12 +1830,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_43",
     "faculty_aliases": [
-      "Khoa Giáo dục Thể chất",
-      "KGDTC",
-      "giao duc the chat",
-      "GDTC",
-      "Khoa GDTC",
-      "Thể chất"
+      "Thể chất",
+      "GDTC"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2074,12 +1944,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_39",
     "faculty_aliases": [
-      "Khoa Giáo dục Đặc biệt",
-      "KGDDB",
-      "giao duc dac biet",
-      "GDDB",
-      "Khoa GDDB",
-      "Đặc biệt"
+      "Đặc biệt",
+      "GDĐB"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2116,12 +1982,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_8",
     "faculty_aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
-      "Hóa"
+      "Hóa",
+      "Hóa học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2157,11 +2019,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_23",
     "faculty_aliases": [
-      "Khoa Tiếng Anh",
-      "KTA",
-      "tieng anh",
-      "TA",
-      "Khoa TA",
+      "Tiếng Anh",
       "Anh văn"
     ],
     "data_category": "directory_table",
@@ -2359,11 +2217,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_29",
     "faculty_aliases": [
-      "Khoa Tiếng Trung",
-      "KTT",
-      "tieng trung",
-      "TT",
-      "Khoa TT"
+      "Khoa Tiếng Trung Quốc"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2442,12 +2296,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_17",
     "faculty_aliases": [
-      "Khoa Lịch sử",
-      "KLS",
-      "lich su",
-      "LS",
-      "Khoa LS",
-      "Sử"
+      "Sử",
+      "Lịch sử"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2483,12 +2333,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_11",
     "faculty_aliases": [
-      "Khoa Sinh học",
-      "KSH",
-      "sinh hoc",
-      "SH",
-      "Khoa SH",
-      "Sinh"
+      "Sinh",
+      "Sinh học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2524,12 +2370,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_6",
     "faculty_aliases": [
-      "Khoa Vật lý",
-      "KVL",
-      "vat ly",
-      "VL",
-      "Khoa VL",
-      "Lý"
+      "Lý",
+      "Vật lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2566,12 +2408,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_7",
     "faculty_aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
-      "Hóa"
+      "Hóa",
+      "Hóa học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2608,12 +2446,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_9",
     "faculty_aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
-      "Hóa"
+      "Hóa",
+      "Hóa học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2649,12 +2483,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_16",
     "faculty_aliases": [
-      "Khoa Lịch sử",
-      "KLS",
-      "lich su",
-      "LS",
-      "Khoa LS",
-      "Sử"
+      "Sử",
+      "Lịch sử"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2690,12 +2520,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_20",
     "faculty_aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2732,11 +2558,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_12",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -2775,12 +2596,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_10",
     "faculty_aliases": [
-      "Khoa Sinh học",
-      "KSH",
-      "sinh hoc",
-      "SH",
-      "Khoa SH",
-      "Sinh"
+      "Sinh",
+      "Sinh học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2817,11 +2634,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_1",
     "faculty_aliases": [
-      "Khoa Công nghệ Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
       "CNTT",
-      "Khoa CNTT",
       "IT"
     ],
     "data_category": "directory_table",
@@ -2856,11 +2669,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_3",
     "faculty_aliases": [
-      "Khoa Toán – Tin học",
-      "KTTH",
-      "toan tin hoc",
-      "TTH",
-      "Khoa TTH",
       "Toán"
     ],
     "data_category": "directory_table",
@@ -2897,12 +2705,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_4",
     "faculty_aliases": [
-      "Khoa Vật lý",
-      "KVL",
-      "vat ly",
-      "VL",
-      "Khoa VL",
-      "Lý"
+      "Lý",
+      "Vật lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -2939,11 +2743,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_22",
     "faculty_aliases": [
-      "Khoa Tiếng Anh",
-      "KTA",
-      "tieng anh",
-      "TA",
-      "Khoa TA",
+      "Tiếng Anh",
       "Anh văn"
     ],
     "data_category": "directory_table",
@@ -3061,11 +2861,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_28",
     "faculty_aliases": [
-      "Khoa Tiếng Trung",
-      "KTT",
-      "tieng trung",
-      "TT",
-      "Khoa TT"
+      "Khoa Tiếng Trung Quốc"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3101,12 +2897,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_18",
     "faculty_aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3142,11 +2934,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_15",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -3184,11 +2971,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_34",
     "faculty_aliases": [
-      "Khoa Tâm lý học",
-      "KTLH",
-      "tam ly hoc",
-      "TLH",
-      "Khoa TLH",
       "Tâm lý"
     ],
     "data_category": "directory_table",
@@ -3226,11 +3008,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_35",
     "faculty_aliases": [
-      "Khoa Tâm lý học",
-      "KTLH",
-      "tam ly hoc",
-      "TLH",
-      "Khoa TLH",
       "Tâm lý"
     ],
     "data_category": "directory_table",
@@ -3267,11 +3044,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_13",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -3308,11 +3080,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_14",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -3349,12 +3116,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_5",
     "faculty_aliases": [
-      "Khoa Vật lý",
-      "KVL",
-      "vat ly",
-      "VL",
-      "Khoa VL",
-      "Lý"
+      "Lý",
+      "Vật lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3390,12 +3153,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_19",
     "faculty_aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3430,11 +3189,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_1",
     "faculty_aliases": [
-      "Khoa Công nghệ Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
       "CNTT",
-      "Khoa CNTT",
       "IT"
     ],
     "data_category": "directory_table",
@@ -3470,11 +3225,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_2",
     "faculty_aliases": [
-      "Khoa Công nghệ Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
       "CNTT",
-      "Khoa CNTT",
       "IT"
     ],
     "data_category": "directory_table",
@@ -3510,11 +3261,6 @@
     "source_record_id": "program_3",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
-      "Khoa Tâm lý học",
-      "KTLH",
-      "tam ly hoc",
-      "TLH",
-      "Khoa TLH",
       "Tâm lý"
     ],
     "data_category": "directory_table",
@@ -3550,12 +3296,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_4",
     "faculty_aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3668,12 +3410,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_10",
     "faculty_aliases": [
-      "Khoa Giáo dục Mầm non",
-      "KGDMN",
-      "giao duc mam non",
-      "GDMN",
-      "Khoa GDMN",
-      "Mầm non"
+      "Mầm non",
+      "GDMN"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3709,12 +3447,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_11",
     "faculty_aliases": [
-      "Khoa Giáo dục Quốc phòng",
-      "KGDQP",
-      "giao duc quoc phong",
-      "GDQP",
-      "Khoa GDQP",
-      "Quốc phòng"
+      "Quốc phòng",
+      "GDQP"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3750,12 +3484,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_12",
     "faculty_aliases": [
-      "Khoa Giáo dục Thể chất",
-      "KGDTC",
-      "giao duc the chat",
-      "GDTC",
-      "Khoa GDTC",
-      "Thể chất"
+      "Thể chất",
+      "GDTC"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3869,12 +3599,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_8",
     "faculty_aliases": [
-      "Khoa Giáo dục Đặc biệt",
-      "KGDDB",
-      "giao duc dac biet",
-      "GDDB",
-      "Khoa GDDB",
-      "Đặc biệt"
+      "Đặc biệt",
+      "GDĐB"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3910,12 +3636,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_14",
     "faculty_aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
-      "Hóa"
+      "Hóa",
+      "Hóa học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -3950,11 +3672,7 @@
     "source_record_id": "program_15",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
-      "Khoa Tiếng Anh",
-      "KTA",
-      "tieng anh",
-      "TA",
-      "Khoa TA",
+      "Tiếng Anh",
       "Anh văn"
     ],
     "data_category": "directory_table",
@@ -4223,12 +3941,8 @@
     "source_record_id": "program_22",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
-      "Khoa Lịch sử",
-      "KLS",
-      "lich su",
-      "LS",
-      "Khoa LS",
-      "Sử"
+      "Sử",
+      "Lịch sử"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4263,12 +3977,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_23",
     "faculty_aliases": [
-      "Khoa Sinh học",
-      "KSH",
-      "sinh hoc",
-      "SH",
-      "Khoa SH",
-      "Sinh"
+      "Sinh",
+      "Sinh học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4303,12 +4013,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_24",
     "faculty_aliases": [
-      "Khoa Vật lý",
-      "KVL",
-      "vat ly",
-      "VL",
-      "Khoa VL",
-      "Lý"
+      "Lý",
+      "Vật lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4344,12 +4050,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_26",
     "faculty_aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
-      "Hóa"
+      "Hóa",
+      "Hóa học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4385,12 +4087,8 @@
     "source_record_id": "program_27",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
-      "Khoa Hóa học",
-      "KHH",
-      "hoa hoc",
-      "HH",
-      "Khoa HH",
-      "Hóa"
+      "Hóa",
+      "Hóa học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4425,12 +4123,8 @@
     "source_record_id": "program_28",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
-      "Khoa Lịch sử",
-      "KLS",
-      "lich su",
-      "LS",
-      "Khoa LS",
-      "Sử"
+      "Sử",
+      "Lịch sử"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4465,12 +4159,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_29",
     "faculty_aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4505,11 +4195,6 @@
     "source_record_id": "program_30",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -4545,12 +4230,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_31",
     "faculty_aliases": [
-      "Khoa Sinh học",
-      "KSH",
-      "sinh hoc",
-      "SH",
-      "Khoa SH",
-      "Sinh"
+      "Sinh",
+      "Sinh học"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4585,11 +4266,7 @@
     "content_mode": "rag_index",
     "source_record_id": "program_36",
     "faculty_aliases": [
-      "Khoa Công nghệ Thông tin",
-      "KCNTT",
-      "cong nghe thong tin",
       "CNTT",
-      "Khoa CNTT",
       "IT"
     ],
     "data_category": "directory_table",
@@ -4626,11 +4303,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_37",
     "faculty_aliases": [
-      "Khoa Toán – Tin học",
-      "KTTH",
-      "toan tin hoc",
-      "TTH",
-      "Khoa TTH",
       "Toán"
     ],
     "data_category": "directory_table",
@@ -4667,12 +4339,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_38",
     "faculty_aliases": [
-      "Khoa Vật lý",
-      "KVL",
-      "vat ly",
-      "VL",
-      "Khoa VL",
-      "Lý"
+      "Lý",
+      "Vật lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4707,11 +4375,7 @@
     "source_record_id": "program_32",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
-      "Khoa Tiếng Anh",
-      "KTA",
-      "tieng anh",
-      "TA",
-      "Khoa TA",
+      "Tiếng Anh",
       "Anh văn"
     ],
     "data_category": "directory_table",
@@ -4857,12 +4521,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_25",
     "faculty_aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -4897,11 +4557,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_41",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -4938,11 +4593,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_42",
     "faculty_aliases": [
-      "Khoa Toán – Tin học",
-      "KTTH",
-      "toan tin hoc",
-      "TTH",
-      "Khoa TTH",
       "Toán"
     ],
     "data_category": "directory_table",
@@ -4979,11 +4629,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_39",
     "faculty_aliases": [
-      "Khoa Tâm lý học",
-      "KTLH",
-      "tam ly hoc",
-      "TLH",
-      "Khoa TLH",
       "Tâm lý"
     ],
     "data_category": "directory_table",
@@ -5019,11 +4664,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_40",
     "faculty_aliases": [
-      "Khoa Tâm lý học",
-      "KTLH",
-      "tam ly hoc",
-      "TLH",
-      "Khoa TLH",
       "Tâm lý"
     ],
     "data_category": "directory_table",
@@ -5060,11 +4700,6 @@
     "source_record_id": "program_45",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -5101,11 +4736,6 @@
     "source_record_id": "program_43",
     "faculty_name_source": "matched_existing_program",
     "faculty_aliases": [
-      "Khoa Ngữ văn",
-      "KNV",
-      "ngu van",
-      "NV",
-      "Khoa NV",
       "Văn"
     ],
     "data_category": "directory_table",
@@ -5141,12 +4771,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_44",
     "faculty_aliases": [
-      "Khoa Vật lý",
-      "KVL",
-      "vat ly",
-      "VL",
-      "Khoa VL",
-      "Lý"
+      "Lý",
+      "Vật lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",
@@ -5182,12 +4808,8 @@
     "content_mode": "rag_index",
     "source_record_id": "program_5",
     "faculty_aliases": [
-      "Khoa Địa lý",
-      "KDL",
-      "dia ly",
-      "DL",
-      "Khoa DL",
-      "Địa"
+      "Địa",
+      "Địa lý"
     ],
     "data_category": "directory_table",
     "quality_status": "approved",

@@ -80,3 +80,7 @@ Regulation tasks are judged on mode and cohort only. Retrieval quality belongs t
 - One AI author wrote and reviewed the questions and the gold; the owner has not reviewed them.
 - The phrasing imitates students; it is not a sample of real traffic.
 - Families have 6 to 17 cases, so intervals are wide: a family result shows direction, not a precise rate.
+
+## Corrections
+
+- **2026-09-28, catalog correction (not a result).** The directory catalogs were rebuilt without guessed keyword aliases and without two service records the catalog build had added: "Hỗ trợ kết nối mạng và wifi sinh viên", which no handbook lists, and "Hỗ trợ thủ tục vay vốn tín dụng dành cho sinh viên", which only the K48-K49 handbook mentions, inside Phòng CTCT's combined duty line. Case 132 (wifi, K50) now cites Phòng CNTT's handbook duty "Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm" and case 131 (student loans, K48-K49) cites the handbook's duty line; the expected unit, email and phone of both are unchanged. The bundle was recompiled; other cases changed only in their catalog record snapshots. No v3 run had used these catalogs.

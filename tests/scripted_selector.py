@@ -36,9 +36,11 @@ class ScriptedClient:
         if self.raw is not None:
             return {"ok": True, "text": self.raw}
         value = re.search(r': "(.*)"\s*$', prompt).group(1)
+        # Any column of a catalog line names its record: unit, service or program.
         ids_by_name: dict[str, list[str]] = {}
-        for record_id, name in re.findall(r"^(S\d+) \| ([^|\n]+?) \|", prompt, flags=re.M):
-            ids_by_name.setdefault(name.strip(), []).append(record_id)
+        for record_id, line in re.findall(r"^(S\d+) \| (.+)$", prompt, flags=re.M):
+            for column in line.split(" | "):
+                ids_by_name.setdefault(column.strip(), []).append(record_id)
         answer = self.answers.get(value)
         names = [answer] if isinstance(answer, str) else list(answer or [])
         ids = [record_id for name in names for record_id in ids_by_name.get(name, [])[:1]]

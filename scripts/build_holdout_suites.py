@@ -48,7 +48,7 @@ ANSWER_FIELDS = {
 
 
 def primary_specs(definition: dict) -> list[dict]:
-    if "clarify" in definition or definition.get("out_of_domain"):
+    if "clarify" in definition or definition.get("out_of_domain") or definition.get("not_in_handbook"):
         return []
     return definition.get("tasks", [definition])
 
@@ -96,8 +96,11 @@ def answer_case(definition: dict, compiled: dict, catalogs: dict, bundle: str) -
         facts = [f"Hỏi lại, không tự đoán: {definition['clarify']}"]
     elif definition.get("out_of_domain"):
         facts = [OUT_OF_DOMAIN_FACT]
+    elif definition.get("not_in_handbook"):
+        facts = [f"Nói rõ sổ tay không có thông tin này, không tự nêu đơn vị hay liên hệ: {definition['not_in_handbook']}"]
     targets = list(dict.fromkeys(unit["cohort"] for unit in units)) or [cohort]
     kind = ("clarification" if path == "clarify" else "out_of_domain" if path == "out_of_domain"
+            else "not_in_handbook" if definition.get("not_in_handbook")
             else "mixed_answer" if path == "mixed" else "structured_answer" if path == "structured"
             else "regulation_true_rag")
     return {
@@ -107,7 +110,8 @@ def answer_case(definition: dict, compiled: dict, catalogs: dict, bundle: str) -
         "expected_intent": "query_plan",
         "expected_strategy": "deterministic_lookup" if path == "structured" else "hybrid_graph_retrieval",
         "expected_answer_behavior": compiled["expected_answer_behavior"],
-        "answerability": "unanswerable" if path == "out_of_domain" else "answerable",
+        "answerability": ("unanswerable" if path == "out_of_domain" or definition.get("not_in_handbook")
+                          else "answerable"),
         "question_style": compiled["question_style"], "eval_split": compiled["eval_split"],
         "tags": [bundle, compiled["question_style"]],
         "ground_truth": "\n".join(facts), "required_facts": facts, "forbidden_claims": [],

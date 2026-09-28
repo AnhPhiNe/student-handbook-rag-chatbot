@@ -248,12 +248,16 @@ cases:
     selected_cohort: K48-K49
     stress: true
     stress_type: informal_spelling
-    service: [Hỗ trợ kết nối mạng và wifi sinh viên, unit_name]
+    # Corrected 2026-09-28: the handbook lists no wifi service; its nearest
+    # entry is Phòng CNTT's central-network duty (the earlier record was invented).
+    service: [Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm, unit_name]
   - query: "Muốn vay vốn tín dụng sinh viên thì liên hệ phòng nào?"
     category: student_service
     slice: single.student_service
     selected_cohort: K50
-    service: [Hỗ trợ thủ tục vay vốn tín dụng, unit_name]
+    # Corrected 2026-09-28: the K50 handbook does not mention student loans; the
+    # earlier gold cited a service record the catalog build had added.
+    not_in_handbook: "Sổ tay K50 không ghi đơn vị hỗ trợ vay vốn tín dụng."
   - query: "Em nộp chứng chỉ để xét miễn học phần ngoại ngữ ở đâu?"
     category: student_service
     slice: single.student_service
@@ -716,7 +720,9 @@ cases:
     coverage_features: [three_requests, structured_structured_regulation]
     tasks:
       - {office: [Trạm Y tế, office]}
-      - {service: [Hỗ trợ thủ tục vay vốn tín dụng, unit_name]}
+      # Corrected 2026-09-28: the K48-K49 handbook lists student loans in Phòng CTCT's
+      # combined duty line; the earlier gold cited a duplicate the catalog build had added.
+      - {service: [vay vốn tín dụng, unit_name]}
       - {policy: [QuyCheDaoTao_Chuong4_Dieu16, "cơ sở khám bệnh"], fact: "Cần chứng nhận của cơ sở khám bệnh, chữa bệnh có thẩm quyền về việc ốm phải điều trị thời gian dài."}
   - query: "Cho em hỏi email khoa Tiếng Anh, GPA 3,3 loại gì, rèn luyện 70 loại gì, học bổng giỏi hệ số mấy và cách tính điểm học bổng luôn."
     category: compound
@@ -1041,7 +1047,7 @@ cases:
     selected_cohort: K50
     history:
       - {role: user, content: "Wifi lỗi thì liên hệ đâu?"}
-      - {role: assistant, content: "Phòng Công nghệ Thông tin hỗ trợ kết nối mạng và wifi cho sinh viên."}
+      - {role: assistant, content: "Phòng Công nghệ Thông tin phụ trách kỹ thuật hệ thống mạng trung tâm của Trường."}
       - {role: user, content: "Email của phòng đó là gì?"}
       - {role: assistant, content: "Email Phòng Công nghệ Thông tin là phongcntt@hcmue.edu.vn."}
     service: [micro, unit_name]

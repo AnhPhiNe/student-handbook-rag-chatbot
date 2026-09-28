@@ -1062,9 +1062,9 @@ cases:
     category: compound
     slice: relation.service_contact
     selected_cohort: K48-K49
-    service: [Hỗ trợ thủ tục vay vốn tín dụng, phone]
+    service: [vay vốn tín dụng, phone]  # corrected 2026-09-28: handbook record, not the added duplicate
   - query: "Cần hỗ trợ kết nối wifi thì tìm đơn vị nào, và email của họ là gì?"
     category: compound
     slice: relation.service_contact
     selected_cohort: K50
-    service: [Hỗ trợ kết nối mạng và wifi sinh viên, email]
+    service: [Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm, email]  # corrected 2026-09-28: the handbook lists no wifi service

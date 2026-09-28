@@ -15,6 +15,7 @@ import src.generation.plan_executor as executor_module
 from src.generation.plan_executor import PlanExecutor, StructuredCatalogs
 from src.generation.prompt_builder import build_authorized_evidence_packet
 from src.retrieval.core.slang_normalizer import SlangNormalizer
+from tests.scripted_selector import scripted_selector
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,7 +38,7 @@ def _catalogs():
     )
 
 
-def _execute(query, task, cohort):
+def _execute(query, task, cohort, directory_selector=None):
     class ScriptedRouter:
         def plan(self, *_args, **_kwargs):
             return {"schema_version": "v1", "context_mode": "standalone",
@@ -48,7 +49,7 @@ def _execute(query, task, cohort):
     executor = PlanExecutor(
         router=ScriptedRouter(), slang_normalizer=SlangNormalizer(),
         catalogs=_catalogs(), parent_sources_by_id={}, top_k=5,
-        public_source_limit=5, directory_selector=None,
+        public_source_limit=5, directory_selector=directory_selector,
         graph=SimpleNamespace(expand_context=lambda *_args, **_kwargs: []),
     )
     return executor.run(query=query, cohort=cohort, chat_history=None)
@@ -164,7 +165,11 @@ def _case122_result():
         "slot_spans": {"service": "Giấy chứng nhận điểm", "requested_field": ["đơn vị nào", "email"]},
         "clarification_question": None,
     }
-    return copy.deepcopy(_execute(case["query"], task, "K50"))
+    # The slot is not a catalog name, so the selector's LLM reply decides;
+    # here it is scripted to the handbook service that issues score certificates.
+    selector = scripted_selector({"Giấy chứng nhận điểm":
+                                  "Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập"})
+    return copy.deepcopy(_execute(case["query"], task, "K50", selector))
 
 
 def test_122_correct_selected_record_passes_with_multi_field_request():

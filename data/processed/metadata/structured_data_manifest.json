@@ -22,11 +22,11 @@
       "catalogs": {
         "student_service_directory": {
           "path": "data\\processed\\directories\\student_service_directory.json",
-          "count": 239,
+          "count": 233,
           "cohort_counts": {
-            "K48-K49": 79,
-            "K50": 80,
-            "K51": 80
+            "K48-K49": 77,
+            "K50": 78,
+            "K51": 78
           }
         },
         "student_office_profiles": {

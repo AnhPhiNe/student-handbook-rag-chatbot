@@ -278,7 +278,9 @@ def test_source_ambiguity_and_missing_target_are_safe():
 def test_catalog_relationship_integrity_all_records():
     data = catalogs()
     assert len(data["program"]) == 129
-    assert len(data["student_service"]) == 239
+    # 2026-09-28: services the handbook does not list (wifi) and a duplicate
+    # of a listed one (student loans) were removed from the catalog build.
+    assert len(data["student_service"]) == 233
     for source_kind, target_kind, source_key, target_keys in (
         ("program", "faculty", "faculty_name", ["unit_name", "faculty_name", "aliases"]),
         ("student_service", "office", "unit_name", ["unit_name", "aliases"]),

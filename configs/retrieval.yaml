@@ -25,14 +25,15 @@ runtime:
   qdrant_timeout_seconds: 60
   parent_cache_max_entries: 2048
 
-cohere_reranker:
+# Qwen3-Reranker-8B on DeepInfra reranks every RRF child; on failure retrieval
+# keeps the RRF order. It replaced Cohere rerank-v4.0-fast on 2026-09-29 (see
+# src/retrieval/core/reranker.py for the measurements). One call with 24
+# candidates took p50 1.6 s, p90 4.7 s, max 9.3 s; with an 8 s timeout 3 of 30
+# live calls fell back, so it waits 10 s, without retry.
+reranker:
   enabled: true
-  model: rerank-v4.0-fast
-  max_tokens_per_doc: 4096
-  # Measured on official_v1 with 24 candidates: p50 0.73 s, p90 0.90 s, max 4.0 s.
-  timeout_seconds: 8
-  key_pool:
-    # Cohere trial Rerank keys currently allow 10 requests/minute. Override
-    # STUDENT_RAG_COHERE_RPM_LIMIT_PER_KEY for a production-key allowance.
-    rpm_limit_per_key: 10
-    cooldown_seconds: 65
+  model: Qwen/Qwen3-Reranker-8B
+  api_url: https://api.deepinfra.com/v1/inference
+  api_key_env_var: DEEPINFRA_API_KEY
+  instruction: Given a student question, retrieve handbook passages that answer it
+  timeout_seconds: 10

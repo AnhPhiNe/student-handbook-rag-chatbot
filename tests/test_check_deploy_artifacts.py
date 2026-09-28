@@ -59,12 +59,12 @@ def test_deploy_examples_and_defaults_match_the_current_build_manifest() -> None
     )
 
 
-def test_hf_deploy_readme_describes_the_optional_fail_open_reranker() -> None:
+def test_hf_deploy_readme_describes_the_fail_open_reranker() -> None:
     script = (ROOT / "scripts" / "deploy_hf_backend.ps1").read_text(
         encoding="utf-8"
     )
 
-    assert "optional fail-open Cohere Fast reranking" in script
+    assert "Qwen3-Reranker-8B reranking that falls back to RRF" in script
 
 
 def test_docker_context_keeps_the_manifest_declared_table_audit() -> None:

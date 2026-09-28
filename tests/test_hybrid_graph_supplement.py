@@ -263,12 +263,12 @@ def test_retrieval_reranks_children_before_grouping_by_parent() -> None:
         (float(index), {"chunk_id": f"r{index}", "content": f"reranked {index}"})
         for index in range(16)
     ]
-    retriever.cohere_reranker = Mock()
-    retriever.cohere_reranker.rerank.return_value = (
+    retriever.reranker = Mock()
+    retriever.reranker.rerank.return_value = (
         reranked,
         {
-            "ranking_method": "cohere_rerank_v4_fast",
-            "cohere_reranker_applied": True,
+            "ranking_method": "qwen3_reranker",
+            "reranker_applied": True,
         },
     )
 
@@ -290,15 +290,15 @@ def test_retrieval_reranks_children_before_grouping_by_parent() -> None:
             cohort="K50",
         )
 
-    retriever.cohere_reranker.rerank.assert_called_once()
+    retriever.reranker.rerank.assert_called_once()
     assert (
         retriever._group_parent_results.call_args.kwargs["scored_chunks"] == reranked
     )
     telemetry = retriever._group_parent_results.call_args.kwargs[
         "retrieval_telemetry"
     ]
-    assert telemetry["ranking_method"] == "cohere_rerank_v4_fast"
-    assert telemetry["cohere_reranker_applied"] is True
+    assert telemetry["ranking_method"] == "qwen3_reranker"
+    assert telemetry["reranker_applied"] is True
     assert result == retriever._group_parent_results.return_value
 
 

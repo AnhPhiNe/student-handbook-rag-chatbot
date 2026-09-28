@@ -541,7 +541,7 @@ Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`.
 
 - Python 3.11 and Node.js 20
 - A Qdrant collection and a MongoDB database loaded from the v33 build (see [Offline build](#offline-build))
-- API keys for OpenAI (planner) and DeepSeek (composer and directory selector). Cohere (reranker), Redis (shared cache) and LangSmith (tracing) are optional.
+- API keys for OpenAI (planner), DeepSeek (composer and directory selector) and DeepInfra (BGE-M3 embeddings and the Qwen3-Reranker-8B reranker). Redis (shared cache) and LangSmith (tracing) are optional.
 
 ### Backend
 
@@ -563,7 +563,7 @@ Interactive API docs are then served at `http://127.0.0.1:8000/docs`.
 | `GROQ_API_KEYS` | no | Evaluation judge only |
 | `DEEPSEEK_API_KEY` | yes | Composer (`llm`) and directory selector, which picks the service, office, faculty or program a student names when no name matches exactly (`directory_selector`); both in `configs/answer_generation.yaml` |
 | `GEMINI_API_KEYS` | no | Only for the Gemini composer arm (`configs/experiments/answer_gemini_flash_lite.yaml`) |
-| `COHERE_API_KEYS` | no | Reranker key pool; without it retrieval uses the RRF order |
+| `DEEPINFRA_API_KEY` | yes | BGE-M3 query and document embeddings, and the Qwen3-Reranker-8B reranker (`configs/retrieval.yaml`); a reranker failure keeps the RRF order |
 | `REDIS_URL` | no | Shared response cache; without it an in-memory cache is used |
 | `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT` | no | Request tracing and user feedback |
 | `STUDENT_RAG_CORS_ORIGINS` | no | Comma-separated browser origins allowed to call the API (needed when the frontend is on another domain) |

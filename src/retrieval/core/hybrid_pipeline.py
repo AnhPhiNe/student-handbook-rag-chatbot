@@ -12,7 +12,7 @@ from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.legal_reference import normalize_article_label
 from src.common.source_identity import canonical_article_source_id
 from src.common.storage_config import require_qdrant_collection_name
-from src.retrieval.core.cohere_reranker import CohereReranker
+from src.retrieval.core.reranker import Reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
@@ -209,7 +209,7 @@ class ChildParentHybridRetriever:
 
         self.embedder = load_embedding_client(embedding)
         self.graph = NetworkXGraphTraverser()
-        self.cohere_reranker = CohereReranker.from_runtime_config(self.runtime_config)
+        self.reranker = Reranker.from_runtime_config(self.runtime_config)
 
         # Full parent content comes from MongoDB.
         self.mongo_store = get_mongo_store()
@@ -368,7 +368,7 @@ class ChildParentHybridRetriever:
         """Retrieve parent-bound regulation sources using child/table chunks.
 
         Dense and BM25 child candidates are fused with RRF, optionally reranked
-        (fail-open Cohere), grouped into parent sources, and in the default mode
+        (Qwen3-Reranker, failing open to RRF), grouped into parent sources, and in the default mode
         outbound graph neighbors are attached as context-only related sources.
         """
         eval_mode = resolve_retrieval_mode()
@@ -409,11 +409,9 @@ class ChildParentHybridRetriever:
             "ranking_method": "rrf",
             "dense_failed": dense_error,
         }
-        cohere_reranker = getattr(self, "cohere_reranker", None)
-        if cohere_reranker is not None:
-            primary_scored, reranker_telemetry = cohere_reranker.rerank(
-                query, primary_scored
-            )
+        reranker = getattr(self, "reranker", None)
+        if reranker is not None:
+            primary_scored, reranker_telemetry = reranker.rerank(query, primary_scored)
             retrieval_telemetry.update(reranker_telemetry)
         primary_results = self._group_parent_results(
             query=query,

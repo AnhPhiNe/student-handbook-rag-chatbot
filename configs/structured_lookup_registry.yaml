@@ -5,6 +5,8 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
+    # regulation tables (structured_tables_registry table_type) this tool reads
+    table_types: [foreign_language]
     description: "Quy đổi chứng chỉ/điểm ngoại ngữ đã nêu sang bậc tương đương hoặc liệt kê bảng quy đổi; không xác lập chuẩn đầu ra bắt buộc."
     intents: [direct_value, list_items]
     default_intent: direct_value
@@ -55,6 +57,8 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
+    # regulation tables (structured_tables_registry table_type) this tool reads
+    table_types: [study_duration]
     description: Tra thời gian học chuẩn/tối đa theo hệ đào tạo và loại chương trình.
     intents: [direct_value, list_items]
     default_intent: direct_value
@@ -93,6 +97,8 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
+    # regulation tables (structured_tables_registry table_type) this tool reads
+    table_types: [scholarship]
     description: Tra mức tiền, công thức tiền, hệ số, căn cứ học phí hoặc xếp loại HBKKHT kèm mức điểm học tập và rèn luyện của từng loại trong bảng.
     intents: [direct_value, list_items]
     default_intent: direct_value
@@ -129,6 +135,8 @@ tools:
     data_category: regulation_table
     presentation_type: table
     selection_mode: table_first
+    # regulation tables (structured_tables_registry table_type) this tool reads
+    table_types: [scoring, conduct]
     description: Tra bảng quy đổi điểm học phần, xếp loại học lực hoặc phân loại tổng điểm rèn luyện; quy tắc chấm từng tiêu chí thành phần và chính sách học bổng dùng RAG.
     intents: [direct_value, list_items]
     default_intent: direct_value

@@ -24,15 +24,15 @@ from .structured_lookup import scoring_lookup_from_reference
 from .structured_routing import load_lookup_registry, validate_fact_lock_inputs
 
 
-_REFERENCE_TABLE_TYPES: dict[str, set[str]] = {
-    "foreign_language": {"foreign_language"},
-    "scholarship_classification": {"scholarship"},
-    "study_duration": {"study_duration"},
-    "scoring": {"scoring", "conduct"},
-}
 _REGISTRY = load_lookup_registry()
 _LOOKUP_TOOL_SPECS = _REGISTRY.get("tools", {})
 _RELATIONSHIPS = _REGISTRY.get("relationships", {})
+# Lookups answered from regulation tables, with the table types each reads.
+_REFERENCE_TABLE_TYPES: dict[str, set[str]] = {
+    name: set(spec["table_types"])
+    for name, spec in _LOOKUP_TOOL_SPECS.items()
+    if spec.get("table_types")
+}
 
 
 @dataclass(frozen=True)

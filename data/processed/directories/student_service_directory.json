@@ -3905,50 +3905,6 @@
     }
   },
   {
-    "service_id": "K50_K50_phan_hieu_long_an_service_1",
-    "cohort": "K50",
-    "service": "Liên hệ Phân hiệu Long An",
-    "aliases": [],
-    "unit": "Phân hiệu Long An",
-    "unit_name": "Phân hiệu Long An",
-    "phone": "(027) 23511329; (027) 23512281",
-    "phones": [
-      "(027) 23511329",
-      "(027) 23512281"
-    ],
-    "internal_numbers": [],
-    "email": "phlongan@hcmue.edu.vn",
-    "emails": [
-      "phlongan@hcmue.edu.vn"
-    ],
-    "website": "",
-    "websites": [],
-    "office": "",
-    "source_pages": [
-      184
-    ],
-    "source_record_id": "K50_phan_hieu_long_an",
-    "document_id": "so_tay_sinh_vien_khoa_50",
-    "source_section": "office_directory",
-    "content_type": "student_service_directory",
-    "summary": "Liên hệ Phân hiệu Long An - đơn vị phụ trách: Phân hiệu Long An",
-    "raw_text": "Dịch vụ: Liên hệ Phân hiệu Long An\nĐơn vị: Phân hiệu Long An\n21. Phân hiệu Long An\nĐiện thoại liên lạc\n: (027) 23511329\nEmail\n: phlongan@hcmue.edu.vn\nĐịa chỉ\n: 934 Quốc lộ 1A, phường Khánh Hậu,\nthành phố Tân An, tỉnh Long An\nĐào tạo các ngành\n: 06 ngành trình độ đại học (Sư phạm Tiếng\nAnh, Sư phạm Ngữ văn, Sư phạm Toán\nhọc, Giáo dục thể chất, Giáo dục Tiểu\nhọc và Giáo dục Mầm non) và 01 ngành\ntrình độ cao đẳng sư phạm (Giáo dục\nMầm non)\nThông tin liên lạc các tổ:\n+ Tổ Đào tạo – Khảo thí – Công tác sinh viên:\nĐiện thoại liên lạc\n: (027) 23512281\n+ Tổ Hành chính – Quản trị:\nĐiện thoại liên lạc\n: (027) 23511329",
-    "data_category": "directory_table",
-    "quality_status": "approved",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "source_provenance": {
-      "catalog": "student_service_directory",
-      "record_id": "K50_K50_phan_hieu_long_an_service_1",
-      "cohort": "K50",
-      "document_id": "so_tay_sinh_vien_khoa_50",
-      "source_pages": [
-        184
-      ],
-      "source_record_id": "K50_phan_hieu_long_an"
-    }
-  },
-  {
     "service_id": "K50_K50_phong_cong_nghe_thong_tin_service_1",
     "cohort": "K50",
     "service": "Quản lý email của sinh viên được cấp theo tên miền của Trường Đại học Sư phạm Thành phố Hồ Chí Minh",

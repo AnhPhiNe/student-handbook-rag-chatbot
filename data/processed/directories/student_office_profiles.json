@@ -1628,60 +1628,6 @@
     }
   },
   {
-    "office_profile_id": "K50_phan_hieu_long_an",
-    "cohort": "K50",
-    "unit": "Phân hiệu Long An",
-    "unit_name": "Phân hiệu Long An",
-    "aliases": [],
-    "services": [
-      "Liên hệ Phân hiệu Long An"
-    ],
-    "service_ids": [
-      "K50_K50_phan_hieu_long_an_service_1"
-    ],
-    "phones": [
-      "(027) 23511329",
-      "(027) 23512281"
-    ],
-    "emails": [
-      "phlongan@hcmue.edu.vn"
-    ],
-    "websites": [],
-    "internal_numbers": [],
-    "offices": [],
-    "source_pages": [
-      184
-    ],
-    "source_service_ids": [
-      "K50_K50_phan_hieu_long_an_service_1"
-    ],
-    "document_ids": [
-      "so_tay_sinh_vien_khoa_50"
-    ],
-    "content_type": "student_office_profile",
-    "source_section": "student_office_profiles",
-    "phone": "(027) 23511329; (027) 23512281",
-    "email": "phlongan@hcmue.edu.vn",
-    "website": "",
-    "office": "",
-    "summary": "Phân hiệu Long An phu trach: Liên hệ Phân hiệu Long An",
-    "raw_text": "Don vi: Phân hiệu Long An\nAlias: \nDich vu phu trach: Liên hệ Phân hiệu Long An\nEmail: phlongan@hcmue.edu.vn\nDien thoai: (027) 23511329; (027) 23512281\nDia diem: ",
-    "data_category": "directory_table",
-    "quality_status": "approved",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "source_provenance": {
-      "catalog": "student_office_profiles",
-      "record_id": "K50_phan_hieu_long_an",
-      "cohort": "K50",
-      "document_id": "so_tay_sinh_vien_khoa_50",
-      "source_pages": [
-        184
-      ],
-      "source_record_id": null
-    }
-  },
-  {
     "office_profile_id": "K50_phong_cong_nghe_thong_tin",
     "cohort": "K50",
     "unit": "Phòng Công nghệ Thông tin",

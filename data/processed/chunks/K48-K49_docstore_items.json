@@ -4423,5 +4423,33 @@
     },
     "cohort": "K48-K49",
     "document_id": "so_tay_sinh_vien_khoa_48_49"
+  },
+  {
+    "_id": "K48-K49_CongViecCuaCacKhoa_Phan1",
+    "content": "Tài liệu: Một số công việc của các khoa liên quan đến sinh viên\nPhần:\nChương:\nTiêu đề: Một số công việc của các khoa liên quan đến sinh viên\nNội dung:\nMỘT SỐ CÔNG VIỆC CỦA CÁC KHOA\nLIÊN QUAN ĐẾN SINH VIÊN\n– Chỉ định tạm thời hoặc bầu ban cán sự (lớp trưởng và các lớp phó)\nlớp sinh viên và lớp học phần;\n– Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký\nmôn học;\n– Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa\nbiểu học tập và thi;\n– Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp\nđịnh của Nhà nước, Nhà trường (nếu có) theo quy định;\n– Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn,\nvăn hóa – văn nghệ, thể dục – thể thao...;\n– Đánh giá, phân loại sinh viên về học tập, rèn luyện theo từng học\nkỳ, năm học và khóa học;\n– Phối hợp với Phòng CTCT và HSSV thực hiện các chế độ chính\nsách cho sinh viên, xét cấp học bổng các loại, miễn, giảm học phí, công\ntác nội trú, ngoại trú, tham quan thực tế, tạm ngưng tiến độ học tập, buộc\nthôi học... thống kê số liệu sinh viên; theo dõi công tác thi đua khen\nthưởng; thực hiện các thủ tục liên quan đến sinh viên tốt nghiệp;\n– Phối hợp với Phòng Đào tạo xử lý học vụ, rèn luyện chuyên môn,\nnghiệp vụ; theo dõi trả nợ các học phần môn học, cảnh báo học vụ của\nsinh viên.",
+    "normalized_content": "Tài liệu: Một số công việc của các khoa liên quan đến sinh viên\nPhần:\nChương:\nTiêu đề: Một số công việc của các khoa liên quan đến sinh viên\nNội dung:\nMỘT SỐ CÔNG VIỆC CỦA CÁC KHOA\nLIÊN QUAN ĐẾN SINH VIÊN\n– Chỉ định tạm thời hoặc bầu ban cán sự (lớp trưởng và các lớp phó)\nlớp sinh viên và lớp học phần;\n– Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký\nmôn học;\n– Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa\nbiểu học tập và thi;\n– Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp\nđịnh của Nhà nước, Nhà trường (nếu có) theo quy định;\n– Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn,\nvăn hóa – văn nghệ, thể dục – thể thao...;\n– Đánh giá, phân loại sinh viên về học tập, rèn luyện theo từng học\nkỳ, năm học và khóa học;\n– Phối hợp với Phòng CTCT và HSSV thực hiện các chế độ chính\nsách cho sinh viên, xét cấp học bổng các loại, miễn, giảm học phí, công\ntác nội trú, ngoại trú, tham quan thực tế, tạm ngưng tiến độ học tập, buộc\nthôi học... thống kê số liệu sinh viên; theo dõi công tác thi đua khen\nthưởng; thực hiện các thủ tục liên quan đến sinh viên tốt nghiệp;\n– Phối hợp với Phòng Đào tạo xử lý học vụ, rèn luyện chuyên môn,\nnghiệp vụ; theo dõi trả nợ các học phần môn học, cảnh báo học vụ của\nsinh viên.",
+    "tables": [],
+    "highlights": [],
+    "metadata": {
+      "source_type": "supplementary_document",
+      "source_kind": "guide",
+      "document_title": "Một số công việc của các khoa liên quan đến sinh viên",
+      "part": null,
+      "chapter": null,
+      "article": null,
+      "title": "Một số công việc của các khoa liên quan đến sinh viên",
+      "source_pages": [
+        160
+      ],
+      "content_type": "regulation_text",
+      "has_table": false,
+      "has_formula": false,
+      "has_scoring_rule": false,
+      "has_thresholds": false,
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49"
+    },
+    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_48_49"
   }
 ]

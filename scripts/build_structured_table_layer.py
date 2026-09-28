@@ -911,6 +911,21 @@ def load_primary_office_records() -> list[dict[str, Any]]:
     return records
 
 
+# The chatbot serves the main campus (280 An Dương Vương, Quận 5). Branch
+# campus units (Phân hiệu Long An, Phân hiệu Gia Lai) are left out of the
+# directories so a main-campus student is never sent to a branch office.
+BRANCH_EMAIL_PREFIXES = ("longan.", "gialai.")
+
+
+def is_branch_campus_unit(unit: str, raw_text: str) -> bool:
+    """A branch campus itself, or a unit reached through a branch email or address."""
+    return (
+        normalize_text(unit).startswith("phan hieu")
+        or any(email.lower().startswith(BRANCH_EMAIL_PREFIXES) for email in extract_emails(raw_text))
+        or "tinh gia lai" in normalize_text(raw_text)
+    )
+
+
 def build_student_service_directory(
     directory_dir: Path = DIRECTORY_DIR,
     source_records: list[dict[str, Any]] | None = None,
@@ -939,6 +954,8 @@ def build_student_service_directory(
                 f"Liên hệ {strip_order_prefix(record.get('unit_name'))}"
             ]
             unit = strip_order_prefix(record.get("unit_name"))
+            if is_branch_campus_unit(unit, raw_text):
+                continue
             cohort = str(record.get("cohort") or "")
             source_by_unit.setdefault(normalize_text(unit), []).append(record)
             for index, responsibility in enumerate(responsibilities, start=1):
@@ -1104,32 +1121,9 @@ def build_student_faculty_profiles(
         faculty = strip_order_prefix(record.get("faculty_or_unit_name"))
         cohort = compact_text(record.get("cohort"))
         raw_text = str(record.get("raw_text") or "")
-        if not faculty or not cohort:
+        if not faculty or not cohort or is_branch_campus_unit(faculty, raw_text):
             continue
         emails = extract_emails(raw_text)
-        normalized_raw = normalize_text(raw_text)
-        if any(email.lower().startswith("longan.") for email in emails):
-            campus = "Phân hiệu Long An"
-        elif any(email.lower().startswith("gialai.") for email in emails):
-            campus = "Phân hiệu Gia Lai"
-        elif "tinh gia lai" in normalized_raw:
-            campus = "Phân hiệu Gia Lai"
-        else:
-            campus = None
-        display_unit = f"{faculty} ({campus})" if campus else faculty
-        aliases = _curated_unit_aliases(faculty)
-        if campus:
-            # The unit is named with its campus; the plain faculty name is kept
-            # so a name shared by two campuses is recognized, then clarified.
-            aliases = _dedupe(
-                [
-                    faculty,
-                    *aliases,
-                    display_unit,
-                    f"{faculty} {campus}",
-                    f"{faculty} {campus.removeprefix('Phân hiệu ')}",
-                ]
-            )
         profiles.append(
             {
                 "faculty_profile_id": (
@@ -1137,11 +1131,10 @@ def build_student_faculty_profiles(
                     f"{normalize_text(faculty).replace(' ', '_')}"
                 ),
                 "cohort": cohort,
-                "unit": display_unit,
-                "unit_name": display_unit,
+                "unit": faculty,
+                "unit_name": faculty,
                 "faculty_name": faculty,
-                "campus": campus,
-                "aliases": aliases,
+                "aliases": _curated_unit_aliases(faculty),
                 "phones": extract_phones(raw_text),
                 "emails": emails,
                 "websites": extract_websites(raw_text),

@@ -106,3 +106,13 @@ cases:
     query: "Những ai được ưu tiên xét vào ở ký túc xá?"
     gold_parent: K48-K49_QuyTrinhXetVaoKyTucXa_Phan1
     must_include: ["dân tộc thiểu số"]
+  - id: sup_20
+    cohort: K48-K49
+    query: "Ai chỉ định ban cán sự lớp sinh viên?"
+    gold_parent: K48-K49_CongViecCuaCacKhoa_Phan1
+    must_include: ["khoa", "tạm thời"]
+  - id: sup_21
+    cohort: K50
+    query: "Khoa có những công việc gì liên quan đến sinh viên?"
+    gold_parent: K50_CongViecCuaCacKhoa_Phan1
+    must_include: ["thời khóa biểu"]

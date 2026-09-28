@@ -48,12 +48,24 @@ def test_unit_aliases_come_only_from_the_curated_list(catalog: str) -> None:
     curated = yaml.safe_load((ROOT / "configs/office_aliases.yaml").read_text(encoding="utf-8"))["unit_aliases"]
     allowed = {normalize_text(alias) for aliases in curated.values() for alias in aliases}
     for record in _load_json(DIRECTORY_DIR / catalog):
-        # A campus unit also keeps its plain faculty name and campus forms.
         names = {normalize_text(record.get("faculty_name") or record["unit_name"])}
         extra = [alias for alias in record.get("aliases") or []
-                 if normalize_text(alias) not in allowed | names
-                 and not (record.get("campus") and normalize_text(record["faculty_name"]) in normalize_text(alias))]
+                 if normalize_text(alias) not in allowed | names]
         assert not extra, (record["unit_name"], extra)
+
+
+@pytest.mark.parametrize("catalog", ["student_service_directory.json", "student_office_profiles.json",
+                                     "student_faculty_profiles.json"])
+def test_directories_hold_main_campus_units_only(catalog: str) -> None:
+    # The chatbot serves the main campus; branch campus units are left out,
+    # recognised by their name, their branch email or their Gia Lai address.
+    branch = [
+        record["unit_name"] for record in _load_json(DIRECTORY_DIR / catalog)
+        if normalize_text(record["unit_name"]).startswith("phan hieu")
+        or any(email.lower().startswith(("longan.", "gialai.")) for email in record.get("emails") or [])
+        or "tinh gia lai" in normalize_text(record.get("office") or "")
+    ]
+    assert not branch
 
 
 def test_generic_service_phrase_stays_ambiguous_when_candidate_is_generic(

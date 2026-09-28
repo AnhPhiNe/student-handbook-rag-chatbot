@@ -73,10 +73,10 @@ cohorts:
       kind: procedure
       pages: [173, 175]
       skip_pages: [173]
-    - id: QuyTrinhBieuMauPhanHieu
-      title: "Quy trình và biểu mẫu các công tác liên quan đến sinh viên tại phân hiệu"
-      kind: links
-      pages: [176, 176]
+    - id: CongViecCuaCacKhoa
+      title: "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên"
+      kind: guide
+      pages: [225, 225]
   K50:
     - id: ThongTinNghiDinh116
       title: "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm"
@@ -128,6 +128,10 @@ cohorts:
       kind: procedure
       pages: [169, 171]
       skip_pages: [169]
+    - id: CongViecCuaCacKhoa
+      title: "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên"
+      kind: guide
+      pages: [208, 208]
   K48-K49:
     - id: ThongTinNghiDinh116
       title: "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm"
@@ -175,3 +179,7 @@ cohorts:
       title: "Các mẫu đơn và biểu mẫu (tên mẫu, trang và nơi gửi)"
       kind: forms
       pages: [169, 185]
+    - id: CongViecCuaCacKhoa
+      title: "Một số công việc của các khoa liên quan đến sinh viên"
+      kind: guide
+      pages: [160, 160]

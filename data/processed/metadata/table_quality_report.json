@@ -3,19 +3,19 @@
   "docstore_path": "data\\processed\\chunks\\all_docstore_items.json",
   "chunk_index_path": "data\\processed\\chunks\\child_parent_chunks.json",
   "summary": {
-    "docstore_item_count": 539,
-    "classified_item_count": 28,
+    "docstore_item_count": 541,
+    "classified_item_count": 31,
     "category_counts": {
-      "regulation_table": 28
+      "regulation_table": 31
     },
     "cohort_category_counts": {
-      "K48-K49::regulation_table": 8,
-      "K50::regulation_table": 10,
-      "K51::regulation_table": 10
+      "K48-K49::regulation_table": 9,
+      "K50::regulation_table": 11,
+      "K51::regulation_table": 11
     },
     "table_like_chunk_count": 0,
     "regulation_table_registry_count": 35,
-    "directory_table_record_count": 505,
+    "directory_table_record_count": 494,
     "boundary_error_count": 0,
     "missing_source_id_count": 0,
     "invalid_regulation_table_count": 0,
@@ -200,6 +200,27 @@
       "boundary_error": false,
       "boundary_signals": [],
       "snippet": "Tài liệu: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - PHÂN LOẠI ĐÁNH GIÁ VÀ QUY TRÌNH ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN Điều: Điều 11. Tiêu đề: Quy trình đánh giá kết quả rèn luyện sinh viên Nội dung: Điều 11. Quy trình đánh giá kết quả rèn luyện sinh viên 1. CVHT thông báo đến lớp trưởng lớp sinh viên về quy trình và thời gian thực hiện việc chấm điểm rèn luyện. 2. Sinh viên căn cứ vào kết quả rèn luyện của bản thân, tự đánh giá theo mức điểm chi tiết do Nhà trường quy định kèm theo các minh chứng hoạt động và gửi về Ban cán sự (BCS) lớp. 3. BCS lớp, Ban chấp hành (BCH) chi đoàn, BCH chi hội, CVHT chấm lạ"
+    },
+    {
+      "_id": "K48-K49_CongViecCuaCacKhoa_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "article": "",
+      "title": "Một số công việc của các khoa liên quan đến sinh viên",
+      "source_pages": [
+        160
+      ],
+      "category": "regulation_table",
+      "extraction_status": "flattened",
+      "confidence": 0.85,
+      "signals": [
+        "\\bPhân\\s*loại\\b.*\\brèn\\s*luyện\\b"
+      ],
+      "recommended_action": "extract_structured_table",
+      "content_chars": 1277,
+      "boundary_error": false,
+      "boundary_signals": [],
+      "snippet": "Tài liệu: Một số công việc của các khoa liên quan đến sinh viên Phần: Chương: Tiêu đề: Một số công việc của các khoa liên quan đến sinh viên Nội dung: MỘT SỐ CÔNG VIỆC CỦA CÁC KHOA LIÊN QUAN ĐẾN SINH VIÊN – Chỉ định tạm thời hoặc bầu ban cán sự (lớp trưởng và các lớp phó) lớp sinh viên và lớp học phần; – Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký môn học; – Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa biểu học tập và thi; – Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp định của Nhà nước, Nhà trường (nếu có) theo quy định; – Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn, văn hóa – văn nghệ, thể dục – thể thao...; – Đán"
     },
     {
       "_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
@@ -427,6 +448,27 @@
       "snippet": "Tài liệu: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Không có chương Điều: Điều 8. Tiêu đề: Tổ chức thực hiện Nội dung: Điều 8. Tổ chức thực hiện 1. Các đơn vị liên quan thuộc Trường có trách nhiệm phổ biến rộng rãi quy định này đến sinh viên. 2. Phòng Đào tạo, Khảo thí và Đảm bảo Chất lượng, các khoa ngoại ngữ có trách nhiệm thông báo, hướng dẫn, tư vấn cho sinh viên lựa chọn, đăng ký chương trình, lớp học phù hợp và tổ chức học và thi các ngoại ngữ theo chức năng và nhiệm vụ được giao. 3. Trong quá trình thực hiện, nếu có vấn đề phát sinh hoặc cần"
     },
     {
+      "_id": "K50_CongViecCuaCacKhoa_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "article": "",
+      "title": "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên",
+      "source_pages": [
+        208
+      ],
+      "category": "regulation_table",
+      "extraction_status": "flattened",
+      "confidence": 0.85,
+      "signals": [
+        "\\bPhân\\s*loại\\b.*\\brèn\\s*luyện\\b"
+      ],
+      "recommended_action": "extract_structured_table",
+      "content_chars": 1307,
+      "boundary_error": false,
+      "boundary_signals": [],
+      "snippet": "Tài liệu: Một số công việc của các khoa và phân hiệu liên quan đến sinh viên Phần: Chương: Tiêu đề: Một số công việc của các khoa và phân hiệu liên quan đến sinh viên Nội dung: MỘT SỐ CÔNG VIỆC CỦA CÁC KHOA VÀ PHÂN HIỆU LIÊN QUAN ĐẾN SINH VIÊN – Chỉ định tạm thời hoặc bầu BCS (lớp trưởng và các lớp phó) lớp sinh viên và lớp học phần; – Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký môn học; – Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa biểu học tập và thi; – Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp định của Nhà nước, Nhà trường (nếu có) theo quy định; – Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn, văn hóa – văn ng"
+    },
+    {
       "_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
@@ -649,32 +691,53 @@
       "boundary_error": false,
       "boundary_signals": [],
       "snippet": "Tài liệu: Quy định chính sách phát triển người học tài năng tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương II - TIÊU CHUẨN ĐỐI VỚI NGƯỜI HỌC CHÍNH SÁCH KHEN THƯỞNG VÀ HỌC BỔNG HỖ TRỢ Điều: Điều 7. Tiêu đề: Tiêu chuẩn đối với học viên sau đại học Nội dung: Điều 7. Tiêu chuẩn đối với học viên sau đại học 1. Khen thưởng học viên có thành tích xuất sắc nổi bật trong 02 lĩnh vực sau theo chính sách phát triển người học tài năng: a) Tiêu biểu trong nghiên cứu khoa học Là tác giả đứng đầu hoặc tác giả liên hệ (hộp thư điện tử được sử dụng trong bài báo, báo cáo khoa học phải có tên miền do Trường cung cấp) của bài báo, báo cáo khoa học được công bố trên các tạp chí khoa học c"
+    },
+    {
+      "_id": "K51_CongViecCuaCacKhoa_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "article": "",
+      "title": "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên",
+      "source_pages": [
+        225
+      ],
+      "category": "regulation_table",
+      "extraction_status": "flattened",
+      "confidence": 0.85,
+      "signals": [
+        "\\bPhân\\s*loại\\b.*\\brèn\\s*luyện\\b"
+      ],
+      "recommended_action": "extract_structured_table",
+      "content_chars": 1307,
+      "boundary_error": false,
+      "boundary_signals": [],
+      "snippet": "Tài liệu: Một số công việc của các khoa và phân hiệu liên quan đến sinh viên Phần: Chương: Tiêu đề: Một số công việc của các khoa và phân hiệu liên quan đến sinh viên Nội dung: MỘT SỐ CÔNG VIỆC CỦA CÁC KHOA VÀ PHÂN HIỆU LIÊN QUAN ĐẾN SINH VIÊN – Chỉ định tạm thời hoặc bầu BCS (lớp trưởng và các lớp phó) lớp sinh viên và lớp học phần; – Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký môn học; – Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa biểu học tập và thi; – Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp định của Nhà nước, Nhà trường (nếu có) theo quy định; – Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn, văn hóa – văn ng"
     }
   ],
   "boundary_errors": [],
   "directory_catalogs": {
     "student_service_directory": {
-      "count": 233,
+      "count": 232,
       "cohort_counts": {
         "K48-K49": 77,
-        "K50": 78,
+        "K50": 77,
         "K51": 78
       }
     },
     "student_office_profiles": {
-      "count": 65,
+      "count": 64,
       "cohort_counts": {
         "K48-K49": 22,
-        "K50": 22,
+        "K50": 21,
         "K51": 21
       }
     },
     "student_faculty_profiles": {
-      "count": 78,
+      "count": 69,
       "cohort_counts": {
         "K48-K49": 23,
         "K50": 23,
-        "K51": 32
+        "K51": 23
       }
     },
     "program_directory": {

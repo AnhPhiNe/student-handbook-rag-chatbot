@@ -40,16 +40,17 @@ cases:
   - {id: fac_19, faculty: "khoa tiếng Hàn", expect: unit, units: ["Khoa Tiếng Hàn Quốc"]}
   - {id: fac_20, faculty: "tổ nữ công", expect: unit, units: ["Tổ Giáo dục Nữ công"]}
 
-  # ---- branch campuses: the campus decides the unit
-  - {id: fac_21, faculty: "khoa Khoa học Tự nhiên phân hiệu Long An", expect: unit, units: ["Khoa Khoa học – Tự nhiên (Phân hiệu Long An)"]}
-  - {id: fac_22, faculty: "khoa tự nhiên ở Gia Lai", expect: unit, units: ["Khoa Khoa học Tự nhiên (Phân hiệu Gia Lai)"]}
-  - {id: fac_23, faculty: "tổ ngoại ngữ Long An", expect: unit, units: ["Tổ Ngoại ngữ (Phân hiệu Long An)"]}
-  - {id: fac_24, faculty: "khoa giáo dục đặc thù", expect: unit, units: ["Khoa Giáo dục đặc thù (Phân hiệu Gia Lai)"]}
+  # ---- branch campuses: out of scope since 2026-09-28 (the chatbot serves the
+  #      main campus), so their units are not in the catalog
+  - {id: fac_21, faculty: "khoa Khoa học Tự nhiên phân hiệu Long An", expect: none}
+  - {id: fac_22, faculty: "khoa tự nhiên ở Gia Lai", expect: none}
+  - {id: fac_23, faculty: "tổ ngoại ngữ Long An", expect: none}
+  - {id: fac_24, faculty: "khoa giáo dục đặc thù", expect: none}
+  - {id: fac_25, faculty: "khoa Khoa học Tự nhiên", expect: none}
+  - {id: fac_26, faculty: "tổ hành chính quản trị", expect: none}
+  - {id: fac_27, faculty: "tổ đào tạo khảo thí công tác sinh viên", expect: none}
 
   # ---- too vague: several units fit
-  - {id: fac_25, faculty: "khoa Khoa học Tự nhiên", expect: clarify}
-  - {id: fac_26, faculty: "tổ hành chính quản trị", expect: clarify}
-  - {id: fac_27, faculty: "tổ đào tạo khảo thí công tác sinh viên", expect: clarify}
   - {id: fac_28, faculty: "khoa tiếng", expect: clarify}
 
   # ---- not a unit in the catalog

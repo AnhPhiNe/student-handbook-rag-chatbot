@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "total_docstore_items": 539,
+  "total_docstore_items": 541,
   "total_edges": 78,
-  "total_skipped": 1057,
+  "total_skipped": 1059,
   "skip_counts": {
-    "missing_index_fields": 75,
+    "missing_index_fields": 77,
     "self_reference": 926,
     "unresolved_external_document": 29,
     "duplicate_edge": 27
@@ -15,14 +15,14 @@
   },
   "coverage": {
     "K48-K49": {
-      "parent_sections": 148,
+      "parent_sections": 149,
       "graph_nodes": 31,
-      "coverage_pct": 20.95
+      "coverage_pct": 20.81
     },
     "K50": {
-      "parent_sections": 191,
+      "parent_sections": 192,
       "graph_nodes": 36,
-      "coverage_pct": 18.85
+      "coverage_pct": 18.75
     },
     "K51": {
       "parent_sections": 200,
@@ -1335,6 +1335,14 @@
     },
     {
       "issue": "missing_index_fields",
+      "section_id": "K48-K49_CongViecCuaCacKhoa_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Một số công việc của các khoa liên quan đến sinh viên",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
       "section_id": "K50_ThongTinNghiDinh116_Phan1",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
@@ -1523,6 +1531,14 @@
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
       "document_key": "Quy trình xét sinh viên vào ở ký túc xá",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_CongViecCuaCacKhoa_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên",
       "article_number": null
     },
     {
@@ -1727,10 +1743,10 @@
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K51_QuyTrinhBieuMauPhanHieu_Phan1",
+      "section_id": "K51_CongViecCuaCacKhoa_Phan1",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
-      "document_key": "Quy trình và biểu mẫu các công tác liên quan đến sinh viên tại phân hiệu",
+      "document_key": "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên",
       "article_number": null
     },
     {

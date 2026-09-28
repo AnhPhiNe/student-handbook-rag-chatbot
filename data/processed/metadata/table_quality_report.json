@@ -3,7 +3,7 @@
   "docstore_path": "data\\processed\\chunks\\all_docstore_items.json",
   "chunk_index_path": "data\\processed\\chunks\\child_parent_chunks.json",
   "summary": {
-    "docstore_item_count": 462,
+    "docstore_item_count": 538,
     "classified_item_count": 28,
     "category_counts": {
       "regulation_table": 28
@@ -412,8 +412,7 @@
         112,
         113,
         114,
-        115,
-        116
+        115
       ],
       "category": "regulation_table",
       "extraction_status": "structured",
@@ -422,7 +421,7 @@
         "structured_tables:1"
       ],
       "recommended_action": "keep_regulation_table",
-      "content_chars": 2185,
+      "content_chars": 2150,
       "boundary_error": false,
       "boundary_signals": [],
       "snippet": "Tài liệu: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Không có chương Điều: Điều 8. Tiêu đề: Tổ chức thực hiện Nội dung: Điều 8. Tổ chức thực hiện 1. Các đơn vị liên quan thuộc Trường có trách nhiệm phổ biến rộng rãi quy định này đến sinh viên. 2. Phòng Đào tạo, Khảo thí và Đảm bảo Chất lượng, các khoa ngoại ngữ có trách nhiệm thông báo, hướng dẫn, tư vấn cho sinh viên lựa chọn, đăng ký chương trình, lớp học phù hợp và tổ chức học và thi các ngoại ngữ theo chức năng và nhiệm vụ được giao. 3. Trong quá trình thực hiện, nếu có vấn đề phát sinh hoặc cần"

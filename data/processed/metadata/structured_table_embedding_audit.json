@@ -1,11 +1,11 @@
 {
   "schema_version": "structured-table-embedding-audit-v1",
   "docstore_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\chunks\\all_docstore_items.json",
-  "docstore_sha256": "72f0cfe49751d30fd782d91baa75b18ea555c7ede0f124e213cba02ba95cb1e9",
+  "docstore_sha256": "500d7e23fea05f7a2aa96d5d554fa43ca04108dbc6fd14955faaba2fe3b248c7",
   "structured_registry_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\tables\\structured_tables_registry.json",
-  "structured_registry_sha256": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
+  "structured_registry_sha256": "39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568",
   "child_output_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\chunks\\child_parent_chunks.json",
-  "child_count": 3117,
+  "child_count": 3795,
   "total_table_like_rows": 0,
   "excluded_as_structured": 0,
   "retained_unmatched": 0,
@@ -73,9 +73,9 @@
         "physical_tables": 1,
         "generated_appendices_removed": 0,
         "parent_table_rows": 10,
-        "original_sha256": "1d10d3bb07b20f8b5faa5a972e8243143c4005e4a3bf0ab42c05a64c36898fc8",
-        "parent_sha256": "39838fca3b9c9e57e9df2b5212de0fbc3be277a7770f54044fa1b55bb00eafee",
-        "narrative_sha256": "15ab7f152bd22788a3b501c454f777be13628be4fddba522ffd63f3e5ba20833"
+        "original_sha256": "46e520c079ffc5a56d25697435bb252da49fa3dadbd9df00764273602ed6e779",
+        "parent_sha256": "b9a99cdade29f13eaeca6609df89b2118354ffb06e2c1d025730e15105c55427",
+        "narrative_sha256": "21834dee918441a1b2d6136bb0dd8f8b5bad2294b46c251fdd53abbe310f75e8"
       },
       {
         "parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
@@ -159,24 +159,24 @@
         "narrative_sha256": "b8a4a465b055e8502c976068f7bdec0ff3d0cab5da589f8bb58f7a5cc307af58"
       }
     ],
-    "review_sha256": "3f39de03e9ecb3cdd059926a5d253e76be9e9693b1fa789493241a3bef82c98f",
+    "review_sha256": "0bcf608b2ace6db06b0a3e5ce1962714fdb5bce3f2241505742c86c78ccb2a4d",
     "source_page_corrections": [],
     "artifact_content_sha256": {
-      "parent_docstore": "354db207d6d1c3c7a8057734763f8fc61443abd85eca41faf1a5fe96ebfc7935",
-      "child_chunks": "b01e93a5bce8ca18fed167eb4463dead332f802b2ca64d5320931fbe69b43bbb"
+      "parent_docstore": "ee029a7072dd6cada0434d60324213a8ad69312d8215a74ec0af7ef0029d3925",
+      "child_chunks": "a963adad4d2a71832f38da846d1c1d130e91a79aa41e7ac8c7a118d046de17c3"
     },
     "physical_tables": 23,
     "parent_table_rows": 150,
     "generated_appendices_removed": 12,
-    "parent_count": 462,
-    "child_count": 3117,
+    "parent_count": 538,
+    "child_count": 3795,
     "table_embedding_chunks_added": 0,
     "input_sha256": {
-      "parents": "f5c41f6f37536c9a243695c50472b099011ed7ac3c4ed8eeed410396e176b5fb",
-      "registry": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
-      "review": "1eb0a429138b5a30b5594af9fd63fefd94e31634d35d4181febf9769c28dc531"
+      "parents": "0a56cd626721a1856ee4a85306f3fa77cd7c0213591e52ff19f72a5386cf010f",
+      "registry": "39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568",
+      "review": "160d1818e6580d9c15db9b693740aea4b3e3cd1cf2a15151a1023725bd3614c6"
     }
   },
-  "build_id": "build-2456d8365f1ff29505de",
-  "child_output_sha256": "21478e40b0fbf12353775f84d2847dff10b2853fd0d7213cabf45ca8d8db9899"
+  "build_id": "build-09809f028e2cf83872a2",
+  "child_output_sha256": "aa09af68dcf7e067e40823898105b1f9ea565962ae42896b082a44f8b82721fb"
 }

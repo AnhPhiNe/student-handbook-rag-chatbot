@@ -50,7 +50,7 @@ ADMINISTRATIVE_LINE_PATTERNS = [
     re.compile(r"^BỘ GIÁO DỤC VÀ ĐÀO TẠO$"),
     re.compile(r"^TRƯỜNG ĐẠI HỌC SƯ PHẠM$"),
     re.compile(r"^THÀNH PHỐ HỒ CHÍ MINH$"),
-    re.compile(r"^CỘNG H[OÒ]À XÃ HỘI CHỦ NGHĨA VIỆT NAM$"),
+    re.compile(r"^CỘNG H(?:OÀ|ÒA) XÃ HỘI CHỦ NGHĨA VIỆT NAM$"),
     re.compile(r"^Độc lập\s*[-–]\s*Tự do\s*[-–]\s*Hạnh phúc$"),
     re.compile(r"^Số:\s*\S*\d+\S*/\S+"),
     re.compile(r"^[^,]{2,40}, ngày \d{1,2} tháng \d{1,2} năm \d{4}$"),

@@ -1,0 +1,157 @@
+# Handbook texts without articles, indexed alongside the regulations.
+#
+# The article parser (src/preprocessing/structure_parser.py) indexes
+# regulations Điều by Điều. The documents below have no articles: notices,
+# guides, procedures, link pages, the conduct score framework and the forms.
+# src/chunking/supplementary_parents.py reads their pages from the PDF.
+#
+#   id      stable part of the parent id (<cohort>_<id>_Phan<n>)
+#   title   the document title as printed in the handbook's table of contents
+#   kind    notice | guide | procedure | links | score_framework | forms
+#   pages   first and last PDF page
+#   skip_pages  pages holding only a flow chart or images
+#   tables  ruled tables inside the pages: render "rows" (header row, one line
+#           per cell) or "score_framework" (parts I-V, one line per scored item)
+version: 1
+cohorts:
+  K51:
+    - id: KhungDiemDanhGiaRenLuyen
+      title: "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)"
+      kind: score_framework
+      pages: [99, 103]
+      tables:
+        - pages: [99, 103]
+          render: score_framework
+          title: "Khung điểm rèn luyện"
+    - id: HuongDanLapHoSoRenLuyen
+      title: "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)"
+      kind: guide
+      pages: [104, 104]
+    - id: HuongDanDanhGiaRenLuyenTrucTuyen
+      title: "Hướng dẫn quy trình đánh giá kết quả rèn luyện sinh viên trên chuyên trang đánh giá kết quả rèn luyện sinh viên trực tuyến (Phụ lục 3)"
+      kind: guide
+      pages: [105, 105]
+    - id: HuongDanCongTacDaoTao
+      title: "Các hướng dẫn liên quan đến công tác đào tạo"
+      kind: links
+      pages: [156, 156]
+    - id: ThongBaoMienGiamHocPhi
+      title: "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2025 – 2026"
+      kind: notice
+      pages: [157, 163]
+      tables:
+        - pages: [157, 161]
+          render: rows
+          title: "Đối tượng miễn, giảm học phí"
+    - id: ThongBaoHocBongNguoiKhuyetTat
+      title: "Thông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ phương tiện, đồ dùng học tập đối với sinh viên hệ chính quy là người khuyết tật thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026"
+      kind: notice
+      pages: [164, 166]
+    - id: ThongBaoHoTroChiPhiHocTap
+      title: "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026"
+      kind: notice
+      pages: [167, 170]
+      tables:
+        - pages: [167, 168]
+          render: rows
+          title: "Đối tượng hỗ trợ chi phí học tập"
+    - id: QuyTrinhBieuMauCoSoChinh
+      title: "Quy trình và biểu mẫu các công tác liên quan đến sinh viên tại cơ sở chính"
+      kind: links
+      pages: [172, 172]
+    - id: QuyTrinhXetVaoKyTucXa
+      title: "Quy trình xét sinh viên vào ở ký túc xá"
+      kind: procedure
+      pages: [173, 175]
+      skip_pages: [173]
+    - id: QuyTrinhBieuMauPhanHieu
+      title: "Quy trình và biểu mẫu các công tác liên quan đến sinh viên tại phân hiệu"
+      kind: links
+      pages: [176, 176]
+  K50:
+    - id: KhungDiemDanhGiaRenLuyen
+      title: "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)"
+      kind: score_framework
+      pages: [103, 107]
+      tables:
+        - pages: [103, 107]
+          render: score_framework
+          title: "Khung điểm rèn luyện"
+    - id: HuongDanLapHoSoRenLuyen
+      title: "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)"
+      kind: guide
+      pages: [108, 108]
+    - id: HuongDanDanhGiaRenLuyenTrucTuyen
+      title: "Hướng dẫn quy trình đánh giá kết quả rèn luyện sinh viên trên chuyên trang đánh giá kết quả rèn luyện sinh viên trực tuyến (Phụ lục 3)"
+      kind: guide
+      pages: [109, 109]
+    - id: ThongBaoMienGiamHocPhi
+      title: "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2024 – 2025"
+      kind: notice
+      pages: [153, 159]
+      tables:
+        - pages: [153, 157]
+          render: rows
+          title: "Đối tượng miễn, giảm học phí"
+    - id: ThongBaoHocBongNguoiKhuyetTat
+      title: "Thông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ phương tiện, đồ dùng học tập đối với sinh viên hệ chính quy là người khuyết tật thuộc hộ nghèo, hộ cận nghèo, năm học 2024 – 2025"
+      kind: notice
+      pages: [160, 162]
+    - id: ThongBaoHoTroChiPhiHocTap
+      title: "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2024 – 2025"
+      kind: notice
+      pages: [163, 166]
+      tables:
+        - pages: [163, 164]
+          render: rows
+          title: "Đối tượng hỗ trợ chi phí học tập"
+    - id: QuyTrinhBieuMau
+      title: "Quy trình và biểu mẫu các công tác liên quan đến sinh viên"
+      kind: links
+      pages: [168, 168]
+    - id: QuyTrinhXetVaoKyTucXa
+      title: "Quy trình xét sinh viên vào ở ký túc xá"
+      kind: procedure
+      pages: [169, 171]
+      skip_pages: [169]
+  K48-K49:
+    - id: PhieuDanhGiaRenLuyen
+      title: "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)"
+      kind: score_framework
+      pages: [82, 86]
+      tables:
+        - pages: [82, 86]
+          render: score_framework
+          title: "Khung điểm rèn luyện"
+    - id: HuongDanLapHoSoRenLuyen
+      title: "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)"
+      kind: guide
+      pages: [87, 87]
+    - id: QuyTacUngXuSinhVien
+      title: "10 quy tắc ứng xử của sinh viên Trường Đại học Sư phạm Thành phố Hồ Chí Minh"
+      kind: guide
+      pages: [105, 105]
+    - id: ThongBaoMienGiamHocPhi
+      title: "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023"
+      kind: notice
+      pages: [118, 123]
+    - id: ThongBaoHocBongNguoiKhuyetTat
+      title: "Thông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ phương tiện, đồ dùng học tập đối với sinh viên khuyết tật thuộc hộ nghèo, hộ cận nghèo học hệ chính quy"
+      kind: notice
+      pages: [124, 125]
+    - id: ThongBaoHoTroChiPhiHocTap
+      title: "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường"
+      kind: notice
+      pages: [126, 128]
+    - id: QuyTrinhXetVaoKyTucXa
+      title: "Quy trình xét sinh viên vào ở ký túc xá"
+      kind: procedure
+      pages: [161, 162]
+    - id: CacMauDonBieuMau
+      title: "Các mẫu đơn và biểu mẫu"
+      kind: links
+      pages: [168, 168]
+    - id: MauDonBieuMau
+      title: "Các mẫu đơn và biểu mẫu (tên mẫu, trang và nơi gửi)"
+      kind: forms
+      pages: [169, 185]

@@ -1,6 +1,6 @@
 {
   "policy": "reviewed-table-separation-v1",
-  "registry_sha256": "2f6b738c1356a020963eebac0e67a8645a13674a4584eb029ccb4fab4208bcc9",
+  "registry_sha256": "7cbc1f10ce1fa96832a6c1b82a7990e664edc4d53288678fa13bb62af2174ddd",
   "review_basis": "Approved registry plus source-layout review documented in TABLE_TEXT_CANDIDATE.md. Agent-reviewed; not claimed as independent human review.",
   "source_page_corrections": [],
   "parents": [
@@ -320,7 +320,7 @@
       "parent_id": "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
-      "content_sha256": "1d10d3bb07b20f8b5faa5a972e8243143c4005e4a3bf0ab42c05a64c36898fc8",
+      "content_sha256": "46e520c079ffc5a56d25697435bb252da49fa3dadbd9df00764273602ed6e779",
       "review_status": "source_checked",
       "registry_dispositions": {
         "K50_foreign_language_equivalency_dieu8": "physical_source_table"

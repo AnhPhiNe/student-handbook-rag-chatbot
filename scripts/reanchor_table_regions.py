@@ -12,6 +12,10 @@ so any change inside a reviewed table still needs a manual review.
 
     python -m scripts.reanchor_table_regions            # report only
     python -m scripts.reanchor_table_regions --write    # update the review file
+
+The review also binds the table registry by hash. After a rebuild that changed
+the registry only in provenance (for example a table's source_pages), check
+the registry diff and pass --accept-registry to record the new hash.
 """
 from __future__ import annotations
 
@@ -23,6 +27,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REVIEW = ROOT / "data/curated/regulation_table_regions.json"
 PARENTS = ROOT / "data/processed/chunks/all_docstore_items.json"
+REGISTRY = ROOT / "data/processed/tables/structured_tables_registry.json"
+
+
+def registry_digest(registry: list) -> str:
+    """The digest scripts/build_parent_child_artifacts.py checks."""
+    return hashlib.sha256(json.dumps(registry, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 
 
 def text_hash(value: str) -> str:
@@ -68,6 +78,8 @@ def dump(review: dict) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true", help="Save the updated review file.")
+    parser.add_argument("--accept-registry", action="store_true",
+                        help="Record the current registry hash (after checking the registry diff).")
     args = parser.parse_args()
     review = json.loads(REVIEW.read_text(encoding="utf-8"))
     parents = {p["_id"]: p for p in json.loads(PARENTS.read_text(encoding="utf-8"))}
@@ -75,7 +87,12 @@ def main() -> None:
     moved = reanchor(review, parents)
     print(f"Page corrections no longer needed: {dropped}")
     print(f"Re-anchored {len(moved)} reviewed parents: {moved}")
-    if args.write and (moved or dropped):
+    current = registry_digest(json.loads(REGISTRY.read_text(encoding="utf-8")))
+    registry_changed = current != review["registry_sha256"]
+    print(f"Registry changed since the review: {registry_changed}")
+    if registry_changed and args.accept_registry:
+        review["registry_sha256"] = current
+    if args.write and (moved or dropped or registry_changed and args.accept_registry):
         REVIEW.write_text(dump(review), encoding="utf-8")
         print(f"Updated {REVIEW.relative_to(ROOT)}")
 

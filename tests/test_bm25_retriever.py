@@ -217,33 +217,7 @@ def test_bm25_prioritizes_exact_parent_title_over_incidental_terms(tmp_path) -> 
     assert results[0][1]["chunk_id"] == "expected"
 
 
-def test_bm25_title_priority_is_accent_insensitive(tmp_path) -> None:
-    retriever = BM25Retriever(
-        vocabulary_path=tmp_path / "missing.yaml",
-        program_directory_path=tmp_path / "missing.json",
-    )
-    expected = _chunk(
-        "expected",
-        "Nội dung chi tiết.",
-        cohort="K48-K49",
-    )
-    expected["metadata"]["title"] = "Hình thức đào tạo"
-    distractor = _chunk(
-        "distractor",
-        "Hình thức xử lý và chương trình đào tạo có nhiều nội dung liên quan.",
-        cohort="K48-K49",
-    )
-    retriever.build_bm25_index([distractor, expected])
-
-    results = retriever.search_bm25(
-        "hinh thuc dao tao duoc quy dinh the nao",
-        top_k=2,
-    )
-
-    assert results[0][1]["chunk_id"] == "expected"
-
-
-def test_bm25_two_word_title_gets_no_priority(tmp_path) -> None:
+def test_bm25_ranks_by_score_not_by_a_title_in_the_query(tmp_path) -> None:
     retriever = BM25Retriever(
         vocabulary_path=tmp_path / "missing.yaml",
         program_directory_path=tmp_path / "missing.json",

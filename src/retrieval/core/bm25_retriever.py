@@ -6,7 +6,6 @@ from typing import Any
 from rank_bm25 import BM25Okapi
 
 from src.common.cohort import is_cohort_applicable
-from src.common.text import fold_text
 from src.retrieval.core.acronym_registry import (
     DEFAULT_PROGRAM_DIRECTORY_PATH,
     DEFAULT_VOCABULARY_PATH,
@@ -21,24 +20,6 @@ except ModuleNotFoundError:
     underthesea = None
 
 logger = logging.getLogger(__name__)
-
-
-def title_query_match_priority(query: str, chunk: dict[str, Any]) -> int:
-    """Return a conservative lexical priority for an explicit section title."""
-
-    metadata = chunk.get("metadata") or {}
-    title = fold_text(
-        str(metadata.get("title") or metadata.get("source_section") or "")
-    )
-    query_text = fold_text(query)
-    # Headings under three words ("Sinh viên", "Học bổng") occur in most
-    # questions, so they are too broad to use as lexical anchors: on official_v1
-    # they fired on 32/155 queries and lowered hybrid hit@1 from 0.832 to 0.813.
-    if len(title.split()) < 3:
-        return 0
-    return int(
-        bool(title and re.search(rf"(?:^| )({re.escape(title)})(?: |$)", query_text))
-    )
 
 
 class BM25Retriever:
@@ -184,24 +165,14 @@ class BM25Retriever:
         query_tokens = self._tokenize(query)
         scores = self.bm25_index.get_scores(query_tokens)
 
-        # Pair scores with chunks
+        # Ranked by BM25 score alone. A section title weighs through
+        # _index_text, which repeats it; no title rule overrides the score.
         scored_chunks = [
-            (float(score), dict(chunk)) for score, chunk in zip(scores, self.chunks)
+            (float(score), dict(chunk))
+            for score, chunk in zip(scores, self.chunks)
+            if score > 0.0
         ]
-
-        # Filter zero scores and sort
-        scored_chunks = [
-            item
-            for item in scored_chunks
-            if item[0] > 0.0 or title_query_match_priority(query, item[1])
-        ]
-        scored_chunks.sort(
-            key=lambda item: (
-                title_query_match_priority(query, item[1]),
-                item[0],
-            ),
-            reverse=True,
-        )
+        scored_chunks.sort(key=lambda item: item[0], reverse=True)
         return scored_chunks[:top_k]
 
     def sparse_search(

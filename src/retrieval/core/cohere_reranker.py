@@ -147,6 +147,9 @@ class CohereReranker:
             except NoAvailableKey:
                 telemetry["cohere_fallback_reason"] = "all_keys_temporarily_limited"
                 telemetry["cohere_latency_ms"] = total_latency_ms
+                # Retrieval quality drops without rerank (official_v1 hit@1
+                # 0.897 -> 0.832), so a skipped rerank is worth a warning.
+                logger.warning("Cohere rerank skipped: every key is at its rate limit.")
                 return fallback, telemetry
 
             excluded.add(key_id)
@@ -233,4 +236,5 @@ class CohereReranker:
 
         telemetry["cohere_latency_ms"] = total_latency_ms
         telemetry["cohere_fallback_reason"] = "all_keys_rate_limited"
+        logger.warning("Cohere rerank skipped: every key answered 429.")
         return fallback, telemetry

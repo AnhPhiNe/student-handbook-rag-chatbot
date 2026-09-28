@@ -462,7 +462,7 @@ class ApiRoutesTest(unittest.TestCase):
 
     def test_chat_capacity_settings_defaults_are_beta_safe(self) -> None:
         with patch.dict("os.environ", {}, clear=True):
-            self.assertEqual(chat_controls.chat_capacity_settings(), (3, 10, 15.0))
+            self.assertEqual(chat_controls.chat_capacity_settings(), (3, 10, 30.0))
 
     def test_chat_rate_limit_defaults_to_5(self) -> None:
         with patch.dict("os.environ", {}, clear=True):

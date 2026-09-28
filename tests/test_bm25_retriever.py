@@ -217,27 +217,27 @@ def test_bm25_prioritizes_exact_parent_title_over_incidental_terms(tmp_path) -> 
     assert results[0][1]["chunk_id"] == "expected"
 
 
-def test_bm25_title_priority_is_accent_insensitive(tmp_path) -> None:
+def test_bm25_ranks_by_score_not_by_a_title_in_the_query(tmp_path) -> None:
     retriever = BM25Retriever(
         vocabulary_path=tmp_path / "missing.yaml",
         program_directory_path=tmp_path / "missing.json",
     )
-    expected = _chunk(
-        "expected",
-        "Nội dung chi tiết.",
-        cohort="K48-K49",
+    generic = _chunk("generic", "Nội dung chi tiết.", cohort="K51")
+    generic["metadata"]["title"] = "Sinh viên"
+    relevant = _chunk(
+        "relevant",
+        "Sinh viên bị cảnh báo học tập khi điểm trung bình học kỳ dưới mức quy định.",
+        cohort="K51",
     )
-    expected["metadata"]["title"] = "Hình thức đào tạo"
-    distractor = _chunk(
-        "distractor",
-        "Hình thức xử lý và chương trình đào tạo có nhiều nội dung liên quan.",
-        cohort="K48-K49",
-    )
-    retriever.build_bm25_index([distractor, expected])
-
-    results = retriever.search_bm25(
-        "hinh thuc dao tao duoc quy dinh the nao",
-        top_k=2,
+    retriever.build_bm25_index(
+        [
+            generic,
+            relevant,
+            _chunk("other-1", "Quy định đăng ký học tập.", cohort="K51"),
+            _chunk("other-2", "Quy định đánh giá rèn luyện.", cohort="K51"),
+        ]
     )
 
-    assert results[0][1]["chunk_id"] == "expected"
+    results = retriever.search_bm25("Vì sao sinh viên bị cảnh báo học tập?", top_k=4)
+
+    assert results[0][1]["chunk_id"] == "relevant"

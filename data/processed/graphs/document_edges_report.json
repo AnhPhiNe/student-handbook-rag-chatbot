@@ -1,11 +1,12 @@
 {
   "status": "ok",
-  "total_docstore_items": 462,
+  "total_docstore_items": 538,
   "total_edges": 78,
-  "total_skipped": 978,
+  "total_skipped": 1056,
   "skip_counts": {
+    "missing_index_fields": 74,
     "self_reference": 926,
-    "unresolved_external_document": 25,
+    "unresolved_external_document": 29,
     "duplicate_edge": 27
   },
   "resolution_counts": {
@@ -14,19 +15,19 @@
   },
   "coverage": {
     "K48-K49": {
-      "parent_sections": 123,
+      "parent_sections": 149,
       "graph_nodes": 31,
-      "coverage_pct": 25.2
+      "coverage_pct": 20.81
     },
     "K50": {
-      "parent_sections": 166,
+      "parent_sections": 190,
       "graph_nodes": 36,
-      "coverage_pct": 21.69
+      "coverage_pct": 18.95
     },
     "K51": {
-      "parent_sections": 173,
+      "parent_sections": 199,
       "graph_nodes": 29,
-      "coverage_pct": 16.76
+      "coverage_pct": 14.57
     }
   },
   "validation": {
@@ -1132,6 +1133,598 @@
     }
   ],
   "skipped": [
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan2",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan3",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan4",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan5",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan6",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan7",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_HuongDanLapHoSoRenLuyen_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_HuongDanLapHoSoRenLuyen_Phan2",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_HuongDanLapHoSoRenLuyen_Phan3",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_HuongDanLapHoSoRenLuyen_Phan4",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_QuyTacUngXuSinhVien_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "10 quy tắc ứng xử của sinh viên Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan2",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan3",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan4",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoHocBongNguoiKhuyetTat_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ phương tiện, đồ dùng học tập đối với sinh viên khuyết tật thuộc hộ nghèo, hộ cận nghèo học hệ chính quy",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan2",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan3",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan4",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan5",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan6",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_QuyTrinhXetVaoKyTucXa_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Quy trình xét sinh viên vào ở ký túc xá",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_CacMauDonBieuMau_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Các mẫu đơn và biểu mẫu",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_MauDonBieuMau_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Các mẫu đơn và biểu mẫu (tên mẫu, trang và nơi gửi)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_KhungDiemDanhGiaRenLuyen_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_KhungDiemDanhGiaRenLuyen_Phan2",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_KhungDiemDanhGiaRenLuyen_Phan3",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_KhungDiemDanhGiaRenLuyen_Phan4",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_KhungDiemDanhGiaRenLuyen_Phan5",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_KhungDiemDanhGiaRenLuyen_Phan6",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_KhungDiemDanhGiaRenLuyen_Phan7",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_HuongDanLapHoSoRenLuyen_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_HuongDanLapHoSoRenLuyen_Phan2",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_HuongDanLapHoSoRenLuyen_Phan3",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_HuongDanLapHoSoRenLuyen_Phan4",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_HuongDanDanhGiaRenLuyenTrucTuyen_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Hướng dẫn quy trình đánh giá kết quả rèn luyện sinh viên trên chuyên trang đánh giá kết quả rèn luyện sinh viên trực tuyến (Phụ lục 3)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongBaoMienGiamHocPhi_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2024 – 2025",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongBaoMienGiamHocPhi_Phan2",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2024 – 2025",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongBaoMienGiamHocPhi_Phan3",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2024 – 2025",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongBaoHocBongNguoiKhuyetTat_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ phương tiện, đồ dùng học tập đối với sinh viên hệ chính quy là người khuyết tật thuộc hộ nghèo, hộ cận nghèo, năm học 2024 – 2025",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongBaoHoTroChiPhiHocTap_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2024 – 2025",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongBaoHoTroChiPhiHocTap_Phan2",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2024 – 2025",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongBaoHoTroChiPhiHocTap_Phan3",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2024 – 2025",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongBaoHoTroChiPhiHocTap_Phan4",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2024 – 2025",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongBaoHoTroChiPhiHocTap_Phan5",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2024 – 2025",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_QuyTrinhBieuMau_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Quy trình và biểu mẫu các công tác liên quan đến sinh viên",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_QuyTrinhXetVaoKyTucXa_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Quy trình xét sinh viên vào ở ký túc xá",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_KhungDiemDanhGiaRenLuyen_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_KhungDiemDanhGiaRenLuyen_Phan2",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_KhungDiemDanhGiaRenLuyen_Phan3",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_KhungDiemDanhGiaRenLuyen_Phan4",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_KhungDiemDanhGiaRenLuyen_Phan5",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_KhungDiemDanhGiaRenLuyen_Phan6",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_KhungDiemDanhGiaRenLuyen_Phan7",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_HuongDanLapHoSoRenLuyen_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_HuongDanLapHoSoRenLuyen_Phan2",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_HuongDanLapHoSoRenLuyen_Phan3",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_HuongDanLapHoSoRenLuyen_Phan4",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_HuongDanDanhGiaRenLuyenTrucTuyen_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Hướng dẫn quy trình đánh giá kết quả rèn luyện sinh viên trên chuyên trang đánh giá kết quả rèn luyện sinh viên trực tuyến (Phụ lục 3)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_HuongDanCongTacDaoTao_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Các hướng dẫn liên quan đến công tác đào tạo",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongBaoMienGiamHocPhi_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongBaoMienGiamHocPhi_Phan2",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongBaoMienGiamHocPhi_Phan3",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongBaoHocBongNguoiKhuyetTat_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ phương tiện, đồ dùng học tập đối với sinh viên hệ chính quy là người khuyết tật thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongBaoHoTroChiPhiHocTap_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongBaoHoTroChiPhiHocTap_Phan2",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongBaoHoTroChiPhiHocTap_Phan3",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongBaoHoTroChiPhiHocTap_Phan4",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongBaoHoTroChiPhiHocTap_Phan5",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_QuyTrinhBieuMauCoSoChinh_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Quy trình và biểu mẫu các công tác liên quan đến sinh viên tại cơ sở chính",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_QuyTrinhXetVaoKyTucXa_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Quy trình xét sinh viên vào ở ký túc xá",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_QuyTrinhBieuMauPhanHieu_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Quy trình và biểu mẫu các công tác liên quan đến sinh viên tại phân hiệu",
+      "article_number": null
+    },
     {
       "issue": "self_reference",
       "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu1",
@@ -4835,6 +5428,28 @@
       "reference_text": "Điều 15"
     },
     {
+      "issue": "unresolved_external_document",
+      "source": "K50_ThongBaoMienGiamHocPhi_Phan4",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_title": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2024 – 2025",
+      "reference_article": 3,
+      "reference_text": "khoản 2 Điều 3",
+      "target_document_hint": "quy định theo Pháp lệnh số 02/2020/PL- UBTVQH14 ngày 09/12/2020) - Đối tượng miễn, giảm học phí – Đối tượng được miễn 100% học phí – Hồ sơ cần nộp cho mục 1",
+      "resolution_mode": "unresolved"
+    },
+    {
+      "issue": "unresolved_external_document",
+      "source": "K50_ThongBaoMienGiamHocPhi_Phan4",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_title": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2024 – 2025",
+      "reference_article": 5,
+      "reference_text": "khoản 1, 2 Điều 5",
+      "target_document_hint": "Nghị định 20/2021/NĐ-CP ngày 15/3/2021 của Chính phủ về chính sách trợ giúp xã hội đối với đối tượng bảo trợ xã hội) - Đối tượng miễn, giảm học phí – Đối tượng được miễn 100% học phí – Hồ sơ cần nộp c",
+      "resolution_mode": "unresolved"
+    },
+    {
       "issue": "self_reference",
       "source": "K51_QuyCheDaoTao_Chuong1_Dieu1",
       "reference_article": 1,
@@ -7124,6 +7739,28 @@
       "source": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
+    },
+    {
+      "issue": "unresolved_external_document",
+      "source": "K51_ThongBaoMienGiamHocPhi_Phan4",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_title": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2025 – 2026",
+      "reference_article": 3,
+      "reference_text": "khoản 2 Điều 3",
+      "target_document_hint": "quy định theo Pháp lệnh số 02/2020/PL- UBTVQH14 ngày 09/12/2020) - Đối tượng miễn, giảm học phí – Đối tượng được miễn 100% học phí – Hồ sơ cần nộp cho mục 1",
+      "resolution_mode": "unresolved"
+    },
+    {
+      "issue": "unresolved_external_document",
+      "source": "K51_ThongBaoMienGiamHocPhi_Phan4",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_title": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2025 – 2026",
+      "reference_article": 5,
+      "reference_text": "khoản 1, 2 Điều 5",
+      "target_document_hint": "Nghị định 20/2021/NĐ-CP ngày 15/3/2021 của Chính phủ về chính sách trợ giúp xã hội đối với đối tượng bảo trợ xã hội) - Đối tượng miễn, giảm học phí – Đối tượng được miễn 100% học phí – Hồ sơ cần nộp c",
+      "resolution_mode": "unresolved"
     }
   ]
 }

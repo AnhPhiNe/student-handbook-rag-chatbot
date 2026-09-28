@@ -190,20 +190,23 @@ def test_pair_validator_checks_source_identity_even_with_current_hashes(tmp_path
         validate_separation_contract(parents, children, audit)
 
 
-def test_corpus_page_corrections_are_limited_to_two_reviewed_parents():
+def test_notice_pages_no_longer_need_page_corrections():
+    """The parser ends an article at its signature, so the notices printed after
+    a decree or regulation no longer widen its source pages; the two reviewed
+    page corrections that used to narrow them are gone."""
+
     def read(path):
         return json.loads(Path(path).read_text(encoding="utf-8"))
 
     parents = read("tests/fixtures/reviewed_parent_source_snapshot.json")
     tables = read("data/processed/tables/structured_tables_registry.json")
     review = read("data/curated/regulation_table_regions.json")
+    assert review["source_page_corrections"] == []
+    pages = {p["_id"]: p["metadata"]["source_pages"] for p in parents}
+    assert pages["K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15"] == [152]
+    assert pages["K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15"] == [155]
     full, _, children, audit = separate_tables(parents, tables, review)
-    changes = [
-        (a["_id"], b["metadata"]["source_pages"])
-        for a, b in zip(parents, full)
-        if a["metadata"]["source_pages"] != b["metadata"]["source_pages"]
-    ]
-    assert sorted(pages for _, pages in changes) == [[152], [155]]
+    assert [a["metadata"]["source_pages"] for a in parents] == [b["metadata"]["source_pages"] for b in full]
     assert len(full) == len(parents) == 18
     assert children
     validate_separation_contract(full, children, audit)

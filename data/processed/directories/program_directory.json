@@ -94,13 +94,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_35",
-    "faculty_aliases": [
-      "Khoa Giáo dục Chính trị",
-      "KGDCT",
-      "giao duc chinh tri",
-      "GDCT",
-      "Khoa GDCT"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -132,13 +125,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_36",
-    "faculty_aliases": [
-      "Khoa Giáo dục Chính trị",
-      "KGDCT",
-      "giao duc chinh tri",
-      "GDCT",
-      "Khoa GDCT"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -277,13 +263,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_38",
-    "faculty_aliases": [
-      "Khoa Giáo dục Tiểu học",
-      "KGDTH",
-      "giao duc tieu hoc",
-      "GDTH",
-      "Khoa GDTH"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -317,13 +296,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_31",
-    "faculty_aliases": [
-      "Khoa Khoa học Giáo dục",
-      "KKHGD",
-      "khoa hoc giao duc",
-      "KHGD",
-      "Khoa KHGD"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -468,13 +440,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_28",
-    "faculty_aliases": [
-      "Khoa Tiếng Hàn Quốc",
-      "KTHQ",
-      "tieng han quoc",
-      "THQ",
-      "Khoa THQ"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -508,13 +473,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_25",
-    "faculty_aliases": [
-      "Khoa Tiếng Nga",
-      "KTN",
-      "tieng nga",
-      "TN",
-      "Khoa TN"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -546,13 +504,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_29",
-    "faculty_aliases": [
-      "Khoa Tiếng Nhật",
-      "KTN",
-      "tieng nhat",
-      "TN",
-      "Khoa TN"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -587,13 +538,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_23",
-    "faculty_aliases": [
-      "Khoa Tiếng Pháp",
-      "KTP",
-      "tieng phap",
-      "TP",
-      "Khoa TP"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -628,13 +572,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_27",
-    "faculty_aliases": [
-      "Khoa Tiếng Trung Quốc",
-      "KTTQ",
-      "tieng trung quoc",
-      "TTQ",
-      "Khoa TTQ"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -669,13 +606,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_30",
-    "faculty_aliases": [
-      "Khoa Khoa học Giáo dục",
-      "KKHGD",
-      "khoa hoc giao duc",
-      "KHGD",
-      "Khoa KHGD"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -1155,13 +1085,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_24",
-    "faculty_aliases": [
-      "Khoa Tiếng Nga",
-      "KTN",
-      "tieng nga",
-      "TN",
-      "Khoa TN"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -1196,13 +1119,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_22",
-    "faculty_aliases": [
-      "Khoa Tiếng Pháp",
-      "KTP",
-      "tieng phap",
-      "TP",
-      "Khoa TP"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -1237,13 +1153,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_26",
-    "faculty_aliases": [
-      "Khoa Tiếng Trung Quốc",
-      "KTTQ",
-      "tieng trung quoc",
-      "TTQ",
-      "Khoa TTQ"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -1683,13 +1592,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_37",
-    "faculty_aliases": [
-      "Khoa Giáo dục Chính trị",
-      "KGDCT",
-      "giao duc chinh tri",
-      "GDCT",
-      "Khoa GDCT"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -1721,13 +1623,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_38",
-    "faculty_aliases": [
-      "Khoa Giáo dục Chính trị",
-      "KGDCT",
-      "giao duc chinh tri",
-      "GDCT",
-      "Khoa GDCT"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -1864,13 +1759,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_40",
-    "faculty_aliases": [
-      "Khoa Giáo dục Tiểu học",
-      "KGDTH",
-      "giao duc tieu hoc",
-      "GDTH",
-      "Khoa GDTH"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -1904,13 +1792,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_33",
-    "faculty_aliases": [
-      "Khoa Khoa học Giáo dục",
-      "KKHGD",
-      "khoa hoc giao duc",
-      "KHGD",
-      "Khoa KHGD"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -2053,13 +1934,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_30",
-    "faculty_aliases": [
-      "Khoa Tiếng Hàn Quốc",
-      "KTHQ",
-      "tieng han quoc",
-      "THQ",
-      "Khoa THQ"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -2094,13 +1968,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_27",
-    "faculty_aliases": [
-      "Khoa Tiếng Nga",
-      "KTN",
-      "tieng nga",
-      "TN",
-      "Khoa TN"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -2133,13 +2000,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_31",
-    "faculty_aliases": [
-      "Khoa Tiếng Nhật",
-      "KTN",
-      "tieng nhat",
-      "TN",
-      "Khoa TN"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -2174,13 +2034,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_25",
-    "faculty_aliases": [
-      "Khoa Tiếng Pháp",
-      "KTP",
-      "tieng phap",
-      "TP",
-      "Khoa TP"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -2254,13 +2107,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_32",
-    "faculty_aliases": [
-      "Khoa Khoa học Giáo dục",
-      "KKHGD",
-      "khoa hoc giao duc",
-      "KHGD",
-      "Khoa KHGD"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -2780,13 +2626,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_26",
-    "faculty_aliases": [
-      "Khoa Tiếng Nga",
-      "KTN",
-      "tieng nga",
-      "TN",
-      "Khoa TN"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -2820,13 +2659,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_24",
-    "faculty_aliases": [
-      "Khoa Tiếng Pháp",
-      "KTP",
-      "tieng phap",
-      "TP",
-      "Khoa TP"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -3331,13 +3163,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_6",
-    "faculty_aliases": [
-      "Khoa Giáo dục Chính trị",
-      "KGDCT",
-      "giao duc chinh tri",
-      "GDCT",
-      "Khoa GDCT"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -3370,13 +3195,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_7",
-    "faculty_aliases": [
-      "Khoa Giáo dục Chính trị",
-      "KGDCT",
-      "giao duc chinh tri",
-      "GDCT",
-      "Khoa GDCT"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -3519,13 +3337,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_13",
-    "faculty_aliases": [
-      "Khoa Giáo dục Tiểu học",
-      "KGDTH",
-      "giao duc tieu hoc",
-      "GDTH",
-      "Khoa GDTH"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -3558,13 +3369,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_9",
-    "faculty_aliases": [
-      "Khoa Khoa học Giáo dục",
-      "KKHGD",
-      "khoa hoc giao duc",
-      "KHGD",
-      "Khoa KHGD"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -3707,13 +3511,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_16",
-    "faculty_aliases": [
-      "Khoa Tiếng Hàn Quốc",
-      "KTHQ",
-      "tieng han quoc",
-      "THQ",
-      "Khoa THQ"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -3747,13 +3544,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_17",
     "faculty_name_source": "matched_existing_program",
-    "faculty_aliases": [
-      "Khoa Tiếng Nga",
-      "KTN",
-      "tieng nga",
-      "TN",
-      "Khoa TN"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -3787,13 +3577,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_18",
-    "faculty_aliases": [
-      "Khoa Tiếng Nhật",
-      "KTN",
-      "tieng nhat",
-      "TN",
-      "Khoa TN"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -3827,13 +3610,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_19",
     "faculty_name_source": "matched_existing_program",
-    "faculty_aliases": [
-      "Khoa Tiếng Pháp",
-      "KTP",
-      "tieng phap",
-      "TP",
-      "Khoa TP"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -3901,13 +3677,6 @@
     "source_section": "program_directory",
     "content_mode": "rag_index",
     "source_record_id": "program_21",
-    "faculty_aliases": [
-      "Khoa Khoa học Giáo dục",
-      "KKHGD",
-      "khoa hoc giao duc",
-      "KHGD",
-      "Khoa KHGD"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -4410,13 +4179,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_33",
     "faculty_name_source": "matched_existing_program",
-    "faculty_aliases": [
-      "Khoa Tiếng Nga",
-      "KTN",
-      "tieng nga",
-      "TN",
-      "Khoa TN"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {
@@ -4449,13 +4211,6 @@
     "content_mode": "rag_index",
     "source_record_id": "program_34",
     "faculty_name_source": "matched_existing_program",
-    "faculty_aliases": [
-      "Khoa Tiếng Pháp",
-      "KTP",
-      "tieng phap",
-      "TP",
-      "Khoa TP"
-    ],
     "data_category": "directory_table",
     "quality_status": "approved",
     "source_provenance": {

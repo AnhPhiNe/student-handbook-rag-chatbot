@@ -2171,8 +2171,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -2401,8 +2400,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -2631,8 +2629,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -2892,8 +2889,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -5827,13 +5823,6 @@
           "source_section": "program_directory",
           "content_mode": "rag_index",
           "source_record_id": "program_36",
-          "faculty_aliases": [
-            "Khoa Giáo dục Chính trị",
-            "KGDCT",
-            "giao duc chinh tri",
-            "GDCT",
-            "Khoa GDCT"
-          ],
           "data_category": "directory_table",
           "quality_status": "approved",
           "source_provenance": {
@@ -10845,8 +10834,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -11483,8 +11471,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -14995,8 +14982,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -15148,8 +15134,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -15301,8 +15286,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -19880,8 +19864,7 @@
             112,
             113,
             114,
-            115,
-            116
+            115
           ],
           "quality_status": "approved",
           "derived_from": null,

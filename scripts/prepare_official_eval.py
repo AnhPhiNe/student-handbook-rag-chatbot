@@ -56,7 +56,7 @@ def prepare() -> None:
             raise ValueError(f"Uncommitted runtime change: {name}")
     build = json.loads((ROOT / "data/processed/metadata/build_manifest.json").read_text(encoding="utf-8"))
     targets = build["storage_targets"]
-    assert targets == {"qdrant_collection": "student_handbook_semantic_v33", "mongo_parent_collection": "parent_docs_v33"}
+    assert targets == {"qdrant_collection": "student_handbook_semantic_v34", "mongo_parent_collection": "parent_docs_v34"}
     artifact_names = {record["path"] for record in build["artifacts"].values()}
     answer = yaml.safe_load((ROOT / "configs/answer_generation.yaml").read_text(encoding="utf-8"))
     router = yaml.safe_load((ROOT / "configs/ai_router.yaml").read_text(encoding="utf-8"))

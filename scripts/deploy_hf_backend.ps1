@@ -2,9 +2,9 @@ param(
     [switch]$DryRun,
     [string]$CommitMessage = "",
     [ValidateNotNullOrEmpty()]
-    [string]$QdrantCollection = "student_handbook_semantic_v33",
+    [string]$QdrantCollection = "student_handbook_semantic_v34",
     [ValidateNotNullOrEmpty()]
-    [string]$MongoCollection = "parent_docs_v33"
+    [string]$MongoCollection = "parent_docs_v34"
 )
 
 $ErrorActionPreference = "Stop"

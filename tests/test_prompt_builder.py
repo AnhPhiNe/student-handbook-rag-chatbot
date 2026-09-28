@@ -1211,3 +1211,38 @@ def test_prompt_asks_for_student_wording_and_explicit_yes_no() -> None:
     # admission_years keeps its v3.26 role: scope matching, not an input to restate.
     assert "dùng metadata này để đối chiếu phạm vi áp dụng" in prompt
     assert "- admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp.\n" not in prompt
+
+
+def test_prompt_covers_table_rows_verbatim_values_and_documents_without_articles() -> None:
+    """v3.30: the handbook texts without articles (notices, guides, score
+    framework) reach the composer as table rows rendered to lines and carry no
+    article_label, so the prompt says how to read such rows, which values to
+    copy character for character, and how to name such a source."""
+    prompt = _build_prompt_text(query="Hỏi?", retrieval_result={})
+    assert '"- Tên bảng › nhóm › mục: giá trị"' in prompt
+    assert "Chỉ lấy giá trị từ dòng có nhãn mục khớp đúng điều được hỏi" in prompt
+    assert "Chép nguyên văn từng ký tự mọi email, số điện thoại, đường link" in prompt
+    assert "nêu tên văn bản theo document_title" in prompt
+    assert "nêu năm học đó cùng kết luận" in prompt
+
+
+def test_evidence_source_carries_its_document_title() -> None:
+    packet = build_authorized_evidence_packet(
+        query="Con thương binh có được miễn học phí không?",
+        retrieval_result={
+            "citations": [
+                {
+                    "source_parent_id": "K51_ThongBaoMienGiamHocPhi_Phan4",
+                    "title": "Đối tượng miễn, giảm học phí",
+                    "document_identity": "Thông báo miễn, giảm học phí năm học 2025 – 2026",
+                    "content": "- Đối tượng miễn, giảm học phí – mục 1.1: …",
+                    "cohort": "K51",
+                }
+            ]
+        },
+        selected_citations=None,
+        fallback_cohort="K51",
+        max_context_chars=10000,
+    )
+    source = packet["units"][0]["primary_evidence"][0]
+    assert source["document_title"] == "Thông báo miễn, giảm học phí năm học 2025 – 2026"

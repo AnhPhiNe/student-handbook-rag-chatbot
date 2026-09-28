@@ -33,7 +33,6 @@ class CohereRerankerConfig:
 
     enabled: bool = True
     model: str = "rerank-v4.0-fast"
-    candidate_count: int = 16
     max_tokens_per_doc: int = 4096
     timeout_seconds: float = 5.0
     rpm_limit_per_key: int = 10
@@ -50,7 +49,6 @@ class CohereRerankerConfig:
         return cls(
             enabled=enabled,
             model=str(config.get("model") or cls.model).strip(),
-            candidate_count=max(1, int(config.get("candidate_count", 16))),
             max_tokens_per_doc=max(1, int(config.get("max_tokens_per_doc", 4096))),
             timeout_seconds=max(0.1, float(config.get("timeout_seconds", 5.0))),
             rpm_limit_per_key=max(
@@ -124,7 +122,9 @@ class CohereReranker:
             telemetry["cohere_fallback_reason"] = "missing_api_keys"
             return fallback, telemetry
 
-        candidates = fallback[: self.config.candidate_count]
+        # The retriever already cut the list to its candidate_children; every
+        # candidate is reranked so none it found is dropped here.
+        candidates = fallback
         telemetry["cohere_candidate_chunks"] = len(candidates)
         if len(candidates) < 2:
             telemetry["cohere_fallback_reason"] = "insufficient_candidates"
@@ -147,6 +147,9 @@ class CohereReranker:
             except NoAvailableKey:
                 telemetry["cohere_fallback_reason"] = "all_keys_temporarily_limited"
                 telemetry["cohere_latency_ms"] = total_latency_ms
+                # Retrieval quality drops without rerank (official_v1 hit@1
+                # 0.897 -> 0.832), so a skipped rerank is worth a warning.
+                logger.warning("Cohere rerank skipped: every key is at its rate limit.")
                 return fallback, telemetry
 
             excluded.add(key_id)
@@ -233,4 +236,5 @@ class CohereReranker:
 
         telemetry["cohere_latency_ms"] = total_latency_ms
         telemetry["cohere_fallback_reason"] = "all_keys_rate_limited"
+        logger.warning("Cohere rerank skipped: every key answered 429.")
         return fallback, telemetry

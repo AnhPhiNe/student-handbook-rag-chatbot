@@ -1,7 +1,7 @@
 {
   "schema_version": "student-handbook-build-v1",
-  "build_id": "build-934f1caf384f99ad96e9",
-  "created_at": "2026-09-06T03:30:51.025839+00:00",
+  "build_id": "build-09809f028e2cf83872a2",
+  "created_at": "2026-09-28T02:46:48.129570+00:00",
   "source_pdfs": {
     "so-tay-sinh-vien-khoa-48-49.pdf": "4bf7b510b66e6ed8ce60008d48efd05723f06899171cbf89e4494f4b277739db",
     "so-tay-sinh-vien-khoa-50.pdf": "bbae270b9821c71eeede660e3168c868bde07f458f07b648645c14584bdeb8b0",
@@ -10,27 +10,27 @@
   "artifacts": {
     "parent_docstore": {
       "path": "data/processed/chunks/all_docstore_items.json",
-      "sha256": "2b9bacb4105ed78ec017872ea3fbe53945c997fc0eef75ce9510e2b6abea9c14",
-      "count": 462,
+      "sha256": "500d7e23fea05f7a2aa96d5d554fa43ca04108dbc6fd14955faaba2fe3b248c7",
+      "count": 538,
       "cohort_counts": {
-        "K48-K49": 123,
-        "K50": 166,
-        "K51": 173
+        "K48-K49": 149,
+        "K50": 190,
+        "K51": 199
       }
     },
     "child_chunks": {
       "path": "data/processed/chunks/child_parent_chunks.json",
-      "sha256": "c951db540eeca6ade7d66a96bf5f0ac457c87f6f79fad9be54c93420a674630d",
-      "count": 3121,
+      "sha256": "aa09af68dcf7e067e40823898105b1f9ea565962ae42896b082a44f8b82721fb",
+      "count": 3795,
       "cohort_counts": {
-        "K48-K49": 877,
-        "K50": 1082,
-        "K51": 1162
+        "K48-K49": 1117,
+        "K50": 1288,
+        "K51": 1390
       }
     },
     "structured_tables": {
       "path": "data/processed/tables/structured_tables_registry.json",
-      "sha256": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
+      "sha256": "39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568",
       "count": 35,
       "cohort_counts": {
         "K48-K49": 11,
@@ -50,7 +50,7 @@
     },
     "table_embedding_audit": {
       "path": "data/processed/metadata/structured_table_embedding_audit.json",
-      "sha256": "6493740ece3a455bb5dcb668ab733291f45fdc911bde9a0626e93d4753d5cbaa",
+      "sha256": "2fe9196943c77c0ad209d8406a3c13599be59c06d14038d99e8e159abb8f0a3e",
       "total_table_like_rows": 0,
       "excluded_as_structured": 0,
       "retained_unmatched": 0,
@@ -63,8 +63,8 @@
     "normalize_embeddings": true
   },
   "storage_targets": {
-    "qdrant_collection": "student_handbook_semantic_v33",
-    "mongo_parent_collection": "parent_docs_v33"
+    "qdrant_collection": "student_handbook_semantic_v34",
+    "mongo_parent_collection": "parent_docs_v34"
   },
   "index_contract": {
     "embedding_input": "data/processed/chunks/child_parent_chunks.json",
@@ -72,7 +72,7 @@
     "structured_json_indexed_in_qdrant": false,
     "covered_table_rows_indexed_in_qdrant": false,
     "table_separation_policy": "reviewed-table-separation-v1",
-    "source_review_sha256": "f3ce49946bfc67f628b881c1eb22f44239ebcb6b5f94f707dcdfd9153c038b8a",
+    "source_review_sha256": "0bcf608b2ace6db06b0a3e5ce1962714fdb5bce3f2241505742c86c78ccb2a4d",
     "parent_representation": "full_article_with_reviewed_tables",
     "child_representation": "narrative_without_reviewed_table_regions"
   }

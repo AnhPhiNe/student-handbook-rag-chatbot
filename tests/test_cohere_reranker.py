@@ -23,7 +23,6 @@ def _candidates(count: int = 24) -> list[tuple[float, dict[str, object]]]:
 def _config(**overrides: object) -> CohereRerankerConfig:
     values: dict[str, object] = {
         "enabled": True,
-        "candidate_count": 16,
         "rpm_limit_per_key": 10,
         "cooldown_seconds": 65.0,
     }
@@ -57,32 +56,32 @@ def test_disabled_reranker_returns_full_rrf_without_http() -> None:
     post.assert_not_called()
 
 
-def test_success_reranks_only_configured_rrf_prefix() -> None:
+def test_success_reranks_every_candidate() -> None:
     results = [
         {"index": index, "relevance_score": 1.0 - rank / 100}
-        for rank, index in enumerate(reversed(range(16)))
+        for rank, index in enumerate(reversed(range(24)))
     ]
     post = Mock(return_value=_response(200, results=results))
     reranker = CohereReranker(_config(), keys=["key-a"], post=post)
 
     ranked, telemetry = reranker.rerank("query", _candidates())
 
-    assert len(ranked) == 16
+    assert len(ranked) == 24
     assert [chunk["chunk_id"] for _, chunk in ranked] == [
-        f"c{index}" for index in reversed(range(16))
+        f"c{index}" for index in reversed(range(24))
     ]
     assert telemetry["ranking_method"] == "cohere_rerank_v4_fast"
     assert telemetry["cohere_reranker_applied"] is True
     assert telemetry["cohere_key_index"] == 0
     assert "cohere_key_fingerprint" not in telemetry
     request_json = post.call_args.kwargs["json"]
-    assert request_json["documents"] == [f"doc {index}" for index in range(16)]
+    assert request_json["documents"] == [f"doc {index}" for index in range(24)]
 
 
 def test_rate_limit_rotates_to_next_key_without_waiting() -> None:
     success = [
         {"index": index, "relevance_score": 1.0 - index / 100}
-        for index in range(16)
+        for index in range(24)
     ]
     post = Mock(
         side_effect=[
@@ -94,7 +93,7 @@ def test_rate_limit_rotates_to_next_key_without_waiting() -> None:
 
     ranked, telemetry = reranker.rerank("query", _candidates())
 
-    assert len(ranked) == 16
+    assert len(ranked) == 24
     assert telemetry["cohere_reranker_applied"] is True
     assert telemetry["cohere_attempts"] == 2
     assert [
@@ -189,7 +188,7 @@ def test_non_object_json_response_fails_open_to_full_rrf() -> None:
 def test_invalid_relevance_score_fails_open_to_full_rrf(score: float) -> None:
     results = [
         {"index": index, "relevance_score": score if index == 0 else 0.5}
-        for index in range(16)
+        for index in range(24)
     ]
     original = _candidates()
     reranker = CohereReranker(

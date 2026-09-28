@@ -5,6 +5,7 @@ import os
 from src.common.cohort import DOCUMENT_ID_BY_COHORT
 from src.common.io import load_json, load_yaml, save_json
 from .regulation_parents import build_regulation_parents
+from .supplementary_parents import build_supplementary_parents
 
 
 CONFIG_PATH = Path("configs/chunking.yaml")
@@ -45,6 +46,11 @@ def main() -> None:
     )
     docstore_items = build_regulation_parents(structured_sections)
     cohort = os.environ.get("COHORT")
+    # Notices, guides, procedures, link pages, the conduct score framework and
+    # forms have no articles; they are read from the PDF by page range.
+    pdf_path = os.environ.get("PDF_PATH")
+    if cohort and pdf_path:
+        docstore_items += build_supplementary_parents(cohort, pdf_path)
     attach_cohort_metadata(
         docstore_items,
         cohort=cohort,

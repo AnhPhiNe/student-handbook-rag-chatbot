@@ -35,7 +35,36 @@ DOCUMENT_TITLE_PATTERNS = [
     re.compile(r"^QUY ĐỊNH\b", re.IGNORECASE),
     re.compile(r"^PHỤ LỤC\b", re.IGNORECASE),
     re.compile(r"^HƯỚNG DẪN\b", re.IGNORECASE),
+    re.compile(r"^NGHỊ ĐỊNH\b", re.IGNORECASE),
 ]
+
+
+# A document's administrative frame is not article text. Letterhead, national
+# motto, document numbers and "(đã ký)" can appear anywhere in the PDF reading
+# order, even inside an article, so they are dropped without closing it. A
+# signature ends the document body: what follows belongs to the article only
+# when it is the document's appendix ("Phụ lục ..."). A notice title starts a
+# document without articles, which is built separately (supplementary
+# documents), so it closes the current article.
+ADMINISTRATIVE_LINE_PATTERNS = [
+    re.compile(r"^BỘ GIÁO DỤC VÀ ĐÀO TẠO$"),
+    re.compile(r"^TRƯỜNG ĐẠI HỌC SƯ PHẠM$"),
+    re.compile(r"^THÀNH PHỐ HỒ CHÍ MINH$"),
+    re.compile(r"^CỘNG H(?:OÀ|ÒA) XÃ HỘI CHỦ NGHĨA VIỆT NAM$"),
+    re.compile(r"^Độc lập\s*[-–]\s*Tự do\s*[-–]\s*Hạnh phúc$"),
+    re.compile(r"^Số:\s*\S*\d+\S*/\S+"),
+    re.compile(r"^[^,]{2,40}, ngày \d{1,2} tháng \d{1,2} năm \d{4}$"),
+    re.compile(r"^\(đã ký\)$"),
+    re.compile(r"^XÁC THỰC VĂN BẢN HỢP NHẤT$"),
+]
+# A signature or the recipients list ("Nơi nhận:") ends the document body.
+SIGNATURE_PATTERNS = [
+    re.compile(r"^Nơi nhận\s*:"),
+    re.compile(r"^(?:KT|TM|TL)\.\s*(?:HIỆU TRƯỞNG|BỘ TRƯỞNG|CHÍNH PHỦ)"),
+    re.compile(r"^(?:PHÓ )?(?:HIỆU TRƯỞNG|BỘ TRƯỞNG|THỦ TƯỚNG)$"),
+]
+NOTICE_TITLE_PATTERN = re.compile(r"^THÔNG BÁO$")
+APPENDIX_PATTERN = re.compile(r"^Phụ lục\b", re.IGNORECASE)
 
 
 def normalize_line(line: str) -> str:
@@ -69,6 +98,15 @@ def classify_line(line: str) -> str:
 
     if not line:
         return "empty"
+
+    if any(pattern.match(line) for pattern in ADMINISTRATIVE_LINE_PATTERNS):
+        return "administrative"
+
+    if any(pattern.match(line) for pattern in SIGNATURE_PATTERNS):
+        return "signature"
+
+    if NOTICE_TITLE_PATTERN.match(line):
+        return "notice_title"
 
     if PART_PATTERN.match(line):
         return "part"
@@ -434,6 +472,7 @@ def build_structured_sections(
     current_section: Optional[dict[str, Any]] = None
 
     section_index = 1
+    after_signature = False
 
     for record in line_records:
         line = record["line"]
@@ -444,6 +483,28 @@ def build_structured_sections(
         if should_close_on_content_type_change(current_section, content_type):
             close_section(current_section, sections)
             current_section = None
+
+        if line_type == "administrative":
+            continue
+
+        if line_type == "signature":
+            after_signature = True
+            continue
+
+        if line_type == "notice_title":
+            close_section(current_section, sections)
+            current_section = None
+            after_signature = False
+            continue
+
+        if after_signature and line_type in {"normal_text", "clause", "point"}:
+            if not APPENDIX_PATTERN.match(line):
+                # Signer names, QR notes and other text outside the body.
+                continue
+            after_signature = False
+
+        if line_type in {"document_title", "part", "chapter", "article"}:
+            after_signature = False
 
         if line_type == "document_title":
             close_section(current_section, sections)
@@ -485,6 +546,8 @@ def build_structured_sections(
                 continue
 
             golden_id = str(excel_data.get("Dinh_dang_2", ""))
+            # The college-level (cao đẳng) Early Childhood Education regulation
+            # (K50, K51) is out of scope: the assistant serves university students.
             if "CaoDang" in golden_id:
                 current_section = None
                 continue

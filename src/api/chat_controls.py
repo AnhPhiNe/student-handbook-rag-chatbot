@@ -19,7 +19,10 @@ DEFAULT_RATE_LIMIT_PER_MINUTE = 5
 DEFAULT_IP_RATE_LIMIT_PER_MINUTE = 120
 DEFAULT_MAX_CONCURRENT_CHAT = 3
 DEFAULT_MAX_QUEUE_SIZE = 10
-DEFAULT_QUEUE_TIMEOUT_SECONDS = 15.0
+# A queued request waits for one of the active answers to finish; answers
+# take about 7 s at p50 and 9-10 s at p90, so a 15 s wait could expire while
+# every slot is busy with a slow answer.
+DEFAULT_QUEUE_TIMEOUT_SECONDS = 30.0
 CLIENT_ID_HEADER = "X-Client-ID"
 TRUE_CLIENT_IP_HEADERS = (
     "CF-Connecting-IP",

@@ -185,6 +185,9 @@ class ChildParentHybridRetriever:
     and the context budget; Composer is not restricted to matched child text.
     """
 
+    # Overridden from configs/retrieval.yaml (retrieval.candidate_children).
+    candidate_children = 24
+
     def __init__(
         self,
         qdrant_url: str,
@@ -194,6 +197,8 @@ class ChildParentHybridRetriever:
     ):
         self.runtime_config = runtime_config or load_retrieval_runtime_config()
         runtime = self.runtime_config.get("runtime") or {}
+        retrieval = self.runtime_config.get("retrieval") or {}
+        self.candidate_children = max(1, int(retrieval.get("candidate_children", 24)))
         embedding = self.runtime_config.get("embedding") or {}
         self.qdrant_client = QdrantClient(
             url=qdrant_url,
@@ -357,7 +362,6 @@ class ChildParentHybridRetriever:
     def retrieve(
         self,
         query: str,
-        top_k_vector: int = 12,
         top_k_final: int = 5,
         graph_depth: int = 2,
         cohort: str | None = None,
@@ -374,16 +378,23 @@ class ChildParentHybridRetriever:
 
         retrieval_started = time.perf_counter()
         logger.info("==> Child-parent query: %s", query)
-        search_limit = max(top_k_vector * 2, 24)
-        dense = self._dense_candidates(query, cohort=cohort, limit=search_limit)
-        if not dense:
-            return []
+        search_limit = self.candidate_children
+        dense_error = None
+        try:
+            dense = self._dense_candidates(query, cohort=cohort, limit=search_limit)
+        except Exception as exc:
+            # The embedding model or Qdrant failed: answer from BM25 alone,
+            # which still goes through the reranker, rather than from nothing.
+            logger.warning("Dense retrieval failed; using BM25 only: %s", exc)
+            dense, dense_error = [], type(exc).__name__
         # vector_only is the dense-only ablation: no lexical candidates are fused.
         lexical = (
             []
             if eval_mode == "vector_only"
             else self._bm25_candidates(query, cohort=cohort, limit=search_limit)
         )
+        if not dense and not lexical:
+            return []
         primary_scored = reciprocal_rank_fusion(dense, lexical)[:search_limit]
 
         seed_parent_ids = {
@@ -397,6 +408,7 @@ class ChildParentHybridRetriever:
             "qdrant_seed_chunks": len(dense),
             "qdrant_seed_parents": len(seed_parent_ids),
             "ranking_method": "rrf",
+            "dense_failed": dense_error,
         }
         cohere_reranker = getattr(self, "cohere_reranker", None)
         if cohere_reranker is not None:

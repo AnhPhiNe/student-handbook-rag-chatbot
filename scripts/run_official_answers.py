@@ -68,6 +68,9 @@ def main():
                         help="Deployed API to send the production suite requests to.")
     parser.add_argument("--retrieval-mode", help="Retrieval suite only: run an ablation mode "
                         "(no_graph, vector_only) instead of the default.")
+    parser.add_argument("--scope", choices=("end_to_end", "pure"), default="end_to_end",
+                        help="Retrieval suite only: end_to_end plans with the planner first; pure searches "
+                        "the case query directly, so two data builds compare without planner variance.")
     parser.add_argument("--answer-config", help="Answers suite only: composer config, "
                         "default configs/answer_generation.yaml.")
     parser.add_argument("--shared-plans", help="Answers suite only: planner decision cache shared "
@@ -100,11 +103,13 @@ def main():
             snapshot["base_url"] = args.base_url
         if args.retrieval_mode:
             snapshot["retrieval_mode"] = args.retrieval_mode
+        if args.suite == "retrieval":
+            snapshot["scope"] = args.scope
         (output / "run_snapshot.json").write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Output: {output}", flush=True)
 
     if args.suite == "retrieval":
-        report = evaluate_retrieval(cases, backend="qdrant", mode=snapshot["retrieval_mode"], scope="end_to_end",
+        report = evaluate_retrieval(cases, backend="qdrant", mode=snapshot["retrieval_mode"], scope=snapshot.get("scope", "end_to_end"),
                                     limit=snapshot["limit"], checkpoint_path=output / "retrieval_checkpoint.json",
                                     resume=resume, checkpoint_context=snapshot)
         report["run_snapshot"] = snapshot

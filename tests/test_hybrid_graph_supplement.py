@@ -434,6 +434,37 @@ def test_vector_only_ablation_fuses_no_bm25_candidates() -> None:
     assert "lexical-only" not in {chunk["chunk_id"] for _, chunk in scored_chunks}
 
 
+def test_dense_failure_falls_back_to_bm25_candidates() -> None:
+    retriever = _retriever_stub()
+    retriever.bm25.sparse_search.return_value = [
+        {"chunk_id": "lexical-only", "bm25_score": 9.0, "content": "bm25"}
+    ]
+
+    with (
+        patch.dict(
+            os.environ,
+            {"STUDENT_RAG_EVAL_RETRIEVAL_MODE": DEFAULT_RETRIEVAL_MODE},
+        ),
+        patch(
+            "src.retrieval.core.hybrid_pipeline._query_points_with_retry",
+            side_effect=TimeoutError("embedding service down"),
+        ),
+    ):
+        results = ChildParentHybridRetriever.retrieve(
+            retriever,
+            "dieu kien hoc bong",
+            top_k_final=5,
+            graph_depth=2,
+            cohort="K50",
+        )
+
+    scored_chunks = retriever._group_parent_results.call_args.kwargs["scored_chunks"]
+    assert [chunk["chunk_id"] for _, chunk in scored_chunks] == ["lexical-only"]
+    telemetry = retriever._group_parent_results.call_args.kwargs["retrieval_telemetry"]
+    assert telemetry["dense_failed"] == "TimeoutError"
+    assert results
+
+
 def test_reciprocal_rank_fusion_uses_ranks_not_raw_scores() -> None:
     dense = [(0.99, {"chunk_id": "a"}), (0.10, {"chunk_id": "b"})]
     lexical = [(55.0, {"chunk_id": "b"}), (1.0, {"chunk_id": "c"})]

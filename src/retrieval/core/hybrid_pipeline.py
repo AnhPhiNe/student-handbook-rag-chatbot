@@ -379,15 +379,22 @@ class ChildParentHybridRetriever:
         retrieval_started = time.perf_counter()
         logger.info("==> Child-parent query: %s", query)
         search_limit = self.candidate_children
-        dense = self._dense_candidates(query, cohort=cohort, limit=search_limit)
-        if not dense:
-            return []
+        dense_error = None
+        try:
+            dense = self._dense_candidates(query, cohort=cohort, limit=search_limit)
+        except Exception as exc:
+            # The embedding model or Qdrant failed: answer from BM25 alone,
+            # which still goes through the reranker, rather than from nothing.
+            logger.warning("Dense retrieval failed; using BM25 only: %s", exc)
+            dense, dense_error = [], type(exc).__name__
         # vector_only is the dense-only ablation: no lexical candidates are fused.
         lexical = (
             []
             if eval_mode == "vector_only"
             else self._bm25_candidates(query, cohort=cohort, limit=search_limit)
         )
+        if not dense and not lexical:
+            return []
         primary_scored = reciprocal_rank_fusion(dense, lexical)[:search_limit]
 
         seed_parent_ids = {
@@ -401,6 +408,7 @@ class ChildParentHybridRetriever:
             "qdrant_seed_chunks": len(dense),
             "qdrant_seed_parents": len(seed_parent_ids),
             "ranking_method": "rrf",
+            "dense_failed": dense_error,
         }
         cohere_reranker = getattr(self, "cohere_reranker", None)
         if cohere_reranker is not None:

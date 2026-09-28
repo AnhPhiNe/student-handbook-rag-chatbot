@@ -38,6 +38,7 @@ REQUIRED_ENV_VARS = (
     "MONGODB_PARENT_COLLECTION",
     "OPENAI_API_KEY",  # planner
     "DEEPSEEK_API_KEY",  # composer and directory selector
+    "DEEPINFRA_API_KEY",  # BGE-M3 query embeddings
 )
 
 

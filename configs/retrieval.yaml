@@ -1,7 +1,17 @@
+# BGE-M3 served by DeepInfra (OpenAI-compatible embeddings API). Its vectors
+# equal the local sentence-transformers model's, so collections built locally
+# stay valid. A query waits query_timeout_seconds per try (query_retries more
+# tries), then retrieval falls back to BM25.
 embedding:
   model_name: BAAI/bge-m3
   dimension: 1024
   normalize_embeddings: true
+  api_url: https://api.deepinfra.com/v1/openai/embeddings
+  api_key_env_var: DEEPINFRA_API_KEY
+  query_timeout_seconds: 5
+  query_retries: 1
+  document_batch_size: 64
+  document_concurrency: 8
 
 retrieval:
   # Parents handed to the composer.

@@ -16,7 +16,7 @@ from src.retrieval.core.cohere_reranker import CohereReranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
-from src.retrieval.core.embedding_model import load_embedding_model
+from src.retrieval.core.embedding_model import load_embedding_client
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
@@ -207,8 +207,7 @@ class ChildParentHybridRetriever:
         )
         self.collection_name = collection_name
 
-        self.embed_model = load_embedding_model(str(embedding["model_name"]))
-        self.normalize_embeddings = bool(embedding.get("normalize_embeddings", True))
+        self.embedder = load_embedding_client(embedding)
         self.graph = NetworkXGraphTraverser()
         self.cohere_reranker = CohereReranker.from_runtime_config(self.runtime_config)
 
@@ -453,10 +452,7 @@ class ChildParentHybridRetriever:
     ) -> list[tuple[float, dict[str, Any]]]:
         """Embed the query and return in-scope Qdrant child chunks with their scores."""
 
-        query_vector = self.embed_model.encode(
-            query,
-            normalize_embeddings=getattr(self, "normalize_embeddings", True),
-        ).tolist()
+        query_vector = self.embedder.embed_query(query)
         hits = _query_points_with_retry(
             self.qdrant_client,
             collection_name=self.collection_name,

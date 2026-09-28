@@ -207,10 +207,8 @@ def _retriever_stub() -> ChildParentHybridRetriever:
     retriever = ChildParentHybridRetriever.__new__(ChildParentHybridRetriever)
     retriever.collection_name = "test"
     retriever.qdrant_client = object()
-    retriever.embed_model = Mock()
-    retriever.embed_model.encode.return_value = SimpleNamespace(
-        tolist=lambda: [0.1, 0.2]
-    )
+    retriever.embedder = Mock()
+    retriever.embedder.embed_query.return_value = [0.1, 0.2]
     primary = [{"chunk_id": "P0", "metadata": {}}]
     retriever._group_parent_results = Mock(return_value=primary)
     retriever._graph_related_parent_results = Mock(

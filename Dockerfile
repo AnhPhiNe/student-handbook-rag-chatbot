@@ -13,13 +13,8 @@ COPY requirements.txt constraints-runtime.txt ./
 RUN pip install --no-cache-dir -c constraints-runtime.txt -r requirements.txt \
     && pip check
 
-# Bake the embedding model into the image. Downloading it at run time makes the
-# first question after any container start wait for several GB. The model name
-# is read from the retrieval contract so it cannot drift from the config.
-ENV HF_HOME=/app/.cache/huggingface
-COPY configs/retrieval.yaml ./configs/retrieval.yaml
-RUN python -c "import yaml; from sentence_transformers import SentenceTransformer; SentenceTransformer(yaml.safe_load(open('configs/retrieval.yaml'))['embedding']['model_name'])"
-
+# Embeddings come from the DeepInfra API (configs/retrieval.yaml), so the image
+# holds no model and needs DEEPINFRA_API_KEY at run time.
 COPY . .
 
 # Change ownership and switch to non-root user

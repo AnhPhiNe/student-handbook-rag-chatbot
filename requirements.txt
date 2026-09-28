@@ -1,6 +1,4 @@
 google-genai>=0.5,<2.0
-sentence-transformers>=3.0,<4.0
-torch>=2.3,<3.0
 pyyaml>=6.0,<7.0
 PyMuPDF>=1.24,<2.0
 fastapi>=0.111,<1.0

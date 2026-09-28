@@ -10,7 +10,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, VectorParams
-from sentence_transformers import SentenceTransformer
+
+from src.retrieval.core.embedding_model import load_embedding_client
 from tqdm import tqdm
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -151,19 +152,11 @@ def main() -> None:
     retrieval_config = load_retrieval_runtime_config()
     embedding_config = retrieval_config["embedding"]
     model_name = str(embedding_config["model_name"])
-    encode_batch_size = int(os.getenv("STUDENT_RAG_EMBEDDING_BATCH_SIZE", "32"))
-    print(f"Loading embedding model: {model_name}")
-    model = SentenceTransformer(model_name)
-    vector_size = model.get_sentence_embedding_dimension()
-    validate_embedding_contract(model_name, vector_size)
-
     texts = [str(chunk.get("content") or "") for chunk in chunks]
-    embeddings = model.encode(
-        texts,
-        batch_size=encode_batch_size,
-        show_progress_bar=True,
-        normalize_embeddings=bool(embedding_config.get("normalize_embeddings", True)),
-    )
+    print(f"Embedding {len(texts)} chunks with {model_name} over the API")
+    embeddings = load_embedding_client(embedding_config).embed_documents(texts)
+    vector_size = len(embeddings[0])
+    validate_embedding_contract(model_name, vector_size)
 
     points: list[PointStruct] = []
     for index, chunk in enumerate(chunks):
@@ -174,7 +167,7 @@ def main() -> None:
         points.append(
             PointStruct(
                 id=string_to_uuid(chunk_id),
-                vector=embeddings[index].tolist(),
+                vector=embeddings[index],
                 payload=metadata,
             )
         )

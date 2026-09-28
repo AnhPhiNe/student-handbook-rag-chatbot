@@ -13,9 +13,6 @@ from src.common.env_loader import env_bool
 from src.common.io import load_json, load_yaml
 from src.retrieval.core.directory_selector import DirectorySelector
 from src.retrieval.core.slang_normalizer import SlangNormalizer
-from src.retrieval.core.embedding_model import (
-    load_embedding_model,
-)
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 
 from .answer_formatter import (
@@ -214,12 +211,6 @@ class AnswerPipeline:
         self.program_directory = load_json(self.config["input"]["program_directory"])
         self.slang_normalizer = SlangNormalizer(
             program_directory=self.program_directory,
-        )
-
-        # Warm-up only: the dense retriever reuses this cached instance, so the
-        # first question does not pay the model load.
-        self.model = load_embedding_model(
-            self.retrieval_config["embedding"]["model_name"]
         )
 
         llm_config = self.config.get("llm", {})

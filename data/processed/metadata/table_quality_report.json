@@ -3,7 +3,7 @@
   "docstore_path": "data\\processed\\chunks\\all_docstore_items.json",
   "chunk_index_path": "data\\processed\\chunks\\child_parent_chunks.json",
   "summary": {
-    "docstore_item_count": 538,
+    "docstore_item_count": 539,
     "classified_item_count": 28,
     "category_counts": {
       "regulation_table": 28
@@ -87,7 +87,7 @@
         "structured_tables:2"
       ],
       "recommended_action": "keep_regulation_table",
-      "content_chars": 3087,
+      "content_chars": 3110,
       "boundary_error": false,
       "boundary_signals": [],
       "snippet": "Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP Điều: Điều 11. Tiêu đề: Đánh giá kết quả học tập theo học kỳ, năm học Nội dung: Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học 1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ chính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong yêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí sau đây: a) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong một học kỳ, trong một năm học, hoặc nợ đọng từ đầu khoá học; b) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khó"
@@ -266,7 +266,7 @@
         "structured_tables:2"
       ],
       "recommended_action": "keep_regulation_table",
-      "content_chars": 3056,
+      "content_chars": 3079,
       "boundary_error": false,
       "boundary_signals": [],
       "snippet": "Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP Điều: Điều 11. Tiêu đề: Đánh giá kết quả học tập theo học kỳ, năm học Nội dung: Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học 1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ chính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong yêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí sau đây: a) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong một học kỳ, trong một năm học, hoặc nợ đọng từ đầu khóa học; b) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khó"
@@ -491,7 +491,7 @@
         "structured_tables:2"
       ],
       "recommended_action": "keep_regulation_table",
-      "content_chars": 3422,
+      "content_chars": 3445,
       "boundary_error": false,
       "boundary_signals": [],
       "snippet": "Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP Điều: Điều 11. Tiêu đề: Đánh giá kết quả học tập theo học kỳ, năm học Nội dung: Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học 1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ chính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong yêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí sau đây: a) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong một học kỳ, trong một năm học, hoặc nợ đọng từ đầu khóa học; b) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khó"

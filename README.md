@@ -390,7 +390,7 @@ Rebuild locally without touching the remote stores:
 
 ```bash
 PUSH_REMOTE=0 python -m scripts.build_multi_cohort \
-  --qdrant-collection student_handbook_semantic_v34 --mongo-collection parent_docs_v34
+  --qdrant-collection student_handbook_semantic_v35 --mongo-collection parent_docs_v35
 ```
 
 The command overwrites `data/processed/`, so run it in a clean worktree. With `PUSH_REMOTE=1` it also preflights the target collections, embeds and uploads, then verifies the remote contents against the manifest. See the [parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md).
@@ -689,8 +689,8 @@ A suggested reading order for the backend: [`schemas.py`](src/api/schemas.py), t
 |---|---|---|
 | Frontend | Vercel ([hcmuebot.id.vn](https://hcmuebot.id.vn)) | Static React build; `/api/visits` is proxied to the backend |
 | Backend | Hugging Face Spaces (Docker) | One worker; runtime files come from an explicit allowlist |
-| Vector store | Qdrant | Collection `student_handbook_semantic_v34` |
-| Documents | MongoDB | Collection `parent_docs_v34` |
+| Vector store | Qdrant | Collection `student_handbook_semantic_v35` |
+| Documents | MongoDB | Collection `parent_docs_v35` |
 
 [`deploy_hf_backend.ps1`](scripts/deploy_hf_backend.ps1) packages only the allowlisted runtime files and checks that the build manifest targets the intended collections. `-DryRun` validates the package without touching the Space. After a deploy, check `/health/readiness`, then run the production suite against the Space.
 

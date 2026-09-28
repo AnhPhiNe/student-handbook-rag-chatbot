@@ -88,9 +88,9 @@ def main():
         raise ValueError(errors or f"No cases in {bundle.name}")
     source_dataset_n = len(cases)
     cases = select_case_ids(cases, args.case_ids)
-    expected = {"QDRANT_COLLECTION_NAME": "student_handbook_semantic_v34",
-                "STUDENT_RAG_HYBRID_COLLECTION": "student_handbook_semantic_v34",
-                "MONGODB_PARENT_COLLECTION": "parent_docs_v34"}
+    expected = {"QDRANT_COLLECTION_NAME": "student_handbook_semantic_v35",
+                "STUDENT_RAG_HYBRID_COLLECTION": "student_handbook_semantic_v35",
+                "MONGODB_PARENT_COLLECTION": "parent_docs_v35"}
     actual = {key: os.environ.get(key) for key in expected}
     if actual != expected:
         raise ValueError(f"Storage configuration mismatch: {actual}")

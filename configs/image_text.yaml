@@ -1,0 +1,19 @@
+# Content the handbook PDF prints as an image, written back as text.
+#
+# Text extraction skips images, so an article can read "được tính theo công
+# thức sau: Trong đó: A là ..." with the formula itself missing. Each entry
+# inserts its text right before an anchor in the one parent that contains it;
+# src/chunking/image_text.py fails the build if the anchor is not found exactly
+# once, so a changed PDF is noticed instead of silently losing the text.
+#
+#   cohorts  handbooks the entry applies to
+#   before   text the inserted line goes in front of (must occur once)
+#   text     the content of the image, copied from the page
+version: 1
+entries:
+  - id: diem_trung_binh_chung
+    # Quy chế đào tạo, Điều 11 khoản 5 (K48-K49 p.22, K50 p.20, K51 p.20);
+    # the same formula as rule gpa_weighted_average in formula_rules.json.
+    cohorts: [K48-K49, K50, K51]
+    before: "Trong đó:\nA là điểm trung bình chung"
+    text: "A = Σ(ai × ni) / Σ(ni)"

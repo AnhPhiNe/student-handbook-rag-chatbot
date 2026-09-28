@@ -35,6 +35,31 @@ STEP = re.compile(r"^Bước\s+\d+\s*:")
 NUMBERED_ITEM = re.compile(r"(?<=\s)(\d+)\.\s+(?=[A-ZĐÀ-Ỹ])")
 ROMAN = re.compile(r"^[IVX]+\.?$")
 LETTER = re.compile(r"^[a-zđ]\)?$")
+# A form's tick-box row ("XUẤT SẮC c TỐT c KHÁ c ..."): the boxes read as "c".
+CHECKBOX = re.compile(r"(?<=\s)[c□☐❑](?=\s|$)")
+
+
+def _is_checkbox_row(text: str) -> bool:
+    return len(CHECKBOX.findall(text)) >= 3
+
+# The answer cannot show a QR code, so a pointer to one is rewritten: dropped
+# where the same sentence gives the link, kept as a page reference where the
+# QR code is the only way in.
+QR_WITH_LINK = (
+    (re.compile(r"\s+hoặc\s+quét\s+mã\s+QR\s+(?:kế\s+bên|bên\s+dưới)"), ""),
+    (re.compile(r"quét\s+mã\s+QR\s+hoặc\s+(?=truy\s+cập)"), ""),
+)
+QR_ONLY = re.compile(r"bằng\s+cách\s+quét\s+mã\s+QR\s+kế\s+bên")
+
+
+def _without_qr_pointers(text: str, pages: list[int]) -> str:
+    for pattern, replacement in QR_WITH_LINK:
+        text = pattern.sub(replacement, text)
+    where = f"trang {pages[0]}" if len(pages) == 1 else f"trang {pages[0]}–{pages[-1]}"
+    text = QR_ONLY.sub(f"qua mã QR in trong Sổ tay sinh viên ({where})", text)
+    if re.search(r"quét\s+mã\s+QR", text, re.IGNORECASE):
+        raise ValueError(f"Unhandled QR pointer: {text[:200]}")
+    return text
 
 
 def _sentence_case(text: str) -> str:
@@ -176,6 +201,8 @@ def _framework_sections(table: dict[str, Any], rows: list[list[str]]) -> list[di
         cells = [cell.strip() for cell in raw]
         if "NỘI DUNG ĐÁNH GIÁ" in cells[:2]:  # header repeated on each page
             continue
+        if _is_checkbox_row(" " + " ".join(cells)):
+            continue
         if len(cells) == 1:  # footnote row: "Tổng điểm của phần 1 là 20 điểm, ..."
             notes.append(f"- {title} – {cells[0]}")
             continue
@@ -276,8 +303,8 @@ def _form_lines(document: fitz.Document, pages: list[int]) -> list[str]:
 
 def _parent(cohort_doc_id: str, index: int, document: dict[str, Any], section: dict[str, Any]) -> dict[str, Any]:
     pages = sorted(set(section.get("pages") or document["page_list"]))
-    content = build_section_content(
-        {"document_title": document["title"], "title": section["title"]}, "\n".join(section["lines"]))
+    body = _without_qr_pointers("\n".join(section["lines"]), pages)
+    content = build_section_content({"document_title": document["title"], "title": section["title"]}, body)
     return {
         "_id": f"{cohort_doc_id}_Phan{index}",
         "content": content,
@@ -328,9 +355,12 @@ def build_supplementary_parents(cohort: str, pdf_path: str | Path,
                 sections.append({"title": table["title"], "lines": _row_lines(table, rows), "pages": table_pages})
         if document["kind"] == "forms":
             sections = [{"title": document["title"], "lines": _form_lines(pdf, pages), "pages": pages}]
-        else:
-            prose = _body_lines(_join_wrapped(_prose_lines(pdf, pages, areas)))
-            sections = _prose_sections(document["title"], prose) + sections
+        elif document.get("prose", True):
+            lines = _join_wrapped(_prose_lines(pdf, pages, areas))
+            if document.get("start_at"):  # the text shares its page with the end of another document
+                start = next(i for i, (_, text) in enumerate(lines) if document["start_at"] in text)
+                lines = lines[start:]
+            sections = _prose_sections(document["title"], _body_lines(lines)) + sections
         doc_id = f"{cohort}_{document['id']}"
         parents.extend(_parent(doc_id, index, document, section)
                        for index, section in enumerate(sections, 1) if section["lines"])

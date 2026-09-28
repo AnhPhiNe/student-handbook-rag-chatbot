@@ -94,7 +94,7 @@ cases:
   - id: sup_17
     cohort: K48-K49
     query: "Đạt danh hiệu Sinh viên 5 tốt cấp Trường được cộng mấy điểm rèn luyện?"
-    gold_parent: K48-K49_PhieuDanhGiaRenLuyen_Phan6
+    gold_parent: K48-K49_PhieuDanhGiaRenLuyen_Phan5
     must_include: ["điểm"]
   - id: sup_18
     cohort: K48-K49

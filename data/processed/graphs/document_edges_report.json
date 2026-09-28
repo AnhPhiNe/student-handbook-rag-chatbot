@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "total_docstore_items": 538,
+  "total_docstore_items": 539,
   "total_edges": 78,
-  "total_skipped": 1056,
+  "total_skipped": 1057,
   "skip_counts": {
-    "missing_index_fields": 74,
+    "missing_index_fields": 75,
     "self_reference": 926,
     "unresolved_external_document": 29,
     "duplicate_edge": 27
@@ -15,19 +15,19 @@
   },
   "coverage": {
     "K48-K49": {
-      "parent_sections": 149,
+      "parent_sections": 148,
       "graph_nodes": 31,
-      "coverage_pct": 20.81
+      "coverage_pct": 20.95
     },
     "K50": {
-      "parent_sections": 190,
+      "parent_sections": 191,
       "graph_nodes": 36,
-      "coverage_pct": 18.95
+      "coverage_pct": 18.85
     },
     "K51": {
-      "parent_sections": 199,
+      "parent_sections": 200,
       "graph_nodes": 29,
-      "coverage_pct": 14.57
+      "coverage_pct": 14.5
     }
   },
   "validation": {
@@ -1135,6 +1135,14 @@
   "skipped": [
     {
       "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongTinNghiDinh116_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
       "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan1",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
@@ -1168,22 +1176,6 @@
     {
       "issue": "missing_index_fields",
       "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan5",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan6",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan7",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
@@ -1339,6 +1331,14 @@
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "document_key": "Các mẫu đơn và biểu mẫu (tên mẫu, trang và nơi gửi)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongTinNghiDinh116_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "article_number": null
     },
     {
@@ -1699,6 +1699,14 @@
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
       "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K51_ThongTinNghiDinh116_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "article_number": null
     },
     {

@@ -69,7 +69,7 @@
       "section_id": "K51_QuyCheDaoTao_Chuong5_Dieu24",
       "title": "Hiệu lực thi hành",
       "page_start": 30,
-      "page_end": 31
+      "page_end": 30
     },
     {
       "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
@@ -105,13 +105,13 @@
       "section_id": "K51_QuyCheCongTacSinhVien_Chuong7_Dieu40",
       "title": "Hiệu lực thi hành",
       "page_start": 81,
-      "page_end": 82
+      "page_end": 81
     },
     {
       "section_id": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
       "title": "Hiệu lực thi hành",
       "page_start": 87,
-      "page_end": 88
+      "page_end": 87
     },
     {
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu18",
@@ -136,12 +136,6 @@
       "title": "Thời gian làm việc",
       "page_start": 124,
       "page_end": 125
-    },
-    {
-      "section_id": "K51_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
-      "title": "Điều khoản thi hành",
-      "page_start": 130,
-      "page_end": 131
     },
     {
       "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
@@ -174,22 +168,10 @@
       "page_end": 143
     },
     {
-      "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
-      "title": "Hiệu lực và trách nhiệm thi hành",
-      "page_start": 143,
-      "page_end": 145
-    },
-    {
       "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6",
       "title": "Tiêu chuẩn đối với sinh viên",
       "page_start": 147,
       "page_end": 149
-    },
-    {
-      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
-      "title": "Hiệu lực thi hành",
-      "page_start": 155,
-      "page_end": 170
     }
   ],
   "sections_with_scoring_rules": [
@@ -577,7 +559,7 @@
       "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
       "title": "Hiệu lực và trách nhiệm thi hành",
       "page_start": 143,
-      "page_end": 145
+      "page_end": 143
     },
     {
       "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6",
@@ -590,12 +572,6 @@
       "title": "Tiêu chuẩn đối với học viên sau đại học",
       "page_start": 149,
       "page_end": 151
-    },
-    {
-      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
-      "title": "Hiệu lực thi hành",
-      "page_start": 155,
-      "page_end": 170
     }
   ],
   "sections_need_structured_extraction": [
@@ -695,7 +671,7 @@
       "title": "Hiệu lực thi hành",
       "content_type": "regulation_text",
       "page_start": 30,
-      "page_end": 31
+      "page_end": 30
     },
     {
       "section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
@@ -751,14 +727,14 @@
       "title": "Hiệu lực thi hành",
       "content_type": "regulation_text",
       "page_start": 81,
-      "page_end": 82
+      "page_end": 81
     },
     {
       "section_id": "K51_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
       "title": "Hiệu lực thi hành",
       "content_type": "regulation_text",
       "page_start": 87,
-      "page_end": 88
+      "page_end": 87
     },
     {
       "section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong2_Dieu4",
@@ -852,13 +828,6 @@
       "page_end": 125
     },
     {
-      "section_id": "K51_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
-      "title": "Điều khoản thi hành",
-      "content_type": "regulation_text",
-      "page_start": 130,
-      "page_end": 131
-    },
-    {
       "section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
       "title": "Phạm vi điều chỉnh và đối tượng áp dụng",
       "content_type": "regulation_text",
@@ -905,7 +874,7 @@
       "title": "Hiệu lực và trách nhiệm thi hành",
       "content_type": "regulation_text",
       "page_start": 143,
-      "page_end": 145
+      "page_end": 143
     },
     {
       "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong2_Dieu6",
@@ -920,13 +889,6 @@
       "content_type": "regulation_text",
       "page_start": 149,
       "page_end": 151
-    },
-    {
-      "section_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
-      "title": "Hiệu lực thi hành",
-      "content_type": "regulation_text",
-      "page_start": 155,
-      "page_end": 170
     }
   ],
   "validation_issues": []

@@ -1,11 +1,11 @@
 {
   "schema_version": "structured-table-embedding-audit-v1",
   "docstore_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\chunks\\all_docstore_items.json",
-  "docstore_sha256": "2b9bacb4105ed78ec017872ea3fbe53945c997fc0eef75ce9510e2b6abea9c14",
+  "docstore_sha256": "72f0cfe49751d30fd782d91baa75b18ea555c7ede0f124e213cba02ba95cb1e9",
   "structured_registry_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\tables\\structured_tables_registry.json",
   "structured_registry_sha256": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
   "child_output_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\chunks\\child_parent_chunks.json",
-  "child_count": 3121,
+  "child_count": 3117,
   "total_table_like_rows": 0,
   "excluded_as_structured": 0,
   "retained_unmatched": 0,
@@ -73,9 +73,9 @@
         "physical_tables": 1,
         "generated_appendices_removed": 0,
         "parent_table_rows": 10,
-        "original_sha256": "2c38946d2c4ca515cd3e98fee953c771c71030bdcd8d4651d8d153aba91d8bb3",
-        "parent_sha256": "702f881492c99ecc619d94e2f3429145084a80a8aa7301d913b8b9dfe92e7320",
-        "narrative_sha256": "2955b5f604e0e8401c735d15dfc3968d7f9690424241639b0ba5eda01cc3504f"
+        "original_sha256": "1d10d3bb07b20f8b5faa5a972e8243143c4005e4a3bf0ab42c05a64c36898fc8",
+        "parent_sha256": "39838fca3b9c9e57e9df2b5212de0fbc3be277a7770f54044fa1b55bb00eafee",
+        "narrative_sha256": "15ab7f152bd22788a3b501c454f777be13628be4fddba522ffd63f3e5ba20833"
       },
       {
         "parent_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu27",
@@ -159,86 +159,24 @@
         "narrative_sha256": "b8a4a465b055e8502c976068f7bdec0ff3d0cab5da589f8bb58f7a5cc307af58"
       }
     ],
-    "review_sha256": "f3ce49946bfc67f628b881c1eb22f44239ebcb6b5f94f707dcdfd9153c038b8a",
-    "source_page_corrections": [
-      {
-        "parent_id": "K50_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
-        "content_sha256": "828c0773788acfcc39ff351ce852853f9037b3314604949b00be99992861f892",
-        "cohort": "K50",
-        "document_id": "so_tay_sinh_vien_khoa_50",
-        "original_source_pages": [
-          152,
-          153,
-          154,
-          155,
-          156,
-          157,
-          158,
-          159,
-          160,
-          161,
-          162,
-          163,
-          164,
-          165,
-          166,
-          167,
-          168,
-          169,
-          170
-        ],
-        "source_pages": [
-          152
-        ],
-        "review_status": "source_checked",
-        "reason": "Article 15 ends on PDF page 152; subsequent notices and procedures are separate documents removed from this parent content."
-      },
-      {
-        "parent_id": "K51_QuyDinhChinhSachPhatTrienNguoiHocTaiNang_Chuong4_Dieu15",
-        "content_sha256": "936870fb239fdd5a1211e75a8a9b2adac1a92dd8fe161c40c0ef57626c6ff64d",
-        "cohort": "K51",
-        "document_id": "so_tay_sinh_vien_khoa_51",
-        "original_source_pages": [
-          155,
-          156,
-          157,
-          158,
-          159,
-          160,
-          161,
-          162,
-          163,
-          164,
-          165,
-          166,
-          167,
-          168,
-          169,
-          170
-        ],
-        "source_pages": [
-          155
-        ],
-        "review_status": "source_checked",
-        "reason": "Article 15 and its signature end on PDF page 155; following notices are not part of this article."
-      }
-    ],
+    "review_sha256": "3f39de03e9ecb3cdd059926a5d253e76be9e9693b1fa789493241a3bef82c98f",
+    "source_page_corrections": [],
     "artifact_content_sha256": {
-      "parent_docstore": "bae1ef13a3c737649abf128210caf9ca6f28b5e68605e867a1a2b7279fa59066",
-      "child_chunks": "ef80922fad1357fb244c92e6a88aecc59ecb8e8576673dd67b5de899ad586e98"
+      "parent_docstore": "354db207d6d1c3c7a8057734763f8fc61443abd85eca41faf1a5fe96ebfc7935",
+      "child_chunks": "b01e93a5bce8ca18fed167eb4463dead332f802b2ca64d5320931fbe69b43bbb"
     },
     "physical_tables": 23,
     "parent_table_rows": 150,
     "generated_appendices_removed": 12,
     "parent_count": 462,
-    "child_count": 3121,
+    "child_count": 3117,
     "table_embedding_chunks_added": 0,
     "input_sha256": {
-      "parents": "4e84925ee3df1a1aa8345ab8d15810ab5bc0c0c0fcd005fe1ff1caf8266fcaf0",
+      "parents": "f5c41f6f37536c9a243695c50472b099011ed7ac3c4ed8eeed410396e176b5fb",
       "registry": "865fe92aca6283147713f02b400734dac44dfc9a0f4d959095ce30978d8fb0fd",
-      "review": "fd0ea643fb5818fbfb0741cc6d56c21f1cd409dd596008933fb1046289f3a4e5"
+      "review": "1eb0a429138b5a30b5594af9fd63fefd94e31634d35d4181febf9769c28dc531"
     }
   },
-  "build_id": "build-934f1caf384f99ad96e9",
-  "child_output_sha256": "c951db540eeca6ade7d66a96bf5f0ac457c87f6f79fad9be54c93420a674630d"
+  "build_id": "build-2456d8365f1ff29505de",
+  "child_output_sha256": "21478e40b0fbf12353775f84d2847dff10b2853fd0d7213cabf45ca8d8db9899"
 }

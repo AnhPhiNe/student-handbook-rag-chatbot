@@ -28,7 +28,7 @@ reports are listed at the end.
 | Component | Chosen | Alternatives measured | Deciding evidence |
 |---|---|---|---|
 | Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema, prompt v53 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | 133/135 on v1 with p95 5.8 s; DeepSeek low 128/135 with p95 18 s; Qwen lost 28 requests to free-tier limits |
-| Composer | DeepSeek flash, thinking off, prompt v3.30 | Gemini 3.1 Flash-Lite; DeepSeek thinking low | Same quality as Gemini with 0 failures against 20/150; thinking low no better with v3.30 and 3 s slower |
+| Composer | DeepSeek flash, thinking off, prompt v3.30 | Gemini 3.1 Flash-Lite; DeepSeek thinking low | Same quality as Gemini with 0 failures against 20/150; thinking low judged the same (correctness 0.991 against 0.988) and 3 s slower |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog | Fuzzy-score thresholds | Development cases: 10 wrong units under thresholds, 0 with the selector |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
 | Reranker | Qwen3-Reranker-8B on DeepInfra, on all 24 fused children | None; Cohere rerank-v4.0-fast; Qwen3-Reranker 0.6B, 4B | hit@1 0.923 / hit@5 1.000 against Cohere 0.897 / 0.981 and none 0.832 / 0.955 |
@@ -111,13 +111,29 @@ questions), same recorded evidence packets:
 | Notices state their school year | 6/6 | 6/6 |
 | Emails, phones and links changed from the source | 0 | 0 |
 
-Thinking off was kept: it is as accurate on every check that needs no judge and
-about 3 s faster per answer. The judge scores for this pair were not collected
-(the Groq judge ran out of daily quota); the final judge pass is planned for
-the hold-out. Earlier, the judge gave thinking low (prompt v3.29, v34 data) 0.990
-correctness against 0.998 for thinking off (an earlier prompt, v33 data), so
-that pair is confounded; two of low's flagged cases were judge disagreements
-on near-identical answers.
+Judged on the 150 `official_v1` answers of the same replay (judge
+`openai/gpt-oss-120b` on Groq, both arms on the dataset version the recorded
+run used):
+
+| Prompt v3.30 | Thinking off | Thinking low |
+|---|---:|---:|
+| Answer correctness (95% CI) | 0.988 (0.971–0.999) | 0.991 (0.976–1.000) |
+| Faithfulness | 0.989 | 0.980 |
+| Citation correctness | 0.985 | 0.973 |
+| Hallucination rate | 0.033 | 0.047 |
+| Answers with an unsupported claim | 5 (4 only in this arm) | 7 (6 only in this arm), McNemar p = 0.75 |
+| Correctness below 0.8 | 1 (006) | 0 |
+| Critical false passes | 0 | 0 |
+
+The one correctness gap, case 006, is a judge inconsistency: both arms name
+the same office and duty in nearly the same words, and the judge scored them
+0.4 and 1.0. Thinking off was kept: it is as accurate by the judge and by
+every rule check, and about 3 s faster per answer (composer p50 1.4 s against
+4.3 s). These answers come from evidence packets recorded on the v34 data
+with Cohere reranking, so they compare the composer setting only. Earlier,
+the judge gave thinking low (prompt v3.29, v34 data) 0.990 correctness
+against 0.998 for thinking off (an earlier prompt, v33 data); that pair is
+confounded and is superseded by the table above.
 
 ### Composer prompt history
 
@@ -317,4 +333,5 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Luna v51 / v52 on v1, v52 on v3 | `official_v1_deterministic_20260927T092317Z`, `…T101327Z`, `official_v3_deterministic_20260927T103000Z` (results also in `data/eval/official_v3/RESULTS.md`) |
 | Directory matching | `directory_matching_20260927T…` and `…20260928T…`; `service_matching_calibration_*` for the thresholds |
 | Retrieval, reranker, embedding, depth, BM25, thinking | `measurements_20260928/` (its README lists each script, commit and result file) |
+| Thinking off against low, judged | `measurements_20260928/results/v330/` (`off_judge.json`, `low_judge.json`) |
 | End-to-end development questions | `supplementary_questions_20260928T231521Z` |

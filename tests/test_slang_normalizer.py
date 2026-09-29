@@ -717,3 +717,31 @@ def test_form_is_not_canonicalized_in_runtime_slang() -> None:
     assert normalizer.replace_for_router("form xác nhận sinh viên") == (
         "form xác nhận sinh viên"
     )
+
+
+def test_replacement_does_not_repeat_the_words_that_follow_it(tmp_path) -> None:
+    path = tmp_path / "overlap.yaml"
+    path.write_text(
+        """
+replace_slangs:
+  - match: hạ hạng
+    replace_with: giảm một mức xếp loại tốt nghiệp
+  - match: rút môn
+    replace_with: rút bớt học phần đã đăng ký
+  - match: đăng ký môn
+    replace_with: đăng ký học phần
+expand_slangs: []
+""".strip(),
+        encoding="utf-8",
+    )
+    normalizer = SlangNormalizer(path, program_directory=[])
+
+    for query, expected in [
+        ("Có bị hạ hạng tốt nghiệp không?", "Có bị giảm một mức xếp loại tốt nghiệp không?"),
+        ("Rút môn đã đăng ký thế nào?", "rút bớt học phần đã đăng ký thế nào?"),
+        ("Có bị hạ hạng không?", "Có bị giảm một mức xếp loại tốt nghiệp không?"),
+        # One shared word is a coincidence, not a repetition.
+        ("Đăng ký môn phần mềm ở đâu?", "đăng ký học phần phần mềm ở đâu?"),
+    ]:
+        assert normalizer.replace_for_router(query) == expected
+        assert normalizer.normalize_for_retrieval(query) == expected

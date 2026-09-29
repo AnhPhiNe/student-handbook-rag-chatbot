@@ -708,7 +708,7 @@ evidence stops, and what would extend it.
 
 | Where the evidence stops | What would close it |
 |---|---|
-| **No baseline.** Every number is absolute — nothing here compares the typed-plan design against plain RAG, or the same pipeline with the reranker or the graph switched off. | `--retrieval-mode no_graph` / `--retrieval-mode vector_only` already exist for exactly this ablation; running them is the highest-value next step. |
+| **Few baselines.** Component ablations on the development set (planner models, composers, directory selection, embeddings, rerankers, BM25, candidate depth) are in [DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md), but nothing yet compares the typed-plan design against plain RAG or a long-context model given the whole handbook. | Run those two baselines on the hold-out for the paper. |
 | **The hold-out is spent.** `official_v2` produced one hold-out measurement; reading its failure informed a fix, so every later run of it is a regression check on a seen set. | A fresh bundle, frozen before any code sees a result from it. |
 | **The judge is unvalidated.** Every quality score comes from an LLM judge with no measured agreement to a human rater. | A sample double-scored by a person, compared to the judge. |
 | **Neither dataset is real traffic.** Both were written from handbook content in student phrasing, so the reweighted score's slice mix is an estimate. | A closed beta with real students; slice weights refit to the observed query mix. |
@@ -720,6 +720,7 @@ evidence stops, and what would extend it.
 | Document | Content |
 |---|---|
 | [Parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) | How parents, children and reviewed tables are built and validated |
+| [Design decisions](docs/DESIGN_DECISIONS.md) | Every model and component choice, with the measurements that decided it |
 | [Structured execution contract](docs/STRUCTURED_EXECUTION_CONTRACT.md) | Lookup capabilities, fact locks and evidence rules |
 | [Technical debt](docs/TECHNICAL_DEBT.md) | Known maintenance boundaries |
 | [Archive](docs/archive/README.md) | Dated experiment logs, audits and earlier system guides (planner versions, composer and rerank A/Bs) |

@@ -10,7 +10,6 @@ def mock_env_vars():
         "OPENAI_API_KEY": "test_openai_key",
         # Groq still serves the evaluation judge.
         "GROQ_API_KEY": "test_groq_key",
-        "GEMINI_API_KEY": "test_gemini_key",
         "MONGO_URI": "mongodb://localhost:27017/",
         "QDRANT_URL": "http://localhost:6333",
         "LANGCHAIN_API_KEY": "test_langsmith_key",

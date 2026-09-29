@@ -10,7 +10,6 @@ from src.api.chat_controls import ChatCapacityLimiter, QueueTicket
 from src.api.schemas import ChatRequest
 from src.generation.answer_formatter import format_final_response, sources_section_start
 from src.generation.answer_pipeline import AnswerPipeline
-from src.generation.gemini_client import GeminiClient
 from src.generation.plan_executor import PlanExecutor
 from src.generation.response_cache import ResponseCache
 
@@ -48,21 +47,6 @@ def test_closing_route_stream_releases_queue_or_active_slot(monkeypatch, queued)
     finally:
         following.leave_queue()
         limiter.release()
-
-
-@pytest.mark.parametrize("chunks", [[], ["", " \n\t"]])
-def test_gemini_empty_stream_is_not_provider_success(chunks):
-    client = object.__new__(GeminiClient)
-    client.model_name = "offline-fake"
-    client.max_retries = 0
-    client.key_pool = Mock()
-    client.key_pool.acquire.return_value = ("fake", "fingerprint", 0)
-    client._create_client = Mock(return_value=None)
-    client._generate_stream_once = lambda *args, **kwargs: iter(chunks)
-    with pytest.raises(RuntimeError):
-        list(client.generate_stream("prompt"))
-    client.key_pool.record_success.assert_not_called()
-    client.key_pool.record_failure.assert_called_once()
 
 
 def _pipeline(chunks):

@@ -26,9 +26,6 @@ from src.evaluation.metrics import retrieval_metrics
 from src.evaluation.answers import _answer_checks, generate_answers
 from src.evaluation.production import _expected_response_status, _response_status_matches_expected, _summarize_production_rows, evaluate_production
 from src.evaluation.retrieval import _retrieval_summary, evaluate_retrieval
-from src.common.key_pool import KeyPool
-from src.generation.gemini_client import gemini_key_pool_config
-from src.generation.gemini_client import GeminiClient
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -673,59 +670,6 @@ def test_judge_request_larger_than_per_key_tpm_is_explicit(tmp_path: Path) -> No
 
     with pytest.raises(RuntimeError, match="request_exceeds_per_key_tpm_limit"):
         pool.acquire(11)
-
-
-def test_gemini_pool_skips_rate_limited_key(tmp_path: Path) -> None:
-    pool = KeyPool(
-        ["gemini-one", "gemini-two"],
-        gemini_key_pool_config({"state_path": str(tmp_path / "gemini_state.json")}),
-        scope="gemini-3.1-flash-lite",
-    )
-    first_key, first_id, _ = pool.acquire()
-    pool.record_rate_limit(first_id)
-    second_key, _, _ = pool.acquire()
-    assert first_key != second_key
-    state_text = (tmp_path / "gemini_state.json").read_text(encoding="utf-8")
-    assert "gemini-one" not in state_text
-    assert "gemini-two" not in state_text
-
-
-def test_gemini_pool_reports_all_keys_temporarily_limited(tmp_path: Path) -> None:
-    pool = KeyPool(
-        ["gemini-one"],
-        gemini_key_pool_config(
-            {"rpm_limit_per_key": 1, "state_path": str(tmp_path / "gemini_state.json")}
-        ),
-        scope="gemini-3.1-flash-lite",
-    )
-    pool.acquire()
-    with pytest.raises(RuntimeError, match="temporarily_limited"):
-        pool.acquire()
-
-
-def test_gemini_empty_response_is_not_success() -> None:
-    class Pool:
-        def acquire(self):
-            return "secret", "fingerprint", 0
-
-        def record_failure(self, *_args):
-            return None
-
-        def record_rate_limit(self, *_args):
-            return None
-
-    client = object.__new__(GeminiClient)
-    client.available_keys = ["secret"]
-    client.model_name = "gemini-3.1-flash-lite"
-    client.max_retries = 0
-    client.retry_base_delay_seconds = 0
-    client.retry_max_delay_seconds = 0
-    client.key_pool = Pool()
-    client._create_client = lambda _api_key: object()
-    client._generate_once = lambda _prompt, **_kwargs: ("", {})
-    result = client.generate("prompt")
-    assert result["ok"] is False
-    assert "empty response" in result["error_message"]
 
 
 def test_retrieval_exception_stays_in_denominator(

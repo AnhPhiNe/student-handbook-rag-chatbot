@@ -35,7 +35,6 @@ from .citation_formatter import (
     select_relevant_citations,
 )
 from .deepseek_client import DeepSeekClient
-from .gemini_client import GeminiClient
 from .prompt_builder import (
     ANSWER_PROMPT_VERSION,
     DEFAULT_MAX_CONTEXT_CHARS,
@@ -46,7 +45,7 @@ from .response_cache import get_response_cache
 from .structured_result_presenter import build_structured_results
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
-COMPOSER_PROVIDERS = {"gemini", "deepseek"}
+COMPOSER_PROVIDERS = {"deepseek"}
 
 PIPELINE_VERSION = "v77-online-answer-boundaries"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
@@ -102,19 +101,7 @@ class PreparedAnswer:
 
 def create_composer_client(llm_config: dict[str, Any]) -> Any:
     """Build the configured composer client (shared by the pipeline and replays)."""
-    provider = llm_config.get("provider", "gemini")
-    if provider == "gemini":
-        return GeminiClient(
-            model_name=llm_config["model_name"],
-            temperature=llm_config.get("temperature", 0.2),
-            max_output_tokens=llm_config.get("max_output_tokens", 1024),
-            max_retries=llm_config.get("max_retries", 3),
-            retry_base_delay_seconds=llm_config.get("retry_base_delay_seconds", 2),
-            retry_max_delay_seconds=llm_config.get("retry_max_delay_seconds", 20),
-            request_timeout_seconds=llm_config.get("request_timeout_seconds", 60),
-            api_keys_env_var=llm_config.get("api_keys_env_var", "GEMINI_API_KEYS"),
-            key_pool_config=llm_config.get("key_pool"),
-        )
+    provider = llm_config.get("provider", "deepseek")
     if provider == "deepseek":
         return DeepSeekClient(
             model_name=llm_config["model_name"],

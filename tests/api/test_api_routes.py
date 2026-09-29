@@ -509,7 +509,7 @@ class ApiRoutesTest(unittest.TestCase):
         def capture_trace_source(source, **kwargs):
             del kwargs
             captured_source.update(source)
-            return {"model": "gemini-3.1-flash-lite"}
+            return {"model": "deepseek-flash"}
 
         with patch(
             "src.api.routes.chat_stream.build_trace_metadata",

@@ -419,7 +419,7 @@ def _llm_run_extra(model: str, metadata: dict[str, Any]) -> dict[str, Any]:
     if not model:
         return {"metadata": dict(metadata)}
     name = model.lower()
-    provider = "google_genai" if "gemini" in name else "deepseek" if "deepseek" in name else "groq"
+    provider = "deepseek" if "deepseek" in name else "groq"
     return {
         "metadata": {
             **metadata,

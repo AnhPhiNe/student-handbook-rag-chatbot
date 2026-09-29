@@ -23,7 +23,7 @@ def _query_plan_result() -> dict:
     return {
         "status": "partial",
         "effective_query": "So sánh K50 và K51 rồi giải thích thủ tục",
-        "model_used": "gemini-3.1-flash-lite",
+        "model_used": "gpt-6-luna",
         "llm_called": True,
         "used_cache": False,
         "retrieved_chunks_count": 9,
@@ -263,6 +263,5 @@ def test_push_trace_uses_task_tags_and_compact_root_outputs() -> None:
 
 def test_llm_runs_name_the_provider_of_each_model() -> None:
     providers = {model: langsmith_helper._llm_run_extra(model, {})["metadata"]["ls_provider"]
-                 for model in ("deepseek-flash", "gemini-3.1-flash-lite", "openai/gpt-oss-120b")}
-    assert providers == {"deepseek-flash": "deepseek", "gemini-3.1-flash-lite": "google_genai",
-                         "openai/gpt-oss-120b": "groq"}
+                 for model in ("deepseek-flash", "openai/gpt-oss-120b")}
+    assert providers == {"deepseek-flash": "deepseek", "openai/gpt-oss-120b": "groq"}

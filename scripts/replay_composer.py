@@ -6,7 +6,7 @@ src/evaluation/composer_replay.py for what is reproduced and its one
 approximation.
 
     python -m scripts.replay_composer --source data/eval/reports/official_v1_answers_<stamp> \
-        --answer-config configs/experiments/answer_deepseek_none.yaml
+        --answer-config configs/experiments/answer_deepseek_low.yaml
 """
 import argparse
 import hashlib

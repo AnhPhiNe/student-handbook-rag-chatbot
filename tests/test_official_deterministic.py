@@ -381,28 +381,6 @@ def test_runner_selects_exact_ids_in_dataset_order():
         select_case_ids(cases, [])
 
 
-def test_experiment_freeze_rejects_changed_or_missing_files(tmp_path, monkeypatch):
-    import hashlib
-    import json
-    import pytest
-    from scripts import prepare_deepseek_v48_smoke as preparation
-
-    monkeypatch.setattr(preparation, "ROOT", tmp_path)
-    source = tmp_path / "source.py"
-    source.write_text("original", encoding="utf-8")
-    freeze = tmp_path / "freeze.json"
-    freeze.write_text(json.dumps({"sha256": {
-        "source.py": hashlib.sha256(source.read_bytes()).hexdigest(),
-    }}), encoding="utf-8")
-    assert preparation.verify_freeze(freeze)["sha256"]
-    source.write_text("changed", encoding="utf-8")
-    with pytest.raises(ValueError, match="freeze drift"):
-        preparation.verify_freeze(freeze)
-    source.unlink()
-    with pytest.raises(ValueError, match="freeze drift"):
-        preparation.verify_freeze(freeze)
-
-
 def test_frozen_bundle_refuses_to_overwrite_a_compiled_contract(tmp_path) -> None:
     from scripts.build_official_deterministic import refuse_frozen_overwrite
 

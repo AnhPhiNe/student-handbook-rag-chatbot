@@ -8,8 +8,7 @@ input:
   program_directory: data/processed/directories/program_directory.json
 
 # Composer: DeepSeek flash with thinking off, chosen on 2026-09-27 over
-# Gemini 3.1 Flash-Lite (same quality on official_v1, no failed calls);
-# configs/experiments/answer_gemini_flash_lite.yaml keeps the Gemini arm.
+# Gemini 3.1 Flash-Lite (same quality on official_v1, no failed calls).
 # Thinking stays off (2026-09-28): with prompt v3.30, off and low gave the same
 # answers on the checks that do not need the judge (table-row reading, verbatim
 # contacts, notice years) while off is about 3 s faster per answer (p50).

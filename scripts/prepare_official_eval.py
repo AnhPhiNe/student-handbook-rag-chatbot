@@ -66,7 +66,7 @@ def prepare() -> None:
     for record in build["artifacts"].values():
         if digest(ROOT / record["path"]) != record["sha256"]:
             raise ValueError(f"Artifact differs from build manifest: {record['path']}")
-    packages = ["google-genai", "groq", "qdrant-client", "pymongo", "pydantic", "fastapi", "torch", "transformers", "sentence-transformers", "numpy"]
+    packages = ["openai", "groq", "requests", "qdrant-client", "pymongo", "pydantic", "fastapi", "numpy"]
     versions = {}
     for package in packages:
         try:

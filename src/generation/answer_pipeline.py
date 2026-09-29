@@ -47,7 +47,7 @@ from .structured_result_presenter import build_structured_results
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 COMPOSER_PROVIDERS = {"deepseek"}
 
-PIPELINE_VERSION = "v77-online-answer-boundaries"
+PIPELINE_VERSION = "v78-stream-tail-spacing"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
@@ -169,6 +169,10 @@ class StreamAnswerCleaner:
         # Source footers were removed at the real stream line boundaries in
         # feed(); do not reinterpret a mid-sentence tail as a new heading.
         tail = clean_answer(self._pending)
+        if tail and self.parts:
+            # clean_answer strips the tail, but after released text its leading
+            # space or line break separates two words or paragraphs.
+            tail = self._pending[: len(self._pending) - len(self._pending.lstrip())] + tail
         if tail:
             self.parts.append(tail)
         return tail

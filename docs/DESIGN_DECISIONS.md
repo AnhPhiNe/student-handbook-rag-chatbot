@@ -46,7 +46,7 @@ unless stated.
 |---|---|---:|---|---|
 | 2026-09-10 | Qwen3.8 low (Groq), prompt v41 | 123/135 | median 1.8 s | Baseline |
 | 2026-09-10 | Qwen3.8 low, prompt v42 | 129/135 | | Control codes shown with their meaning; McNemar p = 0.07 against v41 |
-| 2026-09-12 | Qwen3.8 low, prompt v43 | 129/135 | p95 5.8 s | Baseline for the DeepSeek comparison; 0 fallbacks |
+| 2026-09-12 | Qwen3.8 low, prompt v43 | 129/135 | p95 5.8 s | Unused `CATALOG_HINT` line removed, identical to v42 case by case; baseline for the DeepSeek comparison |
 | 2026-09-11 | Cohere Command A+, thinking budget 2048 | 105/135 | median 5.8 s | 20 cases lost against Qwen, 2 won (p = 0.0001) |
 | 2026-09-25 | DeepSeek flash, thinking off, prompt v43 | 123/135 | p50 1.2 s, p95 3.4 s | McNemar p = 0.03 against Qwen; the 6 losses are simple tool-scope choices |
 | 2026-09-25 | DeepSeek flash, thinking low | 128/135 | p50 5.1 s, p95 18.1 s | 0 fallbacks |
@@ -118,6 +118,19 @@ the hold-out. Earlier, the judge gave thinking low (prompt v3.29, v34 data) 0.99
 correctness against 0.998 for thinking off (an earlier prompt, v33 data), so
 that pair is confounded; two of low's flagged cases were judge disagreements
 on near-identical answers.
+
+### Composer prompt history
+
+| Version | Date | Change | Evidence |
+|---|---|---|---|
+| v3.23 | 2026-09-06 | Material exceptions in the evidence | Six-case smoke (Gemini): 5/6 main criteria met; the scholarship answer omitted the exclusion of bridging students ([archive](archive/COMPOSER_V323_RELEASE_SMOKE.md)) |
+| v3.24 | 2026-09-06 | Table reading and cohort context grounded in the prompt | Not measured separately |
+| v3.25 | 2026-09 | | Used for the Gemini/DeepSeek A/B above. A review of 146 real packets found every source marked `candidate`, so the rule "answer candidate-only units cautiously" applied to every answer and matched DeepSeek hedging before correct answers |
+| v3.26 | 2026-09-27 | An input section defines the packet; `candidate` is the default and answers normally when it directly answers | From the v3.25 review |
+| v3.27 | 2026-09-27 | Rules regrouped by task (scope, conclusions, missing evidence, tables, presentation) | 68 of 71 clauses verbatim; not measured on its own |
+| v3.28 | 2026-09-27 | Student wording; the admission-year definition returns to scope matching | Replays on identical evidence: v3.27 added the admission year to 8 answers against 2; DeepSeek echoed input terms (cohort, evidence) in 2–6 answers per run; 17–29 answers opened with a bare "Có."/"Không." |
+| v3.29 | 2026-09-28 | Yes/no conclusions stated as a full sentence, never a bare "Có." | A bare "Có." had affirmed the opposite of the answer (military leave and the study period) |
+| v3.30 | 2026-09-28 | Table rows read as labelled lines; contacts copied verbatim; sources without an article named by document title; notices state their school year | The thinking comparison above; sup_05 fixed with thinking off |
 
 ## Directory selection: thresholds replaced by an LLM over a closed list
 
@@ -212,7 +225,8 @@ calls fell back to RRF. Any failure keeps the RRF order.
   154/155 questions, within 24 for 155/155, within 40 for 155/155 (median
   distinct parents 8, 11 and 18). All stages use 24: it is the smallest depth
   that holds every gold child, and a reranker call on 24 short children stays
-  within the latency budget.
+  within the latency budget. Before 2026-09-28 (`f8e87a55`) 24 children were
+  fused but Cohere reranked only the first 16 and dropped the other 8.
 - **Parent grouping.** Children are grouped by parent and a parent is scored by
   its best child, so several children of one article cannot push other
   articles out of the top 5.
@@ -237,6 +251,33 @@ calls fell back to RRF. Any failure keeps the RRF order.
   page, main-campus scope) added no noise. All 21 development questions about it
   retrieve a correct source (before the reranker change).
 
+## Operations
+
+| Setting | Value | Why |
+|---|---|---|
+| Start-up warm-up | Build the pipeline and the retriever, wait up to 180 s for BM25 | On the live Space the first RAG question took 23.3 s and the second 6.9 s, because the retriever and the BM25 index were built on first use; with the retriever warmed, the first took 7.5 s (`ac565c1c`) |
+| Queue wait | 30 s (was 15 s) | A queued request waits for an active answer to finish, and answers took about 7 s at p50 and 9–10 s at p90 (`56453c13`) |
+| Reranker timeout | 10 s, no retry | Cohere went from 5 s to 8 s when 24 candidates took up to 4.0 s; for Qwen3-Reranker-8B (max 9.3 s) 3 of 30 live calls fell back at 8 s. A retry would only double the wait at an overloaded service |
+| Query embedding | 5 s timeout, 1 retry; on failure BM25 serves alone | Retrieval used to return nothing when the embedding call failed; with the API embedder a timeout now costs ranking quality, not the answer |
+| Skipped rerank | Logged as a warning and recorded in telemetry | Trial-key limits used to skip reranking silently, dropping hit@1 from 0.897 to 0.832 |
+
+## Earlier held-out results (official_v2, stack of 2026-09-12)
+
+These measure the previous stack (Qwen3 planner on Groq, Gemini composer,
+local `bge-m3`, Cohere reranking, v33 data), not the current one; the full
+tables are in the [README](../README.md#results).
+
+| Suite | Result |
+|---|---|
+| Deterministic (hold-out run) | 142/154 = 92.2%, 95% CI 86.9–95.5 |
+| Retrieval | hit@5 94.6%, MRR 84.8 |
+| Generate + judge | answer correctness 96.3, hallucination rate 6.5% |
+| Production (60 requests on the live Space) | 7 of 12 release gates pass; success rate 96.7% |
+
+The run exposed one real defect (K51 foundation/remaining grading, a failing
+5.2 reported as a pass), fixed in `536169fc`; later `official_v2` runs are
+post-fix.
+
 ## Final system check (2026-09-29)
 
 The complete current stack, on development data:
@@ -255,6 +296,10 @@ The complete current stack, on development data:
 
 - A comparison with plain RAG (no planner) or with a long-context model given the
   whole handbook; these baselines are planned for the paper.
+- The graph and BM25 ablations on the current stack. The runner has the modes
+  (`--retrieval-mode no_graph`, `--retrieval-mode vector_only`, fixed in
+  `dfcc2dc8` so that `vector_only` really skips BM25), but no run of them has
+  been reported; the dense-only numbers above come from the reranker scripts.
 - End-to-end answer quality of the final stack on a hold-out; it will be judged
   once on `official_v3`.
 - The judge's agreement with a human rater; both datasets were written by one

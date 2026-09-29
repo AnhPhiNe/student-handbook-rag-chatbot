@@ -49,10 +49,10 @@ def test_closing_route_stream_releases_queue_or_active_slot(monkeypatch, queued)
         limiter.release()
 
 
-def _pipeline(chunks):
+def _pipeline(chunks, content="Nội dung quy định."):
     task = {"id": "t1", "mode": "rag", "question": "Quy định?", "cohorts": ["K51"]}
     citation = {
-        "chunk_id": "p1", "cohort": "K51", "content": "Nội dung quy định.",
+        "chunk_id": "p1", "cohort": "K51", "content": content,
         "supports_task_ids": ["t1"],
     }
     result = {
@@ -183,3 +183,16 @@ def test_one_multicohort_task_preserves_answerable_unit(other_coverage, transpor
     assert _answer(pipeline, transport) == ("answered", "Trả lời phần đủ bằng chứng.")
     generation = llm.generate if transport == "sync" else llm.generate_stream
     generation.assert_called_once()
+
+
+@pytest.mark.parametrize("transport", ["sync", "stream"])
+def test_a_mistyped_email_is_corrected_from_the_evidence(transport):
+    evidence = "Khoa Tiếng Anh. Email: khoatienganh@hcmue.edu.vn."
+    reply = "Email của Khoa Tiếng Anh là " + "khotienganh@hcmue.edu.vn" + ". " + "Xem thêm tại website khoa. " * 20
+    pipeline, _ = _pipeline([reply[:31], reply[31:60], reply[60:]], content=evidence)
+    status, answer = _answer(pipeline, transport)
+    assert status == "answered"
+    assert "khoatienganh@hcmue.edu.vn" in answer and "khotienganh" not in answer
+    cached = next(iter(pipeline.response_cache._entries.values()))
+    assert "khotienganh" not in str(cached)
+

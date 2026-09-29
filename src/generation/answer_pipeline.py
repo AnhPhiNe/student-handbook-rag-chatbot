@@ -2,7 +2,7 @@ import hashlib
 import logging
 import threading
 import time
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -34,6 +34,7 @@ from .prompt_builder import (
 from .plan_executor import PlanExecutor, StructuredCatalogs
 from .response_cache import get_response_cache
 from .structured_result_presenter import build_structured_results
+from .verbatim_identifiers import IdentifierCorrector
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 COMPOSER_PROVIDERS = {"deepseek"}
@@ -115,9 +116,12 @@ class StreamAnswerCleaner:
     released only after STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS more characters
     have arrived, so a source heading that starts in the held-back tail is cut
     before the student sees it. Everything after that heading is dropped.
+    Text is released at whitespace so that `fix` (the identifier corrector)
+    always sees whole emails, links and numbers.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, fix: Callable[[str], str] | None = None) -> None:
+        self._fix = fix or (lambda text: text)
         self.parts: list[str] = []
         self._pending = ""
         self._released_any = False
@@ -145,8 +149,14 @@ class StreamAnswerCleaner:
         self._pending = clean_stream_fragment(self._pending)
         if len(self._pending) <= STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
             return ""
-        safe_text = self._pending[:-STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS]
-        self._pending = self._pending[-STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:]
+        cut = len(self._pending) - STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS
+        boundary = max(self._pending.rfind(" ", 0, cut), self._pending.rfind("\n", 0, cut))
+        if boundary >= 0:
+            cut = boundary + 1
+        elif len(self._pending) < 2 * STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
+            return ""  # wait for whitespace rather than split a word or an email
+        safe_text = self._fix(self._pending[:cut])
+        self._pending = self._pending[cut:]
         if safe_text:
             self._released_any = True
             self.parts.append(safe_text)
@@ -158,7 +168,7 @@ class StreamAnswerCleaner:
             return ""
         # Source footers were removed at the real stream line boundaries in
         # feed(); do not reinterpret a mid-sentence tail as a new heading.
-        tail = clean_answer(self._pending)
+        tail = self._fix(clean_answer(self._pending))
         if tail and self.parts:
             # clean_answer strips the tail, but after released text its leading
             # space or line break separates two words or paragraphs.
@@ -595,9 +605,11 @@ class AnswerPipeline:
 
         final_answer = ""
         if llm_result.get("ok"):
-            final_answer = format_final_response(
-                str(llm_result.get("text") or "").strip(),
-                primary_citations=selected_citations,
+            final_answer = IdentifierCorrector(prepared.context_used, query).fix(
+                format_final_response(
+                    str(llm_result.get("text") or "").strip(),
+                    primary_citations=selected_citations,
+                )
             )
             if not final_answer.strip():
                 llm_result = {
@@ -858,7 +870,7 @@ class AnswerPipeline:
         final_answer_for_citations = ""
         terminal_status = "answered"
         terminal_error_type: str | None = None
-        cleaner = StreamAnswerCleaner()
+        cleaner = StreamAnswerCleaner(fix=IdentifierCorrector(prepared.context_used, query).fix)
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()

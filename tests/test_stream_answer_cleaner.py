@@ -13,11 +13,18 @@ def _stream(text: str, size: int = 37) -> tuple[list[str], StreamAnswerCleaner]:
     return shown, cleaner
 
 
-def test_text_is_held_back_until_the_buffer_is_full() -> None:
+def test_text_is_held_back_until_the_buffer_is_full_and_released_at_whitespace() -> None:
     cleaner = StreamAnswerCleaner()
-    assert cleaner.feed("x" * STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS) == ""
-    assert cleaner.feed("y") == "x"
-    assert cleaner.finish() == "x" * (STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS - 1) + "y"
+    assert cleaner.feed("x " + "y" * (STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS - 2)) == ""
+    # The last 256 characters stay held; the space before them is the release point.
+    assert cleaner.feed("yz") == "x "
+    assert cleaner.finish() == "y" * (STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS - 1) + "z"
+
+
+def test_a_long_run_without_whitespace_is_held_up_to_twice_the_buffer() -> None:
+    cleaner = StreamAnswerCleaner()
+    assert cleaner.feed("x" * (2 * STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS - 1)) == ""
+    assert cleaner.feed("x") == "x" * STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS
 
 
 def test_released_text_is_the_whole_answer_in_order() -> None:

@@ -68,6 +68,29 @@ def _merge_structured_citation_content(
     return json.dumps({"tables": tables}, ensure_ascii=False, indent=2, default=str)
 
 
+def _directory_record_ids(entry: dict[str, Any]) -> tuple[str, ...] | None:
+    """The record ids behind a directory evidence entry, or None for other evidence.
+
+    A directory lookup cites its whole catalog (source_parent_id is e.g.
+    "student_faculty_profiles"), so two tasks that name different units share
+    that id. Their records must stay apart when task outputs are merged:
+    otherwise "email Khoa Toán, sđt Khoa CNTT" keeps only the first unit and
+    gives it to both tasks.
+    """
+    try:
+        payload = json.loads(str(entry.get("content") or ""))
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(payload, list):
+        return None
+    record_ids = sorted(
+        str(record["record_id"])
+        for record in payload
+        if isinstance(record, dict) and record.get("record_id")
+    )
+    return tuple(record_ids) or None
+
+
 @dataclass(frozen=True)
 class StructuredCatalogs:
     """Reviewed source catalogs the structured resolver reads."""
@@ -678,7 +701,7 @@ class PlanExecutor:
     def _merge_task_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Merge task outputs by identity without duplicating evidence."""
 
-        merged: dict[tuple[str, str], dict[str, Any]] = {}
+        merged: dict[tuple[Any, ...], dict[str, Any]] = {}
         for item in items:
             metadata = item.get("metadata") or {}
             key = (
@@ -689,6 +712,7 @@ class PlanExecutor:
                     or metadata.get("source_parent_id")
                     or ""
                 ),
+                _directory_record_ids(item),
             )
             if key not in merged:
                 merged[key] = dict(item)
@@ -725,6 +749,7 @@ class PlanExecutor:
                     tuple(sorted(citation.get("supports_task_ids") or [])),
                     json.dumps(citation["resolved_result"], sort_keys=True, default=str),
                 ) if citation.get("resolved_result") is not None else None,
+                _directory_record_ids(citation),
             )
             if key not in merged:
                 merged[key] = dict(citation)

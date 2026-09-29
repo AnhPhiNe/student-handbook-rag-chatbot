@@ -2045,3 +2045,39 @@ def test_structured_citation_dedup_preserves_sibling_tables_and_applicability() 
         "Học phần giáo dục đại cương",
         "Các học phần còn lại",
     ]
+
+
+def test_directory_records_of_different_tasks_stay_apart_in_the_merge():
+    # A directory lookup cites its whole catalog: both tasks share the source id.
+    def citation(task_id, record_id, unit, phone):
+        return {
+            "source_parent_id": "student_faculty_profiles", "chunk_id": "student_faculty_profiles",
+            "cohort": "K51", "evidence_kind": "structured_result", "supports_task_ids": [task_id],
+            "content": json.dumps([{"record_id": record_id, "unit_name": unit, "phones": [phone]}],
+                                  ensure_ascii=False),
+        }
+
+    tasks = [
+        {"id": "t1", "question": "Email của Khoa Toán là gì?", "mode": "structured", "cohorts": ["K51"]},
+        {"id": "t2", "question": "Số điện thoại của Khoa CNTT là gì?", "mode": "structured", "cohorts": ["K51"]},
+    ]
+    merged = PlanExecutor._merge_task_citations([
+        citation("t1", "K51_khoa_toan_tin_hoc", "Khoa Toán – Tin học", "(028) 38352020"),
+        citation("t2", "K51_khoa_cong_nghe_thong_tin", "Khoa Công nghệ Thông tin", "(028) 38352020"),
+    ])
+    assert len(merged) == 2
+    packet = build_authorized_evidence_packet(
+        query="email khoa toán, sdt khoa cntt", retrieval_result={
+            "query_plan": {"tasks": tasks}, "coverage_by_task": {"t1": "covered", "t2": "covered"},
+        }, selected_citations=merged, fallback_cohort="K51", max_context_chars=10000,
+    )
+    by_task = {unit["task_id"]: unit for unit in packet["units"]}
+    assert "Khoa Toán – Tin học" in by_task["t1"]["primary_evidence"][0]["content"]
+    assert "Khoa Công nghệ Thông tin" in by_task["t2"]["primary_evidence"][0]["content"]
+    assert "Khoa Toán" not in by_task["t2"]["primary_evidence"][0]["content"]
+    # The same record cited by two tasks is still one source.
+    same = PlanExecutor._merge_task_citations([
+        citation("t1", "K51_khoa_toan_tin_hoc", "Khoa Toán – Tin học", "(028) 38352020"),
+        citation("t2", "K51_khoa_toan_tin_hoc", "Khoa Toán – Tin học", "(028) 38352020"),
+    ])
+    assert len(same) == 1 and same[0]["supports_task_ids"] == ["t1", "t2"]

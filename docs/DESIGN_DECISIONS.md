@@ -91,6 +91,51 @@ out-of-domain decision.
 office field instead of the unit; 033/122: one task or two) point to ambiguous
 definitions rather than model quality; the answer still names the right unit.
 
+### "Where do I go" questions: two catalog wordings tried, neither kept (2026-09-29)
+
+`official_v2` (rerun on the current stack) showed two routing patterns. The
+first was a rule question next to a lookup table sent to the table (case 059).
+The second was "nộp ... ở đâu" sent to the handbook text instead of the service
+catalog (041, 042, 096), which loses the office's contacts. Three development
+sets were written and committed before any change and answered 3 times each:
+`table_adjacent_questions.yaml` (26 rule questions, 14 service "where"
+questions), `where_and_mixed_questions.yaml` (15 more service "where"
+questions, 8 planner-only probes needing a table and a rule) and
+`regulated_where_questions.yaml` (13 "where" questions whose office, approver
+or deadline a regulation sets).
+
+- **Rule questions next to a table: no change needed.** 78/78 went to the
+  text, retrieved the gold parent and stated the facts; the 059 slip did not
+  recur. Probes needing both a table and a rule included a RAG task 22/24.
+- **"Where" questions.** The catalog descriptions of `student_service` and
+  `office` say that procedures ("thủ tục") use RAG. Two rewordings were tried:
+
+| Wording | Service "where" (29 questions × 3) | Regulated "where" (13 × 3) | Rule questions (26 × 3) | `official_v1` / `v2` |
+|---|---|---|---|---|
+| v53, kept: "thủ tục … dùng RAG" | 57/87 planned to the catalog; of the 14 first questions answered, 22/42 gave the contacts, the rest named the unit without them or, 4 times in 20, said nothing was found | 39/39 right office or person | 78/78 | 133/135, 143/154 |
+| v54: asking where to do something uses the catalog, even for a procedure | 87/87 with contacts | `official_v2` 085 became a clarification (2 of 2) and 102 "nothing found" (1 of 2); both were answered from the regulation under v53 | 78/78 | 134/135, 144/154 (041, 042, 096 gained; 085, 102 lost) |
+| v55: v54, except cases where a regulation sets the office, approver or deadline (e.g. complaints, exam absence, leave) use RAG | 53/77 (69%, 10 rate-limit fallbacks excluded) | 39/39 | 78/78 | stopped once v55 failed |
+
+The rule was fixed before v55 ran. v55 would be kept only if service questions
+reached at least 95%, regulated ones named no wrong office and did no worse
+than v53, rule questions stayed at 78/78 and `official_v1`/`v2` did not drop,
+and there would be no third attempt. v55 failed the service criterion: the
+planner read "học vụ, công tác sinh viên" as covering certificate exemptions,
+fee waivers and double-degree admission. So the registry is back at v53.
+
+The boundary is hard to put into words. "Nộp … ở đâu" is a service question
+when the catalog answers it, and a regulated case when a regulation names a
+different office or a deadline. For example, a conduct-score complaint goes to
+Phòng CTCT&HSSV within 7 days, while the catalog lists Phòng Thanh tra Đào
+tạo for complaints. A description can push the planner to one side but does
+not draw that line reliably.
+
+Under v53 the failure is the safe one: no run named a wrong office; a service
+question sometimes lacks the contacts or says nothing was found. Reading both
+the catalog and the regulations for every "where" question would remove the
+choice, at the cost of an extra retrieval and a composer rule for conflicting
+sources. It has not been built.
+
 ## Composer
 
 The composer writes the answer from the evidence packet only.
@@ -498,4 +543,5 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Planner input with and without the slang rewrite | `official_v1_deterministic_20260929T045740Z` (with), `…T051501Z` (without) |
 | Retrieval with and without query expansion | `official_v1_retrieval_20260929T045526Z` (with), `…T052455Z` (without) |
 | Slang probe | `measurements_20260928/results/slang_probe/` (`slang_probe.py`) |
+| "Where" questions and table-adjacent rules | `table_adjacent_questions_20260929_run1-3` and `regwhere_v53_20260929_run1-3` (v53); `where_v54_20260929_run1-3`, `official_v1_deterministic_20260929T124205Z` and `official_v2_deterministic_20260929T125553Z` (v54); `where_all_v55_20260929_run1-3` (v55); `official_v2_deterministic_20260929T111444Z` (v53, before the fact-lock grounding fix) |
 | Directory selector, second look | `directory_matching_20260929T100059Z` / `…T100140Z` (before), `…T100338Z` / `…T100416Z` (looser wording), `…T102008Z` / `…T101754Z` (thinking on every call), `…T103359Z` / `…T103530Z` (second look); existing cases first, everyday set second |

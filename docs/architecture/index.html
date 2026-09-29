@@ -165,7 +165,7 @@
     </section>
 
     <section id="retrieval">
-      <div class="section-head"><div class="section-no">05 / 09</div><h2>Hybrid retrieval internals</h2><p>BGE-M3/Qdrant, BM25, RRF, Cohere rerank, parent hydration và graph navigation.</p></div>
+      <div class="section-head"><div class="section-no">05 / 09</div><h2>Hybrid retrieval internals</h2><p>BGE-M3 (API)/Qdrant, BM25, RRF, Qwen3-Reranker-8B, parent hydration và graph navigation.</p></div>
       <div class="frame"><iframe src="hybrid-retrieval.html" title="Hybrid retrieval internals" loading="lazy"></iframe><div class="frame-foot"><span>Primary evidence và related references được tách rõ.</span><a href="hybrid-retrieval.html">Mở riêng ↗</a></div></div>
     </section>
 
@@ -196,8 +196,8 @@
           <article class="catalog-card"><h3>API & application</h3><ul><li><code>api/schemas.py</code></li><li><code>api/routes/chat*.py</code></li><li><code>services/answer_service.py</code></li><li><code>api/deps.py</code></li></ul></article>
           <article class="catalog-card"><h3>Planning & execution</h3><ul><li><code>answer_pipeline.py</code></li><li><code>plan_executor.py</code></li><li><code>ai_router.py</code></li><li><code>query_plan.py</code></li><li><code>slang_normalizer.py</code></li></ul></article>
           <article class="catalog-card"><h3>Structured lookup</h3><ul><li><code>structured_dispatcher.py</code></li><li><code>structured_lookup_registry.yaml</code></li><li><code>common/cohort.py</code></li><li><code>citation_builder.py</code></li></ul></article>
-          <article class="catalog-card"><h3>Hybrid retrieval</h3><ul><li><code>hybrid_pipeline.py</code></li><li><code>embedding_model.py</code></li><li><code>bm25_retriever.py</code></li><li><code>cohere_reranker.py</code></li><li><code>graph_traverser.py</code></li></ul></article>
-          <article class="catalog-card"><h3>Generation & safety</h3><ul><li><code>prompt_builder.py</code></li><li><code>answer_guardrails.py</code></li><li><code>citation_formatter.py</code></li><li><code>answer_formatter.py</code></li><li><code>response_cache.py</code></li><li><code>gemini_client.py</code></li></ul></article>
+          <article class="catalog-card"><h3>Hybrid retrieval</h3><ul><li><code>hybrid_pipeline.py</code></li><li><code>embedding_model.py</code></li><li><code>bm25_retriever.py</code></li><li><code>reranker.py</code></li><li><code>graph_traverser.py</code></li></ul></article>
+          <article class="catalog-card"><h3>Generation & safety</h3><ul><li><code>prompt_builder.py</code></li><li><code>answer_guardrails.py</code></li><li><code>citation_formatter.py</code></li><li><code>answer_formatter.py</code></li><li><code>response_cache.py</code></li><li><code>deepseek_client.py</code></li></ul></article>
           <article class="catalog-card"><h3>Build, ops & evaluation</h3><ul><li><code>build_multi_cohort.py</code></li><li><code>build_parent_child_artifacts.py</code></li><li><code>api/warmup.py</code></li><li><code>api/routes/health.py</code></li><li><code>evaluation/{deterministic,retrieval,answers,production}.py</code></li></ul></article>
         </div>
 

@@ -716,7 +716,7 @@ evidence stops, and what would extend it.
 | [Structured execution contract](docs/STRUCTURED_EXECUTION_CONTRACT.md) | Lookup capabilities, fact locks and evidence rules |
 | [Technical debt](docs/TECHNICAL_DEBT.md) | Known maintenance boundaries |
 | [Onboarding guide](docs/UA_ONBOARDING.md) | A guided tour of the code base |
-| [Cohere rerank experiment](docs/COHERE_FAST_RERANK_EXPERIMENT.md) | Why the reranker was added |
+| [Archive](docs/archive/README.md) | Dated experiment logs and audits (planner versions, composer and rerank A/Bs) |
 
 ## License
 

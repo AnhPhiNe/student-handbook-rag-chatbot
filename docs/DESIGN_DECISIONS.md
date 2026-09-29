@@ -151,6 +151,20 @@ the judge gave thinking low (prompt v3.29, v34 data) 0.990 correctness
 against 0.998 for thinking off (an earlier prompt, v33 data); that pair is
 confounded and is superseded by the table above.
 
+### Identifiers are checked against the evidence (2026-09-29)
+
+An audit of 768 saved answers checked every identifier (email, phone,
+link, document code, room number) and every number against the evidence
+packet the composer saw. Of 200 identifiers, 1 was wrong
+("khotienganh@hcmue.edu.vn" for "khoatienganh@hcmue.edu.vn"), with exactly
+one near match in the evidence. Of 2,535 numbers, 43 were not found
+verbatim and none was wrong: list numbering, clause numbers read from
+numbered paragraphs, and rewrites such as "01 tuần" as "7 ngày". So the
+answer now passes through a corrector for identifiers only: one missing
+from the evidence is replaced by its unique near match (up to 2 edits for
+emails and links, 1 for phones, codes and rooms) and logged otherwise.
+Numbers are left to the fact lock and the judge.
+
 ### Composer prompt history
 
 | Version | Date | Change | Evidence |

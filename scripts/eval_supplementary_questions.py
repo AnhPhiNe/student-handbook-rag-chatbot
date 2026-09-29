@@ -4,9 +4,10 @@ Runs the runtime answer pipeline on a cases file (default
 data/eval/development/supplementary_questions.yaml) and checks per case:
 
   route      the plan takes the case's route (see ROUTES; default rag_only)
-  retrieved  the gold parent is among the answer's citations or task evidence
-             (only for cases with a gold_parent)
-  facts      the answer states every must_include fact (case-insensitive)
+  retrieved  a gold parent is among the answer's citations or task evidence
+             (only for cases with a gold_parent; a list means any of them)
+  facts      the answer states every must_include fact (case-insensitive; a
+             fact given as a list is stated if any of its wordings is)
 
 Development data, not a hold-out. The collections are the ones named in .env
 (the pipeline reloads .env over the environment), and the report records them.
@@ -56,8 +57,10 @@ def evidence_parent_ids(record: dict) -> set[str]:
 def check(case: dict, record: dict) -> dict:
     tasks = (record.get("query_plan") or {}).get("tasks") or []
     answer = fold(record.get("answer") or "")
-    missing = [fact for fact in case["must_include"] if fold(fact) not in answer]
+    missing = [fact for fact in case["must_include"]
+               if not any(fold(wording) in answer for wording in (fact if isinstance(fact, list) else [fact]))]
     gold_parent = case.get("gold_parent")
+    gold_parents = gold_parent if isinstance(gold_parent, list) else [gold_parent]
     return {
         "id": case["id"],
         "cohort": case["cohort"],
@@ -65,7 +68,7 @@ def check(case: dict, record: dict) -> dict:
         "status": record.get("status"),
         "routes": [task.get("lookup_type") or task.get("mode") for task in tasks],
         "route_ok": ROUTES[case.get("route", "rag_only")](tasks),
-        "retrieved_ok": gold_parent in evidence_parent_ids(record) if gold_parent else None,
+        "retrieved_ok": bool(set(gold_parents) & evidence_parent_ids(record)) if gold_parent else None,
         "missing_facts": missing,
         "facts_ok": not missing,
         "answer": record.get("answer") or "",

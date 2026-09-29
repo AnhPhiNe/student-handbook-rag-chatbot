@@ -1,0 +1,37 @@
+# "Where / to whom" questions whose answer a regulation sets for that case.
+#
+# Purpose: the registry change of 2026-09-29 (prompt v54) sent "where do I
+# submit" questions to the service catalog. That helped questions about a
+# service (dormitory, double degree, certificate exams), but official_v2 cases
+# 085 (absence from an exam) and 102 (conduct-score complaint) then got a
+# clarification or "not found", although the regulations name the office: the
+# catalog only lists general duties ("Thanh tra ... tiếp nhận đơn khiếu nại"),
+# while a regulation names the office, the approver and the deadline for the
+# case. This set checks the next wording, which keeps such cases on the text.
+#
+# Development data, not a hold-out: written 2026-09-29 by the AI assistant from
+# the regulation text quoted by each gold_parent, before any run of the next
+# wording; not independently reviewed. q01, q09 and q10 reword official_v2
+# cases 085 and 102, so they are not blind. official_v3 was not read.
+#
+# route includes_rag: the answer must come from the regulation text (a catalog
+# lookup beside it is fine). must_include: the office or person the regulation
+# names, and its deadline where it gives one; a list gives accepted wordings.
+# Each question is answered 3 times.
+version: 1
+cases:
+  # ---- the regulation names an office or person the catalog does not give for this case
+  - {id: q01, cohort: K51, route: includes_rag, query: "Vắng thi có lý do chính đáng thì em nộp đơn ở đâu?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["Trưởng khoa", "Khảo thí"]}
+  - {id: q02, cohort: K51, route: includes_rag, query: "Muốn dùng điểm đề tài nghiên cứu khoa học thay cho điểm thi kết thúc học phần thì nộp đơn cho ai?", gold_parent: [K51_QuyCheDaoTao_Chuong3_Dieu10, K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14], must_include: ["Trưởng khoa"]}
+  - {id: q03, cohort: K51, route: includes_rag, query: "Thấy điểm rèn luyện của mình bị chấm sai thì em khiếu nại ở đâu, trong bao lâu?", gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu15, must_include: [["CTCT", "Công tác chính trị"], "7 ngày"]}
+  - {id: q04, cohort: K51, route: includes_rag, query: "Bị kỷ luật mà em thấy không thỏa đáng thì khiếu nại lên ai?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong6_Dieu38, must_include: ["Hiệu trưởng"]}
+  - {id: q05, cohort: K51, route: includes_rag, query: "Muốn xin tạm dừng học tập thì làm đơn nộp ở đâu?", gold_parent: K51_QuyCheDaoTao_Chuong4_Dieu16, must_include: [["CTCT", "Công tác chính trị"]]}
+  - {id: q06, cohort: K51, route: includes_rag, query: "Nghỉ học tạm thời xong muốn quay lại học thì nộp hồ sơ ở đâu?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong5_Dieu30, must_include: [["CTCT", "Công tác chính trị"]]}
+  - {id: q07, cohort: K51, route: includes_rag, query: "Sinh viên dân tộc thiểu số thuộc hộ nghèo nộp hồ sơ hỗ trợ chi phí học tập ở đâu, hạn bao lâu?", gold_parent: K51_ThongBaoHoTroChiPhiHocTap_Phan4, must_include: [["CTCT", "Công tác chính trị"], "30 ngày"]}
+  - {id: q08, cohort: K51, route: includes_rag, query: "Sinh viên khuyết tật thuộc hộ nghèo nộp hồ sơ xin học bổng chính sách ở đâu, trong thời gian nào?", gold_parent: K51_ThongBaoHocBongNguoiKhuyetTat_Phan1, must_include: [["CTCT", "Công tác chính trị"], "30 ngày"]}
+  - {id: q09, cohort: K50, route: includes_rag, query: "Điểm rèn luyện học kỳ của em bị sai thì gửi đơn khiếu nại cho phòng nào?", gold_parent: K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15, must_include: [["CTCT", "Công tác chính trị"], "7 ngày"]}
+  - {id: q10, cohort: K50, route: includes_rag, query: "Em bị ốm nên vắng buổi thi, làm đơn nộp ở đâu để được thi bổ sung?", gold_parent: K50_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["Trưởng khoa", "Khảo thí"]}
+  - {id: q11, cohort: K48-K49, route: includes_rag, query: "Hết thời gian bảo lưu muốn đi học lại thì nộp hồ sơ ở đâu?", gold_parent: K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu31, must_include: [["CTCT", "Công tác chính trị"]]}
+  - {id: q12, cohort: K48-K49, route: includes_rag, query: "Vắng thi có giấy xác nhận của bệnh viện thì nộp đơn cho ai?", gold_parent: K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["Trưởng khoa", "Khảo thí"]}
+  # ---- the regulation and the catalog agree
+  - {id: q13, cohort: K51, route: includes_rag, query: "Cần xác nhận điểm rèn luyện để làm hồ sơ thì liên hệ phòng nào?", gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu16, must_include: [["CTCT", "Công tác chính trị"]]}

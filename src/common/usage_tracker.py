@@ -34,21 +34,31 @@ class UsageTracker:
         *,
         cache_read_tokens: int | None = None,
         reasoning_tokens: int | None = None,
+        total_cost: float | None = None,
+        run_type: str = "llm",
+        outputs: dict[str, Any] | None = None,
     ) -> None:
-        """Record one timed model call and its token usage."""
+        """Record one timed step: a model call (``llm``) or another traced step such as ``retriever``.
+
+        ``total_cost`` is set when the provider reports the price itself
+        (DeepInfra); otherwise LangSmith prices the tokens.
+        """
 
         self._steps.append(
             {
                 "step_name": step_name,
+                "run_type": run_type,
                 "model": model,
                 "input_tokens": input_tokens,
                 "output_tokens": output_tokens,
                 "total_tokens": total_tokens,
                 "cache_read_tokens": cache_read_tokens,
                 "reasoning_tokens": reasoning_tokens,
+                "total_cost": total_cost,
                 "start_time": start_time,
                 "end_time": end_time,
                 "metadata": metadata or {},
+                "outputs": outputs,
             }
         )
 

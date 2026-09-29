@@ -475,6 +475,9 @@ def _step_usage_metadata(step: dict[str, Any]) -> dict[str, Any]:
         usage["input_token_details"] = {"cache_read": step["cache_read_tokens"]}
     if isinstance(step.get("reasoning_tokens"), int):
         usage["output_token_details"] = {"reasoning": step["reasoning_tokens"]}
+    if isinstance(step.get("total_cost"), (int, float)):
+        # The provider's own price (DeepInfra); LangSmith prices the others.
+        usage["total_cost"] = float(step["total_cost"])
     return usage
 
 
@@ -560,10 +563,25 @@ def push_trace_to_langsmith(
             extra=extra,
         )
 
-        # One child run per LLM call: planner, directory selector, composer.
+        # One child run per step: the LLM calls (planner, directory selector,
+        # reranker, composer) and each retrieval (stage times, top candidates).
         for step in tracker.get_steps() if tracker is not None else []:
             model = step.get("model") or ""
             step_metadata = step.get("metadata") or {}
+            if step.get("run_type", "llm") != "llm":
+                client.create_run(
+                    id=uuid.uuid4(),
+                    name=step["step_name"],
+                    run_type=step["run_type"],
+                    parent_run_id=run_id,
+                    inputs={"query": step_metadata.get("query") or input_text},
+                    outputs=step.get("outputs") or {},
+                    start_time=datetime.fromisoformat(step["start_time"]),
+                    end_time=datetime.fromisoformat(step["end_time"]),
+                    project_name=project_name,
+                    extra={"metadata": dict(step_metadata)},
+                )
+                continue
             usage = _step_usage_metadata(step)
             step_extra = _llm_run_extra(model, step_metadata, usage)
             prompt = step_metadata.get("prompt")

@@ -31,6 +31,14 @@ def _key(monkeypatch):
     monkeypatch.setenv("TEST_EMBEDDING_KEY", "test-key")
 
 
+def test_the_query_tokens_the_service_counted_are_returned_for_tracing() -> None:
+    response = _response([[3.0, 4.0]])
+    response.json.return_value["usage"] = {"prompt_tokens": 6, "total_tokens": 6}
+    vector, usage = EmbeddingClient(CONFIG, post=Mock(return_value=response)).embed_query_with_usage("câu hỏi")
+    assert vector == pytest.approx([0.6, 0.8])
+    assert usage == {"input": 6}
+
+
 def test_query_vector_is_normalized_and_sent_with_the_short_timeout() -> None:
     post = Mock(return_value=_response([[3.0, 4.0]]))
     client = EmbeddingClient(CONFIG, post=post)

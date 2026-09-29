@@ -35,6 +35,15 @@ def test_reranks_every_candidate_by_score_and_reports_it() -> None:
     assert kwargs["timeout"] == 10.0
 
 
+def test_the_tokens_and_price_deepinfra_reports_are_kept() -> None:
+    body = {"scores": [0.1, 0.9, 0.5, 0.2], "input_tokens": 168,
+            "inference_status": {"runtime_ms": 67, "cost": 8.4e-06, "tokens_input": 168}}
+    reranker = Reranker(RerankerConfig(), api_key="k", post=Mock(return_value=_response(body=body)))
+    _, telemetry = reranker.rerank("câu hỏi", _candidates())
+    assert telemetry["reranker_input_tokens"] == 168
+    assert telemetry["reranker_cost"] == pytest.approx(8.4e-06)
+
+
 @pytest.mark.parametrize(
     ("post", "reason"),
     [

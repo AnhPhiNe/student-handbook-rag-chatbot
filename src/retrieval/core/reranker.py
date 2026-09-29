@@ -107,9 +107,15 @@ class Reranker:
         if response.status_code != 200:
             return fall_back(f"http_{response.status_code}")
         try:
-            scores = [float(score) for score in response.json()["scores"]]
+            body = response.json()
+            scores = [float(score) for score in body["scores"]]
         except (KeyError, TypeError, ValueError):
             return fall_back("invalid_response")
+        # DeepInfra reports the tokens it read and the price it charged.
+        status = body.get("inference_status") if isinstance(body.get("inference_status"), dict) else {}
+        telemetry["reranker_input_tokens"] = int(body.get("input_tokens") or status.get("tokens_input") or 0)
+        cost = status.get("cost")
+        telemetry["reranker_cost"] = float(cost) if isinstance(cost, (int, float)) else None
         if len(scores) != len(scored_chunks) or not all(math.isfinite(score) for score in scores):
             return fall_back("invalid_response")
 

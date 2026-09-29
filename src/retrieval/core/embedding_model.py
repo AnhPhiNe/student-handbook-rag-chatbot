@@ -37,15 +37,22 @@ class EmbeddingClient:
         self._post = post
 
     def embed_query(self, text: str) -> list[float]:
-        return self._request([text], timeout=self.query_timeout, retries=self.query_retries)[0]
+        return self.embed_query_with_usage(text)[0]
+
+    def embed_query_with_usage(self, text: str) -> tuple[list[float], dict[str, int]]:
+        """The query vector and the tokens the service counted, for tracing."""
+        vectors, usage = self._request([text], timeout=self.query_timeout, retries=self.query_retries)
+        return vectors[0], usage
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         batches = [texts[i:i + self.batch_size] for i in range(0, len(texts), self.batch_size)]
         with ThreadPoolExecutor(self.concurrency) as pool:
-            results = pool.map(lambda batch: self._request(batch, timeout=180, retries=4), batches)
+            results = pool.map(lambda batch: self._request(batch, timeout=180, retries=4)[0], batches)
             return [vector for batch in results for vector in batch]
 
-    def _request(self, texts: list[str], *, timeout: float, retries: int) -> list[list[float]]:
+    def _request(
+        self, texts: list[str], *, timeout: float, retries: int,
+    ) -> tuple[list[list[float]], dict[str, int]]:
         for attempt in range(retries + 1):
             try:
                 response = self._post(
@@ -55,11 +62,14 @@ class EmbeddingClient:
                     timeout=timeout,
                 )
                 response.raise_for_status()
-                data = sorted(response.json()["data"], key=lambda item: item["index"])
+                body = response.json()
+                data = sorted(body["data"], key=lambda item: item["index"])
                 vectors = [list(map(float, item["embedding"])) for item in data]
                 if len(vectors) != len(texts):
                     raise ValueError("Embedding response does not match its input.")
-                return [self._normalized(v) for v in vectors] if self.normalize else vectors
+                usage = body.get("usage") if isinstance(body.get("usage"), dict) else {}
+                tokens = {"input": int(usage.get("prompt_tokens") or 0)}
+                return ([self._normalized(v) for v in vectors] if self.normalize else vectors), tokens
             except (requests.RequestException, KeyError, ValueError):
                 if attempt == retries:
                     raise

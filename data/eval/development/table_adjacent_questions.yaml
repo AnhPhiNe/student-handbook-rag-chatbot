@@ -1,0 +1,75 @@
+# Questions that sit next to a lookup table but are answered by the text around it,
+# and "where do I submit / whom do I contact" questions answered by the service catalog.
+#
+# Purpose: official_v2 (2026-09-29) showed two planner patterns.
+#   - A rule question near a table was sent to the table, which does not hold
+#     the rule. Case 059 ("bằng cả điểm học tập lẫn điểm rèn luyện thì học bổng
+#     chia thế nào") got the scholarship levels instead of the tie rule, and the
+#     answer read as if it had answered.
+#   - "nộp / gửi ... ở đâu" went to RAG instead of the service catalog (041, 042,
+#     096), which loses the office's contacts.
+# This set measures how often each happens before anything is changed.
+#
+# Development data, not a hold-out: written 2026-09-29 by the AI assistant from
+# the handbook text (the articles holding the lookup tables and their
+# neighbours) and the K51 service catalog, before any run; not independently
+# reviewed. r01 rewords official_v2 case 059, so it is not blind. official_v3
+# was not read; overlap with it was not screened.
+#
+# route:
+#   includes_rag  at least one task reads the handbook text (a table lookup
+#                 beside it is fine); the gold parent must be retrieved
+#   directory     a structured student_service or office task
+# gold_parent:    the parent that holds the answer (rule questions only)
+# must_include:   facts the answer must state (checked case-insensitively)
+#
+# Each question is run 3 times (the planner varies between runs). Nothing is
+# decided on a single run.
+version: 1
+cases:
+  # ---- rule questions next to the scholarship tables (K51 Điều 26-28)
+  - {id: r01, cohort: K51, route: includes_rag, query: "Nếu nhiều bạn cùng ngành có điểm học tập và điểm rèn luyện bằng nhau thì học bổng khuyến khích chia ra sao?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong5_Dieu28, must_include: ["tỉ lệ số tín chỉ"]}
+  - {id: r02, cohort: K51, route: includes_rag, query: "Điểm học bổng bằng nhau mà quỹ không đủ cấp cho tất cả thì ai được ưu tiên?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong5_Dieu28, must_include: ["điểm học tập cao hơn"]}
+  - {id: r03, cohort: K51, route: includes_rag, query: "Quỹ học bổng của ngành em cấp xong mà còn dư thì số tiền đó xử lý thế nào?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong5_Dieu28, must_include: ["điều phối"]}
+  - {id: r04, cohort: K51, route: includes_rag, query: "Học kỳ cuối em chỉ còn làm khóa luận thì phải tích lũy bao nhiêu tín chỉ mới được xét học bổng khuyến khích?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong5_Dieu27, must_include: ["11 tín chỉ"]}
+  - {id: r05, cohort: K51, route: includes_rag, query: "Em học cùng lúc hai chương trình thì học bổng khuyến khích được xét ở chương trình nào?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong5_Dieu27, must_include: ["chương trình thứ nhất"]}
+  - {id: r06, cohort: K51, route: includes_rag, query: "Em tốt nghiệp sớm, học kỳ cuối không đủ 15 tín chỉ thì còn được xét học bổng không?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong5_Dieu27, must_include: ["nhỏ hơn 15"]}
+  - {id: r07, cohort: K51, route: includes_rag, query: "Sinh viên học liên thông có được nhận học bổng khuyến khích học tập không?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong5_Dieu26, must_include: ["liên thông"]}
+  - {id: r08, cohort: K51, route: includes_rag, query: "Em mới chuyển ngành thì học bổng xét theo ngành cũ hay ngành mới?", gold_parent: K51_QuyCheCongTacSinhVien_Chuong5_Dieu27, must_include: ["ngành mới"]}
+  # ---- rule questions next to the conduct classification table (K51 Quy chế rèn luyện Điều 9-11)
+  - {id: r09, cohort: K51, route: includes_rag, query: "Trong học kỳ đang bị kỷ luật khiển trách thì rèn luyện được xếp loại cao nhất là gì?", gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10, must_include: ["khá"]}
+  - {id: r10, cohort: K51, route: includes_rag, query: "Đang bị kỷ luật cảnh cáo thì điểm rèn luyện học kỳ đó tối đa xếp loại gì?", gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10, must_include: ["trung bình"]}
+  - {id: r11, cohort: K51, route: includes_rag, query: "Trong khóa học em từng bị cảnh cáo thì rèn luyện toàn khóa có được xếp loại xuất sắc không?", gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9, must_include: ["tốt"]}
+  - {id: r12, cohort: K51, route: includes_rag, query: "Em quên tự đánh giá điểm rèn luyện thì bị xếp loại gì?", gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10, must_include: ["kém"]}
+  - {id: r13, cohort: K51, route: includes_rag, query: "Học xong chương trình, đang chờ xét tốt nghiệp thì còn được chấm điểm rèn luyện không?", gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10, must_include: ["không được chấm"]}
+  - {id: r14, cohort: K51, route: includes_rag, query: "Kết quả xếp loại rèn luyện được công bố cho sinh viên trước bao nhiêu ngày?", gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu11, must_include: ["20 ngày"]}
+  # ---- rule questions next to the grade tables (K51 Quy chế đào tạo Điều 10-12)
+  - {id: r15, cohort: K51, route: includes_rag, query: "Điểm đánh giá quá trình có được phúc khảo không?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["không được phúc khảo"]}
+  - {id: r16, cohort: K51, route: includes_rag, query: "Em học cải thiện mà lần sau điểm thấp hơn lần trước thì lấy điểm nào?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["cao nhất"]}
+  - {id: r17, cohort: K51, route: includes_rag, query: "Vắng thi không có lý do chính đáng thì bị tính điểm bao nhiêu?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["điểm 0"]}
+  - {id: r18, cohort: K51, route: includes_rag, query: "Khóa luận tốt nghiệp bị điểm dưới C thì phải làm gì?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["thực hiện lại"]}
+  - {id: r19, cohort: K51, route: includes_rag, query: "Trên bảng điểm có điểm I và điểm X là nghĩa gì?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["hoãn thi", "chưa đủ dữ liệu"]}
+  - {id: r20, cohort: K51, route: includes_rag, query: "Đề tài nghiên cứu khoa học của em đạt loại gì thì được dùng thay điểm thi kết thúc học phần?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["khá", "3 tín chỉ"]}
+  - {id: r21, cohort: K51, route: includes_rag, query: "Học phần không nằm trong chương trình đào tạo thì có tính vào điểm trung bình không?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu11, must_include: ["không được tính"]}
+  - {id: r22, cohort: K51, route: includes_rag, query: "Bị cảnh báo học tập mấy lần thì bị buộc thôi học?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu12, must_include: ["3 lần"]}
+  - {id: r23, cohort: K51, route: includes_rag, query: "Năm nhất điểm trung bình tích lũy dưới bao nhiêu thì bị cảnh báo học tập?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu12, must_include: ["1,2"]}
+  # ---- rule questions next to the study duration and foreign language tables
+  - {id: r24, cohort: K51, route: includes_rag, query: "Học quá thời gian tối đa mà chưa tốt nghiệp thì sẽ bị xử lý thế nào?", gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu12, must_include: ["buộc thôi học"]}
+  - {id: r25, cohort: K51, route: includes_rag, query: "Học liên thông được miễn một số tín chỉ thì thời gian học tối đa tính thế nào?", gold_parent: K51_QuyCheDaoTao_Chuong1_Dieu3, must_include: ["giảm tương ứng"]}
+  - {id: r26, cohort: K50, route: includes_rag, query: "Chứng chỉ ngoại ngữ quốc tế không có trong bảng quy đổi thì ai quyết định có được công nhận không?", gold_parent: K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8, must_include: ["Hiệu trưởng"]}
+
+  # ---- where to submit / whom to contact (K51 service catalog, one unit each)
+  - {id: w01, cohort: K51, route: directory, query: "Muốn đăng ký ở ký túc xá thì nộp hồ sơ ở đâu?", must_include: ["ktx@hcmue.edu.vn"]}
+  - {id: w02, cohort: K51, route: directory, query: "Em muốn nộp chứng chỉ tin học để được miễn học phần thì mang tới đâu?", must_include: ["phongkhaothi@hcmue.edu.vn"]}
+  - {id: w03, cohort: K51, route: directory, query: "Nộp hồ sơ xin miễn giảm học phí ở phòng nào?", must_include: ["hopthusinhvien@hcmue.edu.vn"]}
+  - {id: w04, cohort: K51, route: directory, query: "Em muốn gửi đơn khiếu nại lên trường thì nộp ở đơn vị nào?", must_include: ["phongthanhtra@hcmue.edu.vn"]}
+  - {id: w05, cohort: K51, route: directory, query: "Đăng ký đề tài nghiên cứu khoa học sinh viên thì nộp ở đâu?", must_include: ["phongkhcn@hcmue.edu.vn"]}
+  - {id: w06, cohort: K51, route: directory, query: "Xin giấy xác nhận là sinh viên của trường thì lên phòng nào?", must_include: ["hopthusinhvien@hcmue.edu.vn"]}
+  - {id: w07, cohort: K51, route: directory, query: "Giấy chứng nhận tốt nghiệp tạm thời nhận ở đâu?", must_include: ["phongdt@hcmue.edu.vn"]}
+  - {id: w08, cohort: K51, route: directory, query: "Muốn đăng ký học song ngành thì nộp đơn ở đâu?", must_include: ["phongdt@hcmue.edu.vn"]}
+  - {id: w09, cohort: K51, route: directory, query: "Không đăng nhập được email sinh viên của trường thì hỏi ai?", must_include: ["phongcntt@hcmue.edu.vn"]}
+  - {id: w10, cohort: K51, route: directory, query: "Muốn được giới thiệu việc làm thêm thì liên hệ đơn vị nào?", must_include: ["csaed@hcmue.edu.vn"]}
+  - {id: w11, cohort: K51, route: directory, query: "Mượn phòng học để sinh hoạt lớp thì đăng ký ở đâu?", must_include: ["phongqttb@hcmue.edu.vn"]}
+  - {id: w12, cohort: K51, route: directory, query: "Đăng ký thi chứng chỉ ngoại ngữ bậc 3 theo khung 6 bậc ở đâu?", must_include: ["trungtamnn@hcmue.edu.vn"]}
+  - {id: w13, cohort: K51, route: directory, query: "Muốn gửi bài đăng Tạp chí Khoa học của trường thì nộp ở đâu?", must_include: ["phongkhcn@hcmue.edu.vn"]}
+  - {id: w14, cohort: K51, route: directory, query: "Mua sách do trường xuất bản ở đâu?", must_include: ["nxb@hcmue.edu.vn"]}

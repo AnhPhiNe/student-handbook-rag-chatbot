@@ -448,6 +448,20 @@ The complete current stack, on development data:
 - The judge's agreement with a human rater; both datasets were written by one
   author from handbook content, not collected from real students.
 - Combinations not run, such as Qwen3-Embedding-8B with Qwen3-Reranker-8B.
+- Whether the composer sends students to units the evidence does not name. When
+  the handbook does not say where to go, the composer sometimes suggests an
+  office from general knowledge. For "tui cần in bảng điểm và làm thủ tục
+  chuyển trường thì đến đâu" (K51, whose handbook gives no office for
+  transfers), 2 of 3 runs added "liên hệ Phòng CTCT&HSSV" or "Phòng Đào tạo
+  hoặc Phòng CTCT&HSSV". Both runs first said the source names no office.
+  Across the 768 saved answers, the 6 distinct sentences sending the student
+  to a unit all named a unit in the evidence, with its contacts. The prompt is
+  left as it is: the observed suggestions are plausible and marked as not from
+  the handbook, and forbidding them risks a more rigid composer for a failure
+  not yet seen. The audit found suggestions by phrases such as "nên/có thể
+  liên hệ" and "để được hướng dẫn", so other wordings could be missed, and the
+  saved answers hold few questions the handbook cannot answer. Revisit if a
+  trace shows a suggestion naming the wrong unit.
 
 ## Raw reports
 

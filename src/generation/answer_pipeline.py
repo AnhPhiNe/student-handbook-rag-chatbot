@@ -72,6 +72,25 @@ def _authorized_context_fingerprint(context_used: str) -> dict[str, str]:
     }
 
 
+def _record_generation_usage(
+    tracker: Any,
+    *,
+    model: str,
+    usage: dict[str, int],
+    start_time: str,
+    end_time: str,
+) -> None:
+    tracker.record(
+        step_name="LLM Generation",
+        model=model,
+        input_tokens=usage.get("input", 0),
+        output_tokens=usage.get("output", 0),
+        total_tokens=usage.get("total", 0),
+        start_time=start_time,
+        end_time=end_time,
+    )
+
+
 
 @dataclass(slots=True)
 class PreparedAnswer:
@@ -96,6 +115,63 @@ class PreparedAnswer:
     error_message: str | None = None
     clarification_needed: bool = False
     query_type_override: str | None = None
+
+
+class StreamAnswerCleaner:
+    """Clean a streamed answer as it arrives and hold back its last characters.
+
+    The composer may open with a code fence or preamble and may end with its
+    own "Nguồn:" list, which the UI replaces with the real citations. Text is
+    released only after STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS more characters
+    have arrived, so a source heading that starts in the held-back tail is cut
+    before the student sees it. Everything after that heading is dropped.
+    """
+
+    def __init__(self) -> None:
+        self.parts: list[str] = []
+        self._pending = ""
+        self._released_any = False
+        self._in_sources = False
+
+    @property
+    def text(self) -> str:
+        """Everything released so far."""
+        return "".join(self.parts)
+
+    def feed(self, chunk: str) -> str:
+        """Add one streamed chunk; return the text now safe to show ("" if none)."""
+        if self._in_sources:
+            return ""
+        self._pending += chunk
+        if not self._released_any:
+            self._pending = clean_stream_start(self._pending)
+        source_start = sources_section_start(
+            self._pending,
+            at_line_start=(not self.parts or self.parts[-1].endswith("\n")),
+        )
+        if source_start is not None:
+            self._pending = self._pending[:source_start]
+            self._in_sources = True
+        self._pending = clean_stream_fragment(self._pending)
+        if len(self._pending) <= STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
+            return ""
+        safe_text = self._pending[:-STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS]
+        self._pending = self._pending[-STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:]
+        if safe_text:
+            self._released_any = True
+            self.parts.append(safe_text)
+        return safe_text
+
+    def finish(self) -> str:
+        """Release the held-back tail once the stream has ended."""
+        if not self._pending:
+            return ""
+        # Source footers were removed at the real stream line boundaries in
+        # feed(); do not reinterpret a mid-sentence tail as a new heading.
+        tail = clean_answer(self._pending)
+        if tail:
+            self.parts.append(tail)
+        return tail
 
 
 
@@ -500,29 +576,21 @@ class AnswerPipeline:
                 clarification_needed=prepared.clarification_needed,
             )
 
-        cache_key = prepared.cache_key
-        cached = prepared.cached
-        if cached:
-            cached_answer = str(cached.get("answer") or "")
-            cached_citations = prioritize_citations_by_answer_anchors(
-                cached.get("citations") or retrieval_result.get("citations") or [],
-                cached_answer,
-                max_sources=self._public_source_limit(),
-            )
+        if prepared.cached:
+            cached_answer, cached_citations, cached_status = self._cached_reply(prepared)
             return self._build_output(
                 query=query,
                 retrieval_result=retrieval_result,
                 final_answer=cached_answer,
                 context_used=context_used,
                 selected_citations=cached_citations,
-                status=str(cached.get("status") or "answered"),
-                error_type=cached.get("error_type"),
-                error_message=cached.get("error_message"),
+                status=cached_status,
+                error_type=prepared.cached.get("error_type"),
+                error_message=prepared.cached.get("error_message"),
                 llm_called=False,
                 used_cache=True,
             )
 
-        all_citations = prepared.all_citations
         public_retrieval_citations = prepared.public_retrieval_citations
 
         try:
@@ -563,13 +631,10 @@ class AnswerPipeline:
         self._last_llm_call_at = time.monotonic()
 
         if llm_result.get("ok"):
-            u = llm_result.get("usage") or {}
-            tracker.record(
-                step_name="LLM Generation",
+            _record_generation_usage(
+                tracker,
                 model=llm_result.get("model_used") or self.model_name,
-                input_tokens=u.get("input", 0),
-                output_tokens=u.get("output", 0),
-                total_tokens=u.get("total", 0),
+                usage=llm_result.get("usage") or {},
                 start_time=start_time_llm,
                 end_time=end_time_llm,
             )
@@ -619,11 +684,7 @@ class AnswerPipeline:
                 tracker=tracker,
             )
 
-        public_citations = prioritize_citations_by_answer_anchors(
-            all_citations,
-            final_answer,
-            max_sources=self._public_source_limit(),
-        )
+        public_citations = self._citations_for_answer(prepared.all_citations, final_answer)
         output = self._build_output(
             query=query,
             retrieval_result=retrieval_result,
@@ -638,18 +699,40 @@ class AnswerPipeline:
             model_used=llm_result.get("model_used"),
             tracker=tracker,
         )
+        self._cache_answer(prepared.cache_key, final_answer, public_citations)
+        return output
+
+    def _citations_for_answer(
+        self, citations: list[dict[str, Any]], answer: str,
+    ) -> list[dict[str, Any]]:
+        """The public citations, the sources the answer cites first."""
+        return prioritize_citations_by_answer_anchors(
+            citations, answer, max_sources=self._public_source_limit(),
+        )
+
+    def _cached_reply(self, prepared: PreparedAnswer) -> tuple[str, list[dict[str, Any]], str]:
+        """The cached answer, its citations and its status."""
+        cached = prepared.cached or {}
+        answer = str(cached.get("answer") or "")
+        citations = self._citations_for_answer(
+            cached.get("citations") or prepared.public_retrieval_citations, answer,
+        )
+        return answer, citations, str(cached.get("status") or "answered")
+
+    def _cache_answer(
+        self, cache_key: str | None, answer: str, citations: list[dict[str, Any]],
+    ) -> None:
+        """Cache a generated answer; only answered replies are cached."""
         self.response_cache.set(
             cache_key,
             {
-                "answer": final_answer,
+                "answer": answer,
                 "status": "answered",
                 "error_type": None,
                 "error_message": None,
-                "citations": public_citations,
+                "citations": citations,
             },
         )
-
-        return output
 
     def _build_stream_metadata(
         self,
@@ -663,7 +746,6 @@ class AnswerPipeline:
         related_references: list[dict[str, Any]] | None = None,
         llm_called: bool = False,
         used_cache: bool = False,
-        run_id: str | None = None,
         query_type_override: str | None = None,
     ) -> dict[str, Any]:
         """Build standardized metadata chunk for streaming responses dynamically."""
@@ -700,7 +782,6 @@ class AnswerPipeline:
 
         return {
             "type": "metadata",
-            "run_id": run_id,
             "cohort": res.get("cohort") or res.get("selected_cohort") or "default",
             "status": status,
             "intent": res.get("intent"),
@@ -739,8 +820,6 @@ class AnswerPipeline:
         events so the frontend can show retrieval progress and stream LLM output
         without changing the underlying routing, guardrail, or citation logic.
         """
-        run_id = None
-
         from datetime import datetime, timezone
 
         from src.common.usage_tracker import UsageTracker
@@ -779,7 +858,6 @@ class AnswerPipeline:
                 error_type=prepared.error_type,
                 citations_used=selected_citations,
                 query_type_override=prepared.query_type_override,
-                run_id=run_id,
             )
             yield {"type": "token", "text": prepared.terminal_answer or ""}
             yield {
@@ -793,33 +871,22 @@ class AnswerPipeline:
             return
 
         yield {"type": "progress", "message": "Đang phân tích tài liệu tìm được..."}
-        all_citations = prepared.all_citations
-        public_retrieval_citations = prepared.public_retrieval_citations
         related_references = prepared.related_references
-        prompt = prepared.prompt
-        cache_key = prepared.cache_key
-        cached = prepared.cached
-        if cached:
-            cached_answer = str(cached.get("answer") or "")
-            cached_citations = prioritize_citations_by_answer_anchors(
-                cached.get("citations") or public_retrieval_citations,
-                cached_answer,
-                max_sources=self._public_source_limit(),
-            )
+        if prepared.cached:
+            cached_answer, cached_citations, cached_status = self._cached_reply(prepared)
             yield self._build_stream_metadata(
                 retrieval_result,
-                status=str(cached.get("status") or "answered"),
+                status=cached_status,
                 effective_query=effective_query,
                 citations_used=cached_citations,
                 related_references=related_references,
                 llm_called=False,
                 used_cache=True,
-                run_id=run_id,
             )
             yield {"type": "token", "text": cached_answer}
             yield {
                 "type": "done",
-                "status": str(cached.get("status") or "answered"),
+                "status": cached_status,
                 "used_cache": True,
                 "tracker": tracker,
                 "citations_used": cached_citations,
@@ -832,26 +899,22 @@ class AnswerPipeline:
             retrieval_result,
             status="streaming",
             effective_query=effective_query,
-            citations_used=public_retrieval_citations,
+            citations_used=prepared.public_retrieval_citations,
             related_references=related_references,
             llm_called=llm_called,
-            run_id=run_id,
         )
 
         final_answer_for_citations = ""
         terminal_status = "answered"
         terminal_error_type: str | None = None
-        emitted_answer_parts: list[str] = []
+        cleaner = StreamAnswerCleaner()
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
             self._throttle_llm_call()
-            pending_stream_text = ""
-            stream_prefix_emitted = False
-            suppress_source_tail = False
             stream_result: dict[str, Any] = {}
             llm_called = True
-            llm_stream = iter(llm_client.generate_stream(prompt))
+            llm_stream = iter(llm_client.generate_stream(prepared.prompt))
             while True:
                 try:
                     chunk = next(llm_stream)
@@ -859,42 +922,11 @@ class AnswerPipeline:
                     if isinstance(completed.value, dict):
                         stream_result = completed.value
                     break
-                chunk_text = str(chunk)
-                if suppress_source_tail:
-                    continue
-                pending_stream_text += chunk_text
-                if not stream_prefix_emitted:
-                    pending_stream_text = clean_stream_start(pending_stream_text)
-                source_start = sources_section_start(
-                    pending_stream_text,
-                    at_line_start=(
-                        not emitted_answer_parts or emitted_answer_parts[-1].endswith("\n")
-                    ),
-                )
-                if source_start is not None:
-                    pending_stream_text = pending_stream_text[:source_start]
-                    suppress_source_tail = True
-                pending_stream_text = clean_stream_fragment(pending_stream_text)
-                if len(pending_stream_text) > STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
-                    safe_text = pending_stream_text[
-                        :-STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS
-                    ]
-                    pending_stream_text = pending_stream_text[
-                        -STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
-                    ]
-                    if safe_text:
-                        stream_prefix_emitted = True
-                        emitted_answer_parts.append(safe_text)
-                        yield {"type": "token", "text": safe_text}
-
-            if pending_stream_text:
-                # Source footers were removed with the real stream line boundary
-                # above; do not reinterpret a mid-sentence tail as a new heading.
-                final_tail = clean_answer(pending_stream_text)
-                if final_tail:
-                    emitted_answer_parts.append(final_tail)
-                    yield {"type": "token", "text": final_tail}
-            final_answer_for_citations = "".join(emitted_answer_parts)
+                if safe_text := cleaner.feed(str(chunk)):
+                    yield {"type": "token", "text": safe_text}
+            if final_tail := cleaner.finish():
+                yield {"type": "token", "text": final_tail}
+            final_answer_for_citations = cleaner.text
             if not final_answer_for_citations.strip():
                 raise RuntimeError("Empty answer after output cleanup.")
             end_time_llm = datetime.now(timezone.utc).isoformat()
@@ -902,13 +934,10 @@ class AnswerPipeline:
 
             stream_usage = stream_result.get("usage") or {}
             if stream_usage:
-                tracker.record(
-                    step_name="LLM Generation",
-                    model=stream_result.get("model_used")
-                    or getattr(llm_client, "model_name", ""),
-                    input_tokens=stream_usage.get("input", 0),
-                    output_tokens=stream_usage.get("output", 0),
-                    total_tokens=stream_usage.get("total", 0),
+                _record_generation_usage(
+                    tracker,
+                    model=stream_result.get("model_used") or getattr(llm_client, "model_name", ""),
+                    usage=stream_usage,
                     start_time=start_time_llm,
                     end_time=end_time_llm,
                 )
@@ -919,8 +948,8 @@ class AnswerPipeline:
             )
             terminal_status = "api_error"
             terminal_error_type = type(exc).__name__
-            if emitted_answer_parts:
-                final_answer_for_citations = "".join(emitted_answer_parts)
+            if cleaner.parts:
+                final_answer_for_citations = cleaner.text
             else:
                 fallback = build_fallback_answer(
                     effective_query, retrieval_result, reason="api_error"
@@ -928,11 +957,7 @@ class AnswerPipeline:
                 final_answer_for_citations = fallback
                 yield {"type": "token", "text": fallback}
 
-        final_citations = prioritize_citations_by_answer_anchors(
-            all_citations,
-            final_answer_for_citations,
-            max_sources=self._public_source_limit(),
-        )
+        final_citations = self._citations_for_answer(prepared.all_citations, final_answer_for_citations)
         yield self._build_stream_metadata(
             retrieval_result,
             status=terminal_status,
@@ -942,20 +967,10 @@ class AnswerPipeline:
             citations_used=final_citations,
             related_references=related_references,
             llm_called=llm_called,
-            run_id=run_id,
         )
 
         if terminal_status == "answered":
-            self.response_cache.set(
-                cache_key,
-                {
-                    "answer": final_answer_for_citations,
-                    "status": "answered",
-                    "error_type": None,
-                    "error_message": None,
-                    "citations": final_citations,
-                },
-            )
+            self._cache_answer(prepared.cache_key, final_answer_for_citations, final_citations)
 
         yield {
             "type": "done",
@@ -1053,11 +1068,9 @@ class AnswerPipeline:
         query_handling = retrieval_result.get("query_handling")
         if not isinstance(query_handling, dict):
             query_handling = None
-        run_id = None
         if model_used is None:
             model_used = getattr(self, "model_name", None)
         return {
-            "run_id": run_id,
             "query": query,
             "effective_query": retrieval_result.get("effective_query")
             or (query_handling or {}).get("effective_query")

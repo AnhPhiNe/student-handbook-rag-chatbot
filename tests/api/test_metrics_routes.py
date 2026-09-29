@@ -39,6 +39,13 @@ def test_visits_counter_increments_in_redis(monkeypatch) -> None:
     assert read_only.json() == {"count": 202, "raw_count": 2, "status": "ok"}
 
 
+def test_a_developer_machine_does_not_touch_the_shared_counter(monkeypatch) -> None:
+    monkeypatch.setattr(metrics, "_redis_client", None)
+    monkeypatch.setenv("REDIS_URL", "rediss://shared.example")
+    monkeypatch.setenv("STUDENT_RAG_DISABLE_REDIS", "1")
+    assert metrics.get_redis_client() is False
+
+
 def test_visits_counter_returns_null_without_redis(monkeypatch) -> None:
     monkeypatch.setattr(metrics, "_redis_client", False)
 

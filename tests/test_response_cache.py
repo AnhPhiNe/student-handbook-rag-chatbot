@@ -63,6 +63,24 @@ class ResponseCacheTest(unittest.TestCase):
         self.assertEqual(cache.get("key"), {"answer": "ok"})
         self.assertEqual(client.set.call_args.kwargs["ex"], 60)
 
+    def test_redis_waits_are_bounded(self) -> None:
+        redis_module = SimpleNamespace(from_url=Mock(return_value=Mock()))
+        with patch.dict(sys.modules, {"redis": redis_module}):
+            RedisResponseCache("rediss://example")
+        options = redis_module.from_url.call_args.kwargs
+        self.assertEqual(options["socket_timeout"], 2.0)
+        self.assertEqual(options["socket_connect_timeout"], 3.0)
+
+    def test_a_slow_redis_is_a_cache_miss_not_an_error(self) -> None:
+        client = Mock()
+        client.get.side_effect = TimeoutError("Timeout reading from socket")
+        client.set.side_effect = TimeoutError("Timeout writing to socket")
+        redis_module = SimpleNamespace(from_url=Mock(return_value=client))
+        with patch.dict(sys.modules, {"redis": redis_module}):
+            cache = RedisResponseCache("rediss://example")
+            cache.set("key", {"answer": "ok"})
+            self.assertIsNone(cache.get("key"))
+
     def test_in_memory_cache_returns_stored_values(self) -> None:
         cache = ResponseCache()
         cache.set("key", {"answer": "ok"})

@@ -10,6 +10,8 @@ from collections import OrderedDict
 from typing import Any
 
 from src.common.env_loader import env_bool
+from src.common.redis_client import connect as connect_redis
+from src.common.redis_client import redis_disabled
 
 DEFAULT_CACHE_TTL_SECONDS = 86400
 DEFAULT_CACHE_MAX_ENTRIES = 1000
@@ -103,11 +105,10 @@ class RedisResponseCache:
         enabled: bool = True,
         ttl_seconds: int = DEFAULT_CACHE_TTL_SECONDS,
     ) -> None:
-        import redis
-
         self.enabled = bool(enabled)
         self.ttl_seconds = max(1, int(ttl_seconds))
-        self.client = redis.from_url(redis_url)
+        # A slow Redis reply becomes a cache miss (below) instead of a hung answer.
+        self.client = connect_redis(redis_url)
 
     def get(self, key: str) -> dict[str, Any] | None:
         if not self.enabled:
@@ -145,23 +146,21 @@ def get_response_cache(
     """Create the configured Redis cache or the bounded in-process fallback."""
 
     require_redis = env_bool("STUDENT_RAG_REQUIRE_REDIS")
-    redis_disabled = env_bool("STUDENT_RAG_DISABLE_REDIS")
+    disabled = redis_disabled()
     redis_url = os.environ.get("REDIS_URL")
 
-    if require_redis and redis_disabled:
+    if require_redis and disabled:
         raise RuntimeError("Redis is required but disabled by STUDENT_RAG_DISABLE_REDIS")
     if require_redis and not redis_url:
         raise RuntimeError("Redis is required but REDIS_URL is not configured")
 
-    if redis_disabled:
+    if disabled:
         print("[Cache] Redis disabled by STUDENT_RAG_DISABLE_REDIS. Using in-memory cache.")
         return ResponseCache(enabled, ttl_seconds, max_entries)
 
     if redis_url:
         try:
-            import redis
-
-            redis.from_url(redis_url).ping()
+            connect_redis(redis_url).ping()
             print("[Cache] Connected to Redis. Using Redis-only caching.")
             return RedisResponseCache(redis_url, enabled, ttl_seconds)
         except Exception as e:

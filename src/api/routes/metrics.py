@@ -3,6 +3,9 @@ from typing import Any
 
 from fastapi import APIRouter, Query
 
+from src.common.redis_client import connect as connect_redis
+from src.common.redis_client import redis_disabled
+
 router = APIRouter(prefix="/api/metrics", tags=["metrics"])
 
 VISIT_TOTAL_KEY = "metrics:visits_total"
@@ -19,14 +22,14 @@ def get_redis_client():
         return _redis_client
 
     redis_url = os.environ.get("REDIS_URL")
-    if not redis_url:
+    # A developer machine sets STUDENT_RAG_DISABLE_REDIS so its page loads do
+    # not add to the public counter kept in the shared Redis.
+    if not redis_url or redis_disabled():
         _redis_client = False
         return _redis_client
 
     try:
-        import redis
-
-        _redis_client = redis.from_url(redis_url, decode_responses=True)
+        _redis_client = connect_redis(redis_url, decode_responses=True)
         _redis_client.ping()
     except Exception as e:
         print(f"[Metrics] Redis connection failed: {e}")
@@ -36,7 +39,7 @@ def get_redis_client():
 
 
 @router.get("/visits")
-async def get_visit_count(
+def get_visit_count(  # sync: FastAPI runs it off the event loop, so a slow Redis blocks only this request
     increment: bool = Query(False, description="Increment total visit counter"),
 ) -> dict[str, Any]:
     """Return the total frontend visit count, backed by Redis when available."""

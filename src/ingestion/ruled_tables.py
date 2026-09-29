@@ -13,7 +13,6 @@ break) is merged back into the row it started in.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 import fitz
 
@@ -24,9 +23,6 @@ RULE_TOLERANCE = 2.0
 class TableRow:
     cells: list[str]
     pages: list[int] = field(default_factory=list)
-
-    def as_dict(self) -> dict[str, Any]:
-        return {"cells": self.cells, "pages": self.pages}
 
 
 def _rules(page: fitz.Page) -> tuple[list[tuple[float, float, float]], list[tuple[float, float, float]]]:

@@ -1,10 +1,10 @@
 """Load the answer pipeline before the first student question arrives.
 
 The pipeline builds itself lazily, so on a fresh container the first request
-pays for the embedding model, the catalogs, the parent docstore and the
+pays for the catalogs, the parent docstore, the BM25 index and the
 Qdrant/MongoDB clients. Warming happens on a background thread rather than in
 the startup path: the container must answer ``/health`` immediately or the
-platform health check fails while the model is still loading.
+platform health check fails while the pipeline is still loading.
 
 Warm-up never fails the process. If a dependency is down at boot the first
 real request falls back to the lazy path, which is exactly today's behaviour.

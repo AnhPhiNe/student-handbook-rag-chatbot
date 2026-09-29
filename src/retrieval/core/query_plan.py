@@ -137,34 +137,6 @@ def _bare_article_reference(query: str) -> str | None:
     return match.group(1)
 
 
-def query_plan_json_schema() -> dict[str, Any]:
-    """Return a compact example of the planner payload, not a JSON Schema."""
-
-    tools = list(load_lookup_registry().get("tools", {}).keys())
-    cohorts = list(valid_cohorts())
-    return {
-        "schema_version": QUERY_PLAN_SCHEMA_VERSION,
-        "context_mode": "standalone|follow_up|ambiguous",
-        "normalized_query": "orthographic correction only or original query",
-        "standalone_query": "history-grounded query for follow_up or null",
-        "referenced_turns": [],
-        "out_of_domain": False,
-        "tasks": [
-            {
-                "id": "t1",
-                "question": "one self-contained student request",
-                "mode": "structured|rag|clarify",
-                "intent": "intent name",
-                "lookup_type": "|".join(tools) + "|null",
-                "slots": {},
-                "slot_spans": {},
-                "cohorts": cohorts,
-                "clarification_question": None,
-            }
-        ],
-    }
-
-
 def query_plan_response_schema() -> dict[str, Any]:
     """Return the shared, permissive QueryPlan JSON Schema."""
 

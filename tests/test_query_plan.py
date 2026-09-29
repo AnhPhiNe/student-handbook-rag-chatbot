@@ -15,7 +15,6 @@ from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.query_plan import (
     safe_rag_fallback_plan,
     normalize_query_plan,
-    query_plan_json_schema,
     query_plan_response_schema,
 )
 from src.retrieval.core.slang_normalizer import SlangNormalizer
@@ -1003,7 +1002,6 @@ def test_extended_cohort_registry_drives_schema_normalization_and_merging(
 
     assert cohort_module.normalize_cohort("k52+") == "K52"
     assert cohort_module.admission_years_for_cohort("K52") == (2026,)
-    assert "K52" in query_plan_json_schema()["tasks"][0]["cohorts"]
     assert "K52" in query_plan_response_schema()["properties"]["tasks"]["items"][
         "properties"
     ]["cohorts"]["items"]["enum"]

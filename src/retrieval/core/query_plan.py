@@ -348,6 +348,19 @@ def normalize_query_plan(
 ) -> tuple[dict[str, Any], list[str]]:
     """Validate a raw plan; the router supplies exactly the displayed history.
 
+    The checks run in this order, and the first that fails decides the plan:
+
+    1. `out_of_domain` that is not a boolean: safe RAG fallback.
+    2. A follow-up whose standalone text or turns are not in the visible
+       history: ask the student to restate the question.
+    3. A cohort that contradicts the admission year in the question, or a bare
+       "Điều N" with no document or topic: ask which one is meant.
+    4. Out of domain: no tasks, unless the question names a handbook topic
+       (then safe RAG).
+    5. Each task is normalized on its own (`_normalize_task`), so one bad task
+       does not invalidate its siblings. Identical lookups and per-cohort
+       copies are merged; more than MAX_QUERY_TASKS asks the student to choose.
+
     ``grounding_context`` remains available to trusted offline callers. Runtime
     callers pass ``visible_history`` so references and grounding share one view.
     Standalone/ambiguous plans never use either history source for grounding.
@@ -375,93 +388,41 @@ def normalize_query_plan(
     if context_mode not in {"standalone", "follow_up", "ambiguous"}:
         context_mode = "ambiguous"
     normalized_query = str(payload.get("normalized_query") or query).strip() or query
-    standalone_query = str(payload.get("standalone_query") or "").strip() or None
-    raw_references = payload.get("referenced_turns") or []
-    referenced_turns = list(dict.fromkeys(
-        value
-        for value in (raw_references if isinstance(raw_references, list) else [])
-        if isinstance(value, int) and not isinstance(value, bool) and value >= 0
-    ))
-    if context_mode != "follow_up":
-        standalone_query, referenced_turns, grounding_context = None, [], ""
-    elif visible_history is not None:
-        if (
-            not isinstance(payload.get("standalone_query"), str)
-            or not standalone_query
-            or not referenced_turns
-            or not isinstance(raw_references, list)
-            or any(
-                type(value) is not int or value not in visible_history
-                for value in raw_references
-            )
-        ):
-            errors = ["invalid_history_reference"]
-            return {
-                "schema_version": QUERY_PLAN_SCHEMA_VERSION,
-                "context_mode": "ambiguous",
-                "normalized_query": query,
-                "standalone_query": None,
-                "referenced_turns": [],
-                "out_of_domain": False,
-                "tasks": [_clarify_task(
-                    "t1", query,
-                    clarification="Bạn có thể nêu lại nội dung hoặc đối tượng đang muốn hỏi không?",
-                )],
-                "planner_fallback": "invalid_history_reference",
-                "planner_validation_errors": errors,
-            }, errors
-        grounding_context = "\n".join(visible_history[index] for index in referenced_turns)
+
+    history = _history_references(payload, context_mode, visible_history, grounding_context)
+    if history is None:
+        errors = ["invalid_history_reference"]
+        return _clarification_plan(
+            query,
+            "Bạn có thể nêu lại nội dung hoặc đối tượng đang muốn hỏi không?",
+            fallback="invalid_history_reference",
+            errors=errors,
+        ), errors
+    standalone_query, referenced_turns, grounding_context = history
+
     if conflict := _cohort_admission_year_conflict(query, selected_cohort):
         cohort, year = conflict
         expected_years = ", ".join(
             str(value) for value in admission_years_for_cohort(cohort)
         )
-        return {
-            "schema_version": QUERY_PLAN_SCHEMA_VERSION,
-            "context_mode": "ambiguous",
-            "normalized_query": query,
-            "standalone_query": None,
-            "referenced_turns": [],
-            "out_of_domain": False,
-            "tasks": [
-                _clarify_task(
-                    "t1",
-                    query,
-                    cohorts=[cohort],
-                    clarification=(
-                        f"Bạn đang nêu {cohort} nhưng năm tuyển sinh {year}; "
-                        f"theo dữ liệu khóa hiện có, {cohort} tương ứng năm "
-                        f"{expected_years}. Bạn muốn tra theo khóa hay theo năm "
-                        "tuyển sinh?"
-                    ),
-                )
-            ],
-            "planner_fallback": "cohort_admission_year_conflict",
-            "planner_validation_errors": [],
-        }, []
+        return _clarification_plan(
+            query,
+            f"Bạn đang nêu {cohort} nhưng năm tuyển sinh {year}; "
+            f"theo dữ liệu khóa hiện có, {cohort} tương ứng năm "
+            f"{expected_years}. Bạn muốn tra theo khóa hay theo năm "
+            "tuyển sinh?",
+            cohorts=[cohort],
+            fallback="cohort_admission_year_conflict",
+        ), []
     if article_number := _bare_article_reference(query):
         cohorts = [normalize_cohort(default_cohort)] if default_cohort else []
-        return {
-            "schema_version": QUERY_PLAN_SCHEMA_VERSION,
-            "context_mode": "ambiguous",
-            "normalized_query": query,
-            "standalone_query": None,
-            "referenced_turns": [],
-            "out_of_domain": False,
-            "tasks": [
-                _clarify_task(
-                    "t1",
-                    query,
-                    cohorts=[value for value in cohorts if value],
-                    clarification=(
-                        f"Bạn muốn hỏi Điều {article_number} của văn bản/quy chế nào, "
-                        "hoặc về chủ đề cụ thể nào?"
-                    ),
-                )
-            ],
-            "planner_fallback": "bare_article_requires_document_or_topic",
-            "planner_validation_errors": [],
-        }, []
+        return _clarification_plan(
+            query,
+            f"Bạn muốn hỏi Điều {article_number} của văn bản/quy chế nào, "
+            "hoặc về chủ đề cụ thể nào?",
+            cohorts=[value for value in cohorts if value],
+            fallback="bare_article_requires_document_or_topic",
+        ), []
     if out_of_domain and _has_handbook_domain_signal(query):
         return safe_rag_fallback_plan(
             query,
@@ -555,6 +516,77 @@ def normalize_query_plan(
     return plan, errors
 
 
+def _history_references(
+    payload: dict[str, Any],
+    context_mode: str,
+    visible_history: dict[int, str] | None,
+    grounding_context: str,
+) -> tuple[str | None, list[int], str] | None:
+    """The standalone text, referenced turns and grounding text of a follow-up.
+
+    Only a follow-up keeps them. With the visible history supplied (the
+    runtime), the planner must give a standalone text and reference only turns
+    the student can see; the grounding text is then those turns. Returns
+    None when a follow-up breaks that rule.
+    """
+    standalone_query = str(payload.get("standalone_query") or "").strip() or None
+    raw_references = payload.get("referenced_turns") or []
+    referenced_turns = list(dict.fromkeys(
+        value
+        for value in (raw_references if isinstance(raw_references, list) else [])
+        if isinstance(value, int) and not isinstance(value, bool) and value >= 0
+    ))
+    if context_mode != "follow_up":
+        return None, [], ""
+    if visible_history is None:
+        return standalone_query, referenced_turns, grounding_context
+    if (
+        not isinstance(payload.get("standalone_query"), str)
+        or not standalone_query
+        or not referenced_turns
+        or not isinstance(raw_references, list)
+        or any(
+            type(value) is not int or value not in visible_history
+            for value in raw_references
+        )
+    ):
+        return None
+    return (
+        standalone_query,
+        referenced_turns,
+        "\n".join(visible_history[index] for index in referenced_turns),
+    )
+
+
+def _clarification_plan(
+    query: str,
+    clarification: str,
+    *,
+    fallback: str | None,
+    cohorts: list[str] | None = None,
+    errors: list[str] | None = None,
+    task_errors: list[str] | None = None,
+) -> dict[str, Any]:
+    """A plan whose only task asks the student one clarifying question."""
+    return {
+        "schema_version": QUERY_PLAN_SCHEMA_VERSION,
+        "context_mode": "ambiguous",
+        "normalized_query": query,
+        "standalone_query": None,
+        "referenced_turns": [],
+        "out_of_domain": False,
+        "tasks": [_clarify_task(
+            "t1",
+            query,
+            cohorts=cohorts,
+            clarification=clarification,
+            validation_errors=task_errors,
+        )],
+        "planner_fallback": fallback,
+        "planner_validation_errors": errors if errors is not None else [],
+    }
+
+
 def _normalize_task(
     raw_task: dict[str, Any],
     *,
@@ -567,9 +599,12 @@ def _normalize_task(
 ) -> tuple[dict[str, Any], list[str]]:
     """Normalize and validate one planner task without invalidating siblings.
 
-    Invalid structured inputs are narrowed to clarification when user data is
-    missing, or downgraded to regulation RAG when the structured contract is
-    unsafe. The returned errors remain available for planner observability.
+    A clarify or RAG task is kept as such (a RAG task with no cohort covers
+    every cohort). A structured task with an unknown lookup asks what to look
+    up; one that is valid runs as a lookup; one that lacks only the student's
+    own inputs asks for them; any other contract error degrades that task to
+    regulation RAG. The returned errors remain available for planner
+    observability.
     """
 
     mode = str(raw_task.get("mode") or "").strip().lower()
@@ -578,64 +613,17 @@ def _normalize_task(
     if mode not in ALLOWED_TASK_MODES:
         mode = "rag"
         errors.append("invalid_mode")
-
-    raw_cohorts = raw_task.get("cohorts")
-    cohorts = []
-    supported_cohort_order = valid_cohorts()
-    supported_cohorts = set(supported_cohort_order)
-    if isinstance(raw_cohorts, list):
-        cohorts = [normalize_cohort(value) for value in raw_cohorts]
-        invalid_cohorts = [
-            value for value in cohorts if value and value not in supported_cohorts
-        ]
-        if invalid_cohorts:
-            errors.append("invalid_cohort")
-        cohorts = [value for value in cohorts if value in supported_cohorts]
-    cohorts = list(dict.fromkeys(cohorts))
-    fallback_cohort = normalize_cohort(selected_cohort)
-    if fallback_cohort not in supported_cohorts:
-        fallback_cohort = None
-    task_question_cohorts = [
-        normalized
-        for value in extract_cohorts_from_query(question)
-        if (normalized := normalize_cohort(value)) in supported_cohorts
-    ]
-    if fallback_cohorts is None:
-        fallback_cohorts = [fallback_cohort] if fallback_cohort else []
-    else:
-        fallback_cohorts = [
-            cohort for cohort in fallback_cohorts if cohort in supported_cohorts
-        ]
-    if not cohorts:
-        task_fallback_cohorts = task_question_cohorts or fallback_cohorts
-        if task_fallback_cohorts:
-            cohorts = list(dict.fromkeys(task_fallback_cohorts))
+    cohorts, invalid_cohort = _task_cohorts(
+        raw_task, question, selected_cohort, fallback_cohorts,
+    )
+    if invalid_cohort:
+        errors.append("invalid_cohort")
 
     lookup_type = raw_task.get("lookup_type")
     lookup_type = str(lookup_type).strip().lower() if lookup_type else None
     intent = str(raw_task.get("intent") or "open_question").strip().lower()
     clarification = str(raw_task.get("clarification_question") or "").strip() or None
-    normalization_warnings: list[str] = []
-    slots = (
-        dict(raw_task.get("slots")) if isinstance(raw_task.get("slots"), dict) else {}
-    )
-    # Strict structured output must serialize every declared key. Its nullable
-    # placeholders mean absent inputs, never selector values for the executor.
-    # Keep unknown keys (even null) so the contract validator can reject them.
-    declared_slots = (registry.get("tools", {}).get(lookup_type) or {}).get("slot_schema", {})
-    slots = {key: value for key, value in slots.items()
-             if value is not None or key not in declared_slots}
-    raw_spans = (
-        dict(raw_task.get("slot_spans"))
-        if isinstance(raw_task.get("slot_spans"), dict)
-        else {}
-    )
-    spans = {
-        key: value
-        for key, raw_value in raw_spans.items()
-        if (value := _normalize_span_value(raw_value, original_query))
-        not in (None, "", [])
-    }
+    slots, spans = _task_slots_and_spans(raw_task, lookup_type, registry, original_query)
 
     if mode == "structured" and intent == "compare":
         intent = _structured_lookup_intent(
@@ -661,24 +649,7 @@ def _normalize_task(
     if mode == "rag":
         if lookup_type:
             errors.append("rag_must_not_select_lookup")
-        # A regulation question without an explicit/UI cohort is applicable to
-        # every supported handbook edition. Keep one logical task and let the
-        # executor retrieve independently per cohort, matching the multi-cohort
-        # execution contract instead of using one biased global top-k pool.
-        if not cohorts:
-            cohorts = list(supported_cohort_order)
-        return {
-            "id": task_id,
-            "question": question,
-            "mode": "rag",
-            "intent": "open_question",
-            "lookup_type": None,
-            "slots": {},
-            "slot_spans": {},
-            "cohorts": cohorts,
-            "clarification_question": None,
-            "validation_errors": errors.copy(),
-        }, errors
+        return _rag_task(task_id, question, cohorts, errors), errors
 
     if lookup_type not in registry.get("tools", {}):
         errors.append("unknown_lookup_type")
@@ -690,6 +661,151 @@ def _normalize_task(
             validation_errors=errors,
         ), errors
 
+    return _normalize_structured_task(
+        task_id,
+        question,
+        lookup_type=lookup_type,
+        intent=intent,
+        slots=slots,
+        spans=spans,
+        cohorts=cohorts,
+        selected_cohort=selected_cohort,
+        clarification=clarification,
+        original_query=original_query,
+        grounding_context=grounding_context,
+        registry=registry,
+        errors=errors,
+    )
+
+
+def _task_cohorts(
+    raw_task: dict[str, Any],
+    question: str,
+    selected_cohort: str | None,
+    fallback_cohorts: list[str] | None,
+) -> tuple[list[str], bool]:
+    """The task's supported cohorts, and whether the planner named an unsupported one.
+
+    Without a valid cohort from the planner, the cohorts named in the task's
+    own question are used, then the plan's fallback cohorts.
+    """
+    supported_cohorts = set(valid_cohorts())
+    raw_cohorts = raw_task.get("cohorts")
+    cohorts = []
+    invalid_cohort = False
+    if isinstance(raw_cohorts, list):
+        cohorts = [normalize_cohort(value) for value in raw_cohorts]
+        invalid_cohort = any(value and value not in supported_cohorts for value in cohorts)
+        cohorts = [value for value in cohorts if value in supported_cohorts]
+    cohorts = list(dict.fromkeys(cohorts))
+    if cohorts:
+        return cohorts, invalid_cohort
+    fallback_cohort = normalize_cohort(selected_cohort)
+    if fallback_cohort not in supported_cohorts:
+        fallback_cohort = None
+    task_question_cohorts = [
+        normalized
+        for value in extract_cohorts_from_query(question)
+        if (normalized := normalize_cohort(value)) in supported_cohorts
+    ]
+    if fallback_cohorts is None:
+        fallback_cohorts = [fallback_cohort] if fallback_cohort else []
+    else:
+        fallback_cohorts = [
+            cohort for cohort in fallback_cohorts if cohort in supported_cohorts
+        ]
+    return list(dict.fromkeys(task_question_cohorts or fallback_cohorts)), invalid_cohort
+
+
+def _task_slots_and_spans(
+    raw_task: dict[str, Any],
+    lookup_type: str | None,
+    registry: dict[str, Any],
+    original_query: str,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    slots = (
+        dict(raw_task.get("slots")) if isinstance(raw_task.get("slots"), dict) else {}
+    )
+    # Strict structured output must serialize every declared key. Its nullable
+    # placeholders mean absent inputs, never selector values for the executor.
+    # Keep unknown keys (even null) so the contract validator can reject them.
+    declared_slots = (registry.get("tools", {}).get(lookup_type) or {}).get("slot_schema", {})
+    slots = {key: value for key, value in slots.items()
+             if value is not None or key not in declared_slots}
+    raw_spans = (
+        dict(raw_task.get("slot_spans"))
+        if isinstance(raw_task.get("slot_spans"), dict)
+        else {}
+    )
+    spans = {
+        key: value
+        for key, raw_value in raw_spans.items()
+        if (value := _normalize_span_value(raw_value, original_query))
+        not in (None, "", [])
+    }
+    return slots, spans
+
+
+def _rag_task(
+    task_id: str,
+    question: str,
+    cohorts: list[str],
+    errors: list[str],
+    normalization_warnings: list[str] | None = None,
+) -> dict[str, Any]:
+    """A regulation RAG task.
+
+    A regulation question without an explicit/UI cohort is applicable to every
+    supported handbook edition. Keep one logical task and let the executor
+    retrieve independently per cohort, matching the multi-cohort execution
+    contract instead of using one biased global top-k pool.
+    """
+    return {
+        "id": task_id,
+        "question": question,
+        "mode": "rag",
+        "intent": "open_question",
+        "lookup_type": None,
+        "slots": {},
+        "slot_spans": {},
+        "cohorts": cohorts or list(valid_cohorts()),
+        "clarification_question": None,
+        "validation_errors": errors.copy(),
+        **(
+            {"normalization_warnings": normalization_warnings}
+            if normalization_warnings
+            else {}
+        ),
+    }
+
+
+_SLOT_PROBLEMS = (
+    "missing_slot_span",
+    "ungrounded_slot",
+    "misgrounded_slot",
+    "invalid_slot_type",
+    "invalid_slot_value",
+    "slot_span_mismatch",
+)
+
+
+def _normalize_structured_task(
+    task_id: str,
+    question: str,
+    *,
+    lookup_type: str,
+    intent: str,
+    slots: dict[str, Any],
+    spans: dict[str, Any],
+    cohorts: list[str],
+    selected_cohort: str | None,
+    clarification: str | None,
+    original_query: str,
+    grounding_context: str,
+    registry: dict[str, Any],
+    errors: list[str],
+) -> tuple[dict[str, Any], list[str]]:
+    """Validate a structured task against its lookup contract and the question."""
     task_cohort = cohorts[0] if cohorts else normalize_cohort(selected_cohort)
     # Prepare only values/spans supplied by this task. Validate against the
     # complete user query so a task-local paraphrase cannot introduce factual
@@ -703,91 +819,37 @@ def _normalize_task(
         cohort=task_cohort,
         registry=registry,
     )
-    validation_errors = validate_structured_task(
-        decision,
+    validate = partial(
+        validate_structured_task,
         query=original_query,
         grounding_context=grounding_context,
         registry=registry,
     )
+    validation_errors = validate(decision)
     spec = registry.get("tools", {}).get(lookup_type, {})
     required_slots = set(
         (spec.get("required_slots") or {}).get(decision.get("intent"), [])
     )
-    slot_schema = spec.get("slot_schema") or {}
-    optional_invalid = {
-        error.partition(":")[2]
-        for error in validation_errors
-        if error.startswith(
-            (
-                "missing_slot_span:",
-                "ungrounded_slot:",
-                "misgrounded_slot:",
-                "invalid_slot_type:",
-                "invalid_slot_value:",
-                "slot_span_mismatch:",
-                "unknown_slot:",
-                "unknown_slot_span:",
-            )
-        )
-        and error.partition(":")[2] not in required_slots
-        and (
-            spec.get("selection_mode") == "table_first"
-            or str(
-                (slot_schema.get(error.partition(":")[2]) or {}).get(
-                    "verification_role"
-                )
-            )
-            == "directory_entity"
-        )
-    }
-    if optional_invalid:
-        normalization_warnings = list(
-            dict.fromkeys(
-                error
-                for error in validation_errors
-                if error.partition(":")[2] in optional_invalid
-            )
-        )
-        # Invalid optional hints cannot determine execution. Table-first tasks
-        # keep their complete table; directory tasks let the catalog matcher
-        # consume the trusted task-local question.
-        decision["slots"] = {
-            key: value
-            for key, value in (decision.get("slots") or {}).items()
-            if key not in optional_invalid
-        }
-        decision["slot_spans"] = {
-            key: value
-            for key, value in (decision.get("slot_spans") or {}).items()
-            if key not in optional_invalid
-        }
-        validation_errors = validate_structured_task(
-            decision,
-            query=original_query,
-            grounding_context=grounding_context,
-            registry=registry,
-        )
+    normalization_warnings = _drop_invalid_optional_slots(
+        decision, validation_errors, spec=spec, required_slots=required_slots,
+    )
+    if normalization_warnings:
+        validation_errors = validate(decision)
     if validation_errors:
         errors.extend(validation_errors)
-        clarification_errors = {
+        # Ask only when every error is a required input the student has not
+        # given (or the cohort). The set is compared with the list, so a
+        # repeated error also leads to RAG, as it always has.
+        missing_student_input = {
             error
             for error in validation_errors
             if error == "missing_cohort"
             or (
-                error.partition(":")[0]
-                in {
-                    "missing_slot",
-                    "missing_slot_span",
-                    "ungrounded_slot",
-                    "misgrounded_slot",
-                    "invalid_slot_type",
-                    "invalid_slot_value",
-                    "slot_span_mismatch",
-                }
+                error.partition(":")[0] in {"missing_slot", *_SLOT_PROBLEMS}
                 and error.partition(":")[2] in required_slots
             )
         }
-        if len(clarification_errors) == len(validation_errors):
+        if len(missing_student_input) == len(validation_errors):
             return _clarify_task(
                 task_id,
                 question,
@@ -801,25 +863,7 @@ def _normalize_task(
         # A structured task must never reach the executor with unresolved
         # contract errors. Preserve sibling tasks by degrading only this task
         # to regulation RAG instead of invalidating the complete plan.
-        if not cohorts:
-            cohorts = list(supported_cohort_order)
-        return {
-            "id": task_id,
-            "question": question,
-            "mode": "rag",
-            "intent": "open_question",
-            "lookup_type": None,
-            "slots": {},
-            "slot_spans": {},
-            "cohorts": cohorts,
-            "clarification_question": None,
-            "validation_errors": errors.copy(),
-            **(
-                {"normalization_warnings": normalization_warnings}
-                if normalization_warnings
-                else {}
-            ),
-        }, errors
+        return _rag_task(task_id, question, cohorts, errors, normalization_warnings), errors
 
     return {
         "id": task_id,
@@ -838,6 +882,58 @@ def _normalize_task(
             else {}
         ),
     }, errors
+
+
+def _drop_invalid_optional_slots(
+    decision: dict[str, Any],
+    validation_errors: list[str],
+    *,
+    spec: dict[str, Any],
+    required_slots: set[str],
+) -> list[str]:
+    """Remove optional slots that failed validation; return their errors as warnings.
+
+    Invalid optional hints cannot determine execution. Table-first tasks keep
+    their complete table; directory tasks let the catalog matcher consume the
+    trusted task-local question. Required slots are never dropped.
+    """
+    slot_schema = spec.get("slot_schema") or {}
+    optional_invalid = {
+        error.partition(":")[2]
+        for error in validation_errors
+        if error.startswith(
+            tuple(f"{problem}:" for problem in _SLOT_PROBLEMS) + ("unknown_slot:", "unknown_slot_span:")
+        )
+        and error.partition(":")[2] not in required_slots
+        and (
+            spec.get("selection_mode") == "table_first"
+            or str(
+                (slot_schema.get(error.partition(":")[2]) or {}).get(
+                    "verification_role"
+                )
+            )
+            == "directory_entity"
+        )
+    }
+    if not optional_invalid:
+        return []
+    decision["slots"] = {
+        key: value
+        for key, value in (decision.get("slots") or {}).items()
+        if key not in optional_invalid
+    }
+    decision["slot_spans"] = {
+        key: value
+        for key, value in (decision.get("slot_spans") or {}).items()
+        if key not in optional_invalid
+    }
+    return list(
+        dict.fromkeys(
+            error
+            for error in validation_errors
+            if error.partition(":")[2] in optional_invalid
+        )
+    )
 
 
 def _structured_lookup_intent(
@@ -1007,25 +1103,12 @@ def _merge_cohort_variant_tasks(tasks: list[dict[str, Any]]) -> list[dict[str, A
 
 def _too_many_tasks_plan(query: str, cohort: str | None) -> dict[str, Any]:
     normalized_cohort = normalize_cohort(cohort)
-    return {
-        "schema_version": QUERY_PLAN_SCHEMA_VERSION,
-        "context_mode": "ambiguous",
-        "normalized_query": query,
-        "standalone_query": None,
-        "referenced_turns": [],
-        "out_of_domain": False,
-        "tasks": [
-            _clarify_task(
-                "t1",
-                query,
-                cohorts=[normalized_cohort] if normalized_cohort else [],
-                clarification=(
-                    "Câu hỏi đang có nhiều hơn ba yêu cầu độc lập. "
-                    "Bạn có thể chọn tối đa ba nội dung cần tra trước không?"
-                ),
-                validation_errors=["too_many_tasks"],
-            )
-        ],
-        "planner_fallback": None,
-        "planner_validation_errors": ["too_many_tasks"],
-    }
+    return _clarification_plan(
+        query,
+        "Câu hỏi đang có nhiều hơn ba yêu cầu độc lập. "
+        "Bạn có thể chọn tối đa ba nội dung cần tra trước không?",
+        cohorts=[normalized_cohort] if normalized_cohort else [],
+        fallback=None,
+        errors=["too_many_tasks"],
+        task_errors=["too_many_tasks"],
+    )

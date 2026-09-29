@@ -567,264 +567,6 @@ def _has_multiple_result_choices(
     return False
 
 
-def _resolve_single_lookup(
-    lookup_type: str,
-    *,
-    task: dict[str, Any],
-    query: str,
-    effective_cohort: str | None,
-    formula_rules: list[dict[str, Any]],
-    office_directory: list[dict[str, Any]],
-    student_service_directory: list[dict[str, Any]],
-    student_faculty_profiles: list[dict[str, Any]] | None,
-    structured_tables_registry: list[dict[str, Any]],
-    program_directory: list[dict[str, Any]],
-    directory_selector: DirectorySelector | None = None,
-) -> StructuredResolution | None:
-    """Dispatch one validated lookup and package only grounded results.
-
-    A ``None`` return leaves the caller free to use its existing RAG fallback;
-    ambiguous directory matches instead return an explicit clarification result.
-    """
-
-    # The dispatcher executes only the normalized runtime payload. Missing and
-    # explicitly empty mappings are both authoritative.
-    slots = task.get("slots") or {}
-    if not isinstance(slots, dict):
-        slots = {}
-
-    if lookup_type in _REFERENCE_TABLE_TYPES:
-        resolution_slots = slots
-        if lookup_type == "scoring" and slots.get("score_or_grade") is not None:
-            operands = slots["score_or_grade"]
-            values = operands if isinstance(operands, list) else [operands]
-            grounded_values = []
-            for value in values:
-                if parse_score(value) is None:
-                    grounded_values.append(value)
-                    continue
-                score = grounded_score(
-                    value, (task.get("slot_spans") or {}).get("score_or_grade"), query,
-                )
-                if score is None:
-                    grounded_values = []
-                    break
-                grounded_values.append(
-                    f"{score.value}/{score.scale}" if score.scale is not None else str(score.value)
-                )
-            # Keep tables as evidence, but never calculate rows from ungrounded
-            # values or discard a denominator present in the original task.
-            resolution_slots = (
-                {**slots, "score_or_grade": grounded_values
-                 if isinstance(operands, list) else grounded_values[0]}
-                if grounded_values else {}
-            )
-        candidates = _select_reference_tables(lookup_type, slots, [
-            table for table in structured_tables_registry
-            if table.get("data_category") == "regulation_table"
-            and table.get("table_type") in _REFERENCE_TABLE_TYPES[lookup_type]
-            and is_validated_source_applicable(table, effective_cohort)
-            and isinstance(table.get("rows"), list) and table["rows"]
-        ])
-        result = _reference_table_lookup(
-            lookup_type,
-            query=query,
-            candidates=candidates,
-            cohort=effective_cohort,
-            slots=resolution_slots,
-        )
-        # Keep the complete reference table for UI rendering, but expose a
-        # deterministic fact lock when an existing domain resolver identifies
-        # exactly one row. Ungrounded, invalid, or non-unique lookups stay unlocked.
-        fact_lock_errors = validate_fact_lock_inputs(task, query=query)
-        if (
-            result is not None
-            and not result.get("needs_clarification")
-            and not fact_lock_errors
-        ):
-            resolved_result = _unique_reference_resolution(
-                lookup_type,
-                query=query,
-                slots=resolution_slots,
-                cohort=effective_cohort,
-                selected_tables=candidates,
-            )
-            if resolved_result is not None:
-                source = candidates[0]
-                resolved_result = {
-                    **resolved_result,
-                    "cohort": effective_cohort,
-                    "source_cohort": source.get("source_cohort") or source.get("cohort"),
-                    "table_id": source.get("table_id"),
-                    "source_parent_id": source.get("source_parent_id") or source.get("source_section_id"),
-                }
-                result = dict(result)
-                result["resolved_result"] = resolved_result
-        # A planner-supplied request for missing information is not a resolved
-        # lookup merely because a reference table can be displayed. Do not
-        # infer personal intent from keywords or make list requests clarify.
-        clarification = task.get("clarification_question")
-        if (result is not None and not result.get("needs_clarification")
-                and not result.get("resolved_result")
-                and task.get("intent") == "direct_value"
-                and isinstance(clarification, str) and clarification.strip()):
-            result = {
-                "lookup_type": lookup_type, "cohort": effective_cohort,
-                "needs_clarification": True,
-                "clarification_question": clarification.strip(),
-                "content_type": "structured_lookup_clarification",
-            }
-        return _resolution(
-            lookup_type,
-            "reference_table_lookup",
-            result,
-            result_kind=(
-                "clarification"
-                if result and result.get("needs_clarification")
-                else "structured"
-            ),
-            target_chunk_types=["structured_lookup"],
-        )
-
-    if lookup_type in {"student_service", "office", "faculty"}:
-        candidate_slot = {
-            "student_service": "service",
-            "office": "office",
-            "faculty": "faculty",
-        }[lookup_type]
-        candidate_text = (
-            _slot_value(task, candidate_slot, "faculty", "office", "program_or_faculty")
-            or query
-        )
-        directory = {
-            "student_service": student_service_directory,
-            "office": office_directory,
-            "faculty": student_faculty_profiles or [],
-        }[lookup_type]
-
-        result = office_lookup(
-            query,
-            directory,
-            candidate_text=candidate_text,
-            lookup_type=lookup_type,
-            cohort=effective_cohort,
-            selector=directory_selector,
-        )
-        if result is not None and result.get("resolution_status") in {"ambiguous", "unresolved"}:
-            options = result.get("clarification_options") or []
-            if options:
-                result["clarification_question"] = (
-                    "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n"
-                    + "\n".join(options)
-                )
-            else:
-                result["clarification_question"] = (
-                    f"Mình chưa xác định được đơn vị ứng với \"{result.get('candidate_text')}\". "
-                    "Bạn ghi rõ tên đơn vị hoặc việc cần hỗ trợ giúp mình nhé."
-                )
-            return _resolution(
-                lookup_type,
-                "office_lookup_clarification",
-                result,
-                result_kind="clarification",
-                target_chunk_types=[],
-            )
-        requested_field = slots.get("requested_field") or ""
-        # A grounded directory record remains valid structured evidence even
-        # when it does not contain the optional field requested by the user.
-        # The Composer receives the record and must state that the available
-        # evidence does not provide that field instead of inventing a value.
-        if result is not None:
-            result["requested_field"] = (
-                list(requested_field) if isinstance(requested_field, list)
-                else str(requested_field)
-            )
-            result = resolve_relationship(
-                result, source_lookup=lookup_type,
-                requested_field=requested_field, cohort=effective_cohort,
-                relationships=_RELATIONSHIPS,
-                catalogs={
-                    "student_service": student_service_directory,
-                    "office": office_directory,
-                    "faculty": student_faculty_profiles or [],
-                },
-            )
-        strategies = {
-            "student_service": "student_service_lookup",
-            "office": "office_lookup",
-            "faculty": "faculty_lookup",
-        }
-        target_content_types = {
-            "student_service": ["student_service_directory", "student_office_profile"],
-            "office": ["student_office_profile"],
-            "faculty": ["student_faculty_profile"],
-        }
-        return _resolution(
-            lookup_type,
-            strategies[lookup_type],
-            result,
-            result_kind="clarification" if result and result.get("needs_clarification") else "structured",
-            target_chunk_types=target_content_types.get(
-                lookup_type, ["student_office_profile"]
-            ),
-        )
-
-    if lookup_type == "program":
-        candidate_text = _slot_value(task, "program_or_faculty") or query
-        intent = task.get("intent")
-        scope = str(slots.get("scope") or "school")
-        requested_field = slots.get("requested_field") or ""
-        requested = set(requested_field) if isinstance(requested_field, list) else {str(requested_field)}
-        if "faculty" in requested or requested & {"email", "phone", "website", "office", "all"}:
-            action = "resolve_faculty"
-        elif intent == "exists" or "exists" in requested:
-            action = "exists"
-        elif intent == "list_items" or "programs" in requested:
-            action = "list"
-        else:
-            action = "resolve_faculty"
-        result = program_lookup(
-            program_directory,
-            candidate_text=candidate_text,
-            cohort=effective_cohort,
-            action=action,
-            scope=scope,
-            selector=directory_selector,
-        )
-        if result is not None:
-            result = resolve_relationship(
-                result, source_lookup="program", requested_field=requested_field,
-                cohort=effective_cohort, relationships=_RELATIONSHIPS,
-                catalogs={"faculty": student_faculty_profiles or [],
-                          "program": program_directory},
-            )
-        return _resolution(
-            lookup_type, "program_lookup", result,
-            result_kind="clarification" if result and result.get("needs_clarification") else "structured",
-        )
-
-    if lookup_type == "formula":
-        result = formula_lookup(
-            query,
-            formula_rules,
-            cohort=effective_cohort,
-            slots=slots,
-        )
-        result = _bind_formula_source(
-            result,
-            structured_tables_registry,
-            cohort=effective_cohort,
-        )
-        return _resolution(
-            lookup_type,
-            "formula_lookup",
-            result,
-            result_kind="formula",
-        )
-
-    return None
-
-
 def resolve_structured_task(
     task: dict[str, Any],
     *,
@@ -838,25 +580,289 @@ def resolve_structured_task(
     program_directory: list[dict[str, Any]],
     directory_selector: DirectorySelector | None = None,
 ) -> StructuredResolution | None:
-    """Dispatch a validated structured task to its lookup handler."""
+    """Run one validated structured task with the resolver for its lookup family.
+
+    Four families: reference tables (scoring, scholarship, foreign language,
+    study duration and the other regulation tables), directories (student
+    services, offices, faculties), the program catalog, and formulas. A
+    ``None`` return leaves the caller free to use its RAG fallback; ambiguous
+    directory matches instead return an explicit clarification result.
+    """
 
     lookup_type = str(task.get("lookup_type") or "").strip()
+    if not lookup_type:
+        return None
     effective_cohort = normalize_cohort(cohort or task.get("cohort"))
+    # The dispatcher executes only the normalized runtime payload. Missing and
+    # explicitly empty mappings are both authoritative.
+    slots = task.get("slots") or {}
+    if not isinstance(slots, dict):
+        slots = {}
 
-    lookup_kwargs = {
-        "task": task,
-        "query": query,
-        "effective_cohort": effective_cohort,
-        "formula_rules": formula_rules,
-        "office_directory": office_directory,
-        "student_service_directory": student_service_directory,
-        "student_faculty_profiles": student_faculty_profiles,
-        "structured_tables_registry": structured_tables_registry,
-        "program_directory": program_directory,
-        "directory_selector": directory_selector,
+    if lookup_type in _REFERENCE_TABLE_TYPES:
+        return _resolve_reference_table(
+            lookup_type, task, slots, query=query, cohort=effective_cohort,
+            structured_tables_registry=structured_tables_registry,
+        )
+    directories = {
+        "student_service": student_service_directory,
+        "office": office_directory,
+        "faculty": student_faculty_profiles or [],
     }
+    if lookup_type in directories:
+        return _resolve_directory(
+            lookup_type, task, slots, query=query, cohort=effective_cohort,
+            directories=directories, directory_selector=directory_selector,
+        )
+    if lookup_type == "program":
+        return _resolve_program(
+            task, slots, query=query, cohort=effective_cohort,
+            program_directory=program_directory,
+            faculty_profiles=student_faculty_profiles or [],
+            directory_selector=directory_selector,
+        )
+    if lookup_type == "formula":
+        result = formula_lookup(query, formula_rules, cohort=effective_cohort, slots=slots)
+        result = _bind_formula_source(result, structured_tables_registry, cohort=effective_cohort)
+        return _resolution(lookup_type, "formula_lookup", result, result_kind="formula")
+    return None
 
-    return _resolve_single_lookup(lookup_type, **lookup_kwargs) if lookup_type else None
+
+def _resolve_reference_table(
+    lookup_type: str,
+    task: dict[str, Any],
+    slots: dict[str, Any],
+    *,
+    query: str,
+    cohort: str | None,
+    structured_tables_registry: list[dict[str, Any]],
+) -> StructuredResolution | None:
+    """Return every applicable reference table, and pin a row when exactly one fits.
+
+    The composer always receives the complete tables. When the task's values
+    are grounded in the question and select exactly one row, that row is also
+    attached as `resolved_result` (the fact lock), and the answer must state it.
+    """
+    resolution_slots = _grounded_resolution_slots(task, slots, query) if lookup_type == "scoring" else slots
+    candidates = _select_reference_tables(lookup_type, slots, [
+        table for table in structured_tables_registry
+        if table.get("data_category") == "regulation_table"
+        and table.get("table_type") in _REFERENCE_TABLE_TYPES[lookup_type]
+        and is_validated_source_applicable(table, cohort)
+        and isinstance(table.get("rows"), list) and table["rows"]
+    ])
+    result = _reference_table_lookup(
+        lookup_type,
+        query=query,
+        candidates=candidates,
+        cohort=cohort,
+        slots=resolution_slots,
+    )
+    # Keep the complete reference table for UI rendering, but expose a
+    # deterministic fact lock when an existing domain resolver identifies
+    # exactly one row. Ungrounded, invalid, or non-unique lookups stay unlocked.
+    if (
+        result is not None
+        and not result.get("needs_clarification")
+        and not validate_fact_lock_inputs(task, query=query)
+    ):
+        resolved_result = _unique_reference_resolution(
+            lookup_type,
+            query=query,
+            slots=resolution_slots,
+            cohort=cohort,
+            selected_tables=candidates,
+        )
+        if resolved_result is not None:
+            source = candidates[0]
+            result = dict(result)
+            result["resolved_result"] = {
+                **resolved_result,
+                "cohort": cohort,
+                "source_cohort": source.get("source_cohort") or source.get("cohort"),
+                "table_id": source.get("table_id"),
+                "source_parent_id": source.get("source_parent_id") or source.get("source_section_id"),
+            }
+    # A planner-supplied request for missing information is not a resolved
+    # lookup merely because a reference table can be displayed. Do not
+    # infer personal intent from keywords or make list requests clarify.
+    clarification = task.get("clarification_question")
+    if (result is not None and not result.get("needs_clarification")
+            and not result.get("resolved_result")
+            and task.get("intent") == "direct_value"
+            and isinstance(clarification, str) and clarification.strip()):
+        result = {
+            "lookup_type": lookup_type, "cohort": cohort,
+            "needs_clarification": True,
+            "clarification_question": clarification.strip(),
+            "content_type": "structured_lookup_clarification",
+        }
+    return _resolution(
+        lookup_type,
+        "reference_table_lookup",
+        result,
+        result_kind=_result_kind(result),
+        target_chunk_types=["structured_lookup"],
+    )
+
+
+def _grounded_resolution_slots(
+    task: dict[str, Any],
+    slots: dict[str, Any],
+    query: str,
+) -> dict[str, Any]:
+    """The scoring slots a row may be computed from: operands grounded in the question.
+
+    Each numeric score must appear in the question (with its scale, e.g.
+    "3,6/4", when the student wrote one). If any does not, no slots are
+    returned: the tables are still shown as evidence but no row is computed.
+    """
+    if slots.get("score_or_grade") is None:
+        return slots
+    operands = slots["score_or_grade"]
+    values = operands if isinstance(operands, list) else [operands]
+    grounded_values = []
+    for value in values:
+        if parse_score(value) is None:
+            grounded_values.append(value)
+            continue
+        score = grounded_score(
+            value, (task.get("slot_spans") or {}).get("score_or_grade"), query,
+        )
+        if score is None:
+            return {}
+        grounded_values.append(
+            f"{score.value}/{score.scale}" if score.scale is not None else str(score.value)
+        )
+    if not grounded_values:
+        return {}
+    # Never discard a denominator present in the original task.
+    return {**slots, "score_or_grade": grounded_values if isinstance(operands, list) else grounded_values[0]}
+
+
+_DIRECTORY_CANDIDATE_SLOT = {"student_service": "service", "office": "office", "faculty": "faculty"}
+_DIRECTORY_STRATEGY = {
+    "student_service": "student_service_lookup",
+    "office": "office_lookup",
+    "faculty": "faculty_lookup",
+}
+_DIRECTORY_CONTENT_TYPES = {
+    "student_service": ["student_service_directory", "student_office_profile"],
+    "office": ["student_office_profile"],
+    "faculty": ["student_faculty_profile"],
+}
+
+
+def _resolve_directory(
+    lookup_type: str,
+    task: dict[str, Any],
+    slots: dict[str, Any],
+    *,
+    query: str,
+    cohort: str | None,
+    directories: dict[str, list[dict[str, Any]]],
+    directory_selector: DirectorySelector | None,
+) -> StructuredResolution | None:
+    """Find the service, office or faculty the student names; ask when it is unclear."""
+    candidate_text = (
+        _slot_value(task, _DIRECTORY_CANDIDATE_SLOT[lookup_type], "faculty", "office", "program_or_faculty")
+        or query
+    )
+    result = office_lookup(
+        query,
+        directories[lookup_type],
+        candidate_text=candidate_text,
+        lookup_type=lookup_type,
+        cohort=cohort,
+        selector=directory_selector,
+    )
+    if result is not None and result.get("resolution_status") in {"ambiguous", "unresolved"}:
+        options = result.get("clarification_options") or []
+        if options:
+            result["clarification_question"] = (
+                "Câu hỏi của bạn liên quan đến nhiều đơn vị. Bạn cần hỗ trợ cụ thể về mảng nào dưới đây?\n\n"
+                + "\n".join(options)
+            )
+        else:
+            result["clarification_question"] = (
+                f"Mình chưa xác định được đơn vị ứng với \"{result.get('candidate_text')}\". "
+                "Bạn ghi rõ tên đơn vị hoặc việc cần hỗ trợ giúp mình nhé."
+            )
+        return _resolution(
+            lookup_type,
+            "office_lookup_clarification",
+            result,
+            result_kind="clarification",
+            target_chunk_types=[],
+        )
+    requested_field = slots.get("requested_field") or ""
+    # A grounded directory record remains valid structured evidence even
+    # when it does not contain the optional field requested by the user.
+    # The Composer receives the record and must state that the available
+    # evidence does not provide that field instead of inventing a value.
+    if result is not None:
+        result["requested_field"] = (
+            list(requested_field) if isinstance(requested_field, list)
+            else str(requested_field)
+        )
+        result = resolve_relationship(
+            result, source_lookup=lookup_type,
+            requested_field=requested_field, cohort=cohort,
+            relationships=_RELATIONSHIPS,
+            catalogs=directories,
+        )
+    return _resolution(
+        lookup_type,
+        _DIRECTORY_STRATEGY[lookup_type],
+        result,
+        result_kind=_result_kind(result),
+        target_chunk_types=_DIRECTORY_CONTENT_TYPES[lookup_type],
+    )
+
+
+def _resolve_program(
+    task: dict[str, Any],
+    slots: dict[str, Any],
+    *,
+    query: str,
+    cohort: str | None,
+    program_directory: list[dict[str, Any]],
+    faculty_profiles: list[dict[str, Any]],
+    directory_selector: DirectorySelector | None,
+) -> StructuredResolution | None:
+    """Answer from the program catalog: does a program exist, list them, or find its faculty."""
+    candidate_text = _slot_value(task, "program_or_faculty") or query
+    intent = task.get("intent")
+    scope = str(slots.get("scope") or "school")
+    requested_field = slots.get("requested_field") or ""
+    requested = set(requested_field) if isinstance(requested_field, list) else {str(requested_field)}
+    if "faculty" in requested or requested & {"email", "phone", "website", "office", "all"}:
+        action = "resolve_faculty"
+    elif intent == "exists" or "exists" in requested:
+        action = "exists"
+    elif intent == "list_items" or "programs" in requested:
+        action = "list"
+    else:
+        action = "resolve_faculty"
+    result = program_lookup(
+        program_directory,
+        candidate_text=candidate_text,
+        cohort=cohort,
+        action=action,
+        scope=scope,
+        selector=directory_selector,
+    )
+    if result is not None:
+        result = resolve_relationship(
+            result, source_lookup="program", requested_field=requested_field,
+            cohort=cohort, relationships=_RELATIONSHIPS,
+            catalogs={"faculty": faculty_profiles, "program": program_directory},
+        )
+    return _resolution("program", "program_lookup", result, result_kind=_result_kind(result))
+
+
+def _result_kind(result: dict[str, Any] | None) -> str:
+    return "clarification" if result and result.get("needs_clarification") else "structured"
 
 
 def _resolution(

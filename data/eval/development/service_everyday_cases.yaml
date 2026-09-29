@@ -1,0 +1,101 @@
+# Everyday wording for student services (lookup_type: student_service), K51.
+#
+# Purpose: decide whether to loosen the directory selector prompt, which asks
+# for services named in the handbook's own terms ("in bảng điểm" was answered
+# "none" although Phòng Khảo thí và Đảm bảo chất lượng "cấp các loại giấy
+# chứng nhận điểm"). Written 2026-09-29 by the AI assistant from the 78 K51
+# service texts in data/processed/directories/student_service_directory.json,
+# before any run of a changed prompt; not independent review. It uses services
+# and wording not already in service_matching_cases.yaml, and avoids every
+# service official_v3 asks about (lending a microphone, health insurance
+# cards, paying tuition, emergency care, student loans, wifi) and the Trạm Y
+# tế catalog. Case e01 is the question that prompted this set, so it is not
+# blind.
+#
+# Groups:
+#   everyday  a student's own words for a listed service (should be found)
+#   cross     wording that sits near another unit's service; the gold unit is
+#             the one whose listed service meets the need
+#   absent    a plausible student need that no K51 service lists; the right
+#             answer is none (asking back is also safe)
+#
+# expect: unit   -> the named unit must be the top match
+#         one_of -> clarification, or any listed unit as the top match
+#         none   -> no unit; clarification is safe
+#
+# Decision rule, fixed before running: run the current prompt and the
+# loosened prompt once each on this file and on the existing development
+# sets. Adopt the loosened prompt only if, on this file, "wrong" does not
+# increase (in particular no absent case gets a unit), and on the existing
+# sets nothing that was correct becomes wrong. Any prompt change made after
+# seeing these results turns this file into development data as well.
+version: 1
+cohort: K51
+cases:
+  # ---- everyday: the student's words for a listed service
+  - {id: e01, group: everyday, service: "in bảng điểm", expect: unit, units: ["Phòng Khảo thí và Đảm bảo chất lượng"]}
+  - {id: e02, group: everyday, service: "nhận lại bài thi đã nộp để xem điểm", expect: unit, units: ["Phòng Khảo thí và Đảm bảo chất lượng"]}
+  - {id: e03, group: everyday, service: "làm lại thẻ sinh viên bị mất", expect: unit, units: ["Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  - {id: e04, group: everyday, service: "hỏi về việc bị cảnh báo học vụ", expect: unit, units: ["Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  - {id: e05, group: everyday, service: "cần chứng thực giấy tờ sinh viên", expect: unit, units: ["Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  - {id: e06, group: everyday, service: "hỏi kế hoạch xét tốt nghiệp đợt tới", expect: unit, units: ["Phòng Đào tạo"]}
+  - {id: e07, group: everyday, service: "đi thực tế theo kế hoạch năm học", expect: unit, units: ["Phòng Đào tạo"]}
+  - {id: e08, group: everyday, service: "hộp thư email trường bị đầy không nhận được thư", expect: unit, units: ["Phòng Công nghệ Thông tin"]}
+  - {id: e09, group: everyday, service: "đọc bài báo khoa học trên cơ sở dữ liệu của trường", expect: unit, units: ["Thư viện"]}
+  - {id: e10, group: everyday, service: "mua giáo trình in sẵn cho môn học", expect: unit, units: ["Nhà xuất bản Đại học Sư phạm Thành phố Hồ Chí Minh"]}
+  - {id: e11, group: everyday, service: "đổi sang phòng khác trong khu nội trú", expect: unit, units: ["Ký túc xá"]}
+  - {id: e12, group: everyday, service: "đăng ký chương trình trao đổi sinh viên với trường nước ngoài", expect: unit, units: ["Phòng Hợp tác Quốc tế"]}
+  - {id: e13, group: everyday, service: "căn tin trường mở cửa mấy giờ", expect: unit, units: ["Phòng Quản trị – Thiết bị"]}
+  - {id: e14, group: everyday, service: "xin kinh phí làm đề tài nghiên cứu", expect: unit, units: ["Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học"]}
+  - {id: e15, group: everyday, service: "học thêm tiếng Nhật để thi N3", expect: unit, units: ["Trung tâm Ngoại ngữ"]}
+  - {id: e16, group: everyday, service: "học phương pháp học đại học cho hiệu quả", expect: unit, units: ["Viện Nghiên cứu Giáo dục"]}
+  - {id: e17, group: everyday, service: "đăng ký dự tuyển thạc sĩ", expect: unit, units: ["Phòng Sau Đại học"]}
+  - {id: e18, group: everyday, service: "dự giờ ở trường thực hành", expect: unit, units: ["Trường Trung học Thực hành – Đại học Sư phạm"]}
+  - {id: e19, group: everyday, service: "tố cáo gian lận trong kỳ thi", expect: unit, units: ["Phòng Thanh tra Đào tạo"]}
+  - {id: e20, group: everyday, service: "chụp ảnh cho lễ khai giảng của trường", expect: unit, units: ["Phòng Công tác chính trị và Học sinh, sinh viên"]}
+
+  # ---- cross: near another unit's service; the gold unit lists the need
+  # Khảo thí issues grade certificates; Phòng Đào tạo handles transfers.
+  - {id: c01, group: cross, service: "lấy giấy chứng nhận điểm các môn đã học để làm hồ sơ chuyển trường", expect: unit, units: ["Phòng Khảo thí và Đảm bảo chất lượng"]}
+  # Khảo thí exempts computing courses; Trung tâm Tin học teaches them.
+  - {id: c02, group: cross, service: "nộp chứng chỉ MOS để được miễn học tin học", expect: unit, units: ["Phòng Khảo thí và Đảm bảo chất lượng"]}
+  # Phòng CTCT-HSSV grants tuition reductions; Kế hoạch – Tài chính collects fees.
+  - {id: c03, group: cross, service: "xin miễn giảm học phí vì gia đình khó khăn", expect: unit, units: ["Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  # Kế hoạch – Tài chính pays HBKKHT; Phòng CTCT-HSSV selects scholarship holders.
+  - {id: c04, group: cross, service: "nhận tiền học bổng khuyến khích học tập", expect: one_of, units: ["Phòng Kế hoạch – Tài chính", "Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  # Phòng Đào tạo issues graduation certificates; Khảo thí issues grade certificates.
+  - {id: c05, group: cross, service: "xin giấy chứng nhận tốt nghiệp tạm thời để đi làm", expect: unit, units: ["Phòng Đào tạo"]}
+  # Phòng Đào tạo runs course registration; Phòng CNTT supports the accounts.
+  - {id: c06, group: cross, service: "đăng ký môn cho học kỳ tới", expect: unit, units: ["Phòng Đào tạo"]}
+  - {id: c07, group: cross, service: "quên mật khẩu tài khoản đăng ký học phần", expect: unit, units: ["Phòng Công nghệ Thông tin"]}
+  # Trung tâm Hỗ trợ sinh viên introduces rooms outside; Ký túc xá houses students.
+  - {id: c08, group: cross, service: "tìm phòng trọ ngoài trường", expect: unit, units: ["Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp"]}
+  # Thư viện runs book fairs; the publisher publishes books.
+  - {id: c09, group: cross, service: "tham gia triển lãm sách của trường", expect: unit, units: ["Thư viện"]}
+  # Quản trị – Thiết bị runs classroom projectors; Phòng CNTT runs school systems.
+  - {id: c10, group: cross, service: "máy chiếu phòng học không lên hình", expect: unit, units: ["Phòng Quản trị – Thiết bị"]}
+  # Teaching-related complaints go to Thanh tra Đào tạo; CTCT-HSSV receives general feedback.
+  - {id: c11, group: cross, service: "phản ánh giảng viên hủy buổi học mà không báo", expect: one_of, units: ["Phòng Thanh tra Đào tạo", "Phòng Công tác chính trị và Học sinh, sinh viên"]}
+  # Both centres teach teaching-technology skills.
+  - {id: c12, group: cross, service: "học thiết kế bài giảng điện tử", expect: one_of, units: ["Viện Nghiên cứu Giáo dục", "Trung tâm Phát triển kỹ năng sư phạm"]}
+  - {id: c13, group: cross, service: "học ứng dụng công nghệ thông tin trong dạy học", expect: one_of, units: ["Trung tâm Tin học", "Trung tâm Phát triển kỹ năng sư phạm"]}
+  - {id: c14, group: cross, service: "làm cộng tác viên hỗ trợ sự kiện của trường", expect: one_of, units: ["Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp", "Đoàn Thanh niên và Hội Sinh viên Trường"]}
+  - {id: c15, group: cross, service: "được tư vấn định hướng nghề nghiệp", expect: one_of, units: ["Phòng Công tác chính trị và Học sinh, sinh viên", "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp"]}
+
+  # ---- absent: plausible, but no K51 service lists it
+  - {id: a01, group: absent, service: "xin chứng chỉ giáo dục quốc phòng", expect: none}
+  - {id: a02, group: absent, service: "đăng ký xe buýt đưa đón sinh viên", expect: none}
+  - {id: a03, group: absent, service: "đăng ký phòng tập gym của trường", expect: none}
+  - {id: a04, group: absent, service: "mua đồng phục thể dục", expect: none}
+  - {id: a05, group: absent, service: "tìm đồ bị thất lạc trong trường", expect: none}
+  - {id: a06, group: absent, service: "làm thẻ ngân hàng cho sinh viên", expect: none}
+  - {id: a07, group: absent, service: "đăng ký học bơi", expect: none}
+  # Phòng Hợp tác Quốc tế lists translation, partner scholarships and exchanges, not visas.
+  - {id: a08, group: absent, service: "gia hạn visa cho sinh viên quốc tế", expect: none}
+  # The publisher prints textbooks, not students' own documents.
+  - {id: a09, group: absent, service: "in tài liệu cá nhân", expect: none}
+  - {id: a10, group: absent, service: "mua vé xe buýt tháng", expect: none}
+  # K48-K49 lists mail handling (Phòng Tổ chức – Hành chính); K51 does not.
+  - {id: a11, group: absent, service: "nhận thư bảo đảm gửi cho sinh viên", expect: none}
+  # Phòng CTCT-HSSV photographs school ceremonies, not ID photos.
+  - {id: a12, group: absent, service: "chụp ảnh thẻ để làm hồ sơ", expect: none}

@@ -92,11 +92,11 @@ def program_outcome(case: dict, result: dict | None) -> tuple[str, list[str]]:
     return "correct", picked
 
 
-def run_directory(lookup_type: str, selector, report: Path | None) -> list[dict]:
+def run_directory(lookup_type: str, selector, report: Path | None, cases_path: Path | None = None) -> list[dict]:
     from src.retrieval.core.office_lookup import office_lookup
 
     cases_file, slot, directory_file = DIRECTORY_LOOKUPS[lookup_type]
-    spec = _load(CASES / cases_file)
+    spec = _load(cases_path or CASES / cases_file)
     cases = [{"id": c["id"], "value": c[slot], "expect": c["expect"], "gold": c.get("units", []),
               "cohort": spec["cohort"]} for c in spec["cases"]]
     if report:
@@ -147,6 +147,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--v1-report", help="official_v1 deterministic report whose planner slots to add.")
     parser.add_argument("--config", default="configs/answer_generation.yaml")
+    parser.add_argument("--service-cases", help="Another student-service cases file, e.g. "
+                        "data/eval/development/service_everyday_cases.yaml.")
+    parser.add_argument("--only", choices=(*DIRECTORY_LOOKUPS, "program"), help="Run one lookup type only.")
     args = parser.parse_args()
 
     from src.common.env_loader import load_project_env
@@ -157,8 +160,14 @@ def main() -> None:
     config = _load(ROOT / args.config)["directory_selector"]
     selector = create_directory_selector(config)
     report = ROOT / args.v1_report if args.v1_report else None
-    results = {lookup_type: run_directory(lookup_type, selector, report) for lookup_type in DIRECTORY_LOOKUPS}
-    results["program"] = run_programs(selector, report)
+    service_cases = ROOT / args.service_cases if args.service_cases else None
+    results = {
+        lookup_type: run_directory(lookup_type, selector, report,
+                                   service_cases if lookup_type == "student_service" else None)
+        for lookup_type in DIRECTORY_LOOKUPS if args.only in (None, lookup_type)
+    }
+    if args.only in (None, "program"):
+        results["program"] = run_programs(selector, report)
 
     summary = {}
     for lookup_type, rows in results.items():
@@ -169,7 +178,8 @@ def main() -> None:
             if row["outcome"] != "correct":
                 print(f"{lookup_type:15s} {row['id']:9s} {row['outcome']:10s} {row['value']!r} -> {row['picked']}")
     out = {"created_at": datetime.now(timezone.utc).isoformat(), "prompt_version": SELECTOR_PROMPT_VERSION,
-           "selector": config, "v1_report": args.v1_report, "summary": summary, "cases": results}
+           "selector": config, "v1_report": args.v1_report, "service_cases": args.service_cases,
+           "summary": summary, "cases": results}
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     path = ROOT / "data/eval/reports" / f"directory_matching_{stamp}.json"
     path.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")

@@ -5,10 +5,6 @@ import json
 import os
 import re
 import threading
-from collections.abc import Iterator
-from contextlib import contextmanager
-from contextvars import ContextVar
-from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -24,9 +20,9 @@ from .structured_routing import (
     load_lookup_registry,
     registry_digest,
 )
+from .planner_diagnostics import PlannerTrace, planner_diagnostics_enabled
 from .query_plan import (
     QUERY_PLAN_NORMALIZER_VERSION,
-    QUERY_PLAN_SCHEMA_VERSION,
     safe_rag_fallback_plan,
     normalize_query_plan,
     query_plan_strict_response_schema,
@@ -40,226 +36,6 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
 ROUTER_PROMPT_VERSION = "structured-regulation-v53-restore-conditions"
-PLANNER_DIAGNOSTIC_SCHEMA_VERSION = "planner-decision-diagnostics-v2"
-_planner_diagnostics_scope: ContextVar[bool] = ContextVar(
-    "planner_diagnostics_scope", default=False
-)
-
-
-@contextmanager
-def planner_diagnostics_scope(enabled: bool) -> Iterator[None]:
-    """Enable planner capture only inside an explicit evaluation scope."""
-    token = _planner_diagnostics_scope.set(bool(enabled))
-    try:
-        yield
-    finally:
-        _planner_diagnostics_scope.reset(token)
-
-_PLANNER_DIAGNOSTIC_DECISION_FIELDS = (
-    "route",
-    "execution_mode",
-    "mode",
-    "intent",
-    "lookup_type",
-    "context_mode",
-    "schema_version",
-    "out_of_domain",
-)
-_PLANNER_DIAGNOSTIC_TASK_FIELDS = (
-    "id",
-    "task_id",
-    "mode",
-    "execution_mode",
-    "intent",
-    "lookup_type",
-    "cohort",
-    "cohorts",
-    "slots",
-    "slot_spans",
-)
-_DIAGNOSTIC_MISSING = object()
-
-
-def _diagnostic_copy(value: Any) -> Any:
-    """Copy JSON-compatible diagnostic values without retaining live aliases."""
-    if value is None or isinstance(value, (str, int, float, bool)):
-        return value
-    if isinstance(value, (list, tuple)):
-        return [_diagnostic_copy(item) for item in value]
-    if isinstance(value, dict):
-        return {
-            str(key): _diagnostic_copy(item)
-            for key, item in value.items()
-            if isinstance(key, str)
-        }
-    return None
-
-
-def _diagnostic_leaf(value: Any) -> Any:
-    """Copy a slot/span leaf while rejecting arbitrary nested payloads."""
-    if value is None or isinstance(value, (str, int, float, bool)):
-        return value
-    if isinstance(value, (list, tuple)):
-        copied = []
-        for item in value:
-            leaf = _diagnostic_leaf(item)
-            if leaf is _DIAGNOSTIC_MISSING:
-                return _DIAGNOSTIC_MISSING
-            copied.append(leaf)
-        return copied
-    return _DIAGNOSTIC_MISSING
-
-
-def _diagnostic_slot_map(
-    value: Any,
-    *,
-    allowed_keys: set[str],
-) -> dict[str, Any]:
-    """Copy only declared slot names and scalar/list leaves."""
-    if not isinstance(value, dict):
-        return {}
-    copied: dict[str, Any] = {}
-    for key, item in value.items():
-        if not isinstance(key, str) or key not in allowed_keys:
-            continue
-        leaf = _diagnostic_leaf(item)
-        if leaf is not _DIAGNOSTIC_MISSING:
-            copied[key] = leaf
-    return copied
-
-
-def _diagnostic_allowed_slot_keys(
-    lookup_type: Any,
-    registry: dict[str, Any] | None,
-) -> set[str]:
-    """Return registry-declared slot keys for a planner task."""
-    if not isinstance(lookup_type, str) or not isinstance(registry, dict):
-        return set()
-    tools = registry.get("tools")
-    spec = tools.get(lookup_type) if isinstance(tools, dict) else None
-    schema = spec.get("slot_schema") if isinstance(spec, dict) else None
-    if not isinstance(schema, dict):
-        return set()
-    return {key for key in schema if isinstance(key, str)}
-
-
-def _diagnostic_messages(value: Any) -> list[str]:
-    values = value if isinstance(value, (list, tuple)) else [value]
-    return [
-        item[:500]
-        for item in values
-        if isinstance(item, str) and item.strip()
-    ]
-
-
-def _planner_decision_snapshot(
-    payload: Any,
-    *,
-    errors: Any = None,
-    warnings: Any = None,
-    registry: dict[str, Any] | None = None,
-) -> dict[str, Any]:
-    """Keep only structural planner fields for an explicit eval diagnostic."""
-    if registry is None:
-        registry = load_lookup_registry()
-    decision = payload if isinstance(payload, dict) else {}
-    snapshot: dict[str, Any] = {}
-    for field in _PLANNER_DIAGNOSTIC_DECISION_FIELDS:
-        if field in decision:
-            snapshot[field] = _diagnostic_copy(decision[field])
-
-    raw_tasks = decision.get("tasks")
-    if isinstance(raw_tasks, list):
-        tasks: list[dict[str, Any]] = []
-        for raw_task in raw_tasks:
-            if not isinstance(raw_task, dict):
-                continue
-            task = {
-                field: _diagnostic_copy(raw_task[field])
-                for field in _PLANNER_DIAGNOSTIC_TASK_FIELDS
-                if field in raw_task
-            }
-            allowed_slot_keys = _diagnostic_allowed_slot_keys(
-                raw_task.get("lookup_type"), registry
-            )
-            for field in ("slots", "slot_spans"):
-                if field in raw_task:
-                    task[field] = _diagnostic_slot_map(
-                        raw_task[field], allowed_keys=allowed_slot_keys
-                    )
-            task_errors = raw_task.get("errors")
-            if task_errors is None:
-                task_errors = raw_task.get("validation_errors")
-            task_warnings = raw_task.get("warnings")
-            if task_warnings is None:
-                task_warnings = raw_task.get("normalization_warnings")
-            if task_errors is not None:
-                task["errors"] = _diagnostic_messages(task_errors)
-            if task_warnings is not None:
-                task["warnings"] = _diagnostic_messages(task_warnings)
-            tasks.append(task)
-        snapshot["tasks"] = tasks
-
-    if errors is None:
-        errors = decision.get("errors")
-    if errors is None:
-        errors = decision.get("planner_validation_errors")
-    if errors is None:
-        errors = decision.get("validation_errors")
-    if warnings is None:
-        warnings = decision.get("warnings")
-    if warnings is None:
-        warnings = decision.get("normalization_warnings")
-    snapshot["errors"] = _diagnostic_messages(errors)
-    snapshot["warnings"] = _diagnostic_messages(warnings)
-    return snapshot
-
-
-def _build_planner_diagnostics(
-    attempts: list[dict[str, Any]],
-    final_plan: Any,
-    *,
-    final_errors: Any = None,
-    cache_hit: bool = False,
-    registry: dict[str, Any] | None = None,
-) -> dict[str, Any]:
-    """Build an evaluation-only raw/normalized planner decision envelope."""
-    return {
-        "schema_version": PLANNER_DIAGNOSTIC_SCHEMA_VERSION,
-        "versions": {
-            "router_prompt_version": ROUTER_PROMPT_VERSION,
-            "query_plan_schema_version": QUERY_PLAN_SCHEMA_VERSION,
-            "query_plan_normalizer_version": QUERY_PLAN_NORMALIZER_VERSION,
-        },
-        "cache_hit": bool(cache_hit),
-        "attempts": deepcopy(attempts),
-        "final": _planner_decision_snapshot(
-            final_plan,
-            errors=final_errors,
-            registry=registry,
-        ),
-    }
-
-
-def _attach_planner_diagnostics(
-    result: dict[str, Any],
-    *,
-    enabled: bool,
-    attempts: list[dict[str, Any]],
-    final_plan: Any,
-    final_errors: Any = None,
-    cache_hit: bool = False,
-    registry: dict[str, Any] | None = None,
-) -> dict[str, Any]:
-    if enabled:
-        result["planner_diagnostics"] = _build_planner_diagnostics(
-            attempts,
-            final_plan,
-            final_errors=final_errors,
-            cache_hit=cache_hit,
-            registry=registry,
-        )
-    return result
 
 
 _EXPLICIT_REQUEST_MARKERS = (
@@ -543,6 +319,53 @@ class _RouterCompletion:
     token_details: dict[str, int] | None = None
 
 
+@dataclass
+class _PlanAttempt:
+    """How far one planner attempt got, for its failure diagnostic."""
+
+    stage: str = "request"
+    response: _RouterCompletion | None = None
+
+
+def _count_repair_feedback(expected: int, actual: int) -> str:
+    return (
+        "VALIDATION_FEEDBACK: QUERY có "
+        f"{expected} marker đánh số, "
+        f"nhưng plan có {actual} task. "
+        "Rà lại mọi target trong phạm vi để tránh bỏ sót. "
+        "Bỏ target ngoài phạm vi và gộp theo quy tắc logical tasks; "
+        "không thêm task chỉ để khớp số marker. "
+        "Trả lại toàn bộ plan đã kiểm tra."
+    )
+
+
+def _fall_back_on_fatal_errors(
+    plan: dict[str, Any],
+    validation_errors: list[str],
+    query: str,
+    cohort: str | None,
+) -> dict[str, Any]:
+    """Replace a plan that cannot be executed with the safe RAG fallback.
+
+    Task-local errors stay diagnostic once normalization has turned that task
+    into safe RAG or a clarification, so its valid siblings are kept. A task
+    that could not be read at all was dropped, however, so that partial plan
+    falls back as a whole, as does a structured task that kept its errors.
+    """
+    fatal = any(
+        error.rsplit(":", 1)[-1] == "invalid_object"
+        for error in validation_errors
+    ) or any(
+        task.get("mode") == "structured" and task.get("validation_errors")
+        for task in (plan.get("tasks") or [])
+    )
+    if not fatal:
+        return plan
+    fallback = safe_rag_fallback_plan(query, cohort, reason="safe_rag")
+    fallback["planner_validation_errors"] = validation_errors
+    return fallback
+
+
 class AIRouter:
     """QueryPlan planner on the OpenAI Responses API with a strict JSON schema."""
 
@@ -725,11 +548,21 @@ class AIRouter:
         cohort: str | None = None,
         chat_history: list[dict[str, str]] | None = None,
     ) -> dict[str, Any]:
-        """Create a bounded, validated QueryPlan for one user message."""
-        capture_planner_diagnostics = _planner_diagnostics_scope.get() and not bool(
-            chat_history
+        """Create a bounded, validated QueryPlan for one user message.
+
+        Each attempt asks for a plan on one key (see `_request_plan`). A
+        rate-limited key hands over to the next key; a timeout or server error
+        is retried up to `max_retries` times; any other failure, or running out
+        of attempts, returns the safe RAG fallback plan. Only an empty key pool
+        raises.
+        """
+        trace = PlannerTrace(
+            enabled=planner_diagnostics_enabled() and not chat_history,
+            registry=self.registry,
+            prompt_version=ROUTER_PROMPT_VERSION,
+            describe_response=self._completion_diagnostic,
+            describe_error=self.error_diagnostic,
         )
-        diagnostic_attempts: list[dict[str, Any]] = []
         visible_history = {
             index: content
             for index, (_, content) in _visible_history_turns(chat_history).items()
@@ -750,7 +583,7 @@ class AIRouter:
             chat_history=chat_history,
         )
         if self.cache and (cached := self.cache.get(cache_key)):
-            return _attach_planner_diagnostics(
+            return trace.attach(
                 {
                     **cached,
                     "model_used": self.model_name,
@@ -758,11 +591,8 @@ class AIRouter:
                     "router_cache_hit": True,
                     "prompt_stats": prompt_stats,
                 },
-                enabled=capture_planner_diagnostics,
-                attempts=diagnostic_attempts,
                 final_plan=cached,
                 cache_hit=True,
-                registry=self.registry,
             )
 
         explicit_request_count = _explicit_request_count(query)
@@ -771,6 +601,10 @@ class AIRouter:
             128,
             int(prompt_stats["estimated_input_tokens"]) + max_output_tokens,
         )
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": dynamic_prompt},
+        ]
         attempts = 0
         transient_failures = 0
         # Key rotation and transient retries are separate, bounded allowances.
@@ -780,158 +614,32 @@ class AIRouter:
             try:
                 key, key_id, key_index = self.key_pool.acquire(estimated_tokens)
             except NoAvailableKey as exc:
-                if capture_planner_diagnostics:
-                    diagnostic_attempts.append({
-                        "label": "failure", "stage": "key_acquire",
-                        "error": self.error_diagnostic(exc),
-                    })
-                    # Keep a preceding provider error when rotation finds no ready key.
-                    exc.planner_diagnostics = _build_planner_diagnostics(
-                        diagnostic_attempts, None, registry=self.registry,
-                    )
+                trace.record_key_failure(exc)
                 raise
             attempts += 1
-            response = None
-            attempt_stage = "request"
+            attempt = _PlanAttempt()
             try:
-                response = self._chat_completion(
+                plan, validation_errors, usage, planner_repairs = self._request_plan(
+                    attempt,
+                    trace,
                     api_key=key,
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": dynamic_prompt},
-                    ],
+                    messages=messages,
                     max_output_tokens=max_output_tokens,
                     response_format=response_format,
-                )
-                raw = response.text
-                attempt_stage = "parse"
-                parsed = self._extract_json_object(raw)
-                usage = response.usage
-                raw_snapshot = (
-                    _planner_decision_snapshot(parsed, registry=self.registry)
-                    if capture_planner_diagnostics
-                    else None
-                )
-                attempt_stage = "normalize"
-                plan, validation_errors = normalize_query_plan(
-                    parsed,
                     query=query,
-                    selected_cohort=cohort,
+                    cohort=cohort,
                     visible_history=visible_history,
-                    registry=self.registry,
+                    explicit_request_count=explicit_request_count,
                 )
-                if capture_planner_diagnostics:
-                    diagnostic_attempts.append(
-                        {
-                            "label": "initial",
-                            "response": self._completion_diagnostic(response),
-                            "raw": raw_snapshot,
-                            "normalized": _planner_decision_snapshot(
-                                plan,
-                                errors=validation_errors,
-                                registry=self.registry,
-                            ),
-                        }
-                    )
-                planner_repairs = 0
-                if (
-                    explicit_request_count is not None
-                    and len(plan.get("tasks") or []) != explicit_request_count
-                    and not plan.get("out_of_domain")
-                    and not plan.get("planner_fallback")
-                ):
-                    planner_repairs = 1
-                    attempt_stage = "repair_request"
-                    response = None
-                    repair_response = self._chat_completion(
-                        api_key=key,
-                        messages=[
-                            {
-                                "role": "system",
-                                "content": system_prompt,
-                            },
-                            {"role": "user", "content": dynamic_prompt},
-                            {"role": "assistant", "content": raw},
-                            {
-                                "role": "user",
-                                "content": (
-                                    "VALIDATION_FEEDBACK: QUERY có "
-                                    f"{explicit_request_count} marker đánh số, "
-                                    f"nhưng plan có {len(plan.get('tasks') or [])} task. "
-                                    "Rà lại mọi target trong phạm vi để tránh bỏ sót. "
-                                    "Bỏ target ngoài phạm vi và gộp theo quy tắc logical tasks; "
-                                    "không thêm task chỉ để khớp số marker. "
-                                    "Trả lại toàn bộ plan đã kiểm tra."
-                                ),
-                            },
-                        ],
-                        max_output_tokens=max_output_tokens,
-                        response_format=response_format,
-                    )
-                    response = repair_response
-                    attempt_stage = "repair_parse"
-                    repair_raw = repair_response.text
-                    repair_parsed = self._extract_json_object(repair_raw)
-                    repair_usage = repair_response.usage
-                    usage = {
-                        key: int(usage.get(key, 0)) + int(repair_usage.get(key, 0))
-                        for key in ("input", "output", "total")
-                    }
-                    repair_raw_snapshot = (
-                        _planner_decision_snapshot(
-                            repair_parsed,
-                            registry=self.registry,
-                        )
-                        if capture_planner_diagnostics
-                        else None
-                    )
-                    attempt_stage = "repair_normalize"
-                    plan, validation_errors = normalize_query_plan(
-                        repair_parsed,
-                        query=query,
-                        selected_cohort=cohort,
-                        visible_history=visible_history,
-                        registry=self.registry,
-                    )
-                    if capture_planner_diagnostics:
-                        diagnostic_attempts.append(
-                            {
-                                "label": "repair",
-                                "response": self._completion_diagnostic(repair_response),
-                                "raw": repair_raw_snapshot,
-                                "normalized": _planner_decision_snapshot(
-                                    plan,
-                                    errors=validation_errors,
-                                    registry=self.registry,
-                                ),
-                            }
-                        )
-                    # Marker count is not semantic coverage: legitimate plans
-                    # can drop OOD targets or merge compatible requests. Keep
-                    # the bounded recheck, but never force a count-only fallback.
-                actual_tokens = int(usage.get("total", estimated_tokens))
                 self.key_pool.record_success(
                     key_id,
-                    actual_tokens=actual_tokens,
+                    actual_tokens=int(usage.get("total", estimated_tokens)),
                     reserved_tokens=estimated_tokens,
                 )
-                # Task-local errors remain diagnostic after normalization has
-                # converted that task to safe RAG/clarification. Do not discard
-                # its valid siblings. An unreadable task was dropped, however,
-                # so that partial plan must still fall back as a whole.
-                fatal_validation = any(
-                    error.rsplit(":", 1)[-1] == "invalid_object"
-                    for error in validation_errors
-                ) or any(
-                    task.get("mode") == "structured" and task.get("validation_errors")
-                    for task in (plan.get("tasks") or [])
-                )
-                if fatal_validation:
-                    plan = safe_rag_fallback_plan(query, cohort, reason="safe_rag")
-                    plan["planner_validation_errors"] = validation_errors
+                plan = _fall_back_on_fatal_errors(plan, validation_errors, query, cohort)
                 if self.cache:
                     self.cache.set(cache_key, plan)
-                return _attach_planner_diagnostics(
+                return trace.attach(
                     {
                         **plan,
                         "model_used": self.model_name,
@@ -942,25 +650,13 @@ class AIRouter:
                         "planner_repairs": planner_repairs,
                         "prompt_stats": prompt_stats,
                     },
-                    enabled=capture_planner_diagnostics,
-                    attempts=diagnostic_attempts,
                     final_plan=plan,
                     final_errors=validation_errors,
-                    registry=self.registry,
                 )
             except Exception as exc:
                 last_error = exc
+                trace.record_failure(attempt.stage, exc, attempt.response)
                 error_type = self._classify_error(exc)
-                if capture_planner_diagnostics:
-                    failure = {
-                        "label": "failure",
-                        "stage": attempt_stage,
-                        "error": self.error_diagnostic(exc),
-                    }
-                    if response is not None:
-                        # Preserve truncation evidence, never response text or reasoning.
-                        failure["response"] = self._completion_diagnostic(response)
-                    diagnostic_attempts.append(failure)
                 if error_type == "rate_limit":
                     self.key_pool.record_rate_limit(
                         key_id,
@@ -981,7 +677,7 @@ class AIRouter:
 
         if last_error is not None:
             fallback = safe_rag_fallback_plan(query, cohort, reason="safe_rag")
-            return _attach_planner_diagnostics(
+            return trace.attach(
                 {
                     **fallback,
                     "model_used": self.model_name,
@@ -993,12 +689,95 @@ class AIRouter:
                     "planner_error_type": self._classify_error(last_error),
                     "planner_error": str(last_error),
                 },
-                enabled=capture_planner_diagnostics,
-                attempts=diagnostic_attempts,
                 final_plan=fallback,
-                registry=self.registry,
             )
         raise RuntimeError("ai_planner_failed: no_attempts")
+
+    def _request_plan(
+        self,
+        attempt: _PlanAttempt,
+        trace: PlannerTrace,
+        *,
+        api_key: str,
+        messages: list[dict[str, str]],
+        max_output_tokens: int,
+        response_format: dict[str, Any],
+        query: str,
+        cohort: str | None,
+        visible_history: dict[int, str],
+        explicit_request_count: int | None,
+    ) -> tuple[dict[str, Any], list[str], dict[str, int], int]:
+        """One attempt: request a plan, parse it and normalize it.
+
+        When the query numbers its requests ("thứ nhất", "thứ hai", ...) and
+        the plan has a different number of tasks, the planner is asked once
+        more with that feedback, and its second plan is used. Returns the plan,
+        its validation errors, the token usage of both requests and the number
+        of repairs (0 or 1). `attempt` records how far this got, for the
+        failure diagnostic.
+        """
+
+        def normalize(parsed: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+            return normalize_query_plan(
+                parsed,
+                query=query,
+                selected_cohort=cohort,
+                visible_history=visible_history,
+                registry=self.registry,
+            )
+
+        response = self._chat_completion(
+            api_key=api_key,
+            messages=messages,
+            max_output_tokens=max_output_tokens,
+            response_format=response_format,
+        )
+        attempt.response = response
+        raw = response.text
+        attempt.stage = "parse"
+        parsed = self._extract_json_object(raw)
+        usage = response.usage
+        raw_snapshot = trace.snapshot_raw(parsed)
+        attempt.stage = "normalize"
+        plan, validation_errors = normalize(parsed)
+        trace.record_plan("initial", response, raw_snapshot, plan, validation_errors)
+
+        task_count = len(plan.get("tasks") or [])
+        if (
+            explicit_request_count is None
+            or task_count == explicit_request_count
+            or plan.get("out_of_domain")
+            or plan.get("planner_fallback")
+        ):
+            return plan, validation_errors, usage, 0
+
+        attempt.stage = "repair_request"
+        attempt.response = None
+        repair_response = self._chat_completion(
+            api_key=api_key,
+            messages=[
+                *messages,
+                {"role": "assistant", "content": raw},
+                {"role": "user", "content": _count_repair_feedback(explicit_request_count, task_count)},
+            ],
+            max_output_tokens=max_output_tokens,
+            response_format=response_format,
+        )
+        attempt.response = repair_response
+        attempt.stage = "repair_parse"
+        repair_parsed = self._extract_json_object(repair_response.text)
+        usage = {
+            key: int(usage.get(key, 0)) + int(repair_response.usage.get(key, 0))
+            for key in ("input", "output", "total")
+        }
+        raw_snapshot = trace.snapshot_raw(repair_parsed)
+        attempt.stage = "repair_normalize"
+        plan, validation_errors = normalize(repair_parsed)
+        trace.record_plan("repair", repair_response, raw_snapshot, plan, validation_errors)
+        # Marker count is not semantic coverage: legitimate plans can drop OOD
+        # targets or merge compatible requests. Keep the bounded recheck, but
+        # never force a count-only fallback.
+        return plan, validation_errors, usage, 1
 
     def _build_plan_prompt(
         self,

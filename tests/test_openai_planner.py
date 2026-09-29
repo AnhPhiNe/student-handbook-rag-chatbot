@@ -7,7 +7,8 @@ import openai
 import pytest
 
 from src.retrieval.core import ai_router as module
-from src.retrieval.core.ai_router import AIRouter, planner_diagnostics_scope
+from src.retrieval.core.ai_router import AIRouter
+from src.retrieval.core.planner_diagnostics import planner_diagnostics_scope
 from src.retrieval.core.structured_routing import compact_registry_for_prompt
 
 

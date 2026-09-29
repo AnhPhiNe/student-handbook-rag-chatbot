@@ -7,7 +7,8 @@ import pytest
 from src.common.key_pool import KeyPool, KeyPoolConfig, NoAvailableKey
 from src.evaluation.deterministic import evaluate_deterministic
 from src.retrieval.core import ai_router as router_module
-from src.retrieval.core.ai_router import AIRouter, _RouterCompletion, planner_diagnostics_scope
+from src.retrieval.core.ai_router import AIRouter, _RouterCompletion
+from src.retrieval.core.planner_diagnostics import planner_diagnostics_scope
 
 
 @pytest.fixture

@@ -6,14 +6,13 @@ from pathlib import Path
 
 import pytest
 
-import src.retrieval.core.ai_router as ai_router_module
 from src.evaluation.deterministic import evaluate_deterministic
-from src.retrieval.core.ai_router import (
-    AIRouter,
+from src.retrieval.core.ai_router import ROUTER_PROMPT_VERSION, AIRouter, _RouterCompletion
+from src.retrieval.core.planner_diagnostics import (
     PLANNER_DIAGNOSTIC_SCHEMA_VERSION,
-    _RouterCompletion,
-    _build_planner_diagnostics,
-    _planner_decision_snapshot,
+    build_planner_diagnostics,
+    planner_decision_snapshot,
+    planner_diagnostics_enabled,
     planner_diagnostics_scope,
 )
 from src.retrieval.core.query_plan import (
@@ -76,7 +75,7 @@ def _completion(payload: dict) -> _RouterCompletion:
 
 def test_planner_diagnostic_snapshot_is_whitelisted_and_detached() -> None:
     raw = _raw_payload("A")
-    snapshot = _planner_decision_snapshot(raw)
+    snapshot = planner_decision_snapshot(raw)
 
     assert snapshot["tasks"][0]["slots"] == {"service": "service-A"}
     assert snapshot["tasks"][0]["slot_spans"] == {"service": "service-A"}
@@ -114,18 +113,20 @@ def test_planner_diagnostics_capture_raw_and_normalized_without_aliasing() -> No
             }
         ],
     }
-    diagnostics = _build_planner_diagnostics(
+    diagnostics = build_planner_diagnostics(
         [
             {
                 "label": "initial",
-                "raw": _planner_decision_snapshot(raw),
-                "normalized": _planner_decision_snapshot(normalized),
+                "raw": planner_decision_snapshot(raw),
+                "normalized": planner_decision_snapshot(normalized),
             }
         ],
         normalized,
+        prompt_version=ROUTER_PROMPT_VERSION,
     )
 
     assert diagnostics["schema_version"] == PLANNER_DIAGNOSTIC_SCHEMA_VERSION
+    assert diagnostics["versions"]["router_prompt_version"] == ROUTER_PROMPT_VERSION
     assert diagnostics["versions"]["query_plan_schema_version"] == QUERY_PLAN_SCHEMA_VERSION
     assert diagnostics["versions"]["query_plan_normalizer_version"] == QUERY_PLAN_NORMALIZER_VERSION
     assert diagnostics["attempts"][0]["raw"]["tasks"][0]["slots"]
@@ -213,7 +214,7 @@ def test_deterministic_eval_context_propagates_capture_to_rows(tmp_path: Path) -
             chat_history: list[dict[str, str]] | None = None,
         ) -> dict:
             del query, cohort, chat_history
-            enabled = ai_router_module._planner_diagnostics_scope.get()
+            enabled = planner_diagnostics_enabled()
             calls.append(enabled)
             result = {
                 "query_plan": {

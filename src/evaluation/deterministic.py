@@ -855,7 +855,8 @@ def _evaluate_deterministic_uncached(
     capture_planner_diagnostics = bool(
         (checkpoint_context or {}).get("capture_planner_diagnostics")
     )
-    from src.retrieval.core.ai_router import AIRouter, planner_diagnostics_scope
+    from src.retrieval.core.ai_router import AIRouter
+    from src.retrieval.core.planner_diagnostics import planner_diagnostics_scope
 
     failure_limit = int((checkpoint_context or {}).get("max_consecutive_runtime_failures", 0))
     if failure_limit < 0:

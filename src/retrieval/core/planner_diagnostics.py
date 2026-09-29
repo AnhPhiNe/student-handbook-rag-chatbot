@@ -286,19 +286,6 @@ class PlannerTrace:
             failure["response"] = self._describe_response(response)
         self.attempts.append(failure)
 
-    def record_key_failure(self, exc: Exception) -> None:
-        """No key was ready: record it and put the attempts so far on the exception."""
-        if not self.enabled:
-            return
-        self.attempts.append({
-            "label": "failure", "stage": "key_acquire",
-            "error": self._describe_error(exc),
-        })
-        # Keep a preceding provider error when rotation finds no ready key.
-        exc.planner_diagnostics = build_planner_diagnostics(
-            self.attempts, None, prompt_version=self.prompt_version, registry=self.registry,
-        )
-
     def attach(
         self,
         result: dict[str, Any],

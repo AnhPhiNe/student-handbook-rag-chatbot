@@ -141,7 +141,7 @@ def test_real_rate_limit_rotates_to_another_key(router, monkeypatch):
     assert not result.get("planner_fallback")
 
 
-def test_single_rate_limited_key_fails_fast_without_more_requests(router, monkeypatch):
+def test_single_rate_limited_key_falls_back_to_safe_rag_without_more_requests(router, monkeypatch):
     calls = []
     def request(**kwargs):
         calls.append(1)
@@ -149,13 +149,53 @@ def test_single_rate_limited_key_fails_fast_without_more_requests(router, monkey
         error.status_code = 429
         raise error
     monkeypatch.setattr(router, "_chat_completion", request)
-    with planner_diagnostics_scope(True), pytest.raises(NoAvailableKey) as caught:
-        router.plan("test", cohort="K51")
+    with planner_diagnostics_scope(True):
+        result = router.plan("test", cohort="K51")
     assert calls == [1]
-    attempts = caught.value.planner_diagnostics["attempts"]
+    assert result["planner_fallback"] == "safe_rag"
+    assert result["planner_error_type"] == "key_unavailable"
+    assert [task["mode"] for task in result["tasks"]] == ["rag"]
+    attempts = result["planner_diagnostics"]["attempts"]
     assert attempts[0]["error"]["http_status"] == 429
     assert attempts[-1]["stage"] == "key_acquire"
     assert "private provider body" not in json.dumps(attempts)
+
+
+def test_a_short_rate_limit_is_waited_out_on_one_key(router, monkeypatch):
+    router.key_pool = KeyPool(router.available_keys, KeyPoolConfig(
+        name="test", rpm_limit_per_key=500, state_path=None,
+        wait_when_limited=True, max_wait_seconds=5,
+    ))
+    calls = []
+    def request(**kwargs):
+        calls.append(1)
+        if len(calls) == 1:
+            error = RuntimeError("tokens per min")
+            error.status_code = 429
+            error.response = SimpleNamespace(headers={"retry-after": "0.2"}, status_code=429)
+            raise error
+        return _completion()
+    monkeypatch.setattr(router, "_chat_completion", request)
+    result = router.plan("test", cohort="K51")
+    assert calls == [1, 1]
+    assert not result.get("planner_fallback")
+
+
+def test_a_long_rate_limit_falls_back_without_waiting(router, monkeypatch):
+    router.key_pool = KeyPool(router.available_keys, KeyPoolConfig(
+        name="test", rpm_limit_per_key=500, state_path=None,
+        wait_when_limited=True, max_wait_seconds=5,
+    ))
+    def request(**kwargs):
+        error = RuntimeError("tokens per min")
+        error.status_code = 429
+        error.response = SimpleNamespace(headers={"retry-after": "60"}, status_code=429)
+        raise error
+    monkeypatch.setattr(router, "_chat_completion", request)
+    monkeypatch.setattr("src.common.key_pool.time.sleep", lambda _: pytest.fail("must not wait"))
+    result = router.plan("test", cohort="K51")
+    assert result["planner_fallback"] == "safe_rag"
+    assert result["planner_error_type"] == "key_unavailable"
 
 
 def _cases(n):

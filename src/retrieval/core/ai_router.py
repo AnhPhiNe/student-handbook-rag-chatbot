@@ -266,6 +266,10 @@ def router_key_pool_config(config: dict[str, Any] | None) -> KeyPoolConfig:
         cooldown_seconds=max(1.0, float(config.get("cooldown_seconds", 30.0))),
         state_path=str(config.get("state_path", "data/cache/planner_key_state.json")),
         wait_when_limited=bool(config.get("wait_when_limited", False)),
+        max_wait_seconds=(
+            None if config.get("max_wait_seconds") is None
+            else max(0.0, float(config["max_wait_seconds"]))
+        ),
     )
 
 
@@ -552,9 +556,9 @@ class AIRouter:
 
         Each attempt asks for a plan on one key (see `_request_plan`). A
         rate-limited key hands over to the next key; a timeout or server error
-        is retried up to `max_retries` times; any other failure, or running out
-        of attempts, returns the safe RAG fallback plan. Only an empty key pool
-        raises.
+        is retried up to `max_retries` times; any other failure, running out
+        of attempts, or a key still rate limited after the pool's wait budget
+        returns the safe RAG fallback plan.
         """
         trace = PlannerTrace(
             enabled=planner_diagnostics_enabled() and not chat_history,
@@ -614,8 +618,11 @@ class AIRouter:
             try:
                 key, key_id, key_index = self.key_pool.acquire(estimated_tokens)
             except NoAvailableKey as exc:
-                trace.record_key_failure(exc)
-                raise
+                # The key is rate limited past the wait budget: answer with the
+                # safe RAG plan rather than failing the student's question.
+                last_error = exc
+                trace.record_failure("key_acquire", exc)
+                break
             attempts += 1
             attempt = _PlanAttempt()
             try:

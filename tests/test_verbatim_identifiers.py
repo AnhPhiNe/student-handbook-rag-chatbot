@@ -23,6 +23,14 @@ def test_a_near_miss_with_one_candidate_is_corrected():
     assert fix("Xem khoaan.hcmue.edu.vn") == "Xem khoaanh.hcmue.edu.vn"
 
 
+def test_two_swapped_neighbouring_characters_count_as_one_edit():
+    fix = IdentifierCorrector(EVIDENCE).fix
+    assert fix("Gọi (028) 38352002.") == "Gọi (028) 38352020."           # "20" typed as "02"
+    assert fix("Email khoatieganhn@hcmue.edu.vn") == "Email khoatienganh@hcmue.edu.vn"
+    # Two separate wrong digits are still more than a phone number's one edit.
+    assert fix("Gọi (028) 38352911.") == "Gọi (028) 38352911."
+
+
 def test_an_identifier_with_no_single_near_match_is_left_alone():
     two = IdentifierCorrector("a1@hcmue.edu.vn và a2@hcmue.edu.vn").fix
     assert two("Email a3@hcmue.edu.vn") == "Email a3@hcmue.edu.vn"

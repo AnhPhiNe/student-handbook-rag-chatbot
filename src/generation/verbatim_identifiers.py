@@ -68,18 +68,22 @@ KINDS: dict[str, _Kind] = {
 
 
 def _edit_distance(a: str, b: str, limit: int) -> int:
-    """Levenshtein distance, or limit + 1 once it is certain to exceed limit."""
+    """Typing edits between a and b: insert, delete, replace, or swap two
+    neighbouring characters, each counting one (so "38352002" is one edit from
+    "38352020"). Returns limit + 1 at once when the lengths already differ by
+    more than limit.
+    """
     if abs(len(a) - len(b)) > limit:
         return limit + 1
-    previous = list(range(len(b) + 1))
-    for i, char_a in enumerate(a, 1):
-        current = [i]
-        for j, char_b in enumerate(b, 1):
-            current.append(min(previous[j] + 1, current[j - 1] + 1, previous[j - 1] + (char_a != char_b)))
-        if min(current) > limit:
-            return limit + 1
-        previous = current
-    return previous[-1]
+    rows = [list(range(len(b) + 1))]
+    for i in range(1, len(a) + 1):
+        row = [i] + [0] * len(b)
+        for j in range(1, len(b) + 1):
+            row[j] = min(rows[-1][j] + 1, row[j - 1] + 1, rows[-1][j - 1] + (a[i - 1] != b[j - 1]))
+            if i > 1 and j > 1 and a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]:
+                row[j] = min(row[j], rows[-2][j - 2] + 1)
+        rows.append(row)
+    return rows[-1][-1]
 
 
 def _strings(value: Any) -> Iterator[str]:

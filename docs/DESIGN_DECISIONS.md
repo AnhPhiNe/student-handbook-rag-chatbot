@@ -162,7 +162,11 @@ verbatim and none was wrong: list numbering, clause numbers read from
 numbered paragraphs, and rewrites such as "01 tuần" as "7 ngày". So the
 answer now passes through a corrector for identifiers only: one missing
 from the evidence is replaced by its unique near match (up to 2 edits for
-emails and links, 1 for phones, codes and rooms) and logged otherwise.
+emails and links, 1 for phones, codes and rooms; swapping two neighbouring
+characters counts as one edit) and logged otherwise. The limits are not wider
+because real identifiers sit close together: across the handbook data, 4 pairs
+of document codes (such as 11/2020/NĐ-CP and 110/2020/NĐ-CP), 2 pairs of phone
+numbers and 294 pairs of room numbers are one edit apart.
 Numbers are left to the fact lock and the judge.
 
 ### Composer prompt history

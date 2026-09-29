@@ -1,0 +1,49 @@
+# "Where / whom" questions and questions needing a table and a rule together.
+#
+# Purpose: check a narrow registry change. The student_service and office
+# descriptions said "thủ tục ... dùng RAG", so "nộp hồ sơ ... ở đâu" went to the
+# service catalog in only 22 of 42 runs of table_adjacent_questions.yaml
+# (2026-09-29). The change says that asking which unit or where to do something
+# uses the catalog, and "thủ tục" means what a procedure involves.
+#
+# Development data, not a hold-out: written 2026-09-29 by the AI assistant from
+# the K51 service and office catalogs and the handbook text, before any run of
+# the changed registry; not independently reviewed. official_v3 was not read.
+#
+# Groups:
+#   n  where / whom (answer suite): route directory; must_include is a contact
+#      from the catalog. n11-n14 name the unit (office lookup). n15 also asks
+#      what the dossier holds, so it also needs the handbook text.
+#   p  table plus rule (planner only, not answered): the table alone does not
+#      hold the whole answer. expect_rag: a RAG task must be present for the
+#      answer to be complete. These check overlaps #3 (scholarship) and #4
+#      (foreign language) before anything is changed for them.
+#
+# Each question is planned 3 times; the n group is also answered 3 times.
+version: 1
+cases:
+  - {id: n01, cohort: K51, route: directory, query: "Muốn xin giấy chứng nhận điểm để làm hồ sơ học bổng thì lên phòng nào?", must_include: ["phongkhaothi@hcmue.edu.vn"]}
+  - {id: n02, cohort: K51, route: directory, query: "Đăng ký tham gia Hội nghị sinh viên nghiên cứu khoa học ở đâu?", must_include: ["phongkhcn@hcmue.edu.vn"]}
+  - {id: n03, cohort: K51, route: directory, query: "Tài khoản trên phần mềm đăng ký học phần của em bị lỗi thì gặp ai?", must_include: ["phongcntt@hcmue.edu.vn"]}
+  - {id: n04, cohort: K51, route: directory, query: "Muốn đăng ký lớp luyện thi IELTS của trường thì liên hệ đâu?", must_include: ["trungtamnn@hcmue.edu.vn"]}
+  - {id: n05, cohort: K51, route: directory, query: "Muốn tập giảng trước khi đi thực tập sư phạm thì đăng ký ở đâu?", must_include: ["trungtamptknsp@hcmue.edu.vn"]}
+  - {id: n06, cohort: K51, route: directory, query: "Đăng ký tham gia ngày hội việc làm của trường ở đâu?", must_include: ["csaed@hcmue.edu.vn"]}
+  - {id: n07, cohort: K51, route: directory, query: "Muốn đến Trường Trung học Thực hành để dự giờ thì liên hệ ai?", must_include: ["truongthth@hcmue.edu.vn"]}
+  - {id: n08, cohort: K51, route: directory, query: "Máy chiếu trong phòng học bị hỏng thì báo cho đơn vị nào?", must_include: ["phongqttb@hcmue.edu.vn"]}
+  - {id: n09, cohort: K51, route: directory, query: "Muốn hỏi học bổng du học của các trường đối tác nước ngoài thì đến phòng nào?", must_include: ["phonghtqt@hcmue.edu.vn"]}
+  - {id: n10, cohort: K51, route: directory, query: "Em muốn in giáo trình cho môn học thì liên hệ đơn vị nào?", must_include: ["nxb@hcmue.edu.vn"]}
+  - {id: n11, cohort: K51, route: directory, query: "Phòng Khảo thí nhận đơn phúc khảo ở tầng mấy?", must_include: ["tầng 2"]}
+  - {id: n12, cohort: K51, route: directory, query: "Nộp hồ sơ miễn giảm học phí ở Phòng Công tác chính trị và Học sinh, sinh viên thì phòng đó nằm ở đâu?", must_include: ["tầng 1"]}
+  - {id: n13, cohort: K51, route: directory, query: "Phòng Đào tạo nhận đơn đăng ký song ngành, cho em xin email của phòng.", must_include: ["phongdt@hcmue.edu.vn"]}
+  - {id: n14, cohort: K51, route: directory, query: "Thư viện hướng dẫn khai thác tài liệu thì liên hệ qua email nào?", must_include: ["thuvien@hcmue.edu.vn"]}
+  - {id: n15, cohort: K51, route: directory, query: "Em muốn ở nội trú học kỳ sau thì hồ sơ gồm những gì và nộp ở đâu?", must_include: ["ktx@hcmue.edu.vn", "đơn xin ở nội trú"]}
+
+  # ---- planner only: the answer needs the table and the rule next to it
+  - {id: p01, cohort: K51, expect_rag: true, query: "Điều kiện để được học bổng khuyến khích loại giỏi là gì?"}
+  - {id: p02, cohort: K50, expect_rag: true, query: "Muốn nhận học bổng loại xuất sắc thì cần những điều kiện gì?"}
+  - {id: p03, cohort: K48-K49, expect_rag: true, query: "Học bổng khuyến khích loại khá yêu cầu những gì?"}
+  - {id: p04, cohort: K51, expect_rag: true, query: "IELTS 5.0 có đủ chuẩn đầu ra ngoại ngữ để tốt nghiệp không?"}
+  - {id: p05, cohort: K50, expect_rag: true, query: "Em có TOEFL iBT 40 điểm thì đạt chuẩn đầu ra ngoại ngữ chưa?"}
+  - {id: p06, cohort: K51, expect_rag: true, query: "Có chứng chỉ HSK 3 thì được công nhận đạt chuẩn ngoại ngữ đầu ra không?"}
+  - {id: p07, cohort: K48-K49, expect_rag: true, query: "Chứng chỉ JLPT N4 đã đủ điều kiện ngoại ngữ để xét tốt nghiệp chưa?"}
+  - {id: p08, cohort: K51, expect_rag: true, query: "TOEIC nghe 300, đọc 300, nói 130, viết 130 thì có đạt chuẩn đầu ra không?"}

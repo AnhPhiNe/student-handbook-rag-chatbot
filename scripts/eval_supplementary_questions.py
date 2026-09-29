@@ -80,7 +80,9 @@ def main() -> None:
     load_project_env()
     collections = {key: os.environ.get(key) for key in ("QDRANT_COLLECTION_NAME", "MONGODB_PARENT_COLLECTION")}
 
-    cases = yaml.safe_load(args.cases.read_text(encoding="utf-8"))["cases"]
+    # Cases without facts to check are planner-only probes; they are not answered.
+    cases = [case for case in yaml.safe_load(args.cases.read_text(encoding="utf-8"))["cases"]
+             if "must_include" in case]
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     out = (args.out or REPORTS / f"{args.cases.stem}_{stamp}").resolve()
     run = generate_answers(cases, cache_path=out / "answer_cache.json", resume=True,

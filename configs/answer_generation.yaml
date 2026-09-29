@@ -44,6 +44,14 @@ directory_selector:
   # guard. A limited key fails fast and the student is asked instead.
   key_pool:
     rpm_limit_per_key: 300
+  # When the answer above finds nothing, the same prompt is asked once more
+  # with thinking on, which maps everyday wording ("in bảng điểm") onto the
+  # catalog's. Thinking counts toward max_output_tokens: 128 to ~3,200 tokens
+  # (1-13 s) were measured, and a think that uses them all leaves no answer.
+  thinking_retry:
+    reasoning_effort: low
+    max_output_tokens: 4096
+    request_timeout_seconds: 30
 
 cache:
   enabled: true

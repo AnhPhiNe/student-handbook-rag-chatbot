@@ -199,20 +199,29 @@ def create_composer_client(llm_config: dict[str, Any]) -> Any:
 
 
 def create_directory_selector(selector_config: dict[str, Any]) -> DirectorySelector:
-    """Build the selector that picks directory records a student names (DeepSeek, JSON output)."""
+    """Build the selector that picks directory records a student names (DeepSeek, JSON output).
+
+    `thinking_retry` overrides the settings of the second look, asked when the
+    first finds nothing; without it a "none" is final.
+    """
     if selector_config.get("provider") != "deepseek":
         raise ValueError(f"Unsupported directory selector provider: {selector_config.get('provider')}")
-    return DirectorySelector(DeepSeekClient(
-        model_name=selector_config["model_name"],
-        reasoning_effort=selector_config.get("reasoning_effort", "none"),
-        temperature=0.0,
-        max_output_tokens=selector_config.get("max_output_tokens", 200),
-        max_retries=selector_config.get("max_retries", 1),
-        request_timeout_seconds=selector_config.get("request_timeout_seconds", 15),
-        api_keys_env_var=selector_config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
-        key_pool_config=selector_config.get("key_pool"),
-        response_format={"type": "json_object"},
-    ))
+
+    def client(config: dict[str, Any]) -> DeepSeekClient:
+        return DeepSeekClient(
+            model_name=config["model_name"],
+            reasoning_effort=config.get("reasoning_effort", "none"),
+            temperature=0.0,
+            max_output_tokens=config.get("max_output_tokens", 200),
+            max_retries=config.get("max_retries", 1),
+            request_timeout_seconds=config.get("request_timeout_seconds", 15),
+            api_keys_env_var=config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
+            key_pool_config=config.get("key_pool"),
+            response_format={"type": "json_object"},
+        )
+
+    retry = selector_config.get("thinking_retry")
+    return DirectorySelector(client(selector_config), client({**selector_config, **retry}) if retry else None)
 
 
 class AnswerPipeline:

@@ -112,7 +112,11 @@ class DeepSeekClient(PooledLLMClient):
     def _generate_once(self, prompt: str, *, client: Any | None = None) -> tuple[str, dict[str, int]]:
         """Return the answer text only; the model's reasoning is never shown."""
         response = self._request(prompt, client or self._create_client(self.available_keys[0]))
-        text = (response.choices[0].message.content or "").strip()
+        choice = response.choices[0]
+        text = (choice.message.content or "").strip()
+        if not text and choice.finish_reason == "length":
+            # Thinking counts toward max_tokens; a long think leaves no answer.
+            raise RuntimeError(f"DeepSeek used all {self.max_output_tokens} output tokens before answering.")
         return text, self._usage(getattr(response, "usage", None), prompt, text)
 
     def _generate_stream_once(

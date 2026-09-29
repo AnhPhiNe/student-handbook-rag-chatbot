@@ -81,6 +81,37 @@ def test_malformed_reply_unknown_id_or_api_failure_asks_instead_of_guessing() ->
         assert "result" not in result
 
 
+def test_a_reply_after_the_echoed_format_is_still_read() -> None:
+    reply = '{"type": "json_object"}\n{"decision": "match", "ids": ["S01"]}'
+    result = _faculty("khoa Hàn", ScriptedClient(raw=reply))
+    assert result["result"][0]["unit_name"] == "Khoa Tiếng Hàn Quốc"
+
+
+def test_nothing_found_is_asked_again_with_thinking() -> None:
+    fast, thinking = ScriptedClient({}), ScriptedClient({"khoa Hàn": "Khoa Tiếng Hàn Quốc"})
+    result = office_lookup("khoa Hàn", FACULTIES, candidate_text="khoa Hàn", lookup_type="faculty",
+                           cohort="K51", selector=DirectorySelector(fast, thinking))
+    assert result["result"][0]["unit_name"] == "Khoa Tiếng Hàn Quốc"
+    assert result["selection"][0]["method"] == "llm_selector_thinking"
+    assert fast.prompts == thinking.prompts  # the same question, asked twice
+
+
+def test_a_found_unit_is_not_asked_again() -> None:
+    thinking = ScriptedClient({"khoa Hàn": "Khoa Tiếng Nga"})
+    selector = DirectorySelector(ScriptedClient({"khoa Hàn": "Khoa Tiếng Hàn Quốc"}), thinking)
+    result = office_lookup("khoa Hàn", FACULTIES, candidate_text="khoa Hàn", lookup_type="faculty",
+                           cohort="K51", selector=selector)
+    assert result["result"][0]["unit_name"] == "Khoa Tiếng Hàn Quốc"
+    assert thinking.prompts == []
+
+
+def test_a_failed_second_look_keeps_nothing_found() -> None:
+    for thinking in (ScriptedClient(fail=True), ScriptedClient(raw="")):
+        selector = DirectorySelector(ScriptedClient({}), thinking)
+        assert office_lookup("khoa Y", FACULTIES, candidate_text="khoa Y", lookup_type="faculty",
+                             cohort="K51", selector=selector) is None
+
+
 def test_a_question_naming_two_units_selects_both() -> None:
     question = "Cho em email khoa Hàn và khoa Nga"
     result = _faculty(question, ScriptedClient({question: ["Khoa Tiếng Hàn Quốc", "Khoa Tiếng Nga"]}))

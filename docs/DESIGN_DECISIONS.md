@@ -29,7 +29,7 @@ reports are listed at the end.
 |---|---|---|---|
 | Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema, prompt v53 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | 133/135 on v1 with p95 5.8 s; DeepSeek low 128/135 with p95 18 s; Qwen lost 28 requests to free-tier limits |
 | Composer | DeepSeek flash, thinking off, prompt v3.30 | Gemini 3.1 Flash-Lite; DeepSeek thinking low | Same quality as Gemini with 0 failures against 20/150; thinking low judged the same (correctness 0.991 against 0.988) and 3 s slower |
-| Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog | Fuzzy-score thresholds | Development cases: 10 wrong units under thresholds, 0 with the selector |
+| Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
 | Reranker | Qwen3-Reranker-8B on DeepInfra, on all 24 fused children | None; Cohere rerank-v4.0-fast; Qwen3-Reranker 0.6B, 4B | hit@1 0.923 / hit@5 1.000 against Cohere 0.897 / 0.981 and none 0.832 / 0.955 |
 | Lexical search | BM25 fused with RRF (k = 60), scored by BM25 only | Dense only; BM25 with a title-match rule | RRF + rerank beats dense + rerank; the title rule cost hit@1 and 3× BM25 time |
@@ -214,6 +214,62 @@ from 22/27 to 27/27. Removing guessed keyword aliases and records the
 handbooks do not list (commit `c0d1a760`) kept 189/191 development cases with
 0 wrong units; `official_v1` deterministic stayed at 134/135.
 
+### A second look with thinking when nothing is found (2026-09-29)
+
+"tui cần in bảng điểm và làm thủ tục chuyển trường thì đến đâu" was answered
+without Phòng Khảo thí và Đảm bảo chất lượng, whose K51 service is "Cấp các
+loại giấy chứng nhận điểm cho sinh viên". The selector (thinking off) answered
+"none" for "in bảng điểm". Until the same day the planner saw the question
+after the slang table had rewritten it ("in bảng điểm" → "cấp bảng điểm"),
+which hid the gap; removing that rewrite (*Planner input* under Planner)
+exposed it. Adding a slang rule per wording is the patch this avoids, so three
+general changes were measured instead.
+
+The cases: a new set, `data/eval/development/service_everyday_cases.yaml`
+(47 K51 cases: 20 everyday wordings of a listed service, 15 near another
+unit's service, 12 needs no K51 service lists), written and committed
+(`112089ba`) before any changed prompt ran, with the decision rule fixed in
+its header; and the 189 existing development cases. Each arm ran once; the
+cases whose outcome changed were then repeated (5 times for the two prompts,
+3 for thinking).
+
+| Arm | Existing (189) | New (47) | Wrong units | Service lookups via the LLM (101): median / p90 / max |
+|---|---|---|---|---|
+| Thinking off (before) | 187 | 42 | 0 | 0.78 / 1.0 / 2.5 s |
+| Looser prompt wording, thinking off | 185 | 44 | 0 | not timed separately |
+| Thinking low on every call | 188 | 45 (2 failed calls) | 0 | 1.5 / 5.6 / 12.4 s |
+| **Thinking off, then thinking low only when it finds nothing** | **188** | **47** | **0** | **0.86 / 2.3 / 14.9 s** |
+
+- **Looser wording** told the model that students say "in", "xin", "lấy" for
+  "cấp" and to pick the service that meets the need. It found "in bảng điểm"
+  and "nhận lại bài thi đã nộp để xem điểm", but lost "trang web của trường
+  bị lỗi" (to none) and "xin tài liệu để làm khóa luận" (to a clarification),
+  5 times out of 5 each. That is a trade, not a gain, so it was dropped.
+- **Thinking on every call** found those needs without losing the other two,
+  and the 12 absent needs still got no unit. It costs latency, and 3 of 102
+  calls failed. Two used the whole 3,000-token output budget on thinking,
+  which DeepSeek counts against `max_tokens`, and returned an empty answer.
+  One reply began with the requested format, `{"type": "json_object"}`, before
+  the answer. Thinking length for one prompt ranged from 128 to about 3,200
+  tokens (1–13 s).
+- **Chosen: the second look.** The fast call runs first; only when it answers
+  "none" is the same prompt asked with thinking low. A found record never waits
+  for thinking, and the fast call has chosen no wrong unit on these cases, so
+  nothing it finds changes. Only "none" answers pay a second call: 25 of 101
+  lookups here, 20 of them needs chosen to be absent, so fewer in real
+  questions. It also fixed the one faculty miss (fac_18). Settings: output
+  budget 4,096 tokens, timeout 30 s. The reply parser takes the first JSON
+  object that carries a decision. A failed second look keeps the "none" and is
+  logged as `directory_selector_thinking_failed`. The prompt text is unchanged
+  (v2).
+
+Limits: single runs, and thinking replies vary between runs (in a probe,
+"đăng ký chương trình trao đổi sinh viên với trường nước ngoài" was matched 2
+times of 3 and answered none once), so 47/47 is not a stable figure. The 47
+cases were written by the AI assistant, not reviewed independently, and are
+now development data too. The slowest lookup, about 15 s, was a long think on
+a need the catalog does not list.
+
 ## Retrieval
 
 All retrieval numbers: 155 `official_v1` questions, top 5 parents, gold =
@@ -341,6 +397,7 @@ checked against the saved plans and answers.
 |---|---|---|---|
 | **A unit vanished from the evidence.** "email khoa toán, sdt khoa cntt" (K51) answered that the handbook gives no phone for Khoa CNTT, 4 times out of 4 | A student-style question in LangSmith; the planner and lookups were right, the evidence packet was not | A directory lookup cites its whole catalog (`student_faculty_profiles`), and the task merge keyed citations by that id, so two units of one catalog in two tasks collapsed into the first. The merge key now includes the record ids of directory evidence. Keying on the record, not on the catalog, keeps each task's evidence its own while the same record cited twice is still one source | Regression test; 3 of 2,488 saved plans change, all "email Khoa Tiếng Anh và Khoa Tiếng Pháp", which had lost Khoa Tiếng Pháp |
 | **A miscopied email** ("khotienganh@hcmue.edu.vn" for "khoatienganh@hcmue.edu.vn") | Seen in a LangSmith trace; the saved official_v1 run of 2026-09-28 had the same slip (case 127). The data is right, so the composer dropped a letter despite the verbatim rule | An audit of 768 saved answers first measured the problem: 1 of 200 identifiers wrong, and 0 of the 43 numbers not found verbatim. So only identifiers are corrected, from the evidence, when exactly one near match exists; see *Identifiers are checked against the evidence* under Composer for the rule, the limits and why they are not wider | On the 768 saved answers exactly case 127 changes; unit tests for sync, stream and cache |
+| **"in bảng điểm" not sent to Phòng Khảo thí** ("tui cần in bảng điểm và làm thủ tục chuyển trường thì đến đâu") | A LangSmith trace | The selector answered "none" because the catalog says "cấp giấy chứng nhận điểm"; the planner's slang rewrite had hidden this until it was removed. Looser prompt wording traded two found services for two others; a second look with thinking on, only when nothing is found, gained without losing. See *A second look with thinking* under Directory selection | New frozen set of 47 everyday wordings: 42 → 47 correct; existing development cases 187 → 188; 0 wrong units in every arm |
 | **Glued words in streamed answers** ("sinh viênnộp") | A new unit test for the stream cleaner | The held-back tail was flushed through `clean_answer`, which strips it; its leading space is now kept once text has been shown. `PIPELINE_VERSION` moved so cached glued answers are not served | 24 of the 150 saved answers, replayed as streams, would have glued two words |
 | **Repeated words in the slang rewrite** ("xếp loại tốt nghiệp tốt nghiệp", "phòng khảo thí và đảm bảo chất lượng và đảm bảo chất lượng") | Reading the rewritten development questions | A replacement ending with the words the student wrote next drops those words. Only an overlap of two or more words counts: one shared word is often a coincidence ("đăng ký môn phần mềm" must keep "phần mềm") | Exactly 5 rewrites change on 681 questions, all of them repetitions |
 | **Planner capped at 30 questions a minute** and failing on a busy key | Checking the key pool settings against the account's limits | See Planner rate limits under Operations | Offline simulation |
@@ -408,3 +465,4 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Planner input with and without the slang rewrite | `official_v1_deterministic_20260929T045740Z` (with), `…T051501Z` (without) |
 | Retrieval with and without query expansion | `official_v1_retrieval_20260929T045526Z` (with), `…T052455Z` (without) |
 | Slang probe | `measurements_20260928/results/slang_probe/` (`slang_probe.py`) |
+| Directory selector, second look | `directory_matching_20260929T100059Z` / `…T100140Z` (before), `…T100338Z` / `…T100416Z` (looser wording), `…T102008Z` / `…T101754Z` (thinking on every call), `…T103359Z` / `…T103530Z` (second look); existing cases first, everyday set second |

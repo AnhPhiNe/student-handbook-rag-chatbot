@@ -171,7 +171,7 @@ def main() -> None:
 
     summary = {}
     for lookup_type, rows in results.items():
-        called = sorted(r["ms"] for r in rows if any(s.get("method") == "llm_selector" for s in r["selection"] or []))
+        called = sorted(r["ms"] for r in rows if any(str(s.get("method")).startswith("llm_selector") for s in r["selection"] or []))
         summary[lookup_type] = {"n": len(rows), **Counter(r["outcome"] for r in rows),
                                 "llm_calls": len(called), "median_ms": called[len(called) // 2] if called else 0}
         for row in rows:

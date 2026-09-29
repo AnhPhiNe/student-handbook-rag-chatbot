@@ -2,16 +2,11 @@ from typing import Any
 
 
 def is_context_empty(retrieval_result: dict[str, Any]) -> bool:
-    # Empty context means retrieval, structured lookup, and tools produced no evidence.
-    """Return whether every grounding channel produced no evidence."""
+    """Return whether neither retrieval nor structured lookup produced evidence."""
 
-    return not any(
-        [
-            bool(retrieval_result.get("retrieved_items")),
-            _has_result(retrieval_result.get("structured_result")),
-            _has_formula_result(retrieval_result.get("formula_result")),
-            _has_result(retrieval_result.get("tool_result")),
-        ]
+    return not (
+        bool(retrieval_result.get("retrieved_items"))
+        or _has_result(retrieval_result.get("structured_result"))
     )
 
 
@@ -56,13 +51,7 @@ def _has_validated_non_rag_outcome(retrieval_result: dict[str, Any]) -> bool:
     if retrieval_result.get("deterministic_validated") is not True:
         return False
 
-    return any(
-        (
-            _has_result(retrieval_result.get("structured_result")),
-            _has_formula_result(retrieval_result.get("formula_result")),
-            _has_result(retrieval_result.get("tool_result")),
-        )
-    )
+    return _has_result(retrieval_result.get("structured_result"))
 
 
 def build_fallback_answer(
@@ -86,44 +75,10 @@ def build_fallback_answer(
             "quy định hay mốc điểm cần tra nhé."
         )
 
-    if reason == "out_of_domain":
-        return (
-            "Mình chưa tìm thấy thông tin phù hợp trong Sổ tay sinh viên cho câu hỏi này. "
-            "Sổ tay chủ yếu hỗ trợ các nội dung như quy định học vụ, "
-            "điểm rèn luyện, học bổng, ký túc xá, phòng ban và khoa/ngành. "
-            "Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé."
-        )
-
     return (
         "Mình chưa tìm thấy thông tin đủ rõ trong Sổ tay sinh viên cho câu hỏi này. "
         "Bạn có thể hỏi cụ thể hơn về phòng ban, quy định, mốc điểm "
         "hoặc thủ tục cần tra cứu."
-    )
-
-
-def detect_ambiguous_query(query: str, retrieval_result: dict[str, Any]) -> bool:
-    """Check whether a query requires clarification before generating an answer."""
-    if _has_result(retrieval_result.get("structured_result")) and retrieval_result.get(
-        "deterministic_validated"
-    ):
-        return False
-    if bool(retrieval_result.get("needs_clarification")):
-        return True
-    return False
-
-
-def is_out_of_domain_query(query: str, retrieval_result: dict[str, Any]) -> bool:
-    """Check if query is out of domain."""
-    return bool(retrieval_result.get("out_of_domain"))
-
-
-def build_clarification_question(query: str, retrieval_result: dict[str, Any]) -> str:
-    """Return the Planner clarification or a clean default fallback."""
-    clarification_q = retrieval_result.get("clarification_question")
-    if clarification_q and str(clarification_q).strip():
-        return str(clarification_q).strip()
-    return (
-        "Bạn có thể nói rõ hơn bạn muốn tra cứu quy định, thủ tục hay đơn vị nào không?"
     )
 
 
@@ -137,5 +92,3 @@ def _has_result(value: Any) -> bool:
     )
 
 
-def _has_formula_result(value: Any) -> bool:
-    return isinstance(value, dict) and bool(value.get("formula_text"))

@@ -23,7 +23,6 @@ llm:
   retry_base_delay_seconds: 2
   retry_max_delay_seconds: 20
   request_timeout_seconds: 60
-  request_sleep_seconds: 0
   max_context_chars: 160000
   # DeepSeek limits concurrency, not a request rate; this is only a local guard.
   key_pool:
@@ -52,7 +51,6 @@ cache:
   max_entries: 1000
 
 citations:
-  selection_max_sources: 5
   public_max_sources: 10
 
 guardrails:

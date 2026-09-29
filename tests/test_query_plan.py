@@ -72,7 +72,6 @@ def test_multi_table_fact_lock_reaches_actual_composer_prompt(monkeypatch, trans
     ])
     pipeline = _pipeline(plan)
     pipeline.max_context_chars = 10000
-    pipeline._throttle_llm_call = lambda: None
     pipeline._run_retrieval = lambda *args, **kwargs: {
         "query_plan": plan, "query": "Tra điểm", "effective_query": "Tra điểm",
         "coverage_by_task": {"t1": "covered"},
@@ -1603,7 +1602,6 @@ def test_compound_plan_calls_answer_llm_once(monkeypatch) -> None:
     pipeline.llm_config = {"model_name": "fake"}
     pipeline.config.update({"citations": {"max_sources": 5}, "guardrails": {"skip_llm_on_low_confidence": True}})
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
-    pipeline._throttle_llm_call = lambda: None
 
     class Cache:
         def make_cache_key(self, **kwargs):
@@ -1698,7 +1696,6 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     pipeline = _pipeline(plan)
     pipeline.max_context_chars = 10000
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
-    pipeline._throttle_llm_call = lambda: None
     pipeline.config.update(
         {
             "citations": {"max_sources": 5},
@@ -1816,8 +1813,6 @@ def test_stream_cleans_internal_labels_sources_and_reports_terminal_status(
     pipeline = _pipeline(plan)
     pipeline.max_context_chars = 10000
     pipeline.llm_config = {"model_name": "fake"}
-    pipeline.request_sleep_seconds = 0
-    pipeline._last_llm_call_at = 0
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
 
     class Cache:
@@ -1923,8 +1918,6 @@ def test_stream_failure_finishes_with_api_error_metadata(monkeypatch) -> None:
     pipeline = _pipeline(plan)
     pipeline.max_context_chars = 10000
     pipeline.llm_config = {"model_name": "fake"}
-    pipeline.request_sleep_seconds = 0
-    pipeline._last_llm_call_at = 0
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
 
     class Cache:

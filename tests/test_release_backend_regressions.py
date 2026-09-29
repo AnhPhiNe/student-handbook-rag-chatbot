@@ -62,7 +62,7 @@ def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
     pipeline.slang_normalizer = SlangNormalizer()
     pipeline.config = {
         "planning": {"max_citations": 10},
-        "citations": {"selection_max_sources": 5, "public_max_sources": 10},
+        "citations": {"public_max_sources": 10},
         "guardrails": {"skip_llm_on_low_confidence": False},
     }
     pipeline.model = None
@@ -75,8 +75,6 @@ def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
     pipeline.parent_sources_by_id = {}
     pipeline.max_context_chars = 10000
     pipeline.llm_config = {"model_name": "fake"}
-    pipeline.request_sleep_seconds = 0
-    pipeline._last_llm_call_at = 0
     pipeline.response_cache = _Cache()
     return pipeline
 

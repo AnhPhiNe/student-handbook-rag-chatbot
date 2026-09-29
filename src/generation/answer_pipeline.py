@@ -23,17 +23,8 @@ from .answer_formatter import (
     format_final_response,
     sources_section_start,
 )
-from .answer_guardrails import (
-    build_clarification_question,
-    build_fallback_answer,
-    detect_ambiguous_query,
-    is_low_confidence,
-    is_out_of_domain_query,
-)
-from .citation_formatter import (
-    prioritize_citations_by_answer_anchors,
-    select_relevant_citations,
-)
+from .answer_guardrails import build_fallback_answer, is_low_confidence
+from .citation_formatter import prioritize_citations_by_answer_anchors
 from .deepseek_client import DeepSeekClient
 from .prompt_builder import (
     ANSWER_PROMPT_VERSION,
@@ -114,7 +105,6 @@ class PreparedAnswer:
     error_type: str | None = None
     error_message: str | None = None
     clarification_needed: bool = False
-    query_type_override: str | None = None
 
 
 class StreamAnswerCleaner:
@@ -303,8 +293,6 @@ class AnswerPipeline:
         self.max_context_chars = int(
             llm_config.get("max_context_chars", DEFAULT_MAX_CONTEXT_CHARS)
         )
-        self.request_sleep_seconds = float(llm_config.get("request_sleep_seconds", 2))
-        self._last_llm_call_at = 0.0
 
         cache_config = self.config.get("cache", {})
         self.response_cache = get_response_cache(
@@ -312,10 +300,6 @@ class AnswerPipeline:
             ttl_seconds=cache_config.get("ttl_seconds", 86400),
             max_entries=cache_config.get("max_entries", 1000),
         )
-
-    def _selection_source_limit(self) -> int:
-        citations = self.config.get("citations", {})
-        return max(1, int(citations.get("selection_max_sources", 5)))
 
     def _public_source_limit(self) -> int:
         citations = self.config.get("citations", {})
@@ -407,18 +391,6 @@ class AnswerPipeline:
             prepared.clarification_needed = True
             return prepared
 
-        if not retrieval_result.get("query_plan") and detect_ambiguous_query(
-            effective_query, retrieval_result
-        ):
-            prepared.terminal_status = "needs_clarification"
-            prepared.terminal_answer = build_clarification_question(
-                effective_query, retrieval_result
-            )
-            prepared.fallback_reason = "ambiguous_query"
-            prepared.clarification_needed = True
-            prepared.query_type_override = "ambiguous"
-            return prepared
-
         if retrieval_result.get("out_of_domain"):
             prepared.terminal_status = "out_of_domain"
             prepared.terminal_answer = (
@@ -430,31 +402,11 @@ class AnswerPipeline:
             prepared.fallback_reason = "out_of_domain"
             return prepared
 
-        if not retrieval_result.get("query_plan") and is_out_of_domain_query(
-            effective_query, retrieval_result
-        ):
-            prepared.terminal_status = "out_of_domain"
-            prepared.terminal_answer = build_fallback_answer(
-                effective_query,
-                retrieval_result,
-                reason="out_of_domain",
-            )
-            prepared.fallback_reason = "out_of_domain"
-            return prepared
-
-        if retrieval_result.get("query_plan"):
-            prepared.selected_citations = list(
-                retrieval_result.get("evidence_citations")
-                or retrieval_result.get("citations")
-                or []
-            )
-        else:
-            prepared.selected_citations = select_relevant_citations(
-                retrieval_result.get("citations"),
-                intent=retrieval_result.get("intent"),
-                retrieval_result=retrieval_result,
-                max_sources=self._selection_source_limit(),
-            )
+        prepared.selected_citations = list(
+            retrieval_result.get("evidence_citations")
+            or retrieval_result.get("citations")
+            or []
+        )
 
         guardrails = self.config.get("guardrails", {})
         if guardrails.get("skip_llm_on_low_confidence", True) and is_low_confidence(
@@ -623,7 +575,6 @@ class AnswerPipeline:
                 used_cache=False,
             )
 
-        self._throttle_llm_call()
         start_time_llm = datetime.now(timezone.utc).isoformat()
         llm_started = time.monotonic()
         llm_result = llm_client.generate(prompt)
@@ -632,7 +583,6 @@ class AnswerPipeline:
             telemetry["llm_ms"] = (time.monotonic() - llm_started) * 1000
             telemetry["key_fingerprint"] = llm_result.get("key_fingerprint")
             telemetry["retry_count"] = max(0, int(llm_result.get("attempts") or 1) - 1)
-        self._last_llm_call_at = time.monotonic()
 
         if llm_result.get("ok"):
             _record_generation_usage(
@@ -750,7 +700,6 @@ class AnswerPipeline:
         related_references: list[dict[str, Any]] | None = None,
         llm_called: bool = False,
         used_cache: bool = False,
-        query_type_override: str | None = None,
     ) -> dict[str, Any]:
         """Build standardized metadata chunk for streaming responses dynamically."""
         res = retrieval_result or {}
@@ -759,8 +708,7 @@ class AnswerPipeline:
         execution_mode = res.get("execution_mode") or "regulation"
         lookup_type = res.get("lookup_type")
         query_type = (
-            query_type_override
-            or res.get("query_type")
+            res.get("query_type")
             or query_handling.get("context_mode")
             or "standalone"
         )
@@ -861,7 +809,6 @@ class AnswerPipeline:
                 fallback_reason=prepared.fallback_reason,
                 error_type=prepared.error_type,
                 citations_used=selected_citations,
-                query_type_override=prepared.query_type_override,
             )
             yield {"type": "token", "text": prepared.terminal_answer or ""}
             yield {
@@ -915,7 +862,6 @@ class AnswerPipeline:
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
-            self._throttle_llm_call()
             stream_result: dict[str, Any] = {}
             llm_called = True
             llm_stream = iter(llm_client.generate_stream(prepared.prompt))
@@ -934,7 +880,6 @@ class AnswerPipeline:
             if not final_answer_for_citations.strip():
                 raise RuntimeError("Empty answer after output cleanup.")
             end_time_llm = datetime.now(timezone.utc).isoformat()
-            self._last_llm_call_at = time.monotonic()
 
             stream_usage = stream_result.get("usage") or {}
             if stream_usage:
@@ -1041,16 +986,6 @@ class AnswerPipeline:
                     self._llm_client = create_composer_client(self.config["llm"])
         return self._llm_client
 
-    def _throttle_llm_call(self) -> None:
-        """Respect configured spacing between outbound LLM calls."""
-        if self.request_sleep_seconds <= 0 or self._last_llm_call_at <= 0:
-            return
-
-        elapsed = time.monotonic() - self._last_llm_call_at
-        remaining = self.request_sleep_seconds - elapsed
-        if remaining > 0:
-            time.sleep(remaining)
-
     def _build_output(
         self,
         query: str,
@@ -1119,8 +1054,6 @@ class AnswerPipeline:
                 retrieval_result.get("structured_result"),
                 citations=list(retrieval_result.get("citations") or []),
             ),
-            "formula_result": retrieval_result.get("formula_result"),
-            "tool_result": retrieval_result.get("tool_result"),
             "query_plan": retrieval_result.get("query_plan"),
             "task_results": retrieval_result.get("task_results") or [],
             "coverage_by_task": retrieval_result.get("coverage_by_task") or {},

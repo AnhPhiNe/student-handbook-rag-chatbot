@@ -847,7 +847,6 @@ def run_hybrid_retrieval_pipeline(
         "strategy": strategy,
         "target_chunk_types": target_chunk_types,
         "structured_result": None,
-        "tool_result": None,
         "retrieved_items": formatted_results,
         "related_items": related_items,
         "related_references": related_references,

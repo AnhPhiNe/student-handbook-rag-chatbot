@@ -69,7 +69,6 @@ def _pipeline(chunks):
     pipeline.max_context_chars = 10000
     pipeline.response_cache = ResponseCache()
     pipeline._run_retrieval = lambda *args, **kwargs: result
-    pipeline._throttle_llm_call = lambda: None
     llm = Mock()
     llm.generate.return_value = {"ok": True, "text": "".join(chunks), "usage": {}}
     llm.generate_stream.side_effect = lambda prompt: iter(chunks)

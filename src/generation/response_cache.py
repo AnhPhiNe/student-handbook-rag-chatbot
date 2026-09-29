@@ -47,7 +47,6 @@ def make_cache_key(
             for citation in (selected_citations or [])
         ],
         "structured_result": retrieval_result.get("structured_result"),
-        "tool_result": retrieval_result.get("tool_result"),
     }
     stable_json = json.dumps(payload, ensure_ascii=False, sort_keys=True, default=str)
     return hashlib.sha256(stable_json.encode("utf-8")).hexdigest()

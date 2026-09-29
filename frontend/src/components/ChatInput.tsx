@@ -173,6 +173,8 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
         </div>
         <p className="disclaimer">
           Trợ lý AI có thể mắc lỗi. Vui lòng kiểm tra thông tin quan trọng.
+          <br />
+          Cuộc trò chuyện được lưu để cải thiện chất lượng, vui lòng không nhập thông tin cá nhân (MSSV, số điện thoại…).
         </p>
       </form>
     </div>

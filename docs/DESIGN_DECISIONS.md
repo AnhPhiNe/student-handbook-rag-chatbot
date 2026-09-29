@@ -462,6 +462,24 @@ The complete current stack, on development data:
   liên hệ" and "để được hướng dẫn", so other wordings could be missed, and the
   saved answers hold few questions the handbook cannot answer. Revisit if a
   trace shows a suggestion naming the wrong unit.
+- Whether answers should leave out the branch campus (Phân hiệu Long An). The
+  chatbot serves the main campus. Branch contacts cannot reach an answer: none
+  of the 494 records in the service, office, faculty and program catalogs
+  names the branch, and every contact in an answer comes from those catalogs.
+  Branch text can still arrive through retrieved handbook text. Across the 768
+  saved answers, 10 questions (none asking about the branch) had answers
+  mentioning it:
+  - 8 quote regulation wording that applies to every student ("xác nhận của
+    Trưởng khoa hoặc Giám đốc phân hiệu");
+  - 1 lists the forms page's links under a separate "Tại phân hiệu" heading.
+
+  The transfer question above also listed the rule for the branch's college
+  programme in early-childhood education, marked as such. The composer does
+  this because it is told to present every case it cannot rule out, and it is
+  never told the student studies at the main campus. It is left as it is: the
+  text is faithful and labelled, and forbidding branch content would drop real
+  conditions from the regulations. If shorter answers are wanted, telling the
+  composer the student's campus is the change to try, measured with the judge.
 
 ## Raw reports
 

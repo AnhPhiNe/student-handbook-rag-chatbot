@@ -24,6 +24,7 @@ from src.retrieval.core.hybrid_pipeline import (
     run_hybrid_retrieval_pipeline,
     select_graph_related_parent_candidates,
 )
+from src.retrieval.core.query_plan import grounding_text
 
 
 def _merge_structured_citation_content(
@@ -224,12 +225,14 @@ class PlanExecutor:
                 "out_of_domain": True,
             }
 
+        grounding = grounding_text(query, plan, chat_history)
         try:
             task_executions = [
                 self.execute_task(
                     task=task,
                     task_index=index,
                     default_cohort=cohort,
+                    grounding=grounding,
                 )
                 for index, task in enumerate(plan.get("tasks") or [])
             ]
@@ -257,8 +260,13 @@ class PlanExecutor:
         task: dict[str, Any],
         task_index: int,
         default_cohort: str | None,
+        grounding: str | None = None,
     ) -> dict[str, Any]:
-        """Execute one planned task across its cohorts and normalize the result."""
+        """Execute one planned task across its cohorts and normalize the result.
+
+        ``grounding`` is the student's own words (`grounding_text`); without it
+        a structured task is grounded in its own question.
+        """
 
         task_id = str(task.get("id") or f"t{task_index + 1}")
         mode = task.get("mode")
@@ -305,6 +313,7 @@ class PlanExecutor:
                     task=task,
                     task_id=task_id,
                     cohort=task_cohort,
+                    grounding=grounding,
                 )
             else:
                 sub_result = self._execute_planned_rag_task(
@@ -476,6 +485,7 @@ class PlanExecutor:
         task: dict[str, Any],
         task_id: str,
         cohort: str | None,
+        grounding: str | None = None,
     ) -> dict[str, Any]:
         """Execute one structured lookup task and normalize its evidence packet."""
 
@@ -483,10 +493,11 @@ class PlanExecutor:
 
         resolution = resolve_structured_task(
             task,
-            # Slot spans refer to the task's literal text. Retrieval expansion
-            # may insert words inside a valid span (e.g. GPA), so it must not
-            # become the source against which structured grounding is checked.
             query=str(task.get("question") or ""),
+            # Slot spans are quoted from the student's words, not from the
+            # planner's task question, and never from the retrieval rewrite
+            # (which may insert words inside a valid span, e.g. GPA).
+            grounding=grounding,
             cohort=cohort,
             formula_rules=self.catalogs.formula_rules,
             office_directory=self.catalogs.office_directory,

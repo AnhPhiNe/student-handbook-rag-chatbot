@@ -483,6 +483,35 @@ def normalize_query_plan(
     return plan, errors
 
 
+def visible_history_turns(
+    chat_history: list[dict[str, str]] | None,
+) -> dict[int, tuple[str, str]]:
+    """One bounded history view for both prompt display and slot grounding."""
+    turns: dict[int, tuple[str, str]] = {}
+    for index, item in enumerate((chat_history or [])[-4:]):
+        if not isinstance(item, dict):
+            continue
+        content = str(item.get("content") or "")[:300]
+        if content.strip():
+            turns[index] = (str(item.get("role") or "user"), content)
+    return turns
+
+
+def grounding_text(query: str, plan: dict[str, Any], chat_history: list[dict[str, str]] | None) -> str:
+    """The student's words a plan's slot values must come from.
+
+    The question, plus for a follow-up the history turns the plan references:
+    the same text `normalize_query_plan` checked the plan against. A task's
+    `question` is the planner's own rewording, so values are never grounded
+    in it alone.
+    """
+    if plan.get("context_mode") != "follow_up":
+        return query
+    turns = visible_history_turns(chat_history)
+    referenced = [turns[index][1] for index in plan.get("referenced_turns") or [] if index in turns]
+    return "\n".join([query, *referenced])
+
+
 def _history_references(
     payload: dict[str, Any],
     context_mode: str,

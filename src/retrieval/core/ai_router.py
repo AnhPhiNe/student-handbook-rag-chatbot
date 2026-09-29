@@ -27,6 +27,7 @@ from .query_plan import (
     normalize_query_plan,
     query_plan_strict_response_schema,
     QUERY_PLAN_STRICT_SCHEMA_VERSION,
+    visible_history_turns,
 )
 
 
@@ -56,20 +57,6 @@ def _explicit_request_count(query: str) -> int | None:
             break
         count += 1
     return count if count >= 2 else None
-
-
-def _visible_history_turns(
-    chat_history: list[dict[str, str]] | None,
-) -> dict[int, tuple[str, str]]:
-    """One bounded history view for both prompt display and slot grounding."""
-    turns: dict[int, tuple[str, str]] = {}
-    for index, item in enumerate((chat_history or [])[-4:]):
-        if not isinstance(item, dict):
-            continue
-        content = str(item.get("content") or "")[:300]
-        if content.strip():
-            turns[index] = (str(item.get("role") or "user"), content)
-    return turns
 
 
 PLANNER_SYSTEM_PROMPT = """
@@ -551,7 +538,7 @@ class AIRouter:
         )
         visible_history = {
             index: content
-            for index, (_, content) in _visible_history_turns(chat_history).items()
+            for index, (_, content) in visible_history_turns(chat_history).items()
         }
         dynamic_prompt = self._build_plan_prompt(
             query,
@@ -727,7 +714,7 @@ class AIRouter:
     ) -> str:
         history_lines = [
             f"[{index}] {role}:{content}"
-            for index, (role, content) in _visible_history_turns(chat_history).items()
+            for index, (role, content) in visible_history_turns(chat_history).items()
         ]
         history = "\n".join(history_lines) or "none"
         cohort_years = json.dumps(

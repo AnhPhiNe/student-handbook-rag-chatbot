@@ -579,8 +579,13 @@ def resolve_structured_task(
     structured_tables_registry: list[dict[str, Any]],
     program_directory: list[dict[str, Any]],
     directory_selector: DirectorySelector | None = None,
+    grounding: str | None = None,
 ) -> StructuredResolution | None:
     """Run one validated structured task with the resolver for its lookup family.
+
+    ``query`` is the task's question. ``grounding`` is the student's own words
+    (see `grounding_text`); a table row is pinned only from values found there.
+    It defaults to ``query`` for callers that run a task on its own.
 
     Four families: reference tables (scoring, scholarship, foreign language,
     study duration and the other regulation tables), directories (student
@@ -601,7 +606,7 @@ def resolve_structured_task(
 
     if lookup_type in _REFERENCE_TABLE_TYPES:
         return _resolve_reference_table(
-            lookup_type, task, slots, query=query, cohort=effective_cohort,
+            lookup_type, task, slots, query=query, grounding=grounding or query, cohort=effective_cohort,
             structured_tables_registry=structured_tables_registry,
         )
     directories = {
@@ -634,16 +639,18 @@ def _resolve_reference_table(
     slots: dict[str, Any],
     *,
     query: str,
+    grounding: str,
     cohort: str | None,
     structured_tables_registry: list[dict[str, Any]],
 ) -> StructuredResolution | None:
     """Return every applicable reference table, and pin a row when exactly one fits.
 
     The composer always receives the complete tables. When the task's values
-    are grounded in the question and select exactly one row, that row is also
-    attached as `resolved_result` (the fact lock), and the answer must state it.
+    are grounded in the student's words and select exactly one row, that row is
+    also attached as `resolved_result` (the fact lock), and the answer must
+    state it.
     """
-    resolution_slots = _grounded_resolution_slots(task, slots, query) if lookup_type == "scoring" else slots
+    resolution_slots = _grounded_resolution_slots(task, slots, grounding) if lookup_type == "scoring" else slots
     candidates = _select_reference_tables(lookup_type, slots, [
         table for table in structured_tables_registry
         if table.get("data_category") == "regulation_table"
@@ -664,7 +671,7 @@ def _resolve_reference_table(
     if (
         result is not None
         and not result.get("needs_clarification")
-        and not validate_fact_lock_inputs(task, query=query)
+        and not validate_fact_lock_inputs(task, query=grounding)
     ):
         resolved_result = _unique_reference_resolution(
             lookup_type,
@@ -709,11 +716,11 @@ def _resolve_reference_table(
 def _grounded_resolution_slots(
     task: dict[str, Any],
     slots: dict[str, Any],
-    query: str,
+    grounding: str,
 ) -> dict[str, Any]:
-    """The scoring slots a row may be computed from: operands grounded in the question.
+    """The scoring slots a row may be computed from: operands grounded in the student's words.
 
-    Each numeric score must appear in the question (with its scale, e.g.
+    Each numeric score must appear in them (with its scale, e.g.
     "3,6/4", when the student wrote one). If any does not, no slots are
     returned: the tables are still shown as evidence but no row is computed.
     """
@@ -727,7 +734,7 @@ def _grounded_resolution_slots(
             grounded_values.append(value)
             continue
         score = grounded_score(
-            value, (task.get("slot_spans") or {}).get("score_or_grade"), query,
+            value, (task.get("slot_spans") or {}).get("score_or_grade"), grounding,
         )
         if score is None:
             return {}

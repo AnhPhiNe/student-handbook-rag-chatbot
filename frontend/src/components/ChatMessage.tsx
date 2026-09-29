@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { memo, useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
@@ -508,7 +508,7 @@ function highlightKeywords(text: string, query?: string, relevantExcerpt?: strin
     .join('');
 }
 
-export function ChatMessage({ message, onRegenerate, onRetry, query, onSuggestionClick }: ChatMessageProps) {
+function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionClick }: ChatMessageProps) {
   const effectiveQuery = message.userQuery || query;
   const defaultShowSources = !!(message.citations && message.citations.length > 0 && message.citations.length <= 2);
   const [showSources, setShowSources] = useState(defaultShowSources);
@@ -1029,3 +1029,7 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
     </div>
   );
 }
+
+// Re-render a message only when its own props change: while an answer streams,
+// the other messages in the conversation keep their rendered markdown.
+export const ChatMessage = memo(ChatMessageView);

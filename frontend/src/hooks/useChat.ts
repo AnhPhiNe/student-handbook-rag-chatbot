@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { getApiClientHeaders } from '../utils/clientIdentity';
 
 export interface Citation {
@@ -119,8 +119,18 @@ export function useChat(cohort: string = 'K48-K49') {
     }
   }, [messages, isTyping]);
 
+  // The callbacks below read the latest messages through refs, so they keep the
+  // same identity while an answer streams in. Otherwise every typing tick would
+  // hand ChatMessage new callbacks and re-render (re-parse the markdown of)
+  // every message in the conversation.
+  const messagesRef = useRef(messages);
+  const isTypingRef = useRef(isTyping);
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
+  useEffect(() => { isTypingRef.current = isTyping; }, [isTyping]);
+
   const sendMessage = useCallback(async (text: string) => {
-    if (!text.trim() || isTyping) return;
+    if (!text.trim() || isTypingRef.current) return;
+    isTypingRef.current = true;  // blocks a second send before the next render
 
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const userMsg: Message = { 
@@ -166,12 +176,14 @@ export function useChat(cohort: string = 'K48-K49') {
       usedCache: boolean;
     } | null = null;
 
-    // Bộ đệm làm mịn hiệu ứng gõ chữ (Smooth Typewriter Ticker: 16ms/frame)
+    // Bộ đệm làm mịn hiệu ứng gõ chữ: ~30 lần/giây. Mỗi lần cập nhật phải phân
+    // tích lại markdown của tin nhắn đang gõ, nên 60 lần/giây làm rớt khung hình
+    // với câu trả lời dài; bước gấp đôi giữ nguyên tốc độ gõ (~500 ký tự/giây).
     const typingTimer = setInterval(() => {
       if (displayedBotContent.length < targetBotContent.length) {
         const diff = targetBotContent.length - displayedBotContent.length;
         // Tự động điều chỉnh số ký tự mỗi tick để gõ nhịp nhàng:
-        const step = diff > 100 ? 8 : diff > 40 ? 4 : diff > 15 ? 2 : 1;
+        const step = diff > 100 ? 16 : diff > 40 ? 8 : diff > 15 ? 4 : 2;
         displayedBotContent = targetBotContent.slice(0, displayedBotContent.length + step);
 
         setMessages(prev => prev.map(m => 
@@ -201,10 +213,11 @@ export function useChat(cohort: string = 'K48-K49') {
           ));
         }
       }
-    }, 16);
+    }, 33);
 
     try {
-      const chatHistory = messages
+      // Read before any await: the ref still holds the messages before this question.
+      const chatHistory = messagesRef.current
         .filter(m => !m.isStreaming && !m.isHardcoded)
         .slice(-8)
         .map(m => ({
@@ -344,10 +357,10 @@ export function useChat(cohort: string = 'K48-K49') {
       ));
       setIsTyping(false);
     }
-  }, [messages, isTyping, cohort]);
+  }, [cohort]);
 
   const sendHardcodedMessage = useCallback((userText: string, botResponse: string, suggestions?: string[]) => {
-    if (isTyping) return;
+    if (isTypingRef.current) return;
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
     // User message
@@ -372,7 +385,7 @@ export function useChat(cohort: string = 'K48-K49') {
     };
 
     setMessages(prev => [...prev, userMsg, botMsg]);
-  }, [isTyping]);
+  }, []);
 
   const clearMessages = useCallback(() => {
     setMessages([]);
@@ -381,8 +394,8 @@ export function useChat(cohort: string = 'K48-K49') {
   }, []);
 
   const retryLastMessage = useCallback(async () => {
-    const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
-    if (!lastUserMsg || isTyping) return;
+    const lastUserMsg = [...messagesRef.current].reverse().find(m => m.role === 'user');
+    if (!lastUserMsg || isTypingRef.current) return;
     setMessages(prev => {
       const newMessages = [...prev];
       const lastBotIdx = newMessages.findLastIndex(m => m.role === 'bot');
@@ -390,14 +403,14 @@ export function useChat(cohort: string = 'K48-K49') {
       return newMessages;
     });
     await sendMessage(lastUserMsg.content);
-  }, [messages, isTyping, sendMessage]);
+  }, [sendMessage]);
 
   const regenerateLastMessage = useCallback(async () => {
-    const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
-    if (!lastUserMsg || isTyping) return;
+    const lastUserMsg = [...messagesRef.current].reverse().find(m => m.role === 'user');
+    if (!lastUserMsg || isTypingRef.current) return;
     setMessages(prev => prev.slice(0, -1));
     await sendMessage(lastUserMsg.content);
-  }, [messages, isTyping, sendMessage]);
+  }, [sendMessage]);
 
   return {
     messages,

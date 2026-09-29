@@ -167,7 +167,10 @@ characters counts as one edit) and logged otherwise. The limits are not wider
 because real identifiers sit close together: across the handbook data, 4 pairs
 of document codes (such as 11/2020/NĐ-CP and 110/2020/NĐ-CP), 2 pairs of phone
 numbers and 294 pairs of room numbers are one edit apart.
-Numbers are left to the fact lock and the judge.
+Numbers are left to the fact lock and the judge. In a streamed answer the text is
+released only at whitespace (a run without whitespace is held up to twice the
+256-character buffer), so an identifier is never split between two releases
+and is corrected before the student sees it.
 
 ### Composer prompt history
 
@@ -327,6 +330,21 @@ calls fell back to RRF. Any failure keeps the RRF order.
 | Reranker timeout | 10 s, no retry | Cohere went from 5 s to 8 s when 24 candidates took up to 4.0 s; for Qwen3-Reranker-8B (max 9.3 s) 3 of 30 live calls fell back at 8 s. A retry would only double the wait at an overloaded service |
 | Query embedding | 5 s timeout, 1 retry; on failure BM25 serves alone | Retrieval used to return nothing when the embedding call failed; with the API embedder a timeout now costs ranking quality, not the answer |
 | Skipped rerank | Logged as a warning and recorded in telemetry | Trial-key limits used to skip reranking silently, dropping hit@1 from 0.897 to 0.832 |
+
+## Defects found in the 2026-09-29 review
+
+Each of these reached, or would have reached, a student. They were found by
+reading traces, by new tests, or by checking an assumption, and each fix was
+checked against the saved plans and answers.
+
+| Defect | How it was found | Fix and why this one | Check |
+|---|---|---|---|
+| **A unit vanished from the evidence.** "email khoa toán, sdt khoa cntt" (K51) answered that the handbook gives no phone for Khoa CNTT, 4 times out of 4 | A student-style question in LangSmith; the planner and lookups were right, the evidence packet was not | A directory lookup cites its whole catalog (`student_faculty_profiles`), and the task merge keyed citations by that id, so two units of one catalog in two tasks collapsed into the first. The merge key now includes the record ids of directory evidence. Keying on the record, not on the catalog, keeps each task's evidence its own while the same record cited twice is still one source | Regression test; 3 of 2,488 saved plans change, all "email Khoa Tiếng Anh và Khoa Tiếng Pháp", which had lost Khoa Tiếng Pháp |
+| **Glued words in streamed answers** ("sinh viênnộp") | A new unit test for the stream cleaner | The held-back tail was flushed through `clean_answer`, which strips it; its leading space is now kept once text has been shown. `PIPELINE_VERSION` moved so cached glued answers are not served | 24 of the 150 saved answers, replayed as streams, would have glued two words |
+| **Repeated words in the slang rewrite** ("xếp loại tốt nghiệp tốt nghiệp", "phòng khảo thí và đảm bảo chất lượng và đảm bảo chất lượng") | Reading the rewritten development questions | A replacement ending with the words the student wrote next drops those words. Only an overlap of two or more words counts: one shared word is often a coincidence ("đăng ký môn phần mềm" must keep "phần mềm") | Exactly 5 rewrites change on 681 questions, all of them repetitions |
+| **Planner capped at 30 questions a minute** and failing on a busy key | Checking the key pool settings against the account's limits | See Planner rate limits under Operations | Offline simulation |
+| **The image would not start: networkx undeclared** | Regenerating the dependency constraints | `graph_traverser.py` imports networkx, which only torch had pulled in; dropping torch with the API embeddings would have left the next Docker build without it. It is now in `requirements.txt` | Import audit of `src/` against `requirements.txt` |
+| **Stale dependency constraints** | The same audit | The constraints are regenerated with uv for the Docker target (CPython 3.11, Linux x86_64): 26 pins nothing installs removed, 5 unpinned packages pinned, no version changed. pip cannot do this from Windows: it evaluates platform markers for the host | All 66 pins resolve to prebuilt Linux wheels, which `python:3.11-slim` needs |
 
 ## Earlier held-out results (official_v2, stack of 2026-09-12)
 

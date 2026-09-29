@@ -510,65 +510,6 @@ def _valid_plan_task() -> dict:
     }
 
 
-def test_planner_repairs_an_explicit_numbered_task_count_once(
-    monkeypatch, tmp_path,
-) -> None:
-    query = (
-        "Thứ nhất: Điều 1 nói gì? Thứ hai: Điều 2 nói gì? "
-        "Thứ ba: Điều 3 nói gì?"
-    )
-    calls = _mock_plan_response_sequence(
-        monkeypatch,
-        [
-            [_rag_task("Điều 1 nói gì?"), _rag_task("Điều 2 nói gì?")],
-            [
-                _rag_task("Điều 1 nói gì?"),
-                _rag_task("Điều 2 nói gì?"),
-                _rag_task("Điều 3 nói gì?"),
-            ],
-        ],
-    )
-    router = _router(monkeypatch, tmp_path)
-
-    plan = router.plan(query, cohort="K51")
-
-    assert len(calls) == 2
-    assert calls[0]["max_output_tokens"] == 8192
-    assert calls[1]["max_output_tokens"] == 8192
-    assert len(plan["tasks"]) == 3
-    assert plan["planner_repairs"] == 1
-    assert "VALIDATION_FEEDBACK" in calls[1]["messages"][-1]["content"]
-    assert not plan.get("planner_fallback")
-
-
-def test_planner_count_discrepancy_is_rechecked_but_not_a_hard_execution_gate(
-    monkeypatch, tmp_path,
-) -> None:
-    query = (
-        "Thứ nhất: Điều 1 nói gì? Thứ hai: Điều 2 nói gì? "
-        "Thứ ba: Điều 3 nói gì?"
-    )
-    calls = _mock_plan_response_sequence(
-        monkeypatch,
-        [
-            [_rag_task("Điều 1 nói gì?"), _rag_task("Điều 2 nói gì?")],
-            [_rag_task("Điều 1 nói gì?"), _rag_task("Điều 2 nói gì?")],
-        ],
-    )
-    router = _router(monkeypatch, tmp_path)
-
-    plan = router.plan(query, cohort="K51")
-
-    assert len(calls) == 2
-    # Counts alone cannot distinguish an omitted target from legal grouping or
-    # OOD removal. This fixture remains semantically incomplete: the new policy
-    # does not claim that a second model answer proves complete target coverage.
-    assert len(plan["tasks"]) == 2
-    assert plan["planner_repairs"] == 1
-    assert not plan.get("planner_fallback")
-    assert "không thêm task chỉ để khớp số marker" in calls[1]["messages"][-1]["content"]
-
-
 @pytest.mark.parametrize(
     ("raw_mode", "lookup_type", "expected_mode", "error_marker"),
     [

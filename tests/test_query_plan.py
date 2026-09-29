@@ -363,7 +363,8 @@ def test_terminal_out_of_domain_does_not_require_executable_tasks() -> None:
     assert plan["planner_fallback"] is None
 
 
-def test_handbook_domain_signal_overrides_false_out_of_domain() -> None:
+def test_out_of_domain_is_kept_even_when_the_query_names_a_handbook_topic() -> None:
+    # The planner decides the scope; no keyword list overrides it.
     query = "K51 co duoc boi hoan hoc phi khi nghi hoc khong?"
     plan, errors = normalize_query_plan(
         {
@@ -380,11 +381,8 @@ def test_handbook_domain_signal_overrides_false_out_of_domain() -> None:
     )
 
     assert errors == []
-    assert plan["out_of_domain"] is False
-    assert plan["planner_fallback"] == "domain_signal_overrides_out_of_domain"
-    assert plan["tasks"][0]["mode"] == "rag"
-    assert plan["tasks"][0]["question"] == query
-    assert plan["tasks"][0]["cohorts"] == ["K51"]
+    assert plan["out_of_domain"] is True
+    assert plan["tasks"] == []
 
 
 def test_unrelated_reimbursement_query_remains_out_of_domain() -> None:

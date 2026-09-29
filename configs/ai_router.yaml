@@ -3,7 +3,6 @@
 model_name: gpt-6-luna
 reasoning_effort: medium
 max_output_tokens: 8192
-output_tokens_per_task: 640
 hard_max_output_tokens: 8192
 request_timeout_seconds: 20
 max_retries: 1

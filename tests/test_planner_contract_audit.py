@@ -639,7 +639,6 @@ def test_numbered_ood_query_does_not_trigger_count_repair(offline_router, monkey
     result = offline_router.plan(query, cohort="K50")
     assert len(calls) == 1
     assert result["out_of_domain"] is True
-    assert result["planner_repairs"] == 0
 
 
 @pytest.mark.parametrize("value", ["email", "all", ["email", "phone"]])
@@ -660,37 +659,6 @@ def test_directory_requested_field_scalar_and_list_contract(monkeypatch, value):
         assert result.result["requested_field"] is not value
 
 
-def test_repair_revalidates_history_references_instead_of_reusing_initial_grounding(
-    offline_router, monkeypatch
-):
-    query = "Thứ nhất email đơn vị đó? Thứ hai website đơn vị đó?"
-    first = _follow_up_payload()
-    first["normalized_query"] = query
-    second = deepcopy(first)
-    second["referenced_turns"] = [1]
-    responses = iter([first, second])
-    calls = []
-
-    def request(**kwargs):
-        calls.append(kwargs)
-        return _RouterCompletion(
-            json.dumps(next(responses)), {"input": 1, "output": 1, "total": 2}, "stop"
-        )
-
-    monkeypatch.setattr(offline_router, "_chat_completion", request)
-    result = offline_router.plan(
-        query,
-        cohort="K50",
-        chat_history=[
-            {"role": "user", "content": "Phòng Đào tạo"},
-            {"role": "assistant", "content": "Nội dung khác."},
-        ],
-    )
-    assert len(calls) == 2
-    assert result["tasks"][0]["mode"] == "clarify"
-    assert "t1:ungrounded_slot:office" in result["planner_validation_errors"]
-
-
 def test_numbered_compatible_contact_requests_can_remain_grouped(
     offline_router, monkeypatch
 ):
@@ -701,9 +669,11 @@ def test_numbered_compatible_contact_requests_can_remain_grouped(
         question=query,
         slots={"office": "Phòng Đào tạo", "requested_field": ["email", "phone"]},
     )
-    _respond(monkeypatch, offline_router, payload)
+    calls = []
+    monkeypatch.setattr(offline_router, "_chat_completion", lambda **kwargs: calls.append(1) or _RouterCompletion(
+        json.dumps(payload), {"input": 1, "output": 1, "total": 2}, "stop"))
     result = offline_router.plan(query, cohort="K50")
-    assert result["planner_repairs"] == 1
+    assert calls == [1]
     assert not result.get("planner_fallback")
     assert len(result["tasks"]) == 1
     assert result["tasks"][0]["slots"]["requested_field"] == ["email", "phone"]

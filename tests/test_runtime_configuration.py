@@ -70,12 +70,10 @@ def test_parent_cache_evicts_oldest_entry_at_configured_limit() -> None:
     assert list(retriever.parent_cache) == ["p2", "p3"]
 
 
-def test_router_output_budget_scales_by_task_and_respects_cap() -> None:
+def test_router_output_budget_respects_the_hard_cap() -> None:
     router = AIRouter.__new__(AIRouter)
-    router.max_output_tokens = 768
-    router.output_tokens_per_task = 640
+    router.max_output_tokens = 8192
     router.hard_max_output_tokens = 1600
-
-    assert router._planner_output_token_limit(None) == 768
-    assert router._planner_output_token_limit(2) == 1280
-    assert router._planner_output_token_limit(3) == 1600
+    assert router._planner_output_token_limit() == 1600
+    router.hard_max_output_tokens = 8192
+    assert router._planner_output_token_limit() == 8192

@@ -27,25 +27,6 @@ MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
 
-_HANDBOOK_DOMAIN_PHRASES = (
-    "bao luu",
-    "chi phi boi hoan",
-    "chuan dau ra",
-    "chuyen nganh",
-    "chuyen truong",
-    "co van hoc tap",
-    "diem hoc bong",
-    "diem ren luyen",
-    "hoc bong",
-    "hoc phi",
-    "ky tuc xa",
-    "nghi hoc",
-    "quy che",
-    "so tay sinh vien",
-    "tin chi",
-    "tot nghiep",
-)
-
 _BARE_ARTICLE_QUESTION_WORDS = {
     "co",
     "dinh",
@@ -78,13 +59,6 @@ _COMPARISON_PHRASES = (
 
 
 _fold_query = partial(fold_text, keep="")
-
-
-def _has_handbook_domain_signal(query: str) -> bool:
-    """Reject terminal OOD only when the query has no strong handbook anchor."""
-
-    folded = _fold_query(query)
-    return any(phrase in folded for phrase in _HANDBOOK_DOMAIN_PHRASES)
 
 
 def _cohort_admission_year_conflict(
@@ -355,8 +329,7 @@ def normalize_query_plan(
        history: ask the student to restate the question.
     3. A cohort that contradicts the admission year in the question, or a bare
        "Điều N" with no document or topic: ask which one is meant.
-    4. Out of domain: no tasks, unless the question names a handbook topic
-       (then safe RAG).
+    4. Out of domain: no tasks.
     5. Each task is normalized on its own (`_normalize_task`), so one bad task
        does not invalidate its siblings. Identical lookups and per-cohort
        copies are merged; more than MAX_QUERY_TASKS asks the student to choose.
@@ -422,12 +395,6 @@ def normalize_query_plan(
             "hoặc về chủ đề cụ thể nào?",
             cohorts=[value for value in cohorts if value],
             fallback="bare_article_requires_document_or_topic",
-        ), []
-    if out_of_domain and _has_handbook_domain_signal(query):
-        return safe_rag_fallback_plan(
-            query,
-            default_cohort,
-            reason="domain_signal_overrides_out_of_domain",
         ), []
     if out_of_domain:
         return {

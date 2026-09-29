@@ -38,6 +38,7 @@ _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
 ROUTER_PROMPT_VERSION = "structured-regulation-v53-restore-conditions"
 
 
+# Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
 _EXPLICIT_REQUEST_MARKERS = (
     re.compile(r"\bthứ\s+nhất\b", re.IGNORECASE),
     re.compile(r"\bthứ\s+hai\b", re.IGNORECASE),
@@ -331,18 +332,6 @@ class _PlanAttempt:
     response: _RouterCompletion | None = None
 
 
-def _count_repair_feedback(expected: int, actual: int) -> str:
-    return (
-        "VALIDATION_FEEDBACK: QUERY có "
-        f"{expected} marker đánh số, "
-        f"nhưng plan có {actual} task. "
-        "Rà lại mọi target trong phạm vi để tránh bỏ sót. "
-        "Bỏ target ngoài phạm vi và gộp theo quy tắc logical tasks; "
-        "không thêm task chỉ để khớp số marker. "
-        "Trả lại toàn bộ plan đã kiểm tra."
-    )
-
-
 def _fall_back_on_fatal_errors(
     plan: dict[str, Any],
     validation_errors: list[str],
@@ -385,7 +374,6 @@ class AIRouter:
         key_pool_config: KeyPoolConfig | dict[str, Any] | None = None,
         cache_path: str = "data/cache/planner_cache.json",
         cache_enabled: bool = True,
-        output_tokens_per_task: int = 640,
         hard_max_output_tokens: int = 8192,
     ) -> None:
         load_project_env()
@@ -403,7 +391,6 @@ class AIRouter:
             )
         self.model_name = model_name
         self.max_output_tokens = max(64, int(max_output_tokens))
-        self.output_tokens_per_task = max(64, int(output_tokens_per_task))
         self.hard_max_output_tokens = max(
             self.max_output_tokens, int(hard_max_output_tokens)
         )
@@ -457,7 +444,6 @@ class AIRouter:
                 or config.get("max_output_tokens")
                 or 8192
             ),
-            output_tokens_per_task=int(config.get("output_tokens_per_task", 640)),
             hard_max_output_tokens=int(
                 os.environ.get("STUDENT_RAG_ROUTER_HARD_MAX_OUTPUT_TOKENS")
                 or config.get("hard_max_output_tokens")
@@ -483,15 +469,9 @@ class AIRouter:
             and not cache_disabled,
         )
 
-    def _planner_output_token_limit(self, explicit_request_count: int | None) -> int:
-        """Scale planner output capacity by task count under a hard cap."""
-
-        task_count = max(1, int(explicit_request_count or 1))
-        requested = max(
-            self.max_output_tokens,
-            self.output_tokens_per_task * task_count,
-        )
-        return min(requested, self.hard_max_output_tokens)
+    def _planner_output_token_limit(self) -> int:
+        """The planner's output budget: the configured size under the hard cap."""
+        return min(self.max_output_tokens, self.hard_max_output_tokens)
 
     def _chat_completion(
         self,
@@ -554,7 +534,9 @@ class AIRouter:
     ) -> dict[str, Any]:
         """Create a bounded, validated QueryPlan for one user message.
 
-        Each attempt asks for a plan on one key (see `_request_plan`). A
+        Each attempt asks for a plan on one key (see `_request_plan`). The
+        prompt states how many numbered requests ("thứ nhất", "thứ hai", ...)
+        the query has; the plan is not asked to match that count. A
         rate-limited key hands over to the next key; a timeout or server error
         is retried up to `max_retries` times; any other failure, running out
         of attempts, or a key still rate limited after the pool's wait budget
@@ -599,8 +581,7 @@ class AIRouter:
                 cache_hit=True,
             )
 
-        explicit_request_count = _explicit_request_count(query)
-        max_output_tokens = self._planner_output_token_limit(explicit_request_count)
+        max_output_tokens = self._planner_output_token_limit()
         estimated_tokens = max(
             128,
             int(prompt_stats["estimated_input_tokens"]) + max_output_tokens,
@@ -626,7 +607,7 @@ class AIRouter:
             attempts += 1
             attempt = _PlanAttempt()
             try:
-                plan, validation_errors, usage, planner_repairs = self._request_plan(
+                plan, validation_errors, usage = self._request_plan(
                     attempt,
                     trace,
                     api_key=key,
@@ -636,7 +617,6 @@ class AIRouter:
                     query=query,
                     cohort=cohort,
                     visible_history=visible_history,
-                    explicit_request_count=explicit_request_count,
                 )
                 self.key_pool.record_success(
                     key_id,
@@ -654,7 +634,6 @@ class AIRouter:
                         "key_fingerprint": key_id,
                         "router_cache_hit": False,
                         "attempts": attempts,
-                        "planner_repairs": planner_repairs,
                         "prompt_stats": prompt_stats,
                     },
                     final_plan=plan,
@@ -712,27 +691,12 @@ class AIRouter:
         query: str,
         cohort: str | None,
         visible_history: dict[int, str],
-        explicit_request_count: int | None,
-    ) -> tuple[dict[str, Any], list[str], dict[str, int], int]:
+    ) -> tuple[dict[str, Any], list[str], dict[str, int]]:
         """One attempt: request a plan, parse it and normalize it.
 
-        When the query numbers its requests ("thứ nhất", "thứ hai", ...) and
-        the plan has a different number of tasks, the planner is asked once
-        more with that feedback, and its second plan is used. Returns the plan,
-        its validation errors, the token usage of both requests and the number
-        of repairs (0 or 1). `attempt` records how far this got, for the
-        failure diagnostic.
+        Returns the plan, its validation errors and the token usage. `attempt`
+        records how far this got, for the failure diagnostic.
         """
-
-        def normalize(parsed: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
-            return normalize_query_plan(
-                parsed,
-                query=query,
-                selected_cohort=cohort,
-                visible_history=visible_history,
-                registry=self.registry,
-            )
-
         response = self._chat_completion(
             api_key=api_key,
             messages=messages,
@@ -740,51 +704,19 @@ class AIRouter:
             response_format=response_format,
         )
         attempt.response = response
-        raw = response.text
         attempt.stage = "parse"
-        parsed = self._extract_json_object(raw)
-        usage = response.usage
+        parsed = self._extract_json_object(response.text)
         raw_snapshot = trace.snapshot_raw(parsed)
         attempt.stage = "normalize"
-        plan, validation_errors = normalize(parsed)
-        trace.record_plan("initial", response, raw_snapshot, plan, validation_errors)
-
-        task_count = len(plan.get("tasks") or [])
-        if (
-            explicit_request_count is None
-            or task_count == explicit_request_count
-            or plan.get("out_of_domain")
-            or plan.get("planner_fallback")
-        ):
-            return plan, validation_errors, usage, 0
-
-        attempt.stage = "repair_request"
-        attempt.response = None
-        repair_response = self._chat_completion(
-            api_key=api_key,
-            messages=[
-                *messages,
-                {"role": "assistant", "content": raw},
-                {"role": "user", "content": _count_repair_feedback(explicit_request_count, task_count)},
-            ],
-            max_output_tokens=max_output_tokens,
-            response_format=response_format,
+        plan, validation_errors = normalize_query_plan(
+            parsed,
+            query=query,
+            selected_cohort=cohort,
+            visible_history=visible_history,
+            registry=self.registry,
         )
-        attempt.response = repair_response
-        attempt.stage = "repair_parse"
-        repair_parsed = self._extract_json_object(repair_response.text)
-        usage = {
-            key: int(usage.get(key, 0)) + int(repair_response.usage.get(key, 0))
-            for key in ("input", "output", "total")
-        }
-        raw_snapshot = trace.snapshot_raw(repair_parsed)
-        attempt.stage = "repair_normalize"
-        plan, validation_errors = normalize(repair_parsed)
-        trace.record_plan("repair", repair_response, raw_snapshot, plan, validation_errors)
-        # Marker count is not semantic coverage: legitimate plans can drop OOD
-        # targets or merge compatible requests. Keep the bounded recheck, but
-        # never force a count-only fallback.
-        return plan, validation_errors, usage, 1
+        trace.record_plan("initial", response, raw_snapshot, plan, validation_errors)
+        return plan, validation_errors, response.usage
 
     def _build_plan_prompt(
         self,
@@ -860,7 +792,6 @@ class AIRouter:
             "strict_schema_version": QUERY_PLAN_STRICT_SCHEMA_VERSION,
             "max_output_tokens": self.max_output_tokens,
             "hard_max_output_tokens": self.hard_max_output_tokens,
-            "output_tokens_per_task": self.output_tokens_per_task,
             "prompt_version": ROUTER_PROMPT_VERSION,
             "plan_normalizer_version": QUERY_PLAN_NORMALIZER_VERSION,
             "registry": registry_digest(self.registry),

@@ -53,11 +53,6 @@ directory_selector:
     max_output_tokens: 4096
     request_timeout_seconds: 30
 
-cache:
-  enabled: true
-  ttl_seconds: 86400
-  max_entries: 1000
-
 citations:
   public_max_sources: 10
 

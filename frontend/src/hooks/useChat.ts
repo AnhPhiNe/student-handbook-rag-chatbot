@@ -88,7 +88,6 @@ export interface Message {
   structuredResults?: StructuredResult[];
   relatedReferences?: RelatedReference[];
   runId?: string;
-  usedCache?: boolean;
   suggestions?: string[];
   queuePosition?: number | null;
   userQuery?: string;
@@ -151,7 +150,6 @@ export function useChat(cohort: string = 'K48-K49') {
     let capturedStructuredResults: StructuredResult[] = [];
     let capturedRelatedReferences: RelatedReference[] = [];
     let capturedRunId: string | null = null;
-    let capturedUsedCache = false;
 
     setMessages(prev => [...prev, { 
       id: botMsgId, 
@@ -173,7 +171,6 @@ export function useChat(cohort: string = 'K48-K49') {
       structuredResults: StructuredResult[];
       relatedReferences: RelatedReference[];
       runId?: string;
-      usedCache: boolean;
     } | null = null;
 
     // Bộ đệm làm mịn hiệu ứng gõ chữ: ~30 lần/giây. Mỗi lần cập nhật phải phân
@@ -207,8 +204,7 @@ export function useChat(cohort: string = 'K48-K49') {
               citations: donePayload!.citations,
               structuredResults: donePayload!.structuredResults,
               relatedReferences: donePayload!.relatedReferences,
-              runId: donePayload!.runId,
-              usedCache: donePayload!.usedCache
+              runId: donePayload!.runId
             } : m
           ));
         }
@@ -280,9 +276,6 @@ export function useChat(cohort: string = 'K48-K49') {
                 if (data.run_id) {
                   capturedRunId = data.run_id;
                 }
-                if (data.used_cache) {
-                  capturedUsedCache = data.used_cache;
-                }
               } else if (eventType === 'queued') {
                 setMessages(prev => prev.map(m => 
                   m.id === botMsgId ? { ...m, queuePosition: data.position } : m
@@ -324,8 +317,7 @@ export function useChat(cohort: string = 'K48-K49') {
                   citations: capturedCitations,
                   structuredResults: capturedStructuredResults,
                   relatedReferences: capturedRelatedReferences,
-                  runId: capturedRunId || undefined,
-                  usedCache: capturedUsedCache
+                  runId: capturedRunId || undefined
                 };
                 streamDone = true;
               }

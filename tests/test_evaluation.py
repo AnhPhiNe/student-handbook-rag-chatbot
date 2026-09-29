@@ -99,7 +99,7 @@ def test_retrieval_summary_excludes_graph_supplement_metrics() -> None:
     assert summary["hit_at_5"] == 1.0
 
 
-def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
+def test_production_summary_separates_ttft_paths() -> None:
     rows = [
         {
             "scenario": "cold_rag",
@@ -111,7 +111,6 @@ def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
             "status_code": 200,
             "latency_ms": 1_000.0,
             "ttft_ms": None,
-            "used_cache": False,
             "telemetry": {"retrieval_ms": 100},
             "eval_split": "realistic",
         },
@@ -125,7 +124,6 @@ def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
             "status_code": 200,
             "latency_ms": 300.0,
             "ttft_ms": None,
-            "used_cache": False,
             "telemetry": {"routing_ms": 100},
             "eval_split": "realistic",
         },
@@ -139,7 +137,6 @@ def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
             "status_code": 200,
             "latency_ms": 200.0,
             "ttft_ms": None,
-            "used_cache": False,
             "telemetry": {"routing_ms": 100},
             "eval_split": "realistic",
         },
@@ -153,8 +150,7 @@ def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
             "status_code": 200,
             "latency_ms": 100.0,
             "ttft_ms": None,
-            "used_cache": True,
-            "telemetry": {"cache_hit": True},
+            "telemetry": {"retrieval_ms": 100},
             "eval_split": "realistic",
         },
         {
@@ -167,7 +163,6 @@ def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
             "status_code": 200,
             "latency_ms": 800.0,
             "ttft_ms": 120.0,
-            "used_cache": None,
             "telemetry": {},
             "eval_split": "realistic",
         },
@@ -178,14 +173,11 @@ def test_production_summary_separates_ttft_paths_and_cache_protocol() -> None:
     assert summary["streaming_ttft_ms"]["mean"] == 120.0
     assert summary["streaming_ttft_coverage"] == 1.0
     assert summary["cold_regulation_rag_latency_ms"]["p95"] == 1_000.0
-    assert summary["cold_cache_hit_rate"] == 0.0
-    assert summary["warm_cache_hit_rate"] == 1.0
-    assert summary["cache_protocol_valid"] is True
     assert summary["response_status_accuracy"] == 1.0
     assert summary["by_expected_path"]["structured"]["n"] == 2
     assert production_gates(summary)["passed"] is True
 
-    summary["cold_cache_hit_rate"] = 0.5
+    summary["http_429_rate"] = 0.1
     assert production_gates(summary)["passed"] is False
 
 

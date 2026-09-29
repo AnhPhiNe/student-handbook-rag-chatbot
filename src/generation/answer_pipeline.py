@@ -1,4 +1,3 @@
-import hashlib
 import logging
 import threading
 import time
@@ -27,19 +26,17 @@ from .answer_guardrails import build_fallback_answer, is_low_confidence
 from .citation_formatter import prioritize_citations_by_answer_anchors
 from .deepseek_client import DeepSeekClient
 from .prompt_builder import (
-    ANSWER_PROMPT_VERSION,
     DEFAULT_MAX_CONTEXT_CHARS,
     build_answer_prompt_bundle,
 )
 from .plan_executor import PlanExecutor, StructuredCatalogs
-from .response_cache import get_response_cache
 from .structured_result_presenter import build_structured_results
 from .verbatim_identifiers import IdentifierCorrector
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 COMPOSER_PROVIDERS = {"deepseek"}
 
-PIPELINE_VERSION = "v78-stream-tail-spacing"
+PIPELINE_VERSION = "v79-no-answer-cache"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
@@ -54,14 +51,6 @@ def _normalize_retrieval_cohort(cohort: str | None) -> str | None:
     if normalized.lower() in {"", "general", "all"}:
         return None
     return normalized
-
-
-def _authorized_context_fingerprint(context_used: str) -> dict[str, str]:
-    return {
-        "authorized_evidence_sha256": hashlib.sha256(
-            context_used.encode("utf-8")
-        ).hexdigest()
-    }
 
 
 def _record_generation_usage(
@@ -118,8 +107,6 @@ class PreparedAnswer:
     related_references: list[dict[str, Any]] = field(default_factory=list)
     prompt: str = ""
     context_used: str = ""
-    cache_key: str | None = None
-    cached: dict[str, Any] | None = None
     terminal_status: str | None = None
     terminal_answer: str | None = None
     fallback_reason: str | None = None
@@ -319,25 +306,12 @@ class AnswerPipeline:
         if not self.model_name:
             raise ValueError("AnswerPipeline requires llm.model_name.")
 
-        if env_bool("STUDENT_RAG_OFFLINE_EVAL"):
-            self.config.setdefault("cache", {})["enabled"] = False
-        elif env_bool("STUDENT_RAG_QUALITY_EVAL"):
-            # Quality evaluation must exercise retrieval and generation.
-            self.config.setdefault("cache", {})["enabled"] = False
-
         self._component_init_lock = threading.Lock()
         self._plan_executor: PlanExecutor | None = None
         self.router = None
         self._llm_client = llm_client
         self.max_context_chars = int(
             llm_config.get("max_context_chars", DEFAULT_MAX_CONTEXT_CHARS)
-        )
-
-        cache_config = self.config.get("cache", {})
-        self.response_cache = get_response_cache(
-            enabled=cache_config.get("enabled", True),
-            ttl_seconds=cache_config.get("ttl_seconds", 86400),
-            max_entries=cache_config.get("max_entries", 1000),
         )
 
     def _public_source_limit(self) -> int:
@@ -360,7 +334,7 @@ class AnswerPipeline:
         telemetry: dict[str, Any] | None = None,
         trace_id: str | None = None,
     ) -> PreparedAnswer:
-        """Run shared routing, retrieval, guardrails, prompt, and cache lookup."""
+        """Run shared routing, retrieval, guardrails and prompt building."""
 
         from datetime import datetime, timedelta, timezone
 
@@ -503,21 +477,6 @@ class AnswerPipeline:
                 retrieval_result.get("retrieved_items") or []
             )
             telemetry["prompt_chars"] = len(prepared.prompt)
-
-        prepared.cache_key = self.response_cache.make_cache_key(
-            query=effective_query,
-            retrieval_result=retrieval_result,
-            selected_citations=prepared.selected_citations,
-            cohort=cohort,
-            context_fingerprint=_authorized_context_fingerprint(prepared.context_used),
-            pipeline_version=PIPELINE_VERSION,
-            answer_prompt_version=ANSWER_PROMPT_VERSION,
-        )
-        cached = self.response_cache.get(prepared.cache_key)
-        # Older runtimes could cache a successful but empty stream.
-        prepared.cached = (
-            cached if cached and str(cached.get("answer") or "").strip() else None
-        )
         return prepared
 
     def answer(
@@ -578,24 +537,7 @@ class AnswerPipeline:
                 error_type=prepared.error_type,
                 error_message=prepared.error_message,
                 llm_called=False,
-                used_cache=False,
                 clarification_needed=prepared.clarification_needed,
-                tracker=tracker,
-            )
-
-        if prepared.cached:
-            cached_answer, cached_citations, cached_status = self._cached_reply(prepared)
-            return self._build_output(
-                query=query,
-                retrieval_result=retrieval_result,
-                final_answer=cached_answer,
-                context_used=context_used,
-                selected_citations=cached_citations,
-                status=cached_status,
-                error_type=prepared.cached.get("error_type"),
-                error_message=prepared.cached.get("error_message"),
-                llm_called=False,
-                used_cache=True,
                 tracker=tracker,
             )
 
@@ -624,7 +566,6 @@ class AnswerPipeline:
                 error_type="api_init_error",
                 error_message=str(exc),
                 llm_called=False,
-                used_cache=False,
                 tracker=tracker,
             )
 
@@ -690,7 +631,6 @@ class AnswerPipeline:
                 error_type=error_type,
                 error_message=llm_result.get("error_message"),
                 llm_called=True,
-                used_cache=False,
                 model_used=llm_result.get("model_used"),
                 tracker=tracker,
             )
@@ -706,11 +646,9 @@ class AnswerPipeline:
             error_type=None,
             error_message=None,
             llm_called=True,
-            used_cache=False,
             model_used=llm_result.get("model_used"),
             tracker=tracker,
         )
-        self._cache_answer(prepared.cache_key, final_answer, public_citations)
         return output
 
     def _citations_for_answer(
@@ -719,30 +657,6 @@ class AnswerPipeline:
         """The public citations, the sources the answer cites first."""
         return prioritize_citations_by_answer_anchors(
             citations, answer, max_sources=self._public_source_limit(),
-        )
-
-    def _cached_reply(self, prepared: PreparedAnswer) -> tuple[str, list[dict[str, Any]], str]:
-        """The cached answer, its citations and its status."""
-        cached = prepared.cached or {}
-        answer = str(cached.get("answer") or "")
-        citations = self._citations_for_answer(
-            cached.get("citations") or prepared.public_retrieval_citations, answer,
-        )
-        return answer, citations, str(cached.get("status") or "answered")
-
-    def _cache_answer(
-        self, cache_key: str | None, answer: str, citations: list[dict[str, Any]],
-    ) -> None:
-        """Cache a generated answer; only answered replies are cached."""
-        self.response_cache.set(
-            cache_key,
-            {
-                "answer": answer,
-                "status": "answered",
-                "error_type": None,
-                "error_message": None,
-                "citations": citations,
-            },
         )
 
     def _build_stream_metadata(
@@ -756,7 +670,6 @@ class AnswerPipeline:
         citations_used: list[dict[str, Any]] | None = None,
         related_references: list[dict[str, Any]] | None = None,
         llm_called: bool = False,
-        used_cache: bool = False,
     ) -> dict[str, Any]:
         """Build standardized metadata chunk for streaming responses dynamically."""
         res = retrieval_result or {}
@@ -813,7 +726,6 @@ class AnswerPipeline:
             "planner_fallback": res.get("planner_fallback"),
             "supports_task_ids": res.get("supports_task_ids") or {},
             "llm_called": llm_called,
-            "used_cache": used_cache,
         }
 
     def answer_stream(
@@ -872,7 +784,6 @@ class AnswerPipeline:
                 "type": "done",
                 "status": prepared.terminal_status,
                 "error_type": prepared.error_type,
-                "used_cache": False,
                 "tracker": tracker,
                 "citations_used": selected_citations,
             }
@@ -880,27 +791,6 @@ class AnswerPipeline:
 
         yield {"type": "progress", "message": "Đang phân tích tài liệu tìm được..."}
         related_references = prepared.related_references
-        if prepared.cached:
-            cached_answer, cached_citations, cached_status = self._cached_reply(prepared)
-            yield self._build_stream_metadata(
-                retrieval_result,
-                status=cached_status,
-                effective_query=effective_query,
-                citations_used=cached_citations,
-                related_references=related_references,
-                llm_called=False,
-                used_cache=True,
-            )
-            yield {"type": "token", "text": cached_answer}
-            yield {
-                "type": "done",
-                "status": cached_status,
-                "used_cache": True,
-                "tracker": tracker,
-                "citations_used": cached_citations,
-            }
-            return
-
         yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}
         llm_called = False
         yield self._build_stream_metadata(
@@ -976,14 +866,10 @@ class AnswerPipeline:
             llm_called=llm_called,
         )
 
-        if terminal_status == "answered":
-            self._cache_answer(prepared.cache_key, final_answer_for_citations, final_citations)
-
         yield {
             "type": "done",
             "status": terminal_status,
             "error_type": terminal_error_type,
-            "used_cache": False,
             "tracker": tracker,
             "citations_used": final_citations,
         }
@@ -1055,7 +941,6 @@ class AnswerPipeline:
         error_type: str | None,
         error_message: str | None,
         llm_called: bool,
-        used_cache: bool,
         clarification_needed: bool = False,
         model_used: str | None = None,
         tracker: Any = None,
@@ -1120,20 +1005,16 @@ class AnswerPipeline:
             "llm_called": llm_called,
             "model_used": model_used,
             "model": model_used,
-            "used_cache": used_cache,
             "clarification_needed": clarification_needed,
             "context_used": context_used,
             "tracker": tracker,
             "evaluation_telemetry": self._finalize_evaluation_telemetry(
-                used_cache=used_cache,
                 llm_called=llm_called,
             ),
         }
 
     @staticmethod
-    def _finalize_evaluation_telemetry(
-        *, used_cache: bool, llm_called: bool
-    ) -> dict[str, Any] | None:
+    def _finalize_evaluation_telemetry(*, llm_called: bool) -> dict[str, Any] | None:
         """Finalize request-level metrics from completed task results."""
 
         telemetry = _evaluation_telemetry.get()
@@ -1142,6 +1023,5 @@ class AnswerPipeline:
         output = dict(telemetry)
         started_at = float(output.pop("started_at_monotonic", time.monotonic()))
         output["total_ms"] = (time.monotonic() - started_at) * 1000
-        output["cache_hit"] = used_cache
         output["llm_called"] = llm_called
         return output

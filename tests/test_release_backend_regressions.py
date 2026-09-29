@@ -39,23 +39,6 @@ def _plan(tasks: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-class _Cache:
-    def __init__(self, value: dict[str, Any] | None = None) -> None:
-        self.value = value
-
-    def make_cache_key(self, **kwargs: Any) -> str:
-        del kwargs
-        return "release-regression"
-
-    def get(self, key: str) -> dict[str, Any] | None:
-        del key
-        return self.value
-
-    def set(self, key: str, value: dict[str, Any]) -> None:
-        del key
-        self.value = value
-
-
 def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
     pipeline = AnswerPipeline.__new__(AnswerPipeline)
     pipeline.router = type("Planner", (), {"plan": lambda self, *args, **kwargs: plan})()
@@ -75,7 +58,6 @@ def _pipeline(plan: dict[str, Any]) -> AnswerPipeline:
     pipeline.parent_sources_by_id = {}
     pipeline.max_context_chars = 10000
     pipeline.llm_config = {"model_name": "fake"}
-    pipeline.response_cache = _Cache()
     return pipeline
 
 
@@ -205,7 +187,6 @@ def test_output_stream_and_trace_use_resolved_scope_without_collapsing_multi_met
         error_type=None,
         error_message=None,
         llm_called=True,
-        used_cache=False,
     )
     metadata = pipeline._build_stream_metadata(
         retrieval_result,
@@ -237,7 +218,6 @@ def test_output_stream_and_trace_use_resolved_scope_without_collapsing_multi_met
         error_type=None,
         error_message=None,
         llm_called=True,
-        used_cache=False,
     )
     multi_trace = build_trace_metadata(
         multi_output,
@@ -262,7 +242,6 @@ def test_sync_route_traces_pipeline_scope_over_request_scope() -> None:
                 "citations_used": [],
                 "related_references": [],
                 "llm_called": False,
-                "used_cache": False,
             }
 
     def capture_trace(source: dict[str, Any], **kwargs: Any) -> dict[str, Any]:
@@ -322,7 +301,6 @@ def test_stream_llm_called_reflects_actual_backend_attempt(monkeypatch) -> None:
             raise RuntimeError("generation failed")
             yield "unreachable"
 
-    pipeline.response_cache = _Cache()
     pipeline._get_llm_client = lambda: AttemptFailingLLM()
     attempt_events = list(pipeline.answer_stream(task["question"], cohort="K51"))
     attempt_metadata = [
@@ -331,22 +309,6 @@ def test_stream_llm_called_reflects_actual_backend_attempt(monkeypatch) -> None:
     attempt_done = next(event for event in attempt_events if event["type"] == "done")
     assert [event["llm_called"] for event in attempt_metadata] == [False, True]
     assert attempt_done["status"] == "api_error"
-
-    cached_pipeline = _pipeline(plan)
-    cached_pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
-    cached_pipeline.response_cache = _Cache(
-        {"answer": "cached", "status": "answered", "citations": []}
-    )
-    cached_pipeline._get_llm_client = lambda: (_ for _ in ()).throw(
-        AssertionError("cache hit must not initialize the client")
-    )
-    cached_events = list(cached_pipeline.answer_stream(task["question"], cohort="K51"))
-    cached_metadata = [
-        event for event in cached_events if event["type"] == "metadata"
-    ]
-    cached_done = next(event for event in cached_events if event["type"] == "done")
-    assert [event["llm_called"] for event in cached_metadata] == [False]
-    assert cached_done["used_cache"] is True
 
     terminal_pipeline = _pipeline(plan)
     terminal_result = _retrieval_result(plan)
@@ -368,4 +330,4 @@ def test_stream_llm_called_reflects_actual_backend_attempt(monkeypatch) -> None:
     ]
     terminal_done = next(event for event in terminal_events if event["type"] == "done")
     assert [event["llm_called"] for event in terminal_metadata] == [False]
-    assert terminal_done["used_cache"] is False
+    assert terminal_done["status"] == "needs_clarification"

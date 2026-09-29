@@ -3123,14 +3123,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   align-items: center;
   gap: 0.25rem;
 }
-.metadata-badge.cache {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: #10B981;
-}
-[data-theme='dark'] .metadata-badge.cache {
-  background-color: rgba(16, 185, 129, 0.2);
-  color: #34D399;
-}
 .metadata-badge.latency {
   background-color: rgba(107, 114, 128, 0.1);
   color: var(--text-secondary);

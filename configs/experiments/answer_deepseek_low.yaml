@@ -42,11 +42,6 @@ directory_selector:
   key_pool:
     rpm_limit_per_key: 300
 
-cache:
-  enabled: true
-  ttl_seconds: 86400
-  max_entries: 1000
-
 citations:
   public_max_sources: 10
 

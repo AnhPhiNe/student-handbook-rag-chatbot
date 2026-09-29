@@ -11,7 +11,6 @@ from src.api.schemas import ChatRequest
 from src.generation.answer_formatter import format_final_response, sources_section_start
 from src.generation.answer_pipeline import AnswerPipeline
 from src.generation.plan_executor import PlanExecutor
-from src.generation.response_cache import ResponseCache
 
 
 @pytest.mark.parametrize("queued", [True, False])
@@ -67,7 +66,6 @@ def _pipeline(chunks, content="Nội dung quy định."):
     pipeline.llm_config = {"model_name": "offline-fake"}
     pipeline.model_name = "offline-fake"
     pipeline.max_context_chars = 10000
-    pipeline.response_cache = ResponseCache()
     pipeline._run_retrieval = lambda *args, **kwargs: result
     llm = Mock()
     llm.generate.return_value = {"ok": True, "text": "".join(chunks), "usage": {}}
@@ -86,23 +84,11 @@ def _answer(pipeline, transport):
 
 @pytest.mark.parametrize("transport", ["sync", "stream"])
 @pytest.mark.parametrize("chunks", [[], [" \n\t"], ["```markdown\n", "Nguồn:\n- S1"]])
-def test_empty_final_answer_falls_back_without_caching(transport, chunks):
+def test_empty_final_answer_falls_back(transport, chunks):
     pipeline, _ = _pipeline(chunks)
     status, answer = _answer(pipeline, transport)
     assert status == "api_error"
     assert answer.strip()
-    assert not pipeline.response_cache._entries
-
-
-@pytest.mark.parametrize("transport", ["sync", "stream"])
-def test_old_empty_cached_answer_is_a_miss(transport):
-    pipeline, llm = _pipeline(["Câu trả lời hợp lệ."])
-    prepared = pipeline.prepare_answer(
-        "Quy định?", cohort="K51", chat_history=None, tracker=Mock(), router_started_at="",
-    )
-    pipeline.response_cache.set(prepared.cache_key, {"answer": " \n", "status": "answered"})
-    assert _answer(pipeline, transport) == ("answered", "Câu trả lời hợp lệ.")
-    assert llm.generate.called if transport == "sync" else llm.generate_stream.called
 
 
 @pytest.mark.parametrize("text", [
@@ -123,10 +109,9 @@ def test_actual_source_footer_is_removed(footer):
 
 
 @pytest.mark.parametrize("transport", ["sync", "stream"])
-def test_source_word_survives_generation_and_cache(transport):
+def test_source_word_survives_generation(transport):
     text = "Kinh phí được cấp từ nguồn: ngân sách. Điều kiện áp dụng: theo quy định."
     pipeline, _ = _pipeline([text[:28], text[28:]])
-    assert _answer(pipeline, transport) == ("answered", text)
     assert _answer(pipeline, transport) == ("answered", text)
 
 
@@ -193,6 +178,4 @@ def test_a_mistyped_email_is_corrected_from_the_evidence(transport):
     status, answer = _answer(pipeline, transport)
     assert status == "answered"
     assert "khoatienganh@hcmue.edu.vn" in answer and "khotienganh" not in answer
-    cached = next(iter(pipeline.response_cache._entries.values()))
-    assert "khotienganh" not in str(cached)
 

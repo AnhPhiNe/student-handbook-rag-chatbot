@@ -1,5 +1,5 @@
 """Production suite: send the official requests to a deployed API and check
-transport, cache behaviour and latency."""
+transport and latency."""
 
 from __future__ import annotations
 
@@ -54,29 +54,10 @@ def _response_status_matches_expected(
 def _summarize_production_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
     streaming_rows = [row for row in rows if row.get("scenario") == "streaming"]
     cold_rows = [row for row in rows if row.get("scenario") == "cold_rag"]
-    warm_rows = [row for row in rows if row.get("scenario") == "warm_cache"]
     cold_regulation_rows = [
         row for row in cold_rows if row.get("expected_path") == "regulation_rag"
     ]
 
-    cold_cache_observed = [
-        row for row in cold_rows if row.get("used_cache") is not None
-    ]
-    warm_cache_observed = [
-        row for row in warm_rows if row.get("used_cache") is not None
-    ]
-    cold_cache_hit_rate = safe_mean(
-        [float(bool(row.get("used_cache"))) for row in cold_cache_observed]
-    )
-    warm_cache_hit_rate = safe_mean(
-        [float(bool(row.get("used_cache"))) for row in warm_cache_observed]
-    )
-    cold_cache_coverage = (
-        len(cold_cache_observed) / len(cold_rows) if cold_rows else 0.0
-    )
-    warm_cache_coverage = (
-        len(warm_cache_observed) / len(warm_rows) if warm_rows else 0.0
-    )
     streaming_ttft_coverage = (
         len([row for row in streaming_rows if row.get("ttft_ms") is not None])
         / len(streaming_rows)
@@ -114,20 +95,6 @@ def _summarize_production_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "streaming_ttft_coverage": streaming_ttft_coverage,
         "cold_regulation_rag_latency_ms": latency_summary(
             [row["latency_ms"] for row in cold_regulation_rows]
-        ),
-        "cache_hit_rate": safe_mean(
-            [float(bool(row.get("used_cache"))) for row in rows]
-        ),
-        "cold_cache_hit_rate": cold_cache_hit_rate,
-        "warm_cache_hit_rate": warm_cache_hit_rate,
-        "cold_cache_status_coverage": cold_cache_coverage,
-        "warm_cache_status_coverage": warm_cache_coverage,
-        "cache_protocol_valid": (
-            cold_cache_coverage == 1.0
-            and warm_cache_coverage == 1.0
-            and cold_cache_hit_rate == 0.0
-            and warm_cache_hit_rate is not None
-            and warm_cache_hit_rate >= 0.90
         ),
         "source_count_mean": safe_mean(
             [float(row.get("source_count", 0)) for row in rows]
@@ -219,8 +186,8 @@ def evaluate_production(
     def run(case: dict[str, Any]) -> dict[str, Any]:
         endpoint = "/chat/stream" if case["scenario"] == "streaming" else "/chat"
         # Production browsers send an anonymous UUID used by the API's
-        # per-browser rate limiter.  Reuse the originating identity for a warm
-        # cache repeat; independent cases represent independent clients.  The
+        # per-browser rate limiter.  Reuse the originating identity for a
+        # repeated question; independent cases represent independent clients.  The
         # public-IP abuse guard still applies to the whole evaluation run.
         client_identity = str(case.get("repeat_of") or case["id"])
         client_id = str(uuid5(NAMESPACE_URL, f"student-rag-eval:{client_identity}"))
@@ -339,7 +306,6 @@ def evaluate_production(
                     response_status,
                     expected_status,
                 ),
-                "used_cache": response_payload.get("used_cache"),
                 "source_count": len(
                     response_payload.get("citations_used")
                     or response_payload.get("citations")

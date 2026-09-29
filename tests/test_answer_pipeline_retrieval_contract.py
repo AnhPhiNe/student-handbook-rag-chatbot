@@ -48,7 +48,6 @@ def test_answer_output_propagates_query_handling() -> None:
         error_type=None,
         error_message=None,
         llm_called=False,
-        used_cache=False,
     )
 
     assert output["effective_query"] == handling["effective_query"]

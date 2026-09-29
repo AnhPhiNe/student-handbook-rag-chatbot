@@ -80,11 +80,6 @@ def test_multi_table_fact_lock_reaches_actual_composer_prompt(monkeypatch, trans
         "citations": citations, "evidence_citations": citations,
         "structured_result": lookup,
     }
-    class Cache:
-        def make_cache_key(self, **kwargs): return "key"
-        def get(self, key): return None
-        def set(self, key, value): pass
-
     captured = []
     class LLM:
         def generate(self, prompt):
@@ -95,7 +90,6 @@ def test_multi_table_fact_lock_reaches_actual_composer_prompt(monkeypatch, trans
             yield "Điểm chữ D+."
             return {"usage": {}, "model_used": "fake"}
 
-    pipeline.response_cache = Cache()
     pipeline._get_llm_client = lambda: LLM()
     monkeypatch.setattr("src.generation.answer_pipeline.resolve_cohort_from_query", lambda query, cohort: cohort)
     if transport == "sync":
@@ -1546,7 +1540,6 @@ def test_sync_and_stream_metadata_share_plan_coverage_and_fallback() -> None:
         error_type=None,
         error_message=None,
         llm_called=True,
-        used_cache=False,
     )
     metadata = pipeline._build_stream_metadata(
         retrieval_result,
@@ -1600,16 +1593,6 @@ def test_compound_plan_calls_answer_llm_once(monkeypatch) -> None:
     pipeline.config.update({"citations": {"max_sources": 5}, "guardrails": {"skip_llm_on_low_confidence": True}})
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
 
-    class Cache:
-        def make_cache_key(self, **kwargs):
-            return "key"
-
-        def get(self, key):
-            return None
-
-        def set(self, key, value):
-            return None
-
     class LLM:
         calls = 0
 
@@ -1619,7 +1602,6 @@ def test_compound_plan_calls_answer_llm_once(monkeypatch) -> None:
             return {"ok": True, "text": "Trả lời phần đủ nguồn", "model_used": "fake", "usage": {}}
 
     llm = LLM()
-    pipeline.response_cache = Cache()
     pipeline._get_llm_client = lambda: llm
     monkeypatch.setattr("src.generation.answer_pipeline.resolve_cohort_from_query", lambda query, cohort: cohort)
 
@@ -1700,19 +1682,6 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         }
     )
 
-    class Cache:
-        def __init__(self):
-            self.value = None
-
-        def make_cache_key(self, **kwargs):
-            return "key"
-
-        def get(self, key):
-            return self.value
-
-        def set(self, key, value):
-            self.value = value
-
     class LLM:
         def generate(self, prompt):
             return {
@@ -1736,7 +1705,6 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         captured.append(kwargs["selected_citations"])
         return "prompt", '{"units": []}'
 
-    pipeline.response_cache = Cache()
     pipeline._get_llm_client = lambda: LLM()
     monkeypatch.setattr(
         "src.generation.answer_pipeline.build_answer_prompt_bundle",
@@ -1748,15 +1716,12 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     )
 
     sync_output = pipeline.answer(task["question"], cohort="K51")
-    cached_output = pipeline.answer(task["question"], cohort="K51")
-    pipeline.response_cache.value = None
     stream_events = list(pipeline.answer_stream(task["question"], cohort="K51"))
     stream_answer = "".join(
         event["text"] for event in stream_events if event.get("type") == "token"
     )
 
     assert captured == [
-        [unanchored_citation, citation, *later_citations],
         [unanchored_citation, citation, *later_citations],
         [unanchored_citation, citation, *later_citations],
     ]
@@ -1766,8 +1731,6 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         "p1",
         "p2",
     ]
-    assert cached_output["used_cache"] is True
-    assert cached_output["citations_used"] == sync_output["citations_used"]
     stream_done = next(
         event for event in stream_events if event.get("type") == "done"
     )
@@ -1812,27 +1775,11 @@ def test_stream_cleans_internal_labels_sources_and_reports_terminal_status(
     pipeline.llm_config = {"model_name": "fake"}
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
 
-    class Cache:
-        value = None
-
-        def make_cache_key(self, **kwargs):
-            return "key"
-
-        def get(self, key):
-            return self.value
-
-        def set(self, key, value):
-            self.value = value
-
     class DirtyLLM:
-        calls = 0
-
         def generate_stream(self, prompt):
-            self.calls += 1
             yield "```markdown\nTheo Điều 16 (S1), sinh viên đủ điều kiện "
             yield "(được bổ sung bởi AMENDMENT 2).\n\nNguồn:\n- S1"
 
-    pipeline.response_cache = Cache()
     llm = DirtyLLM()
     pipeline._get_llm_client = lambda: llm
     monkeypatch.setattr(
@@ -1852,16 +1799,6 @@ def test_stream_cleans_internal_labels_sources_and_reports_terminal_status(
     assert "AMENDMENT" not in answer
     assert "Nguồn:" not in answer
     assert "```" not in answer
-    assert pipeline.response_cache.value["answer"] == answer
-
-    cached_events = list(pipeline.answer_stream(task["question"], cohort="K51"))
-    cached_metadata = next(
-        event for event in cached_events if event["type"] == "metadata"
-    )
-    cached_done = next(event for event in cached_events if event["type"] == "done")
-    assert llm.calls == 1
-    assert cached_metadata["used_cache"] is True
-    assert cached_done["used_cache"] is True
 
 
 def test_stream_terminal_guardrail_reports_status_in_done_event() -> None:
@@ -1884,7 +1821,6 @@ def test_stream_terminal_guardrail_reports_status_in_done_event() -> None:
     assert metadata["status"] == "needs_clarification"
     assert done["status"] == "needs_clarification"
     assert done["error_type"] is None
-    assert done["used_cache"] is False
     assert done["citations_used"] == []
 
 
@@ -1917,22 +1853,11 @@ def test_stream_failure_finishes_with_api_error_metadata(monkeypatch) -> None:
     pipeline.llm_config = {"model_name": "fake"}
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
 
-    class Cache:
-        def make_cache_key(self, **kwargs):
-            return "key"
-
-        def get(self, key):
-            return None
-
-        def set(self, key, value):
-            raise AssertionError("failed streams must not be cached")
-
     class FailingLLM:
         def generate_stream(self, prompt):
             yield "Một phần câu trả lời hợp lệ. " * 20
             raise RuntimeError("stream failed")
 
-    pipeline.response_cache = Cache()
     pipeline._get_llm_client = lambda: FailingLLM()
     monkeypatch.setattr(
         "src.generation.answer_pipeline.resolve_cohort_from_query",

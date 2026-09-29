@@ -30,7 +30,6 @@ class FakeAnswerService:
             "citations_used": [{"source": "directory", "page": 1}],
             "related_references": [{"id": "R1", "title": "Điều 3"}],
             "llm_called": False,
-            "used_cache": True,
             "clarification_needed": False,
             "context_used": "short context",
             "error_type": None,
@@ -292,7 +291,6 @@ class ApiRoutesTest(unittest.TestCase):
         self.assertEqual(payload["citations_used"], [{"source": "directory", "page": 1}])
         self.assertEqual(payload["related_references"], [{"id": "R1", "title": "Điều 3"}])
         self.assertFalse(payload["llm_called"])
-        self.assertTrue(payload["used_cache"])
         self.assertIsInstance(payload["request_id"], str)
         self.assertIsInstance(payload["latency_ms"], float)
         self.assertIsNone(payload["debug"])

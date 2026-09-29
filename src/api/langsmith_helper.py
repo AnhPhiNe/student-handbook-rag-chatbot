@@ -391,7 +391,6 @@ def build_trace_metadata(
         "retrieved_chunks_count": int(src.get("retrieved_chunks_count") or 0),
         "fallback_reason": src.get("fallback_reason")
         or ("none" if status == "answered" else str(status)),
-        "used_cache": src.get("used_cache", False),
         "llm_called": src.get("llm_called", True),
         "chat_history_turns": len(chat_history or []),
         "has_chat_history": bool(chat_history),
@@ -444,7 +443,6 @@ def _trace_tags(meta: dict[str, Any], tags: list[str], cohort: str | None) -> li
     if meta.get("planner_fallback_used"):
         trace_tags.append("planner_fallback:true")
     trace_tags.append(f"llm_called:{str(bool(meta.get('llm_called'))).lower()}")
-    trace_tags.append(f"cache_hit:{str(bool(meta.get('used_cache'))).lower()}")
     return list(dict.fromkeys(trace_tags))
 
 

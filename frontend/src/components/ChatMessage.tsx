@@ -878,11 +878,7 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
                 </div>
                 
                 <div className="meta-latency-wrapper">
-                  {message.usedCache ? (
-                    <span className="metadata-badge cache" title="Câu trả lời được lấy từ bộ nhớ đệm giúp tốc độ phản hồi tức thì">
-                      ⚡ Từ bộ nhớ đệm
-                    </span>
-                  ) : message.responseTimeMs ? (
+                  {message.responseTimeMs ? (
                     <span 
                       className="metadata-badge latency" 
                       title={`Tổng thời gian phản hồi: ${(message.responseTimeMs / 1000).toFixed(2)}s${message.ttftMs ? ` (Từ đầu tiên: ${(message.ttftMs / 1000).toFixed(2)}s)` : ''}`}

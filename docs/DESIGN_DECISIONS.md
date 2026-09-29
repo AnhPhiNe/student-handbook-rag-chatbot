@@ -35,6 +35,7 @@ reports are listed at the end.
 | Lexical search | BM25 fused with RRF (k = 60), scored by BM25 only | Dense only; BM25 with a title-match rule | RRF + rerank beats dense + rerank; the title rule cost hit@1 and 3× BM25 time |
 | Candidate depth | 24 children for dense, BM25, fusion and rerank | 16, 40 | 24 holds the first gold child for 155/155 questions, 16 for 154/155 |
 | Tables | Reviewed JSON tables for lookup; readable tables kept in parents; no table rows embedded | The composer reading tables from retrieved text | The composer picked the wrong row of a range table in every try (sup_05, grade_remaining) |
+| Planner input | The student's own words | 156 slang rules rewriting the question first | 133/135 without the rewrite against 132/135 with it; the 12 rewritten questions pass either way |
 
 ## Planner
 
@@ -70,6 +71,20 @@ accurate (129/135) but not dependable: the same suite lost 28 requests to rate
 limits. Cohere was clearly worse. A golden test
 (`tests/fixtures/luna_planner_request_v53.json`) proves production sends the
 exact request that was measured.
+
+**Planner input and keyword rules (2026-09-29).** The question used to reach
+the planner after 156 slang rules rewrote it (63 of 681 `official_v1`/`v2`
+questions changed), a remnant of the Qwen era. On `official_v1` deterministic
+(v10 contract, Luna v53, same code otherwise) the planner scored 132/135 with
+the rewrite and 133/135 without it; the 12 questions the rewrite changes pass
+in both arms, and the 3 discordant cases (003, 113, 122) are ones it does not
+touch, so they are run-to-run variance (McNemar p = 1.00). The planner now
+reads the student's own words. Two keyword rules were removed the same day
+because neither fired on the 706 `official_v1`, `official_v2` and development
+questions: a second planner call when the task count differed from the
+numbered requests ("thứ nhất", "thứ hai"; the count is still stated in the
+prompt), and a list of 16 handbook phrases that overrode the planner's
+out-of-domain decision.
 
 **Failures that persist across models** (093/096: "ở phòng nào" read as the
 office field instead of the unit; 033/122: one task or two) point to ambiguous
@@ -243,6 +258,12 @@ calls fell back to RRF. Any failure keeps the RRF order.
   that holds every gold child, and a reranker call on 24 short children stays
   within the latency budget. Before 2026-09-28 (`f8e87a55`) 24 children were
   fused but Cohere reranked only the first 16 and dropped the other 8.
+- **Query expansion (2026-09-29).** Before retrieval the slang dictionary
+  rewrites and expands the query (43 of the 155 questions change). With and
+  without it, on the same code: hit@1 0.929 / 0.923, hit@3 0.987 / 0.994,
+  hit@5 1.000 / 1.000, MRR 0.959 / 0.956. It moves one question into first
+  place (101) and one out of the top 3 (080): a tie (McNemar p = 1.00) on
+  development questions written in handbook-like wording.
 - **Parent grouping.** Children are grouped by parent and a parent is scored by
   its best child, so several children of one article cannot push other
   articles out of the top 5.
@@ -272,6 +293,7 @@ calls fell back to RRF. Any failure keeps the RRF order.
 | Setting | Value | Why |
 |---|---|---|
 | Start-up warm-up | Build the pipeline and the retriever, wait up to 180 s for BM25 | On the live Space the first RAG question took 23.3 s and the second 6.9 s, because the retriever and the BM25 index were built on first use; with the retriever warmed, the first took 7.5 s (`ac565c1c`) |
+| Planner rate limits | 500 requests a minute, no local token limit; after a 429 wait up to 10 s, then the safe RAG plan | The account allows 500 RPM and 200,000 TPM for `gpt-6-luna`. A plan costs about 9,400 tokens (948 calls), so tokens bind first at about 21 questions a minute, which OpenAI enforces with 429s. The old local cap of 30 a minute (the free Groq limit of the Qwen era) failed the 31st question in a minute, and with a single key one 429 failed every question for 30 s; both now plan normally or fall back to RAG (offline simulation, `e7a19a21`) |
 | Queue wait | 30 s (was 15 s) | A queued request waits for an active answer to finish, and answers took about 7 s at p50 and 9–10 s at p90 (`56453c13`) |
 | Reranker timeout | 10 s, no retry | Cohere went from 5 s to 8 s when 24 candidates took up to 4.0 s; for Qwen3-Reranker-8B (max 9.3 s) 3 of 30 live calls fell back at 8 s. A retry would only double the wait at an overloaded service |
 | Query embedding | 5 s timeout, 1 retry; on failure BM25 serves alone | Retrieval used to return nothing when the embedding call failed; with the API embedder a timeout now costs ranking quality, not the answer |
@@ -335,3 +357,5 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Retrieval, reranker, embedding, depth, BM25, thinking | `measurements_20260928/` (its README lists each script, commit and result file) |
 | Thinking off against low, judged | `measurements_20260928/results/v330/` (`off_judge.json`, `low_judge.json`) |
 | End-to-end development questions | `supplementary_questions_20260928T231521Z` |
+| Planner input with and without the slang rewrite | `official_v1_deterministic_20260929T045740Z` (with), `…T051501Z` (without) |
+| Retrieval with and without query expansion | `official_v1_retrieval_20260929T045526Z` (with), `…T052455Z` (without) |

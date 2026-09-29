@@ -199,7 +199,11 @@ class PlanExecutor:
             "query_plan": plan,
             "planner_fallback": planner_fallback,
             "router_usage": raw_plan.get("usage"),
+            "router_usage_details": raw_plan.get("usage_details"),
             "router_model": raw_plan.get("model_used"),
+            "router_provider": getattr(self.router, "provider", None),
+            # A short hash of the key used, never the key itself.
+            "router_key_fingerprint": raw_plan.get("key_fingerprint"),
             # Full call duration, including key wait, retries and backoff.
             "planner_latency_ms": planner_latency_ms,
             # Category only; raw exception strings may contain credentials/body text.

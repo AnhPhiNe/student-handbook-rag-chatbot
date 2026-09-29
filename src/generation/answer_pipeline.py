@@ -71,16 +71,36 @@ def _record_generation_usage(
     usage: dict[str, int],
     start_time: str,
     end_time: str,
+    metadata: dict[str, Any] | None = None,
 ) -> None:
-    tracker.record(
-        step_name="LLM Generation",
+    tracker.record_call(
+        "LLM Generation",
         model=model,
-        input_tokens=usage.get("input", 0),
-        output_tokens=usage.get("output", 0),
-        total_tokens=usage.get("total", 0),
+        usage=usage,
         start_time=start_time,
         end_time=end_time,
+        metadata=metadata,
     )
+
+
+def _composer_trace_metadata(llm_client: Any, result: dict[str, Any], prompt: str) -> dict[str, Any]:
+    """What the trace keeps about one composer call: provider, key hash, outcome.
+
+    The prompt is kept only when STUDENT_RAG_TRACE_PROMPTS is on (it is 5,000 to
+    15,000 characters, and the evidence it holds can be rebuilt from the cited
+    source ids).
+    """
+    metadata: dict[str, Any] = {
+        "provider": str(getattr(llm_client, "provider_label", "") or "").lower() or None,
+        # A short hash of the key used, never the key itself.
+        "key_fingerprint": result.get("key_fingerprint"),
+        "attempts": result.get("attempts"),
+    }
+    if result.get("ok") is False:
+        metadata["error_type"] = result.get("error_type")
+    if env_bool("STUDENT_RAG_TRACE_PROMPTS"):
+        metadata["prompt"] = prompt
+    return metadata
 
 
 
@@ -342,17 +362,22 @@ class AnswerPipeline:
     ) -> PreparedAnswer:
         """Run shared routing, retrieval, guardrails, prompt, and cache lookup."""
 
-        from datetime import datetime, timezone
+        from datetime import datetime, timedelta, timezone
+
+        from src.common.usage_tracker import tracking
 
         effective_query = query
         cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
         retrieval_started = time.monotonic()
         try:
-            retrieval_result = self._run_retrieval(
-                query,
-                cohort,
-                chat_history=chat_history,
-            )
+            # Calls made while planning and executing (the directory selector)
+            # record themselves on this request's tracker.
+            with tracking(tracker):
+                retrieval_result = self._run_retrieval(
+                    query,
+                    cohort,
+                    chat_history=chat_history,
+                )
         except Exception as exc:
             logger.exception(
                 "answer_retrieval_failed",
@@ -378,15 +403,21 @@ class AnswerPipeline:
             )
 
         if retrieval_result.get("router_usage"):
-            usage = retrieval_result["router_usage"]
-            tracker.record(
-                step_name="AI Router",
+            planner_ms = float(retrieval_result.get("planner_latency_ms") or 0)
+            router_ended_at = (
+                datetime.fromisoformat(router_started_at) + timedelta(milliseconds=planner_ms)
+            ).isoformat() if planner_ms else datetime.now(timezone.utc).isoformat()
+            tracker.record_call(
+                "AI Router",
                 model=retrieval_result.get("router_model", ""),
-                input_tokens=usage.get("input", 0),
-                output_tokens=usage.get("output", 0),
-                total_tokens=usage.get("total", 0),
+                usage={**retrieval_result["router_usage"], **(retrieval_result.get("router_usage_details") or {})},
                 start_time=router_started_at,
-                end_time=datetime.now(timezone.utc).isoformat(),
+                end_time=router_ended_at,
+                metadata={
+                    "provider": retrieval_result.get("router_provider"),
+                    "key_fingerprint": retrieval_result.get("router_key_fingerprint"),
+                    "planner_fallback": retrieval_result.get("planner_fallback"),
+                },
             )
         if telemetry is not None:
             telemetry["routing_retrieval_parent_lookup_ms"] = (
@@ -549,6 +580,7 @@ class AnswerPipeline:
                 llm_called=False,
                 used_cache=False,
                 clarification_needed=prepared.clarification_needed,
+                tracker=tracker,
             )
 
         if prepared.cached:
@@ -564,6 +596,7 @@ class AnswerPipeline:
                 error_message=prepared.cached.get("error_message"),
                 llm_called=False,
                 used_cache=True,
+                tracker=tracker,
             )
 
         public_retrieval_citations = prepared.public_retrieval_citations
@@ -592,6 +625,7 @@ class AnswerPipeline:
                 error_message=str(exc),
                 llm_called=False,
                 used_cache=False,
+                tracker=tracker,
             )
 
         start_time_llm = datetime.now(timezone.utc).isoformat()
@@ -603,23 +637,25 @@ class AnswerPipeline:
             telemetry["key_fingerprint"] = llm_result.get("key_fingerprint")
             telemetry["retry_count"] = max(0, int(llm_result.get("attempts") or 1) - 1)
 
-        if llm_result.get("ok"):
-            _record_generation_usage(
-                tracker,
-                model=llm_result.get("model_used") or self.model_name,
-                usage=llm_result.get("usage") or {},
-                start_time=start_time_llm,
-                end_time=end_time_llm,
-            )
+        _record_generation_usage(
+            tracker,
+            model=llm_result.get("model_used") or self.model_name,
+            usage=llm_result.get("usage") or {},
+            start_time=start_time_llm,
+            end_time=end_time_llm,
+            metadata=_composer_trace_metadata(llm_client, llm_result, prompt),
+        )
 
         final_answer = ""
         if llm_result.get("ok"):
-            final_answer = IdentifierCorrector(prepared.context_used, query).fix(
+            corrector = IdentifierCorrector(prepared.context_used, query)
+            final_answer = corrector.fix(
                 format_final_response(
                     str(llm_result.get("text") or "").strip(),
                     primary_citations=selected_citations,
                 )
             )
+            tracker.counters.update(corrector.counts)
             if not final_answer.strip():
                 llm_result = {
                     **llm_result,
@@ -879,7 +915,8 @@ class AnswerPipeline:
         final_answer_for_citations = ""
         terminal_status = "answered"
         terminal_error_type: str | None = None
-        cleaner = StreamAnswerCleaner(fix=IdentifierCorrector(prepared.context_used, query).fix)
+        corrector = IdentifierCorrector(prepared.context_used, query)
+        cleaner = StreamAnswerCleaner(fix=corrector.fix)
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
@@ -902,15 +939,14 @@ class AnswerPipeline:
                 raise RuntimeError("Empty answer after output cleanup.")
             end_time_llm = datetime.now(timezone.utc).isoformat()
 
-            stream_usage = stream_result.get("usage") or {}
-            if stream_usage:
-                _record_generation_usage(
-                    tracker,
-                    model=stream_result.get("model_used") or getattr(llm_client, "model_name", ""),
-                    usage=stream_usage,
-                    start_time=start_time_llm,
-                    end_time=end_time_llm,
-                )
+            _record_generation_usage(
+                tracker,
+                model=stream_result.get("model_used") or getattr(llm_client, "model_name", ""),
+                usage=stream_result.get("usage") or {},
+                start_time=start_time_llm,
+                end_time=end_time_llm,
+                metadata=_composer_trace_metadata(llm_client, stream_result, prepared.prompt),
+            )
         except Exception as exc:
             logger.exception(
                 "answer_stream_generation_failed",
@@ -927,6 +963,7 @@ class AnswerPipeline:
                 final_answer_for_citations = fallback
                 yield {"type": "token", "text": fallback}
 
+        tracker.counters.update(corrector.counts)
         final_citations = self._citations_for_answer(prepared.all_citations, final_answer_for_citations)
         yield self._build_stream_metadata(
             retrieval_result,

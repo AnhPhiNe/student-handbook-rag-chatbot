@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from src.common.text import fold_text
+from src.common.usage_tracker import current_tracker, utc_now
 
 logger = logging.getLogger("student_handbook_rag.retrieval.directory_selector")
 
@@ -261,15 +262,47 @@ class DirectorySelector:
 
 
 def _ask(client: Any, lookup_type: str, prompt: str, ids: dict[str, dict[str, Any]], method: str) -> Selection:
+    started = utc_now()
+    response: dict[str, Any] = {}
     try:
         response = client.generate(prompt)
     except Exception as exc:  # noqa: BLE001 - any failure asks the student instead
-        return Selection(UNAVAILABLE, method=method, reply=f"error: {type(exc).__name__}")
-    if not response.get("ok"):
-        message = response.get("error_message")
-        reply = f"error: {response.get('error_type')}" + (f": {message}" if message else "")
-        return Selection(UNAVAILABLE, method=method, reply=reply)
-    return parse_reply(lookup_type, str(response.get("text") or ""), ids, method)
+        selection = Selection(UNAVAILABLE, method=method, reply=f"error: {type(exc).__name__}")
+    else:
+        if not response.get("ok"):
+            message = response.get("error_message")
+            reply = f"error: {response.get('error_type')}" + (f": {message}" if message else "")
+            selection = Selection(UNAVAILABLE, method=method, reply=reply)
+        else:
+            selection = parse_reply(lookup_type, str(response.get("text") or ""), ids, method)
+    _record_call(client, response, started, lookup_type, selection)
+    return selection
+
+
+def _record_call(
+    client: Any, response: dict[str, Any], started: str, lookup_type: str, selection: Selection,
+) -> None:
+    """Add this LLM call to the current request's usage, for tracing and cost."""
+    tracker = current_tracker()
+    if tracker is None:
+        return
+    thinking = selection.method == "llm_selector_thinking"
+    tracker.record_call(
+        "Directory Selector (thinking)" if thinking else "Directory Selector",
+        model=str(response.get("model_used") or getattr(client, "model_name", "") or ""),
+        usage=response.get("usage"),
+        start_time=started,
+        end_time=utc_now(),
+        metadata={
+            "provider": str(getattr(client, "provider_label", "") or "").lower() or None,
+            "key_fingerprint": response.get("key_fingerprint"),
+            "lookup_type": lookup_type,
+            "decision": selection.status,
+            "chosen": sorted({LOOKUPS[lookup_type].entity(r) for r in selection.records})[:3],
+            "reply": selection.reply,
+            "prompt_version": SELECTOR_PROMPT_VERSION,
+        },
+    )
 
 
 def select_records(

@@ -31,6 +31,12 @@ def test_two_swapped_neighbouring_characters_count_as_one_edit():
     assert fix("Gọi (028) 38352911.") == "Gọi (028) 38352911."
 
 
+def test_corrections_are_counted_by_kind_without_values():
+    corrector = IdentifierCorrector(EVIDENCE)
+    corrector.fix("Email khotienganh@hcmue.edu.vn, hoặc phongdaotao@gmail.com")
+    assert dict(corrector.counts) == {"identifier_corrected:email": 1, "identifier_not_in_evidence:email": 1}
+
+
 def test_an_identifier_with_no_single_near_match_is_left_alone():
     two = IdentifierCorrector("a1@hcmue.edu.vn và a2@hcmue.edu.vn").fix
     assert two("Email a3@hcmue.edu.vn") == "Email a3@hcmue.edu.vn"

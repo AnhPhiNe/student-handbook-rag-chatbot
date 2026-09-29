@@ -311,6 +311,16 @@ class _RouterCompletion:
     token_details: dict[str, int] | None = None
 
 
+def _usage_details(token_details: dict[str, int] | None) -> dict[str, int]:
+    """Token counts billed differently: cached input (cheaper) and reasoning (output)."""
+    details = token_details or {}
+    return {
+        name: details[key]
+        for name, key in (("cache_read", "prompt_cache_hit_tokens"), ("reasoning", "reasoning_tokens"))
+        if key in details
+    }
+
+
 @dataclass
 class _PlanAttempt:
     """How far one planner attempt got, for its failure diagnostic."""
@@ -594,7 +604,7 @@ class AIRouter:
             attempts += 1
             attempt = _PlanAttempt()
             try:
-                plan, validation_errors, usage = self._request_plan(
+                plan, validation_errors, usage, usage_details = self._request_plan(
                     attempt,
                     trace,
                     api_key=key,
@@ -618,6 +628,7 @@ class AIRouter:
                         **plan,
                         "model_used": self.model_name,
                         "usage": usage,
+                        "usage_details": usage_details,
                         "key_fingerprint": key_id,
                         "router_cache_hit": False,
                         "attempts": attempts,
@@ -703,7 +714,7 @@ class AIRouter:
             registry=self.registry,
         )
         trace.record_plan("initial", response, raw_snapshot, plan, validation_errors)
-        return plan, validation_errors, response.usage
+        return plan, validation_errors, response.usage, _usage_details(response.token_details)
 
     def _build_plan_prompt(
         self,

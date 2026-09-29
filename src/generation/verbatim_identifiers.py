@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+from collections import Counter
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from typing import Any
@@ -121,6 +122,9 @@ class IdentifierCorrector:
     """Correct the identifiers of one answer against its evidence and question."""
 
     def __init__(self, *evidence_texts: str) -> None:
+        # Per kind: identifiers corrected, and identifiers left as written with
+        # no single near match in the evidence (for tracing; no values kept).
+        self.counts: Counter[str] = Counter()
         self._known: dict[str, dict[str, str]] = {kind: {} for kind in KINDS}
         self._text = "\n".join(_evidence_text(text) for text in evidence_texts if text)
         for kind, match in _spans(self._text):
@@ -149,8 +153,10 @@ class IdentifierCorrector:
             ]
             if len(near) == 1:
                 replacements.append((match.start(), match.end(), near[0]))
+                self.counts[f"identifier_corrected:{kind}"] += 1
                 logger.warning("answer_identifier_corrected", extra={"kind": kind})
             else:
+                self.counts[f"identifier_not_in_evidence:{kind}"] += 1
                 logger.warning(
                     "answer_identifier_not_in_evidence",
                     extra={"kind": kind, "candidates": len(near)},

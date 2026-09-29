@@ -96,6 +96,22 @@ def test_nothing_found_is_asked_again_with_thinking() -> None:
     assert fast.prompts == thinking.prompts  # the same question, asked twice
 
 
+def test_each_selector_call_is_recorded_on_the_request_tracker() -> None:
+    from src.common.usage_tracker import UsageTracker, tracking
+
+    tracker = UsageTracker()
+    selector = DirectorySelector(ScriptedClient({}), ScriptedClient({"khoa Hàn": "Khoa Tiếng Hàn Quốc"}))
+    with tracking(tracker):
+        office_lookup("khoa Hàn", FACULTIES, candidate_text="khoa Hàn", lookup_type="faculty",
+                      cohort="K51", selector=selector)
+    steps = tracker.get_steps()
+    assert [step["step_name"] for step in steps] == ["Directory Selector", "Directory Selector (thinking)"]
+    assert [step["metadata"]["decision"] for step in steps] == ["none", "match"]
+    assert steps[1]["metadata"]["chosen"] == ["Khoa Tiếng Hàn Quốc"]
+    # Outside a request nothing is recorded, and selection still works.
+    assert _faculty("khoa Hàn", ScriptedClient({"khoa Hàn": "Khoa Tiếng Hàn Quốc"})) is not None
+
+
 def test_a_found_unit_is_not_asked_again() -> None:
     thinking = ScriptedClient({"khoa Hàn": "Khoa Tiếng Nga"})
     selector = DirectorySelector(ScriptedClient({"khoa Hàn": "Khoa Tiếng Hàn Quốc"}), thinking)

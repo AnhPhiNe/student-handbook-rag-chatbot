@@ -18,4 +18,6 @@ system, read the [README](../../README.md) and the contracts in [docs/](..).
 | [ONLINE_PIPELINE_AUDIT_FIXES](ONLINE_PIPELINE_AUDIT_FIXES.md) | Fixes from the online answer-pipeline audit |
 | [PARENT_CHILD_RELEASE_AB](PARENT_CHILD_RELEASE_AB.md), [TABLE_SEPARATION_CANDIDATE](TABLE_SEPARATION_CANDIDATE.md), [PARENT_TABLE_COVERAGE_AUDIT](PARENT_TABLE_COVERAGE_AUDIT.md) | Parent/child corpus and table handling |
 | [V33_RELEASE_STATUS](V33_RELEASE_STATUS.md) | v33 data release record |
+| [BACKEND_SYSTEM_GUIDE_20260913](BACKEND_SYSTEM_GUIDE_20260913.md) | Vietnamese backend guide, describing the system of 2026-09-13 |
+| [UA_ONBOARDING_20260904](UA_ONBOARDING_20260904.md) | Code tour generated from the knowledge graph of 2026-09-04 |
 | [checkpoints/](checkpoints/) | Machine-readable checkpoint for the planner v49 record |

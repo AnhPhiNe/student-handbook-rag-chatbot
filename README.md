@@ -64,9 +64,9 @@ The web app also includes a GPA calculator, credit and tuition tools, scholarshi
 
 - **The LLM plans and the code verifies.** OpenAI `gpt-6-luna` returns a `QueryPlan` under a strict JSON schema: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer drops any slot value that does not appear in the question, checks lookup types and cohorts against the registry, and turns a task it cannot trust into a clarifying question or a RAG task. The plan is never trusted blindly.
 - **Exact facts come from tables, not from generation.** Nine lookup capabilities run over reviewed JSON catalogs: grading scales, foreign-language equivalency, scholarship classification, study duration, formulas, and office, faculty, program and student-service directories. A unique match becomes a `resolved_result` that the writer is instructed to keep verbatim.
-- **Hybrid retrieval.** `BAAI/bge-m3` dense search in Qdrant and in-process BM25 are fused with reciprocal rank fusion (k = 60). An optional Cohere `rerank-v4.0-fast` pass reorders the top 16 children. Children then expand to their full parent article from MongoDB. An offline cross-reference graph adds related-article links for the UI.
+- **Hybrid retrieval.** `BAAI/bge-m3` dense search in Qdrant (embeddings from the DeepInfra API) and in-process BM25 each return 24 children, fused with reciprocal rank fusion (k = 60). `Qwen/Qwen3-Reranker-8B` on DeepInfra reorders those 24, and the children are grouped into their full parent articles from MongoDB (top 5). An offline cross-reference graph adds related-article links for the UI.
 - **Cohort isolation end to end.** Every task runs per cohort, and retrieved sources and citations are filtered to the cohort that was asked for.
-- **Graceful degradation.** Each provider has a quota-aware key pool with per-key RPM, TPM and daily limits that honors the provider's retry hints. Reranking fails open to the RRF order. A planner failure falls back to a safe RAG plan. Admission control allows 3 concurrent requests, a queue of 10 and a 15 s wait, with a configurable per-client rate limit.
+- **Graceful degradation.** Each provider has a quota-aware key pool with per-key RPM, TPM and daily limits that honors the provider's retry hints. Reranking fails open to the RRF order, and a failed query embedding leaves BM25 serving alone. A planner failure falls back to a safe RAG plan. Admission control allows 3 concurrent requests, a queue of 10 and a 30 s wait, with a configurable per-client rate limit.
 - **Reproducible data.** One command rebuilds the corpus from the PDFs, and the rebuild is byte-for-byte deterministic. A build manifest of hashes, counts and target collections ties the Qdrant and MongoDB contents to one build ID.
 - **Frozen evaluation harness.** Four suites run over a hand-authored, source-anchored dataset. Every run records the git commit, the dataset hash and the model and prompt versions it measured.
 
@@ -79,15 +79,15 @@ flowchart TD
     Pipeline --> Planner["Planner: gpt-6-luna<br/>typed QueryPlan (strict JSON schema)"]
     Planner --> Normalizer["Normalizer<br/>grounding and cohort checks"]
     Normalizer -->|structured task| Lookup["Structured lookup<br/>reviewed JSON tables and directories"]
-    Normalizer -->|RAG task| Retrieve["Hybrid retrieval<br/>bge-m3 dense + BM25, RRF k=60"]
+    Normalizer -->|RAG task| Retrieve["Hybrid retrieval<br/>bge-m3 dense + BM25, 24 each, RRF k=60"]
     Normalizer -->|clarify task| Clarify["Clarifying question"]
-    Retrieve --> Rerank["Cohere rerank of the top 16<br/>optional, fails open"]
+    Retrieve --> Rerank["Qwen3-Reranker-8B on the 24 children<br/>fails open to the RRF order"]
     Rerank --> Parents["Parent articles<br/>MongoDB"]
     Lookup --> Merge["Merge tasks<br/>keep task and cohort scope"]
     Parents --> Merge
     Clarify --> Merge
     Merge --> Packet["Guards and evidence packet<br/>citations, context budget"]
-    Packet -->|answerable, cache miss| Composer["Composer: Gemini 3.1 Flash-Lite<br/>sync or streaming"]
+    Packet -->|answerable, cache miss| Composer["Composer: DeepSeek flash, thinking off<br/>sync or streaming"]
     Packet -->|cache hit| Cache[("Response cache<br/>Redis or in-memory")]
     Composer --> API
     Cache --> API
@@ -111,7 +111,7 @@ flowchart TD
   executes.
 - **Every branch out of the normalizer can end without a composer call.** A clarify
   task, an out-of-domain question, or a request where nothing is answerable returns an
-  explicit status and never reaches Gemini - what keeps a wrong-but-fluent answer from
+  explicit status and never reaches the composer - what keeps a wrong-but-fluent answer from
   being generated in the first place.
 
 ### Request lifecycle
@@ -120,7 +120,7 @@ flowchart TD
 2. **Plan.** Student slang and abbreviations are expanded, then the planner splits the question into typed tasks. The normalizer validates and canonicalizes that plan before anything runs.
 3. **Execute.** Each task runs per cohort. Structured tasks read reviewed tables and directories. RAG tasks retrieve narrative chunks, rerank them and expand them to full articles. Clarify tasks carry the question to ask.
 4. **Guard.** Task results are merged without mixing cohorts. If nothing can be answered, the request stops with an explicit status and no composer call.
-5. **Compose.** The evidence packet goes through the response cache, then to Gemini. The model answers the covered tasks and asks for anything missing.
+5. **Compose.** The evidence packet goes through the response cache, then to the DeepSeek composer. The model answers the covered tasks and asks for anything missing.
 6. **Deliver.** The same prepared answer is returned as JSON (`/chat`) or streamed as server-sent events (`/chat/stream`), with citations, structured results and related-article links.
 
 | Situation | Outcome |
@@ -129,7 +129,8 @@ flowchart TD
 | The question is outside the handbooks | `out_of_domain`, with no composer call |
 | Only part of a compound question is answerable | The answered parts plus a question about the missing part |
 | No key is available or the provider fails | An explicit error status; failures are never cached |
-| The reranker is unavailable | The original RRF order is used and the request continues |
+| The reranker is unavailable or slower than 10 s | The original RRF order is used and the request continues |
+| The query embedding fails | BM25 candidates alone go through reranking; the request continues |
 
 ### A query plan in practice
 
@@ -246,21 +247,22 @@ The layer distinguishes three outcomes, and the distinction is the point:
 
 ```mermaid
 flowchart TD
-    Q["RAG task query + cohort"] --> Dense["bge-m3 embedding<br/>Qdrant search with cohort filter<br/>top 24 children"]
+    Q["RAG task query + cohort"] --> Dense["bge-m3 embedding via the DeepInfra API<br/>Qdrant search with cohort filter<br/>top 24 children"]
     Q --> Lex["In-process BM25<br/>built from Qdrant payloads at startup<br/>top 24 children"]
-    Dense -->|no dense hits| None["No evidence for this task"]
+    Dense -.->|embedding call fails| Lex
     Dense --> RRF["Reciprocal rank fusion, k = 60<br/>pool of 24"]
     Lex --> RRF
-    RRF --> Rerank["Cohere rerank-v4.0-fast<br/>first 16 children"]
-    Rerank -->|valid ordering| Group["Group children by parent article<br/>keep the top 5 parents"]
-    Rerank -.->|"no key · 429 · timeout · invalid"| Group
+    RRF -->|"neither returns anything"| None["No evidence for this task"]
+    RRF --> Rerank["Qwen3-Reranker-8B on DeepInfra<br/>all 24 children, 10 s timeout"]
+    Rerank -->|valid scores| Group["Group children by parent article<br/>parent score = best child<br/>keep the top 5 parents"]
+    Rerank -.->|"no key · HTTP error · timeout · invalid reply"| Group
     Group --> Mongo[("MongoDB parents<br/>with an in-process LRU cache")]
     Mongo --> Evidence["Primary evidence: full articles<br/>plus the matching child text"]
     Group --> Graph["Cross-reference graph<br/>NetworkX, depth 2"]
     Graph --> Related["related_references<br/>UI navigation only, never evidence"]
 ```
 
-Children are small, so matching stays precise; the writer always receives the full parent article, so the context stays complete. The `no_graph` and `vector_only` modes switch off the graph and BM25 for ablations.
+Children are small, so matching stays precise; the writer always receives the full parent article, so the context stays complete. Scoring a parent by its best child means several matching children of one article do not push other articles out of the top 5. The `no_graph` and `vector_only` modes switch off the graph and BM25 for ablations, and `STUDENT_RAG_RERANKER_ENABLED=false` switches off reranking.
 
 </details>
 
@@ -274,9 +276,8 @@ flowchart TD
     Life --> Flag{"STUDENT_RAG_WARMUP_ON_STARTUP?"}
     Flag -->|off, the local default| Lazy["Everything stays lazy:<br/>the first question builds it"]
     Flag -->|"on, set by the Dockerfile"| Thread["Background warm-up thread"]
-    Thread --> Model["Embedding model from the image<br/>baked in at build time"]
-    Model --> Cat["Catalogs, parent docstore,<br/>planner client, plan executor, composer client"]
-    Cat --> Retr["Hybrid retriever singleton"]
+    Thread --> Cat["Catalogs, parent docstore,<br/>planner client, plan executor, composer client"]
+    Cat --> Retr["Hybrid retriever singleton<br/>embedding and reranker clients"]
     Retr --> BM["BM25 index<br/>scroll Qdrant, then wait up to 180 s"]
     BM --> Ready["Warm: the first question costs what the second does"]
     BM -.->|"timeout or Qdrant unreachable"| Degraded["BM25 degraded, dense retrieval still serves"]
@@ -286,16 +287,16 @@ Two properties here were learned by measuring the deployed Space, not by reasoni
 about it:
 
 - **Warm-up runs on a background thread, never in the startup path.** The container has
-  to answer `/health` while a multi-gigabyte model is still loading, or the platform
-  health check fails and restarts it into a loop - so the port opens first and warming
-  happens beside it.
+  to answer `/health` while the pipeline is still being built, or the platform health
+  check fails and restarts it into a loop - so the port opens first and warming happens
+  beside it. (This mattered most when the embedding model ran in the container; it now
+  runs behind the DeepInfra API, so the image holds no model.)
 - **It warms the retriever, not just the model.** An earlier version warmed the model,
   catalogs and clients but left the hybrid retriever lazy. Measured on the live Space: a
   structured question answered in 4.7 s, but the first RAG question took 23.3 s and the
   second took 6.9 s - the first one paid about 16 s to build the retriever and scroll
   Qdrant for the BM25 index. Warming the retriever too brought it to 7.5 s, matching the
-  second. The embedding model is baked into the image at build time, so a fresh
-  container never downloads it at run time.
+  second.
 - **It can only make startup slower, never broken.** BM25 is fail-open, so a timeout or
   an unreachable Qdrant leaves dense retrieval serving, and any exception is logged
   rather than propagated.
@@ -314,7 +315,7 @@ sequenceDiagram
     participant G as Luna planner
     participant S as Qdrant, BM25, MongoDB
     participant R as Response cache
-    participant M as Gemini composer
+    participant M as DeepSeek composer
     C->>A: question, cohort, recent history
     A-->>C: queued (repeats while waiting for a slot)
     A->>P: start
@@ -354,20 +355,21 @@ sequenceDiagram
 | Small children are embedded; answers use full parent articles | Embedding whole articles | Precise matching plus complete context for the writer |
 | Dense and BM25 are fused with RRF | Dense search only | Exact terms such as certificate names, cohort codes and article numbers need lexical matching |
 | The reranker is optional and fails open | A mandatory reranker | A provider limit should cost ranking quality, not the answer |
+| Embeddings and reranking run behind an API | Models loaded in the container | The free Space has no GPU; an API keeps the container small and serves several students at once |
 | Separate models for planning and writing | One large model for both | Each role has a narrow contract; a small fast planner keeps latency and cost down |
 | A frozen, source-anchored benchmark with run snapshots | Ad-hoc spot checks | Every change is compared on identical cases against a recorded runtime |
 
 ## Knowledge base
 
-| Artifact | v33 snapshot | Used for |
+| Artifact | v35 build | Used for |
 |---|---:|---|
-| Full parent articles | 462 | Composer context and citations (MongoDB) |
-| Narrative child chunks | 3,121 | Dense and BM25 search (Qdrant) |
+| Full parent articles | 541 | Composer context and citations (MongoDB) |
+| Narrative child chunks | 3,800 | Dense and BM25 search (Qdrant) |
 | Reviewed structured tables | 35 | Deterministic lookup (not embedded) |
 | Cross-reference edges | 78 | Related-article navigation in the UI |
 | Embedding | `BAAI/bge-m3`, 1,024 dimensions | Dense child retrieval |
 
-Per cohort: K48–K49 has 123 parents and 877 children, K50 has 166 and 1,082, and K51 has 173 and 1,162. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
+Per cohort: K48–K49 has 149 parents and 1,118 children, K50 has 192 and 1,293, and K51 has 200 and 1,389. The chatbot covers the main campus (District 5); branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
 
 ### Offline build
 
@@ -411,6 +413,12 @@ labelled as such ([dataset notes](data/eval/official_v2/README.md)).
 | Production | 60 / — | Requests against the deployed API: success rate, 429s, cache behavior, streaming time to first token and p95 latency, with pass/fail release gates |
 
 ### Results
+
+> [!NOTE]
+> These results measure the stack of 2026-09-12: Qwen3 planner on Groq, Gemini 3.1
+> Flash-Lite composer, a local `bge-m3` model, Cohere reranking and the v33 data. The
+> current stack (Luna planner, DeepSeek composer, `bge-m3` over an API, Qwen3-Reranker-8B,
+> v35 data) will be measured once, on the `official_v3` hold-out, when the project closes.
 
 `official_v2`'s hold-out run: 2026-09-12, commit `d09e970`, planner Qwen3 `v43` on Groq,
 composer Gemini 3.1 Flash-Lite, judge `openai/gpt-oss-120b`. Production: `official_v1`'s
@@ -540,7 +548,7 @@ Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`.
 ### Prerequisites
 
 - Python 3.11 and Node.js 20
-- A Qdrant collection and a MongoDB database loaded from the v33 build (see [Offline build](#offline-build))
+- A Qdrant collection and a MongoDB database loaded from the v35 build (see [Offline build](#offline-build))
 - API keys for OpenAI (planner), DeepSeek (composer and directory selector) and DeepInfra (BGE-M3 embeddings and the Qwen3-Reranker-8B reranker). Redis (shared cache) and LangSmith (tracing) are optional.
 
 ### Backend
@@ -562,7 +570,6 @@ Interactive API docs are then served at `http://127.0.0.1:8000/docs`.
 | `OPENAI_API_KEY` | yes | Planner (`gpt-6-luna`, strict QueryPlan schema; settings in `configs/ai_router.yaml`) |
 | `GROQ_API_KEYS` | no | Evaluation judge only |
 | `DEEPSEEK_API_KEY` | yes | Composer (`llm`) and directory selector, which picks the service, office, faculty or program a student names when no name matches exactly (`directory_selector`); both in `configs/answer_generation.yaml` |
-| `GEMINI_API_KEYS` | no | Only for the Gemini composer arm (`configs/experiments/answer_gemini_flash_lite.yaml`) |
 | `DEEPINFRA_API_KEY` | yes | BGE-M3 query and document embeddings, and the Qwen3-Reranker-8B reranker (`configs/retrieval.yaml`); a reranker failure keeps the RRF order |
 | `REDIS_URL` | no | Shared response cache; without it an in-memory cache is used |
 | `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT` | no | Request tracing and user feedback |
@@ -635,13 +642,13 @@ Conversation history lives in the browser's `sessionStorage` and is sent with ea
 
 | Concern | Implementation |
 |---|---|
-| Admission control | At most 3 chats at a time, a queue of 10 and a 15 s wait; beyond that, HTTP 503 for `/chat` or a `server_busy` event for `/chat/stream` |
+| Admission control | At most 3 chats at a time, a queue of 10 and a 30 s wait; beyond that, HTTP 503 for `/chat` or a `server_busy` event for `/chat/stream` |
 | Rate limits | Code defaults are 5 requests per minute per client, 120 per minute per IP and a 1,000-character question limit, all overridable; the shipped `.env.example` raises the per-client limit to 20/min and tightens the question limit to 500 characters. Over the limit returns HTTP 429 with `Retry-After` |
 | Provider quotas | One `KeyPool` per provider rotates keys under per-key request, token and daily limits and cools a key down after a 429 |
 | Caching | A router cache for plans, and an answer cache keyed by the question, cohort, selected evidence and prompt versions (Redis, 24 h TTL, or an in-memory fallback) |
 | Observability | One LangSmith trace per request, with child runs and token usage for the planner and the composer; feedback is attached to the same run |
 | Health | `/health` for liveness, `/health/readiness` for Qdrant, MongoDB, BM25 and artifacts, and an admin-only `/health/artifacts` |
-| Cold start | The embedding model is baked into the image at build time, and `STUDENT_RAG_WARMUP_ON_STARTUP` (set by the Dockerfile) builds the pipeline and the BM25 index on a background thread at boot, so the first question costs what the second does. Off by default locally, so a shell or a test run never loads the model |
+| Cold start | `STUDENT_RAG_WARMUP_ON_STARTUP` (set by the Dockerfile) builds the pipeline and the BM25 index on a background thread at boot, so the first question costs what the second does. Off by default locally, so a shell or a test run builds nothing it does not use |
 | Secrets | Keys are read from environment variables only; key-pool state and logs store a SHA-256 fingerprint, never the key itself |
 | Privacy | The server keeps no chat log. With LangSmith tracing on, questions and answers are sent to LangSmith |
 
@@ -658,8 +665,8 @@ Conversation history lives in the browser's `sessionStorage` and is sent with ea
 ├── src/
 │   ├── api/                  # FastAPI routes, schemas, admission control, health checks, startup warm-up, tracing
 │   ├── services/             # Shared AnswerPipeline lifecycle
-│   ├── generation/           # Pipeline orchestration, plan executor, evidence packet, prompts, Gemini client
-│   ├── retrieval/core/       # Planner, normalizer, structured lookups, hybrid retrieval, reranker
+│   ├── generation/           # Pipeline orchestration, plan executor, evidence packet, prompts, DeepSeek client
+│   ├── retrieval/core/       # Planner, normalizer, structured lookups, embedding client, hybrid retrieval, reranker
 │   ├── retrieval/vectorstore/# MongoDB parent store
 │   ├── common/               # Cohorts, text folding, key pool, I/O and config helpers
 │   ├── ingestion/            # PDF loading and cross-reference graph
@@ -670,7 +677,7 @@ Conversation history lives in the browser's `sessionStorage` and is sent with ea
 ├── scripts/                  # Build, publish, evaluation and deploy entry points
 ├── frontend/                 # React 19 + TypeScript + Vite client
 ├── tests/                    # Unit, contract and regression tests
-└── docs/                     # Build and execution contracts, experiment write-ups
+└── docs/                     # Build and execution contracts; dated experiment logs in docs/archive/
 ```
 
 A suggested reading order for the backend: [`schemas.py`](src/api/schemas.py), then [`answer_pipeline.py`](src/generation/answer_pipeline.py), [`ai_router.py`](src/retrieval/core/ai_router.py), [`query_plan.py`](src/retrieval/core/query_plan.py), [`structured_dispatcher.py`](src/retrieval/core/structured_dispatcher.py) and [`hybrid_pipeline.py`](src/retrieval/core/hybrid_pipeline.py), and finally [`prompt_builder.py`](src/generation/prompt_builder.py). Read the matching tests alongside each file.
@@ -715,8 +722,7 @@ evidence stops, and what would extend it.
 | [Parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) | How parents, children and reviewed tables are built and validated |
 | [Structured execution contract](docs/STRUCTURED_EXECUTION_CONTRACT.md) | Lookup capabilities, fact locks and evidence rules |
 | [Technical debt](docs/TECHNICAL_DEBT.md) | Known maintenance boundaries |
-| [Onboarding guide](docs/UA_ONBOARDING.md) | A guided tour of the code base |
-| [Archive](docs/archive/README.md) | Dated experiment logs and audits (planner versions, composer and rerank A/Bs) |
+| [Archive](docs/archive/README.md) | Dated experiment logs, audits and earlier system guides (planner versions, composer and rerank A/Bs) |
 
 ## License
 

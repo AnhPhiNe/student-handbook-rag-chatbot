@@ -54,9 +54,10 @@ class AnswerService:
     def warm(self, *, bm25_wait_seconds: float = 180.0) -> None:
         """Build everything the first question would otherwise build itself.
 
-        The constructor loads the embedding model, catalogs and parent
-        docstore; the router, plan executor and LLM client stay lazy behind
-        properties. Touching all of them here means the first request runs the
+        The constructor loads the catalogs and parent docstore; the router,
+        plan executor and LLM client stay lazy behind properties, and the
+        retriever (with its embedding and reranker clients) is a lazy
+        singleton. Touching all of them here means the first request runs the
         same code path as the hundredth.
 
         The regulation retriever is the expensive part a lazy first request

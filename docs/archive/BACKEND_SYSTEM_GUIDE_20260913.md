@@ -1335,74 +1335,74 @@ Mọi metric nên đi cùng:
 
 | File | Trách nhiệm |
 |---|---|
-| [`src/api/main.py`](../src/api/main.py) | Tạo FastAPI, CORS, lifespan và gắn router |
-| [`src/api/schemas.py`](../src/api/schemas.py) | Public request/response models |
-| [`src/api/routes/chat.py`](../src/api/routes/chat.py) | Sync chat, response projection, feedback |
-| [`src/api/routes/chat_stream.py`](../src/api/routes/chat_stream.py) | SSE endpoint, queue và tracing |
-| [`src/api/sse_events.py`](../src/api/sse_events.py) | Stateful SSE protocol builder |
-| [`src/api/chat_controls.py`](../src/api/chat_controls.py) | Validation, rate limit, capacity FIFO |
-| [`src/api/routes/health.py`](../src/api/routes/health.py) | Liveness/readiness/artifact health |
-| [`src/api/dependency_health.py`](../src/api/dependency_health.py) | Bounded Qdrant/Mongo probes |
-| [`src/api/warmup.py`](../src/api/warmup.py) | Background warm-up state |
-| [`src/api/langsmith_helper.py`](../src/api/langsmith_helper.py) | Async/bounded trace và feedback |
-| [`src/services/answer_service.py`](../src/services/answer_service.py) | Process-wide lazy `AnswerPipeline` facade |
+| [`src/api/main.py`](../../src/api/main.py) | Tạo FastAPI, CORS, lifespan và gắn router |
+| [`src/api/schemas.py`](../../src/api/schemas.py) | Public request/response models |
+| [`src/api/routes/chat.py`](../../src/api/routes/chat.py) | Sync chat, response projection, feedback |
+| [`src/api/routes/chat_stream.py`](../../src/api/routes/chat_stream.py) | SSE endpoint, queue và tracing |
+| [`src/api/sse_events.py`](../../src/api/sse_events.py) | Stateful SSE protocol builder |
+| [`src/api/chat_controls.py`](../../src/api/chat_controls.py) | Validation, rate limit, capacity FIFO |
+| [`src/api/routes/health.py`](../../src/api/routes/health.py) | Liveness/readiness/artifact health |
+| [`src/api/dependency_health.py`](../../src/api/dependency_health.py) | Bounded Qdrant/Mongo probes |
+| [`src/api/warmup.py`](../../src/api/warmup.py) | Background warm-up state |
+| [`src/api/langsmith_helper.py`](../../src/api/langsmith_helper.py) | Async/bounded trace và feedback |
+| [`src/services/answer_service.py`](../../src/services/answer_service.py) | Process-wide lazy `AnswerPipeline` facade |
 
 ### 19.2 Generation/orchestration
 
 | File | Trách nhiệm |
 |---|---|
-| [`src/generation/answer_pipeline.py`](../src/generation/answer_pipeline.py) | Shared prepare, guard, cache, sync/stream generation |
-| [`src/generation/plan_executor.py`](../src/generation/plan_executor.py) | Chạy task/cohort và aggregate result |
-| [`src/generation/prompt_builder.py`](../src/generation/prompt_builder.py) | Authorized evidence packet và context budget |
-| [`src/generation/gemini_client.py`](../src/generation/gemini_client.py) | Gemini boundary, retries, stream, usage |
-| [`src/generation/response_cache.py`](../src/generation/response_cache.py) | Context-aware key, Redis/in-memory cache |
-| [`src/generation/citation_formatter.py`](../src/generation/citation_formatter.py) | Chọn, dedupe, ưu tiên citation |
-| [`src/generation/answer_guardrails.py`](../src/generation/answer_guardrails.py) | Clarify/OOD/low-confidence/fallback |
-| [`src/generation/structured_result_presenter.py`](../src/generation/structured_result_presenter.py) | Public table/contact projection |
-| [`src/generation/amendment_precedence.py`](../src/generation/amendment_precedence.py) | Áp dụng amendment có provenance |
+| [`src/generation/answer_pipeline.py`](../../src/generation/answer_pipeline.py) | Shared prepare, guard, cache, sync/stream generation |
+| [`src/generation/plan_executor.py`](../../src/generation/plan_executor.py) | Chạy task/cohort và aggregate result |
+| [`src/generation/prompt_builder.py`](../../src/generation/prompt_builder.py) | Authorized evidence packet và context budget |
+| [`src/generation/gemini_client.py`](../../src/generation/gemini_client.py) | Gemini boundary, retries, stream, usage |
+| [`src/generation/response_cache.py`](../../src/generation/response_cache.py) | Context-aware key, Redis/in-memory cache |
+| [`src/generation/citation_formatter.py`](../../src/generation/citation_formatter.py) | Chọn, dedupe, ưu tiên citation |
+| [`src/generation/answer_guardrails.py`](../../src/generation/answer_guardrails.py) | Clarify/OOD/low-confidence/fallback |
+| [`src/generation/structured_result_presenter.py`](../../src/generation/structured_result_presenter.py) | Public table/contact projection |
+| [`src/generation/amendment_precedence.py`](../../src/generation/amendment_precedence.py) | Áp dụng amendment có provenance |
 
 ### 19.3 Planner, structured lookup và retrieval
 
 | File | Trách nhiệm |
 |---|---|
-| [`src/retrieval/core/ai_router.py`](../src/retrieval/core/ai_router.py) | Groq Planner, prompt/schema, cache, retry, diagnostics |
-| [`src/retrieval/core/query_plan.py`](../src/retrieval/core/query_plan.py) | QueryPlan schema và deterministic normalization |
-| [`src/retrieval/core/structured_dispatcher.py`](../src/retrieval/core/structured_dispatcher.py) | Dispatch lookup type, resolution contract |
-| [`src/retrieval/core/structured_lookup.py`](../src/retrieval/core/structured_lookup.py) | Generic table/range matching |
-| [`src/retrieval/core/*_lookup.py`](../src/retrieval/core) | Domain-specific lookup handlers |
-| [`src/retrieval/core/hybrid_pipeline.py`](../src/retrieval/core/hybrid_pipeline.py) | Dense + BM25 + RRF + rerank + parent + graph |
-| [`src/retrieval/core/bm25_retriever.py`](../src/retrieval/core/bm25_retriever.py) | Local lexical index/search |
-| [`src/retrieval/core/cohere_reranker.py`](../src/retrieval/core/cohere_reranker.py) | Optional fail-open reranker |
-| [`src/retrieval/core/embedding_model.py`](../src/retrieval/core/embedding_model.py) | Cached BGE-M3 loader |
-| [`src/retrieval/core/citation_builder.py`](../src/retrieval/core/citation_builder.py) | Canonical source/citation construction |
-| [`src/retrieval/vectorstore/mongo_store.py`](../src/retrieval/vectorstore/mongo_store.py) | Parent document access |
+| [`src/retrieval/core/ai_router.py`](../../src/retrieval/core/ai_router.py) | Groq Planner, prompt/schema, cache, retry, diagnostics |
+| [`src/retrieval/core/query_plan.py`](../../src/retrieval/core/query_plan.py) | QueryPlan schema và deterministic normalization |
+| [`src/retrieval/core/structured_dispatcher.py`](../../src/retrieval/core/structured_dispatcher.py) | Dispatch lookup type, resolution contract |
+| [`src/retrieval/core/structured_lookup.py`](../../src/retrieval/core/structured_lookup.py) | Generic table/range matching |
+| [`src/retrieval/core/*_lookup.py`](../../src/retrieval/core) | Domain-specific lookup handlers |
+| [`src/retrieval/core/hybrid_pipeline.py`](../../src/retrieval/core/hybrid_pipeline.py) | Dense + BM25 + RRF + rerank + parent + graph |
+| [`src/retrieval/core/bm25_retriever.py`](../../src/retrieval/core/bm25_retriever.py) | Local lexical index/search |
+| [`src/retrieval/core/cohere_reranker.py`](../../src/retrieval/core/cohere_reranker.py) | Optional fail-open reranker |
+| [`src/retrieval/core/embedding_model.py`](../../src/retrieval/core/embedding_model.py) | Cached BGE-M3 loader |
+| [`src/retrieval/core/citation_builder.py`](../../src/retrieval/core/citation_builder.py) | Canonical source/citation construction |
+| [`src/retrieval/vectorstore/mongo_store.py`](../../src/retrieval/vectorstore/mongo_store.py) | Parent document access |
 
 ### 19.4 Offline build
 
 | File | Trách nhiệm |
 |---|---|
-| [`scripts/build_multi_cohort.py`](../scripts/build_multi_cohort.py) | Orchestrate full three-cohort build |
-| [`src/preprocessing/structure_parser.py`](../src/preprocessing/structure_parser.py) | Parse chapter/article/section |
-| [`src/extraction/runner.py`](../src/extraction/runner.py) | Structured extraction orchestration |
-| [`src/extraction/scoring_tables.py`](../src/extraction/scoring_tables.py) | Scoring/scholarship table builders |
-| [`src/chunking/regulation_parents.py`](../src/chunking/regulation_parents.py) | Full parent content |
-| [`scripts/build_parent_child_artifacts.py`](../scripts/build_parent_child_artifacts.py) | Audited parent/child separation |
-| [`src/ingestion/graph_extractor.py`](../src/ingestion/graph_extractor.py) | Rule-based legal reference graph |
-| [`scripts/build_artifact_manifest.py`](../scripts/build_artifact_manifest.py) | Hash/build/storage identity |
-| [`scripts/push_to_qdrant.py`](../scripts/push_to_qdrant.py) | Validate và upload children |
-| [`scripts/push_to_mongo.py`](../scripts/push_to_mongo.py) | Validate và upload parents |
+| [`scripts/build_multi_cohort.py`](../../scripts/build_multi_cohort.py) | Orchestrate full three-cohort build |
+| [`src/preprocessing/structure_parser.py`](../../src/preprocessing/structure_parser.py) | Parse chapter/article/section |
+| [`src/extraction/runner.py`](../../src/extraction/runner.py) | Structured extraction orchestration |
+| [`src/extraction/scoring_tables.py`](../../src/extraction/scoring_tables.py) | Scoring/scholarship table builders |
+| [`src/chunking/regulation_parents.py`](../../src/chunking/regulation_parents.py) | Full parent content |
+| [`scripts/build_parent_child_artifacts.py`](../../scripts/build_parent_child_artifacts.py) | Audited parent/child separation |
+| [`src/ingestion/graph_extractor.py`](../../src/ingestion/graph_extractor.py) | Rule-based legal reference graph |
+| [`scripts/build_artifact_manifest.py`](../../scripts/build_artifact_manifest.py) | Hash/build/storage identity |
+| [`scripts/push_to_qdrant.py`](../../scripts/push_to_qdrant.py) | Validate và upload children |
+| [`scripts/push_to_mongo.py`](../../scripts/push_to_mongo.py) | Validate và upload parents |
 
 ### 19.5 Evaluation và deployment
 
 | File | Trách nhiệm |
 |---|---|
-| [`src/evaluation/deterministic.py`](../src/evaluation/deterministic.py) | Plan/tool/result grading |
-| [`src/evaluation/retrieval.py`](../src/evaluation/retrieval.py) | Retrieval metrics |
-| [`src/evaluation/answers.py`](../src/evaluation/answers.py) | Generate + judge workflow |
-| [`src/evaluation/production.py`](../src/evaluation/production.py) | HTTP/SSE/cache/latency suite |
-| [`src/evaluation/gates.py`](../src/evaluation/gates.py) | Release thresholds |
-| [`scripts/deploy_hf_backend.ps1`](../scripts/deploy_hf_backend.ps1) | Allowlisted HF package/deploy |
-| [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) | Automated lint/test/build checks |
+| [`src/evaluation/deterministic.py`](../../src/evaluation/deterministic.py) | Plan/tool/result grading |
+| [`src/evaluation/retrieval.py`](../../src/evaluation/retrieval.py) | Retrieval metrics |
+| [`src/evaluation/answers.py`](../../src/evaluation/answers.py) | Generate + judge workflow |
+| [`src/evaluation/production.py`](../../src/evaluation/production.py) | HTTP/SSE/cache/latency suite |
+| [`src/evaluation/gates.py`](../../src/evaluation/gates.py) | Release thresholds |
+| [`scripts/deploy_hf_backend.ps1`](../../scripts/deploy_hf_backend.ps1) | Allowlisted HF package/deploy |
+| [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) | Automated lint/test/build checks |
 
 ---
 
@@ -1543,7 +1543,7 @@ Hệ thống không cần bỏ toàn bộ request chỉ vì một task thiếu i
    LangSmith hoặc script gọi động; không được xóa chỉ vì call graph nói “dead”.
 
 Chi tiết và quy tắc xóa code nằm trong
-[`TECHNICAL_DEBT.md`](TECHNICAL_DEBT.md).
+[`TECHNICAL_DEBT.md`](../TECHNICAL_DEBT.md).
 
 ### 22.3 Điều không nên “refactor cho đẹp” trước khi hiểu contract
 
@@ -1657,12 +1657,12 @@ Không phải khi có thêm nhiều class hoặc framework. Tín hiệu mạnh h
 
 | File | Điều khiển |
 |---|---|
-| [`configs/ai_router.yaml`](../configs/ai_router.yaml) | Planner model, schema mode, token budget, retries, key pool |
-| [`configs/answer_generation.yaml`](../configs/answer_generation.yaml) | Composer, context, cache, citations, guardrail |
-| [`configs/retrieval.yaml`](../configs/retrieval.yaml) | Embedding, top-k, Qdrant timeout, parent cache, Cohere |
-| [`configs/structured_lookup_registry.yaml`](../configs/structured_lookup_registry.yaml) | Tool/slot/selector/matching/presentation contract |
-| [`configs/hcmue_slang_dictionary.yaml`](../configs/hcmue_slang_dictionary.yaml) | Slang và abbreviation normalization |
-| [`configs/office_aliases.yaml`](../configs/office_aliases.yaml) | Alias danh bạ |
+| [`configs/ai_router.yaml`](../../configs/ai_router.yaml) | Planner model, schema mode, token budget, retries, key pool |
+| [`configs/answer_generation.yaml`](../../configs/answer_generation.yaml) | Composer, context, cache, citations, guardrail |
+| [`configs/retrieval.yaml`](../../configs/retrieval.yaml) | Embedding, top-k, Qdrant timeout, parent cache, Cohere |
+| [`configs/structured_lookup_registry.yaml`](../../configs/structured_lookup_registry.yaml) | Tool/slot/selector/matching/presentation contract |
+| [`configs/hcmue_slang_dictionary.yaml`](../../configs/hcmue_slang_dictionary.yaml) | Slang và abbreviation normalization |
+| [`configs/office_aliases.yaml`](../../configs/office_aliases.yaml) | Alias danh bạ |
 
 ### 25.2 Environment groups
 
@@ -1699,14 +1699,14 @@ Không copy placeholder trong `.env.example` thành secret thật trong Git.
 Nếu chỉ có 30 phút, hãy làm theo thứ tự:
 
 1. Mở [portal kiến trúc](https://anhphine.github.io/student-handbook-rag-chatbot/architecture/index.html).
-2. Đọc [API schemas](../src/api/schemas.py).
+2. Đọc [API schemas](../../src/api/schemas.py).
 3. Đọc `AnswerPipeline.prepare_answer` trong
-   [answer pipeline](../src/generation/answer_pipeline.py).
+   [answer pipeline](../../src/generation/answer_pipeline.py).
 4. Đọc `PlanExecutor.run` trong
-   [plan executor](../src/generation/plan_executor.py).
+   [plan executor](../../src/generation/plan_executor.py).
 5. Chọn một trong hai nhánh:
-   [structured dispatcher](../src/retrieval/core/structured_dispatcher.py) hoặc
-   [hybrid retriever](../src/retrieval/core/hybrid_pipeline.py).
+   [structured dispatcher](../../src/retrieval/core/structured_dispatcher.py) hoặc
+   [hybrid retriever](../../src/retrieval/core/hybrid_pipeline.py).
 6. Đọc test tương ứng để xác nhận cách hiểu.
 
 Sau sáu bước này, người đọc sẽ biết request đi đâu, quyết định nào do LLM đề xuất,

@@ -36,6 +36,7 @@ reports are listed at the end.
 | Candidate depth | 24 children for dense, BM25, fusion and rerank | 16, 40 | 24 holds the first gold child for 155/155 questions, 16 for 154/155 |
 | Tables | Reviewed JSON tables for lookup; readable tables kept in parents; no table rows embedded | The composer reading tables from retrieved text | The composer picked the wrong row of a range table in every try (sup_05, grade_remaining) |
 | Planner input | The student's own words | 156 slang rules rewriting the question first | 133/135 without the rewrite against 132/135 with it; the 12 rewritten questions pass either way |
+| Retrieval query | Slang rewritten to handbook wording | The student's own words | On 61 slang-reworded questions hit@5 61/61 with the rewrite against 58/61 without |
 
 ## Planner
 
@@ -263,7 +264,17 @@ calls fell back to RRF. Any failure keeps the RRF order.
   without it, on the same code: hit@1 0.929 / 0.923, hit@3 0.987 / 0.994,
   hit@5 1.000 / 1.000, MRR 0.959 / 0.956. It moves one question into first
   place (101) and one out of the top 3 (080): a tie (McNemar p = 1.00) on
-  development questions written in handbook-like wording.
+  development questions written in handbook-like wording. Those questions
+  exercise only 14 of the 106 slang phrases, so a slang probe followed: 61
+  gold-labelled `official_v1`/`v2` questions reworded with 30 testable slang
+  phrases (canonical phrase replaced by the slang, sources unchanged). With
+  the rewrite hit@5 was 61/61, without it 58/61; hit@1 46 against 43, MRR
+  0.857 against 0.816. The three lost sources were "miễn giảm tiền học",
+  "miễn giảm tiền trường" and "bị warning", which dense search did not map to
+  học phí and cảnh báo học tập. Not significant at this size (p = 0.25 for
+  hit@5), but only the arm without the rewrite loses sources, so the retrieval
+  rewrite stays. BM25 also expands the 50 listed acronyms and 39 generated
+  program acronyms itself, independently of this rewrite.
 - **Parent grouping.** Children are grouped by parent and a parent is scored by
   its best child, so several children of one article cannot push other
   articles out of the top 5.
@@ -359,3 +370,4 @@ Evaluation reports are git-ignored and stay on the development machine under
 | End-to-end development questions | `supplementary_questions_20260928T231521Z` |
 | Planner input with and without the slang rewrite | `official_v1_deterministic_20260929T045740Z` (with), `…T051501Z` (without) |
 | Retrieval with and without query expansion | `official_v1_retrieval_20260929T045526Z` (with), `…T052455Z` (without) |
+| Slang probe | `measurements_20260928/results/slang_probe/` (`slang_probe.py`) |

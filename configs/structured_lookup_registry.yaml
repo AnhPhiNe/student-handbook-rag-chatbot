@@ -1,5 +1,13 @@
 version: 10
 
+# span_aliases (per slot): the phrases in a question that count as evidence
+# for a slot value. The planner's span must contain the value or one of its
+# aliases, and when the planner gives a value without a span, a matching
+# phrase in the question becomes its span. Matching ignores case, diacritics
+# and punctuation, so write each phrase once, with diacritics. The first alias
+# of an opaque code (e.g. secondary_bridge) is its meaning in the planner
+# prompt. A slot with no span_aliases gets no span recovery, which is why some
+# lists hold only the value itself (IELTS: [IELTS]).
 tools:
   foreign_language:
     data_category: regulation_table
@@ -21,7 +29,7 @@ tools:
         span_aliases:
           IELTS: [IELTS]
           TOEFL: [TOEFL, TOEFL iBT, TOEFL ITP]
-          TOEIC: [TOEIC, TOEIC 4 kỹ năng, TOEIC 4 ky nang]
+          TOEIC: [TOEIC, TOEIC 4 kỹ năng]
           Cambridge: [Cambridge, Linguaskill]
           JLPT: [JLPT, Japanese Language Proficiency Test]
           HSK: [HSK, Hanyu Shuiping Kaoshi]
@@ -233,12 +241,12 @@ tools:
           Chọn theo loại đáp án cần trả: tên đơn vị hay vị trí vật lý;
           nếu mục đích vẫn mơ hồ sau history hợp lệ thì clarify, không dùng all để né chọn field.
         span_aliases:
-          unit: [đơn vị, don vi, bộ phận, bo phan]
-          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
-          email: [email, thư điện tử, thu dien tu]
-          office: [địa chỉ, dia chi, phòng làm việc, phong lam viec]
+          unit: [đơn vị, bộ phận]
+          phone: [số điện thoại, điện thoại, sđt, phone]
+          email: [email, thư điện tử]
+          office: [địa chỉ, phòng làm việc]
           website: [website, trang web]
-          all: [thông tin liên hệ, thong tin lien he]
+          all: [thông tin liên hệ]
     strategy: student_service_lookup
     response_intent: office_query
     target_chunk_types: [office_directory]
@@ -262,12 +270,12 @@ tools:
         enum: [phone, email, office, website, services, all]
         description: Trường đầu ra; office=địa chỉ/vị trí, services=danh sách dịch vụ của đơn vị, all=thông tin liên hệ tổng hợp.
         span_aliases:
-          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
-          email: [email, thư điện tử, thu dien tu]
-          office: [địa chỉ, dia chi, phòng làm việc, phong lam viec]
+          phone: [số điện thoại, điện thoại, sđt, phone]
+          email: [email, thư điện tử]
+          office: [địa chỉ, phòng làm việc]
           website: [website, trang web]
-          services: [dịch vụ, dich vu, hỗ trợ gì, ho tro gi]
-          all: [thông tin liên hệ, thong tin lien he, liên hệ, lien he]
+          services: [dịch vụ, hỗ trợ gì]
+          all: [thông tin liên hệ, liên hệ]
     strategy: office_lookup
     response_intent: office_query
     target_chunk_types: [office_directory]
@@ -291,11 +299,11 @@ tools:
         enum: [phone, email, office, website, all]
         description: Trường liên hệ của khoa; office=địa chỉ/vị trí, all=thông tin liên hệ tổng hợp.
         span_aliases:
-          phone: [số điện thoại, so dien thoai, điện thoại, dien thoai, sđt, sdt, phone]
-          email: [email, thư điện tử, thu dien tu]
-          office: [địa chỉ, dia chi, văn phòng, van phong]
+          phone: [số điện thoại, điện thoại, sđt, phone]
+          email: [email, thư điện tử]
+          office: [địa chỉ, văn phòng]
           website: [website, trang web]
-          all: [thông tin liên hệ, thong tin lien he, liên hệ, lien he]
+          all: [thông tin liên hệ, liên hệ]
     strategy: faculty_lookup
     response_intent: faculty_query
     target_chunk_types: [faculty_program_directory]
@@ -326,7 +334,7 @@ tools:
         description: "Phạm vi danh sách ngành: school=toàn trường; faculty=theo khoa đã nêu, không phải field khoa phụ trách ngành."
         grounding_intents: [list_items]
         span_aliases:
-          school: [các ngành của trường, cac nganh cua truong, những ngành của trường, nhung nganh cua truong, toàn trường, toan truong, trường có những ngành, truong co nhung nganh]
+          school: [các ngành của trường, những ngành của trường, toàn trường, trường có những ngành]
           faculty: [khoa]
     strategy: program_lookup
     response_intent: faculty_query

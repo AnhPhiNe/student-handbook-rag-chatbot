@@ -3,6 +3,16 @@
 This contract separates interpretation from execution in the existing modules.
 It does not add a planner, resolver framework, or fallback orchestration layer.
 
+**Fact lock.** When a reference-table lookup has input values that appear in the
+question (for example a score of 3,6/10) and those values select exactly one row
+of exactly one applicable table, the dispatcher attaches that row as
+`resolved_result`. That row is the fact lock: the composer must state it rather
+than read the table itself. The complete tables are still sent as evidence. No
+lock is set when an input is missing or ungrounded, when several tables apply,
+or when the inputs select several rows. `validate_fact_lock_inputs` lists the
+reasons a task cannot be locked, and evaluation cases mark whether a lock is
+expected with `fact_lock_applicable`.
+
 ## Responsibilities
 
 - **Planner** owns task decomposition, lookup intent, semantic selectors and

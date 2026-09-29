@@ -82,7 +82,7 @@ def main() -> None:
 
     cases = yaml.safe_load(args.cases.read_text(encoding="utf-8"))["cases"]
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out = args.out or REPORTS / f"{args.cases.stem}_{stamp}"
+    out = (args.out or REPORTS / f"{args.cases.stem}_{stamp}").resolve()
     run = generate_answers(cases, cache_path=out / "answer_cache.json", resume=True,
                            checkpoint_context=collections)
     records = {row["id"]: row for row in run["cases"]}

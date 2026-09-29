@@ -200,8 +200,8 @@ class SlangNormalizer:
                 return " ".join(words[:-size])
         return replacement
 
-    def replace_for_router(self, query: str) -> str:
-        """Apply only meaning-preserving replacements before routing."""
+    def canonicalize(self, query: str) -> str:
+        """Apply only the meaning-preserving replacements (replace_slangs)."""
         if not query:
             return query
 
@@ -253,8 +253,4 @@ class SlangNormalizer:
 
         # 4. Final canonical pass for any replacement introduced through
         # fallback paths or expansion text.
-        if self.replace_pattern:
-
-            normalized = self.replace_pattern.sub(self._replacement, normalized)
-
-        return self._clean(normalized)
+        return self.canonicalize(normalized)

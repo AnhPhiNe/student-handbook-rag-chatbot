@@ -112,11 +112,13 @@ class PlanExecutor:
         chat_history: list[dict[str, str]] | None,
     ) -> dict[str, Any]:
         """Plan and execute at most three independent, non-recursive tasks."""
-        router_input_query = self.slang_normalizer.replace_for_router(query)
+        # The planner reads the student's own words; the slang dictionary only
+        # rewrites the retrieval query (measured 2026-09-29: official_v1
+        # deterministic 133/135 without the planner rewrite, 132/135 with it).
         planner_started = time.perf_counter()
         try:
             raw_plan = self.router.plan(
-                router_input_query,
+                query,
                 chat_history=chat_history,
                 cohort=cohort,
             )

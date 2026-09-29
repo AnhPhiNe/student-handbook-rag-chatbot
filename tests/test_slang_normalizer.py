@@ -53,7 +53,7 @@ def test_explicit_acronyms_are_case_insensitive(tmp_path) -> None:
     assert normalizer.normalize_for_retrieval("Cntt") == "công nghệ thông tin"
 
 
-def test_router_replacement_does_not_apply_retrieval_expansion(tmp_path) -> None:
+def test_canonicalize_does_not_apply_retrieval_expansion(tmp_path) -> None:
     normalizer = SlangNormalizer(
         _write_vocabulary(tmp_path),
         program_directory=[],
@@ -62,7 +62,7 @@ def test_router_replacement_does_not_apply_retrieval_expansion(tmp_path) -> None
     query = "cntt có học bổng không?"
 
     assert (
-        normalizer.replace_for_router(query)
+        normalizer.canonicalize(query)
         == "công nghệ thông tin có học bổng không?"
     )
     assert normalizer.normalize_for_retrieval(query) == (
@@ -141,19 +141,19 @@ def test_unique_directory_aliases_are_canonicalized_before_routing(tmp_path) -> 
     )
 
     canonical = "phòng công tác chính trị và học sinh, sinh viên"
-    assert normalizer.replace_for_router("Phòng CTCT-HSSV nằm ở đâu?") == (
+    assert normalizer.canonicalize("Phòng CTCT-HSSV nằm ở đâu?") == (
         f"{canonical} nằm ở đâu?"
     )
-    assert normalizer.replace_for_router("Phòng CTCT&HSSV nằm ở đâu?") == (
+    assert normalizer.canonicalize("Phòng CTCT&HSSV nằm ở đâu?") == (
         f"{canonical} nằm ở đâu?"
     )
-    assert normalizer.replace_for_router("Phòng CTCT/HSSV nằm ở đâu?") == (
+    assert normalizer.canonicalize("Phòng CTCT/HSSV nằm ở đâu?") == (
         f"{canonical} nằm ở đâu?"
     )
-    assert normalizer.replace_for_router("phòng công tác sinh viên ở đâu?") == (
+    assert normalizer.canonicalize("phòng công tác sinh viên ở đâu?") == (
         f"{canonical} ở đâu?"
     )
-    assert normalizer.replace_for_router("số điện thoại PDT") == (
+    assert normalizer.canonicalize("số điện thoại PDT") == (
         "số điện thoại phòng đào tạo"
     )
 
@@ -165,7 +165,7 @@ def test_ambiguous_directory_alias_is_not_canonicalized(tmp_path) -> None:
         unit_alias_config_path=_write_unit_aliases(tmp_path),
     )
 
-    assert normalizer.replace_for_router("CNTT ở đâu?") == "CNTT ở đâu?"
+    assert normalizer.canonicalize("CNTT ở đâu?") == "CNTT ở đâu?"
 
 
 def test_short_alias_is_not_replaced_inside_unregistered_compound(tmp_path) -> None:
@@ -186,17 +186,17 @@ expand_slangs: []
     )
 
     for compound in ("CTCT-HSSV", "CTCT&HSSV", "CTCT/HSSV"):
-        assert normalizer.replace_for_router(compound) == compound
-    assert normalizer.replace_for_router("HSSV") == "học sinh, sinh viên"
+        assert normalizer.canonicalize(compound) == compound
+    assert normalizer.canonicalize("HSSV") == "học sinh, sinh viên"
 
 
 def test_phone_abbreviation_is_canonicalized_for_router() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router("sdt của phòng đào tạo") == (
+    assert normalizer.canonicalize("sdt của phòng đào tạo") == (
         "số điện thoại của phòng đào tạo"
     )
-    assert normalizer.replace_for_router("SĐT của phòng đào tạo") == (
+    assert normalizer.canonicalize("SĐT của phòng đào tạo") == (
         "số điện thoại của phòng đào tạo"
     )
 
@@ -204,10 +204,10 @@ def test_phone_abbreviation_is_canonicalized_for_router() -> None:
 def test_academic_warning_acronym_is_canonicalized_for_router() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router("các lý do dẫn đến cbht") == (
+    assert normalizer.canonicalize("các lý do dẫn đến cbht") == (
         "các lý do dẫn đến cảnh báo học tập"
     )
-    assert normalizer.replace_for_router("CBHT do đâu?") == (
+    assert normalizer.canonicalize("CBHT do đâu?") == (
         "cảnh báo học tập do đâu?"
     )
 
@@ -241,7 +241,7 @@ def test_handbook_front_matter_acronyms_are_canonicalized(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(acronym).casefold() == expected.casefold()
+    assert normalizer.canonicalize(acronym).casefold() == expected.casefold()
 
 
 @pytest.mark.parametrize(
@@ -257,7 +257,7 @@ def test_defined_body_acronyms_are_canonicalized(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(acronym) == expected
+    assert normalizer.canonicalize(acronym) == expected
 
 
 @pytest.mark.parametrize(
@@ -271,17 +271,17 @@ def test_defined_body_acronyms_are_canonicalized(
 def test_legal_reference_acronyms_remain_literal(legal_reference: str) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(legal_reference) == legal_reference
+    assert normalizer.canonicalize(legal_reference) == legal_reference
 
 
 def test_generic_gpa_is_preserved_for_router_and_expanded_for_retrieval() -> None:
     normalizer = SlangNormalizer(program_directory=[])
     query = "hai kỳ liên tiếp GPA và điểm rèn luyện xuất sắc"
 
-    router_query = normalizer.replace_for_router(query)
+    canonical_query = normalizer.canonicalize(query)
     retrieval_query = normalizer.normalize_for_retrieval(query)
 
-    assert router_query == query
+    assert canonical_query == query
     assert "GPA" in retrieval_query
     assert "điểm trung bình học kỳ hoặc điểm trung bình tích lũy" in retrieval_query
 
@@ -289,10 +289,10 @@ def test_generic_gpa_is_preserved_for_router_and_expanded_for_retrieval() -> Non
 def test_explicit_gpa_scope_keeps_existing_canonical_replacement() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router("GPA học kỳ") == (
+    assert normalizer.canonicalize("GPA học kỳ") == (
         "điểm trung bình chung học kỳ"
     )
-    assert normalizer.replace_for_router("GPA tích lũy") == (
+    assert normalizer.canonicalize("GPA tích lũy") == (
         "điểm trung bình chung tích lũy"
     )
 
@@ -300,15 +300,15 @@ def test_explicit_gpa_scope_keeps_existing_canonical_replacement() -> None:
 def test_graduation_rank_slang_only_canonicalizes_the_user_term() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    router_query = normalizer.replace_for_router(
+    canonical_query = normalizer.canonicalize(
         "học lại hay học cải thiện mới bị hạ bằng"
     )
     normalized = normalizer.normalize_for_retrieval(
         "học lại hay học cải thiện mới bị hạ bằng"
     )
 
-    assert "hạ bằng" not in router_query
-    assert "giảm một mức xếp loại tốt nghiệp" in router_query
+    assert "hạ bằng" not in canonical_query
+    assert "giảm một mức xếp loại tốt nghiệp" in canonical_query
     assert "hạ bằng" not in normalized
     assert "tiếp nhận trở lại học" not in normalized
     assert "giảm một mức xếp loại tốt nghiệp" in normalized
@@ -320,15 +320,15 @@ def test_graduation_rank_slang_only_canonicalizes_the_user_term() -> None:
 def test_accentless_slangs_use_same_canonical_mappings() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    router_query = normalizer.replace_for_router(
+    canonical_query = normalizer.canonicalize(
         "K50 hoc lai hay hoc cai thien moi bi ha bang?"
     )
     normalized = normalizer.normalize_for_retrieval(
         "K50 hoc lai hay hoc cai thien moi bi ha bang?"
     )
 
-    assert "ha bang" not in router_query
-    assert "giảm một mức xếp loại tốt nghiệp" in router_query
+    assert "ha bang" not in canonical_query
+    assert "giảm một mức xếp loại tốt nghiệp" in canonical_query
     assert "khối lượng tín chỉ học lại vượt quá 5%" not in normalized
     assert "kỷ luật cảnh cáo trở lên" not in normalized
     assert "học lại học phần đã đạt" in normalized
@@ -338,20 +338,20 @@ def test_accentless_slangs_use_same_canonical_mappings() -> None:
 def test_program_acronym_replacement_handles_lowercase_user_input() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router("nganh cntt o khoa nao") == (
+    assert normalizer.canonicalize("nganh cntt o khoa nao") == (
         "nganh công nghệ thông tin o khoa nao"
     )
 
 
-def test_ambiguous_slangs_expand_but_do_not_replace_for_router() -> None:
+def test_ambiguous_slangs_expand_but_do_not_canonicalize() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router("thi bù") == "thi bù"
-    assert normalizer.replace_for_router("chuyển khoa") == "chuyển khoa"
-    assert normalizer.replace_for_router("gap year") == "gap year"
-    assert normalizer.replace_for_router("treo học") == "treo học"
-    assert normalizer.replace_for_router("dính biên bản") == "dính biên bản"
-    assert normalizer.replace_for_router("học lại sau bảo lưu") == (
+    assert normalizer.canonicalize("thi bù") == "thi bù"
+    assert normalizer.canonicalize("chuyển khoa") == "chuyển khoa"
+    assert normalizer.canonicalize("gap year") == "gap year"
+    assert normalizer.canonicalize("treo học") == "treo học"
+    assert normalizer.canonicalize("dính biên bản") == "dính biên bản"
+    assert normalizer.canonicalize("học lại sau bảo lưu") == (
         "học lại sau bảo lưu"
     )
 
@@ -392,7 +392,7 @@ def test_improvement_study_is_canonicalized_before_routing(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(query) == expected
+    assert normalizer.canonicalize(query) == expected
     assert normalizer.normalize_for_retrieval(query) == expected
 
 
@@ -441,7 +441,7 @@ def test_ambiguous_handbook_terms_only_expand_retrieval(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(query) == query
+    assert normalizer.canonicalize(query) == query
     retrieval_query = normalizer.normalize_for_retrieval(query)
     assert original_term in retrieval_query
     assert expected_expansion in retrieval_query
@@ -487,7 +487,7 @@ def test_ambiguous_terms_do_not_force_one_meaning_before_planning(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(query) == query
+    assert normalizer.canonicalize(query) == query
     retrieval_query = normalizer.normalize_for_retrieval(query)
     assert query in retrieval_query
     assert expected_expansion in retrieval_query
@@ -499,21 +499,21 @@ def test_official_failed_course_term_is_not_reexpanded() -> None:
     normalizer = SlangNormalizer(program_directory=[])
     query = "học phần chưa đạt"
 
-    assert normalizer.replace_for_router(query) == query
+    assert normalizer.canonicalize(query) == query
     assert normalizer.normalize_for_retrieval(query) == query
 
 
 def test_academic_warning_alias_uses_official_handbook_term() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router("warning học vụ") == "cảnh báo học tập"
-    assert normalizer.replace_for_router("cảnh báo học vụ") == "cảnh báo học tập"
+    assert normalizer.canonicalize("warning học vụ") == "cảnh báo học tập"
+    assert normalizer.canonicalize("cảnh báo học vụ") == "cảnh báo học tập"
 
 
 def test_specific_improvement_phrase_is_replaced_before_shorter_phrase() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    normalized = normalizer.replace_for_router("học cải thiện điểm")
+    normalized = normalizer.canonicalize("học cải thiện điểm")
     assert normalized == "học lại học phần đã đạt để cải thiện điểm"
     assert "điểm điểm" not in normalized
 
@@ -537,7 +537,7 @@ def test_session_absence_slang_is_not_rewritten_as_abandoning_study(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(query) == query
+    assert normalizer.canonicalize(query) == query
     assert normalizer.normalize_for_retrieval(query) == query
     assert "tự ý bỏ học" not in normalizer.normalize_for_retrieval(query)
 
@@ -546,7 +546,7 @@ def test_generic_unexcused_absence_is_not_narrowed_to_exam_or_study_status() -> 
     normalizer = SlangNormalizer(program_directory=[])
     query = "vắng không phép thì bị xử lý thế nào?"
 
-    assert normalizer.replace_for_router(query) == query
+    assert normalizer.canonicalize(query) == query
     assert normalizer.normalize_for_retrieval(query) == query
     assert "buổi thi" not in normalizer.normalize_for_retrieval(query)
     assert "tự ý bỏ học" not in normalizer.normalize_for_retrieval(query)
@@ -565,7 +565,7 @@ def test_generic_unexcused_absence_is_not_narrowed_to_exam_or_study_status() -> 
 def test_official_or_ambiguous_terms_are_not_overexpanded(query: str) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(query) == query
+    assert normalizer.canonicalize(query) == query
     assert normalizer.normalize_for_retrieval(query) == query
 
 
@@ -588,11 +588,11 @@ def test_ambiguous_time_and_grade_terms_only_expand_retrieval(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    router_query = normalizer.replace_for_router(query)
+    canonical_query = normalizer.canonicalize(query)
     retrieval_query = normalizer.normalize_for_retrieval(query)
 
-    expected_router_query = query.replace("bị đuổi học", "buộc thôi học")
-    assert router_query == expected_router_query
+    expected_canonical_query = query.replace("bị đuổi học", "buộc thôi học")
+    assert canonical_query == expected_canonical_query
     assert expected_expansion in retrieval_query
 
 
@@ -609,7 +609,7 @@ def test_dismissal_slang_is_canonicalized_before_routing(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(query) == expected
+    assert normalizer.canonicalize(query) == expected
     assert normalizer.normalize_for_retrieval(query) == expected
 
 
@@ -617,10 +617,10 @@ def test_generic_failure_slang_only_expands_retrieval() -> None:
     normalizer = SlangNormalizer(program_directory=[])
     query = "thi rớt 3 môn có bị đuổi học?"
 
-    router_query = normalizer.replace_for_router(query)
+    canonical_query = normalizer.canonicalize(query)
     retrieval_query = normalizer.normalize_for_retrieval(query)
 
-    assert router_query == "thi rớt 3 môn có buộc thôi học?"
+    assert canonical_query == "thi rớt 3 môn có buộc thôi học?"
     assert "rớt không đạt" in retrieval_query
     assert "buộc thôi học" in retrieval_query
 
@@ -654,7 +654,7 @@ def test_required_subject_debt_uses_handbook_course_names(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(query) == expected
+    assert normalizer.canonicalize(query) == expected
 
 
 @pytest.mark.parametrize(
@@ -683,7 +683,7 @@ def test_unsupported_exam_ban_phrase_is_not_given_an_invented_policy_mapping() -
     normalizer = SlangNormalizer(program_directory=[])
     query = "đóng học phí trễ có bị cấm thi không?"
 
-    assert normalizer.replace_for_router(query) == query
+    assert normalizer.canonicalize(query) == query
     assert "cấm thi" in normalizer.normalize_for_retrieval(query)
     assert "không được dự thi" not in normalizer.normalize_for_retrieval(query)
 
@@ -701,7 +701,7 @@ def test_generic_output_standard_is_not_narrowed_to_specific_requirements(
 ) -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router(query) == query
+    assert normalizer.canonicalize(query) == query
     assert normalizer.normalize_for_retrieval(query) == query
 
 
@@ -714,7 +714,7 @@ def test_runtime_slang_categories_do_not_overlap() -> None:
 def test_form_is_not_canonicalized_in_runtime_slang() -> None:
     normalizer = SlangNormalizer(program_directory=[])
 
-    assert normalizer.replace_for_router("form xác nhận sinh viên") == (
+    assert normalizer.canonicalize("form xác nhận sinh viên") == (
         "form xác nhận sinh viên"
     )
 
@@ -743,5 +743,5 @@ expand_slangs: []
         # One shared word is a coincidence, not a repetition.
         ("Đăng ký môn phần mềm ở đâu?", "đăng ký học phần phần mềm ở đâu?"),
     ]:
-        assert normalizer.replace_for_router(query) == expected
+        assert normalizer.canonicalize(query) == expected
         assert normalizer.normalize_for_retrieval(query) == expected

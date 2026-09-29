@@ -696,7 +696,7 @@ def test_normalized_modes_reach_matching_executor_branch(validator, monkeypatch,
     executor = PlanExecutor(
         router=SimpleNamespace(plan=lambda *args, **kwargs: normalized),
         slang_normalizer=SimpleNamespace(
-            replace_for_router=lambda q: q, normalize_for_retrieval=lambda q: q
+            normalize_for_retrieval=lambda q: q
         ),
         catalogs=None,
         parent_sources_by_id={},

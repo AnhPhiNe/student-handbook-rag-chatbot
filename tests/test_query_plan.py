@@ -1069,7 +1069,7 @@ def _executor(plan: dict[str, Any], **catalogs: Any) -> PlanExecutor:
     )
 
 
-def test_query_plan_receives_canonical_improvement_study_query() -> None:
+def test_planner_receives_the_students_own_words() -> None:
     captured: dict[str, Any] = {}
     clarification_task = {
         **_rag_task(1, "Học cải thiện tính điểm thế nào?"),
@@ -1093,9 +1093,8 @@ def test_query_plan_receives_canonical_improvement_study_query() -> None:
         chat_history=[],
     )
 
-    assert captured["query"] == (
-        "học lại học phần đã đạt tính điểm thế nào?"
-    )
+    # The slang dictionary rewrites only the retrieval query.
+    assert captured["query"] == "Học cải thiện tính điểm thế nào?"
     assert captured["kwargs"]["cohort"] == "K51"
 
 

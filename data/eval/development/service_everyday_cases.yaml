@@ -55,7 +55,8 @@ cases:
   - {id: e20, group: everyday, service: "chụp ảnh cho lễ khai giảng của trường", expect: unit, units: ["Phòng Công tác chính trị và Học sinh, sinh viên"]}
 
   # ---- cross: near another unit's service; the gold unit lists the need
-  # Khảo thí issues grade certificates; Phòng Đào tạo handles transfers.
+  # Khảo thí issues grade certificates; no K51 service lists transfers, so the
+  # need names only one unit.
   - {id: c01, group: cross, service: "lấy giấy chứng nhận điểm các môn đã học để làm hồ sơ chuyển trường", expect: unit, units: ["Phòng Khảo thí và Đảm bảo chất lượng"]}
   # Khảo thí exempts computing courses; Trung tâm Tin học teaches them.
   - {id: c02, group: cross, service: "nộp chứng chỉ MOS để được miễn học tin học", expect: unit, units: ["Phòng Khảo thí và Đảm bảo chất lượng"]}

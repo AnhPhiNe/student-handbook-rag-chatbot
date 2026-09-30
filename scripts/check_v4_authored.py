@@ -32,7 +32,7 @@ CITE_MARK = re.compile(r"\[cite:[^\]]*\]")
 FACT_TOKEN = re.compile(
     r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"          # email
     r"|(?:https?://)?[\w-]+(?:\.[\w-]+)*\.(?:edu|com|gov|org)\.vn\S*"  # web address
-    r"|\(0\d{2,3}\)\s?\d[\d .]{5,}\d"        # phone
+    r"|\(0\d{2,3}\)\s?\d{3,4}(?:[ .]?\d{3,4})?"  # phone, without the extension numbers after it
     r"|\d+(?:[.,]\d+)*"                       # number
 )
 
@@ -116,7 +116,7 @@ def check(batch_number: int) -> list[str]:
                 notes.append(f"cites {label}, another ticket's excerpt")
         evidence = _squash(" ".join(sources[k]["text"] for k in ticket_keys | {labels[c] for c in cited if c in labels}
                                     if k in sources))
-        claims = re.sub(r"Đ\d+", "", " ".join([case.get("dap_an_nhap") or "", *(case.get("y_bat_buoc") or [])]))
+        claims = re.sub(r"Đ\d+", "", " | ".join([case.get("dap_an_nhap") or "", *(case.get("y_bat_buoc") or [])]))
         asked = _squash(question)
         missing = sorted({tok for tok in FACT_TOKEN.findall(claims)
                           if _squash(tok) not in evidence and _squash(tok) not in asked

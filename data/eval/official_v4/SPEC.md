@@ -109,6 +109,23 @@ author nor its models wrote.
 | Convert and freeze | `scripts/build_v4_cases.py` | done 2026-09-30: `generated_answer_cases.json` (246 cases, 229 clusters) applies `gold_adjustments.yaml`; frozen at the commit that adds it, and each run snapshot records the file's `dataset_sha256`. `tests/test_official_v4.py` fails if the file drifts from its sources |
 | Run once, end to end | `scripts/run_official_answers.py --suite answers --bundle official_v4` | pending owner approval (paid) |
 
+## Metrics (decided 2026-09-30, before the run)
+
+- **Headline:** mean `answer_correctness` over the 246 cases, with a 95% interval
+  from a bootstrap over the 229 clusters.
+- **Secondary:** mean `answer_correctness` per family with 24 or more cases
+  (A, B, C, E, F); the hallucination rate (`unsupported_claim`); the count of
+  critical false passes.
+- **Descriptive only:** results per cell (6 cases) and per writing style, and
+  D (12 cases). The 14 refusal cases give a refusal figure too small for a
+  strong claim.
+- The overall mean is over the designed mix (multi-request and boundary
+  questions are over-weighted on purpose), not an estimate of accuracy on real
+  traffic; results are reported per family as well.
+- A run that fails part-way is completed by rerunning only the failed cases.
+  Gold found wrong after the run is not edited; it is reported with both
+  figures.
+
 ## Pilot 1 (2026-09-30)
 
 The first draw was tried on 15 tickets. The output is kept in
@@ -129,9 +146,10 @@ tickets were redrawn with the same seed after the fixes below. No system was run
 
 ## Limitations to report
 
-- The author is a language model, not students; the questions are still
-  synthetic. A set of real questions collected after the deploy remains the
-  test of realism.
+- Scope: the system is not deployed yet, so the questions are synthetic, written
+  by an independent language model (with no knowledge of the system) from
+  randomly drawn tickets in several writing styles. Evaluating on real student
+  questions is the next step after the deploy.
 - The ticket draw is made by the system's maintainer, at random with a fixed
   seed.
 - v4 measures the final answer, not the planner on its own: planner labels

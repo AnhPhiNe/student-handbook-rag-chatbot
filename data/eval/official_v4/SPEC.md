@@ -140,6 +140,19 @@ author nor its models wrote.
   reranker-timeout rule applies to both runs. A later switch of the deployed
   reranker to 4B would be a choice made on this test set, and its v4 figure
   would be reported as such.
+- **Reranker choice by non-inferiority** (owner, 2026-09-30, before any v4
+  score was read; replaces "the headline stays the 8B run" above): compare
+  the 4B and 8B runs case by case over the 246 cases, both after their
+  timeout reruns. Deploy 4B, and make its run the headline, if all three hold:
+  mean `answer_correctness` of 4B is no more than 0.02 below 8B; 4B has no
+  more critical false passes than 8B; the 4B hallucination rate is no more
+  than 0.02 above 8B. Otherwise keep 8B as the headline and 4B stays an
+  ablation. The reason is availability (the 8B endpoint stalled for over an
+  hour; 4B answered in 1.4 s), not a higher score; the paper states the rule
+  and reports both runs. The 0.02 margin is about the run-to-run spread seen
+  on official_v1 (0.970 against 0.990). A retrieval-only comparison on
+  official_v1 (`--suite retrieval --scope pure`, both rerankers) is reported
+  as supporting evidence and is not part of the rule.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

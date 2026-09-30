@@ -483,6 +483,47 @@ The complete current stack, on development data:
   identical planner requests, plans, structured results and answers on 23,016
   offline scenarios and 49,760 fuzzed plans (see the refactor commits).
 
+## End-to-end check before the deploy (2026-09-30)
+
+`official_v1` answers (150 cases) on the stack after the 2026-09-29 changes
+(v35 data, BGE-M3 over the API, Qwen3-Reranker-8B, composer v3.30, identifier
+correction, the selector's second look, fact-lock grounding), against the last
+run on 2026-09-28. One run each, so single cases move with planner variance.
+
+| Metric | 2026-09-28 | 2026-09-30 |
+|---|---:|---:|
+| Answer correctness | 0.990 | 0.970 |
+| Faithfulness | 0.985 | 0.972 |
+| Hallucination rate | 2.7% | 3.3% |
+| Citation correctness | 0.976 | 0.967 |
+| Abstention correct | 0.980 | 0.953 |
+| Context precision / recall | 0.591 / 0.916 | 0.608 / 0.902 |
+| Critical false passes | 0 | 1 |
+| Latency p50 / p95 | 11.1 s / 21.5 s | 10.1 s / 21.4 s |
+
+The four cases that dropped all come from a different plan, not from the
+composer. Each was planned again five times on the same code:
+
+| Case | 2026-09-30 run | Five new plans |
+|---|---|---|
+| 029 "đăng nhầm kết quả tốt nghiệp thì báo ai" | student_service, so the wrong office (the critical false pass) | RAG 5/5, correct |
+| 110 "số điện thoại thư viện" | student_service, then a needless clarification | office 5/5, correct |
+| 092 "TOEIC bốn kỹ năng bậc 3 từng phần" | RAG, "the sources do not say" | table 3/5, RAG 2/5 |
+| 045 "có nằm trong quy định này không" | clarification | RAG 3/5, clarification 2/5; asking is defensible for "quy định này" |
+
+So 029 and 110 were rare flips, and 092 is a real instability at the boundary
+between a table value and a policy, the kind `official_v3` found in 003, 007
+and 085. No prompt change follows: v54 and v55 tried this boundary and each
+broke other cases, the failure costs a "not found" answer rather than a wrong
+fact, and how often students ask this way is unknown.
+
+This run is the first with the judge fix `d7ffaefb`. The judge used to see only
+a source's title, so a correct answer naming the article and document (which
+composer v3.30 does) read as an unsupported claim: on a 10-case `official_v2`
+smoke the fix moved hallucination from 2/10 to 0/10 on the same answers. The
+2026-09-28 run was judged before the fix, when the composer did not yet name
+documents.
+
 ## What these measurements do not show
 
 - A comparison with plain RAG (no planner) or with a long-context model given the
@@ -491,8 +532,12 @@ The complete current stack, on development data:
   (`--retrieval-mode no_graph`, `--retrieval-mode vector_only`, fixed in
   `dfcc2dc8` so that `vector_only` really skips BM25), but no run of them has
   been reported; the dense-only numbers above come from the reranker scripts.
-- End-to-end answer quality of the final stack on a hold-out; it will be judged
-  once on `official_v3`.
+- End-to-end answer quality of the final stack on a hold-out. `official_v3`
+  has only a planner suite, and prompt v53 was written after its run.
+- How often the planner sends a question about a table value to RAG. It is
+  about 1–2% of the development cases (v1 092, v3 003, 007, 085), and the student
+  gets a "not found" answer. Real questions after the deploy will show whether
+  it matters.
 - The judge's agreement with a human rater; both datasets were written by one
   author from handbook content, not collected from real students.
 - Combinations not run, such as Qwen3-Embedding-8B with Qwen3-Reranker-8B.
@@ -547,3 +592,4 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Slang probe | `measurements_20260928/results/slang_probe/` (`slang_probe.py`) |
 | "Where" questions and table-adjacent rules | `table_adjacent_questions_20260929_run1-3` and `regwhere_v53_20260929_run1-3` (v53); `where_v54_20260929_run1-3`, `official_v1_deterministic_20260929T124205Z` and `official_v2_deterministic_20260929T125553Z` (v54); `where_all_v55_20260929_run1-3` (v55); `official_v2_deterministic_20260929T111444Z` (v53, before the fact-lock grounding fix) |
 | Directory selector, second look | `directory_matching_20260929T100059Z` / `…T100140Z` (before), `…T100338Z` / `…T100416Z` (looser wording), `…T102008Z` / `…T101754Z` (thinking on every call), `…T103359Z` / `…T103530Z` (second look); existing cases first, everyday set second |
+| End-to-end check before the deploy | `official_v1_answers_20260930T023654Z` (against `…20260928T062050Z`); the five replans in its `replans_029_045_092_110_x5.json`; judge fix: `official_v2_answers_smoke10_20260930T011049Z` and `…_rejudge` |

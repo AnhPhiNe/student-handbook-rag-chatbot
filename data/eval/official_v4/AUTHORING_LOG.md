@@ -10,3 +10,4 @@ with its reason.
 | Batch 01 | 01 | Kept as saved; the checker drops the `[cite: 2]` marks | Gemini adds these marks when the batch is attached as a file; they are not part of the text |
 | V4-078, V4-079 | 01, 02 | Kept; scored as one cluster | The same article (Quy chế công tác sinh viên, Điều 32) in two cohorts' handbooks gave the same question twice |
 | V4-086, V4-087 | 02 | Kept; scored as one cluster | The same article (Quy định ngoại trú, Điều 10) in two cohorts' handbooks gave the same question twice |
+| V4-104, V4-200 | 07, 10 | Kept | They ask about K51 faculty records of the Gia Lai branch, which the branch filter missed (it matched "phân hiệu" and "Long An"). The K51 handbook lists these units with the main-campus faculties, the system's directory holds them, and the gold follows the handbook |

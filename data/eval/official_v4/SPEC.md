@@ -130,6 +130,19 @@ author nor its models wrote.
   times, then kept as its last attempt and counted as "reranker unavailable".
   The headline uses the rerun results (the system as designed); the first-run
   figure and the timeout rate are reported too.
+- **4B reranker ablation** (added 2026-09-30, before any score was read):
+  DeepInfra's Qwen3-Reranker-8B endpoint was overloaded during the first run
+  (27-46 s per tiny call against 1.4 s for the 4B model), and the first run was
+  paused at 75 cases. v4 is also run in full with Qwen3-Reranker-4B
+  (`configs/retrieval_reranker_4b.yaml`, otherwise identical). The headline
+  stays the 8B run, the deployed configuration, resumed when the endpoint
+  recovers; the 4B run is reported as an ablation whatever its result. The
+  reranker-timeout rule applies to both runs. A later switch of the deployed
+  reranker to 4B would be a choice made on this test set, and its v4 figure
+  would be reported as such.
+- The timeout list is read from the run log (the reranker warning is printed
+  while its case is running): the answer records do not keep the reranker
+  telemetry.
 - A run that fails part-way is completed by rerunning only the failed cases.
   Gold found wrong after the run is not edited; it is reported with both
   figures.

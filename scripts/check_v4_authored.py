@@ -125,6 +125,13 @@ def check(batch_number: int) -> list[str]:
                           and not re.fullmatch(r"\d", tok)})
         if missing and ticket["requests"]:
             notes.append(f"not in its excerpts: {missing}")
+        # The assistant turn of a two-turn case is input to the system: a false fact there misleads it.
+        history = re.sub(r"Đ\d+|K\d\d(?:-K\d\d)?", "", " | ".join(turn["noi_dung"] for turn in case["hoi_thoai"] if turn["vai"] == "tro_ly"))
+        history_missing = sorted({tok for tok in FACT_TOKEN.findall(history)
+                                  if _squash(tok) not in evidence and _squash(tok.lstrip("0") or tok) not in evidence
+                                  and _squash(tok) not in asked and not re.fullmatch(r"\d", tok)})
+        if history_missing and ticket["requests"]:
+            notes.append(f"history turn not in its excerpts: {history_missing}")
         if ticket["requests"] and case.get("hanh_vi", "").startswith("tra_loi"):
             evidence_words = set(_words(" ".join(sources[k]["text"] for k in ticket_keys if k in sources)))
             for fact in case.get("y_bat_buoc") or []:

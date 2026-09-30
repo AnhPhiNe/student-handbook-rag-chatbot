@@ -54,6 +54,10 @@ author nor its models wrote.
   authored gold before any run. This only widens the intervals.
 - **Over-limit tickets** (four or five requests) accept either answering them or
   asking the student to choose at most three.
+- **Missing-information tickets** (`F.clarify`) accept either asking for the
+  missing detail or answering every case with its condition (e.g. both study
+  forms' maximum durations). The owner judges an answer by whether it answers the
+  question, and extra information is fine; decided 2026-09-30, before any run.
 
 ## What the draw samples
 
@@ -85,7 +89,7 @@ author nor its models wrote.
 | Draw tickets and batches | `scripts/draw_v4_tickets.py` | done (246 tickets, 13 batches) |
 | Pilot 1 (15 tickets) | Gemini 3.8 Flash | done, questions discarded (below) |
 | Batch 00 (pilot 2, 15 tickets) | Gemini 3.8 Flash | done: 15 of 15 written, all facts found in their excerpts, 1 reclassified (AUTHORING_LOG.md) |
-| Check each batch | `scripts/check_v4_authored.py N` | done for 00–10 |
+| Check each batch | `scripts/check_v4_authored.py N` | done for 00–11 |
 | Batch 01 (30 tickets) | Gemini 3.8 Flash | done: 30 of 30 written, all facts found in their excerpts; 3 consequence tickets asked another kind, as allowed |
 | Batch 02 (25 tickets) | Gemini 3.8 Flash | done: 25 of 25 written, all facts found in their excerpts; 5 of 10 procedure tickets asked another kind |
 | Batch 03 (28 tickets) | Gemini 3.8 Flash | done: 28 of 28 written; facts in their excerpts, and the three computed scholarship scores recomputed correct |
@@ -96,7 +100,8 @@ author nor its models wrote.
 | Batch 08 (11 tickets) | Gemini 3.8 Flash | done: 11 of 11 written; facts in their excerpts, the computed average (3,50) recomputed correct |
 | Batch 09 (16 tickets) | Gemini 3.8 Flash | done: 16 of 16 written; facts in their excerpts, including the cohort differences (7,5 and 9 years; 6 and 8 years) |
 | Batch 10 (27 tickets) | Gemini 3.8 Flash | done: 27 of 27 written; facts in their excerpts; V4-175 follows the amended K51 table (D+ fails in the remaining courses) |
-| Batches 11–12 | external author | pending |
+| Batch 11 (14 tickets) | Gemini 3.8 Flash | done: 14 of 14 written; facts in their excerpts, including the assistant turns of the conversations |
+| Batch 12 | external author | pending |
 | Fact check against the data; overlap check with v1–v3; clusters | scripts | pending |
 | Owner review of a random sample of about 30 cases | owner | pending |
 | Freeze and run once, end to end | | pending |

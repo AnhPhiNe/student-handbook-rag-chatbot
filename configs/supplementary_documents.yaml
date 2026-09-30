@@ -10,6 +10,10 @@
 #   kind    notice | guide | procedure | links | score_framework | forms
 #   pages   first and last PDF page
 #   skip_pages  pages holding only a flow chart or images
+#   start_at    text where the document begins, when it shares its first page
+#               with the end of another document
+#   prose       false for a form to fill in: only its table is read, not the
+#               header fields and signature boxes around it
 #   tables  ruled tables inside the pages: render "rows" (header row, one line
 #           per cell) or "score_framework" (parts I-V, one line per scored item)
 version: 1
@@ -55,6 +59,11 @@ cohorts:
         - pages: [167, 168]
           render: rows
           title: "Đối tượng hỗ trợ chi phí học tập"
+    - id: ThongTinNghiDinh116
+      title: "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm"
+      kind: links
+      pages: [144, 144]
+      start_at: "Sinh viên có thể quét mã QR"
     - id: QuyTrinhBieuMauCoSoChinh
       title: "Quy trình và biểu mẫu các công tác liên quan đến sinh viên tại cơ sở chính"
       kind: links
@@ -64,11 +73,16 @@ cohorts:
       kind: procedure
       pages: [173, 175]
       skip_pages: [173]
-    - id: QuyTrinhBieuMauPhanHieu
-      title: "Quy trình và biểu mẫu các công tác liên quan đến sinh viên tại phân hiệu"
-      kind: links
-      pages: [176, 176]
+    - id: CongViecCuaCacKhoa
+      title: "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên"
+      kind: guide
+      pages: [225, 225]
   K50:
+    - id: ThongTinNghiDinh116
+      title: "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm"
+      kind: links
+      pages: [152, 152]
+      start_at: "Sinh viên có thể quét mã QR"
     - id: KhungDiemDanhGiaRenLuyen
       title: "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)"
       kind: score_framework
@@ -114,11 +128,21 @@ cohorts:
       kind: procedure
       pages: [169, 171]
       skip_pages: [169]
+    - id: CongViecCuaCacKhoa
+      title: "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên"
+      kind: guide
+      pages: [208, 208]
   K48-K49:
+    - id: ThongTinNghiDinh116
+      title: "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm"
+      kind: links
+      pages: [117, 117]
+      start_at: "Sinh viên có thể quét mã QR"
     - id: PhieuDanhGiaRenLuyen
       title: "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)"
       kind: score_framework
       pages: [82, 86]
+      prose: false
       tables:
         - pages: [82, 86]
           render: score_framework
@@ -155,3 +179,7 @@ cohorts:
       title: "Các mẫu đơn và biểu mẫu (tên mẫu, trang và nơi gửi)"
       kind: forms
       pages: [169, 185]
+    - id: CongViecCuaCacKhoa
+      title: "Một số công việc của các khoa liên quan đến sinh viên"
+      kind: guide
+      pages: [160, 160]

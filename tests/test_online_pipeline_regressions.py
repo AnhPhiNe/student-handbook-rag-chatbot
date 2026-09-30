@@ -10,9 +10,7 @@ from src.api.chat_controls import ChatCapacityLimiter, QueueTicket
 from src.api.schemas import ChatRequest
 from src.generation.answer_formatter import format_final_response, sources_section_start
 from src.generation.answer_pipeline import AnswerPipeline
-from src.generation.gemini_client import GeminiClient
 from src.generation.plan_executor import PlanExecutor
-from src.generation.response_cache import ResponseCache
 
 
 @pytest.mark.parametrize("queued", [True, False])
@@ -50,25 +48,10 @@ def test_closing_route_stream_releases_queue_or_active_slot(monkeypatch, queued)
         limiter.release()
 
 
-@pytest.mark.parametrize("chunks", [[], ["", " \n\t"]])
-def test_gemini_empty_stream_is_not_provider_success(chunks):
-    client = object.__new__(GeminiClient)
-    client.model_name = "offline-fake"
-    client.max_retries = 0
-    client.key_pool = Mock()
-    client.key_pool.acquire.return_value = ("fake", "fingerprint", 0)
-    client._create_client = Mock(return_value=None)
-    client._generate_stream_once = lambda *args, **kwargs: iter(chunks)
-    with pytest.raises(RuntimeError):
-        list(client.generate_stream("prompt"))
-    client.key_pool.record_success.assert_not_called()
-    client.key_pool.record_failure.assert_called_once()
-
-
-def _pipeline(chunks):
+def _pipeline(chunks, content="Nội dung quy định."):
     task = {"id": "t1", "mode": "rag", "question": "Quy định?", "cohorts": ["K51"]}
     citation = {
-        "chunk_id": "p1", "cohort": "K51", "content": "Nội dung quy định.",
+        "chunk_id": "p1", "cohort": "K51", "content": content,
         "supports_task_ids": ["t1"],
     }
     result = {
@@ -83,9 +66,7 @@ def _pipeline(chunks):
     pipeline.llm_config = {"model_name": "offline-fake"}
     pipeline.model_name = "offline-fake"
     pipeline.max_context_chars = 10000
-    pipeline.response_cache = ResponseCache()
     pipeline._run_retrieval = lambda *args, **kwargs: result
-    pipeline._throttle_llm_call = lambda: None
     llm = Mock()
     llm.generate.return_value = {"ok": True, "text": "".join(chunks), "usage": {}}
     llm.generate_stream.side_effect = lambda prompt: iter(chunks)
@@ -103,23 +84,11 @@ def _answer(pipeline, transport):
 
 @pytest.mark.parametrize("transport", ["sync", "stream"])
 @pytest.mark.parametrize("chunks", [[], [" \n\t"], ["```markdown\n", "Nguồn:\n- S1"]])
-def test_empty_final_answer_falls_back_without_caching(transport, chunks):
+def test_empty_final_answer_falls_back(transport, chunks):
     pipeline, _ = _pipeline(chunks)
     status, answer = _answer(pipeline, transport)
     assert status == "api_error"
     assert answer.strip()
-    assert not pipeline.response_cache._entries
-
-
-@pytest.mark.parametrize("transport", ["sync", "stream"])
-def test_old_empty_cached_answer_is_a_miss(transport):
-    pipeline, llm = _pipeline(["Câu trả lời hợp lệ."])
-    prepared = pipeline.prepare_answer(
-        "Quy định?", cohort="K51", chat_history=None, tracker=Mock(), router_started_at="",
-    )
-    pipeline.response_cache.set(prepared.cache_key, {"answer": " \n", "status": "answered"})
-    assert _answer(pipeline, transport) == ("answered", "Câu trả lời hợp lệ.")
-    assert llm.generate.called if transport == "sync" else llm.generate_stream.called
 
 
 @pytest.mark.parametrize("text", [
@@ -140,10 +109,9 @@ def test_actual_source_footer_is_removed(footer):
 
 
 @pytest.mark.parametrize("transport", ["sync", "stream"])
-def test_source_word_survives_generation_and_cache(transport):
+def test_source_word_survives_generation(transport):
     text = "Kinh phí được cấp từ nguồn: ngân sách. Điều kiện áp dụng: theo quy định."
     pipeline, _ = _pipeline([text[:28], text[28:]])
-    assert _answer(pipeline, transport) == ("answered", text)
     assert _answer(pipeline, transport) == ("answered", text)
 
 
@@ -200,3 +168,14 @@ def test_one_multicohort_task_preserves_answerable_unit(other_coverage, transpor
     assert _answer(pipeline, transport) == ("answered", "Trả lời phần đủ bằng chứng.")
     generation = llm.generate if transport == "sync" else llm.generate_stream
     generation.assert_called_once()
+
+
+@pytest.mark.parametrize("transport", ["sync", "stream"])
+def test_a_mistyped_email_is_corrected_from_the_evidence(transport):
+    evidence = "Khoa Tiếng Anh. Email: khoatienganh@hcmue.edu.vn."
+    reply = "Email của Khoa Tiếng Anh là " + "khotienganh@hcmue.edu.vn" + ". " + "Xem thêm tại website khoa. " * 20
+    pipeline, _ = _pipeline([reply[:31], reply[31:60], reply[60:]], content=evidence)
+    status, answer = _answer(pipeline, transport)
+    assert status == "answered"
+    assert "khoatienganh@hcmue.edu.vn" in answer and "khotienganh" not in answer
+

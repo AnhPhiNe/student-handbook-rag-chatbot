@@ -88,9 +88,9 @@ def main():
         raise ValueError(errors or f"No cases in {bundle.name}")
     source_dataset_n = len(cases)
     cases = select_case_ids(cases, args.case_ids)
-    expected = {"QDRANT_COLLECTION_NAME": "student_handbook_semantic_v34",
-                "STUDENT_RAG_HYBRID_COLLECTION": "student_handbook_semantic_v34",
-                "MONGODB_PARENT_COLLECTION": "parent_docs_v34"}
+    expected = {"QDRANT_COLLECTION_NAME": "student_handbook_semantic_v35",
+                "STUDENT_RAG_HYBRID_COLLECTION": "student_handbook_semantic_v35",
+                "MONGODB_PARENT_COLLECTION": "parent_docs_v35"}
     actual = {key: os.environ.get(key) for key in expected}
     if actual != expected:
         raise ValueError(f"Storage configuration mismatch: {actual}")
@@ -105,8 +105,7 @@ def main():
                "reasoning_effort": router.reasoning_effort,
                "normalizer_version": QUERY_PLAN_NORMALIZER_VERSION}
     planner.update({name: getattr(router, name) for name in (
-        "max_output_tokens", "output_tokens_per_task",
-        "hard_max_output_tokens", "request_timeout_seconds", "max_retries")})
+        "max_output_tokens", "hard_max_output_tokens", "request_timeout_seconds", "max_retries")})
     planner["key_pool"] = {name: getattr(router.key_pool.config, name) for name in (
         "rpm_limit_per_key", "rpd_limit_per_key", "tpm_limit_per_key", "tpd_limit_per_key",
         "cooldown_seconds", "wait_when_limited", "max_wait_seconds")}

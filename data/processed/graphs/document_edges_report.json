@@ -1,10 +1,10 @@
 {
   "status": "ok",
-  "total_docstore_items": 538,
+  "total_docstore_items": 541,
   "total_edges": 78,
-  "total_skipped": 1056,
+  "total_skipped": 1059,
   "skip_counts": {
-    "missing_index_fields": 74,
+    "missing_index_fields": 77,
     "self_reference": 926,
     "unresolved_external_document": 29,
     "duplicate_edge": 27
@@ -20,14 +20,14 @@
       "coverage_pct": 20.81
     },
     "K50": {
-      "parent_sections": 190,
+      "parent_sections": 192,
       "graph_nodes": 36,
-      "coverage_pct": 18.95
+      "coverage_pct": 18.75
     },
     "K51": {
-      "parent_sections": 199,
+      "parent_sections": 200,
       "graph_nodes": 29,
-      "coverage_pct": 14.57
+      "coverage_pct": 14.5
     }
   },
   "validation": {
@@ -1135,6 +1135,14 @@
   "skipped": [
     {
       "issue": "missing_index_fields",
+      "section_id": "K48-K49_ThongTinNghiDinh116_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
       "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan1",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
@@ -1168,22 +1176,6 @@
     {
       "issue": "missing_index_fields",
       "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan5",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan6",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan7",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
@@ -1339,6 +1331,22 @@
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
       "document_key": "Các mẫu đơn và biểu mẫu (tên mẫu, trang và nơi gửi)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K48-K49_CongViecCuaCacKhoa_Phan1",
+      "cohort": "K48-K49",
+      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "document_key": "Một số công việc của các khoa liên quan đến sinh viên",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K50_ThongTinNghiDinh116_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "article_number": null
     },
     {
@@ -1527,6 +1535,14 @@
     },
     {
       "issue": "missing_index_fields",
+      "section_id": "K50_CongViecCuaCacKhoa_Phan1",
+      "cohort": "K50",
+      "document_id": "so_tay_sinh_vien_khoa_50",
+      "document_key": "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
       "section_id": "K51_KhungDiemDanhGiaRenLuyen_Phan1",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
@@ -1703,6 +1719,14 @@
     },
     {
       "issue": "missing_index_fields",
+      "section_id": "K51_ThongTinNghiDinh116_Phan1",
+      "cohort": "K51",
+      "document_id": "so_tay_sinh_vien_khoa_51",
+      "document_key": "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
       "section_id": "K51_QuyTrinhBieuMauCoSoChinh_Phan1",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
@@ -1719,10 +1743,10 @@
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K51_QuyTrinhBieuMauPhanHieu_Phan1",
+      "section_id": "K51_CongViecCuaCacKhoa_Phan1",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
-      "document_key": "Quy trình và biểu mẫu các công tác liên quan đến sinh viên tại phân hiệu",
+      "document_key": "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên",
       "article_number": null
     },
     {

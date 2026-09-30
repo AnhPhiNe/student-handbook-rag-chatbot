@@ -56,7 +56,6 @@ def test_done_prefers_terminal_citations_and_updates_trace_state() -> None:
         {
             "type": "done",
             "status": "answered",
-            "used_cache": True,
             "citations_used": [{"source": "final.pdf", "task_id": "t2"}],
             "tracker": tracker,
         }
@@ -64,7 +63,6 @@ def test_done_prefers_terminal_citations_and_updates_trace_state() -> None:
     payload = _payload(events.done())
 
     assert payload["status"] == "answered"
-    assert payload["used_cache"] is True
     assert payload["citations_used"] == [{"source": "final.pdf"}]
     assert events.trace_metadata["citations_used"] == [
         {"source": "final.pdf", "task_id": "t2"}

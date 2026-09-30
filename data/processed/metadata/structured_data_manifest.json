@@ -22,29 +22,29 @@
       "catalogs": {
         "student_service_directory": {
           "path": "data\\processed\\directories\\student_service_directory.json",
-          "count": 233,
+          "count": 232,
           "cohort_counts": {
             "K48-K49": 77,
-            "K50": 78,
+            "K50": 77,
             "K51": 78
           }
         },
         "student_office_profiles": {
           "path": "data\\processed\\directories\\student_office_profiles.json",
-          "count": 65,
+          "count": 64,
           "cohort_counts": {
             "K48-K49": 22,
-            "K50": 22,
+            "K50": 21,
             "K51": 21
           }
         },
         "student_faculty_profiles": {
           "path": "data\\processed\\directories\\student_faculty_profiles.json",
-          "count": 78,
+          "count": 69,
           "cohort_counts": {
             "K48-K49": 23,
             "K50": 23,
-            "K51": 32
+            "K51": 23
           }
         },
         "program_directory": {

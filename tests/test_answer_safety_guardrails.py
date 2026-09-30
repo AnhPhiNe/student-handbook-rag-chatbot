@@ -8,8 +8,6 @@ def test_empty_retrieval_has_no_answer_context() -> None:
         {
             "retrieved_items": [],
             "structured_result": None,
-            "formula_result": None,
-            "tool_result": None,
         }
     )
 

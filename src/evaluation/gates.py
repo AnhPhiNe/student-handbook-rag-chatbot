@@ -6,18 +6,13 @@ from typing import Any
 PRODUCTION_MINIMUMS = {
     "success_rate": 0.98,
     "telemetry_coverage": 1.0,
-    "warm_cache_hit_rate": 0.90,
-    "cold_cache_status_coverage": 1.0,
-    "warm_cache_status_coverage": 1.0,
     "streaming_ttft_coverage": 1.0,
 }
 PRODUCTION_MAXIMUMS = {
     "http_429_rate": 0.0,
-    "cold_cache_hit_rate": 0.0,
 }
 PRODUCTION_P95_LIMITS_MS = {
     "deterministic_p95_ms": 3_000.0,
-    "warm_cache_p95_ms": 2_000.0,
     "rag_p95_ms": 45_000.0,
     "streaming_ttft_p95_ms": 10_000.0,
 }
@@ -50,7 +45,6 @@ def production_gates(summary: dict[str, Any]) -> dict[str, Any]:
     scenario = summary.get("by_scenario") or {}
     p95 = {
         "deterministic_p95_ms": ((scenario.get("deterministic") or {}).get("latency_ms") or {}).get("p95"),
-        "warm_cache_p95_ms": ((scenario.get("warm_cache") or {}).get("latency_ms") or {}).get("p95"),
         "rag_p95_ms": (summary.get("cold_regulation_rag_latency_ms") or {}).get("p95"),
         "streaming_ttft_p95_ms": (summary.get("streaming_ttft_ms") or {}).get("p95"),
     }

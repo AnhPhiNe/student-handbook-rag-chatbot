@@ -10,8 +10,8 @@
     "visual_preset": "signal-flow",
     "quality_profile": "showcase",
     "views": [
-      {"id": "candidates", "label": "Sinh candidates", "focus": ["query", "dense", "bm25", "rrf"], "note": "Dense và lexical search chạy trên child chunks rồi hợp nhất bằng reciprocal rank fusion."},
-      {"id": "rank", "label": "Rerank và parent hydration", "focus": ["rrf", "rerank", "group", "mongo", "evidence"], "note": "Cohere chỉ đổi thứ tự; lỗi reranker không làm hỏng retrieval."},
+      {"id": "candidates", "label": "Sinh candidates", "focus": ["query", "dense", "bm25", "rrf"], "note": "Dense và lexical search chạy trên child chunks rồi hợp nhất bằng reciprocal rank fusion; nếu gọi embedding lỗi thì BM25 phục vụ một mình."},
+      {"id": "rank", "label": "Rerank và parent hydration", "focus": ["rrf", "rerank", "group", "mongo", "evidence"], "note": "Reranker chỉ đổi thứ tự; lỗi reranker giữ nguyên thứ tự RRF."},
       {"id": "navigation", "label": "Evidence và điều hướng", "focus": ["group", "mongo", "evidence", "related"], "note": "Full parent là primary evidence; graph chỉ tạo related references cho UI."}
     ]
   },
@@ -24,10 +24,10 @@
   ],
   "nodes": [
     {"id": "query", "type": "backend", "label": "RAG task", "sublabel": "query + cohort", "stage": 0, "row": 2, "tag": "typed plan"},
-    {"id": "dense", "type": "database", "label": "Dense search", "sublabel": "BGE-M3 + Qdrant", "stage": 1, "row": 0, "tag": "top children"},
+    {"id": "dense", "type": "database", "label": "Dense search", "sublabel": "BGE-M3 API + Qdrant", "stage": 1, "row": 0, "tag": "top children"},
     {"id": "bm25", "type": "database", "label": "BM25 search", "sublabel": "in-process lexical", "stage": 1, "row": 3, "tag": "fail-open"},
     {"id": "rrf", "type": "backend", "label": "RRF fusion", "sublabel": "k = 60", "stage": 2, "row": 1, "tag": "candidate pool"},
-    {"id": "rerank", "type": "external", "label": "Cohere reranker", "sublabel": "top 16 children", "stage": 2, "row": 3, "tag": "optional"},
+    {"id": "rerank", "type": "external", "label": "Qwen3-Reranker-8B", "sublabel": "all 24 children", "stage": 2, "row": 3, "tag": "optional"},
     {"id": "group", "type": "backend", "label": "Group by parent", "sublabel": "top parent articles", "stage": 3, "row": 1, "tag": "deduplicate"},
     {"id": "mongo", "type": "database", "label": "Mongo docstore", "sublabel": "full parent text", "stage": 3, "row": 3, "tag": "LRU cached"},
     {"id": "evidence", "type": "backend", "label": "Primary evidence", "sublabel": "parents + matched child", "stage": 4, "row": 1, "tag": "composer input"},

@@ -1,5 +1,6 @@
-# Only meaning-preserving canonicalizations belong here because this text is
-# sent to the Planner. Ambiguous expressions must stay in expand_slangs.
+# Rewrites of the retrieval query (the planner reads the student's own words).
+# replace_slangs are meaning-preserving canonical forms; ambiguous expressions
+# must stay in expand_slangs, which keep the original and append meanings.
 replace_slangs:
 - match: không đăng ký được môn
   replace_with: đăng ký học phần không thành công

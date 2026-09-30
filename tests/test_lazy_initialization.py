@@ -96,17 +96,17 @@ def test_answer_pipeline_initializes_llm_once_under_concurrency(monkeypatch) -> 
     calls = 0
     calls_lock = Lock()
 
-    class FakeGeminiClient:
+    class FakeDeepSeekClient:
         def __init__(self, **kwargs):
             nonlocal calls
             with calls_lock:
                 calls += 1
             time.sleep(0.02)
 
-    monkeypatch.setattr(answer_pipeline_module, "GeminiClient", FakeGeminiClient)
+    monkeypatch.setattr(answer_pipeline_module, "DeepSeekClient", FakeDeepSeekClient)
     pipeline = AnswerPipeline.__new__(AnswerPipeline)
     pipeline.config = {
-        "llm": {"provider": "gemini", "model_name": "gemini-3.1-flash-lite"}
+        "llm": {"provider": "deepseek", "model_name": "deepseek-flash"}
     }
     pipeline._llm_client = None
     pipeline._component_init_lock = Lock()

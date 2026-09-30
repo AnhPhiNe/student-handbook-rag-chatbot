@@ -5083,7 +5083,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <div class="pulse-dot"></div>
         <h1>Container startup, warm-up và readiness</h1>
       </div>
-      <p class="subtitle">Port mở trước; model và BM25 khởi tạo trên background thread</p>
+      <p class="subtitle">Port mở trước; pipeline và BM25 khởi tạo trên background thread</p>
     </div>
 
     <script id="archify-guided-views-data" type="application/json">[{"id":"boot","label":"Boot không chặn port","focus":["platform","uvicorn","lifespan","health"],"note":"Liveness hoạt động ngay cả khi warm-up vẫn đang chạy."},{"id":"warmup","label":"Background warm-up","focus":["lifespan","warmup","assets","retriever"],"note":"Embedding, catalogs, clients và hybrid retriever được dựng ngoài startup path."},{"id":"readiness","label":"Readiness và degraded mode","focus":["retriever","health","platform"],"note":"BM25 fail-open; readiness vẫn báo rõ trạng thái Qdrant, MongoDB và artifacts."}]</script>
@@ -5133,7 +5133,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
          data-preset-badge-editorial-plate="ARCHIFY / PLATE 04">
       <svg viewBox="0 0 1080 580" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase">
         <title id="archify-diagram-title">Container startup, warm-up và readiness</title>
-        <desc id="archify-diagram-description">Port mở trước; model và BM25 khởi tạo trên background thread</desc>
+        <desc id="archify-diagram-description">Port mở trước; pipeline và BM25 khởi tạo trên background thread</desc>
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -5227,11 +5227,11 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         </g>
         </g>
 
-        <g data-edge-from="warmup" data-edge-to="assets" data-edge-label="load embedding + catalogs" data-edge-key="5" data-edge-id="load">
+        <g data-edge-from="warmup" data-edge-to="assets" data-edge-label="load catalogs + docstore" data-edge-key="5" data-edge-id="load">
           <path data-composition-edge-from="warmup" data-composition-edge-to="assets" data-composition-edge-id="load" data-composition-points="558,315;688.1666666666666,315" d="M 558 315 L 688.1666666666666 315" class="a-default" data-animate="edge" style="--step:5" stroke-width="1.4" marker-end="url(#arrowhead)"/>
         <g data-detail="context">
           <rect x="552.0833333333333" y="295" width="142" height="16" rx="3" class="c-mask"/>
-          <text x="623.0833333333333" y="305" class="t-backend" font-size="9" text-anchor="middle">load embedding + catalogs</text>
+          <text x="623.0833333333333" y="305" class="t-backend" font-size="9" text-anchor="middle">load catalogs + docstore</text>
         </g>
         </g>
 
@@ -5343,15 +5343,15 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <text data-detail="context" x="551" y="111" class="t-muted" font-size="7" text-anchor="middle">non-blocking</text>
         </g>
 
-        <g id="node-assets" data-node-id="assets" data-node-label="Models + catalogs" tabindex="0" role="button" aria-label="Focus Models + catalogs, local artifacts, Sequence participant" aria-pressed="false" data-node-kind="database" data-node-sublabel="local artifacts" data-node-context="Sequence participant">
-          <title>Models + catalogs · local artifacts · Sequence participant</title>
+        <g id="node-assets" data-node-id="assets" data-node-label="Catalogs + docs" tabindex="0" role="button" aria-label="Focus Catalogs + docs, local artifacts, Sequence participant" aria-pressed="false" data-node-kind="database" data-node-sublabel="local artifacts" data-node-context="Sequence participant">
+          <title>Catalogs + docs · local artifacts · Sequence participant</title>
           <rect x="638.6666666666666" y="72" width="113" height="54" rx="6" class="c-mask"/>
           <rect x="638.6666666666666" y="72" width="113" height="54" rx="6" class="c-database" data-animate="node" style="--step:4" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(644.6666666666666 78) scale(0.6875)">
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-node-label="" data-detail-anchor="" x="695.1666666666666" y="94" class="t-primary" font-size="10.2" font-weight="600" text-anchor="middle">Models + catalogs</text>
+          <text data-node-label="" data-detail-anchor="" x="695.1666666666666" y="94" class="t-primary" font-size="10.2" font-weight="600" text-anchor="middle">Catalogs + docs</text>
           <text data-detail="context" x="695.1666666666666" y="111" class="t-muted" font-size="7" text-anchor="middle">local artifacts</text>
         </g>
 

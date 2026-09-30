@@ -121,7 +121,7 @@
       "parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
       "cohort": "K48-K49",
       "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "content_sha256": "2ddbf2f52865275f7d24962173f1c22054ae1ecbe8f7d995f4fcabcf02b55e89",
+      "content_sha256": "76c56e29aa3940dc0de286c4a14815c1ad727bb374cd28b7783f555c2aec8e53",
       "review_status": "source_checked",
       "registry_dispositions": {
         "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification": "physical_source_table",
@@ -154,8 +154,8 @@
           }
         },
         {
-          "start": 2356,
-          "end": 2518,
+          "start": 2379,
+          "end": 2541,
           "source_text": "Xếp loại\nThang điểm 4\nXuất sắc\nTừ 3,6 đến 4,0\nGiỏi\nTừ 3,2 đến dưới 3,6\nKhá\nTừ 2,5 đến dưới 3,2\nTrung bình\nTừ 2,0 đến dưới 2,5\nYếu\nTừ 1,0 đến dưới 2,0\nKém\nDưới 1,0",
           "kind": "physical_table",
           "source_pages": [
@@ -179,8 +179,8 @@
           }
         },
         {
-          "start": 2951,
-          "end": 3458,
+          "start": 2974,
+          "end": 3481,
           "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng quy đổi điểm chữ sang thang điểm 4\n| Thang điểm chữ | Thang điểm 4 |\n| --- | --- |\n| A | 4,0 |\n| B+ | 3,5 |\n| B | 3,0 |\n| C+ | 2,5 |\n| C | 2,0 |\n| D+ | 1,5 |\n| D | 1,0 |\n| F+ | 0,5 |\n| F | 0,0 |\n\nBảng: Bảng xếp loại học lực theo thang điểm 4\n| Xếp loại | Thang điểm 4 |\n| --- | --- |\n| Xuất sắc | Từ 3,6 đến 4,0 |\n| Giỏi | Từ 3,2 đến dưới 3,6 |\n| Khá | Từ 2,5 đến dưới 3,2 |\n| Trung bình | Từ 2,0 đến dưới 2,5 |\n| Yếu | Từ 1,0 đến dưới 2,0 |\n| Kém | Dưới 1,0 |",
           "kind": "generated_table_appendix",
           "source_pages": [
@@ -428,7 +428,7 @@
       "parent_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
       "cohort": "K50",
       "document_id": "so_tay_sinh_vien_khoa_50",
-      "content_sha256": "1c233496f0f66c38d55450fd5c63bb51a069fd99891170bf64dda35bea8d2c04",
+      "content_sha256": "94a5355bada18615eb5ed8ea7b97883954d45f8b6d1beb4cd9d3479f403d6288",
       "review_status": "source_checked",
       "registry_dispositions": {
         "K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification": "physical_source_table",
@@ -461,8 +461,8 @@
           }
         },
         {
-          "start": 2324,
-          "end": 2486,
+          "start": 2347,
+          "end": 2509,
           "source_text": "Xếp loại\nThang điểm 4\nXuất sắc\nTừ 3,6 đến 4,0\nGiỏi\nTừ 3,2 đến dưới 3,6\nKhá\nTừ 2,5 đến dưới 3,2\nTrung bình\nTừ 2,0 đến dưới 2,5\nYếu\nTừ 1,0 đến dưới 2,0\nKém\nDưới 1,0",
           "kind": "physical_table",
           "source_pages": [
@@ -486,8 +486,8 @@
           }
         },
         {
-          "start": 2920,
-          "end": 3427,
+          "start": 2943,
+          "end": 3450,
           "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng quy đổi điểm chữ sang thang điểm 4\n| Thang điểm chữ | Thang điểm 4 |\n| --- | --- |\n| A | 4,0 |\n| B+ | 3,5 |\n| B | 3,0 |\n| C+ | 2,5 |\n| C | 2,0 |\n| D+ | 1,5 |\n| D | 1,0 |\n| F+ | 0,5 |\n| F | 0,0 |\n\nBảng: Bảng xếp loại học lực theo thang điểm 4\n| Xếp loại | Thang điểm 4 |\n| --- | --- |\n| Xuất sắc | Từ 3,6 đến 4,0 |\n| Giỏi | Từ 3,2 đến dưới 3,6 |\n| Khá | Từ 2,5 đến dưới 3,2 |\n| Trung bình | Từ 2,0 đến dưới 2,5 |\n| Yếu | Từ 1,0 đến dưới 2,0 |\n| Kém | Dưới 1,0 |",
           "kind": "generated_table_appendix",
           "source_pages": [
@@ -818,7 +818,7 @@
       "parent_id": "K51_QuyCheDaoTao_Chuong3_Dieu11",
       "cohort": "K51",
       "document_id": "so_tay_sinh_vien_khoa_51",
-      "content_sha256": "6a24ff1ca9b64cf4c29a9523d21ab879227f3110f78bf2d6c97dc95f15dca9b9",
+      "content_sha256": "491c1a694b78f881bd9178e5297ec4b0cd98ded66b641dc23833e43adf58df07",
       "review_status": "source_checked",
       "registry_dispositions": {
         "K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification": "physical_source_table",
@@ -851,8 +851,8 @@
           }
         },
         {
-          "start": 2324,
-          "end": 2486,
+          "start": 2347,
+          "end": 2509,
           "source_text": "Xếp loại\nThang điểm 4\nXuất sắc\nTừ 3,6 đến 4,0\nGiỏi\nTừ 3,2 đến dưới 3,6\nKhá\nTừ 2,5 đến dưới 3,2\nTrung bình\nTừ 2,0 đến dưới 2,5\nYếu\nTừ 1,0 đến dưới 2,0\nKém\nDưới 1,0",
           "kind": "physical_table",
           "source_pages": [
@@ -876,8 +876,8 @@
           }
         },
         {
-          "start": 3286,
-          "end": 3793,
+          "start": 3309,
+          "end": 3816,
           "source_text": "BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:\n\nBảng: Bảng quy đổi điểm chữ sang thang điểm 4\n| Thang điểm chữ | Thang điểm 4 |\n| --- | --- |\n| A | 4,0 |\n| B+ | 3,5 |\n| B | 3,0 |\n| C+ | 2,5 |\n| C | 2,0 |\n| D+ | 1,5 |\n| D | 1,0 |\n| F+ | 0,5 |\n| F | 0,0 |\n\nBảng: Bảng xếp loại học lực theo thang điểm 4\n| Xếp loại | Thang điểm 4 |\n| --- | --- |\n| Xuất sắc | Từ 3,6 đến 4,0 |\n| Giỏi | Từ 3,2 đến dưới 3,6 |\n| Khá | Từ 2,5 đến dưới 3,2 |\n| Trung bình | Từ 2,0 đến dưới 2,5 |\n| Yếu | Từ 1,0 đến dưới 2,0 |\n| Kém | Dưới 1,0 |",
           "kind": "generated_table_appendix",
           "source_pages": [

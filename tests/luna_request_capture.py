@@ -18,8 +18,8 @@ SCENARIOS = [
     {"name": "follow_up", "query": "Vậy K50 thì sao?", "cohort": "K51",
      "history": [{"role": "user", "content": "Điểm 7,3 là điểm chữ gì?"},
                  {"role": "assistant", "content": "Theo sổ tay K51, 7,3 điểm là B."}]},
-    # One task for three numbered requests triggers the single count repair.
-    {"name": "numbered_repair", "cohort": "K50",
+    # Three numbered requests: the prompt states EXPLICIT_REQUEST_COUNT: 3.
+    {"name": "numbered_requests", "cohort": "K50",
      "query": "Thứ nhất: Điều 1 nói gì? Thứ hai: Điều 2 nói gì? Thứ ba: Điều 3 nói gì?",
      "history": []},
 ]
@@ -58,9 +58,7 @@ def capture_requests(build_router, monkeypatch) -> list[dict]:
 
         def create(self, **request):
             sent.append({"client": self.options, "request": request})
-            numbered = "Thứ ba" in json.dumps(request["input"], ensure_ascii=False)
-            first_try = not any(m.get("role") == "assistant" for m in request["input"])
-            return _response(1 if numbered and first_try else 3 if numbered else 1)
+            return _response(1)
 
     monkeypatch.setattr(openai, "OpenAI", Client)
     monkeypatch.setattr(module, "load_project_env", lambda: None)

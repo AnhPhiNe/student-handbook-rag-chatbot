@@ -56,7 +56,7 @@ def prepare() -> None:
             raise ValueError(f"Uncommitted runtime change: {name}")
     build = json.loads((ROOT / "data/processed/metadata/build_manifest.json").read_text(encoding="utf-8"))
     targets = build["storage_targets"]
-    assert targets == {"qdrant_collection": "student_handbook_semantic_v34", "mongo_parent_collection": "parent_docs_v34"}
+    assert targets == {"qdrant_collection": "student_handbook_semantic_v35", "mongo_parent_collection": "parent_docs_v35"}
     artifact_names = {record["path"] for record in build["artifacts"].values()}
     answer = yaml.safe_load((ROOT / "configs/answer_generation.yaml").read_text(encoding="utf-8"))
     router = yaml.safe_load((ROOT / "configs/ai_router.yaml").read_text(encoding="utf-8"))
@@ -66,7 +66,7 @@ def prepare() -> None:
     for record in build["artifacts"].values():
         if digest(ROOT / record["path"]) != record["sha256"]:
             raise ValueError(f"Artifact differs from build manifest: {record['path']}")
-    packages = ["google-genai", "groq", "qdrant-client", "pymongo", "pydantic", "fastapi", "torch", "transformers", "sentence-transformers", "numpy"]
+    packages = ["openai", "groq", "requests", "qdrant-client", "pymongo", "pydantic", "fastapi", "numpy"]
     versions = {}
     for package in packages:
         try:

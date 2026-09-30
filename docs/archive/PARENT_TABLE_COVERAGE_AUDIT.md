@@ -142,5 +142,5 @@ human-reviewed completeness metric. No external LLM/OCR service was called.
 The two page-range defects identified here are corrected in the new local paired
 build through content-hash-bound review metadata. The supported-table scope is
 unchanged; notices and appendices outside that scope were not added. See
-[PARENT_CHILD_BUILD_CONTRACT.md](PARENT_CHILD_BUILD_CONTRACT.md) for build results
+[PARENT_CHILD_BUILD_CONTRACT.md](../PARENT_CHILD_BUILD_CONTRACT.md) for build results
 and publication guards. The original/live v32 snapshot has not been overwritten.

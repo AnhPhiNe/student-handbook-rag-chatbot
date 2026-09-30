@@ -4,16 +4,19 @@ from fastapi.testclient import TestClient
 from src.api.routes import metrics
 
 
-class FakeRedis:
+class FakeCollection:
+    """The two pymongo calls the counter makes, over one in-memory document."""
+
     def __init__(self) -> None:
-        self.values: dict[str, int] = {}
+        self.documents: dict[str, dict] = {}
 
-    def incr(self, key: str) -> int:
-        self.values[key] = self.values.get(key, 0) + 1
-        return self.values[key]
+    def find_one_and_update(self, query, update, upsert, return_document):
+        document = self.documents.setdefault(query["_id"], {"_id": query["_id"], "count": 0})
+        document["count"] += update["$inc"]["count"]
+        return dict(document)
 
-    def get(self, key: str) -> int | None:
-        return self.values.get(key)
+    def find_one(self, query):
+        return self.documents.get(query["_id"])
 
 
 def make_client() -> TestClient:
@@ -22,9 +25,8 @@ def make_client() -> TestClient:
     return TestClient(app)
 
 
-def test_visits_counter_increments_in_redis(monkeypatch) -> None:
-    fake_redis = FakeRedis()
-    monkeypatch.setattr(metrics, "_redis_client", fake_redis)
+def test_visits_counter_increments_in_mongodb(monkeypatch) -> None:
+    monkeypatch.setattr(metrics, "_collection", FakeCollection())
     monkeypatch.setenv("STUDENT_RAG_VISIT_COUNT_OFFSET", "200")
 
     client = make_client()
@@ -39,11 +41,18 @@ def test_visits_counter_increments_in_redis(monkeypatch) -> None:
     assert read_only.json() == {"count": 202, "raw_count": 2, "status": "ok"}
 
 
-def test_visits_counter_returns_null_without_redis(monkeypatch) -> None:
-    monkeypatch.setattr(metrics, "_redis_client", False)
+def test_a_developer_machine_does_not_touch_the_shared_counter(monkeypatch) -> None:
+    monkeypatch.setattr(metrics, "_collection", None)
+    monkeypatch.setenv("MONGODB_URL", "mongodb+srv://shared.example")
+    monkeypatch.setenv("STUDENT_RAG_VISIT_COUNTER", "false")
+    assert metrics.get_metrics_collection() is False
+
+
+def test_visits_counter_returns_null_without_a_database(monkeypatch) -> None:
+    monkeypatch.setattr(metrics, "_collection", False)
 
     client = make_client()
     response = client.get("/api/metrics/visits?increment=true")
 
     assert response.status_code == 200
-    assert response.json() == {"count": None, "status": "redis_unavailable"}
+    assert response.json() == {"count": None, "status": "unavailable"}

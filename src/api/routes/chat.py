@@ -42,7 +42,6 @@ def _build_debug_payload(result: dict[str, Any]) -> dict[str, Any]:
         "query_handling": result.get("query_handling"),
         "retrieval_query": result.get("retrieval_query"),
         "llm_called": bool(result.get("llm_called", False)),
-        "used_cache": bool(result.get("used_cache", False)),
         "error_type": result.get("error_type"),
         "error_message": result.get("error_message"),
         "context_used_length": len(context_used),
@@ -102,7 +101,6 @@ def _to_chat_response(
         intent=result.get("intent"),
         strategy=result.get("strategy"),
         llm_called=bool(result.get("llm_called", False)),
-        used_cache=bool(result.get("used_cache", False)),
         error_type=result.get("error_type"),
         error_message=public_error_message,
         debug=_build_debug_payload(result) if include_debug else None,
@@ -189,7 +187,6 @@ def chat(
             "effective_query": result.get("effective_query"),
             "retrieval_query": result.get("retrieval_query"),
             "llm_called": bool(result.get("llm_called", False)),
-            "used_cache": bool(result.get("used_cache", False)),
         },
     )
 

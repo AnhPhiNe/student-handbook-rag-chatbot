@@ -63,7 +63,6 @@ class ChatResponse(BaseModel):
     structured_results: list[dict[str, Any]] = Field(default_factory=list)
     related_references: list[dict[str, Any]] | None = None
     llm_called: bool = False
-    used_cache: bool = False
     clarification_needed: bool = False
     error_type: str | None = None
     error_message: str | None = None

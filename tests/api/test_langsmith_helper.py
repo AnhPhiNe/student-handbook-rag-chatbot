@@ -23,7 +23,7 @@ def _query_plan_result() -> dict:
     return {
         "status": "partial",
         "effective_query": "So sánh K50 và K51 rồi giải thích thủ tục",
-        "model_used": "gemini-3.1-flash-lite",
+        "model_used": "gpt-6-luna",
         "llm_called": True,
         "used_cache": False,
         "retrieved_chunks_count": 9,
@@ -146,8 +146,19 @@ def test_build_trace_metadata_matches_query_plan_runtime_without_raw_payloads() 
     assert "rows" not in metadata["structured_result_summaries"][0]
     assert metadata["chat_history_turns"] == 1
     assert metadata["has_chat_history"] is True
+    # The history is kept as the planner saw it, so a follow-up can be replayed.
+    assert metadata["visible_history"] == [{"index": 0, "role": "user", "content": "private history"}]
     assert "chat_history" not in metadata
     assert "raw_query" not in metadata
+    assert [task["question"] for task in metadata["query_plan"]["tasks"]] == [
+        "So sánh thời gian K50 và K51", "Thủ tục còn thiếu là gì?"]
+
+
+def test_visible_history_is_the_last_four_turns_cut_to_300_characters() -> None:
+    history = [{"role": "user" if i % 2 == 0 else "assistant", "content": f"{i}" + "x" * 400} for i in range(6)]
+    visible = build_trace_metadata({}, query="q", chat_history=history)["visible_history"]
+    assert [turn["content"][0] for turn in visible] == ["2", "3", "4", "5"]
+    assert all(len(turn["content"]) == 300 for turn in visible)
 
 
 class _FakeLangSmithClient:
@@ -262,7 +273,58 @@ def test_push_trace_uses_task_tags_and_compact_root_outputs() -> None:
 
 
 def test_llm_runs_name_the_provider_of_each_model() -> None:
-    providers = {model: langsmith_helper._llm_run_extra(model, {})["metadata"]["ls_provider"]
-                 for model in ("deepseek-flash", "gemini-3.1-flash-lite", "openai/gpt-oss-120b")}
-    assert providers == {"deepseek-flash": "deepseek", "gemini-3.1-flash-lite": "google_genai",
-                         "openai/gpt-oss-120b": "groq"}
+    def provider(model: str, metadata: dict | None = None):
+        return langsmith_helper._llm_run_extra(model, metadata or {})["metadata"].get("ls_provider")
+
+    assert provider("gpt-6-luna") == "openai"
+    assert provider("deepseek-flash") == "deepseek"
+    # The provider the client reported wins; an unknown model gets none, not a guess.
+    assert provider("some-model", {"provider": "deepseek"}) == "deepseek"
+    assert provider("some-model") is None
+
+
+def test_llm_runs_carry_tokens_where_langsmith_reads_them() -> None:
+    from src.common.usage_tracker import UsageTracker
+
+    tracker = UsageTracker()
+    tracker.record_call(
+        "AI Router", model="gpt-6-luna",
+        usage={"input": 9200, "output": 400, "total": 9600, "cache_read": 8000, "reasoning": 300},
+        start_time="2026-09-29T10:00:00+00:00", end_time="2026-09-29T10:00:05+00:00",
+        metadata={"provider": "openai", "key_fingerprint": "31844edc170f"},
+    )
+    tracker.record_call(
+        "LLM Generation", model="deepseek-flash", usage={"input": 5000, "output": 600, "total": 5600},
+        start_time="2026-09-29T10:00:06+00:00", end_time="2026-09-29T10:00:09+00:00",
+        metadata={"provider": "deepseek", "prompt": "full composer prompt"},
+    )
+    tracker.counters["identifier_corrected:email"] += 1
+    client = _FakeLangSmithClient()
+    with patch("src.api.langsmith_helper.get_langsmith_client", return_value=client):
+        push_trace_to_langsmith("trace-1", input_text="q", output_text="a",
+                                metadata=build_trace_metadata({}, query="q"), tracker=tracker)
+
+    root, router, composer = client.runs
+    assert "usage" not in root["extra"]  # LangSmith sums the children
+    assert root["extra"]["metadata"]["counters"] == {"identifier_corrected:email": 1}
+    router_meta = router["extra"]["metadata"]
+    assert router_meta["usage_metadata"] == {
+        "input_tokens": 9200, "output_tokens": 400, "total_tokens": 9600,
+        "input_token_details": {"cache_read": 8000}, "output_token_details": {"reasoning": 300},
+    }
+    assert router_meta["ls_provider"] == "openai"
+    assert router_meta["key_fingerprint"] == "31844edc170f"
+    # A prompt, when kept, is the run's input, not a second copy in the metadata.
+    assert composer["inputs"]["prompts"] == ["full composer prompt"]
+    assert "prompt" not in composer["extra"]["metadata"]
+
+
+def test_task_summaries_show_fact_locks_and_directory_decisions() -> None:
+    result = _query_plan_result()
+    result["task_results"][0]["evidence"] = [
+        {"resolved_result": {"label": "Tốt"}},
+        {"selection": [{"status": "match", "method": "llm_selector_thinking", "reply": "{}"}]},
+    ]
+    summary = build_trace_metadata(result, query="q")["task_summaries"][0]
+    assert summary["fact_locked"] is True
+    assert summary["directory_selection"] == [{"status": "match", "method": "llm_selector_thinking"}]

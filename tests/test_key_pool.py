@@ -133,3 +133,22 @@ def test_state_survives_a_restart_and_ignores_unknown_fields(tmp_path: Path) -> 
     with pytest.raises(NoAvailableKey, match="temporarily_limited"):
         restarted.acquire()
     assert "legacy_field" not in _saved_key_state(tmp_path)
+
+
+def test_state_file_holds_fingerprints_not_keys(tmp_path: Path) -> None:
+    pool = _pool(tmp_path, ["key-secret-a", "key-secret-b"])
+    _, key_id, _ = pool.acquire()
+
+    pool.record_rate_limit(key_id)
+
+    text = (tmp_path / "state.json").read_text(encoding="utf-8")
+    assert key_id in text
+    assert "key-secret" not in text
+
+
+def test_daily_request_limit_blocks_the_key(tmp_path: Path) -> None:
+    pool = _pool(tmp_path, rpd_limit_per_key=1)
+    pool.acquire()
+
+    with pytest.raises(NoAvailableKey, match="daily_request_quota_exhausted"):
+        pool.acquire()

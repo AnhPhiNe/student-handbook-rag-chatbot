@@ -13,6 +13,11 @@ from src.retrieval.core.acronym_registry import (
 DEFAULT_UNIT_ALIAS_CONFIG_PATH = Path("configs/office_aliases.yaml")
 
 
+def _word_key(word: str) -> str:
+    """A word compared without case or surrounding punctuation."""
+    return re.sub(r"^\W+|\W+$", "", word.lower())
+
+
 class SlangNormalizer:
     """
     Normalizes student slangs in retrieval queries using regex word boundaries.
@@ -175,21 +180,34 @@ class SlangNormalizer:
     def _clean(query: str) -> str:
         return re.sub(r"\s+", " ", query).strip()
 
-    def replace_for_router(self, query: str) -> str:
-        """Apply only meaning-preserving replacements before routing."""
+    def _replacement(self, match: re.Match[str]) -> str:
+        """The canonical phrase for one match, without repeating the words after it.
+
+        A replacement can end with words the student already wrote next: "rút
+        môn đã đăng ký" must become "rút bớt học phần đã đăng ký", not "... đã
+        đăng ký đã đăng ký". When two or more trailing words of the replacement
+        are the words right after the match, they are dropped from the
+        replacement. One shared word is not enough ("đăng ký môn phần mềm").
+        """
+        matched_text = match.group(1)
+        replacement = self.replace_dict.get(matched_text.lower())
+        if not replacement:
+            return matched_text
+        words = replacement.split()
+        following = [_word_key(word) for word in match.string[match.end():].split()]
+        for size in range(len(words) - 1, 1, -1):
+            if following[:size] == [_word_key(word) for word in words[-size:]]:
+                return " ".join(words[:-size])
+        return replacement
+
+    def canonicalize(self, query: str) -> str:
+        """Apply only the meaning-preserving replacements (replace_slangs)."""
         if not query:
             return query
 
         normalized = query
         if self.replace_pattern:
-
-            def replace_match(match):
-                matched_text = match.group(1)
-                replacement = self.replace_dict.get(matched_text.lower())
-                return replacement if replacement else matched_text
-
-            normalized = self.replace_pattern.sub(replace_match, normalized)
-
+            normalized = self.replace_pattern.sub(self._replacement, normalized)
         return self._clean(normalized)
 
     def normalize_for_retrieval(self, query: str) -> str:
@@ -207,8 +225,8 @@ class SlangNormalizer:
 
             def protect_replace_match(match):
                 matched_text = match.group(1)
-                replacement = self.replace_dict.get(matched_text.lower())
-                if not replacement:
+                replacement = self._replacement(match)
+                if replacement == matched_text:
                     return matched_text
                 placeholder = f"__SLANG_CANONICAL_{len(protected_replacements)}__"
                 protected_replacements[placeholder] = replacement
@@ -235,13 +253,4 @@ class SlangNormalizer:
 
         # 4. Final canonical pass for any replacement introduced through
         # fallback paths or expansion text.
-        if self.replace_pattern:
-
-            def replace_match(match):
-                matched_text = match.group(1)
-                replacement = self.replace_dict.get(matched_text.lower())
-                return replacement if replacement else matched_text
-
-            normalized = self.replace_pattern.sub(replace_match, normalized)
-
-        return self._clean(normalized)
+        return self.canonicalize(normalized)

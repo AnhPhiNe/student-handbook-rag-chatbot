@@ -3,6 +3,9 @@ import os
 import threading
 import time
 from collections import OrderedDict, defaultdict
+from collections.abc import Iterator
+from contextlib import contextmanager
+from dataclasses import dataclass, field
 from typing import Any
 
 from qdrant_client import QdrantClient
@@ -12,11 +15,12 @@ from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.legal_reference import normalize_article_label
 from src.common.source_identity import canonical_article_source_id
 from src.common.storage_config import require_qdrant_collection_name
-from src.retrieval.core.cohere_reranker import CohereReranker
+from src.common.usage_tracker import current_tracker, utc_now
+from src.retrieval.core.reranker import Reranker
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
-from src.retrieval.core.embedding_model import load_embedding_model
+from src.retrieval.core.embedding_model import load_embedding_client
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
@@ -62,6 +66,87 @@ def reciprocal_rank_fusion(
 def _attach_telemetry(results: list[dict[str, Any]], telemetry: dict[str, Any]) -> None:
     for item in results:
         item["metadata"] = {**(item.get("metadata") or {}), "retrieval_telemetry": telemetry}
+
+
+TRACED_CANDIDATES = 10
+
+
+@dataclass
+class _RetrievalTrace:
+    """One retrieval as the request's trace shows it: stage times, the rerank
+    call and its price, and the top candidates with their rank in each list.
+
+    Recorded on the request's usage tracker; outside a request nothing is kept.
+    Candidate text is left out: the chunk ids find it in the index.
+    """
+
+    query: str
+    cohort: str | None
+    mode: str
+    started: str = field(default_factory=utc_now)
+    rerank_started: str | None = None
+    stats: dict[str, Any] = field(default_factory=dict)
+
+    @contextmanager
+    def timed(self, name: str) -> Iterator[None]:
+        started = time.perf_counter()
+        try:
+            yield
+        finally:
+            self.stats[name] = round((time.perf_counter() - started) * 1000, 1)
+
+    def record(
+        self,
+        telemetry: dict[str, Any],
+        final: list[tuple[float, dict[str, Any]]],
+        dense: list[tuple[float, dict[str, Any]]],
+        lexical: list[tuple[float, dict[str, Any]]],
+        fused: list[tuple[float, dict[str, Any]]],
+    ) -> None:
+        tracker = current_tracker()
+        if tracker is None:
+            return
+        ended = utc_now()
+        ranks = {
+            name: {_chunk_key(chunk): index + 1 for index, (_, chunk) in enumerate(items)}
+            for name, items in (("dense_rank", dense), ("bm25_rank", lexical), ("rrf_rank", fused))
+        }
+        candidates = []
+        for index, (score, chunk) in enumerate(final[:TRACED_CANDIDATES]):
+            key = _chunk_key(chunk)
+            candidates.append({
+                "rank": index + 1,
+                "chunk_id": key,
+                "parent_section_id": (chunk.get("metadata") or {}).get("parent_section_id"),
+                "score": round(float(score), 4),
+                **{name: by_id.get(key) for name, by_id in ranks.items()},
+            })
+        reranked = bool(telemetry.get("reranker_applied"))
+        tracker.record(
+            "Retrieval", "", 0, 0, 0, self.started, ended,
+            {
+                "query": self.query,
+                "cohort": self.cohort,
+                "retrieval_mode": self.mode,
+                "score": "reranker" if reranked else "rrf",
+                "dense_candidates": len(dense),
+                "bm25_candidates": len(lexical),
+                "dense_failed": telemetry.get("dense_failed"),
+                "reranker_applied": reranked,
+                "reranker_fallback_reason": telemetry.get("reranker_fallback_reason"),
+                "rerank_ms": round(float(telemetry.get("reranker_latency_ms") or 0), 1),
+                **self.stats,
+            },
+            run_type="retriever",
+            outputs={"top_candidates": candidates},
+        )
+        rerank_tokens = int(telemetry.get("reranker_input_tokens") or 0)
+        if reranked and self.rerank_started:
+            tracker.record(
+                "Reranker", str(telemetry.get("reranker_model") or ""), rerank_tokens, 0, rerank_tokens,
+                self.rerank_started, ended, {"provider": "deepinfra", "candidates": len(fused)},
+                total_cost=telemetry.get("reranker_cost"),
+            )
 
 
 def _query_points_with_retry(
@@ -207,10 +292,9 @@ class ChildParentHybridRetriever:
         )
         self.collection_name = collection_name
 
-        self.embed_model = load_embedding_model(str(embedding["model_name"]))
-        self.normalize_embeddings = bool(embedding.get("normalize_embeddings", True))
+        self.embedder = load_embedding_client(embedding)
         self.graph = NetworkXGraphTraverser()
-        self.cohere_reranker = CohereReranker.from_runtime_config(self.runtime_config)
+        self.reranker = Reranker.from_runtime_config(self.runtime_config)
 
         # Full parent content comes from MongoDB.
         self.mongo_store = get_mongo_store()
@@ -369,7 +453,7 @@ class ChildParentHybridRetriever:
         """Retrieve parent-bound regulation sources using child/table chunks.
 
         Dense and BM25 child candidates are fused with RRF, optionally reranked
-        (fail-open Cohere), grouped into parent sources, and in the default mode
+        (Qwen3-Reranker, failing open to RRF), grouped into parent sources, and in the default mode
         outbound graph neighbors are attached as context-only related sources.
         """
         eval_mode = resolve_retrieval_mode()
@@ -377,25 +461,30 @@ class ChildParentHybridRetriever:
             graph_depth = 0
 
         retrieval_started = time.perf_counter()
+        trace = _RetrievalTrace(query=query, cohort=cohort, mode=eval_mode)
         logger.info("==> Child-parent query: %s", query)
         search_limit = self.candidate_children
         dense_error = None
         try:
-            dense = self._dense_candidates(query, cohort=cohort, limit=search_limit)
+            with trace.timed("dense_ms"):
+                dense = self._dense_candidates(query, cohort=cohort, limit=search_limit, stats=trace.stats)
         except Exception as exc:
             # The embedding model or Qdrant failed: answer from BM25 alone,
             # which still goes through the reranker, rather than from nothing.
             logger.warning("Dense retrieval failed; using BM25 only: %s", exc)
             dense, dense_error = [], type(exc).__name__
         # vector_only is the dense-only ablation: no lexical candidates are fused.
-        lexical = (
-            []
-            if eval_mode == "vector_only"
-            else self._bm25_candidates(query, cohort=cohort, limit=search_limit)
-        )
+        with trace.timed("bm25_ms"):
+            lexical = (
+                []
+                if eval_mode == "vector_only"
+                else self._bm25_candidates(query, cohort=cohort, limit=search_limit)
+            )
         if not dense and not lexical:
+            trace.record({"dense_failed": dense_error}, [], dense, lexical, [])
             return []
         primary_scored = reciprocal_rank_fusion(dense, lexical)[:search_limit]
+        fused_order = list(primary_scored)
 
         seed_parent_ids = {
             str((chunk.get("metadata") or {}).get("parent_section_id") or "")
@@ -410,11 +499,10 @@ class ChildParentHybridRetriever:
             "ranking_method": "rrf",
             "dense_failed": dense_error,
         }
-        cohere_reranker = getattr(self, "cohere_reranker", None)
-        if cohere_reranker is not None:
-            primary_scored, reranker_telemetry = cohere_reranker.rerank(
-                query, primary_scored
-            )
+        reranker = getattr(self, "reranker", None)
+        if reranker is not None:
+            trace.rerank_started = utc_now()
+            primary_scored, reranker_telemetry = reranker.rerank(query, primary_scored)
             retrieval_telemetry.update(reranker_telemetry)
         primary_results = self._group_parent_results(
             query=query,
@@ -427,13 +515,16 @@ class ChildParentHybridRetriever:
                 time.perf_counter() - retrieval_started
             ) * 1000
             _attach_telemetry(primary_results, retrieval_telemetry)
+            trace.record(retrieval_telemetry, primary_scored, dense, lexical, fused_order)
             return primary_results
 
-        related_results, related_telemetry = self._graph_related_parent_results(
-            primary_results,
-            graph_depth=graph_depth,
-            cohort=cohort,
-        )
+        with trace.timed("graph_ms"):
+            related_results, related_telemetry = self._graph_related_parent_results(
+                primary_results,
+                graph_depth=graph_depth,
+                cohort=cohort,
+            )
+        trace.record({**retrieval_telemetry, **related_telemetry}, primary_scored, dense, lexical, fused_order)
         _attach_telemetry(
             primary_results,
             {
@@ -449,14 +540,22 @@ class ChildParentHybridRetriever:
         return primary_results
 
     def _dense_candidates(
-        self, query: str, *, cohort: str | None, limit: int
+        self, query: str, *, cohort: str | None, limit: int, stats: dict[str, Any] | None = None,
     ) -> list[tuple[float, dict[str, Any]]]:
-        """Embed the query and return in-scope Qdrant child chunks with their scores."""
+        """Embed the query and return in-scope Qdrant child chunks with their scores.
 
-        query_vector = self.embed_model.encode(
-            query,
-            normalize_embeddings=getattr(self, "normalize_embeddings", True),
-        ).tolist()
+        ``stats`` receives the embedding call's time and tokens, for tracing.
+        """
+
+        embed_started = time.perf_counter()
+        # Looked up on the class, so a stand-in embedder without the method uses embed_query.
+        if hasattr(type(self.embedder), "embed_query_with_usage"):
+            query_vector, usage = self.embedder.embed_query_with_usage(query)
+        else:
+            query_vector, usage = self.embedder.embed_query(query), {}
+        if stats is not None:
+            stats["embed_ms"] = round((time.perf_counter() - embed_started) * 1000, 1)
+            stats["embedding_tokens"] = int(usage.get("input") or 0)
         hits = _query_points_with_retry(
             self.qdrant_client,
             collection_name=self.collection_name,
@@ -853,7 +952,6 @@ def run_hybrid_retrieval_pipeline(
         "strategy": strategy,
         "target_chunk_types": target_chunk_types,
         "structured_result": None,
-        "tool_result": None,
         "retrieved_items": formatted_results,
         "related_items": related_items,
         "related_references": related_references,

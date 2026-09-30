@@ -441,7 +441,14 @@ def validate_fact_lock_inputs(
     query: str,
     registry: dict[str, Any] | None = None,
 ) -> list[str]:
-    """Return reasons why a table-first task must not emit a fact lock."""
+    """Return reasons why a table-first task must not emit a fact lock.
+
+    A fact lock is the single table row the dispatcher pins as
+    `resolved_result` for the composer to state (see
+    docs/STRUCTURED_EXECUTION_CONTRACT.md). It needs a valid slot contract and
+    at least one input value whose span appears in the question; an empty
+    list means the task may be locked if its values select exactly one row.
+    """
 
     registry = registry or load_lookup_registry()
     lookup_type = str(task.get("lookup_type") or "")

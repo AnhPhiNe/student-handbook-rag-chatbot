@@ -2,7 +2,7 @@
 
 Status: **historical A/B record**. The policy was later promoted: every build now
 applies it through `scripts/build_parent_child_artifacts.py` (see
-[PARENT_CHILD_BUILD_CONTRACT.md](PARENT_CHILD_BUILD_CONTRACT.md)). It differs from
+[PARENT_CHILD_BUILD_CONTRACT.md](../PARENT_CHILD_BUILD_CONTRACT.md)). It differs from
 an earlier, rejected experiment that embedded registry-rendered table text; that
 experiment's scripts and write-up were removed and remain in git history.
 
@@ -176,5 +176,5 @@ unchanged. The known forced-RAG limitation is explicit, not scored away.
 The hashes and A/B measurements above describe the historical candidate, before
 source-page corrections and explicit corpus-role metadata. The official paired
 builder, clean-build verification, and pre-upload contract are now documented in
-[PARENT_CHILD_BUILD_CONTRACT.md](PARENT_CHILD_BUILD_CONTRACT.md). That integration
+[PARENT_CHILD_BUILD_CONTRACT.md](../PARENT_CHILD_BUILD_CONTRACT.md). That integration
 does not retroactively constitute final-answer A/B or production promotion.

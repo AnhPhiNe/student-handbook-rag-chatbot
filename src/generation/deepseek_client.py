@@ -104,15 +104,27 @@ class DeepSeekClient(PooledLLMClient):
         if usage is not None:
             inp = int(getattr(usage, "prompt_tokens", 0) or 0)
             out = int(getattr(usage, "completion_tokens", 0) or 0)
-            return {"input": inp, "output": out,
-                    "total": int(getattr(usage, "total_tokens", 0) or (inp + out))}
+            counts = {"input": inp, "output": out,
+                      "total": int(getattr(usage, "total_tokens", 0) or (inp + out))}
+            # Cached input is billed at a lower rate; thinking counts as output.
+            details = {
+                "cache_read": getattr(usage, "prompt_cache_hit_tokens", None),
+                "reasoning": getattr(getattr(usage, "completion_tokens_details", None), "reasoning_tokens", None),
+            }
+            counts.update({key: value for key, value in details.items()
+                           if isinstance(value, int) and not isinstance(value, bool)})
+            return counts
         inp, out = max(1, len(prompt) // 4), max(1, len(text) // 4)
         return {"input": inp, "output": out, "total": inp + out}
 
     def _generate_once(self, prompt: str, *, client: Any | None = None) -> tuple[str, dict[str, int]]:
         """Return the answer text only; the model's reasoning is never shown."""
         response = self._request(prompt, client or self._create_client(self.available_keys[0]))
-        text = (response.choices[0].message.content or "").strip()
+        choice = response.choices[0]
+        text = (choice.message.content or "").strip()
+        if not text and choice.finish_reason == "length":
+            # Thinking counts toward max_tokens; a long think leaves no answer.
+            raise RuntimeError(f"DeepSeek used all {self.max_output_tokens} output tokens before answering.")
         return text, self._usage(getattr(response, "usage", None), prompt, text)
 
     def _generate_stream_once(

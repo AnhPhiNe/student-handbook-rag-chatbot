@@ -280,7 +280,9 @@ def test_catalog_relationship_integrity_all_records():
     assert len(data["program"]) == 129
     # 2026-09-28: services the handbook does not list (wifi) and a duplicate
     # of a listed one (student loans) were removed from the catalog build.
-    assert len(data["student_service"]) == 233
+    # The K50 branch campus unit (Phân hiệu Long An) followed when the
+    # chatbot's scope was set to the main campus.
+    assert len(data["student_service"]) == 232
     for source_kind, target_kind, source_key, target_keys in (
         ("program", "faculty", "faculty_name", ["unit_name", "faculty_name", "aliases"]),
         ("student_service", "office", "unit_name", ["unit_name", "aliases"]),
@@ -344,8 +346,7 @@ def test_planner_diagnostics_survive_downstream_execution_exception():
                                "cohorts": ["K51"]}],
                     "planner_diagnostics": {"schema_version": "synthetic"}}
 
-    normalizer = SimpleNamespace(replace_for_router=lambda value: value,
-                                 normalize_for_retrieval=lambda value: value)
+    normalizer = SimpleNamespace(normalize_for_retrieval=lambda value: value)
     executor = PlanExecutor(router=Router(), slang_normalizer=normalizer,
                             catalogs={}, parent_sources_by_id={}, top_k=5,
                             public_source_limit=5)

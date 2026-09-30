@@ -2,9 +2,9 @@ param(
     [switch]$DryRun,
     [string]$CommitMessage = "",
     [ValidateNotNullOrEmpty()]
-    [string]$QdrantCollection = "student_handbook_semantic_v34",
+    [string]$QdrantCollection = "student_handbook_semantic_v35",
     [ValidateNotNullOrEmpty()]
-    [string]$MongoCollection = "parent_docs_v34"
+    [string]$MongoCollection = "parent_docs_v35"
 )
 
 $ErrorActionPreference = "Stop"
@@ -189,7 +189,7 @@ license: mit
 
 Backend-only deployment for the HCMUE AI student handbook assistant.
 
-Runtime: FastAPI, OpenAI Luna planner, BGE-M3, Qdrant, BM25, optional fail-open Cohere Fast reranking, MongoDB, and a DeepSeek composer.
+Runtime: FastAPI, OpenAI Luna planner, BGE-M3, Qdrant, BM25, Qwen3-Reranker-8B reranking that falls back to RRF, MongoDB, and a DeepSeek composer.
 
 Source repository: https://github.com/AnhPhiNe/student-handbook-rag-chatbot
 "@ | Set-Content -LiteralPath (Join-Path $TempDir "README.md") -Encoding utf8

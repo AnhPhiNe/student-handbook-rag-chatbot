@@ -1,8 +1,9 @@
-# Development smoke only, authored before new inference. Not a holdout.
-# The other 12 cases are copied unchanged from the V10 regression contracts.
+# Hand-authored contracts for grade scales, pass thresholds, several subjects,
+# subject scopes and a two-faculty contact lookup. Test fixture, not a holdout;
+# tests/test_scale_and_task_pairing_integration.py runs them offline.
 settings:
   expected: {cases: 6}
-  id_prefix: v48_dev
+  id_prefix: scale_dev
   independent_holdout: false
   overlap_policy: "Development probes derived from offline safety/intent tests; no generalization claim."
 cases:

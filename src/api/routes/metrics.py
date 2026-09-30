@@ -1,55 +1,83 @@
+"""The public visit counter shown in the frontend, kept in MongoDB.
+
+MongoDB already holds the handbook's parent documents, so the counter needs no
+other service. One document in the `app_metrics` collection holds the raw
+count; `$inc` is atomic, so concurrent visits are all counted. Displayed
+counts add STUDENT_RAG_VISIT_COUNT_OFFSET to the raw count.
+
+A developer machine that shares the production database sets
+STUDENT_RAG_VISIT_COUNTER=false, so its page loads are not counted.
+"""
 import os
 from typing import Any
 
 from fastapi import APIRouter, Query
 
+from src.common.env_loader import env_bool
+
 router = APIRouter(prefix="/api/metrics", tags=["metrics"])
 
-VISIT_TOTAL_KEY = "metrics:visits_total"
+METRICS_COLLECTION = "app_metrics"
+VISIT_TOTAL_ID = "visits_total"
 DEFAULT_VISIT_COUNT_OFFSET = 150
+# The counter is optional: a slow database answers "unavailable", never a hung page.
+TIMEOUT_MS = 3000
 
-_redis_client = None
+_collection = None
 
 
-def get_redis_client():
-    """Return a cached Redis client for metrics collection."""
+def get_metrics_collection():
+    """The MongoDB collection holding the counter, or False when the counter is off or unreachable."""
 
-    global _redis_client
-    if _redis_client is not None:
-        return _redis_client
+    global _collection
+    if _collection is not None:
+        return _collection
 
-    redis_url = os.environ.get("REDIS_URL")
-    if not redis_url:
-        _redis_client = False
-        return _redis_client
+    uri = os.environ.get("MONGODB_URL")
+    if not uri or not env_bool("STUDENT_RAG_VISIT_COUNTER", default=True):
+        _collection = False
+        return _collection
 
     try:
-        import redis
+        from pymongo import MongoClient
 
-        _redis_client = redis.from_url(redis_url, decode_responses=True)
-        _redis_client.ping()
+        client = MongoClient(
+            uri,
+            serverSelectionTimeoutMS=TIMEOUT_MS,
+            connectTimeoutMS=TIMEOUT_MS,
+            socketTimeoutMS=TIMEOUT_MS,
+        )
+        db_name = str(os.environ.get("MONGODB_DB_NAME") or "chatbotHCMUE").strip()
+        _collection = client[db_name][METRICS_COLLECTION]
     except Exception as e:
-        print(f"[Metrics] Redis connection failed: {e}")
-        _redis_client = False
+        print(f"[Metrics] MongoDB connection failed: {e}")
+        _collection = False
 
-    return _redis_client
+    return _collection
 
 
 @router.get("/visits")
-async def get_visit_count(
+def get_visit_count(  # sync: FastAPI runs it off the event loop, so a slow database blocks only this request
     increment: bool = Query(False, description="Increment total visit counter"),
 ) -> dict[str, Any]:
-    """Return the total frontend visit count, backed by Redis when available."""
-    r = get_redis_client()
-    if not r:
-        return {"count": None, "status": "redis_unavailable"}
+    """Return the total frontend visit count, counting this visit when asked."""
+    collection = get_metrics_collection()
+    if collection is False:
+        return {"count": None, "status": "unavailable"}
 
     try:
-        raw_count = (
-            int(r.incr(VISIT_TOTAL_KEY))
-            if increment
-            else int(r.get(VISIT_TOTAL_KEY) or 0)
-        )
+        if increment:
+            from pymongo import ReturnDocument
+
+            document = collection.find_one_and_update(
+                {"_id": VISIT_TOTAL_ID},
+                {"$inc": {"count": 1}},
+                upsert=True,
+                return_document=ReturnDocument.AFTER,
+            )
+        else:
+            document = collection.find_one({"_id": VISIT_TOTAL_ID})
+        raw_count = int((document or {}).get("count") or 0)
         offset = int(
             os.getenv("STUDENT_RAG_VISIT_COUNT_OFFSET", str(DEFAULT_VISIT_COUNT_OFFSET))
         )
@@ -57,4 +85,3 @@ async def get_visit_count(
     except Exception as e:
         print(f"[Metrics] Error tracking visits: {e}")
         return {"count": None, "status": "error"}
-

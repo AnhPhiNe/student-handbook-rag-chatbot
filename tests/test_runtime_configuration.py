@@ -9,7 +9,6 @@ from src.retrieval.core.hybrid_pipeline import (
     ChildParentHybridRetriever,
 )
 from src.retrieval.runtime_config import load_retrieval_runtime_config
-from src.retrieval.core.embedding_model import load_embedding_model
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
 
@@ -27,27 +26,6 @@ def test_retrieval_runtime_config_uses_explicit_file(
 
     assert config["embedding"]["model_name"] == "test/model"
     assert config["runtime"]["parent_cache_max_entries"] == 3
-
-
-def test_embedding_model_loader_reuses_one_process_instance() -> None:
-    model = object()
-    load_embedding_model.cache_clear()
-    try:
-        with (
-            patch(
-                "src.retrieval.core.embedding_model.SentenceTransformer",
-                return_value=model,
-            ) as model_class,
-            patch("src.retrieval.core.embedding_model.get_device", return_value="cpu"),
-        ):
-            first = load_embedding_model("test/model")
-            second = load_embedding_model("test/model")
-
-        assert first is model
-        assert second is model
-        model_class.assert_called_once_with("test/model", device="cpu")
-    finally:
-        load_embedding_model.cache_clear()
 
 
 def test_mongo_store_uses_database_name_from_environment(monkeypatch) -> None:
@@ -92,12 +70,10 @@ def test_parent_cache_evicts_oldest_entry_at_configured_limit() -> None:
     assert list(retriever.parent_cache) == ["p2", "p3"]
 
 
-def test_router_output_budget_scales_by_task_and_respects_cap() -> None:
+def test_router_output_budget_respects_the_hard_cap() -> None:
     router = AIRouter.__new__(AIRouter)
-    router.max_output_tokens = 768
-    router.output_tokens_per_task = 640
+    router.max_output_tokens = 8192
     router.hard_max_output_tokens = 1600
-
-    assert router._planner_output_token_limit(None) == 768
-    assert router._planner_output_token_limit(2) == 1280
-    assert router._planner_output_token_limit(3) == 1600
+    assert router._planner_output_token_limit() == 1600
+    router.hard_max_output_tokens = 8192
+    assert router._planner_output_token_limit() == 8192

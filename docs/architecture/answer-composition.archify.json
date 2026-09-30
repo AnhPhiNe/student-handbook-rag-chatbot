@@ -21,7 +21,7 @@
     {"id": "cache", "type": "database", "label": "Response cache", "sublabel": "evidence-bound"},
     {"id": "citation", "type": "backend", "label": "Citation select", "sublabel": "priority + dedupe"},
     {"id": "prompt", "type": "backend", "label": "Prompt builder", "sublabel": "authorized packet"},
-    {"id": "composer", "type": "external", "label": "Gemini client", "sublabel": "streaming LLM"},
+    {"id": "composer", "type": "external", "label": "DeepSeek", "sublabel": "streaming LLM"},
     {"id": "formatter", "type": "backend", "label": "Formatter", "sublabel": "clean fragments"},
     {"id": "api", "type": "backend", "label": "SSE route", "sublabel": "client events"}
   ],

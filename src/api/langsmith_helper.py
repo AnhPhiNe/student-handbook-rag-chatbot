@@ -228,6 +228,13 @@ def _task_summaries(source: dict[str, Any]) -> list[dict[str, Any]]:
         task_id = str(task.get("id") or "")
         result = results_by_id.get(task_id, {})
         evidence = result.get("evidence")
+        evidence_items = [item for item in evidence if isinstance(item, dict)] if isinstance(evidence, list) else []
+        selections = [
+            {key: trace.get(key) for key in ("status", "method") if trace.get(key) is not None}
+            for item in evidence_items
+            for trace in (item.get("selection") or [])
+            if isinstance(trace, dict)
+        ]
         summaries.append(
             {
                 "task_id": task_id,
@@ -240,12 +247,50 @@ def _task_summaries(source: dict[str, Any]) -> list[dict[str, Any]]:
                 "coverage_by_cohort": result.get("coverage_by_cohort") or {},
                 "evidence_count": len(evidence) if isinstance(evidence, list) else 0,
                 "citation_count": int(result.get("citation_count") or 0),
+                # A table row pinned for the composer to state (the fact lock).
+                "fact_locked": any(item.get("resolved_result") for item in evidence_items),
+                "directory_selection": selections,
                 "needs_clarification": bool(
                     task.get("mode") == "clarify" or task.get("clarification_question")
                 ),
             }
         )
     return summaries
+
+
+def _visible_history(chat_history: list[dict[str, str]] | None) -> list[dict[str, Any]]:
+    """The turns the planner was shown: the last four, 300 characters each."""
+
+    from src.retrieval.core.query_plan import visible_history_turns
+
+    return [
+        {"index": index, "role": role, "content": content}
+        for index, (role, content) in visible_history_turns(chat_history).items()
+    ]
+
+
+_PLAN_TASK_FIELDS = (
+    "id", "question", "mode", "intent", "lookup_type", "slots", "slot_spans",
+    "cohorts", "clarification_question",
+)
+
+
+def _compact_plan(plan: dict[str, Any]) -> dict[str, Any] | None:
+    """The planner's decision: context, tasks, slots and the phrases they came from."""
+
+    if not plan:
+        return None
+    return {
+        "context_mode": plan.get("context_mode"),
+        "standalone_query": plan.get("standalone_query"),
+        "referenced_turns": plan.get("referenced_turns") or [],
+        "out_of_domain": plan.get("out_of_domain"),
+        "tasks": [
+            {field: task.get(field) for field in _PLAN_TASK_FIELDS if task.get(field) not in (None, {}, [])}
+            for task in plan.get("tasks") or []
+            if isinstance(task, dict)
+        ],
+    }
 
 
 def _ordered_unique(values: list[Any]) -> list[str]:
@@ -346,10 +391,13 @@ def build_trace_metadata(
         "retrieved_chunks_count": int(src.get("retrieved_chunks_count") or 0),
         "fallback_reason": src.get("fallback_reason")
         or ("none" if status == "answered" else str(status)),
-        "used_cache": src.get("used_cache", False),
         "llm_called": src.get("llm_called", True),
         "chat_history_turns": len(chat_history or []),
         "has_chat_history": bool(chat_history),
+        # The history exactly as the planner saw it, so a follow-up can be replayed.
+        "visible_history": _visible_history(chat_history),
+        "referenced_turns": list(query_handling.get("referenced_turns") or []),
+        "query_plan": _compact_plan(plan),
         "qdrant_collection": os.environ.get("QDRANT_COLLECTION_NAME"),
         "mongo_parent_collection": os.environ.get("MONGODB_PARENT_COLLECTION"),
     }
@@ -369,20 +417,6 @@ def _run_uuid(value: str) -> uuid.UUID:
         return uuid.UUID(value)
     except (ValueError, AttributeError):
         return uuid.uuid5(uuid.NAMESPACE_DNS, str(value))
-
-
-def _usage(input_tokens: Any, output_tokens: Any, total_tokens: Any) -> dict[str, int]:
-    """Token usage under both key names LangSmith recognizes."""
-
-    input_tokens = int(input_tokens or 0)
-    output_tokens = int(output_tokens or 0)
-    return {
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
-        "total_tokens": int(total_tokens or 0) or input_tokens + output_tokens,
-        "prompt_tokens": input_tokens,
-        "completion_tokens": output_tokens,
-    }
 
 
 def _trace_tags(meta: dict[str, Any], tags: list[str], cohort: str | None) -> list[str]:
@@ -409,25 +443,56 @@ def _trace_tags(meta: dict[str, Any], tags: list[str], cohort: str | None) -> li
     if meta.get("planner_fallback_used"):
         trace_tags.append("planner_fallback:true")
     trace_tags.append(f"llm_called:{str(bool(meta.get('llm_called'))).lower()}")
-    trace_tags.append(f"cache_hit:{str(bool(meta.get('used_cache'))).lower()}")
     return list(dict.fromkeys(trace_tags))
 
 
-def _llm_run_extra(model: str, metadata: dict[str, Any]) -> dict[str, Any]:
-    """Fields LangSmith reads to show an LLM run's model and provider."""
+def _provider(model: str, metadata: dict[str, Any]) -> str | None:
+    """The provider the calling client reported, else one read from the model name."""
 
-    if not model:
-        return {"metadata": dict(metadata)}
+    if metadata.get("provider"):
+        return str(metadata["provider"])
     name = model.lower()
-    provider = "google_genai" if "gemini" in name else "deepseek" if "deepseek" in name else "groq"
+    if name.startswith("gpt") or name.startswith(("o1", "o3", "o4")):
+        return "openai"
+    if "deepseek" in name:
+        return "deepseek"
+    return None
+
+
+def _step_usage_metadata(step: dict[str, Any]) -> dict[str, Any]:
+    """Token usage in the form LangSmith reads (``usage_metadata``) to count tokens and cost."""
+
+    input_tokens = int(step.get("input_tokens") or 0)
+    output_tokens = int(step.get("output_tokens") or 0)
+    usage: dict[str, Any] = {
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "total_tokens": int(step.get("total_tokens") or 0) or input_tokens + output_tokens,
+    }
+    if isinstance(step.get("cache_read_tokens"), int):
+        usage["input_token_details"] = {"cache_read": step["cache_read_tokens"]}
+    if isinstance(step.get("reasoning_tokens"), int):
+        usage["output_token_details"] = {"reasoning": step["reasoning_tokens"]}
+    if isinstance(step.get("total_cost"), (int, float)):
+        # The provider's own price (DeepInfra); LangSmith prices the others.
+        usage["total_cost"] = float(step["total_cost"])
+    return usage
+
+
+def _llm_run_extra(model: str, metadata: dict[str, Any], usage: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Fields LangSmith reads to show an LLM run's model, provider, tokens and cost."""
+
+    metadata = {key: value for key, value in metadata.items() if key != "prompt"}
+    if usage and usage.get("total_tokens"):
+        metadata["usage_metadata"] = usage
+    if not model:
+        return {"metadata": metadata}
+    metadata.update({"model": model, "ls_model_name": model, "ls_model_type": "chat"})
+    provider = _provider(model, metadata)
+    if provider:
+        metadata["ls_provider"] = provider
     return {
-        "metadata": {
-            **metadata,
-            "model": model,
-            "ls_provider": provider,
-            "ls_model_name": model,
-            "ls_model_type": "chat",
-        },
+        "metadata": metadata,
         "invocation_params": {"model": model, "model_name": model},
     }
 
@@ -460,11 +525,14 @@ def push_trace_to_langsmith(
     run_id = _run_uuid(trace_id) if trace_id else None
 
     try:
-        extra: dict[str, Any] = {"metadata": meta}
+        # Tokens and cost live on the LLM child runs; LangSmith sums them for
+        # the request, so the root run carries none of its own.
         if tracker is not None:
-            usage = _usage(**tracker.get_total_usage())
-            if usage["total_tokens"]:
-                extra["usage"] = usage
+            meta["llm_call_count"] = len(tracker.get_steps())
+            meta["total_tokens"] = tracker.get_total_usage()["total_tokens"]
+            if tracker.counters:
+                meta["counters"] = dict(tracker.counters)
+        extra: dict[str, Any] = {"metadata": meta}
 
         citations = meta.get("citations_used") or []
         client.create_run(
@@ -482,6 +550,9 @@ def push_trace_to_langsmith(
                 "citations": citations,
                 "related_references": meta.get("related_references") or [],
                 "structured_results": meta.get("structured_result_summaries") or [],
+                # Kept once, in the outputs, rather than again in the metadata.
+                "query_plan": meta.pop("query_plan", None),
+                "visible_history": meta.pop("visible_history", None) or [],
             },
             start_time=start_time,
             end_time=end_time,
@@ -490,24 +561,39 @@ def push_trace_to_langsmith(
             extra=extra,
         )
 
-        # The tracker records only LLM calls (the router and the composer).
+        # One child run per step: the LLM calls (planner, directory selector,
+        # reranker, composer) and each retrieval (stage times, top candidates).
         for step in tracker.get_steps() if tracker is not None else []:
             model = step.get("model") or ""
-            usage = _usage(
-                step.get("input_tokens"),
-                step.get("output_tokens"),
-                step.get("total_tokens"),
-            )
-            step_extra = _llm_run_extra(model, step.get("metadata") or {})
-            if usage["total_tokens"]:
-                step_extra["usage"] = usage
+            step_metadata = step.get("metadata") or {}
+            if step.get("run_type", "llm") != "llm":
+                client.create_run(
+                    id=uuid.uuid4(),
+                    name=step["step_name"],
+                    run_type=step["run_type"],
+                    parent_run_id=run_id,
+                    inputs={"query": step_metadata.get("query") or input_text},
+                    outputs=step.get("outputs") or {},
+                    start_time=datetime.fromisoformat(step["start_time"]),
+                    end_time=datetime.fromisoformat(step["end_time"]),
+                    project_name=project_name,
+                    extra={"metadata": dict(step_metadata)},
+                )
+                continue
+            usage = _step_usage_metadata(step)
+            step_extra = _llm_run_extra(model, step_metadata, usage)
+            prompt = step_metadata.get("prompt")
             client.create_run(
                 id=uuid.uuid4(),
                 name=step["step_name"],
                 run_type="llm",
                 parent_run_id=run_id,
-                inputs={"query": input_text, "prompts": [input_text]},
-                outputs={"status": "completed", "model": model, "token_usage": usage},
+                inputs={"query": input_text, "prompts": [prompt or input_text]},
+                outputs={
+                    "status": "failed" if step_metadata.get("error_type") else "completed",
+                    "model": model,
+                    "usage_metadata": usage,
+                },
                 start_time=datetime.fromisoformat(step["start_time"]),
                 end_time=datetime.fromisoformat(step["end_time"]),
                 project_name=project_name,

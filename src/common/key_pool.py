@@ -48,7 +48,7 @@ class NoAvailableKey(RuntimeError):
 class KeyPoolConfig:
     """Per-key limits for one provider; a limit left as None is not enforced."""
 
-    name: str  # appears in errors, e.g. all_gemini_keys_temporarily_limited_...
+    name: str  # appears in errors, e.g. all_deepseek_keys_temporarily_limited_...
     rpm_limit_per_key: int
     rpd_limit_per_key: int | None = None
     tpm_limit_per_key: int | None = None
@@ -75,10 +75,6 @@ class KeyPool:
         for key in self.keys:
             self._state(key_fingerprint(key))
         self._save()
-
-    @property
-    def key_count(self) -> int:
-        return len(self.keys)
 
     def acquire(
         self, estimated_tokens: int = 0, *, excluded: set[str] | None = None

@@ -8,8 +8,7 @@ input:
   program_directory: data/processed/directories/program_directory.json
 
 # Composer: DeepSeek flash with thinking off, chosen on 2026-09-27 over
-# Gemini 3.1 Flash-Lite (same quality on official_v1, no failed calls);
-# configs/experiments/answer_gemini_flash_lite.yaml keeps the Gemini arm.
+# Gemini 3.1 Flash-Lite (same quality on official_v1, no failed calls).
 # Thinking stays off (2026-09-28): with prompt v3.30, off and low gave the same
 # answers on the checks that do not need the judge (table-row reading, verbatim
 # contacts, notice years) while off is about 3 s faster per answer (p50).
@@ -24,7 +23,6 @@ llm:
   retry_base_delay_seconds: 2
   retry_max_delay_seconds: 20
   request_timeout_seconds: 60
-  request_sleep_seconds: 0
   max_context_chars: 160000
   # DeepSeek limits concurrency, not a request rate; this is only a local guard.
   key_pool:
@@ -46,14 +44,16 @@ directory_selector:
   # guard. A limited key fails fast and the student is asked instead.
   key_pool:
     rpm_limit_per_key: 300
-
-cache:
-  enabled: true
-  ttl_seconds: 86400
-  max_entries: 1000
+  # When the answer above finds nothing, the same prompt is asked once more
+  # with thinking on, which maps everyday wording ("in bảng điểm") onto the
+  # catalog's. Thinking counts toward max_output_tokens: 128 to ~3,200 tokens
+  # (1-13 s) were measured, and a think that uses them all leaves no answer.
+  thinking_retry:
+    reasoning_effort: low
+    max_output_tokens: 4096
+    request_timeout_seconds: 30
 
 citations:
-  selection_max_sources: 5
   public_max_sources: 10
 
 guardrails:

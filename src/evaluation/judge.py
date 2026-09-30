@@ -261,10 +261,18 @@ def _authorized_packet_evidence_units(context: str) -> list[str]:
             if not isinstance(source, dict):
                 continue
             source_ref = str(source.get("source_ref") or "unknown")
-            title = str(source.get("title") or source.get("article_label") or "")
+            article = str(source.get("article_label") or "")
+            title = str(source.get("title") or "")
             prefix = f"Task: {task_id} | Cohort: {cohort} | Source: {source_ref}"
-            if title:
+            if article:
+                prefix += f" | Article: {article}"
+            if title and title != article:
                 prefix += f" | Title: {title}"
+            # The composer may name the article and the document; the judge
+            # must see both, or a correct citation reads as unsupported.
+            document = str(source.get("document_title") or "")
+            if document:
+                units.append(f"{prefix} | Document: {document}")
             body = str(source.get("content") or "")
             for evidence_unit in _split_evidence_units(body):
                 units.append(f"{prefix} | {evidence_unit}")

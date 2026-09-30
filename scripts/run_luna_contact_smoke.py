@@ -13,7 +13,8 @@ from pathlib import Path
 
 import yaml
 
-from src.retrieval.core.ai_router import AIRouter, planner_diagnostics_scope
+from src.retrieval.core.ai_router import AIRouter
+from src.retrieval.core.planner_diagnostics import planner_diagnostics_scope
 from src.retrieval.core.structured_routing import load_lookup_registry
 
 ROOT = Path(__file__).resolve().parents[1]

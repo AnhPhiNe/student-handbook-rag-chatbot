@@ -122,15 +122,18 @@ def test_rejects_missing_key_and_unknown_effort(monkeypatch):
         DeepSeekClient(reasoning_effort="medium")
 
 
-@pytest.mark.parametrize("effort", ["none", "low"])
-def test_pipeline_builds_the_configured_deepseek_composer(monkeypatch, effort):
+@pytest.mark.parametrize(("config_path", "effort"), [
+    ("configs/answer_generation.yaml", "none"),
+    ("configs/experiments/answer_deepseek_low.yaml", "low"),
+])
+def test_pipeline_builds_the_configured_deepseek_composer(monkeypatch, config_path, effort):
     from src.generation.answer_pipeline import AnswerPipeline
 
     monkeypatch.setattr(module, "load_project_env", lambda: None)
     monkeypatch.setenv("DEEPSEEK_API_KEY", "offline-deepseek-key")
     pipeline = object.__new__(AnswerPipeline)
     pipeline.config = __import__("yaml").safe_load(
-        open(f"configs/experiments/answer_deepseek_{effort}.yaml", encoding="utf-8"))
+        open(config_path, encoding="utf-8"))
     pipeline._llm_client = None
     pipeline._component_init_lock = __import__("threading").Lock()
     client = pipeline._get_llm_client()

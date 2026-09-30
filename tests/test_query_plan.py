@@ -15,7 +15,6 @@ from src.retrieval.core.office_lookup import office_lookup
 from src.retrieval.core.query_plan import (
     safe_rag_fallback_plan,
     normalize_query_plan,
-    query_plan_json_schema,
     query_plan_response_schema,
 )
 from src.retrieval.core.slang_normalizer import SlangNormalizer
@@ -73,7 +72,6 @@ def test_multi_table_fact_lock_reaches_actual_composer_prompt(monkeypatch, trans
     ])
     pipeline = _pipeline(plan)
     pipeline.max_context_chars = 10000
-    pipeline._throttle_llm_call = lambda: None
     pipeline._run_retrieval = lambda *args, **kwargs: {
         "query_plan": plan, "query": "Tra điểm", "effective_query": "Tra điểm",
         "coverage_by_task": {"t1": "covered"},
@@ -82,11 +80,6 @@ def test_multi_table_fact_lock_reaches_actual_composer_prompt(monkeypatch, trans
         "citations": citations, "evidence_citations": citations,
         "structured_result": lookup,
     }
-    class Cache:
-        def make_cache_key(self, **kwargs): return "key"
-        def get(self, key): return None
-        def set(self, key, value): pass
-
     captured = []
     class LLM:
         def generate(self, prompt):
@@ -97,7 +90,6 @@ def test_multi_table_fact_lock_reaches_actual_composer_prompt(monkeypatch, trans
             yield "Điểm chữ D+."
             return {"usage": {}, "model_used": "fake"}
 
-    pipeline.response_cache = Cache()
     pipeline._get_llm_client = lambda: LLM()
     monkeypatch.setattr("src.generation.answer_pipeline.resolve_cohort_from_query", lambda query, cohort: cohort)
     if transport == "sync":
@@ -365,7 +357,8 @@ def test_terminal_out_of_domain_does_not_require_executable_tasks() -> None:
     assert plan["planner_fallback"] is None
 
 
-def test_handbook_domain_signal_overrides_false_out_of_domain() -> None:
+def test_out_of_domain_is_kept_even_when_the_query_names_a_handbook_topic() -> None:
+    # The planner decides the scope; no keyword list overrides it.
     query = "K51 co duoc boi hoan hoc phi khi nghi hoc khong?"
     plan, errors = normalize_query_plan(
         {
@@ -382,11 +375,8 @@ def test_handbook_domain_signal_overrides_false_out_of_domain() -> None:
     )
 
     assert errors == []
-    assert plan["out_of_domain"] is False
-    assert plan["planner_fallback"] == "domain_signal_overrides_out_of_domain"
-    assert plan["tasks"][0]["mode"] == "rag"
-    assert plan["tasks"][0]["question"] == query
-    assert plan["tasks"][0]["cohorts"] == ["K51"]
+    assert plan["out_of_domain"] is True
+    assert plan["tasks"] == []
 
 
 def test_unrelated_reimbursement_query_remains_out_of_domain() -> None:
@@ -1003,7 +993,6 @@ def test_extended_cohort_registry_drives_schema_normalization_and_merging(
 
     assert cohort_module.normalize_cohort("k52+") == "K52"
     assert cohort_module.admission_years_for_cohort("K52") == (2026,)
-    assert "K52" in query_plan_json_schema()["tasks"][0]["cohorts"]
     assert "K52" in query_plan_response_schema()["properties"]["tasks"]["items"][
         "properties"
     ]["cohorts"]["items"]["enum"]
@@ -1074,7 +1063,7 @@ def _executor(plan: dict[str, Any], **catalogs: Any) -> PlanExecutor:
     )
 
 
-def test_query_plan_receives_canonical_improvement_study_query() -> None:
+def test_planner_receives_the_students_own_words() -> None:
     captured: dict[str, Any] = {}
     clarification_task = {
         **_rag_task(1, "Học cải thiện tính điểm thế nào?"),
@@ -1098,9 +1087,8 @@ def test_query_plan_receives_canonical_improvement_study_query() -> None:
         chat_history=[],
     )
 
-    assert captured["query"] == (
-        "học lại học phần đã đạt tính điểm thế nào?"
-    )
+    # The slang dictionary rewrites only the retrieval query.
+    assert captured["query"] == "Học cải thiện tính điểm thế nào?"
     assert captured["kwargs"]["cohort"] == "K51"
 
 
@@ -1552,7 +1540,6 @@ def test_sync_and_stream_metadata_share_plan_coverage_and_fallback() -> None:
         error_type=None,
         error_message=None,
         llm_called=True,
-        used_cache=False,
     )
     metadata = pipeline._build_stream_metadata(
         retrieval_result,
@@ -1605,17 +1592,6 @@ def test_compound_plan_calls_answer_llm_once(monkeypatch) -> None:
     pipeline.llm_config = {"model_name": "fake"}
     pipeline.config.update({"citations": {"max_sources": 5}, "guardrails": {"skip_llm_on_low_confidence": True}})
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
-    pipeline._throttle_llm_call = lambda: None
-
-    class Cache:
-        def make_cache_key(self, **kwargs):
-            return "key"
-
-        def get(self, key):
-            return None
-
-        def set(self, key, value):
-            return None
 
     class LLM:
         calls = 0
@@ -1626,7 +1602,6 @@ def test_compound_plan_calls_answer_llm_once(monkeypatch) -> None:
             return {"ok": True, "text": "Trả lời phần đủ nguồn", "model_used": "fake", "usage": {}}
 
     llm = LLM()
-    pipeline.response_cache = Cache()
     pipeline._get_llm_client = lambda: llm
     monkeypatch.setattr("src.generation.answer_pipeline.resolve_cohort_from_query", lambda query, cohort: cohort)
 
@@ -1700,26 +1675,12 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     pipeline = _pipeline(plan)
     pipeline.max_context_chars = 10000
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
-    pipeline._throttle_llm_call = lambda: None
     pipeline.config.update(
         {
             "citations": {"max_sources": 5},
             "guardrails": {"skip_llm_on_low_confidence": True},
         }
     )
-
-    class Cache:
-        def __init__(self):
-            self.value = None
-
-        def make_cache_key(self, **kwargs):
-            return "key"
-
-        def get(self, key):
-            return self.value
-
-        def set(self, key, value):
-            self.value = value
 
     class LLM:
         def generate(self, prompt):
@@ -1744,7 +1705,6 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         captured.append(kwargs["selected_citations"])
         return "prompt", '{"units": []}'
 
-    pipeline.response_cache = Cache()
     pipeline._get_llm_client = lambda: LLM()
     monkeypatch.setattr(
         "src.generation.answer_pipeline.build_answer_prompt_bundle",
@@ -1756,15 +1716,12 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
     )
 
     sync_output = pipeline.answer(task["question"], cohort="K51")
-    cached_output = pipeline.answer(task["question"], cohort="K51")
-    pipeline.response_cache.value = None
     stream_events = list(pipeline.answer_stream(task["question"], cohort="K51"))
     stream_answer = "".join(
         event["text"] for event in stream_events if event.get("type") == "token"
     )
 
     assert captured == [
-        [unanchored_citation, citation, *later_citations],
         [unanchored_citation, citation, *later_citations],
         [unanchored_citation, citation, *later_citations],
     ]
@@ -1774,8 +1731,6 @@ def test_sync_and_stream_send_the_same_selected_evidence_to_composer(monkeypatch
         "p1",
         "p2",
     ]
-    assert cached_output["used_cache"] is True
-    assert cached_output["citations_used"] == sync_output["citations_used"]
     stream_done = next(
         event for event in stream_events if event.get("type") == "done"
     )
@@ -1818,31 +1773,13 @@ def test_stream_cleans_internal_labels_sources_and_reports_terminal_status(
     pipeline = _pipeline(plan)
     pipeline.max_context_chars = 10000
     pipeline.llm_config = {"model_name": "fake"}
-    pipeline.request_sleep_seconds = 0
-    pipeline._last_llm_call_at = 0
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
 
-    class Cache:
-        value = None
-
-        def make_cache_key(self, **kwargs):
-            return "key"
-
-        def get(self, key):
-            return self.value
-
-        def set(self, key, value):
-            self.value = value
-
     class DirtyLLM:
-        calls = 0
-
         def generate_stream(self, prompt):
-            self.calls += 1
             yield "```markdown\nTheo Điều 16 (S1), sinh viên đủ điều kiện "
             yield "(được bổ sung bởi AMENDMENT 2).\n\nNguồn:\n- S1"
 
-    pipeline.response_cache = Cache()
     llm = DirtyLLM()
     pipeline._get_llm_client = lambda: llm
     monkeypatch.setattr(
@@ -1862,16 +1799,6 @@ def test_stream_cleans_internal_labels_sources_and_reports_terminal_status(
     assert "AMENDMENT" not in answer
     assert "Nguồn:" not in answer
     assert "```" not in answer
-    assert pipeline.response_cache.value["answer"] == answer
-
-    cached_events = list(pipeline.answer_stream(task["question"], cohort="K51"))
-    cached_metadata = next(
-        event for event in cached_events if event["type"] == "metadata"
-    )
-    cached_done = next(event for event in cached_events if event["type"] == "done")
-    assert llm.calls == 1
-    assert cached_metadata["used_cache"] is True
-    assert cached_done["used_cache"] is True
 
 
 def test_stream_terminal_guardrail_reports_status_in_done_event() -> None:
@@ -1894,7 +1821,6 @@ def test_stream_terminal_guardrail_reports_status_in_done_event() -> None:
     assert metadata["status"] == "needs_clarification"
     assert done["status"] == "needs_clarification"
     assert done["error_type"] is None
-    assert done["used_cache"] is False
     assert done["citations_used"] == []
 
 
@@ -1925,26 +1851,13 @@ def test_stream_failure_finishes_with_api_error_metadata(monkeypatch) -> None:
     pipeline = _pipeline(plan)
     pipeline.max_context_chars = 10000
     pipeline.llm_config = {"model_name": "fake"}
-    pipeline.request_sleep_seconds = 0
-    pipeline._last_llm_call_at = 0
     pipeline._run_retrieval = lambda *args, **kwargs: retrieval_result
-
-    class Cache:
-        def make_cache_key(self, **kwargs):
-            return "key"
-
-        def get(self, key):
-            return None
-
-        def set(self, key, value):
-            raise AssertionError("failed streams must not be cached")
 
     class FailingLLM:
         def generate_stream(self, prompt):
             yield "Một phần câu trả lời hợp lệ. " * 20
             raise RuntimeError("stream failed")
 
-    pipeline.response_cache = Cache()
     pipeline._get_llm_client = lambda: FailingLLM()
     monkeypatch.setattr(
         "src.generation.answer_pipeline.resolve_cohort_from_query",
@@ -2057,3 +1970,39 @@ def test_structured_citation_dedup_preserves_sibling_tables_and_applicability() 
         "Học phần giáo dục đại cương",
         "Các học phần còn lại",
     ]
+
+
+def test_directory_records_of_different_tasks_stay_apart_in_the_merge():
+    # A directory lookup cites its whole catalog: both tasks share the source id.
+    def citation(task_id, record_id, unit, phone):
+        return {
+            "source_parent_id": "student_faculty_profiles", "chunk_id": "student_faculty_profiles",
+            "cohort": "K51", "evidence_kind": "structured_result", "supports_task_ids": [task_id],
+            "content": json.dumps([{"record_id": record_id, "unit_name": unit, "phones": [phone]}],
+                                  ensure_ascii=False),
+        }
+
+    tasks = [
+        {"id": "t1", "question": "Email của Khoa Toán là gì?", "mode": "structured", "cohorts": ["K51"]},
+        {"id": "t2", "question": "Số điện thoại của Khoa CNTT là gì?", "mode": "structured", "cohorts": ["K51"]},
+    ]
+    merged = PlanExecutor._merge_task_citations([
+        citation("t1", "K51_khoa_toan_tin_hoc", "Khoa Toán – Tin học", "(028) 38352020"),
+        citation("t2", "K51_khoa_cong_nghe_thong_tin", "Khoa Công nghệ Thông tin", "(028) 38352020"),
+    ])
+    assert len(merged) == 2
+    packet = build_authorized_evidence_packet(
+        query="email khoa toán, sdt khoa cntt", retrieval_result={
+            "query_plan": {"tasks": tasks}, "coverage_by_task": {"t1": "covered", "t2": "covered"},
+        }, selected_citations=merged, fallback_cohort="K51", max_context_chars=10000,
+    )
+    by_task = {unit["task_id"]: unit for unit in packet["units"]}
+    assert "Khoa Toán – Tin học" in by_task["t1"]["primary_evidence"][0]["content"]
+    assert "Khoa Công nghệ Thông tin" in by_task["t2"]["primary_evidence"][0]["content"]
+    assert "Khoa Toán" not in by_task["t2"]["primary_evidence"][0]["content"]
+    # The same record cited by two tasks is still one source.
+    same = PlanExecutor._merge_task_citations([
+        citation("t1", "K51_khoa_toan_tin_hoc", "Khoa Toán – Tin học", "(028) 38352020"),
+        citation("t2", "K51_khoa_toan_tin_hoc", "Khoa Toán – Tin học", "(028) 38352020"),
+    ])
+    assert len(same) == 1 and same[0]["supports_task_ids"] == ["t1", "t2"]

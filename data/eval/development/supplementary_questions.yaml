@@ -94,7 +94,7 @@ cases:
   - id: sup_17
     cohort: K48-K49
     query: "Đạt danh hiệu Sinh viên 5 tốt cấp Trường được cộng mấy điểm rèn luyện?"
-    gold_parent: K48-K49_PhieuDanhGiaRenLuyen_Phan6
+    gold_parent: K48-K49_PhieuDanhGiaRenLuyen_Phan5
     must_include: ["điểm"]
   - id: sup_18
     cohort: K48-K49
@@ -106,3 +106,13 @@ cases:
     query: "Những ai được ưu tiên xét vào ở ký túc xá?"
     gold_parent: K48-K49_QuyTrinhXetVaoKyTucXa_Phan1
     must_include: ["dân tộc thiểu số"]
+  - id: sup_20
+    cohort: K48-K49
+    query: "Ai chỉ định ban cán sự lớp sinh viên?"
+    gold_parent: K48-K49_CongViecCuaCacKhoa_Phan1
+    must_include: ["khoa", "tạm thời"]
+  - id: sup_21
+    cohort: K50
+    query: "Khoa có những công việc gì liên quan đến sinh viên?"
+    gold_parent: K50_CongViecCuaCacKhoa_Phan1
+    must_include: ["thời khóa biểu"]

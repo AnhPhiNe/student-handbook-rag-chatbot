@@ -7,7 +7,8 @@ import openai
 import pytest
 
 from src.retrieval.core import ai_router as module
-from src.retrieval.core.ai_router import AIRouter, planner_diagnostics_scope
+from src.retrieval.core.ai_router import AIRouter
+from src.retrieval.core.planner_diagnostics import planner_diagnostics_scope
 from src.retrieval.core.structured_routing import compact_registry_for_prompt
 
 
@@ -157,7 +158,7 @@ def test_production_config_is_the_measured_luna_setup(monkeypatch, tmp_path):
         "openai", "gpt-6-luna", "medium")
     assert router.cache is None
     assert router.max_retries == 1 and router.request_timeout_seconds == 20
-    assert router._planner_output_token_limit(3) == 8192
+    assert router._planner_output_token_limit() == 8192
     assert router._plan_response_format_payload()["strict"] is True
     # Production keeps the decision cache; evaluation runs disable it.
     monkeypatch.delenv("STUDENT_RAG_DISABLE_ROUTER_CACHE")
@@ -184,23 +185,10 @@ def test_invalid_completed_output_is_not_executed(router, monkeypatch, text):
     assert result["planner_error_type"] == "invalid_response"
 
 
-def test_repair_reuses_responses_contract_and_sums_usage(router, monkeypatch):
-    calls = _fake(monkeypatch, [_response(), _response()])
-    result = router.plan("Thứ nhất: quy định A. Thứ hai: quy định B.", cohort="K51")
-    assert result["planner_repairs"] == 1
-    assert result["usage"]["total"] == 270
-    assert len(calls) == 2
-    repair = calls[1]["request"]
-    assert [message["role"] for message in repair["input"]] == ["system", "user", "assistant", "user"]
-    assert "VALIDATION_FEEDBACK" in repair["input"][-1]["content"]
-    assert repair["text"] == calls[0]["request"]["text"]
-
-
 def test_cache_isolates_model_configuration(router):
     key = router._cache_key("test", cohort="K51", chat_history=[])
     for field, value in [("reasoning_effort", "none"),
-                         ("max_output_tokens", 4096), ("hard_max_output_tokens", 4096),
-                         ("output_tokens_per_task", 2048)]:
+                         ("max_output_tokens", 4096), ("hard_max_output_tokens", 4096)]:
         old = getattr(router, field)
         setattr(router, field, value)
         assert key != router._cache_key("test", cohort="K51", chat_history=[])

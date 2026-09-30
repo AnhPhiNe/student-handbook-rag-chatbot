@@ -127,9 +127,6 @@ class StreamEventBuilder:
 
         self.final_status = str(chunk.get("status") or self.final_status)
         self.final_metadata["status"] = self.final_status
-        self.final_metadata["used_cache"] = bool(
-            chunk.get("used_cache", self.final_metadata.get("used_cache", False))
-        )
         if chunk.get("error_type"):
             self.final_metadata["error_type"] = chunk["error_type"]
 
@@ -148,7 +145,6 @@ class StreamEventBuilder:
             self.trace_source_metadata.update(
                 {
                     "status": self.final_status,
-                    "used_cache": self.final_metadata["used_cache"],
                     "error_type": self.final_metadata.get("error_type"),
                     "citations_used": raw_citations or [],
                 }
@@ -164,7 +160,6 @@ class StreamEventBuilder:
                 "latency_ms": self.latency_ms if latency_ms is None else latency_ms,
                 "status": self.final_status,
                 "error_type": self.final_metadata.get("error_type"),
-                "used_cache": self.final_metadata.get("used_cache", False),
                 "citations_used": self.final_metadata.get("citations_used", []),
             },
         )

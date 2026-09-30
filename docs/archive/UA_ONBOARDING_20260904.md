@@ -13,7 +13,7 @@ backend uses FastAPI, Qdrant, MongoDB, optional Redis, and Gemini generation.
 The React/Vite frontend renders synchronous and SSE streaming answers,
 citations, structured results, and per-answer feedback.
 
-Read [README.md](../README.md) first. It is the source of truth for the
+Read [README.md](../../README.md) first. It is the source of truth for the
 current architecture, runtime boundaries, evaluation governance, and
 deployment workflow.
 

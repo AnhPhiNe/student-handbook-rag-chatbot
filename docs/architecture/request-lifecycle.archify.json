@@ -23,7 +23,7 @@
     {"id": "executor", "type": "backend", "label": "PlanExecutor", "sublabel": "task runner"},
     {"id": "stores", "type": "database", "label": "Evidence stores", "sublabel": "tables + hybrid RAG"},
     {"id": "cache", "type": "database", "label": "Response cache", "sublabel": "evidence-bound"},
-    {"id": "composer", "type": "external", "label": "Gemini composer", "sublabel": "streaming model"}
+    {"id": "composer", "type": "external", "label": "Composer", "sublabel": "DeepSeek streaming"}
   ],
   "segments": [
     {"from": 150, "to": 275, "label": "Request + plan"},

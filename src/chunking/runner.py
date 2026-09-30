@@ -4,6 +4,7 @@ import os
 
 from src.common.cohort import DOCUMENT_ID_BY_COHORT
 from src.common.io import load_json, load_yaml, save_json
+from .image_text import restore_image_text
 from .regulation_parents import build_regulation_parents
 from .supplementary_parents import build_supplementary_parents
 
@@ -46,6 +47,8 @@ def main() -> None:
     )
     docstore_items = build_regulation_parents(structured_sections)
     cohort = os.environ.get("COHORT")
+    # Content printed as an image (the GPA formula) is written back as text.
+    restore_image_text(docstore_items, cohort)
     # Notices, guides, procedures, link pages, the conduct score framework and
     # forms have no articles; they are read from the PDF by page range.
     pdf_path = os.environ.get("PDF_PATH")

@@ -1,8 +1,7 @@
-import hashlib
 import logging
 import threading
 import time
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -13,9 +12,6 @@ from src.common.env_loader import env_bool
 from src.common.io import load_json, load_yaml
 from src.retrieval.core.directory_selector import DirectorySelector
 from src.retrieval.core.slang_normalizer import SlangNormalizer
-from src.retrieval.core.embedding_model import (
-    load_embedding_model,
-)
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 
 from .answer_formatter import (
@@ -26,32 +22,21 @@ from .answer_formatter import (
     format_final_response,
     sources_section_start,
 )
-from .answer_guardrails import (
-    build_clarification_question,
-    build_fallback_answer,
-    detect_ambiguous_query,
-    is_low_confidence,
-    is_out_of_domain_query,
-)
-from .citation_formatter import (
-    prioritize_citations_by_answer_anchors,
-    select_relevant_citations,
-)
+from .answer_guardrails import build_fallback_answer, is_low_confidence
+from .citation_formatter import prioritize_citations_by_answer_anchors
 from .deepseek_client import DeepSeekClient
-from .gemini_client import GeminiClient
 from .prompt_builder import (
-    ANSWER_PROMPT_VERSION,
     DEFAULT_MAX_CONTEXT_CHARS,
     build_answer_prompt_bundle,
 )
 from .plan_executor import PlanExecutor, StructuredCatalogs
-from .response_cache import get_response_cache
 from .structured_result_presenter import build_structured_results
+from .verbatim_identifiers import IdentifierCorrector
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
-COMPOSER_PROVIDERS = {"gemini", "deepseek"}
+COMPOSER_PROVIDERS = {"deepseek"}
 
-PIPELINE_VERSION = "v77-online-answer-boundaries"
+PIPELINE_VERSION = "v79-no-answer-cache"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
@@ -68,12 +53,43 @@ def _normalize_retrieval_cohort(cohort: str | None) -> str | None:
     return normalized
 
 
-def _authorized_context_fingerprint(context_used: str) -> dict[str, str]:
-    return {
-        "authorized_evidence_sha256": hashlib.sha256(
-            context_used.encode("utf-8")
-        ).hexdigest()
+def _record_generation_usage(
+    tracker: Any,
+    *,
+    model: str,
+    usage: dict[str, int],
+    start_time: str,
+    end_time: str,
+    metadata: dict[str, Any] | None = None,
+) -> None:
+    tracker.record_call(
+        "LLM Generation",
+        model=model,
+        usage=usage,
+        start_time=start_time,
+        end_time=end_time,
+        metadata=metadata,
+    )
+
+
+def _composer_trace_metadata(llm_client: Any, result: dict[str, Any], prompt: str) -> dict[str, Any]:
+    """What the trace keeps about one composer call: provider, key hash, outcome.
+
+    The prompt is kept only when STUDENT_RAG_TRACE_PROMPTS is on (it is 5,000 to
+    15,000 characters, and the evidence it holds can be rebuilt from the cited
+    source ids).
+    """
+    metadata: dict[str, Any] = {
+        "provider": str(getattr(llm_client, "provider_label", "") or "").lower() or None,
+        # A short hash of the key used, never the key itself.
+        "key_fingerprint": result.get("key_fingerprint"),
+        "attempts": result.get("attempts"),
     }
+    if result.get("ok") is False:
+        metadata["error_type"] = result.get("error_type")
+    if env_bool("STUDENT_RAG_TRACE_PROMPTS"):
+        metadata["prompt"] = prompt
+    return metadata
 
 
 
@@ -91,33 +107,88 @@ class PreparedAnswer:
     related_references: list[dict[str, Any]] = field(default_factory=list)
     prompt: str = ""
     context_used: str = ""
-    cache_key: str | None = None
-    cached: dict[str, Any] | None = None
     terminal_status: str | None = None
     terminal_answer: str | None = None
     fallback_reason: str | None = None
     error_type: str | None = None
     error_message: str | None = None
     clarification_needed: bool = False
-    query_type_override: str | None = None
+
+
+class StreamAnswerCleaner:
+    """Clean a streamed answer as it arrives and hold back its last characters.
+
+    The composer may open with a code fence or preamble and may end with its
+    own "Nguồn:" list, which the UI replaces with the real citations. Text is
+    released only after STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS more characters
+    have arrived, so a source heading that starts in the held-back tail is cut
+    before the student sees it. Everything after that heading is dropped.
+    Text is released at whitespace so that `fix` (the identifier corrector)
+    always sees whole emails, links and numbers.
+    """
+
+    def __init__(self, fix: Callable[[str], str] | None = None) -> None:
+        self._fix = fix or (lambda text: text)
+        self.parts: list[str] = []
+        self._pending = ""
+        self._released_any = False
+        self._in_sources = False
+
+    @property
+    def text(self) -> str:
+        """Everything released so far."""
+        return "".join(self.parts)
+
+    def feed(self, chunk: str) -> str:
+        """Add one streamed chunk; return the text now safe to show ("" if none)."""
+        if self._in_sources:
+            return ""
+        self._pending += chunk
+        if not self._released_any:
+            self._pending = clean_stream_start(self._pending)
+        source_start = sources_section_start(
+            self._pending,
+            at_line_start=(not self.parts or self.parts[-1].endswith("\n")),
+        )
+        if source_start is not None:
+            self._pending = self._pending[:source_start]
+            self._in_sources = True
+        self._pending = clean_stream_fragment(self._pending)
+        if len(self._pending) <= STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
+            return ""
+        cut = len(self._pending) - STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS
+        boundary = max(self._pending.rfind(" ", 0, cut), self._pending.rfind("\n", 0, cut))
+        if boundary >= 0:
+            cut = boundary + 1
+        elif len(self._pending) < 2 * STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
+            return ""  # wait for whitespace rather than split a word or an email
+        safe_text = self._fix(self._pending[:cut])
+        self._pending = self._pending[cut:]
+        if safe_text:
+            self._released_any = True
+            self.parts.append(safe_text)
+        return safe_text
+
+    def finish(self) -> str:
+        """Release the held-back tail once the stream has ended."""
+        if not self._pending:
+            return ""
+        # Source footers were removed at the real stream line boundaries in
+        # feed(); do not reinterpret a mid-sentence tail as a new heading.
+        tail = self._fix(clean_answer(self._pending))
+        if tail and self.parts:
+            # clean_answer strips the tail, but after released text its leading
+            # space or line break separates two words or paragraphs.
+            tail = self._pending[: len(self._pending) - len(self._pending.lstrip())] + tail
+        if tail:
+            self.parts.append(tail)
+        return tail
 
 
 
 def create_composer_client(llm_config: dict[str, Any]) -> Any:
     """Build the configured composer client (shared by the pipeline and replays)."""
-    provider = llm_config.get("provider", "gemini")
-    if provider == "gemini":
-        return GeminiClient(
-            model_name=llm_config["model_name"],
-            temperature=llm_config.get("temperature", 0.2),
-            max_output_tokens=llm_config.get("max_output_tokens", 1024),
-            max_retries=llm_config.get("max_retries", 3),
-            retry_base_delay_seconds=llm_config.get("retry_base_delay_seconds", 2),
-            retry_max_delay_seconds=llm_config.get("retry_max_delay_seconds", 20),
-            request_timeout_seconds=llm_config.get("request_timeout_seconds", 60),
-            api_keys_env_var=llm_config.get("api_keys_env_var", "GEMINI_API_KEYS"),
-            key_pool_config=llm_config.get("key_pool"),
-        )
+    provider = llm_config.get("provider", "deepseek")
     if provider == "deepseek":
         return DeepSeekClient(
             model_name=llm_config["model_name"],
@@ -135,20 +206,29 @@ def create_composer_client(llm_config: dict[str, Any]) -> Any:
 
 
 def create_directory_selector(selector_config: dict[str, Any]) -> DirectorySelector:
-    """Build the selector that picks directory records a student names (DeepSeek, JSON output)."""
+    """Build the selector that picks directory records a student names (DeepSeek, JSON output).
+
+    `thinking_retry` overrides the settings of the second look, asked when the
+    first finds nothing; without it a "none" is final.
+    """
     if selector_config.get("provider") != "deepseek":
         raise ValueError(f"Unsupported directory selector provider: {selector_config.get('provider')}")
-    return DirectorySelector(DeepSeekClient(
-        model_name=selector_config["model_name"],
-        reasoning_effort=selector_config.get("reasoning_effort", "none"),
-        temperature=0.0,
-        max_output_tokens=selector_config.get("max_output_tokens", 200),
-        max_retries=selector_config.get("max_retries", 1),
-        request_timeout_seconds=selector_config.get("request_timeout_seconds", 15),
-        api_keys_env_var=selector_config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
-        key_pool_config=selector_config.get("key_pool"),
-        response_format={"type": "json_object"},
-    ))
+
+    def client(config: dict[str, Any]) -> DeepSeekClient:
+        return DeepSeekClient(
+            model_name=config["model_name"],
+            reasoning_effort=config.get("reasoning_effort", "none"),
+            temperature=0.0,
+            max_output_tokens=config.get("max_output_tokens", 200),
+            max_retries=config.get("max_retries", 1),
+            request_timeout_seconds=config.get("request_timeout_seconds", 15),
+            api_keys_env_var=config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
+            key_pool_config=config.get("key_pool"),
+            response_format={"type": "json_object"},
+        )
+
+    retry = selector_config.get("thinking_retry")
+    return DirectorySelector(client(selector_config), client({**selector_config, **retry}) if retry else None)
 
 
 class AnswerPipeline:
@@ -216,12 +296,6 @@ class AnswerPipeline:
             program_directory=self.program_directory,
         )
 
-        # Warm-up only: the dense retriever reuses this cached instance, so the
-        # first question does not pay the model load.
-        self.model = load_embedding_model(
-            self.retrieval_config["embedding"]["model_name"]
-        )
-
         llm_config = self.config.get("llm", {})
         self.llm_config = llm_config
         if llm_config.get("provider") not in COMPOSER_PROVIDERS:
@@ -232,12 +306,6 @@ class AnswerPipeline:
         if not self.model_name:
             raise ValueError("AnswerPipeline requires llm.model_name.")
 
-        if env_bool("STUDENT_RAG_OFFLINE_EVAL"):
-            self.config.setdefault("cache", {})["enabled"] = False
-        elif env_bool("STUDENT_RAG_QUALITY_EVAL"):
-            # Quality evaluation must exercise retrieval and generation.
-            self.config.setdefault("cache", {})["enabled"] = False
-
         self._component_init_lock = threading.Lock()
         self._plan_executor: PlanExecutor | None = None
         self.router = None
@@ -245,19 +313,6 @@ class AnswerPipeline:
         self.max_context_chars = int(
             llm_config.get("max_context_chars", DEFAULT_MAX_CONTEXT_CHARS)
         )
-        self.request_sleep_seconds = float(llm_config.get("request_sleep_seconds", 2))
-        self._last_llm_call_at = 0.0
-
-        cache_config = self.config.get("cache", {})
-        self.response_cache = get_response_cache(
-            enabled=cache_config.get("enabled", True),
-            ttl_seconds=cache_config.get("ttl_seconds", 86400),
-            max_entries=cache_config.get("max_entries", 1000),
-        )
-
-    def _selection_source_limit(self) -> int:
-        citations = self.config.get("citations", {})
-        return max(1, int(citations.get("selection_max_sources", 5)))
 
     def _public_source_limit(self) -> int:
         citations = self.config.get("citations", {})
@@ -279,19 +334,24 @@ class AnswerPipeline:
         telemetry: dict[str, Any] | None = None,
         trace_id: str | None = None,
     ) -> PreparedAnswer:
-        """Run shared routing, retrieval, guardrails, prompt, and cache lookup."""
+        """Run shared routing, retrieval, guardrails and prompt building."""
 
-        from datetime import datetime, timezone
+        from datetime import datetime, timedelta, timezone
+
+        from src.common.usage_tracker import tracking
 
         effective_query = query
         cohort = _normalize_retrieval_cohort(resolve_cohort_from_query(query, cohort))
         retrieval_started = time.monotonic()
         try:
-            retrieval_result = self._run_retrieval(
-                query,
-                cohort,
-                chat_history=chat_history,
-            )
+            # Calls made while planning and executing (the directory selector)
+            # record themselves on this request's tracker.
+            with tracking(tracker):
+                retrieval_result = self._run_retrieval(
+                    query,
+                    cohort,
+                    chat_history=chat_history,
+                )
         except Exception as exc:
             logger.exception(
                 "answer_retrieval_failed",
@@ -317,15 +377,21 @@ class AnswerPipeline:
             )
 
         if retrieval_result.get("router_usage"):
-            usage = retrieval_result["router_usage"]
-            tracker.record(
-                step_name="AI Router",
+            planner_ms = float(retrieval_result.get("planner_latency_ms") or 0)
+            router_ended_at = (
+                datetime.fromisoformat(router_started_at) + timedelta(milliseconds=planner_ms)
+            ).isoformat() if planner_ms else datetime.now(timezone.utc).isoformat()
+            tracker.record_call(
+                "AI Router",
                 model=retrieval_result.get("router_model", ""),
-                input_tokens=usage.get("input", 0),
-                output_tokens=usage.get("output", 0),
-                total_tokens=usage.get("total", 0),
+                usage={**retrieval_result["router_usage"], **(retrieval_result.get("router_usage_details") or {})},
                 start_time=router_started_at,
-                end_time=datetime.now(timezone.utc).isoformat(),
+                end_time=router_ended_at,
+                metadata={
+                    "provider": retrieval_result.get("router_provider"),
+                    "key_fingerprint": retrieval_result.get("router_key_fingerprint"),
+                    "planner_fallback": retrieval_result.get("planner_fallback"),
+                },
             )
         if telemetry is not None:
             telemetry["routing_retrieval_parent_lookup_ms"] = (
@@ -349,18 +415,6 @@ class AnswerPipeline:
             prepared.clarification_needed = True
             return prepared
 
-        if not retrieval_result.get("query_plan") and detect_ambiguous_query(
-            effective_query, retrieval_result
-        ):
-            prepared.terminal_status = "needs_clarification"
-            prepared.terminal_answer = build_clarification_question(
-                effective_query, retrieval_result
-            )
-            prepared.fallback_reason = "ambiguous_query"
-            prepared.clarification_needed = True
-            prepared.query_type_override = "ambiguous"
-            return prepared
-
         if retrieval_result.get("out_of_domain"):
             prepared.terminal_status = "out_of_domain"
             prepared.terminal_answer = (
@@ -372,31 +426,11 @@ class AnswerPipeline:
             prepared.fallback_reason = "out_of_domain"
             return prepared
 
-        if not retrieval_result.get("query_plan") and is_out_of_domain_query(
-            effective_query, retrieval_result
-        ):
-            prepared.terminal_status = "out_of_domain"
-            prepared.terminal_answer = build_fallback_answer(
-                effective_query,
-                retrieval_result,
-                reason="out_of_domain",
-            )
-            prepared.fallback_reason = "out_of_domain"
-            return prepared
-
-        if retrieval_result.get("query_plan"):
-            prepared.selected_citations = list(
-                retrieval_result.get("evidence_citations")
-                or retrieval_result.get("citations")
-                or []
-            )
-        else:
-            prepared.selected_citations = select_relevant_citations(
-                retrieval_result.get("citations"),
-                intent=retrieval_result.get("intent"),
-                retrieval_result=retrieval_result,
-                max_sources=self._selection_source_limit(),
-            )
+        prepared.selected_citations = list(
+            retrieval_result.get("evidence_citations")
+            or retrieval_result.get("citations")
+            or []
+        )
 
         guardrails = self.config.get("guardrails", {})
         if guardrails.get("skip_llm_on_low_confidence", True) and is_low_confidence(
@@ -443,21 +477,6 @@ class AnswerPipeline:
                 retrieval_result.get("retrieved_items") or []
             )
             telemetry["prompt_chars"] = len(prepared.prompt)
-
-        prepared.cache_key = self.response_cache.make_cache_key(
-            query=effective_query,
-            retrieval_result=retrieval_result,
-            selected_citations=prepared.selected_citations,
-            cohort=cohort,
-            context_fingerprint=_authorized_context_fingerprint(prepared.context_used),
-            pipeline_version=PIPELINE_VERSION,
-            answer_prompt_version=ANSWER_PROMPT_VERSION,
-        )
-        cached = self.response_cache.get(prepared.cache_key)
-        # Older runtimes could cache a successful but empty stream.
-        prepared.cached = (
-            cached if cached and str(cached.get("answer") or "").strip() else None
-        )
         return prepared
 
     def answer(
@@ -518,33 +537,10 @@ class AnswerPipeline:
                 error_type=prepared.error_type,
                 error_message=prepared.error_message,
                 llm_called=False,
-                used_cache=False,
                 clarification_needed=prepared.clarification_needed,
+                tracker=tracker,
             )
 
-        cache_key = prepared.cache_key
-        cached = prepared.cached
-        if cached:
-            cached_answer = str(cached.get("answer") or "")
-            cached_citations = prioritize_citations_by_answer_anchors(
-                cached.get("citations") or retrieval_result.get("citations") or [],
-                cached_answer,
-                max_sources=self._public_source_limit(),
-            )
-            return self._build_output(
-                query=query,
-                retrieval_result=retrieval_result,
-                final_answer=cached_answer,
-                context_used=context_used,
-                selected_citations=cached_citations,
-                status=str(cached.get("status") or "answered"),
-                error_type=cached.get("error_type"),
-                error_message=cached.get("error_message"),
-                llm_called=False,
-                used_cache=True,
-            )
-
-        all_citations = prepared.all_citations
         public_retrieval_citations = prepared.public_retrieval_citations
 
         try:
@@ -570,10 +566,9 @@ class AnswerPipeline:
                 error_type="api_init_error",
                 error_message=str(exc),
                 llm_called=False,
-                used_cache=False,
+                tracker=tracker,
             )
 
-        self._throttle_llm_call()
         start_time_llm = datetime.now(timezone.utc).isoformat()
         llm_started = time.monotonic()
         llm_result = llm_client.generate(prompt)
@@ -582,26 +577,26 @@ class AnswerPipeline:
             telemetry["llm_ms"] = (time.monotonic() - llm_started) * 1000
             telemetry["key_fingerprint"] = llm_result.get("key_fingerprint")
             telemetry["retry_count"] = max(0, int(llm_result.get("attempts") or 1) - 1)
-        self._last_llm_call_at = time.monotonic()
 
-        if llm_result.get("ok"):
-            u = llm_result.get("usage") or {}
-            tracker.record(
-                step_name="LLM Generation",
-                model=llm_result.get("model_used") or self.model_name,
-                input_tokens=u.get("input", 0),
-                output_tokens=u.get("output", 0),
-                total_tokens=u.get("total", 0),
-                start_time=start_time_llm,
-                end_time=end_time_llm,
-            )
+        _record_generation_usage(
+            tracker,
+            model=llm_result.get("model_used") or self.model_name,
+            usage=llm_result.get("usage") or {},
+            start_time=start_time_llm,
+            end_time=end_time_llm,
+            metadata=_composer_trace_metadata(llm_client, llm_result, prompt),
+        )
 
         final_answer = ""
         if llm_result.get("ok"):
-            final_answer = format_final_response(
-                str(llm_result.get("text") or "").strip(),
-                primary_citations=selected_citations,
+            corrector = IdentifierCorrector(prepared.context_used, query)
+            final_answer = corrector.fix(
+                format_final_response(
+                    str(llm_result.get("text") or "").strip(),
+                    primary_citations=selected_citations,
+                )
             )
+            tracker.counters.update(corrector.counts)
             if not final_answer.strip():
                 llm_result = {
                     **llm_result,
@@ -636,16 +631,11 @@ class AnswerPipeline:
                 error_type=error_type,
                 error_message=llm_result.get("error_message"),
                 llm_called=True,
-                used_cache=False,
                 model_used=llm_result.get("model_used"),
                 tracker=tracker,
             )
 
-        public_citations = prioritize_citations_by_answer_anchors(
-            all_citations,
-            final_answer,
-            max_sources=self._public_source_limit(),
-        )
+        public_citations = self._citations_for_answer(prepared.all_citations, final_answer)
         output = self._build_output(
             query=query,
             retrieval_result=retrieval_result,
@@ -656,22 +646,18 @@ class AnswerPipeline:
             error_type=None,
             error_message=None,
             llm_called=True,
-            used_cache=False,
             model_used=llm_result.get("model_used"),
             tracker=tracker,
         )
-        self.response_cache.set(
-            cache_key,
-            {
-                "answer": final_answer,
-                "status": "answered",
-                "error_type": None,
-                "error_message": None,
-                "citations": public_citations,
-            },
-        )
-
         return output
+
+    def _citations_for_answer(
+        self, citations: list[dict[str, Any]], answer: str,
+    ) -> list[dict[str, Any]]:
+        """The public citations, the sources the answer cites first."""
+        return prioritize_citations_by_answer_anchors(
+            citations, answer, max_sources=self._public_source_limit(),
+        )
 
     def _build_stream_metadata(
         self,
@@ -684,9 +670,6 @@ class AnswerPipeline:
         citations_used: list[dict[str, Any]] | None = None,
         related_references: list[dict[str, Any]] | None = None,
         llm_called: bool = False,
-        used_cache: bool = False,
-        run_id: str | None = None,
-        query_type_override: str | None = None,
     ) -> dict[str, Any]:
         """Build standardized metadata chunk for streaming responses dynamically."""
         res = retrieval_result or {}
@@ -695,8 +678,7 @@ class AnswerPipeline:
         execution_mode = res.get("execution_mode") or "regulation"
         lookup_type = res.get("lookup_type")
         query_type = (
-            query_type_override
-            or res.get("query_type")
+            res.get("query_type")
             or query_handling.get("context_mode")
             or "standalone"
         )
@@ -722,7 +704,6 @@ class AnswerPipeline:
 
         return {
             "type": "metadata",
-            "run_id": run_id,
             "cohort": res.get("cohort") or res.get("selected_cohort") or "default",
             "status": status,
             "intent": res.get("intent"),
@@ -745,7 +726,6 @@ class AnswerPipeline:
             "planner_fallback": res.get("planner_fallback"),
             "supports_task_ids": res.get("supports_task_ids") or {},
             "llm_called": llm_called,
-            "used_cache": used_cache,
         }
 
     def answer_stream(
@@ -761,8 +741,6 @@ class AnswerPipeline:
         events so the frontend can show retrieval progress and stream LLM output
         without changing the underlying routing, guardrail, or citation logic.
         """
-        run_id = None
-
         from datetime import datetime, timezone
 
         from src.common.usage_tracker import UsageTracker
@@ -800,80 +778,41 @@ class AnswerPipeline:
                 fallback_reason=prepared.fallback_reason,
                 error_type=prepared.error_type,
                 citations_used=selected_citations,
-                query_type_override=prepared.query_type_override,
-                run_id=run_id,
             )
             yield {"type": "token", "text": prepared.terminal_answer or ""}
             yield {
                 "type": "done",
                 "status": prepared.terminal_status,
                 "error_type": prepared.error_type,
-                "used_cache": False,
                 "tracker": tracker,
                 "citations_used": selected_citations,
             }
             return
 
         yield {"type": "progress", "message": "Đang phân tích tài liệu tìm được..."}
-        all_citations = prepared.all_citations
-        public_retrieval_citations = prepared.public_retrieval_citations
         related_references = prepared.related_references
-        prompt = prepared.prompt
-        cache_key = prepared.cache_key
-        cached = prepared.cached
-        if cached:
-            cached_answer = str(cached.get("answer") or "")
-            cached_citations = prioritize_citations_by_answer_anchors(
-                cached.get("citations") or public_retrieval_citations,
-                cached_answer,
-                max_sources=self._public_source_limit(),
-            )
-            yield self._build_stream_metadata(
-                retrieval_result,
-                status=str(cached.get("status") or "answered"),
-                effective_query=effective_query,
-                citations_used=cached_citations,
-                related_references=related_references,
-                llm_called=False,
-                used_cache=True,
-                run_id=run_id,
-            )
-            yield {"type": "token", "text": cached_answer}
-            yield {
-                "type": "done",
-                "status": str(cached.get("status") or "answered"),
-                "used_cache": True,
-                "tracker": tracker,
-                "citations_used": cached_citations,
-            }
-            return
-
         yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}
         llm_called = False
         yield self._build_stream_metadata(
             retrieval_result,
             status="streaming",
             effective_query=effective_query,
-            citations_used=public_retrieval_citations,
+            citations_used=prepared.public_retrieval_citations,
             related_references=related_references,
             llm_called=llm_called,
-            run_id=run_id,
         )
 
         final_answer_for_citations = ""
         terminal_status = "answered"
         terminal_error_type: str | None = None
-        emitted_answer_parts: list[str] = []
+        corrector = IdentifierCorrector(prepared.context_used, query)
+        cleaner = StreamAnswerCleaner(fix=corrector.fix)
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
-            self._throttle_llm_call()
-            pending_stream_text = ""
-            stream_prefix_emitted = False
-            suppress_source_tail = False
             stream_result: dict[str, Any] = {}
             llm_called = True
-            llm_stream = iter(llm_client.generate_stream(prompt))
+            llm_stream = iter(llm_client.generate_stream(prepared.prompt))
             while True:
                 try:
                     chunk = next(llm_stream)
@@ -881,59 +820,23 @@ class AnswerPipeline:
                     if isinstance(completed.value, dict):
                         stream_result = completed.value
                     break
-                chunk_text = str(chunk)
-                if suppress_source_tail:
-                    continue
-                pending_stream_text += chunk_text
-                if not stream_prefix_emitted:
-                    pending_stream_text = clean_stream_start(pending_stream_text)
-                source_start = sources_section_start(
-                    pending_stream_text,
-                    at_line_start=(
-                        not emitted_answer_parts or emitted_answer_parts[-1].endswith("\n")
-                    ),
-                )
-                if source_start is not None:
-                    pending_stream_text = pending_stream_text[:source_start]
-                    suppress_source_tail = True
-                pending_stream_text = clean_stream_fragment(pending_stream_text)
-                if len(pending_stream_text) > STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
-                    safe_text = pending_stream_text[
-                        :-STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS
-                    ]
-                    pending_stream_text = pending_stream_text[
-                        -STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
-                    ]
-                    if safe_text:
-                        stream_prefix_emitted = True
-                        emitted_answer_parts.append(safe_text)
-                        yield {"type": "token", "text": safe_text}
-
-            if pending_stream_text:
-                # Source footers were removed with the real stream line boundary
-                # above; do not reinterpret a mid-sentence tail as a new heading.
-                final_tail = clean_answer(pending_stream_text)
-                if final_tail:
-                    emitted_answer_parts.append(final_tail)
-                    yield {"type": "token", "text": final_tail}
-            final_answer_for_citations = "".join(emitted_answer_parts)
+                if safe_text := cleaner.feed(str(chunk)):
+                    yield {"type": "token", "text": safe_text}
+            if final_tail := cleaner.finish():
+                yield {"type": "token", "text": final_tail}
+            final_answer_for_citations = cleaner.text
             if not final_answer_for_citations.strip():
                 raise RuntimeError("Empty answer after output cleanup.")
             end_time_llm = datetime.now(timezone.utc).isoformat()
-            self._last_llm_call_at = time.monotonic()
 
-            stream_usage = stream_result.get("usage") or {}
-            if stream_usage:
-                tracker.record(
-                    step_name="LLM Generation",
-                    model=stream_result.get("model_used")
-                    or getattr(llm_client, "model_name", ""),
-                    input_tokens=stream_usage.get("input", 0),
-                    output_tokens=stream_usage.get("output", 0),
-                    total_tokens=stream_usage.get("total", 0),
-                    start_time=start_time_llm,
-                    end_time=end_time_llm,
-                )
+            _record_generation_usage(
+                tracker,
+                model=stream_result.get("model_used") or getattr(llm_client, "model_name", ""),
+                usage=stream_result.get("usage") or {},
+                start_time=start_time_llm,
+                end_time=end_time_llm,
+                metadata=_composer_trace_metadata(llm_client, stream_result, prepared.prompt),
+            )
         except Exception as exc:
             logger.exception(
                 "answer_stream_generation_failed",
@@ -941,8 +844,8 @@ class AnswerPipeline:
             )
             terminal_status = "api_error"
             terminal_error_type = type(exc).__name__
-            if emitted_answer_parts:
-                final_answer_for_citations = "".join(emitted_answer_parts)
+            if cleaner.parts:
+                final_answer_for_citations = cleaner.text
             else:
                 fallback = build_fallback_answer(
                     effective_query, retrieval_result, reason="api_error"
@@ -950,11 +853,8 @@ class AnswerPipeline:
                 final_answer_for_citations = fallback
                 yield {"type": "token", "text": fallback}
 
-        final_citations = prioritize_citations_by_answer_anchors(
-            all_citations,
-            final_answer_for_citations,
-            max_sources=self._public_source_limit(),
-        )
+        tracker.counters.update(corrector.counts)
+        final_citations = self._citations_for_answer(prepared.all_citations, final_answer_for_citations)
         yield self._build_stream_metadata(
             retrieval_result,
             status=terminal_status,
@@ -964,26 +864,12 @@ class AnswerPipeline:
             citations_used=final_citations,
             related_references=related_references,
             llm_called=llm_called,
-            run_id=run_id,
         )
-
-        if terminal_status == "answered":
-            self.response_cache.set(
-                cache_key,
-                {
-                    "answer": final_answer_for_citations,
-                    "status": "answered",
-                    "error_type": None,
-                    "error_message": None,
-                    "citations": final_citations,
-                },
-            )
 
         yield {
             "type": "done",
             "status": terminal_status,
             "error_type": terminal_error_type,
-            "used_cache": False,
             "tracker": tracker,
             "citations_used": final_citations,
         }
@@ -1044,16 +930,6 @@ class AnswerPipeline:
                     self._llm_client = create_composer_client(self.config["llm"])
         return self._llm_client
 
-    def _throttle_llm_call(self) -> None:
-        """Respect configured spacing between outbound LLM calls."""
-        if self.request_sleep_seconds <= 0 or self._last_llm_call_at <= 0:
-            return
-
-        elapsed = time.monotonic() - self._last_llm_call_at
-        remaining = self.request_sleep_seconds - elapsed
-        if remaining > 0:
-            time.sleep(remaining)
-
     def _build_output(
         self,
         query: str,
@@ -1065,7 +941,6 @@ class AnswerPipeline:
         error_type: str | None,
         error_message: str | None,
         llm_called: bool,
-        used_cache: bool,
         clarification_needed: bool = False,
         model_used: str | None = None,
         tracker: Any = None,
@@ -1075,11 +950,9 @@ class AnswerPipeline:
         query_handling = retrieval_result.get("query_handling")
         if not isinstance(query_handling, dict):
             query_handling = None
-        run_id = None
         if model_used is None:
             model_used = getattr(self, "model_name", None)
         return {
-            "run_id": run_id,
             "query": query,
             "effective_query": retrieval_result.get("effective_query")
             or (query_handling or {}).get("effective_query")
@@ -1124,8 +997,6 @@ class AnswerPipeline:
                 retrieval_result.get("structured_result"),
                 citations=list(retrieval_result.get("citations") or []),
             ),
-            "formula_result": retrieval_result.get("formula_result"),
-            "tool_result": retrieval_result.get("tool_result"),
             "query_plan": retrieval_result.get("query_plan"),
             "task_results": retrieval_result.get("task_results") or [],
             "coverage_by_task": retrieval_result.get("coverage_by_task") or {},
@@ -1134,20 +1005,16 @@ class AnswerPipeline:
             "llm_called": llm_called,
             "model_used": model_used,
             "model": model_used,
-            "used_cache": used_cache,
             "clarification_needed": clarification_needed,
             "context_used": context_used,
             "tracker": tracker,
             "evaluation_telemetry": self._finalize_evaluation_telemetry(
-                used_cache=used_cache,
                 llm_called=llm_called,
             ),
         }
 
     @staticmethod
-    def _finalize_evaluation_telemetry(
-        *, used_cache: bool, llm_called: bool
-    ) -> dict[str, Any] | None:
+    def _finalize_evaluation_telemetry(*, llm_called: bool) -> dict[str, Any] | None:
         """Finalize request-level metrics from completed task results."""
 
         telemetry = _evaluation_telemetry.get()
@@ -1156,6 +1023,5 @@ class AnswerPipeline:
         output = dict(telemetry)
         started_at = float(output.pop("started_at_monotonic", time.monotonic()))
         output["total_ms"] = (time.monotonic() - started_at) * 1000
-        output["cache_hit"] = used_cache
         output["llm_called"] = llm_called
         return output

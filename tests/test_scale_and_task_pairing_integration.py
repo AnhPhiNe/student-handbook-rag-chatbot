@@ -15,6 +15,9 @@ from src.retrieval.core.query_plan import normalize_query_plan
 from src.retrieval.core.slang_normalizer import SlangNormalizer
 
 
+SCALE_CONTRACT_CASES = Path(__file__).resolve().parent / "fixtures/scale_contract_cases"
+
+
 @lru_cache(maxsize=1)
 def _catalogs():
     base = Path(__file__).resolve().parents[1] / "data/processed"
@@ -212,12 +215,12 @@ def test_multi_cohort_is_one_task_and_packet_locks_do_not_mix():
 
 
 @pytest.mark.parametrize("index", range(6))
-def test_new_smoke_contracts_are_source_backed_before_inference(index):
-    from scripts.prepare_deepseek_v48_smoke import build_smoke_cases
+def test_scale_contracts_pass_with_their_source_backed_plan(index):
+    from scripts.build_official_deterministic import CONTRACT_V10, build
     from src.evaluation.deterministic import _evaluate_outcome_case
     import time
 
-    case = build_smoke_cases()[12 + index]
+    case = build(SCALE_CONTRACT_CASES, contract=CONTRACT_V10)[index]
     query = case["query"]
     if index in {0, 1}:
         literal = "3,60/10" if index == 0 else "3,6/4"
@@ -246,14 +249,6 @@ def test_new_smoke_contracts_are_source_backed_before_inference(index):
     assert row["passed"], row
     if index == 1:
         assert not result["structured_result"].get("resolved_result")
-
-
-def test_smoke_copies_twelve_v10_regression_cases_without_changing_gold():
-    from scripts.prepare_deepseek_v48_smoke import build_smoke_cases, REGRESSION_IDS, ROOT
-    original = json.loads((ROOT / "data/eval/official_v1/deterministic_tool_cases_v10.json")
-                          .read_text(encoding="utf-8"))
-    expected = [case for case in original if case["id"] in REGRESSION_IDS]
-    assert build_smoke_cases()[:12] == expected
 
 
 @pytest.mark.parametrize("modes", [("structured", "structured"), ("rag", "rag"), ("structured", "rag")])

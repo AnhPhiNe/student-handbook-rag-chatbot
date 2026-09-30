@@ -37,7 +37,6 @@ def test_all_sixty_requests_use_existing_runner_with_fake_http(monkeypatch):
     from threading import Lock
 
     observed = []
-    seen = set()
     lock = Lock()
 
     class Response(BytesIO):
@@ -47,11 +46,9 @@ def test_all_sixty_requests_use_existing_runner_with_fake_http(monkeypatch):
         payload = json.loads(request.data)
         key = (payload["query"], payload["cohort"])
         with lock:
-            used_cache = key in seen
-            seen.add(key)
             observed.append((request.full_url, key))
         body = {"answer": "Câu trả lời fixture, không phải kết quả model.", "status": "answered",
-                "used_cache": used_cache, "citations": []}
+                "citations": []}
         if request.full_url.endswith("/stream"):
             chunks = [f"event: {event}\ndata: {json.dumps(data)}\n\n" for event, data in (
                 ("metadata", body), ("token", {"text": body["answer"]}), ("done", {"status": "answered"}))]
@@ -62,7 +59,6 @@ def test_all_sixty_requests_use_existing_runner_with_fake_http(monkeypatch):
     result = production_suite.evaluate_production(build(), base_url="https://fixture.invalid")
     assert len(observed) == 60
     assert sum(url.endswith("/stream") for url, _ in observed) == 10
-    assert result["summary"]["cache_protocol_valid"]
     assert all(row["success"] for row in result["cases"])
     assert len({row["id"] for row in result["cases"]}) == 60
 

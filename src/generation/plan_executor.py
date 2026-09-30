@@ -24,6 +24,7 @@ from src.retrieval.core.hybrid_pipeline import (
     run_hybrid_retrieval_pipeline,
     select_graph_related_parent_candidates,
 )
+from src.retrieval.core.query_plan import grounding_text
 
 
 def _merge_structured_citation_content(
@@ -66,6 +67,29 @@ def _merge_structured_citation_content(
     if not tables:
         return str(existing.get("content") or "")
     return json.dumps({"tables": tables}, ensure_ascii=False, indent=2, default=str)
+
+
+def _directory_record_ids(entry: dict[str, Any]) -> tuple[str, ...] | None:
+    """The record ids behind a directory evidence entry, or None for other evidence.
+
+    A directory lookup cites its whole catalog (source_parent_id is e.g.
+    "student_faculty_profiles"), so two tasks that name different units share
+    that id. Their records must stay apart when task outputs are merged:
+    otherwise "email Khoa Toán, sđt Khoa CNTT" keeps only the first unit and
+    gives it to both tasks.
+    """
+    try:
+        payload = json.loads(str(entry.get("content") or ""))
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(payload, list):
+        return None
+    record_ids = sorted(
+        str(record["record_id"])
+        for record in payload
+        if isinstance(record, dict) and record.get("record_id")
+    )
+    return tuple(record_ids) or None
 
 
 @dataclass(frozen=True)
@@ -112,11 +136,13 @@ class PlanExecutor:
         chat_history: list[dict[str, str]] | None,
     ) -> dict[str, Any]:
         """Plan and execute at most three independent, non-recursive tasks."""
-        router_input_query = self.slang_normalizer.replace_for_router(query)
+        # The planner reads the student's own words; the slang dictionary only
+        # rewrites the retrieval query (measured 2026-09-29: official_v1
+        # deterministic 133/135 without the planner rewrite, 132/135 with it).
         planner_started = time.perf_counter()
         try:
             raw_plan = self.router.plan(
-                router_input_query,
+                query,
                 chat_history=chat_history,
                 cohort=cohort,
             )
@@ -173,7 +199,11 @@ class PlanExecutor:
             "query_plan": plan,
             "planner_fallback": planner_fallback,
             "router_usage": raw_plan.get("usage"),
+            "router_usage_details": raw_plan.get("usage_details"),
             "router_model": raw_plan.get("model_used"),
+            "router_provider": getattr(self.router, "provider", None),
+            # A short hash of the key used, never the key itself.
+            "router_key_fingerprint": raw_plan.get("key_fingerprint"),
             # Full call duration, including key wait, retries and backoff.
             "planner_latency_ms": planner_latency_ms,
             # Category only; raw exception strings may contain credentials/body text.
@@ -199,12 +229,14 @@ class PlanExecutor:
                 "out_of_domain": True,
             }
 
+        grounding = grounding_text(query, plan, chat_history)
         try:
             task_executions = [
                 self.execute_task(
                     task=task,
                     task_index=index,
                     default_cohort=cohort,
+                    grounding=grounding,
                 )
                 for index, task in enumerate(plan.get("tasks") or [])
             ]
@@ -232,8 +264,13 @@ class PlanExecutor:
         task: dict[str, Any],
         task_index: int,
         default_cohort: str | None,
+        grounding: str | None = None,
     ) -> dict[str, Any]:
-        """Execute one planned task across its cohorts and normalize the result."""
+        """Execute one planned task across its cohorts and normalize the result.
+
+        ``grounding`` is the student's own words (`grounding_text`); without it
+        a structured task is grounded in its own question.
+        """
 
         task_id = str(task.get("id") or f"t{task_index + 1}")
         mode = task.get("mode")
@@ -280,6 +317,7 @@ class PlanExecutor:
                     task=task,
                     task_id=task_id,
                     cohort=task_cohort,
+                    grounding=grounding,
                 )
             else:
                 sub_result = self._execute_planned_rag_task(
@@ -451,6 +489,7 @@ class PlanExecutor:
         task: dict[str, Any],
         task_id: str,
         cohort: str | None,
+        grounding: str | None = None,
     ) -> dict[str, Any]:
         """Execute one structured lookup task and normalize its evidence packet."""
 
@@ -458,10 +497,11 @@ class PlanExecutor:
 
         resolution = resolve_structured_task(
             task,
-            # Slot spans refer to the task's literal text. Retrieval expansion
-            # may insert words inside a valid span (e.g. GPA), so it must not
-            # become the source against which structured grounding is checked.
             query=str(task.get("question") or ""),
+            # Slot spans are quoted from the student's words, not from the
+            # planner's task question, and never from the retrieval rewrite
+            # (which may insert words inside a valid span, e.g. GPA).
+            grounding=grounding,
             cohort=cohort,
             formula_rules=self.catalogs.formula_rules,
             office_directory=self.catalogs.office_directory,
@@ -676,7 +716,7 @@ class PlanExecutor:
     def _merge_task_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Merge task outputs by identity without duplicating evidence."""
 
-        merged: dict[tuple[str, str], dict[str, Any]] = {}
+        merged: dict[tuple[Any, ...], dict[str, Any]] = {}
         for item in items:
             metadata = item.get("metadata") or {}
             key = (
@@ -687,6 +727,7 @@ class PlanExecutor:
                     or metadata.get("source_parent_id")
                     or ""
                 ),
+                _directory_record_ids(item),
             )
             if key not in merged:
                 merged[key] = dict(item)
@@ -723,6 +764,7 @@ class PlanExecutor:
                     tuple(sorted(citation.get("supports_task_ids") or [])),
                     json.dumps(citation["resolved_result"], sort_keys=True, default=str),
                 ) if citation.get("resolved_result") is not None else None,
+                _directory_record_ids(citation),
             )
             if key not in merged:
                 merged[key] = dict(citation)

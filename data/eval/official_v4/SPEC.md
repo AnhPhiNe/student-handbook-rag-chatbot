@@ -104,7 +104,7 @@ author nor its models wrote.
 | Batch 12 (22 tickets) | Gemini 3.8 Flash | done: 22 of 22 written; facts in their excerpts (the JLPT levels N4 and N3 checked by hand) |
 | All batches | | done: 246 of 246 tickets written, none refused; 36 asked another question kind, as allowed |
 | Fact check against the data; overlap check with v1–v3; clusters | scripts | done: every number and worded fact in its excerpts (computed values rechecked by hand); no question reaches 0.5 word-3-gram overlap with the 725 questions of v1–v3; 229 clusters, 11 of them with more than one case |
-| Owner review of a random sample of about 30 cases | owner | pending |
+| Gold review of all 246 cases against their excerpts and the handbook | system author with Claude (an AI assistant), at the owner's request instead of the 30-case owner sample | done 2026-09-30: 3 cases' gold adjusted and one scoring rule added (`gold_adjustments.yaml`, AUTHORING_LOG.md); not an independent human review |
 | Freeze and run once, end to end | | pending |
 
 ## Pilot 1 (2026-09-30)
@@ -141,7 +141,10 @@ tickets were redrawn with the same seed after the fixes below. No system was run
   The `variant_style` field in `tickets.json` is left from the draw and unused.
 - Some drawn articles give questions few students would ask (staff conduct, a
   unit's internal duties, the legal basis of a notice); they stay in the set,
-  and the owner's review can mark them.
+  and the gold review did not remove them.
 - Procedure and consequence tickets often fell back to another question kind
   when the article had none; results are reported by the kind actually asked.
 - The judge (`openai/gpt-oss-120b`) has not been compared with a human rater.
+- The gold was checked by the system's author with an AI assistant, not by an
+  independent human rater. The paper says "checked by the system author with
+  AI support".

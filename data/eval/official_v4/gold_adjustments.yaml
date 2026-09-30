@@ -1,0 +1,61 @@
+# Gold adjustments made before any system run (AUTHORING_LOG.md).
+# The authored YAML stays as Gemini wrote it; these entries replace the named
+# fields when v4 is converted to the runner's case format. Questions are never
+# changed here.
+
+cases:
+  V4-104:
+    reason: >-
+      The K51 handbook lists two branch faculties with nearly the same name:
+      "Khoa Khoa học – Tự nhiên" (Long An branch) and "Khoa Khoa học Tự nhiên"
+      (Gia Lai branch). The question names neither branch, so the gold's
+      Gia Lai address alone is too narrow.
+    y_bat_buoc:
+      - >-
+        Địa chỉ văn phòng khoa: chấp nhận địa chỉ Gia Lai (Văn phòng Khoa – Nhà K,
+        Số 126 Lê Thánh Tôn, phường Diên Hồng, tỉnh Gia Lai), địa chỉ Long An
+        (Khu Hiệu bộ, Số 934, Quốc lộ 1A, phường Khánh Hậu, tỉnh Tây Ninh), cả hai,
+        hoặc hỏi lại sinh viên học ở phân hiệu nào
+      - "Bước 1: CVHT thông báo cho lớp trưởng về quy trình, thời gian chấm ĐRL"
+      - "Bước 2: Sinh viên tự đánh giá kèm minh chứng gửi BCS lớp"
+      - "Bước 3: BCS lớp, BCH Chi đoàn, BCH Chi hội, CVHT chấm lại điểm"
+      - "Bước 4: Họp lớp thông qua (trên 50% ý kiến đồng ý, có biên bản), nộp hồ sơ lên Hội đồng cấp cơ sở"
+      - "Bước 5: Hội đồng cấp cơ sở (khoa, phân hiệu) họp xét, báo cáo Trưởng đơn vị thông qua, trình lên Hội đồng cấp Trường"
+      - "Bước 6: Hội đồng cấp Trường họp xét trình Hiệu trưởng quyết định công nhận"
+      - "Bước 7: Công bố công khai trước 20 ngày trước khi ban hành quyết định chính thức và cập nhật phần mềm"
+
+  V4-172:
+    reason: >-
+      The gold answers from Điều 4 of the conduct rules, which binds staff
+      (viên chức, người lao động), and presents it as the students' rule. The
+      same document has a students' dress rule, Điều 12 (Quy định về trang
+      phục, người học), identical in K50 and K51. The no-smoking rule appears
+      only in Điều 4 but covers the whole campus.
+    y_bat_buoc:
+      - "quy định giữa K50 và K51 là giống nhau (hoặc không có sự khác biệt)"
+      - >-
+        Trang phục: chấp nhận Điều 12 cho người học (gọn gàng, lịch sự, kín đáo,
+        phù hợp thuần phong mỹ tục; đeo thẻ sinh viên) hoặc Điều 4 cho viên chức,
+        người lao động (gọn gàng, lịch sự, đi giày hoặc dép có quai hậu; đeo thẻ,
+        biển tên), hoặc cả hai
+      - "không hút thuốc lá (kể cả thuốc lá điện tử) trong khuôn viên Trường"
+
+  V4-211:
+    reason: >-
+      The student asks only whether staff may use public property for private
+      work. The gold also requires the rest of the same clause (not acting in
+      the institution's name, building a green workplace), which the question
+      does not ask for; a correct "no" answer would fail on them.
+    y_bat_buoc:
+      - "không được sử dụng tài sản, trang thiết bị, phương tiện công để làm việc riêng"
+
+rules:
+  F.refuse_in_domain:
+    cases: [V4-229, V4-230, V4-231, V4-232, V4-233, V4-234, V4-235, V4-236]
+    rule: >-
+      The required suggestion ("gợi ý liên hệ ...") is met by any relevant
+      official channel (the unit the handbook names for the topic, the faculty
+      office, the adviser, the class officers, or the school's official
+      notices or student portal), not only the channel the gold names. The
+      scored core is saying the handbook does not hold the information and not
+      inventing it.

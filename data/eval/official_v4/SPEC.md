@@ -82,12 +82,13 @@ author nor its models wrote.
 | Draw tickets and batches | `scripts/draw_v4_tickets.py` | done (246 tickets, 13 batches) |
 | Pilot 1 (15 tickets) | Gemini 3.8 Flash | done, questions discarded (below) |
 | Batch 00 (pilot 2, 15 tickets) | Gemini 3.8 Flash | done: 15 of 15 written, all facts found in their excerpts, 1 reclassified (AUTHORING_LOG.md) |
-| Check each batch | `scripts/check_v4_authored.py N` | done for 00–04 |
+| Check each batch | `scripts/check_v4_authored.py N` | done for 00–05 |
 | Batch 01 (30 tickets) | Gemini 3.8 Flash | done: 30 of 30 written, all facts found in their excerpts; 3 consequence tickets asked another kind, as allowed |
 | Batch 02 (25 tickets) | Gemini 3.8 Flash | done: 25 of 25 written, all facts found in their excerpts; 5 of 10 procedure tickets asked another kind |
 | Batch 03 (28 tickets) | Gemini 3.8 Flash | done: 28 of 28 written; facts in their excerpts, and the three computed scholarship scores recomputed correct |
 | Batch 04 (8 tickets) | Gemini 3.8 Flash | done: 8 of 8 written; the computed scores (3,40, 3,60) recomputed correct; the 6- and 8-year maximum durations are the K51 and K50 handbooks' own values |
-| Batches 05–12 | external author | pending |
+| Batch 05 (14 tickets) | Gemini 3.8 Flash | done: 14 of 14 written; all facts in their excerpts |
+| Batches 06–12 | external author | pending |
 | Fact check against the data; overlap check with v1–v3; clusters | scripts | pending |
 | Owner review of a random sample of about 30 cases | owner | pending |
 | Freeze and run once, end to end | | pending |

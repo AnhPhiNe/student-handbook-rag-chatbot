@@ -1,0 +1,434 @@
+- phieu: V4-109
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho e hoi cong tac sinh vien o truong minh gom nhung hoat dong nao va phai dam bao nguyen tac gi vay a? tien the cho e hoi neu thay co cvht ma ko hoan thanh nhiem vu thi co bi ky luat hay gi ko"
+  dap_an_nhap: |-
+    1. Về công tác sinh viên:
+    - Là một trong các công tác trọng tâm của Trường, bao gồm tổng thể các hoạt động giáo dục, tuyên truyền; quản lý; hỗ trợ và dịch vụ đối với sinh viên nhằm đảm bảo các mục tiêu của giáo dục đại học.
+    - Phải thực hiện đúng đường lối của Đảng, chính sách, pháp luật của Nhà nước và các quy chế, quy định của Bộ Giáo dục và Đào tạo.
+    - Phải bảo đảm khách quan, công bằng, công khai, minh bạch trong các vấn đề có liên quan đến sinh viên.
+
+    2. Về xử lý đối với Cố vấn học tập (CVHT):
+    - CVHT được đánh giá không hoàn thành nhiệm vụ 02 năm học liên tiếp sẽ bị hạ 01 bậc thi đua.
+  y_bat_buoc:
+    - "Công tác sinh viên gồm: giáo dục, tuyên truyền; quản lý; hỗ trợ và dịch vụ đối với sinh viên[cite: 2]"
+    - "Thực hiện đúng đường lối của Đảng, chính sách, pháp luật của Nhà nước và quy chế, quy định của Bộ Giáo dục và Đào tạo[cite: 2]"
+    - "Bảo đảm khách quan, công bằng, công khai, minh bạch[cite: 2]"
+    - "CVHT không hoàn thành nhiệm vụ 02 năm học liên tiếp sẽ bị hạ 01 bậc thi đua[cite: 2]"
+  nguon:
+    - "Đ1: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+    - "Đ2: Quy định công tác cố vấn học tập cho sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-110
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, quy định về học liên thông cho người đã có văn bằng khác của trường mình thế nào ạ? Với lại bên hệ vhvl (vừa làm vừa học) thì việc xử lý kqht, cảnh báo học tập với buộc thôi học quy định ra sao thế ad?"
+  dap_an_nhap: |-
+    1. Về học liên thông đối với người có văn bằng khác:
+    - Đối tượng: Người đã tốt nghiệp các trình độ đào tạo của giáo dục nghề nghiệp được dự tuyển và học liên thông lên trình độ đại học; người đã tốt nghiệp đại học được dự tuyển và học liên thông để nhận thêm một bằng tốt nghiệp đại học của một ngành đào tạo khác theo đề án tuyển sinh và thông báo tuyển sinh hằng năm của Trường.
+    - Kế hoạch học tập: Người học liên thông thực hiện CTĐT và đăng ký học tập theo kế hoạch chung như các sinh viên khác cùng hình thức đào tạo.
+    - Miễn trừ học phần: Trên cơ sở công nhận và chuyển đổi tín chỉ, sinh viên được miễn trừ các học phần tương ứng với khối lượng học tập đã tích lũy theo quy định hiện hành của Trường.
+
+    2. Về xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học:
+    - Cảnh báo học tập (xét vào cuối mỗi năm học nếu vi phạm một trong các điều kiện):
+      + Điểm trung bình tích lũy đạt dưới 1,2 đối với sinh viên năm thứ nhất; dưới 1,4 đối với sinh viên năm thứ hai; dưới 1,6 đối với sinh viên năm thứ ba; dưới 1,8 đối với sinh viên các năm tiếp theo.
+      + Tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24.
+      + Lưu ý: Sinh viên bị cảnh báo học tập do nợ đọng quá 24 tín chỉ chỉ được đăng ký học tập các học phần nhằm trả nợ và cải thiện điểm.
+    - Buộc thôi học trong các trường hợp:
+      + Bị cảnh báo học tập 02 lần liên tiếp trong một khóa học.
+      + Bị cảnh báo học tập 03 lần không liên tiếp trong một khóa học.
+      + Thời gian học tập vượt quá giới hạn tối đa quy định tại Điều 3 của Quy chế.
+    - Bảo lưu kết quả: Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu; sinh viên được quyền yêu cầu cung cấp giấy chứng nhận điểm các học phần đã tích lũy.
+  y_bat_buoc:
+    - "Tốt nghiệp giáo dục nghề nghiệp được học liên thông lên đại học; tốt nghiệp đại học được học liên thông nhận thêm bằng đại học ngành khác theo đề án và thông báo tuyển sinh hằng năm[cite: 2]"
+    - "Thực hiện CTĐT và đăng ký học tập theo kế hoạch chung; được miễn trừ học phần tương ứng trên cơ sở công nhận và chuyển đổi tín chỉ[cite: 2]"
+    - "Cảnh báo học tập cuối mỗi năm học nếu ĐTB tích lũy: < 1,2 (năm 1), < 1,4 (năm 2), < 1,6 (năm 3), < 1,8 (các năm tiếp theo); hoặc tổng số tín chỉ nợ đọng vượt quá 24[cite: 2]"
+    - "Sinh viên nợ đọng > 24 tín chỉ chỉ được đăng ký học tập để trả nợ và cải thiện điểm[cite: 2]"
+    - "Buộc thôi học: cảnh báo 02 lần liên tiếp, hoặc cảnh báo 03 lần không liên tiếp, hoặc vượt quá thời gian học tập tối đa[cite: 2]"
+    - "Kết quả tích lũy được bảo lưu và được cấp giấy chứng nhận điểm nếu yêu cầu[cite: 2]"
+  nguon:
+    - "Đ3: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 20"
+    - "Đ4: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 13"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-111
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho mình hỏi nếu vi phạm nội quy học đường, không mua BHYT hay bị kỷ luật thì bị trừ điểm rèn luyện thế nào, trường hợp nào ở phần chấp hành nội quy bị xếp loại Kém luôn? Với lại khung điểm rèn luyện phần III về hoạt động chính trị, xã hội, văn nghệ thể thao quy định cụ thể ra sao?"
+  dap_an_nhap: |-
+    1. Về hệ quả vi phạm và trừ điểm ở Phần II (Ý thức chấp hành nội quy, quy chế, quy định trong nhà trường):
+    - Vi phạm nội quy học đường (thời gian học tập, không mang thẻ sinh viên…): trừ 3 điểm.
+    - Đăng ký tham gia hoạt động mà không tham gia: cấp Khoa trừ 3 điểm/lần; cấp Trường trừ 4 điểm/lần.
+    - Không thực hiện đúng quy định thời hạn các loại hồ sơ, giấy tờ của Trường: trừ 3 điểm/lần.
+    - Không tham gia BHYT theo quy định: trừ 5 điểm.
+    - Vi phạm đến mức kỷ luật: Khiển trách trừ 5 điểm; Cảnh cáo trừ 10 điểm; Đình chỉ học tập 1 năm học xếp loại Rèn luyện Kém.
+    - Tham gia Tuần Sinh hoạt công dân – Sinh viên: Không đạt được 0 điểm (đạt được 10 điểm).
+    - Đánh giá kết quả rèn luyện chậm tiến độ, sai quy định, không trung thực: trừ 3 điểm; không đánh giá kết quả rèn luyện: xếp loại Rèn luyện Kém.
+
+    2. Về khung điểm đánh giá Phần III (Ý thức tham gia các hoạt động chính trị, xã hội, văn hóa, văn nghệ, thể thao, phòng chống tội phạm và các tệ nạn xã hội - Tối đa 20 điểm):
+    - Thành viên các CLB: 3 điểm/CLB.
+    - Tham gia cổ vũ các hoạt động: 2 điểm/hoạt động.
+    - Tham gia hoạt động, buổi hội nghị, đại hội do Nhà trường, Đoàn – Hội tổ chức/triệu tập: 4 điểm/hoạt động; nếu không tham gia không có lý do chính đáng: trừ 4 điểm/hoạt động.
+    - Tham gia đầy đủ và nghiêm túc hoạt động văn hóa, văn nghệ, thể dục thể thao: Cấp lớp (tương đương): 1 điểm/hoạt động; Cấp khoa (tương đương): 2 điểm/hoạt động; Cấp Trường (tương đương): 3 điểm/hoạt động; Cấp Tỉnh/Thành (tương đương) trở lên: 4 điểm/hoạt động.
+    - Tham gia hoạt động hiến máu, công ích hoặc an sinh xã hội: 3 điểm/hoạt động.
+    - Tham gia tuyên truyền phòng chống tội phạm và tệ nạn xã hội: 3 điểm/hoạt động.
+    - Kết nạp Đoàn TNCS Hồ Chí Minh: 2 điểm; kết nạp Đảng Cộng sản Việt Nam: 3 điểm.
+    - Khen thưởng đạt thành tích hoạt động chính trị, xã hội, văn hóa, văn nghệ, thể thao, phòng chống tội phạm và tệ nạn xã hội: Cấp khoa 3 điểm/thành tích; Cấp Trường 4 điểm/thành tích; Cấp Tỉnh/Thành 5 điểm/thành tích; Cấp Trung ương 6 điểm/thành tích.
+  y_bat_buoc:
+    - "Vi phạm nội quy học đường: - 3 điểm[cite: 2]"
+    - "Đăng ký không tham gia hoạt động: cấp Khoa - 3 điểm/lần, cấp Trường - 4 điểm/lần[cite: 2]"
+    - "Không thực hiện đúng thời hạn hồ sơ, giấy tờ: - 3 điểm/lần[cite: 2]"
+    - "Không tham gia BHYT: - 5 điểm[cite: 2]"
+    - "Kỷ luật khiển trách: - 5 điểm; cảnh cáo: - 10 điểm; đình chỉ học tập 1 năm học: Rèn luyện Kém[cite: 2]"
+    - "Không đạt Tuần Sinh hoạt công dân – Sinh viên: 0 điểm[cite: 2]"
+    - "Đánh giá ĐRL chậm/sai/không trung thực: - 3 điểm; không đánh giá kết quả rèn luyện: Rèn luyện Kém[cite: 2]"
+    - "Phần III tối đa 20 điểm; thành viên CLB: 3 điểm/CLB; cổ vũ: 2 điểm/hoạt động[cite: 2]"
+    - "Hoạt động/hội nghị triệu tập: tham gia 4 điểm/hoạt động; vắng không lý do chính đáng: - 4 điểm/hoạt động[cite: 2]"
+    - "Hoạt động văn nghệ thể thao: Cấp lớp 1 điểm; Cấp khoa 2 điểm; Cấp Trường 3 điểm; Cấp Tỉnh/Thành trở lên 4 điểm[cite: 2]"
+    - "Hiến máu/công ích/an sinh xã hội: 3 điểm/hoạt động; tuyên truyền phòng chống tội phạm tệ nạn: 3 điểm/hoạt động[cite: 2]"
+    - "Kết nạp Đoàn: 2 điểm; kết nạp Đảng: 3 điểm[cite: 2]"
+    - "Khen thưởng: Cấp khoa 3 điểm; Cấp Trường 4 điểm; Cấp Tỉnh/Thành 5 điểm; Cấp Trung ương 6 điểm[cite: 2]"
+  nguon:
+    - "Đ5: Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1), Phần II. Đánh giá về ý thức chấp hành nội quy, quy chế, quy định trong nhà trường"
+    - "Đ6: Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1), Phần III. Đánh giá về ý thức tham gia các hoạt động chính trị, xã hội, văn hóa, văn nghệ, thể thao, phòng chống tội phạm và các tệ nạn xã hội"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-113
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "neu bi xep loai ren luyen yeu kem lien tiep thi bi lam sao vay a? voi cho e hoi truong quy dinh nhung hanh vi nao sv khong duoc lam the"
+  dap_an_nhap: |-
+    1. Về hệ quả khi bị xếp loại rèn luyện yếu, kém:
+    - Sinh viên bị xếp loại rèn luyện yếu, kém trong hai học kỳ liên tiếp thì phải tạm ngừng học ít nhất một học kỳ ở học kỳ tiếp theo.
+    - Nếu bị xếp loại rèn luyện yếu, kém hai học kỳ liên tiếp lần thứ hai thì sẽ bị buộc thôi học.
+
+    2. Về các hành vi sinh viên không được làm (Điều 10):
+    - Xúc phạm nhân phẩm, danh dự, xâm phạm thân thể giảng viên, viên chức, nhân viên, sinh viên Trường và người khác.
+    - Gian lận trong học tập, kiểm tra, thi cử: quay cóp, mang tài liệu vào phòng thi, xin điểm; học, thi, thực tập hộ người khác hoặc nhờ người khác học, thi, thực tập hộ; sao chép, nhờ hoặc làm hộ tiểu luận, đồ án, khóa luận tốt nghiệp; tổ chức hoặc tham gia tổ chức thi hộ hoặc các hành vi gian lận khác.
+    - Sản xuất, buôn bán, vận chuyển, phát hành, tàng trữ, sử dụng hoặc lôi kéo người khác sử dụng vũ khí, chất nổ, các chất ma túy, các loại dược phẩm, hóa chất cấm sử dụng; các tài liệu, ấn phẩm, thông tin phản động, đồi trụy và các tài liệu cấm khác; tổ chức, tham gia, truyền bá mê tín dị đoan, hoạt động tôn giáo trong Trường và các hành vi vi phạm đạo đức khác.
+    - Hút thuốc, uống rượu, bia trong trường học; say rượu, bia khi đến lớp. Bôi xóa, viết vẽ lên bàn, tường; làm hư hại tài sản, trang thiết bị của Trường.
+    - Tổ chức hoặc tham gia tụ tập đông người, biểu tình, khiếu kiện trái pháp luật; tham gia tệ nạn xã hội, gây rối an ninh, trật tự an toàn trong Trường và ngoài xã hội.
+    - Tổ chức hoặc tham gia đua xe hoặc cổ vũ đua xe trái phép.
+    - Tổ chức hoặc tham gia đánh bạc dưới mọi hình thức.
+    - Thành lập, tham gia các hoạt động mang tính chất chính trị trái pháp luật; tổ chức, tham gia các hoạt động tập thể mang danh nghĩa của Trường khi chưa được Hiệu trưởng cho phép.
+    - Đăng tải, bình luận, chia sẻ bài viết, hình ảnh có nội dung dung tục, phản cảm, bạo lực, đồi trụy, xâm phạm an ninh quốc gia, chống phá Đảng và Nhà nước, xuyên tạc, vu khống, xúc phạm uy tín của tổ chức, danh dự và nhân phẩm của cá nhân trên không gian mạng.
+    - Tổ chức hoặc tham gia các hoạt động vi phạm pháp luật khác.
+  y_bat_buoc:
+    - "Rèn luyện yếu, kém 2 học kỳ liên tiếp: tạm ngừng học ít nhất 1 học kỳ ở học kỳ tiếp theo[cite: 2]"
+    - "Rèn luyện yếu, kém 2 học kỳ liên tiếp lần thứ hai: bị buộc thôi học[cite: 2]"
+    - "Xúc phạm nhân phẩm, danh dự, xâm phạm thân thể giảng viên, nhân viên, sinh viên và người khác[cite: 2]"
+    - "Gian lận trong học tập, kiểm tra, thi cử (quay cóp, thi hộ, chép khóa luận, xin điểm...)[cite: 2]"
+    - "Tàng trữ, buôn bán, sử dụng vũ khí, chất nổ, ma túy, tài liệu cấm, phản động, đồi trụy; truyền bá mê tín dị đoan, tôn giáo trong Trường[cite: 2]"
+    - "Hút thuốc, uống rượu bia trong trường; say rượu bia khi đến lớp; viết vẽ lên bàn tường, làm hư hại tài sản của Trường[cite: 2]"
+    - "Tụ tập đông người, biểu tình, khiếu kiện trái pháp luật; tham gia tệ nạn xã hội, đua xe trái phép, đánh bạc[cite: 2]"
+    - "Hoạt động chính trị trái phép; mang danh nghĩa Trường khi chưa được Hiệu trưởng cho phép[cite: 2]"
+    - "Đăng tải, chia sẻ nội dung dung tục, phản cảm, bạo lực, chống phá, vu khống xúc phạm uy tín danh dự trên không gian mạng[cite: 2]"
+  nguon:
+    - "Đ7: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 14"
+    - "Đ8: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-114
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Chào ad, cho mình hỏi sinh viên vi phạm những trường hợp nào thì bị đình chỉ tiến độ học tập? Và thủ tục nộp hồ sơ miễn giảm học phí, hỗ trợ chi phí học tập thì nộp ở đâu, thời hạn ra sao?"
+  dap_an_nhap: |-
+    1. Về các trường hợp sinh viên bị đình chỉ tiến độ học tập do vi phạm:
+    Sinh viên bị đình chỉ tiến độ học tập nếu vi phạm một trong các trường hợp sau:
+    - Vi phạm kỷ luật theo quy định ở mức buộc nghỉ học tạm thời;
+    - Bị xếp loại rèn luyện yếu, kém trong hai học kỳ liên tiếp đối với sinh viên đào tạo trình độ đại học hoặc bị xếp rèn luyện kém cả năm đối với sinh viên đào tạo trình độ cao đẳng sư phạm.
+
+    2. Về thủ tục nộp hồ sơ miễn, giảm học phí, cấp học bổng và hỗ trợ chi phí học tập:
+    - Địa điểm nộp: Nộp hồ sơ về Phòng Công tác Chính trị và Học sinh, sinh viên (Phòng CTCT&HSSV).
+    - Thời hạn: Nộp đúng thời gian được quy định theo từng học kỳ.
+  y_bat_buoc:
+    - "Bị đình chỉ tiến độ học tập khi vi phạm kỷ luật ở mức buộc nghỉ học tạm thời[cite: 2]"
+    - "Bị đình chỉ tiến độ học tập khi bị xếp loại rèn luyện yếu, kém trong 2 học kỳ liên tiếp (đối với đại học) hoặc rèn luyện kém cả năm (đối với CĐSP)[cite: 2]"
+    - "Hồ sơ nộp về Phòng CTCT&HSSV[cite: 2]"
+    - "Nộp đúng thời gian được quy định theo từng học kỳ[cite: 2]"
+  nguon:
+    - "Đ9: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 30"
+    - "Đ10: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 29"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-115
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Bạn ơi cho mình hỏi Khung điểm đánh giá kết quả rèn luyện sinh viên được ban hành theo quyết định nào của trường vậy? Với lại các đơn vị, đoàn thể trong trường có trách nhiệm gì đối với công tác sinh viên ngoại trú?"
+  dap_an_nhap: |-
+    1. Về quyết định ban hành Khung điểm đánh giá kết quả rèn luyện sinh viên:
+    - Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1) được ban hành kèm theo Quyết định số 2000/QĐ-ĐHSP ngày 15 tháng 7 năm 2024 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh.
+
+    2. Về quy định đối với các đơn vị, đoàn thể trong Trường về công tác ngoại trú:
+    - Phối hợp với Phòng CTCT&HSSV và các đơn vị có liên quan trong việc triển khai thực hiện công tác ngoại trú sinh viên theo Quy định.
+    - Tư vấn, giới thiệu chỗ ở, tạo điều kiện để sinh viên có nhu cầu tham gia các hoạt động rèn luyện tại nơi cư trú.
+  y_bat_buoc:
+    - "Quyết định số 2000/QĐ-ĐHSP ngày 15 tháng 7 năm 2024 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh[cite: 2]"
+    - "Phối hợp với Phòng CTCT&HSSV và các đơn vị liên quan triển khai thực hiện công tác ngoại trú sinh viên[cite: 2]"
+    - "Tư vấn, giới thiệu chỗ ở, tạo điều kiện để sinh viên có nhu cầu tham gia các hoạt động rèn luyện tại nơi cư trú[cite: 2]"
+  nguon:
+    - "Đ11: Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2000/QĐ-ĐHSP ngày 15/7/2024)"
+    - "Đ12: Quy định ngoại trú đối với sinh viên đào tạo trình độ đại học, cao đẳng ngành Giáo dục Mầm non hình thức chính quy của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 14"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ11 chỉ có thông tin quyết định ban hành, không có chi tiết khung điểm nên yêu cầu 1 chuyển sang hỏi về số quyết định và ngày ban hành văn bản."
+
+- phieu: V4-116
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "ad oi cho e hoi truong quy dinh nhung doi tuong nao dc mien giam hoc phi nam hoc 2024-2025 the a? voi ca tien boi hoan kinh phi ho tro sv su pham gom nhung gi va tinh nhu the nao vay ad"
+  dap_an_nhap: |-
+    1. Về đối tượng được miễn, giảm học phí năm học 2024 – 2025:
+    * Miễn 100% học phí:
+    - Đối tượng 1: Sinh viên là thân nhân của người có công cách mạng (con liệt sĩ; con Anh hùng Lực lượng vũ trang nhân dân; con Anh hùng Lao động trong thời kỳ kháng chiến; con thương binh, người hưởng chính sách như thương binh; con bệnh binh; con người HĐKC bị nhiễm chất độc hóa học).
+    - Đối tượng 2: Sinh viên bị tàn tật, khuyết tật.
+    - Đối tượng 3: Sinh viên thuộc diện hưởng trợ cấp xã hội hằng tháng (văn bằng thứ nhất, không quá 22 tuổi) thuộc các trường hợp mồ côi hoặc cha mẹ bị mất tích, chấp hành án phạt tù, trường giáo dưỡng... theo quy định.
+    - Đối tượng 4: Sinh viên là người dân tộc thiểu số rất ít người (gồm: La Hủ, La Ha, Pà Thẻn, Lự, Ngái, Chứt, Lô Lô, Mảng, Cống, Cờ Lao, Bố Y, Si La, Pu Péo, Rơ Măm, Brâu, Ơ Đu).
+    - Đối tượng 5: Sinh viên dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo theo quy định của Thủ tướng Chính phủ.
+    * Giảm học phí:
+    - Giảm 70% học phí: Sinh viên dân tộc thiểu số (không phải rất ít người) ở vùng có điều kiện KT-XH đặc biệt khó khăn, xã khu vực III vùng dân tộc miền núi, xã đặc biệt khó khăn vùng bãi ngang ven biển hải đảo.
+    - Giảm 50% học phí: Sinh viên là con của cán bộ, công nhân, viên chức mà cha hoặc mẹ bị tai nạn lao động hoặc mắc bệnh nghề nghiệp được hưởng trợ cấp thường xuyên.
+
+    2. Về chi phí bồi hoàn và cách tính chi phí bồi hoàn kinh phí hỗ trợ đối với sinh viên sư phạm:
+    - Chi phí bồi hoàn bao gồm: Kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt đã được ngân sách Nhà nước hỗ trợ.
+    - Đối tượng tại điểm a và điểm c khoản 1 Điều 6 Nghị định: Bồi hoàn toàn bộ kinh phí đã được ngân sách Nhà nước hỗ trợ.
+    - Đối tượng tại điểm b khoản 1 Điều 6 Nghị định: Bồi hoàn một phần kinh phí hỗ trợ theo công thức:
+      S = (F / T1) x (T1 – T2)
+      Trong đó:
+      + S là chi phí bồi hoàn;
+      + F là khoản học phí và chi phí sinh hoạt được Nhà nước hỗ trợ;
+      + T1 là tổng thời gian làm việc trong ngành giáo dục theo quy định tính bằng số tháng làm tròn;
+      + T2 là thời gian đã làm việc trong ngành giáo dục tính bằng số tháng làm tròn.
+  y_bat_buoc:
+    - "Miễn 100%: Thân nhân người có công cách mạng; sinh viên bị tàn tật, khuyết tật; sinh viên hưởng trợ cấp xã hội hằng tháng (không quá 22 tuổi, VB1); sinh viên dân tộc thiểu số rất ít người; sinh viên dân tộc thiểu số thuộc hộ nghèo/cận nghèo[cite: 2]"
+    - "Giảm 70%: Sinh viên dân tộc thiểu số ở vùng KT-XH đặc biệt khó khăn, xã khu vực III, xã đặc biệt khó khăn vùng bãi ngang ven biển hải đảo[cite: 2]"
+    - "Giảm 50%: Sinh viên là con của cán bộ, công nhân, viên chức mà cha hoặc mẹ bị tai nạn lao động hoặc bệnh nghề nghiệp hưởng trợ cấp thường xuyên[cite: 2]"
+    - "Chi phí bồi hoàn gồm tiền đóng học phí và chi phí sinh hoạt được ngân sách Nhà nước hỗ trợ[cite: 2]"
+    - "Bồi hoàn toàn bộ đối với đối tượng điểm a và c khoản 1 Điều 6; bồi hoàn một phần đối với đối tượng điểm b khoản 1 Điều 6[cite: 2]"
+    - "Công thức tính: S = (F / T1) x (T1 – T2) (trong đó nêu rõ S, F, T1, T2)[cite: 2]"
+  nguon:
+    - "Đ13: Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2024 – 2025, Đối tượng miễn, giảm học phí"
+    - "Đ14: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 8"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-118
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Chào bạn, cho mình hỏi sinh viên hệ chính quy bị cảnh báo học tập và buộc thôi học trong những trường hợp nào? Với lại cố vấn học tập có những nhiệm vụ gì để hỗ trợ sinh viên vậy?"
+  dap_an_nhap: |-
+    1. Về điều kiện bị cảnh báo học tập và buộc thôi học đối với sinh viên chính quy (Điều 12):
+    - Cảnh báo học tập (cuối mỗi học kỳ chính nếu vi phạm một trong các điều kiện):
+      + Tổng số tín chỉ không đạt trong học kỳ vượt quá 50% khối lượng đã đăng ký học trong học kỳ, hoặc tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24.
+      + Điểm trung bình học kỳ đạt dưới 0,8 đối với học kỳ đầu của khóa học, dưới 1,0 đối với các học kỳ tiếp theo.
+      + Điểm trung bình tích lũy đạt dưới 1,2 đối với sinh viên năm thứ nhất, dưới 1,4 đối với sinh viên năm thứ hai, dưới 1,6 đối với sinh viên năm thứ ba, dưới 1,8 đối với sinh viên các năm tiếp theo.
+    - Buộc thôi học trong các trường hợp:
+      + Bị cảnh báo học tập 03 lần liên tiếp trong một khóa học.
+      + Bị cảnh báo học tập đến lần thứ tư tính từ đầu khóa.
+      + Thời gian học tập vượt quá giới hạn tối đa theo quy định.
+      (Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu và sinh viên được cấp giấy chứng nhận điểm nếu yêu cầu).
+
+    2. Về nhiệm vụ của Cố vấn học tập (CVHT) (Điều 3):
+    - Học tập, nắm vững mục tiêu, quy chế, nội quy của Bộ GD&ĐT và của Trường để tư vấn, hỗ trợ sinh viên; cập nhật các thay đổi, bổ sung.
+    - Nắm rõ chức năng, nhiệm vụ các đơn vị liên quan để hướng dẫn sinh viên tìm hiểu thông tin và liên hệ công tác học tập, rèn luyện.
+    - Hướng dẫn sinh viên đăng ký học phần từng học kỳ và xây dựng kế hoạch học tập toàn khóa.
+    - Quản lý lớp sinh viên, thông tin cá nhân; giới thiệu nhân sự bầu ban cán sự lớp và đề nghị Trưởng khoa phê duyệt kết quả bầu cử.
+    - Tư vấn, hướng dẫn sinh viên điều chỉnh kế hoạch học tập phù hợp năng lực, hoàn cảnh dựa trên kết quả học tập.
+    - Hướng dẫn, khuyến khích sinh viên tham gia hoạt động học thuật, NCKH, văn - thể - mỹ.
+    - Nắm tình hình chung của lớp về học tập, đời sống; tư vấn cho sinh viên trong quá trình học tập, rèn luyện.
+    - Hướng dẫn sinh viên điều chỉnh, khiếu nại kết quả học tập, rèn luyện, khen thưởng, kỷ luật; chủ trì họp lớp xét khen thưởng, kỷ luật và gửi kết quả lên khoa.
+    - Tham dự họp Hội đồng Khen thưởng – Kỷ luật sinh viên cấp Khoa, đề xuất hình thức khen thưởng, kỷ luật.
+    - Thực hiện chế độ báo cáo theo yêu cầu của Trưởng khoa.
+  y_bat_buoc:
+    - "Cảnh báo học tập: Tín chỉ không đạt > 50% khối lượng đăng ký học kỳ, hoặc tổng tín chỉ nợ đọng vượt quá 24[cite: 2]"
+    - "Cảnh báo học tập: Điểm trung bình học kỳ < 0,8 (kỳ đầu), < 1,0 (các kỳ tiếp theo)[cite: 2]"
+    - "Cảnh báo học tập: Điểm trung bình tích lũy < 1,2 (năm 1), < 1,4 (năm 2), < 1,6 (năm 3), < 1,8 (các năm tiếp theo)[cite: 2]"
+    - "Buộc thôi học: Cảnh báo học tập 03 lần liên tiếp; cảnh báo đến lần thứ 4 từ đầu khóa; hoặc vượt quá thời gian học tập tối đa[cite: 2]"
+    - "Nhiệm vụ CVHT: Hướng dẫn đăng ký học phần, xây dựng kế hoạch học tập; quản lý lớp sinh viên và thông tin cá nhân; tư vấn điều chỉnh học tập, NCKH; hướng dẫn khiếu nại, chủ trì họp xét khen thưởng kỷ luật[cite: 2]"
+  nguon:
+    - "Đ15: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 12"
+    - "Đ16: Quy định công tác cố vấn học tập tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: "Yêu cầu 2 của phiếu yêu cầu hỏi hệ quả vi phạm hoặc ngoại lệ, nhưng đoạn Đ16 chỉ quy định nhiệm vụ của cố vấn học tập nên chuyển sang hỏi về các nhiệm vụ của cố vấn học tập."
+
+- phieu: V4-119
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Bạn cho mình hỏi quy trình và thủ tục công nhận chuẩn đầu ra ngoại ngữ để xét tốt nghiệp gồm các bước nào? Sẵn cho mình hỏi thông báo miễn giảm học phí năm học 2024-2025 của trường được căn cứ trên các nghị định nào của Chính phủ vậy?"
+  dap_an_nhap: |-
+    1. Về quy trình và thủ tục công nhận trình độ ngoại ngữ để xét tốt nghiệp:
+    - Bước 1: Sinh viên nộp đơn (theo mẫu) cho Phòng Khảo thí và Đảm bảo chất lượng theo thông báo cụ thể của Trường.
+    - Bước 2: Phòng Khảo thí và Đảm bảo chất lượng phối hợp các khoa kiểm tra và báo cáo Hiệu trưởng ra quyết định công nhận việc miễn học, miễn thi học phần ngoại ngữ hoặc công nhận trình độ ngoại ngữ để xét tốt nghiệp cho sinh viên trong vòng 15 ngày làm việc kể từ ngày hết hạn nộp đơn.
+    - Bước 3: Thông báo kết quả cho sinh viên và công khai trên Cổng thông tin điện tử Trường trong vòng 10 ngày làm việc kể từ khi ra quyết định.
+
+    2. Về các văn bản căn cứ trong Thông báo miễn, giảm học phí năm học 2024 – 2025:
+    - Nghị định số 81/2021/NĐ-CP ngày 27/8/2021 của Chính phủ quy định về cơ chế thu, quản lý học phí đối với cơ sở giáo dục thuộc hệ thống giáo dục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập; giá dịch vụ trong lĩnh vực giáo dục, đào tạo.
+    - Nghị định 97/2023/NĐ-CP ngày 31/12/2023 của Chính phủ về sửa đổi, bổ sung một số điều của Nghị định 81/2021/NĐ-CP ngày 27/8/2021 của Chính phủ quy định về cơ chế thu, quản lý học phí đối với cơ sở giáo dục thuộc hệ thống giáo dục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập; giá dịch vụ trong lĩnh vực giáo dục, đào tạo.
+  y_bat_buoc:
+    - "Bước 1: Sinh viên nộp đơn (theo mẫu) cho Phòng Khảo thí và Đảm bảo chất lượng theo thông báo[cite: 2]"
+    - "Bước 2: Phòng Khảo thí và Đảm bảo chất lượng phối hợp các khoa kiểm tra, báo cáo Hiệu trưởng ra quyết định trong vòng 15 ngày làm việc kể từ ngày hết hạn nộp đơn[cite: 2]"
+    - "Bước 3: Thông báo kết quả cho sinh viên và công khai trên Cổng thông tin điện tử Trường trong vòng 10 ngày làm việc kể từ khi ra quyết định[cite: 2]"
+    - "Nghị định số 81/2021/NĐ-CP ngày 27/8/2021 của Chính phủ[cite: 2]"
+    - "Nghị định 97/2023/NĐ-CP ngày 31/12/2023 của Chính phủ[cite: 2]"
+  nguon:
+    - "Đ17: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 5"
+    - "Đ18: Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2024 – 2025, Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2024 – 2025"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ18 là phần mở đầu căn cứ pháp lý của thông báo nên yêu cầu 2 chuyển sang hỏi về các văn bản căn cứ thực hiện chính sách miễn, giảm học phí."
+
+- phieu: V4-120
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho e hoi ve viec trao doi sv voi co so dao tao khac dc quy dinh the nao vay a? voi quy dinh dang ky hoc phan cho he chinh quy can luu y nhung moc nao voi gioi han tin chi ra sao a"
+  dap_an_nhap: |-
+    1. Về trao đổi sinh viên và hợp tác trong đào tạo (Điều 18):
+    - Trên cơ sở đối sánh chuẩn đầu ra từng ngành, CTĐT, nội dung và khối lượng học tập, cách thức đánh giá học phần và các điều kiện đảm bảo chất lượng, Hiệu trưởng quyết định nội dung hợp tác và công khai trên Cổng thông tin điện tử.
+    - Cho phép sinh viên của Trường được học một số học phần tại cơ sở đào tạo khác và ngược lại (không bao gồm các học phần giáo dục thể chất và giáo dục quốc phòng – an ninh).
+    - Việc công nhận kết quả học tập mà sinh viên tích lũy tại cơ sở phối hợp đào tạo khác không vượt quá 25% tổng khối lượng của CTĐT.
+
+    2. Về tổ chức đăng ký học tập đối với hình thức chính quy (Điều 9):
+    - Học kỳ đầu tiên: Sinh viên học tập theo thời khóa biểu do Trường ấn định.
+    - Từ học kỳ thứ hai: Sinh viên tự đăng ký học phần trên hệ thống đăng ký học tập (học phần mới, học lại, cải thiện điểm).
+    - Lịch đăng ký học phần được công bố chậm nhất 01 tuần trước khi bắt đầu mở hệ thống.
+    - Rút bớt học phần: Thực hiện theo thời hạn thông báo của Trường và phải đảm bảo khối lượng tối thiểu. Sau thời hạn, nếu không đi học sẽ xem như tự ý bỏ học.
+    - Giới hạn khối lượng học tập mỗi học kỳ chính:
+      + Khối lượng tối thiểu không ít hơn 2/3 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn của CTĐT.
+      + Khối lượng tối đa không vượt quá 3/2 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn của CTĐT.
+  y_bat_buoc:
+    - "Hiệu trưởng quyết định nội dung hợp tác và công khai trên Cổng thông tin điện tử[cite: 2]"
+    - "Không bao gồm các học phần giáo dục thể chất và giáo dục quốc phòng – an ninh[cite: 2]"
+    - "Công nhận kết quả tích lũy tại cơ sở khác không vượt quá 25% tổng khối lượng của CTĐT[cite: 2]"
+    - "Học kỳ đầu học theo TKB do Trường ấn định; từ học kỳ thứ hai tự đăng ký học phần[cite: 2]"
+    - "Lịch đăng ký công bố chậm nhất 01 tuần trước khi mở hệ thống[cite: 2]"
+    - "Rút bớt học phần theo thời hạn thông báo và phải bảo đảm khối lượng tối thiểu[cite: 2]"
+    - "Khối lượng học kỳ chính: tối thiểu không ít hơn 2/3, tối đa không vượt quá 3/2 khối lượng trung bình một học kỳ theo kế hoạch chuẩn[cite: 2]"
+  nguon:
+    - "Đ19: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 18"
+    - "Đ20: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-121
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ em chào phòng đào tạo và quý thầy cô ạ. Học kỳ này em có tham gia ban cán sự lớp và phụ trách hỗ trợ Bí thư chi đoàn tổng hợp các hồ sơ đánh giá điểm rèn luyện cũng như giấy tờ hoạt động sinh viên của lớp để gửi lên khoa, nên em cũng muốn tìm hiểu thêm về quy trình ở các cấp cao hơn. Thầy cô cho em hỏi là ở cấp Trường thì bộ hồ sơ đánh giá kết quả rèn luyện sinh viên sẽ bao gồm những thành phần và biểu mẫu cụ thể nào ạ? Ngoài ra, kỳ này tụi em trong lớp cũng đang rủ nhau lập nhóm đăng ký đề tài nghiên cứu khoa học sinh viên, em có nghe nói trường mình có nguồn kinh phí hỗ trợ riêng cho hoạt động này, thầy cô cho em hỏi kinh phí hỗ trợ NCKH của sinh viên được trích từ những nguồn nào theo quy định ạ?"
+  dap_an_nhap: |-
+    1. Về hồ sơ đánh giá rèn luyện sinh viên cấp Trường:
+    Gồm các văn bản, giấy tờ sau:
+    - Biên bản họp Hội đồng đánh giá rèn luyện cấp Trường (Thư ký và Chủ tịch Hội đồng ký biên bản) – Mẫu 3.
+    - Hồ sơ đánh giá kết quả rèn luyện của các đơn vị quản lý sinh viên (Biên bản và bảng kết quả đánh giá rèn luyện sinh viên đã được Hội đồng cấp Khoa thông qua).
+    - Quyết định công nhận kết quả rèn luyện sinh viên; Quyết định tạm nghỉ học, buộc thôi học đối với sinh viên đạt kết quả rèn luyện yếu, kém; các quyết định khác liên quan đến đánh giá kết quả rèn luyện (nếu có) và bảng kết quả đánh giá rèn luyện sinh viên hệ chính quy toàn Trường – Mẫu 3a.
+
+    2. Về nguồn kinh phí hỗ trợ cho hoạt động NCKH của sinh viên:
+    Hằng năm, Hiệu trưởng ra quyết định dành một khoản kinh phí thích hợp để hỗ trợ cho hoạt động NCKH của sinh viên. Kinh phí này được trích từ các nguồn sau:
+    - Kinh phí KH&CN: Chi cho khen thưởng (Quỹ hỗ trợ hoạt động Khoa học và Công nghệ Trường Đại học Sư phạm Thành phố Hồ Chí Minh); tổ chức Hội nghị cấp Trường, cấp Khoa; hỗ trợ cho SV.
+    - Kinh phí đào tạo thường xuyên: Chi cho công tác hướng dẫn, tổ chức bảo vệ, đánh giá đề tài tại Khoa đào tạo.
+    - Tài trợ từ các trung tâm, đoàn thể, cá nhân trong và ngoài nước.
+  y_bat_buoc:
+    - "Biên bản họp Hội đồng đánh giá rèn luyện cấp Trường (Thư ký và Chủ tịch Hội đồng ký biên bản) – Mẫu 3[cite: 2]"
+    - "Hồ sơ đánh giá của các đơn vị quản lý sinh viên (Biên bản và bảng kết quả đã được Hội đồng cấp Khoa thông qua)[cite: 2]"
+    - "Quyết định công nhận kết quả rèn luyện; Quyết định tạm nghỉ học, buộc thôi học với SV yếu, kém; quyết định khác liên quan và bảng kết quả đánh giá rèn luyện toàn Trường – Mẫu 3a[cite: 2]"
+    - "Kinh phí KH&CN (khen thưởng từ Quỹ hỗ trợ hoạt động KH&CN, tổ chức Hội nghị cấp Trường, cấp Khoa, hỗ trợ SV)[cite: 2]"
+    - "Kinh phí đào tạo thường xuyên (hướng dẫn, tổ chức bảo vệ, đánh giá đề tài tại Khoa đào tạo)[cite: 2]"
+    - "Tài trợ từ các trung tâm, đoàn thể, cá nhân trong và ngoài nước[cite: 2]"
+  nguon:
+    - "Đ21: Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022), III. Hồ sơ đánh giá rèn luyện sinh viên cấp Trường"
+    - "Đ22: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 10"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-123
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, theo quy chế ctsv thì sv không được làm những hành vi gian lận nào trong học tập, thi cử ạ? Với lại khi làm nckh thì quy định mỗi đề tài tối đa bao nhiêu sv tham gia và cần đạt bao nhiêu điểm để được xếp loại Xuất sắc thế ạ?"
+  dap_an_nhap: |-
+    1. Về các hành vi gian lận trong học tập, kiểm tra, thi cử sinh viên không được làm (Điều 10):
+    - Quay cóp, mang tài liệu vào phòng thi, xin điểm.
+    - Học, thi, thực tập hộ người khác hoặc nhờ người khác học, thi, thực tập hộ.
+    - Sao chép, nhờ hoặc làm hộ tiểu luận, đồ án, khóa luận tốt nghiệp.
+    - Tổ chức hoặc tham gia tổ chức thi hộ hoặc các hành vi gian lận khác.
+
+    2. Về quy định số lượng người thực hiện và mức điểm xếp loại Xuất sắc đề tài NCKH của sinh viên (Điều 7):
+    - Người hướng dẫn và số lượng sinh viên: Mỗi đề tài NCKH của sinh viên chỉ do 01 người hướng dẫn và tối đa không quá 05 sinh viên tham gia thực hiện, trong đó phải xác định một sinh viên chịu trách nhiệm chính.
+    - Điểm xếp loại Xuất sắc: Căn cứ vào điểm trung bình cuối cùng (theo thang 100 điểm) của các thành viên hội đồng có mặt, đề tài được xếp loại ở mức Xuất sắc khi đạt từ 90 điểm trở lên.
+  y_bat_buoc:
+    - "Hành vi gian lận bị cấm: quay cóp, mang tài liệu vào phòng thi, xin điểm[cite: 2]"
+    - "Học, thi, thực tập hộ hoặc nhờ người khác học, thi, thực tập hộ[cite: 2]"
+    - "Sao chép, nhờ hoặc làm hộ tiểu luận, đồ án, khóa luận tốt nghiệp; tổ chức hoặc tham gia tổ chức thi hộ[cite: 2]"
+    - "Mỗi đề tài chỉ do 01 người hướng dẫn[cite: 2]"
+    - "Tối đa không quá 05 sinh viên tham gia thực hiện, xác định 01 sinh viên chịu trách nhiệm chính[cite: 2]"
+    - "Xếp loại Xuất sắc: điểm trung bình cuối cùng từ 90 điểm trở lên (thang điểm 100)[cite: 2]"
+  nguon:
+    - "Đ8: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+    - "Đ23: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 7"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ8 không nêu hệ quả vi phạm cụ thể mà chỉ quy định các hành vi không được làm, nên yêu cầu 1 chuyển sang hỏi về các hành vi gian lận trong học tập, thi cử mà sinh viên không được làm."
+
+- phieu: V4-125
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ em chào quý thầy cô ạ. Em là sinh viên năm cuối, đợt này em đang làm khóa luận tốt nghiệp về đề tài văn hóa công sở và đạo đức nghề nghiệp trong môi trường sư phạm của trường mình. Trong quá trình tìm hiểu các văn bản nội bộ để trích dẫn vào bài luận, em có đọc Quy định quy tắc ứng xử nhưng muốn hiểu rõ hơn một số điểm. Thầy cô cho em hỏi là theo quy định của Nhà trường thì viên chức khi ứng xử với cấp trên và đồng nghiệp cần tuân theo những chuẩn mực gì, và có những lưu ý hay điều cấm kỵ nào trong việc góp ý, phê bình không ạ? Ngoài ra, việc khen thưởng và xử lý kỷ luật đối với các cá nhân, đơn vị thực hiện tốt hoặc vi phạm quy tắc ứng xử này được quy định cụ thể như thế nào ạ?"
+  dap_an_nhap: |-
+    1. Về quy tắc ứng xử giữa viên chức với cấp trên và đồng nghiệp (Điều 7):
+    - Ứng xử với cấp trên:
+      + Có thái độ tôn trọng, nghiêm chỉnh chấp hành sự chỉ đạo, điều hành và phân công công việc của cấp trên.
+      + Đóng góp ý kiến với cấp trên với tinh thần xây dựng, nhằm khắc phục kịp thời những tồn tại, hạn chế và đổi mới công tác chỉ đạo, điều hành.
+      + Không được lợi dụng việc góp ý, phê bình làm ảnh hưởng đến uy tín, danh dự của cấp trên.
+    - Ứng xử với đồng nghiệp:
+      + Chủ động, tích cực phối hợp, hỗ trợ đồng nghiệp trong thực hiện nhiệm vụ.
+      + Chân thành, thân thiện trong quan hệ với đồng nghiệp.
+      + Không được lợi dụng việc góp ý, phê bình làm ảnh hưởng đến uy tín, danh dự của đồng nghiệp.
+
+    2. Về khen thưởng và kỷ luật (Điều 17):
+    - Khen thưởng: Viên chức, người lao động và người học thực hiện tốt Quy định này sẽ đạt điều kiện được xem xét các hình thức khen thưởng.
+    - Kỷ luật: Các đơn vị, cá nhân vi phạm Quy định này, tuỳ theo tính chất, mức độ sẽ bị xem xét xử lý theo quy định.
+  y_bat_buoc:
+    - "Với cấp trên: Tôn trọng, nghiêm chỉnh chấp hành chỉ đạo, phân công; góp ý với tinh thần xây dựng[cite: 2]"
+    - "Với đồng nghiệp: Chủ động hỗ trợ, phối hợp; chân thành, thân thiện[cite: 2]"
+    - "Không được lợi dụng việc góp ý, phê bình làm ảnh hưởng đến uy tín, danh dự của cấp trên và đồng nghiệp[cite: 2]"
+    - "Khen thưởng: Thực hiện tốt đạt điều kiện được xem xét các hình thức khen thưởng[cite: 2]"
+    - "Kỷ luật: Đơn vị, cá nhân vi phạm tuỳ theo tính chất, mức độ sẽ bị xem xét xử lý theo quy định[cite: 2]"
+  nguon:
+    - "Đ24: Quy định quy tắc ứng xử của viên chức, người lao động và người học Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 7"
+    - "Đ25: Quy định quy tắc ứng xử của viên chức, người lao động và người học Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 17"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ24 không nêu hệ quả vi phạm cụ thể, nên yêu cầu 1 chuyển sang hỏi về quy tắc ứng xử và điều cấm khi góp ý, phê bình giữa viên chức với cấp trên và đồng nghiệp."
+
+- phieu: V4-126
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Bạn ơi cho mình hỏi tiêu chí và khung điểm đánh giá về ý thức học tập trong điểm rèn luyện được quy định thế nào? Với lại sinh viên sư phạm được hỗ trợ học phí và sinh hoạt phí ở mức bao nhiêu, thời gian hỗ trợ tối đa là mấy tháng một năm và nếu đào tạo theo tín chỉ thì tính ra sao?"
+  dap_an_nhap: |-
+    1. Về đánh giá ý thức học tập trong kết quả rèn luyện (Điều 4):
+    - Khung điểm đánh giá: Từ 0 đến 20 điểm.
+    - Các tiêu chí xác định điểm đánh giá:
+      + Ý thức và thái độ trong học tập;
+      + Ý thức và thái độ tham gia các câu lạc bộ học thuật, các hoạt động học thuật, hoạt động ngoại khóa, hoạt động NCKH;
+      + Ý thức và thái độ tham gia các kỳ thi, cuộc thi;
+      + Kết quả học tập;
+      + Tinh thần vượt khó, phấn đấu vươn lên trong học tập.
+
+    2. Về mức hỗ trợ và thời gian hỗ trợ đối với sinh viên sư phạm (Điều 4):
+    - Mức hỗ trợ:
+      + Hỗ trợ tiền đóng học phí: Bằng mức thu học phí của cơ sở đào tạo giáo viên nơi theo học.
+      + Hỗ trợ chi phí sinh hoạt: 3,63 triệu đồng/tháng trong thời gian học tập tại trường.
+    - Thời gian và giới hạn hỗ trợ:
+      + Xác định theo số tháng thực tế học tập tại trường theo quy định, nhưng không quá 10 tháng/năm học.
+      + Trường hợp giảng dạy theo học chế tín chỉ: Cơ sở đào tạo có thể quy đổi mức hỗ trợ cho phù hợp với học chế tín chỉ. Tổng kinh phí hỗ trợ của cả khóa học theo học chế tín chỉ không vượt quá mức hỗ trợ quy định cho khóa học theo năm học.
+  y_bat_buoc:
+    - "Khung điểm đánh giá ý thức học tập: từ 0 đến 20 điểm[cite: 2]"
+    - "Các tiêu chí đánh giá ý thức học tập: ý thức, thái độ học tập; tham gia CLB học thuật, hoạt động học thuật, ngoại khóa, NCKH; tham gia kỳ thi, cuộc thi; kết quả học tập; tinh thần vượt khó[cite: 2]"
+    - "Hỗ trợ học phí bằng mức thu học phí của cơ sở đào tạo[cite: 2]"
+    - "Hỗ trợ chi phí sinh hoạt: 3,63 triệu đồng/tháng[cite: 2]"
+    - "Thời gian hỗ trợ theo số tháng thực tế nhưng không quá 10 tháng/năm học[cite: 2]"
+    - "Đào tạo theo tín chỉ: tổng kinh phí hỗ trợ cả khóa học không vượt quá mức hỗ trợ quy định cho khóa học theo năm học[cite: 2]"
+  nguon:
+    - "Đ26: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 4"
+    - "Đ27: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 4"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ27 không quy định hệ quả vi phạm mà chỉ có giới hạn thời gian hỗ trợ và trường hợp theo học chế tín chỉ, nên yêu cầu 2 hỏi về mức hỗ trợ và giới hạn thời gian hỗ trợ theo quy định."

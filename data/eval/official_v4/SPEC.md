@@ -29,7 +29,7 @@ author nor its models wrote.
    `khong_phu_hop`, a near-duplicate of v1–v3), logged before any run.
 5. **Run once**, end to end, on the frozen final system.
 
-## Allocation (246 base tickets + 36 variants)
+## Allocation (246 tickets)
 
 | Family | Cells | Tickets |
 |---|---|---:|
@@ -39,18 +39,15 @@ author nor its models wrote.
 | D. Relation | programme → faculty contact 6, service → unit contact 6 | 12 |
 | E. Conversation (two turns, the second is scored) | cohort switch, entity switch, pronoun, topic switch, 6 each | 24 |
 | F. Boundary | missing information 6, partly answerable 6, in domain but not in the handbook 8, out of domain 6, mixed 4 | 30 |
-| G. Variants | 36 A/B tickets written naturally get one rewrite each: informal, no diacritics or typos, long context (12 each) | 36 |
 
-- **Size.** About 280 cases give an overall 95% interval of about ±4 points
-  (v3: ±6 with 132). Families of 24 or more are reported on their own (about
+- **Size.** 246 cases give an overall 95% interval of about ±4 points at 90%
+  (v3: ±6 with 132); clustering widens it a little. Families of 24 or more are reported on their own (about
   ±12 points); cells of 6 are descriptive only.
 - **Cohorts.** Tickets rotate K48-K49, K50 and K51 within each cell. The six
   foreign-language table tickets are all K50, because only the K50 handbook has
   the certificate equivalence table; a ticket always takes its source's cohort.
 - **Styles** over the base tickets, assigned at random: natural 50%, informal
   20%, no diacritics or typos 15%, long context 15%.
-- **Variants** are scored with their base case as one cluster, so a pair does not
-  count as two independent observations.
 - **Repeated content.** The three cohorts' handbooks share many articles and the
   two formulas, so some tickets ask the same thing. Cases whose required facts
   overlap by 80% or more (word 3-grams) are scored as one cluster, decided from the
@@ -89,9 +86,8 @@ author nor its models wrote.
 | Batch 01 (30 tickets) | Gemini 3.8 Flash | done: 30 of 30 written, all facts found in their excerpts; 3 consequence tickets asked another kind, as allowed |
 | Batch 02 (25 tickets) | Gemini 3.8 Flash | done: 25 of 25 written, all facts found in their excerpts; 5 of 10 procedure tickets asked another kind |
 | Batch 03 (28 tickets) | Gemini 3.8 Flash | done: 28 of 28 written; facts in their excerpts, and the three computed scholarship scores recomputed correct |
-| Batches 01–12 | external author | pending |
-| Variants (G): rewrite 36 authored questions | external author | pending (needs the authored base) |
-| Planner gold labels; fact check against the data; overlap check with v1–v3 | maintainer, scripts | pending |
+| Batches 04–12 | external author | pending |
+| Fact check against the data; overlap check with v1–v3; clusters | scripts | pending |
 | Owner review of a random sample of about 30 cases | owner | pending |
 | Freeze and run once, end to end | | pending |
 
@@ -118,7 +114,18 @@ tickets were redrawn with the same seed after the fixes below. No system was run
 - The author is a language model, not students; the questions are still
   synthetic. A set of real questions collected after the deploy remains the
   test of realism.
-- The ticket draw and the planner gold labels are made by the system's
-  maintainer. The draw is random with a fixed seed; the labels are checked by
-  the owner on a sample.
+- The ticket draw is made by the system's maintainer, at random with a fixed
+  seed.
+- v4 measures the final answer, not the planner on its own: planner labels
+  were dropped to keep the set small (2026-09-30). Failed cases are traced to
+  the planner, retrieval or the composer after the run. The planner's own
+  hold-out figure remains v3's 87.1% before the fix.
+- Robustness to rewording is seen only through the mix of writing styles; the
+  36 paired variants in the first design were dropped with the planner labels.
+  The `variant_style` field in `tickets.json` is left from the draw and unused.
+- Some drawn articles give questions few students would ask (staff conduct, a
+  unit's internal duties, the legal basis of a notice); they stay in the set,
+  and the owner's review can mark them.
+- Procedure and consequence tickets often fell back to another question kind
+  when the article had none; results are reported by the kind actually asked.
 - The judge (`openai/gpt-oss-120b`) has not been compared with a human rater.

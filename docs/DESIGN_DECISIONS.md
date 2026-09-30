@@ -524,6 +524,67 @@ smoke the fix moved hallucination from 2/10 to 0/10 on the same answers. The
 2026-09-28 run was judged before the fix, when the composer did not yet name
 documents.
 
+## Held-out end-to-end result (official_v4, 2026-09-30)
+
+`official_v4` is 246 authored questions over 229 clusters, written against the
+handbook and frozen before any of them was run (`data/eval/official_v4/SPEC.md`
+fixes the metrics, the cluster bootstrap and the rerun rules). Full figures and
+caveats are in `data/eval/official_v4/RESULTS.md`.
+
+| | Run A, hold-out | Run B, after the fixes |
+|---|---:|---:|
+| Commit | `d3db167e` | `c23e027a` |
+| **answer_correctness** | **0.926** | **0.942** |
+| 95% CI over clusters | 0.899 – 0.950 | 0.920 – 0.962 |
+| Hallucination rate | 0.093 | 0.130 |
+| Critical false passes | 0 | 0 |
+| Answers scoring 0.0 | 5 | 2 |
+
+Run A is the hold-out: its code predates any sight of a v4 answer. Run B adds
+the five fixes below, which were written after the 4B ablation was read, so it
+describes the deployed system and is never quoted as a hold-out figure.
+
+Paired over clusters, B − A is +0.016 with a 95% CI of [−0.008, +0.041]: over
+the whole set the improvement is not established. It is established where it
+was expected — unaccented and mistyped questions gained +0.124 (CI +0.034 to
++0.233, 0.834 → 0.958), which is what the BM25 fix targets — and absent
+everywhere else (−0.013, CI −0.036 to +0.007).
+
+The rising hallucination rate is the judge objecting to detail beyond the
+sources on answers it also scores correct: 23 of run B's 32 flagged cases score
+1.0. Wrong answers fell from 5 to 2, and both of run B's wrong answers came
+from planner and composer variance rather than from a fix (in one the query
+plan and the resolved table row are identical in both runs).
+
+### The five fixes, found by reading the 4B ablation
+
+| Fix | What was wrong |
+|---|---|
+| `bm25_retriever` indexes and queries both spellings | an unaccented question could not match accented handbook text |
+| `catalog_relationship` accepts several service rows of one unit | a service question could not join to its office |
+| `scholarship_lookup` matches a label as a whole word | "khác" was read as "Khá" |
+| `foreign_language_lookup` matches a code as a whole word, and answers a named level from that column whenever the table fills it | "N30" was read as "N3"; a level column holding a score range was never matched |
+| `query_plan` gives a single-task follow-up the standalone query | the scope named earlier in the conversation was dropped |
+
+Only the BM25 fix has a measured end-to-end benefit. The `query_plan` fix was
+compared on `official_v2`'s 25 follow-ups against the pre-patch normalizer with
+one planner call feeding both: it changed 6 questions and lost no scope term,
+which passes its criterion without showing a gain. The two whole-word fixes
+carry regression tests and no measured v4 effect.
+
+### Availability during the runs
+
+Both runs were made from one home network on a day when every provider was
+slow; a request that runs no model took 1.5–2.4 s. Run A's first pass lost
+dense retrieval to the 5 s embedding timeout in 108 of 246 cases (those cases
+scored 0.932 against 0.924 for the intact ones, so the BM25 fallback held), and
+the rule for rerunning them was added after those scores were read, which
+`RESULTS.md` states. Reruns and run B used
+`configs/retrieval_eval_patient.yaml`, which raises the embedding and reranker
+waits to 30 s and changes nothing else; deployment keeps `configs/retrieval.yaml`.
+Whether the deployed timeouts should rise has to be decided on latency measured
+from the deployment, not from this network.
+
 ## What these measurements do not show
 
 - A comparison with plain RAG (no planner) or with a long-context model given the
@@ -588,6 +649,10 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Thinking off against low, judged | `measurements_20260928/results/v330/` (`off_judge.json`, `low_judge.json`) |
 | End-to-end development questions | `supplementary_questions_20260928T231521Z` |
 | Planner input with and without the slang rewrite | `official_v1_deterministic_20260929T045740Z` (with), `…T051501Z` (without) |
+| official_v4 run A (hold-out) and run B (after the fixes) | `official_v4_answers_20260930T112153Z` (run A, in the `student_handbook_rag_voyage` worktree) and `official_v4_answers_20260930T152637Z` (run B), each with its `v4_report.json`; ablations `…T060046Z` (8B, 105 cases without a reranker) and `…T063041Z` (4B) |
+| Reranker comparison on v1 with shared candidates | `reranker_compare_v1/` and `reranker_compare_v1_patched/` |
+| query_plan normalizer, patched against frozen | `plan_normalizer_compare/` |
+| Structured lookup audit over every table and cohort | `structured_lookup_audit/` |
 | Retrieval with and without query expansion | `official_v1_retrieval_20260929T045526Z` (with), `…T052455Z` (without) |
 | Slang probe | `measurements_20260928/results/slang_probe/` (`slang_probe.py`) |
 | "Where" questions and table-adjacent rules | `table_adjacent_questions_20260929_run1-3` and `regwhere_v53_20260929_run1-3` (v53); `where_v54_20260929_run1-3`, `official_v1_deterministic_20260929T124205Z` and `official_v2_deterministic_20260929T125553Z` (v54); `where_all_v55_20260929_run1-3` (v55); `official_v2_deterministic_20260929T111444Z` (v53, before the fact-lock grounding fix) |

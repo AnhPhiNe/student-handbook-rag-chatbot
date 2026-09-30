@@ -105,8 +105,9 @@ author nor its models wrote.
 | Batch 12 (22 tickets) | Gemini 3.8 Flash | done: 22 of 22 written; facts in their excerpts (the JLPT levels N4 and N3 checked by hand) |
 | All batches | | done: 246 of 246 tickets written, none refused; 36 asked another question kind, as allowed |
 | Fact check against the data; overlap check with v1–v3; clusters | scripts | done: every number and worded fact in its excerpts (computed values rechecked by hand); no question reaches 0.5 word-3-gram overlap with the 725 questions of v1–v3; 229 clusters, 11 of them with more than one case |
-| Gold review of all 246 cases against their excerpts and the handbook | system author with Claude (an AI assistant), at the owner's request instead of the 30-case owner sample | done 2026-09-30: 6 cases' gold adjusted and one scoring rule added (`gold_adjustments.yaml`, AUTHORING_LOG.md); not an independent human review |
-| Freeze and run once, end to end | | pending |
+| Gold review of all 246 cases against their excerpts and the handbook | system author with Claude (an AI assistant), at the owner's request instead of the 30-case owner sample | done 2026-09-30: 5 cases' gold adjusted and one scoring rule added for the 8 refusal cases (`gold_adjustments.yaml`, AUTHORING_LOG.md); not an independent human review |
+| Convert and freeze | `scripts/build_v4_cases.py` | done 2026-09-30: `generated_answer_cases.json` (246 cases, 229 clusters) applies `gold_adjustments.yaml`; frozen at the commit that adds it, and each run snapshot records the file's `dataset_sha256`. `tests/test_official_v4.py` fails if the file drifts from its sources |
+| Run once, end to end | `scripts/run_official_answers.py --suite answers --bundle official_v4` | pending owner approval (paid) |
 
 ## Pilot 1 (2026-09-30)
 

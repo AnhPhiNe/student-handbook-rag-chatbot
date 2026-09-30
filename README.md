@@ -87,24 +87,12 @@ flowchart TD
     Parents --> Merge
     Clarify --> Merge
     Merge --> Packet["Guards and evidence packet<br/>citations, context budget"]
-    Packet -->|answerable, cache miss| Composer["Composer: DeepSeek flash, thinking off<br/>sync or streaming"]
-    Packet -->|cache hit| Cache[("Response cache<br/>Redis or in-memory")]
+    Packet -->|answerable| Composer["Composer: DeepSeek flash, thinking off<br/>sync or streaming"]
     Composer --> API
-    Cache --> API
 ```
 
-**Reading the diagram**, three things that are easy to misread:
+**Reading the diagram**, two things that are easy to misread:
 
-- **The response cache sits after the evidence packet, not before it.** That looks
-  backwards, but the cache key is not the question - it is a SHA-256 over the question,
-  cohort, selected citations, structured result, a context fingerprint, and the pipeline
-  and prompt versions. Four of those only exist once planning and retrieval have run, so
-  the key cannot be computed any earlier. This is deliberate: a corpus change, a
-  different retrieval result or a prompt-version bump all change the key, so a stale
-  answer can never be served for a regulation that has since moved. The cost is that a
-  hit only saves the composer call - the production run shows warm-cache p50 at 2,396 ms
-  against 6,852 ms cold, about 4.5 s saved, with planner and retrieval still paid in
-  full.
 - **The normalizer, not the planner, decides what actually runs.** The planner is an LLM
   and is treated as untrusted: it proposes a typed plan, and the normalizer validates
   every task against the question text and the lookup registry before a single lookup
@@ -120,7 +108,7 @@ flowchart TD
 2. **Plan.** Student slang and abbreviations are expanded, then the planner splits the question into typed tasks. The normalizer validates and canonicalizes that plan before anything runs.
 3. **Execute.** Each task runs per cohort. Structured tasks read reviewed tables and directories. RAG tasks retrieve narrative chunks, rerank them and expand them to full articles. Clarify tasks carry the question to ask.
 4. **Guard.** Task results are merged without mixing cohorts. If nothing can be answered, the request stops with an explicit status and no composer call.
-5. **Compose.** The evidence packet goes through the response cache, then to the DeepSeek composer. The model answers the covered tasks and asks for anything missing.
+5. **Compose.** The evidence packet goes to the DeepSeek composer. The model answers the covered tasks and asks for anything missing.
 6. **Deliver.** The same prepared answer is returned as JSON (`/chat`) or streamed as server-sent events (`/chat/stream`), with citations, structured results and related-article links.
 
 | Situation | Outcome |
@@ -314,7 +302,6 @@ sequenceDiagram
     participant P as AnswerPipeline
     participant G as Luna planner
     participant S as Qdrant, BM25, MongoDB
-    participant R as Response cache
     participant M as DeepSeek composer
     C->>A: question, cohort, recent history
     A-->>C: queued (repeats while waiting for a slot)
@@ -328,16 +315,10 @@ sequenceDiagram
     alt nothing answerable
         P-->>C: token (clarification or out-of-scope reply), done
     else answerable
-        P->>R: evidence-bound cache key
-        alt cache hit
-            P-->>C: metadata, token (cached answer), done
-        else cache miss
-            P-->>C: progress (composing), metadata (citations, tables)
-            P->>M: evidence packet
-            M-->>P: text chunks
-            P-->>C: token, token, ..., done
-            P->>R: store the answer
-        end
+        P-->>C: progress (composing), metadata (citations, tables)
+        P->>M: evidence packet
+        M-->>P: text chunks
+        P-->>C: token, token, ..., done
     end
     A-)A: send the trace to LangSmith in the background
 ```
@@ -541,7 +522,7 @@ python -m scripts.run_official_answers --bundle official_v1 --suite production -
 python -m scripts.report_official_slices <run>/deterministic.json --bundle official_v2
 ```
 
-Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`. `--limit N` runs a smoke subset, and `--output DIR` resumes an interrupted run. `--retrieval-mode no_graph` or `--retrieval-mode vector_only` runs a retrieval ablation. [`regrade_official_deterministic.py`](scripts/regrade_official_deterministic.py) rescores a saved run without any model calls. The suites disable the router and response caches, and they call paid providers.
+Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`. `--limit N` runs a smoke subset, and `--output DIR` resumes an interrupted run. `--retrieval-mode no_graph` or `--retrieval-mode vector_only` runs a retrieval ablation. [`regrade_official_deterministic.py`](scripts/regrade_official_deterministic.py) rescores a saved run without any model calls. The suites disable the router cache, and they call paid providers.
 
 ## Getting started
 
@@ -549,7 +530,7 @@ Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`.
 
 - Python 3.11 and Node.js 20
 - A Qdrant collection and a MongoDB database loaded from the v35 build (see [Offline build](#offline-build))
-- API keys for OpenAI (planner), DeepSeek (composer and directory selector) and DeepInfra (BGE-M3 embeddings and the Qwen3-Reranker-8B reranker). Redis (shared cache) and LangSmith (tracing) are optional.
+- API keys for OpenAI (planner), DeepSeek (composer and directory selector) and DeepInfra (BGE-M3 embeddings and the Qwen3-Reranker-8B reranker). LangSmith (tracing) is optional.
 
 ### Backend
 
@@ -571,7 +552,6 @@ Interactive API docs are then served at `http://127.0.0.1:8000/docs`.
 | `GROQ_API_KEYS` | no | Evaluation judge only |
 | `DEEPSEEK_API_KEY` | yes | Composer (`llm`) and directory selector, which picks the service, office, faculty or program a student names when no name matches exactly (`directory_selector`); both in `configs/answer_generation.yaml` |
 | `DEEPINFRA_API_KEY` | yes | BGE-M3 query and document embeddings, and the Qwen3-Reranker-8B reranker (`configs/retrieval.yaml`); a reranker failure keeps the RRF order |
-| `REDIS_URL` | no | Shared response cache; without it an in-memory cache is used |
 | `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT` | no | Request tracing and user feedback |
 | `STUDENT_RAG_CORS_ORIGINS` | no | Comma-separated browser origins allowed to call the API (needed when the frontend is on another domain) |
 | `STUDENT_RAG_ADMIN_API_KEY` | no | Enables `/health/artifacts` through the `X-Admin-API-Key` header |
@@ -604,7 +584,7 @@ python -m ruff check src tests --select E,F --ignore E402,E501
 python scripts/check_deploy_artifacts.py # required runtime files and build manifest
 ```
 
-The test suite covers the API contracts, planner prompt and normalizer, every structured lookup, retrieval fusion and reranking, the key pools, the response cache, the build scripts and the evaluators. No test needs network access or API keys. CI runs these checks, plus the frontend lint and build, on every push and pull request to `main`.
+The test suite covers the API contracts, planner prompt and normalizer, every structured lookup, retrieval fusion and reranking, the key pools, the build scripts and the evaluators. No test needs network access or API keys. CI runs these checks, plus the frontend lint and build, on every push and pull request to `main`.
 
 Behavior-preserving refactors are also checked with an equivalence test: a byte-for-byte rebuild of `data/processed/` for build code, an offline regrade of saved evaluation runs for evaluators, or a fake-provider comparison for provider clients.
 
@@ -618,7 +598,7 @@ Behavior-preserving refactors are also checked with an equivalence test: a byte-
 | `GET` | `/health` | Liveness |
 | `GET` | `/health/readiness` | Qdrant, MongoDB, BM25 and artifact readiness |
 | `GET` | `/health/artifacts` | Required files and configuration (admin key required) |
-| `GET` | `/api/metrics/visits` | Visitor counter backed by Redis |
+| `GET` | `/api/metrics/visits` | Visitor counter kept in MongoDB |
 
 ```bash
 curl -X POST http://127.0.0.1:8000/chat \
@@ -645,7 +625,7 @@ Conversation history lives in the browser's `sessionStorage` and is sent with ea
 | Admission control | At most 3 chats at a time, a queue of 10 and a 30 s wait; beyond that, HTTP 503 for `/chat` or a `server_busy` event for `/chat/stream` |
 | Rate limits | Code defaults are 5 requests per minute per client, 120 per minute per IP and a 1,000-character question limit, all overridable; the shipped `.env.example` raises the per-client limit to 20/min and tightens the question limit to 500 characters. Over the limit returns HTTP 429 with `Retry-After` |
 | Provider quotas | One `KeyPool` per provider rotates keys under per-key request, token and daily limits and cools a key down after a 429 |
-| Caching | A router cache for plans, and an answer cache keyed by the question, cohort, selected evidence and prompt versions (Redis, 24 h TTL, or an in-memory fallback) |
+| Caching | A router cache for plans only. Answers are not cached: exact repeats were 4 of 78 real requests, and a cached reply defeated the regenerate button |
 | Observability | One LangSmith trace per request, with child runs and token usage for the planner and the composer; feedback is attached to the same run |
 | Health | `/health` for liveness, `/health/readiness` for Qdrant, MongoDB, BM25 and artifacts, and an admin-only `/health/artifacts` |
 | Cold start | `STUDENT_RAG_WARMUP_ON_STARTUP` (set by the Dockerfile) builds the pipeline and the BM25 index on a background thread at boot, so the first question costs what the second does. Off by default locally, so a shell or a test run builds nothing it does not use |
@@ -685,7 +665,7 @@ A suggested reading order for the backend: [`schemas.py`](src/api/schemas.py), t
 | Configuration | Controls |
 |---|---|
 | [`ai_router.yaml`](configs/ai_router.yaml) | Planner model, output budget and key-pool limits |
-| [`answer_generation.yaml`](configs/answer_generation.yaml) | Composer model, response cache and key-pool limits |
+| [`answer_generation.yaml`](configs/answer_generation.yaml) | Composer model, directory selector and key-pool limits |
 | [`retrieval.yaml`](configs/retrieval.yaml) | Embedding model, top-k and reranker settings |
 | [`structured_lookup_registry.yaml`](configs/structured_lookup_registry.yaml) | Lookup capabilities, slots and aliases shown to the planner |
 | [`hcmue_slang_dictionary.yaml`](configs/hcmue_slang_dictionary.yaml) | Student slang and abbreviation normalization |

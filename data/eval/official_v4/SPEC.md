@@ -85,7 +85,7 @@ author nor its models wrote.
 | Draw tickets and batches | `scripts/draw_v4_tickets.py` | done (246 tickets, 13 batches) |
 | Pilot 1 (15 tickets) | Gemini 3.8 Flash | done, questions discarded (below) |
 | Batch 00 (pilot 2, 15 tickets) | Gemini 3.8 Flash | done: 15 of 15 written, all facts found in their excerpts, 1 reclassified (AUTHORING_LOG.md) |
-| Check each batch | `scripts/check_v4_authored.py N` | done for 00–09 |
+| Check each batch | `scripts/check_v4_authored.py N` | done for 00–10 |
 | Batch 01 (30 tickets) | Gemini 3.8 Flash | done: 30 of 30 written, all facts found in their excerpts; 3 consequence tickets asked another kind, as allowed |
 | Batch 02 (25 tickets) | Gemini 3.8 Flash | done: 25 of 25 written, all facts found in their excerpts; 5 of 10 procedure tickets asked another kind |
 | Batch 03 (28 tickets) | Gemini 3.8 Flash | done: 28 of 28 written; facts in their excerpts, and the three computed scholarship scores recomputed correct |
@@ -95,7 +95,8 @@ author nor its models wrote.
 | Batch 07 (22 tickets) | Gemini 3.8 Flash | done: 22 of 22 written; facts in their excerpts, the computed scores (3,56, 3,70, 3,52) recomputed correct |
 | Batch 08 (11 tickets) | Gemini 3.8 Flash | done: 11 of 11 written; facts in their excerpts, the computed average (3,50) recomputed correct |
 | Batch 09 (16 tickets) | Gemini 3.8 Flash | done: 16 of 16 written; facts in their excerpts, including the cohort differences (7,5 and 9 years; 6 and 8 years) |
-| Batches 10–12 | external author | pending |
+| Batch 10 (27 tickets) | Gemini 3.8 Flash | done: 27 of 27 written; facts in their excerpts; V4-175 follows the amended K51 table (D+ fails in the remaining courses) |
+| Batches 11–12 | external author | pending |
 | Fact check against the data; overlap check with v1–v3; clusters | scripts | pending |
 | Owner review of a random sample of about 30 cases | owner | pending |
 | Freeze and run once, end to end | | pending |

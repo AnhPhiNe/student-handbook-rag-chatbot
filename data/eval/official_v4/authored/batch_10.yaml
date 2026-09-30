@@ -1,0 +1,438 @@
+- phieu: V4-175
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho mình hỏi đối với các học phần còn lại, mức điểm thang 10 từ 8,5 đến 10 với từ 4,8 đến 5,4 thì quy đổi ra điểm chữ gì và xếp loại đạt hay không đạt vậy?"
+  dap_an_nhap: "Theo quy định đánh giá đối với các học phần còn lại:\n- Thang điểm 10 từ 8,5 – 10: quy đổi thành điểm chữ A, xếp loại Đạt.\n- Thang điểm 10 từ 4,8 – 5,4: quy đổi thành điểm chữ D+, xếp loại Không đạt."
+  y_bat_buoc:
+    - "Thang điểm 10 từ 8,5 – 10: quy đổi thành điểm chữ A, xếp loại Đạt"
+    - "Thang điểm 10 từ 4,8 – 5,4: quy đổi thành điểm chữ D+, xếp loại Không đạt"
+  nguon:
+    - "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-180
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thời gian học tập chuẩn và tối đa của hình thức chính quy khác với hình thức vừa làm vừa học như thế nào vậy ạ?"
+  dap_an_nhap: "Thời gian học tập chuẩn và tối đa giữa hai hình thức đào tạo được quy định như sau:\n- Hình thức chính quy: Thời gian học tập chuẩn là 04 năm học, thời gian học tập tối đa là 06 năm học.\n- Hình thức vừa làm vừa học: Thời gian học tập chuẩn là 05 năm học, thời gian học tập tối đa là 7,5 năm học.\n- Quy tắc đối với sinh viên liên thông: Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy ở cả hai hình thức, thời gian tối đa để hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ."
+  y_bat_buoc:
+    - "Chính quy: thời gian học tập chuẩn là 04 năm học, thời gian học tập tối đa là 06 năm học"
+    - "Vừa làm vừa học: thời gian học tập chuẩn là 05 năm học, thời gian học tập tối đa là 7,5 năm học"
+    - "Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ"
+  nguon:
+    - "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-181
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho m hoi nganh su pham hoa hoc thuoc khoa nao quan ly va cho m xin sdt vs email cua khoa voi"
+  dap_an_nhap: "Ngành Sư phạm Hoá học thuộc Khoa Hóa học quản lý. Thông tin liên hệ của Khoa Hóa học như sau:\n- Số điện thoại liên lạc: (028) 38352020 (số máy nội bộ: 107, 108)\n- Email: khoahoahoc@hcmue.edu.vn\n- Website: khoahoa.hcmue.edu.vn\n- Văn phòng làm việc: Nhà B, tầng 5, P.505, P.508, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+  y_bat_buoc:
+    - "Khoa Hóa học"
+    - "Số điện thoại: (028) 38352020 (số máy nội bộ: 107, 108)"
+    - "Email: khoahoahoc@hcmue.edu.vn"
+    - "Văn phòng: Nhà B, tầng 5, P.505, P.508, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+  nguon:
+    - "Đ3: Danh bạ trong Sổ tay sinh viên K48-K49"
+    - "Đ4: Danh bạ khoa"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-183
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Ngành Ngôn ngữ Trung Quốc thuộc khoa nào quản lý vậy ạ? Cho em xin số điện thoại và email liên hệ của khoa đó với."
+  dap_an_nhap: "Ngành Ngôn ngữ Trung Quốc thuộc Khoa Tiếng Trung. Thông tin liên hệ của Khoa Tiếng Trung gồm:\n- Số điện thoại: (028) 38352020 (số nội bộ: 131, 150, 153)\n- Email: khoatiengtrung@hcmue.edu.vn\n- Website: khoatrung.hcmue.edu.vn\n- Văn phòng làm việc: Nhà A, tầng 4, P.408, P.410, P.411, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+  y_bat_buoc:
+    - "Khoa Tiếng Trung"
+    - "Số điện thoại: (028) 38352020 (số nội bộ: 131, 150, 153)"
+    - "Email: khoatiengtrung@hcmue.edu.vn"
+    - "Văn phòng làm việc: Nhà A, tầng 4, P.408, P.410, P.411, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+  nguon:
+    - "Đ5: Danh bạ trong Sổ tay sinh viên K50"
+    - "Đ6: Danh bạ khoa"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-184
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho mình hỏi ngành Ngôn ngữ Hàn Quốc thuộc khoa nào và thông tin liên hệ của khoa gồm những gì?"
+  dap_an_nhap: "Ngành Ngôn ngữ Hàn Quốc thuộc Khoa Tiếng Hàn Quốc. Thông tin liên hệ của khoa như sau:\n- Điện thoại liên lạc: (028) 38303247 (số máy nội bộ: 222, 223)\n- Email: khoatienghan@hcmue.edu.vn\n- Website: khoatienghan.hcmue.edu.vn\n- Văn phòng làm việc: Nhà C, tầng 6, P.604, P.606, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  y_bat_buoc:
+    - "Khoa Tiếng Hàn Quốc"
+    - "Điện thoại: (028) 38303247 (số máy nội bộ: 222, 223)"
+    - "Email: khoatienghan@hcmue.edu.vn"
+    - "Văn phòng làm việc: Nhà C, tầng 6, P.604, P.606, số 280 An Dương Vương, phường Chợ Quán, TP. HCM"
+  nguon:
+    - "Đ7: Danh bạ trong Sổ tay sinh viên K51"
+    - "Đ8: Danh bạ khoa"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-185
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em muốn hỏi ngành Tâm lý học thuộc khoa nào và em có thể liên hệ với khoa qua số điện thoại, email nào ạ?"
+  dap_an_nhap: "Ngành Tâm lý học thuộc Khoa Tâm lý học. Thông tin liên hệ của Khoa Tâm lý học như sau:\n- Số điện thoại liên lạc: (028) 38352020 (số máy nội bộ: 216, 217)\n- Email: khoatlh@hcmue.edu.vn\n- Văn phòng làm việc: Nhà A, tầng 4, P.401, P.402, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+  y_bat_buoc:
+    - "Khoa Tâm lý học"
+    - "Số điện thoại liên lạc: (028) 38352020 (số máy nội bộ: 216, 217)"
+    - "Email: khoatlh@hcmue.edu.vn"
+    - "Văn phòng làm việc: Nhà A, tầng 4, P.401, P.402, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+  nguon:
+    - "Đ9: Danh bạ trong Sổ tay sinh viên K50"
+    - "Đ10: Danh bạ khoa"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-186
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Ngành Sinh học ứng dụng thuộc khoa nào vậy ạ? Bạn cho mình xin số điện thoại và địa chỉ văn phòng của khoa với."
+  dap_an_nhap: "Ngành Sinh học ứng dụng thuộc Khoa Sinh học. Thông tin liên hệ của Khoa Sinh học gồm:\n- Điện thoại liên lạc: (028) 38352020 (số máy nội bộ: 113, 114)\n- Email: khoasinhhoc@hcmue.edu.vn\n- Website: khoasinh.hcmue.edu.vn\n- Văn phòng làm việc: Nhà B, tầng 5, P.501, P.502, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  y_bat_buoc:
+    - "Khoa Sinh học"
+    - "Điện thoại: (028) 38352020 (số máy nội bộ: 113, 114)"
+    - "Email: khoasinhhoc@hcmue.edu.vn"
+    - "Văn phòng làm việc: Nhà B, tầng 5, P.501, P.502, số 280 An Dương Vương, phường Chợ Quán, TP. HCM"
+  nguon:
+    - "Đ11: Danh bạ trong Sổ tay sinh viên K51"
+    - "Đ12: Danh bạ khoa"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-187
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "m muon hoi ve cong tac khao thi voi dam bao chat luong cua truong thi lien he ai, cho m xin sdt voi dc phong voi"
+  dap_an_nhap: "Về công tác khảo thí và đảm bảo chất lượng, bạn liên hệ Phòng Khảo thí và Đảm bảo chất lượng theo thông tin sau:\n- Điện thoại: (028) 38352020\n- Email: phongkhaothi@hcmue.edu.vn\n- Địa chỉ: Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  y_bat_buoc:
+    - "Phòng Khảo thí và Đảm bảo chất lượng"
+    - "Điện thoại: (028) 38352020"
+    - "Email: phongkhaothi@hcmue.edu.vn"
+    - "Địa chỉ: Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, phường Chợ Quán, TP. HCM"
+  nguon:
+    - "Đ13: Danh bạ trong Sổ tay sinh viên K51"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-188
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Phòng học của lớp em máy vi tính và máy chiếu bị hỏng thì phải báo cho đơn vị nào ạ? Cho em xin số điện thoại và phòng làm việc của đơn vị đó với."
+  dap_an_nhap: "Để được hỗ trợ về thiết bị trình chiếu và máy vi tính lớp học, bạn liên hệ Phòng Quản trị – Thiết bị theo thông tin sau:\n- Điện thoại: (028) 38352020\n- Email: phongqttb@hcmue.edu.vn\n- Địa chỉ: Nhà C, tầng trệt, P.004, P.005, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+  y_bat_buoc:
+    - "Phòng Quản trị – Thiết bị"
+    - "Điện thoại: (028) 38352020"
+    - "Email: phongqttb@hcmue.edu.vn"
+    - "Địa chỉ: Nhà C, tầng trệt, P.004, P.005, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+  nguon:
+    - "Đ14: Danh bạ trong Sổ tay sinh viên K50"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-189
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, em có việc liên quan đến cntt cần hỗ trợ thì liên hệ phòng nào vậy ạ, cho em xin sđt với email luôn nha"
+  dap_an_nhap: "Các công tác liên quan đến Công nghệ Thông tin do Phòng Công nghệ Thông tin phụ trách. Thông tin liên hệ như sau:\n- Điện thoại: (028) 38352020\n- Email: phongcntt@hcmue.edu.vn\n- Địa chỉ: Nhà A, tầng 5, P.503, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+  y_bat_buoc:
+    - "Phòng Công nghệ Thông tin"
+    - "Điện thoại: (028) 38352020"
+    - "Email: phongcntt@hcmue.edu.vn"
+    - "Địa chỉ: Nhà A, tầng 5, P.503, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+  nguon:
+    - "Đ15: Danh bạ trong Sổ tay sinh viên K48-K49"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-190
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, bên mình muốn liên hệ về việc xuất bản và phát hành sách phục vụ sv thì liên hệ đơn vị nào, cho em xin sđt với đc văn phòng với"
+  dap_an_nhap: "Công tác xuất bản và phát hành sách phục vụ sinh viên do Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh phụ trách. Thông tin liên hệ:\n- Điện thoại: (028) 39381382\n- Email: nxb@hcmue.edu.vn\n- Địa chỉ: Nhà A, tầng trệt: P.007, tầng 1: P.114, tầng 2: P.212, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+  y_bat_buoc:
+    - "Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh"
+    - "Điện thoại: (028) 39381382"
+    - "Email: nxb@hcmue.edu.vn"
+    - "Địa chỉ: Nhà A, tầng trệt: P.007, tầng 1: P.114, tầng 2: P.212, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+  nguon:
+    - "Đ16: Danh bạ trong Sổ tay sinh viên K48-K49"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-191
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "minh muon tham gia may hoat dong trang bi ky nang thuc hanh xa hoi voi ky nang khoi nghiep thi hoi don vi nao dc vay, cho xin sdt voi email lien he nha"
+  dap_an_nhap: "Các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã hội và kỹ năng khởi nghiệp cho sinh viên do Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp phụ trách. Thông tin liên hệ:\n- Điện thoại: (028) 38352020\n- Email: csaed@hcmue.edu.vn\n- Địa chỉ: Nhà A, tầng 1, P.101, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  y_bat_buoc:
+    - "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp"
+    - "Điện thoại: (028) 38352020"
+    - "Email: csaed@hcmue.edu.vn"
+    - "Địa chỉ: Nhà A, tầng 1, P.101, số 280 An Dương Vương, phường Chợ Quán, TP. HCM"
+  nguon:
+    - "Đ17: Danh bạ trong Sổ tay sinh viên K51"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-192
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em muốn tìm hiểu về các hoạt động nghiên cứu khoa học và hội thảo khoa học về giáo dục, kỹ năng, nghiệp vụ sư phạm thì liên hệ đơn vị nào, thông tin liên lạc ra sao ạ?"
+  dap_an_nhap: "Đơn vị tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục, kỹ năng, nghiệp vụ sư phạm là Trung tâm Phát triển kỹ năng sư phạm. Thông tin liên hệ:\n- Điện thoại: (028) 38397868\n- Email: trungtamptknsp@hcmue.edu.vn\n- Địa chỉ: Nhà A, tầng 2, P.201, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+  y_bat_buoc:
+    - "Trung tâm Phát triển kỹ năng sư phạm"
+    - "Điện thoại: (028) 38397868"
+    - "Email: trungtamptknsp@hcmue.edu.vn"
+    - "Địa chỉ: Nhà A, tầng 2, P.201, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+  nguon:
+    - "Đ18: Danh bạ trong Sổ tay sinh viên K50"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-193
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em là sinh viên sư phạm K49, đợt này em đang tìm hiểu các quy định liên quan đến tiền hỗ trợ học phí và chi phí sinh hoạt. Em nghe bảo sau khi tốt nghiệp thì hằng năm mình phải làm báo cáo việc làm gửi về cho cơ quan chức năng thì mới không bị thu hồi tiền hỗ trợ, mà em chưa rõ cụ thể thời hạn là ngày nào trong năm và gửi cho ai. Đối với sinh viên K48-K49 thì quy định báo cáo việc làm sau tốt nghiệp này như thế nào ạ?"
+    - vai: tro_ly
+      noi_dung: "Đối với K48-K49, sau khi có quyết định công nhận tốt nghiệp, định kỳ trước ngày 31 tháng 12 hằng năm của năm tiếp theo cho đến năm đủ thời gian không phải thực hiện nghĩa vụ bồi hoàn, sinh viên phải báo cáo tình hình việc làm của bản thân (Mẫu số 02 tại Phụ lục kèm Nghị định) tới cơ quan thu hồi kinh phí bồi hoàn để thông báo xóa hoặc thu hồi khoản kinh phí hỗ trợ."
+    - vai: sinh_vien
+      noi_dung: "Dạ em hiểu rồi, thế còn khóa K51 thì sao ạ?"
+  dap_an_nhap: "Đối với khóa K51, sau khi có quyết định công nhận tốt nghiệp, định kỳ trước ngày 31 tháng 12 hằng năm của năm tiếp theo cho đến năm đủ thời gian không phải thực hiện nghĩa vụ bồi hoàn kinh phí hỗ trợ quy định tại điểm a khoản 2 Điều 6 Nghị định 116, sinh viên phải báo cáo tình hình việc làm của bản thân theo Mẫu số 02 Phụ lục ban hành kèm theo Nghị định 116 tới cơ quan theo dõi, hướng dẫn, ra thông báo thu hồi kinh phí nơi sinh viên thường trú hoặc cơ quan giao nhiệm vụ, đặt hàng (đối với sinh viên thuộc đối tượng giao nhiệm vụ, đặt hàng) để thông báo xóa hoặc thu hồi khoản kinh phí hỗ trợ."
+  y_bat_buoc:
+    - "định kỳ trước ngày 31 tháng 12 hằng năm của năm tiếp theo cho đến năm đủ thời gian không phải thực hiện nghĩa vụ bồi hoàn kinh phí hỗ trợ quy định tại điểm a khoản 2 Điều 6 Nghị định 116"
+    - "báo cáo tình hình việc làm của bản thân theo Mẫu số 02 Phụ lục ban hành kèm theo Nghị định 116"
+    - "gửi tới cơ quan theo dõi, hướng dẫn, ra thông báo thu hồi kinh phí nơi sinh viên thường trú hoặc cơ quan giao nhiệm vụ, đặt hàng (đối với sinh viên thuộc đối tượng giao nhiệm vụ, đặt hàng)"
+  nguon:
+    - "Đ20: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 13"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-194
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Sinh viên khóa K48 muốn dùng điểm đề tài nghiên cứu khoa học thay cho điểm thi học phần thì cần đáp ứng điều kiện gì và nộp đơn cho ai ạ?"
+    - vai: tro_ly
+      noi_dung: "Đối với sinh viên K48, sinh viên là tác giả chính của đề tài SV NCKH được đánh giá đạt loại Khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử dụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần (không quá 3 tín chỉ) liên quan gần với đề tài."
+    - vai: sinh_vien
+      noi_dung: "Còn khóa K50 thì thế nào ạ?"
+  dap_an_nhap: "Đối với khóa K50, sinh viên là tác giả chính của đề tài sinh viên NCKH được đánh giá đạt loại Khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử dụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần (không quá 3 tín chỉ) liên quan gần với đề tài."
+  y_bat_buoc:
+    - "tác giả chính của đề tài sinh viên NCKH được đánh giá đạt loại Khá trở lên"
+    - "nộp đơn cho Trưởng khoa"
+    - "thay thế cho điểm thi kết thúc học phần (không quá 3 tín chỉ) liên quan gần với đề tài"
+  nguon:
+    - "Đ22: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 14"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn văn bản chỉ nêu điều kiện và nơi tiếp nhận đơn (Trưởng khoa), không nêu thành phần hồ sơ và thời hạn xử lý nên câu hỏi đã được điều chỉnh về điều kiện và nơi nộp đơn."
+
+- phieu: V4-195
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Khóa K50 đào tạo liên thông đại học cho người đã có một bằng đại học hệ chính quy có thời gian chuẩn là 2 năm học thì thời gian tối đa là bao nhiêu ạ?"
+    - vai: tro_ly
+      noi_dung: "Đối với khóa K50 hình thức chính quy, chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học có thời gian học tập tối đa là 4 năm học."
+    - vai: sinh_vien
+      noi_dung: "Còn khóa K51 thì sao ạ?"
+  dap_an_nhap: "Đối với khóa K51, quy định thời gian đào tạo chính quy được áp dụng chung: Thời gian học tập chuẩn toàn khoá là 04 năm học và thời gian học tập tối đa là 06 năm học. Riêng đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ."
+  y_bat_buoc:
+    - "Hình thức chính quy: Thời gian học tập chuẩn 04 năm học, thời gian học tập tối đa 06 năm học"
+    - "Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ"
+  nguon:
+    - "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-197
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Khóa K50 học liên thông từ cao đẳng lên đại học theo hình thức vừa làm vừa học, em biết thời gian chuẩn là 2 năm học rồi thì thời gian tối đa được học là mấy năm ạ?"
+    - vai: tro_ly
+      noi_dung: "Đối với khóa K50 hình thức vừa làm vừa học, chương trình đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học có thời gian học tập tối đa là 4 năm học."
+    - vai: sinh_vien
+      noi_dung: "Thế còn khóa K51 thì sao ạ?"
+  dap_an_nhap: "Đối với khóa K51 hình thức vừa làm vừa học: Thời gian học tập chuẩn là 05 năm học và thời gian học tập tối đa là 7,5 năm học. Riêng đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ."
+  y_bat_buoc:
+    - "Hình thức vừa làm vừa học: thời gian học tập chuẩn là 05 năm học, thời gian học tập tối đa là 7,5 năm học"
+    - "Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ"
+  nguon:
+    - "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: "Để đảm bảo hai lượt hỏi cùng nội dung về hình thức vừa làm vừa học giữa hai khóa (nhất quán với lượt 2 dựa trên Đ2), lượt 1 đã đổi sang hỏi dòng liên thông CĐ lên ĐH của hình thức vừa làm vừa học trong Đ23 (chuẩn 2 năm, tối đa 4 năm) thay vì dòng chính quy."
+
+- phieu: V4-198
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "khoa e k49 hoc lien thong đh van bang 2 he vua lam vua hoc, biet thoi gian chuan la 2,5 nam hoc roi thi thoi gian toi da la may nam v?"
+    - vai: tro_ly
+      noi_dung: "Đối với khóa K48-K49, đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học hình thức vừa làm vừa học có thời gian học tập tối đa là 5 năm học."
+    - vai: sinh_vien
+      noi_dung: "the con khoa k50 thi sao b"
+  dap_an_nhap: "Đối với khóa K50, chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học hình thức vừa làm vừa học có thời gian học tập chuẩn là 2,5 năm học và thời gian học tập tối đa là 5 năm học."
+  y_bat_buoc:
+    - "thời gian học tập chuẩn là 2,5 năm học"
+    - "thời gian học tập tối đa là 5 năm học"
+  nguon:
+    - "Đ23: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: "Để hai lượt hỏi cùng nội dung về hệ vừa làm vừa học (nhất quán với lượt 2 được chấm theo Đ23), lượt 1 đã hỏi dòng đào tạo liên thông người đã có bằng đại học hệ vừa làm vừa học trong Đ24 thay vì hệ chính quy."
+
+- phieu: V4-199
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, sđt của Khoa Tiếng Trung là số nào vậy ạ?"
+    - vai: tro_ly
+      noi_dung: "Số điện thoại liên lạc của Khoa Tiếng Trung là (028) 38352020 (số nội bộ: 131, 150, 153)."
+    - vai: sinh_vien
+      noi_dung: "thế còn email của Khoa CNTT thì sao ạ?"
+  dap_an_nhap: "Email của Khoa Công nghệ Thông tin là khoacntt@hcmue.edu.vn."
+  y_bat_buoc:
+    - "khoacntt@hcmue.edu.vn"
+  nguon:
+    - "Đ25: Danh bạ trong Sổ tay sinh viên K50"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-200
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Chào ad, em có đứa bạn đang học ở phân hiệu Gia Lai cần liên hệ làm một số thủ tục giấy tờ cơ sở vật chất với ký túc xá dưới đó mà tụi em không biết gọi số nào. Ad cho em hỏi số điện thoại liên lạc của Tổ Hành chính – Quản trị dưới Gia Lai là số mấy vậy ạ?"
+    - vai: tro_ly
+      noi_dung: "Số điện thoại liên lạc của Tổ Hành chính – Quản trị là (026) 93877244."
+    - vai: sinh_vien
+      noi_dung: "Dạ em cảm ơn, thế còn địa chỉ văn phòng của Khoa Vật lý thì ở đâu vậy ad?"
+  dap_an_nhap: "Văn phòng làm việc của Khoa Vật lý đặt tại: Nhà B, tầng 5, P.504, P.509, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  y_bat_buoc:
+    - "Nhà B, tầng 5, P.504, P.509, số 280 An Dương Vương, phường Chợ Quán, TP. HCM"
+  nguon:
+    - "Đ27: Danh bạ trong Sổ tay sinh viên K51"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-201
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho mình hỏi ngành Sư phạm Lịch sử thì thuộc khoa nào vậy bạn?"
+    - vai: tro_ly
+      noi_dung: "Ngành Sư phạm Lịch sử thuộc Khoa Lịch sử."
+    - vai: sinh_vien
+      noi_dung: "Thế còn ngành Giáo dục Thể chất thuộc khoa nào?"
+  dap_an_nhap: "Ngành Giáo dục Thể chất thuộc Khoa Giáo dục Thể chất."
+  y_bat_buoc:
+    - "Khoa Giáo dục Thể chất"
+  nguon:
+    - "Đ29: Danh bạ trong Sổ tay sinh viên K48-K49"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-202
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Chào bạn, tình hình là kỳ này mình có học một môn bên công nghệ thông tin nhưng điểm quá trình đang có chút nhầm lẫn cần gửi thư trao đổi gấp với khoa quản lý môn học. Bạn cho mình xin địa chỉ email của Khoa Công nghệ Thông tin để mình liên hệ nhé."
+    - vai: tro_ly
+      noi_dung: "Địa chỉ email của Khoa Công nghệ Thông tin là khoacntt@hcmue.edu.vn."
+    - vai: sinh_vien
+      noi_dung: "Cảm ơn bạn, thế còn số điện thoại của Khoa Giáo dục Chính trị là số nào vậy?"
+  dap_an_nhap: "Số điện thoại liên lạc của Khoa Giáo dục Chính trị là: (028) 38352020 (số máy nội bộ: 125, 126)."
+  y_bat_buoc:
+    - "(028) 38352020"
+    - "số máy nội bộ: 125, 126"
+  nguon:
+    - "Đ31: Danh bạ trong Sổ tay sinh viên K51"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-203
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "ban oi cho m xin email cua khoa giao duc dac biet voi"
+    - vai: tro_ly
+      noi_dung: "Email của Khoa Giáo dục Đặc biệt là khoagddb@hcmue.edu.vn."
+    - vai: sinh_vien
+      noi_dung: "the con email khoa giao duc mam non thi sao b"
+  dap_an_nhap: "Email của Khoa Giáo dục Mầm non là khoagdmn@hcmue.edu.vn."
+  y_bat_buoc:
+    - "khoagdmn@hcmue.edu.vn"
+  nguon:
+    - "Đ33: Danh bạ trong Sổ tay sinh viên K50"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-204
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho mình xin địa chỉ email của Viện Nghiên cứu Giáo dục với ạ."
+    - vai: tro_ly
+      noi_dung: "Địa chỉ email của Viện Nghiên cứu Giáo dục là vienncgd@hcmue.edu.vn."
+    - vai: sinh_vien
+      noi_dung: "Thế còn Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp hỗ trợ sinh viên những việc gì vậy bạn?"
+  dap_an_nhap: "Những công việc liên quan đến sinh viên của Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp bao gồm:\n− Tổ chức dịch vụ hỗ trợ đời sống của sinh viên: giới thiệu việc làm, thông tin học bổng, khảo sát và giới thiệu chỗ trọ…;\n− Tổ chức các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã hội, các kiến thức, kỹ năng về khởi nghiệp cần thiết cho sinh viên theo từng đối tượng và chuyên ngành;\n− Tập huấn kỹ năng và hướng dẫn sinh viên tham gia các chương trình, dự án khởi nghiệp; tổ chức các hoạt động tạo môi trường để hỗ trợ sinh viên hình thành và hiện thực hóa các ý tưởng, dự án khởi nghiệp, góp phần tạo việc làm cho sinh viên sau khi tốt nghiệp;\n− Phối hợp các đơn vị tuyển chọn và quản lý các nhóm cộng tác viên (là sinh viên) hỗ trợ cho công tác tổ chức các sự kiện trong trường;\n− Tổ chức và phối hợp tổ chức các hoạt động nhằm nâng cao chuyên môn nghiệp vụ cho sinh viên khi tốt nghiệp;\n− Xây dựng và điều hành các kênh thông tin của trung tâm để nắm bắt và giải quyết các nhu cầu hỗ trợ sinh viên;\n− Tổ chức ngày hội việc làm, và các hoạt động giúp sinh viên tiếp cận với các nguồn lực của xã hội."
+  y_bat_buoc:
+    - "Tổ chức dịch vụ hỗ trợ đời sống của sinh viên: giới thiệu việc làm, thông tin học bổng, khảo sát và giới thiệu chỗ trọ…"
+    - "Tổ chức các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã hội, các kiến thức, kỹ năng về khởi nghiệp cần thiết cho sinh viên theo từng đối tượng và chuyên ngành"
+    - "Tập huấn kỹ năng và hướng dẫn sinh viên tham gia các chương trình, dự án khởi nghiệp; tổ chức các hoạt động tạo môi trường để hỗ trợ sinh viên hình thành và hiện thực hóa các ý tưởng, dự án khởi nghiệp, góp phần tạo việc làm cho sinh viên sau khi tốt nghiệp"
+    - "Phối hợp các đơn vị tuyển chọn và quản lý các nhóm cộng tác viên (là sinh viên) hỗ trợ cho công tác tổ chức các sự kiện trong trường"
+    - "Tổ chức và phối hợp tổ chức các hoạt động nhằm nâng cao chuyên môn nghiệp vụ cho sinh viên khi tốt nghiệp"
+    - "Xây dựng và điều hành các kênh thông tin của trung tâm để nắm bắt và giải quyết các nhu cầu hỗ trợ sinh viên"
+    - "Tổ chức ngày hội việc làm, và các hoạt động giúp sinh viên tiếp cận với các nguồn lực của xã hội"
+  nguon:
+    - "Đ35: Danh bạ trong Sổ tay sinh viên K48-K49"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-206
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, trường mình có quy định về hoạt động nckh của sinh viên không ạ?"
+    - vai: tro_ly
+      noi_dung: "Có bạn nhé, Nhà trường có ban hành Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên."
+    - vai: sinh_vien
+      noi_dung: "dạ thế các yêu cầu đối với nó được quy định thế nào vậy ạ?"
+  dap_an_nhap: "Theo Điều 3 Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, yêu cầu về hoạt động này gồm:\n1. Phù hợp với khả năng và nguyện vọng của SV;\n2. Phù hợp với mục tiêu, nội dung, chương trình đào tạo của Trường;\n3. Phù hợp với định hướng hoạt động khoa học và công nghệ (KH&CN) của Trường;\n4. Kết quả nghiên cứu có giá trị khoa học, giá trị thực tiễn."
+  y_bat_buoc:
+    - "Phù hợp với khả năng và nguyện vọng của SV"
+    - "Phù hợp với mục tiêu, nội dung, chương trình đào tạo của Trường"
+    - "Phù hợp với định hướng hoạt động khoa học và công nghệ (KH&CN) của Trường"
+    - "Kết quả nghiên cứu có giá trị khoa học, giá trị thực tiễn"
+  nguon:
+    - "Đ36: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-208
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, trường mình có ngành Sư phạm Khoa học tự nhiên không ạ?"
+    - vai: tro_ly
+      noi_dung: "Có nhé bạn, Trường Đại học Sư phạm Thành phố Hồ Chí Minh có đào tạo ngành Sư phạm Khoa học tự nhiên."
+    - vai: sinh_vien
+      noi_dung: "dạ thế nó thuộc khoa nào quản lý vậy ạ?"
+  dap_an_nhap: "Ngành Sư phạm Khoa học tự nhiên thuộc Khoa Hóa học quản lý."
+  y_bat_buoc:
+    - "Khoa Hóa học"
+  nguon:
+    - "Đ37: Danh bạ trong Sổ tay sinh viên K50"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-209
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "ban oi phong lam viec cua doan thanh nien va hoi sinh vien truong o dau the"
+    - vai: tro_ly
+      noi_dung: "Văn phòng Đoàn Thanh niên và Văn phòng Hội Sinh viên đều đặt tại Nhà A, tầng trệt, P.001, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+    - vai: sinh_vien
+      noi_dung: "the email lien he cua ho la gi v b"
+  dap_an_nhap: "Email liên hệ của hai đơn vị như sau:\n- Văn phòng Đoàn Thanh niên: vpdoantn@hcmue.edu.vn\n- Văn phòng Hội Sinh viên: vphoisinhvien@hcmue.edu.vn"
+  y_bat_buoc:
+    - "Văn phòng Đoàn Thanh niên: vpdoantn@hcmue.edu.vn"
+    - "Văn phòng Hội Sinh viên: vphoisinhvien@hcmue.edu.vn"
+  nguon:
+    - "Đ38: Danh bạ trong Sổ tay sinh viên K48-K49"
+  hanh_vi: tra_loi
+  ghi_chu: ""

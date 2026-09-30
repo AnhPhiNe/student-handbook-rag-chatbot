@@ -415,6 +415,73 @@ def test_single_rag_task_preserves_original_subject_and_predicate() -> None:
     assert plan["tasks"][0]["question"] == query
 
 
+@pytest.mark.parametrize("history,query,standalone,task_question", [
+    (
+        "Em học vừa làm vừa học K50 và muốn tìm hiểu về cảnh báo học tập.",
+        "Việc đó xét vào lúc nào ạ?",
+        "Sinh viên vừa làm vừa học K50 được xét cảnh báo học tập vào lúc nào?",
+        "Sinh viên được xét cảnh báo học tập vào lúc nào?",
+    ),
+    (
+        "Em đang hỏi về đề tài nghiên cứu khoa học cấp khoa của sinh viên K50.",
+        "Hội đồng đó gồm ai ạ?",
+        "Hội đồng đánh giá đề tài nghiên cứu khoa học cấp khoa của sinh viên K50 gồm những ai?",
+        "Hội đồng đánh giá đề tài nghiên cứu khoa học gồm những ai?",
+    ),
+])
+def test_single_follow_up_keeps_scope_through_retrieval(
+    monkeypatch, history, query, standalone, task_question,
+) -> None:
+    payload = {
+        **_plan([{**_rag_task(1, task_question), "cohorts": ["K50"]}]),
+        "context_mode": "follow_up",
+        "standalone_query": standalone,
+        "referenced_turns": [0],
+    }
+    plan, errors = normalize_query_plan(
+        payload, query=query, selected_cohort="K50", visible_history={0: history},
+    )
+    assert errors == []
+    observed = []
+
+    def retrieve(**kwargs):
+        observed.append(kwargs["query"])
+        return {"retrieved_items": [], "citations": []}
+
+    monkeypatch.setattr("src.generation.plan_executor.run_hybrid_retrieval_pipeline", retrieve)
+    _executor(plan).run(query=query, cohort="K50", chat_history=[{"role": "user", "content": history}])
+    assert observed == [standalone]
+
+
+def test_multi_task_follow_up_keeps_each_training_mode_separate(monkeypatch) -> None:
+    history = "Em học chính quy K50, bạn em học vừa làm vừa học K50."
+    questions = [
+        "Điều kiện cảnh báo học tập của sinh viên chính quy K50 là gì?",
+        "Điều kiện cảnh báo học tập của sinh viên vừa làm vừa học K50 là gì?",
+    ]
+    query = "Điều kiện cảnh báo của tụi em khác nhau thế nào?"
+    payload = {
+        **_plan([{**_rag_task(index, question), "cohorts": ["K50"]}
+                 for index, question in enumerate(questions, 1)]),
+        "context_mode": "follow_up",
+        "standalone_query": "So sánh điều kiện cảnh báo học tập của chính quy và vừa làm vừa học K50.",
+        "referenced_turns": [0],
+    }
+    plan, errors = normalize_query_plan(
+        payload, query=query, selected_cohort="K50", visible_history={0: history},
+    )
+    assert errors == []
+    observed = []
+
+    def retrieve(**kwargs):
+        observed.append(kwargs["query"])
+        return {"retrieved_items": [], "citations": []}
+
+    monkeypatch.setattr("src.generation.plan_executor.run_hybrid_retrieval_pipeline", retrieve)
+    _executor(plan).run(query=query, cohort="K50", chat_history=[{"role": "user", "content": history}])
+    assert observed == questions
+
+
 def test_single_structured_task_preserves_original_qualifiers() -> None:
     query = "Điểm học bổng loại Giỏi được tính như thế nào?"
     task = {

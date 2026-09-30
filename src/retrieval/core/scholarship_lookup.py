@@ -54,7 +54,8 @@ def _filter_tables(
 def _requested_labels(query_norm: str) -> list[str]:
     labels = []
     for label, aliases in LABEL_ALIASES.items():
-        if any(alias in query_norm for alias in aliases):
+        # A label must be a whole word or phrase: "khác" must not select "Khá".
+        if any(re.search(rf"\b{re.escape(alias)}\b", query_norm) for alias in aliases):
             labels.append(label)
     return labels
 

@@ -446,15 +446,17 @@ def normalize_query_plan(
     tasks = _merge_compatible_structured_tasks(tasks)
     tasks = _merge_cohort_variant_tasks(tasks)
     if (
-        context_mode == "standalone"
+        context_mode in {"standalone", "follow_up"}
         and len(tasks) == 1
         and tasks[0].get("mode") in {"rag", "structured"}
     ):
         # A single task has no decomposition benefit from rewriting its
-        # question. Reuse the original user query so a planner paraphrase at
-        # either task or top-plan level cannot silently change the subject or
-        # predicate before retrieval.
-        tasks[0]["question"] = query
+        # question. Preserve the original user query, or the standalone
+        # follow-up text that already includes the referenced history. Another
+        # task-level paraphrase can drop its subject or applicability.
+        task_query = query if context_mode == "standalone" else standalone_query
+        if task_query:
+            tasks[0]["question"] = task_query
     if len(tasks) > MAX_QUERY_TASKS:
         return _too_many_tasks_plan(query, default_cohort), []
     for index, task in enumerate(tasks, start=1):

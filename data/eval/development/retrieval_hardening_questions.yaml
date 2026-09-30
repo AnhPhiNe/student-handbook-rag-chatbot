@@ -1,0 +1,108 @@
+# Development smoke check for the local retrieval/lookup fixes, 2026-09-30.
+# Questions come from existing development rubrics and reviewed source data.
+# This is development data, not an independent hold-out or a replacement metric.
+# must_include checks are preliminary; review answers against the sources below.
+version: 1
+independent_holdout: false
+cases:
+  - id: hardening_01
+    cohort: K50
+    query: "Học bổng loại Khá của K50 có khoảng điểm học bổng và khoảng điểm học tập bao nhiêu?"
+    expected_lookup: scholarship_classification
+    gold_parent: K50_QuyCheCongTacSinhVien_Chuong5_Dieu27
+    must_include: [["2,56", "2.56"], ["3,35", "3.35"], ["2,50", "2.50", "2,5", "2.5"], ["3,19", "3.19"]]
+  - id: hardening_02
+    cohort: K50
+    query: "Hệ số nhân tiền học bổng loại Khá là bao nhiêu vậy?"
+    expected_lookup: scholarship_classification
+    gold_parent: K50_QuyCheCongTacSinhVien_Chuong5_Dieu27
+    must_include: [["1,0", "1.0", "hệ số 1", "hệ số là 1"]]
+  - id: hardening_03
+    cohort: K50
+    query: "Công thức tính điểm học bổng từ điểm học tập và điểm rèn luyện là gì?"
+    expected_lookup: formula
+    gold_parent: K50_QuyCheCongTacSinhVien_Chuong5_Dieu27
+    must_include: ["80", "25", "20", "100"]
+  - id: hardening_04
+    cohort: K50
+    query: "Sinh viên đang bị kỷ luật có được xét học bổng không?"
+    expected_mode: rag
+    gold_parent: K50_QuyCheCongTacSinhVien_Chuong5_Dieu27
+    must_include: ["khiển trách"]
+  - id: hardening_05
+    cohort: K50
+    query: "Cho em xem các mức tiền học bổng khác nhau theo xếp loại của K50."
+    expected_lookup: scholarship_classification
+    gold_parent: K50_QuyCheCongTacSinhVien_Chuong5_Dieu27
+    must_include: ["Khá", "Giỏi", "Xuất sắc", ["1,25", "1.25"], ["1,5", "1.5"]]
+  - id: hardening_06
+    cohort: K51
+    query: "e quen tu danh gia diem ren luyen hoc ky nay thi bi xep loai gi a"
+    expected_mode: rag
+    gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu10
+    must_include: ["kém", "0"]
+  - id: hardening_07
+    cohort: K51
+    query: "vang thi khong co ly do chinh dang thi bi tinh diem bao nhieu"
+    expected_mode: rag
+    gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu10
+    must_include: ["0"]
+  - id: hardening_08
+    cohort: K51
+    query: "em hoc cai thien ma lan sau diem thap hon lan truoc thi lay diem nao"
+    expected_mode: rag
+    gold_parent: K51_QuyCheDaoTao_Chuong3_Dieu10
+    must_include: ["cao nhất"]
+  - id: hardening_09
+    cohort: K50
+    chat_history:
+      - {role: user, content: "Em học vừa làm vừa học K50 và muốn tìm hiểu về cảnh báo học tập."}
+      - {role: assistant, content: "Mình sẽ xem quy định cảnh báo học tập dành cho hình thức vừa làm vừa học của K50."}
+    query: "Việc đó xét vào lúc nào ạ?"
+    expected_mode: rag
+    gold_parent: K50_QuyCheDaoTao_Chuong3_Dieu13
+    must_include: ["cuối mỗi năm học"]
+    manual_checks: ["Câu trả lời áp dụng cho vừa làm vừa học; không áp thời điểm cuối mỗi học kỳ của chính quy."]
+  - id: hardening_10
+    cohort: K50
+    query: "Tụi em đều học K50, em chính quy còn bạn em vừa làm vừa học. Cảnh báo học tập xét cuối học kỳ hay cuối năm ở mỗi hình thức vậy ạ?"
+    expected_mode: rag
+    gold_parents_all: [K50_QuyCheDaoTao_Chuong3_Dieu12, K50_QuyCheDaoTao_Chuong3_Dieu13]
+    must_include: ["chính quy", "vừa làm vừa học", ["cuối mỗi học kỳ", "cuối học kỳ"], ["cuối mỗi năm học", "cuối năm học"]]
+    manual_checks: ["Thời điểm xét phải gắn đúng từng hình thức: chính quy cuối học kỳ chính, vừa làm vừa học cuối năm học."]
+  - id: hardening_11
+    cohort: K51
+    query: "Cho em số điện thoại và email của Thư viện với ạ."
+    expected_directory: true
+    must_include: ["thuvien@hcmue.edu.vn", "35261042", "38308905", "38352020"]
+    source_catalog: data/processed/directories/student_office_profiles.json
+  - id: hardening_12
+    cohort: K51
+    query: "Phòng Hợp tác Quốc tế hỗ trợ sinh viên những việc gì, cho em email liên hệ luôn ạ?"
+    expected_directory: true
+    must_include: ["phonghtqt@hcmue.edu.vn", "dịch thuật", "học bổng", "giao lưu"]
+    source_catalog: data/processed/directories/student_office_profiles.json
+  - id: hardening_13
+    cohort: K51
+    query: "Em chưa biết cách tra cứu và mượn sách, cần được hướng dẫn thì liên hệ đơn vị nào và email nào?"
+    expected_directory: true
+    must_include: ["Thư viện", "thuvien@hcmue.edu.vn"]
+    source_catalog: data/processed/directories/student_service_directory.json
+  - id: hardening_14
+    cohort: K50
+    query: "Chứng chỉ Cambridge B1 Preliminary tương đương bậc nào theo bảng của Trường?"
+    expected_lookup: foreign_language
+    gold_parent: K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8
+    must_include: ["bậc 3"]
+  - id: hardening_15
+    cohort: K50
+    query: "Chứng chỉ Cambridge B2 First tương đương bậc nào theo bảng của Trường?"
+    expected_lookup: foreign_language
+    gold_parent: K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8
+    must_include: ["bậc 4"]
+  - id: hardening_16
+    cohort: K50
+    query: "Điểm học tập của em là 3,1 và điểm rèn luyện là 80, tính điểm học bổng giúp em với."
+    expected_lookup: formula
+    gold_parent: K50_QuyCheCongTacSinhVien_Chuong5_Dieu27
+    must_include: [["3,12", "3.12"]]

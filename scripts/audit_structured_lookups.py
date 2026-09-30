@@ -146,7 +146,7 @@ def audit(lookup: str | None = None) -> tuple[dict[str, Any], list[dict[str, Any
     for table in tables:
         cohort = table.get("cohort")
         for row, lookup_type, slots, key_column in probes(table):
-            if lookup and lookup_type != args.lookup:
+            if lookup and lookup_type != lookup:
                 continue
             question = f"{table.get('table_name')} {' '.join(str(v) for v in slots.values())}"
             payload = {"schema_version": QUERY_PLAN_SCHEMA_VERSION, "context_mode": "standalone",

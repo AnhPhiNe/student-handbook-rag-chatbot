@@ -585,6 +585,56 @@ waits to 30 s and changes nothing else; deployment keeps `configs/retrieval.yaml
 Whether the deployed timeouts should rise has to be decided on latency measured
 from the deployment, not from this network.
 
+## Fixes after reading the official_v4 answers (2026-10-01)
+
+Every run B answer below 1.0 and every answer the judge flagged (43 cases) was
+read against its required facts and the source data. Six answers stated
+something false; the rest were incomplete or correct with extra detail. Three
+causes were in what a description told a model, not in the data:
+
+| Gap | Evidence | Fix |
+|---|---|---|
+| The scholarship table holds `scholarship_score_range`, but only the formula tool advertised "điểm học bổng" | V4-148 computed 3.20–3.60 where the table says 3.672; V4-150 sent the student to compute it | The classification aspect names the score range and the K51 columns; the formula tool hands range questions back |
+| Directory lookups return `internal_numbers`, the composer dropped them | 9 cases asked for an extension, the payload held it 9 times, the answer printed it 4 times | `requested_field=phone` includes the extension; the composer gives every contact field the evidence has |
+| The GPA rounding rule sat only in `raw_excerpt`, which the lookup never passed on | V4-025, V4-030 | A `rounding` field on the rule, carried in the lookup result |
+
+`scripts/audit_tool_descriptions.py` now checks that every answerable field in
+the data is named in its tool's registry text, and `tests/test_tool_description_audit.py`
+fails on a new gap. Four known gaps remain: the scholarship tool reads the
+eligibility and score-formula tables, but no value of `aspect` selects them, so
+they are unreachable rather than unadvertised; reaching them needs code.
+
+Not fixed, with the reason:
+
+- **V4-070, dormitory application.** The service directory comes from the
+  handbook's directory table, which lists no dormitory application for the
+  student affairs office; that duty is in the office's numbered responsibilities
+  in the regulations, a second source. Merging it changes every unit's services.
+- **V4-107, graduate office routed to RAG.** The service directory holds the
+  exact answer; the planner chose RAG for "liên hệ ở đâu để tìm hiểu quy chế".
+  This is the "where" boundary that prompts v54 and v55 failed to fix.
+- **Needless clarification (V4-100, V4-145, V4-092).** The prompt already forbids
+  it; the planner did not follow the rule.
+- **V4-003, V4-204.** Composer and planner variance: V4-003 had the same plan and
+  the same resolved row as the run that answered correctly.
+
+The registry text is part of the planner prompt, so `official_v1` was planned
+again (`official_v1_deterministic_20260930T174119Z`, graded with the v10
+contract the baseline used): **130/135**, against 133/135 before. Four cases
+newly failed and one newly passed. Each newly failing case was planned again
+under the old and the new prompt:
+
+| Case | Old prompt | New prompt | Reading |
+|---|---:|---:|---|
+| 003 "Môn đại cương 8,8 được A chưa?", keeps `course_scope=foundation` | 10/20 | 5/20 | unstable under both prompts; the baseline pass was a coin flip |
+| 032 TOPIK II, keeps "bậc 3"/"bậc 4" | 19/20 | 18/20 | no difference |
+| 038 TOEFL iBT, keeps "bậc 3"/"bậc 4" | 5/5 | 5/5 | the failed run was a rare draw |
+| 122 certificate office, plans `student_service` | 4/5 | 4/5 | no difference |
+
+No case shows an effect of the change that its variance does not explain, so
+the 130 against 133 is read as planner variance. Case 003 is a standing
+instability of the scoring boundary, not a new one.
+
 ## What these measurements do not show
 
 - A comparison with plain RAG (no planner) or with a long-context model given the

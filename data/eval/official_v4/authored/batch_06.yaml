@@ -1,0 +1,244 @@
+- phieu: V4-091
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em chào thầy cô ạ. Kỳ này em đang chuẩn bị cho đợt thực tập tốt nghiệp sắp tới nhưng bản thân cảm thấy kỹ năng đứng lớp cũng như việc ứng dụng công nghệ giảng dạy còn yếu quá. Em có nghe nói trường mình có hỗ trợ tập giảng trong các phòng học ảo với phòng học thông minh, nên em muốn hỏi là nếu em có nhu cầu tham gia tập giảng, kiến tập và thực tập giảng tại các phòng học trực tuyến, phòng học ảo hoặc thông minh thì em liên hệ ai và ở đâu ạ? Nhân tiện cho em hỏi thêm, quy định về việc công nhận tốt nghiệp và cấp bằng tốt nghiệp của trường mình hiện nay được thực hiện như thế nào ạ?"
+  dap_an_nhap: "1. Về nhu cầu tập giảng, kiến tập và thực tập giảng tại các phòng học trực tuyến, phòng học ảo và phòng học thông minh, bạn liên hệ Trung tâm Phát triển kỹ năng Sư phạm:\n- Địa chỉ: Nhà A, tầng 2, P.201, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.\n- Điện thoại: (028) 38397868\n- Email: trungtamptknsp@hcmue.edu.vn\n\n2. Quy định về công nhận tốt nghiệp và cấp bằng tốt nghiệp (Điều 15 Quy chế đào tạo trình độ đại học):\n- Điều kiện công nhận tốt nghiệp: Tích lũy đủ học phần, số tín chỉ và hoàn thành các nội dung bắt buộc khác theo yêu cầu của CTĐT, đạt chuẩn đầu ra; Điểm trung bình tích lũy toàn khóa đạt từ trung bình trở lên; Tại thời điểm xét không bị truy cứu trách nhiệm hình sự hoặc không đang trong thời gian bị kỷ luật đình chỉ học tập.\n- Cấp bằng tốt nghiệp: Hiệu trưởng ký quyết định công nhận tốt nghiệp và cấp bằng trong thời hạn 03 tháng kể từ thời điểm sinh viên đáp ứng đầy đủ điều kiện và hoàn thành nghĩa vụ với Trường.\n- Hạng tốt nghiệp: Căn cứ điểm trung bình tích lũy toàn khóa. Hạng Xuất sắc và Giỏi bị giảm một mức nếu khối lượng học phần học lại vượt quá 5% tổng số tín chỉ của chương trình, hoặc đã bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học.\n- Xử lý khi hết thời gian tối đa: Sinh viên hết thời gian tối đa nhưng chưa đủ điều kiện tốt nghiệp do thiếu học phần GDQP-AN, GDTC hoặc chưa đạt chuẩn đầu ra ngoại ngữ, CNTT được hoàn thiện trong 03 năm kể từ khi thôi học để đề nghị xét công nhận tốt nghiệp. Sinh viên chính quy hết thời gian được chuyển sang hình thức vừa làm vừa học nếu còn trong thời hạn đào tạo quy định của hình thức chuyển đến.\n- Đợt xét tốt nghiệp: Hình thức chính quy có 03 đợt chính thức (tháng 5, tháng 8, tháng 10); vừa làm vừa học có 05 đợt (tháng 3, tháng 5, tháng 8, tháng 10, tháng 12) cùng các đợt bổ sung do Hiệu trưởng quyết định.\n- Quy trình: Trường ban hành kế hoạch và công bố kết quả dự kiến trên cổng thông tin; sinh viên và khoa chuyên môn rà soát, phản hồi sai sót về Phòng Đào tạo trong thời gian quy định; tổ chức họp Hội đồng xét tốt nghiệp và ban hành Quyết định công nhận tốt nghiệp."
+  y_bat_buoc:
+    - "Đơn vị: Trung tâm Phát triển kỹ năng Sư phạm"
+    - "Địa chỉ: Nhà A, tầng 2, P.201, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+    - "Điện thoại: (028) 38397868"
+    - "Email: trungtamptknsp@hcmue.edu.vn"
+    - "Điều kiện công nhận tốt nghiệp: tích lũy đủ học phần, tín chỉ, nội dung bắt buộc, đạt chuẩn đầu ra; ĐTB tích lũy toàn khóa từ trung bình trở lên; không bị truy cứu trách nhiệm hình sự hoặc đình chỉ học tập"
+    - "Cấp bằng tốt nghiệp trong thời hạn 03 tháng tính từ khi đủ điều kiện và hoàn thành nghĩa vụ"
+    - "Hạng Xuất sắc và Giỏi bị giảm một mức nếu học lại vượt quá 5% tổng số tín chỉ CTĐT hoặc bị kỷ luật từ cảnh cáo trở lên"
+    - "Hết thời gian tối đa nếu còn thiếu GDQP-AN, GDTC hoặc chuẩn ngoại ngữ, CNTT được hoàn thiện trong 03 năm kể từ khi thôi học"
+    - "Các đợt xét chính thức: chính quy có 03 đợt (tháng 5, tháng 8, tháng 10); vừa làm vừa học có 05 đợt (tháng 3, tháng 5, tháng 8, tháng 10, tháng 12)"
+    - "Quy trình: công bố kết quả dự kiến, sinh viên và khoa rà soát phản hồi sai sót về Phòng Đào tạo, họp Hội đồng xét và ban hành quyết định"
+  nguon:
+    - "Đ1: Danh bạ trong Sổ tay sinh viên K48-K49"
+    - "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 15"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-092
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "thay co cho e hoi e muon hoi ve may cong tac khao thi voi dam bao chat luong cua truong thi lien he o dau a? voi lai theo quy dinh thi hoat dong nghien cuu khoa hoc cua sv lay tu nhung nguon tai chinh nao the a"
+  dap_an_nhap: "1. Về công tác khảo thí và đảm bảo chất lượng, bạn liên hệ Phòng Khảo thí và Đảm bảo chất lượng:\n- Địa chỉ: Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.\n- Điện thoại: (028) 38352020\n- Email: phongkhaothi@hcmue.edu.vn\n\n2. Tài chính cho hoạt động nghiên cứu khoa học của sinh viên gồm 4 nguồn theo quy định:\n- Ngân sách Nhà nước trích từ kinh phí hoạt động khoa học và công nghệ.\n- Tài trợ, viện trợ của các tổ chức, cá nhân trong và ngoài nước.\n- Trích từ nguồn thu hợp pháp của Trường.\n- Huy động từ các nguồn hợp pháp khác."
+  y_bat_buoc:
+    - "Đơn vị: Phòng Khảo thí và Đảm bảo chất lượng"
+    - "Địa chỉ: Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+    - "Điện thoại: (028) 38352020"
+    - "Email: phongkhaothi@hcmue.edu.vn"
+    - "Nguồn 1: Ngân sách Nhà nước trích từ kinh phí hoạt động khoa học và công nghệ"
+    - "Nguồn 2: Tài trợ, viện trợ của các tổ chức, cá nhân trong và ngoài nước"
+    - "Nguồn 3: Trích từ nguồn thu hợp pháp của Trường"
+    - "Nguồn 4: Huy động từ các nguồn hợp pháp khác"
+  nguon:
+    - "Đ3: Danh bạ trong Sổ tay sinh viên K50"
+    - "Đ4: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 5"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-093
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ thầy cô cho em hỏi điểm xét học bổng khuyến khích học tập được tính theo công thức nào ạ, nếu điểm học tập của em là 3.4 và điểm rèn luyện là 85 thì điểm học bổng ra bao nhiêu? Với lại theo quy định thì người học liên thông có bằng đại học khác có được xét miễn trừ học phần không ạ?"
+  dap_an_nhap: "1. Công thức tính điểm học bổng khuyến khích học tập:\n- Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100 (trong đó Điểm rèn luyện / 25 là quy đổi về thang điểm 4).\n- Với điểm học tập là 3.4 và điểm rèn luyện là 85, điểm học bổng của bạn được tính như sau:\nĐiểm học bổng = (3.4 x 80 + (85 / 25) x 20) / 100 = (272 + 3.4 x 20) / 100 = 340 / 100 = 3.40.\n\n2. Về việc miễn trừ học phần cho người học liên thông:\nNgười học liên thông thực hiện CTĐT và đăng ký học tập theo kế hoạch chung như các sinh viên khác cùng hình thức đào tạo. Trên cơ sở công nhận và chuyển đổi tín chỉ, sinh viên được miễn trừ các học phần tương ứng với khối lượng học tập đã tích lũy theo quy định hiện hành của Trường."
+  y_bat_buoc:
+    - "Công thức: Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100"
+    - "Điểm rèn luyện /25 là quy đổi về thang điểm 4"
+    - "Kết quả tính với điểm học tập 3.4 và điểm rèn luyện 85: 3.40 (hoặc 3.4)"
+    - "Sinh viên liên thông được miễn trừ các học phần tương ứng với khối lượng học tập đã tích lũy trên cơ sở công nhận và chuyển đổi tín chỉ"
+  nguon:
+    - "Đ5: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
+    - "Đ6: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 20"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-095
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Chào thầy cô, em được biết chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học hình thức vừa làm vừa học có thời gian học tập chuẩn là 2,5 năm học, vậy thời gian học tập tối đa là bao nhiêu năm ạ? Sẵn cho em hỏi thêm, quy định về thời gian và nội dung làm việc của cố vấn học tập với lớp sinh viên thế nào ạ?"
+  dap_an_nhap: "1. Đối với chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học (hình thức vừa làm vừa học), thời gian học tập chuẩn là 2,5 năm học và thời gian học tập tối đa là 5 năm học.\n\n2. Quy định về thời gian và nội dung làm việc của Cố vấn học tập (CVHT) với lớp sinh viên (Điều 6):\n- Thời gian làm việc: Định kỳ làm việc với ban cán sự lớp 1 lần/tháng; họp với lớp phụ trách 2 lần/học kỳ (các buổi họp phải ghi biên bản và báo cáo Trưởng khoa). Ngoài ra có thể làm việc đột xuất hoặc họp lớp khi có yêu cầu; thường xuyên liên hệ với lớp phụ trách để nắm tình hình.\n- Nội dung họp đầu học kỳ: Công bố thành phần ban cán sự lớp do khoa chỉ định (năm thứ nhất) hoặc tổ chức họp lớp chọn ban cán sự, phân công nhiệm vụ và mối quan hệ công tác; xây dựng và phổ biến công tác học kỳ; hướng dẫn cách thức tìm hiểu, truy cập quy chế, quy định và nội dung mới; phổ biến các hoạt động Đoàn - Hội; lưu ý về phương pháp học tập, nghiên cứu khoa học; công việc khác theo yêu cầu quản lý.\n- Nội dung họp cuối học kỳ: Sơ kết nội dung đã thực hiện trong kỳ; tổ chức đánh giá kết quả rèn luyện sinh viên đúng thời gian và quy định; phổ biến quy định mới; theo dõi các học phần và số tín chỉ để tư vấn; xem xét, đề xuất thi đua, khen thưởng và kỷ luật; công việc khác theo yêu cầu.\n- CVHT có trách nhiệm tạo điều kiện, quan tâm giúp đỡ sinh viên khuyết tật có hoàn cảnh khó khăn nếu có yêu cầu."
+  y_bat_buoc:
+    - "Thời gian học tập tối đa: 5 năm học"
+    - "CVHT định kỳ làm việc với ban cán sự lớp 1 lần/tháng; họp với lớp phụ trách 2 lần/học kỳ (ghi biên bản, báo cáo Trưởng khoa)"
+    - "Nội dung họp đầu kỳ: công bố/chọn ban cán sự và phân công nhiệm vụ, phổ biến công tác kỳ, hướng dẫn tìm hiểu quy chế/quy định, phổ biến hoạt động Đoàn - Hội, lưu ý phương pháp học và NCKH"
+    - "Nội dung họp cuối kỳ: sơ kết học kỳ, tổ chức đánh giá điểm rèn luyện, theo dõi học phần/tín chỉ để tư vấn, đề xuất khen thưởng/kỷ luật"
+    - "Quan tâm giúp đỡ sinh viên khuyết tật khó khăn nếu có yêu cầu; thường xuyên liên hệ nắm tình hình lớp"
+  nguon:
+    - "Đ7: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+    - "Đ8: Quy định công tác cố vấn học tập tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 6"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-096
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em chào thầy cô, em được biết là chương trình đào tạo đại học cấp bằng thứ nhất hệ chính quy có thời gian học chuẩn là 4 năm học, vậy thời gian học tập tối đa là bao nhiêu năm ạ? Tiện cho em hỏi thủ tục xin vào ở ký túc xá của trường mình gồm những hồ sơ gì, nộp ở đâu và thời hạn làm thủ tục như thế nào ạ?"
+  dap_an_nhap: "1. Đối với chương trình đào tạo đại học cấp bằng thứ nhất theo hình thức đào tạo chính quy, thời gian học tập chuẩn là 4 năm học và thời gian học tập tối đa là 8 năm học.\n\n2. Thủ tục, hồ sơ và thời hạn xét vào ở ký túc xá (KTX):\n- Hồ sơ gồm:\n  + Đơn xin vào ở KTX (theo mẫu), nêu rõ hoàn cảnh gia đình, đối tượng ưu tiên và phải có xác nhận của chính quyền địa phương (phường, xã) nơi cư trú.\n  + Bản sao có công chứng các giấy tờ ưu tiên (nếu có).\n- Nơi nộp hồ sơ: Phòng CTCT và HSSV (tiếp nhận hồ sơ vào đầu năm học).\n- Thời hạn và quy trình xét duyệt:\n  + Danh sách dự kiến được niêm yết công khai trong vòng 07 ngày.\n  + Sau khi có kết quả xét chọn, sinh viên đến Phòng CTCT và HSSV nhận giấy giới thiệu đến KTX tại số 351B Lạc Long Quân, Quận 11 làm hợp đồng và thủ tục vào ở nội trú theo hướng dẫn.\n  + Trong thời hạn 07 ngày kể từ ngày niêm yết thông báo kết quả, nếu sinh viên không đến làm thủ tục sẽ bị xóa tên khỏi danh sách để xét nhận sinh viên khác."
+  y_bat_buoc:
+    - "Thời gian học tập tối đa: 8 năm học"
+    - "Hồ sơ gồm: Đơn xin vào ở KTX theo mẫu (nêu hoàn cảnh, đối tượng ưu tiên, có xác nhận của chính quyền địa phương phường/xã nơi cư trú) và Bản sao có công chứng các giấy tờ ưu tiên (nếu có)"
+    - "Nộp đơn tại: Phòng CTCT và HSSV (vào đầu năm học)"
+    - "Niêm yết công khai danh sách dự kiến trong vòng 07 ngày"
+    - "Địa chỉ KTX làm thủ tục: số 351B Lạc Long Quân, Quận 11"
+    - "Thời hạn làm thủ tục vào ở: trong vòng 07 ngày kể từ ngày niêm yết kết quả, quá hạn sẽ bị xóa tên"
+  nguon:
+    - "Đ7: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+    - "Đ9: Quy trình xét sinh viên vào ở ký túc xá"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-097
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, bên hệ vlvvh ngành liên thông đh cho ng có bằng đh thì tgian học tối đa là 5 năm, thế còn tgian học chuẩn là bao lâu v ạ? Sẵn ad cho em hỏi nếu sv đi thi hộ hoặc nhờ ng khác đi thi hộ thì bị trường xử lý kỷ luật như thế nào ạ?"
+  dap_an_nhap: "1. Đối với chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học (hình thức vừa làm vừa học), thời gian học tập tối đa là 5 năm học và thời gian học tập chuẩn là 2,5 năm học.\n\n2. Mức xử lý kỷ luật đối với hành vi thi hộ hoặc nhờ người thi hộ (Điều 21 Quy chế đào tạo trình độ đại học):\n- Vi phạm lần thứ nhất: Bị kỷ luật ở mức đình chỉ học tập một năm.\n- Vi phạm lần thứ hai: Bị buộc thôi học."
+  y_bat_buoc:
+    - "Thời gian học tập chuẩn: 2,5 năm học"
+    - "Thi hộ hoặc nhờ người thi hộ lần thứ nhất: đình chỉ học tập một năm"
+    - "Thi hộ hoặc nhờ người thi hộ lần thứ hai: buộc thôi học"
+  nguon:
+    - "Đ7: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+    - "Đ10: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 21"
+  hanh_vi: tra_loi
+  ghi_chu: "Yêu cầu 2 đổi sang hỏi hình thức xử lý kỷ luật đối với hành vi thi hộ hoặc nhờ người thi hộ do đoạn Đ10 không có quy định về thủ tục hồ sơ."
+
+- phieu: V4-098
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "ad cho hoi dao tao lien thong trinh do dai hoc cho ng da co 1 bang dai hoc he vua lam vua hoc co tgian chuan la 2,5 nam thi tgian toi da dc hoc may nam v? voi lai thu tuc xin nghi hoc tam thoi can giay to gi, nop o dau va nop trc bao lau the"
+  dap_an_nhap: "1. Đối với chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học (hình thức vừa làm vừa học), thời gian học tập chuẩn là 2,5 năm học và thời gian học tập tối đa là 5 năm học.\n\n2. Thủ tục, hồ sơ và thời hạn xin nghỉ học tạm thời (Điều 16 Quy chế đào tạo trình độ đại học):\n- Hồ sơ cần chuẩn bị: Đơn trình bày rõ lý do có xác nhận của Trưởng khoa quản lý sinh viên, bảng điểm hợp lệ và các giấy tờ minh chứng kèm theo (như giấy tờ điều động vào lực lượng vũ trang, tham gia thi đấu quốc tế, hoặc chứng nhận điều trị y tế dài ngày của cơ sở khám chữa bệnh có thẩm quyền nếu ốm đau/tai nạn/thai sản).\n- Nơi nộp hồ sơ: Phòng CTCT&HSSV.\n- Thời hạn nộp:\n  + Nghỉ học tạm thời vì lý do cá nhân khác: Phải làm đơn gửi Phòng CTCT&HSSV ít nhất 2 tuần trước khi học kỳ mới bắt đầu.\n  + Tiếp nhận trở lại: Trước khi hết thời gian tạm dừng học tập 2 tuần, sinh viên phải làm đơn gửi Phòng CTCT&HSSV để tiếp nhận trở lại học tập (hoặc xin gia hạn nếu chưa thể trở lại)."
+  y_bat_buoc:
+    - "Thời gian học tập tối đa: 5 năm học"
+    - "Hồ sơ: Đơn trình bày lý do có xác nhận của Trưởng khoa quản lý sinh viên, bảng điểm hợp lệ và các giấy tờ minh chứng liên quan"
+    - "Nơi nộp hồ sơ: Phòng CTCT&HSSV"
+    - "Thời hạn nộp đơn nghỉ vì lý do cá nhân: ít nhất 2 tuần trước khi học kỳ mới bắt đầu"
+    - "Thời hạn nộp đơn trở lại học tập: 2 tuần trước khi hết thời gian tạm dừng học tập"
+  nguon:
+    - "Đ11: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+    - "Đ12: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 16"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-099
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Ad cho em hỏi xíu, email của Phòng CNTT trường mình là gì vậy ạ? Với lại quy trình, thủ tục xét cấp hb khuyến khích học tập của trường mình được làm ntn thế ạ?"
+  dap_an_nhap: "1. Email liên hệ của Phòng Công nghệ Thông tin: phongcntt@hcmue.edu.vn.\n\n2. Trình tự và thủ tục xét cấp học bổng khuyến khích học tập (HBKKHT) theo Điều 28:\n- Bước 1: Phòng CTCT&HSSV phối hợp Phòng Kế hoạch – Tài chính xác định quỹ HBKKHT của từng ngành học cụ thể ứng với khóa học dựa trên quỹ chung toàn Trường và tỉ lệ sinh viên.\n- Bước 2: Cố vấn học tập (CVHT) họp lớp đánh giá kết quả rèn luyện; khoa hoặc phân hiệu xem xét kết quả, nhập điểm rèn luyện vào phần mềm và nộp bảng tổng hợp về Phòng CTCT&HSSV theo thời gian quy định.\n- Bước 3: Căn cứ vào kết quả cập nhật điểm và khóa điểm do Phòng Khảo thí và Đảm bảo chất lượng thực hiện, Phòng CTCT&HSSV đối chiếu làm cơ sở xét học bổng.\n- Bước 4: Xét phân bổ học bổng theo thứ tự điểm học bổng giảm dần từ cao xuống thấp đến hết quỹ của ngành. Nếu điểm học bổng bằng nhau mà thiếu chỉ tiêu thì ưu tiên sinh viên có điểm học tập cao hơn; nếu cả điểm học tập và rèn luyện bằng nhau thì phân bổ theo tỉ lệ số tín chỉ. Trường hợp ngành còn dư quỹ, Phòng CTCT&HSSV điều phối cho ngành/khoa khác có sinh viên đủ tiêu chuẩn.\n- Bước 5: Phòng Kế hoạch – Tài chính thực hiện chi trả HBKKHT qua tài khoản cá nhân sinh viên đã đăng ký theo quyết định của Hiệu trưởng."
+  y_bat_buoc:
+    - "Email: phongcntt@hcmue.edu.vn"
+    - "Phòng CTCT&HSSV phối hợp Phòng Kế hoạch – Tài chính xác định quỹ học bổng theo ngành và khóa"
+    - "CVHT họp lớp đánh giá rèn luyện; khoa/phân hiệu nhập điểm và gửi bảng tổng hợp về Phòng CTCT&HSSV"
+    - "Phòng Khảo thí và Đảm bảo chất lượng cập nhật và khóa điểm làm cơ sở đối chiếu"
+    - "Xét điểm từ cao xuống thấp; bằng điểm thì ưu tiên điểm học tập cao hơn, sau đó xét theo tỉ lệ số tín chỉ"
+    - "Phòng Kế hoạch – Tài chính chi trả học bổng qua tài khoản cá nhân đã đăng ký"
+  nguon:
+    - "Đ13: Danh bạ trong Sổ tay sinh viên K50"
+    - "Đ14: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-100
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thầy cô cho em hỏi, em thi TOEIC 4 kỹ năng có điểm Nói là 130 và điểm Viết là 130 thì đã đạt bậc 3 rồi, vậy hai kỹ năng Nghe và Đọc cần nằm trong khoảng bao nhiêu điểm để được công nhận tương đương bậc 3 ạ? Với lại theo quy định của trường mình thì một tín chỉ được tính bằng bao nhiêu giờ học và tự học ạ?"
+  dap_an_nhap: "1. Theo Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4, đối với chứng chỉ TOEIC (4 kỹ năng), để đạt mức tương đương bậc 3 thì hai kỹ năng Nghe và Đọc cần đạt mức điểm như sau:\n- Kỹ năng Nghe: 275 – 399 điểm.\n- Kỹ năng Đọc: 275 – 384 điểm.\n(Hai kỹ năng còn lại yêu cầu: Nói 120 – 159 điểm; Viết 120 – 149 điểm).\n\n2. Quy định về giá trị của một tín chỉ (Điều 2 Quy chế đào tạo trình độ đại học):\nMột tín chỉ được quy định bằng một trong các định mức sau:\n- 15 giờ học lý thuyết và 30 giờ tự học, chuẩn bị cá nhân có hướng dẫn; hoặc\n- 30 giờ thực hành, thí nghiệm, thảo luận và 15 giờ tự học, chuẩn bị cá nhân có hướng dẫn; hoặc\n- 45 giờ thực tập tại cơ sở, làm tiểu luận, bài tập lớn, làm đồ án, khóa luận tốt nghiệp.\n(Quy định một giờ học được tính bằng 50 phút)."
+  y_bat_buoc:
+    - "Thang điểm TOEIC tương đương bậc 3 cho Nghe: 275 – 399"
+    - "Thang điểm TOEIC tương đương bậc 3 cho Đọc: 275 – 384"
+    - "Một tín chỉ: 15 giờ học lý thuyết và 30 giờ tự học, chuẩn bị cá nhân có hướng dẫn"
+    - "Hoặc: 30 giờ thực hành, thí nghiệm, thảo luận và 15 giờ tự học, chuẩn bị cá nhân có hướng dẫn"
+    - "Hoặc: 45 giờ thực tập tại cơ sở, làm tiểu luận, bài tập lớn, làm đồ án, khóa luận tốt nghiệp"
+    - "Một giờ học được tính bằng 50 phút"
+  nguon:
+    - "Đ15: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Phụ lục"
+    - "Đ16: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 2"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-106
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "ad cho e hoi chuong trinh lien thong tu trung cap len dai hoc he chinh quy co tgian hoc chuan la 2,5 nam thi tgian hoc toi da la bao lau v a? voi trinh tu thu tuc xet khen thuong cho ca nhan va tap the lop xuat sac vao cuoi nam gom cac buoc nao the"
+  dap_an_nhap: "1. Đối với chương trình đào tạo liên thông từ trình độ trung cấp lên trình độ đại học theo hình thức đào tạo chính quy, thời gian học tập chuẩn là 2,5 năm học và thời gian học tập tối đa là 5 năm học.\n\n2. Trình tự và thủ tục xét khen thưởng cá nhân và tập thể lớp có thành tích xuất sắc (Điều 33):\n- Đầu năm học: Phòng CTCT&HSSV tổ chức cho sinh viên và các lớp sinh viên đăng ký danh hiệu thi đua cá nhân và tập thể lớp sinh viên.\n- Cuối năm học: Phòng CTCT&HSSV phối hợp với các khoa, phân hiệu tiến hành thống kê danh sách sinh viên xuất sắc và tập thể lớp sinh viên có tỉ lệ Giỏi, Xuất sắc cao để xét khen thưởng.\n- Thủ tục xét duyệt:\n  + Đối với cá nhân: Căn cứ thành tích học tập và rèn luyện của sinh viên, Phòng CTCT&HSSV lập danh sách đề nghị Hội đồng Khen thưởng và Kỷ luật sinh viên xét và đề nghị Hiệu trưởng công nhận danh hiệu.\n  + Đối với tập thể lớp: Hội đồng Khen thưởng và Kỷ luật căn cứ quy định để xét và đề nghị Hiệu trưởng công nhận danh hiệu đối với những tập thể đạt tiêu chuẩn."
+  y_bat_buoc:
+    - "Thời gian học tập tối đa: 5 năm học"
+    - "Đầu năm học: Phòng CTCT&HSSV tổ chức cho sinh viên và các lớp đăng ký danh hiệu thi đua"
+    - "Cuối năm học: Phòng CTCT&HSSV phối hợp khoa, phân hiệu thống kê danh sách sinh viên xuất sắc và tập thể lớp có tỉ lệ Giỏi, Xuất sắc cao"
+    - "Phòng CTCT&HSSV lập danh sách đề nghị Hội đồng Khen thưởng và Kỷ luật sinh viên xét và đề nghị Hiệu trưởng ra quyết định công nhận danh hiệu"
+  nguon:
+    - "Đ11: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+    - "Đ17: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 33"
+  hanh_vi: tra_loi
+  ghi_chu: "Yêu cầu 2 đổi sang hỏi về trình tự, thủ tục xét khen thưởng cá nhân và tập thể lớp xuất sắc do đoạn Đ17 không có quy định về hệ quả vi phạm hay trường hợp ngoại lệ."
+
+- phieu: V4-108
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thầy cô cho em hỏi, đối với học phần chỉ yêu cầu đánh giá đạt/không đạt không phân mức, nếu em được 6,0 điểm hệ 10 thì điểm chữ quy đổi là gì và điểm đó có tính vào điểm trung bình học tập không ạ? Ngoài ra, theo quy chế của trường thì trường hợp nào sinh viên sẽ bị xử lý kỷ luật ở mức cảnh cáo ạ?"
+  dap_an_nhap: "1. Theo Bảng đánh giá học phần đạt/không đạt không phân mức:\n- Điểm số thang điểm 10 từ 5,0 trở lên (trong đó có mức 6,0 điểm) được xếp kết quả là Đạt và quy đổi thành điểm chữ P.\n- Điểm này không được tính vào điểm trung bình học tập.\n\n2. Điều kiện áp dụng hình thức kỷ luật Cảnh cáo đối với sinh viên (Điều 35):\nHình thức cảnh cáo được áp dụng đối với sinh viên thuộc một trong các trường hợp sau:\n- Đã bị khiển trách mà tái phạm;\n- Vi phạm ở mức độ nhẹ nhưng hành vi vi phạm có tính chất thường xuyên;\n- Mới vi phạm lần đầu nhưng mức độ tương đối nghiêm trọng.\n(Hình thức kỷ luật từ cảnh cáo trở lên phải được ghi vào hồ sơ sinh viên)."
+  y_bat_buoc:
+    - "Thang điểm 10 từ 5,0 trở lên quy đổi thành điểm chữ P (kết quả Đạt)"
+    - "Tính vào điểm trung bình học tập: Không"
+    - "Áp dụng cảnh cáo khi: đã bị khiển trách mà tái phạm"
+    - "Hoặc: vi phạm ở mức độ nhẹ nhưng hành vi vi phạm có tính chất thường xuyên"
+    - "Hoặc: mới vi phạm lần đầu nhưng mức độ tương đối nghiêm trọng"
+  nguon:
+    - "Đ18: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+    - "Đ19: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 35"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-117
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, quy định về việc dừng cấp kinh phí hỗ trợ chi phí học tập đối với sv dân tộc thiểu số thuộc hộ nghèo, cận nghèo ntn ạ? Với cả trường mình quy định về việc nghỉ học tạm thời và tiếp nhận trở lại học ra sao vậy ad?"
+  dap_an_nhap: "1. Quy định về dừng cấp kinh phí hỗ trợ chi phí học tập đối với sinh viên DTTS hộ nghèo, hộ cận nghèo:\n- Sinh viên học đồng thời ở nhiều khoa trong Trường hoặc học ở nhiều trường khác nhau thì chỉ được hưởng hỗ trợ một lần.\n- Sinh viên bỏ học hoặc bị kỷ luật buộc thôi học thì không được nhận kinh phí hỗ trợ chi phí học tập kể từ thời điểm quyết định kỷ luật có hiệu lực.\n- Sinh viên bị đình chỉ học tập (có thời hạn) thì không được nhận kinh phí hỗ trợ chi phí học tập trong thời gian bị đình chỉ.\n- Sinh viên cùng lúc được hưởng nhiều chính sách hỗ trợ có cùng tính chất thì chỉ được hưởng một chế độ ưu đãi cao nhất.\n\n2. Quy định về nghỉ học tạm thời, tạm dừng tiến độ học tập và tiếp nhận trở lại học (Điều 30 Quy chế công tác sinh viên):\n- Điều kiện nghỉ học tạm thời: Sinh viên phải hoàn thành ít nhất một học kỳ (đối với sinh viên đại học chính quy trúng tuyển từ năm 2020 trở về trước phải có điểm trung bình chung tích lũy từ 2.00 trở lên); không nợ học phí và có xác nhận của Phòng Kế hoạch – Tài chính tại thời điểm làm hồ sơ; thuộc các trường hợp cho phép nghỉ theo quy chế đào tạo.\n- Hồ sơ nghỉ học tạm thời: Đơn xin tạm nghỉ học có xác nhận đồng ý của Trưởng khoa hoặc Giám đốc phân hiệu kèm các minh chứng. Hạn cuối nộp hồ sơ ở học kỳ chính là sau khi học kỳ đó bắt đầu 04 tuần.\n- Tạm dừng tiến độ học tập: Áp dụng khi vi phạm kỷ luật ở mức buộc nghỉ học tạm thời, hoặc bị xếp loại rèn luyện yếu, kém 2 học kỳ liên tiếp (đối với trình độ đại học) hoặc kém cả năm (đối với CĐSP).\n- Tiếp nhận trở lại học: Hoàn tất thủ tục xin học lại trước thời điểm đăng ký học phần ít nhất 02 tuần. Hồ sơ gồm đơn xin học lại (có xác nhận đồng ý của Trưởng khoa/Giám đốc phân hiệu) và quyết định nghỉ học tạm thời, nộp tại Phòng CTCT&HSSV. Đối với sinh viên tuyển sinh từ năm 2025 trở về sau, khi trở lại Trường sẽ tiếp tục học theo CTĐT của khóa tuyển sinh."
+  y_bat_buoc:
+    - "Dừng hỗ trợ chi phí học tập: Chỉ hưởng một lần nếu học nhiều khoa/trường; không được nhận kể từ khi quyết định kỷ luật buộc thôi học có hiệu lực hoặc khi bỏ học; không được nhận trong thời gian bị đình chỉ học tập có thời hạn; chỉ hưởng 1 chế độ ưu đãi cao nhất nếu trùng chính sách"
+    - "Điều kiện nghỉ tạm thời: hoàn thành ít nhất 1 học kỳ (trúng tuyển từ 2020 trở về trước cần ĐTB tích lũy từ 2.00 trở lên), không nợ học phí (có xác nhận của Phòng Kế hoạch – Tài chính)"
+    - "Hồ sơ nghỉ tạm thời: Đơn xin nghỉ có xác nhận của Trưởng khoa/Giám đốc phân hiệu kèm minh chứng; hạn nộp kỳ chính là sau khi bắt đầu 04 tuần"
+    - "Tạm dừng tiến độ: vi phạm kỷ luật buộc nghỉ tạm thời, hoặc bị xếp ĐRL yếu/kém 2 kỳ liên tiếp (ĐH) hoặc kém cả năm (CĐSP)"
+    - "Thủ tục học lại: nộp đơn xin học lại (xác nhận của Trưởng khoa/GĐ phân hiệu) và quyết định nghỉ tạm thời tại Phòng CTCT&HSSV trước đợt ĐKHP ít nhất 02 tuần"
+    - "Sinh viên tuyển sinh từ 2025 trở về sau trở lại học theo CTĐT của khóa tuyển sinh"
+  nguon:
+    - "Đ20: Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026, III. Quy định về dừng cấp kinh phí hỗ trợ chi phí"
+    - "Đ21: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 30"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-122
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Chào thầy cô, theo quy chế của trường thì sinh viên có những trách nhiệm gì trong học tập ạ? Ngoài ra, đối với sinh viên học cùng lúc hai chương trình, nếu không đáp ứng được kết quả học tập ở chương trình thứ nhất thì sẽ bị xử lý như thế nào ạ?"
+  dap_an_nhap: "1. Trách nhiệm của sinh viên trong học tập (Điều 9 Quy chế công tác sinh viên):\n- Tìm hiểu, nghiên cứu để nắm vững CTĐT của khóa, ngành đào tạo, kế hoạch học tập mỗi học kỳ và các quy định liên quan; liên lạc với cố vấn học tập, khoa, phân hiệu, các phòng chức năng hoặc giảng viên khi cần giúp đỡ.\n- Thường xuyên theo dõi các thông báo, đọc kỹ tài liệu hướng dẫn để thực hiện quy định học vụ đúng trình tự và thời hạn.\n- Thực hiện việc đăng ký học phần trước mỗi học kỳ theo đúng quy định, quy trình.\n- Thực hiện đầy đủ và nghiêm túc tất cả yêu cầu của học phần đã đăng ký, tham dự kiểm tra đánh giá quá trình và thi kết thúc học phần.\n- Tham gia học tập, kiểm tra và thi đúng lớp học phần đã được xếp (trường hợp đặc biệt phải có sự đồng ý của giảng viên, Phòng Đào tạo, Phòng CTCT&HSSV).\n- Bảo mật thông tin cá nhân, tài khoản cá nhân, hộp thư điện tử được Trường cung cấp.\n\n2. Hệ quả đối với sinh viên học cùng lúc hai chương trình (Khoản 3 Điều 19 Quy chế đào tạo trình độ đại học):\nTrong quá trình sinh viên học cùng lúc hai chương trình, nếu điểm trung bình tích luỹ của chương trình thứ nhất đạt dưới điểm trung bình hoặc thuộc diện cảnh báo kết quả học tập thì bị buộc thôi học chương trình thứ hai ở học kỳ tiếp theo."
+  y_bat_buoc:
+    - "Trách nhiệm học tập: Nắm vững CTĐT, kế hoạch học tập, quy định (liên hệ CVHT, khoa, phòng ban khi cần); theo dõi thông báo và tài liệu hướng dẫn đúng hạn; đăng ký học phần đúng quy định trước mỗi kỳ; thực hiện đầy đủ yêu cầu học phần, tham dự kiểm tra/thi; tham gia học/thi đúng lớp được xếp (trường hợp đặc biệt cần đồng ý của giảng viên, Phòng Đào tạo, Phòng CTCT&HSSV); bảo mật thông tin cá nhân, tài khoản, email"
+    - "Hệ quả học 2 chương trình: Bị buộc thôi học chương trình thứ hai ở học kỳ tiếp theo nếu điểm trung bình tích lũy của chương trình thứ nhất đạt dưới điểm trung bình hoặc thuộc diện cảnh báo kết quả học tập"
+  nguon:
+    - "Đ22: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9"
+    - "Đ23: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 19"
+  hanh_vi: tra_loi
+  ghi_chu: "Yêu cầu 1 đổi sang hỏi về trách nhiệm của sinh viên trong học tập do đoạn Đ22 không có quy định về thủ tục hồ sơ."
+
+- phieu: V4-124
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "ad cho e hoi thu tuc dang ky nhan ho tro tien dong hoc phi va chi phi sinh hoat cho sv su pham can nop ho so gi, o dau va nop trong thoi han bao lau v a? tien cho e hoi them la van ban huong dan lap ho so danh gia ket qua ren luyen sinh vien duoc ban hanh theo quyet dinh nao ngay nao the a"
+  dap_an_nhap: "1. Thủ tục đăng ký hỗ trợ tiền đóng học phí và chi phí sinh hoạt đối với sinh viên sư phạm (Điều 7 Nghị định về chính sách hỗ trợ sinh viên sư phạm):\n- Hồ sơ gồm: Đơn đề nghị hưởng và cam kết bồi hoàn học phí, chi phí sinh hoạt (Mẫu số 01).\n- Hình thức nộp: Nộp trực tiếp hoặc qua bưu điện hoặc trực tuyến (nếu có).\n- Số lượng: Sinh viên chỉ nộp 01 bộ hồ sơ cho 01 lần đầu đề nghị hỗ trợ trong cả thời gian học tại trường.\n- Nơi nộp: Cơ sở đào tạo giáo viên (Trường).\n- Thời hạn: Trong thời hạn 30 ngày kể từ ngày nhận được thông báo trúng tuyển.\n- Các mốc thời gian xử lý: Trong thời hạn 15 ngày kể từ ngày kết thúc nhận đơn, cơ sở đào tạo giáo viên thống nhất với địa phương thông báo cho sinh viên được hưởng chính sách; danh sách sinh viên được hưởng hỗ trợ được công khai chậm nhất sau 05 ngày làm việc kể từ khi hoàn thành việc xét duyệt.\n\n2. Quyết định ban hành Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên:\nVăn bản được ban hành kèm theo Quyết định số 2000/QĐ-ĐHSP ngày 15 tháng 7 năm 2024 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh."
+  y_bat_buoc:
+    - "Hồ sơ: Đơn đề nghị hưởng và cam kết bồi hoàn học phí, chi phí sinh hoạt (Mẫu số 01)"
+    - "Hình thức nộp: nộp trực tiếp hoặc qua bưu điện hoặc trực tuyến (nếu có)"
+    - "Số lượng hồ sơ: chỉ nộp 01 bộ hồ sơ cho 01 lần đầu đề nghị hỗ trợ trong cả thời gian học"
+    - "Nơi nộp: cơ sở đào tạo giáo viên"
+    - "Thời hạn nộp: trong thời hạn 30 ngày kể từ ngày nhận được thông báo trúng tuyển"
+    - "Thời hạn xét duyệt: trong vòng 15 ngày kể từ ngày kết thúc nhận đơn cơ sở đào tạo thống nhất và thông báo; công khai danh sách chậm nhất sau 05 ngày làm việc kể từ khi xét duyệt xong"
+    - "Quyết định ban hành hướng dẫn đánh giá ĐRL: Quyết định số 2000/QĐ-ĐHSP ngày 15 tháng 7 năm 2024 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh"
+  nguon:
+    - "Đ24: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 7"
+    - "Đ25: Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)"
+  hanh_vi: tra_loi
+  ghi_chu: "Yêu cầu 2 đổi sang hỏi về số quyết định và ngày ban hành văn bản hướng dẫn do đoạn Đ25 không có nội dung chi tiết về thủ tục hồ sơ."

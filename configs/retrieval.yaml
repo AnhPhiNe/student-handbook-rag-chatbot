@@ -25,15 +25,26 @@ runtime:
   qdrant_timeout_seconds: 60
   parent_cache_max_entries: 2048
 
-# Qwen3-Reranker-8B on DeepInfra reranks every RRF child; on failure retrieval
-# keeps the RRF order. It replaced Cohere rerank-v4.0-fast on 2026-09-29 (see
-# src/retrieval/core/reranker.py for the measurements). One call with 24
-# candidates took p50 1.6 s, p90 4.7 s, max 9.3 s; with an 8 s timeout 3 of 30
-# live calls fell back, so it waits 10 s, without retry.
+# Voyage rerank-3 reranks every RRF child; on failure retrieval keeps the RRF
+# order. It replaced Qwen3-Reranker-8B on DeepInfra on 2026-09-30 (see
+# src/retrieval/core/reranker.py for the measurements): same ranking quality on
+# official_v1 at half the latency, and without DeepInfra's endpoint stalls,
+# which cost 105 of 246 cases their reranker in the official_v4 8B run. One call
+# with 24 candidates took p50 0.76 s, p90 0.85 s, max 1.35 s, so the 10 s
+# timeout is unchanged, without retry.
+# One call with 24 handbook children costs about 2,700 tokens, and the project
+# rate limit is per minute (100,000 TPM when this was written), so about 36 calls
+# a minute. A question makes one or a few calls and an evaluation run paces itself
+# at a few cases a minute, but a reranker-only burst (for example
+# scripts/compare_rerankers.py) must pace itself or it will be refused with 429
+# and fall back to the RRF order.
+# api_url matches the key: MongoDB Atlas keys use ai.mongodb.com, Voyage-native
+# keys https://api.voyageai.com/v1/rerank.
 reranker:
   enabled: true
-  model: Qwen/Qwen3-Reranker-8B
-  api_url: https://api.deepinfra.com/v1/inference
-  api_key_env_var: DEEPINFRA_API_KEY
+  provider: voyage
+  model: rerank-3
+  api_url: https://ai.mongodb.com/v1/rerank
+  api_key_env_var: VOYAGE_API_KEY
   instruction: Given a student question, retrieve handbook passages that answer it
   timeout_seconds: 10

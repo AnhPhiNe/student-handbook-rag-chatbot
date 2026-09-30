@@ -440,6 +440,24 @@ def test_compact_packet_prefers_complete_citations_for_single_cohort() -> None:
     assert "nhiễu" not in packet["retrieved_context"]
 
 
+def test_judge_packet_shows_the_article_and_document_the_composer_may_name() -> None:
+    source = {
+        "source_ref": "S1",
+        "title": "Bảng quy đổi thang điểm 10 sang điểm chữ",
+        "article_label": "Điều 10",
+        "document_title": "Quy chế đào tạo trình độ đại học",
+        "content": "8,1 điểm hệ 10 tương ứng điểm chữ B+.",
+    }
+    context = json.dumps({"units": [{"task_id": "t1", "cohort": "K50", "primary_evidence": [source]}]})
+    case = {"id": "grade", "query": "8,1 ra điểm chữ gì?", "cohort": "K50", "required_facts": []}
+    answer = {"answer": "Theo Điều 10 của Quy chế đào tạo trình độ đại học, 8,1 là B+.", "context_used": context}
+
+    packet = compact_judge_packet(case, answer)
+
+    assert "Article: Điều 10" in packet["retrieved_context"]
+    assert "Document: Quy chế đào tạo trình độ đại học" in packet["retrieved_context"]
+    assert "Title: Bảng quy đổi thang điểm 10 sang điểm chữ" in packet["retrieved_context"]
+
 def test_default_judge_packet_keeps_long_answer_and_later_citation_evidence() -> None:
     answer_tail = "Kết luận quan trọng nằm ở cuối câu trả lời."
     later_evidence = "Nguồn thứ sáu xác lập kết luận quan trọng."

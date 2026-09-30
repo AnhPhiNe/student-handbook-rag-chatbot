@@ -17,13 +17,14 @@ def main():
     parser.add_argument("--run", required=True, help="Run directory, e.g. data/eval/reports/official_v4_answers_<stamp>.")
     parser.add_argument("--ids", required=True, help="Comma-separated case ids.")
     parser.add_argument("--attempt", type=int, required=True)
+    parser.add_argument("--retrieval-config", help="Override the run's retrieval config, e.g. one with longer waits.")
     args = parser.parse_args()
 
     from src.common.env_loader import load_project_env
     load_project_env()
     run = ROOT / args.run
     snapshot = json.loads((run / "run_snapshot.json").read_text(encoding="utf-8"))
-    retrieval_config = snapshot.get("retrieval_config") or "configs/retrieval.yaml"
+    retrieval_config = args.retrieval_config or snapshot.get("retrieval_config") or "configs/retrieval.yaml"
     if retrieval_config == "configs/retrieval.yaml":
         os.environ.pop("STUDENT_RAG_RETRIEVAL_CONFIG", None)
     else:
@@ -40,7 +41,8 @@ def main():
 
     output = run / "reruns" / f"attempt_{args.attempt}"
     output.mkdir(parents=True, exist_ok=False)
-    context = {**snapshot, "rerun_of": run.name, "attempt": args.attempt, "rerun_ids": wanted}
+    context = {**snapshot, "retrieval_config": retrieval_config, "rerun_of": run.name,
+               "attempt": args.attempt, "rerun_ids": wanted}
     (output / "run_snapshot.json").write_text(json.dumps(context, ensure_ascii=False, indent=2), encoding="utf-8")
     cache = output / "answer_cache.json"
     generate_answers(cases, cache_path=cache, resume=False, checkpoint_context=context,

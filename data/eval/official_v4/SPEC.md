@@ -184,6 +184,16 @@ author nor its models wrote.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.
+- **Dense-retrieval timeouts** (added 2026-09-30, AFTER run A's scores were
+  read): run A's log shows 108 of 246 cases with at least one search that fell
+  back to BM25 only, because the embedding call exceeded its 5 s limit on a
+  slow network. The reranker-timeout rule is extended to them unchanged: the
+  list comes from the log alone, each case is rerun whole, the rerun result is
+  kept whether better or worse. Reruns, and run B, use
+  `configs/retrieval_eval_patient.yaml` (30 s waits for the embedding and the
+  reranker, otherwise identical), which changes how long a call may take and
+  not what it returns. Because the rule was extended after scores were seen,
+  the first-run figure (0.927, n = 245) is reported beside the rerun figure.
 - A run that fails part-way is completed by rerunning only the failed cases.
   Gold found wrong after the run is not edited; it is reported with both
   figures.

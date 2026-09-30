@@ -15,7 +15,9 @@ Bạn giúp tôi soạn câu hỏi kiểm thử cho một trợ lý hỏi đáp 
 4. **Ghi nguồn**: mã đoạn và tên văn bản, số Điều (nếu có).
 5. **Ghi hành vi mong đợi**: `tra_loi`, `hoi_lai`, `tu_choi`, `tra_loi_va_hoi_lai` hoặc `tra_loi_va_tu_choi`.
 
-Nếu một phiếu **không thể viết trung thực** (ví dụ đoạn sổ tay không chứa điều phiếu yêu cầu hỏi), đừng bịa: điền `khong_phu_hop` với lý do và bỏ trống các trường khác.
+Nếu một yêu cầu không hỏi được đúng kiểu phiếu nêu (ví dụ phiếu bảo hỏi thủ tục nhưng đoạn sổ tay không có thủ tục), hãy hỏi một điều khác mà đoạn đó thực sự nêu và ghi vào `ghi_chu` loại câu đã hỏi. Không bao giờ bịa thông tin ngoài đoạn sổ tay.
+
+Chỉ khi **cả phiếu không thể viết trung thực** mới điền `khong_phu_hop` với lý do và bỏ trống các trường khác.
 
 ## Định dạng trả về
 

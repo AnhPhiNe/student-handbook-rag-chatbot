@@ -68,6 +68,15 @@ REGULATION_ASK = {
     "consequence": "hỏi hệ quả nếu vi phạm hoặc không đáp ứng, hoặc một trường hợp ngoại lệ",
     "open": "câu hỏi mở, rộng về chủ đề của đoạn (vd: \"quy định về ... thế nào?\")",
 }
+# A procedure or consequence question needs an article that has one; the pilot
+# drew them from any article and 4 of 15 tickets could not be written.
+INTENT_CONTENT = {
+    "procedure": re.compile(r"(?i)hồ sơ|thủ tục|nộp|đơn đề nghị|đăng ký"),
+    "consequence": re.compile(r"(?i)kỷ luật|khiển trách|cảnh cáo|đình chỉ|buộc thôi học|cảnh báo"
+                              r"|không được|trừ trường hợp|ngoại lệ|thu hồi|bồi hoàn|dừng cấp"),
+}
+FALLBACK_ASK = (" (nếu đoạn không có nội dung đó, hỏi một điều khác mà đoạn thực sự nêu"
+                " và ghi loại đã hỏi vào ghi_chu)")
 DIRECTORY_FIELDS = ("số điện thoại", "email", "địa chỉ văn phòng")
 OFFICE_DUTIES = "đơn vị này hỗ trợ sinh viên những việc gì"  # only office records list duties
 MIN_ARTICLE_CHARS = 300
@@ -135,7 +144,8 @@ class Handbook:
                          for rule in _load(DATA / f"tables/{cohort}_formula_rules.json")]
         self.directories = {
             kind: {cohort: [r for r in _load(DATA / f"directories/{cohort}_{kind}_directory.json")
-                            if not _is_branch(json.dumps(r, ensure_ascii=False))]
+                            if not _is_branch(json.dumps(r, ensure_ascii=False))
+                            and (kind != "program" or r.get("faculty_name"))]
                    for cohort in COHORTS}
             for kind in ("office", "faculty", "program")
         }
@@ -195,7 +205,12 @@ class Drawer:
         self.formula_pool = Pool(rng, _by_cohort(handbook.formulas))
         self.directory_pools = {kind: Pool(rng, by_cohort) for kind, by_cohort in handbook.directories.items()}
         self.service_pool = Pool(rng, _by_cohort(handbook.services))
-        self.regulation_pool = Pool(rng, dict(handbook.regulations))
+        self.regulation_pools = {
+            intent: Pool(rng, {c: [a for a in ids if intent not in INTENT_CONTENT
+                                   or INTENT_CONTENT[intent].search(handbook.articles[a]["content"])]
+                               for c, ids in handbook.regulations.items()})
+            for intent in REGULATION_ASK
+        }
 
     # One "request": a piece of handbook content plus what the student should ask about it.
     def table_request(self, family: str, cohort: str) -> dict:
@@ -211,7 +226,8 @@ class Drawer:
         article = self.hb.article_id(table["source_parent_id"], cohort)
         return {"source": self.hb.article_excerpt(article),
                 "ask": f"hỏi một giá trị trong bảng \"{table.get('table_name') or table.get('title')}\", "
-                       f"ở dòng: {shown}. Sinh viên nêu phần mình đã biết và hỏi phần còn lại"}
+                       f"ở dòng: {shown}. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, "
+                       "sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng"}
 
     def directory_request(self, kind: str, cohort: str) -> dict:
         cohort, record = self.directory_pools[kind].draw(cohort)
@@ -239,8 +255,8 @@ class Drawer:
                 "service": service}
 
     def regulation_request(self, intent: str, cohort: str) -> dict:
-        _, article_id = self.regulation_pool.draw(cohort)
-        return {"source": self.hb.article_excerpt(article_id), "ask": REGULATION_ASK[intent]}
+        _, article_id = self.regulation_pools[intent].draw(cohort)
+        return {"source": self.hb.article_excerpt(article_id), "ask": REGULATION_ASK[intent] + FALLBACK_ASK}
 
     def any_table(self, cohort: str) -> dict:
         families = [f for f, pool in self.table_pools.items() if cohort in pool.cohorts()]
@@ -352,11 +368,14 @@ def build_ticket(drawer: Drawer, cell: str, cohort: str) -> dict:
                      "ask": f"so sánh hai dòng của bảng \"{table.get('table_name') or table.get('title')}\": {shown}"}]
     elif cell == "D.program_faculty":
         task = CELL_TEXT["D.program_faculty"]
-        program = drawer.directory_request("program", cohort)
-        faculty_name = next((r for r in drawer.hb.directories["program"][program["source"]["cohort"]]
-                             if r.get("record_id") == program["source"]["id"]), {}).get("faculty_name", "")
-        faculty = next((r for r in drawer.hb.directories["faculty"][program["source"]["cohort"]]
-                        if faculty_name and faculty_name in r.get("faculty_or_unit_name", "")), None)
+        for _ in range(50):  # a programme whose faculty has a directory entry
+            program = drawer.directory_request("program", cohort)
+            faculty_name = next((r for r in drawer.hb.directories["program"][program["source"]["cohort"]]
+                                 if r.get("record_id") == program["source"]["id"]), {}).get("faculty_name", "")
+            faculty = next((r for r in drawer.hb.directories["faculty"][program["source"]["cohort"]]
+                            if faculty_name and faculty_name in r.get("faculty_or_unit_name", "")), None)
+            if faculty:
+                break
         requests = [program]
         if faculty:
             requests.append({"source": {"kind": "faculty", "id": faculty["record_id"], "cohort": program["source"]["cohort"],

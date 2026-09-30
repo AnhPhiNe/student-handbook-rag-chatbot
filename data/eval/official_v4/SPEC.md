@@ -64,7 +64,11 @@ author nor its models wrote.
 - **Regulations:** a random handbook article, excluding articles that print a
   lookup table, articles under 300 characters, and administrative articles no
   student asks about (scope, entry into force, duties of ministries or units,
-  budgeting), matched on the article title.
+  budgeting), matched on the article title. Procedure tickets draw only from
+  articles that mention a file, a procedure or a submission; consequence tickets
+  only from articles that mention a sanction, a prohibition or an exception.
+  When an article still cannot carry the ticket's question kind, the author asks
+  something else the article states and records the kind in `ghi_chu`.
 - **Main campus only:** records and articles naming the branch campus
   (Phân hiệu Long An) are left out.
 - **Free tickets:** out-of-domain and not-in-handbook tickets (F) have no source;
@@ -75,13 +79,31 @@ author nor its models wrote.
 | Step | Who | Status |
 |---|---|---|
 | Draw tickets and batches | `scripts/draw_v4_tickets.py` | done (246 tickets, 13 batches) |
-| Pilot: batch 00 (15 tickets, every family) | external author (Gemini) | pending |
-| Check the pilot: facts, style, naturalness | this repo's maintainer | pending |
+| Pilot 1 (15 tickets) | Gemini 3.8 Flash | done, questions discarded (below) |
+| Pilot 2: batch 00 of the redraw | Gemini 3.8 Flash | pending |
 | Batches 01–12 | external author | pending |
 | Variants (G): rewrite 36 authored questions | external author | pending (needs the authored base) |
 | Planner gold labels; fact check against the data; overlap check with v1–v3 | maintainer, scripts | pending |
 | Owner review of a random sample of about 30 cases | owner | pending |
 | Freeze and run once, end to end | | pending |
+
+## Pilot 1 (2026-09-30)
+
+The first draw was tried on 15 tickets. The output is kept in
+`pilot/batch_00_gemini_flash.yaml`; its questions are not part of v4, and the
+tickets were redrawn with the same seed after the fixes below. No system was run.
+
+- 10 of 15 tickets were written; the author marked 5 as not writable, each with
+  a correct reason. 4 asked for a question kind the drawn article could not
+  carry (a procedure from an article on using conduct results, a consequence
+  from an article on advisers' rights); 1 drew a programme whose record has no
+  faculty. Fixes: procedure and consequence tickets draw from matching
+  articles, the author may change the question kind and record it, and
+  programmes without a faculty are left out.
+- The author invented nothing: missing content was reported, not filled in.
+- The informal style was followed in 4 of 4 tickets. One table question copied
+  the row's whole range ("từ 5,5 đến 6,2"); table tickets now ask for one value
+  inside a range.
 
 ## Limitations to report
 

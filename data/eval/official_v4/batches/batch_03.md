@@ -1,4 +1,4 @@
-# Đợt 03: 27 phiếu
+# Đợt 03: 28 phiếu
 
 ## Phiếu
 
@@ -6,133 +6,127 @@
 - Khóa của sinh viên: K48-K49
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
 - Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng xếp loại học lực theo thang điểm 4", ở dòng: Xếp loại = Yếu; Thang điểm 4 = Từ 1,0 đến dưới 2,0. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ1.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng xếp loại học lực theo thang điểm 4", ở dòng: Xếp loại = Yếu; Thang điểm 4 = Từ 1,0 đến dưới 2,0. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ1.
 
 ### V4-002
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
-- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng đánh giá học phần đạt/không đạt không phân mức", ở dòng: Kết quả = Chưa đạt; Thang điểm 10 = Dưới 5,0; Điểm chữ = Không quy đổi thành P; Tính vào điểm trung bình học tập = Không. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ2.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng đánh giá học phần đạt/không đạt không phân mức", ở dòng: Kết quả = Chưa đạt; Thang điểm 10 = Dưới 5,0; Điểm chữ = Không quy đổi thành P; Tính vào điểm trung bình học tập = Không. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ2.
 
 ### V4-003
 - Khóa của sinh viên: K51
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
 - Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng xếp loại học lực theo thang điểm 4", ở dòng: Xếp loại = Xuất sắc; Thang điểm 4 = Từ 3,6 đến 4,0. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ3.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng xếp loại học lực theo thang điểm 4", ở dòng: Xếp loại = Xuất sắc; Thang điểm 4 = Từ 3,6 đến 4,0. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ3.
 
 ### V4-004
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Gõ không dấu hoặc có lỗi gõ, như nhắn vội trên điện thoại.
-- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng xếp loại học lực theo thang điểm 4", ở dòng: Xếp loại = Trung bình; Thang điểm 4 = Từ 2,0 đến dưới 2,5. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ4.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng xếp loại học lực theo thang điểm 4", ở dòng: Xếp loại = Trung bình; Thang điểm 4 = Từ 2,0 đến dưới 2,5. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ4.
 
 ### V4-005
 - Khóa của sinh viên: K51
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Văn nói, tiếng lóng hoặc viết tắt của sinh viên (vd: "ktx", "hb", "đrl", "sđt", "cho em hỏi xíu").
-- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng quy đổi điểm chữ sang thang điểm 4", ở dòng: Thang điểm chữ = C+; Thang điểm 4 = 2,5. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ3.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng quy đổi điểm chữ sang thang điểm 4", ở dòng: Thang điểm chữ = C+; Thang điểm 4 = 2,5. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ3.
+
+### V4-007
+- Khóa của sinh viên: K50
+- Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Trung Quốc; Chứng chỉ = Hanyu Shuiping Kaoshi (HSK); Thang điểm hoặc cấp độ = HSK; Tương đương bậc 3 = HSK bậc 3; Tương đương bậc 4 = HSK bậc 4. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ5.
+
+### V4-008
+- Khóa của sinh viên: K50
+- Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
+- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Hàn Quốc; Chứng chỉ = TOPIK II; Thang điểm hoặc cấp độ = TOPIK II; Tương đương bậc 3 = TOPIK II (120); Tương đương bậc 4 = TOPIK II (150). Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ5.
 
 ### V4-009
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Gõ không dấu hoặc có lỗi gõ, như nhắn vội trên điện thoại.
-- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Nga; Chứng chỉ = ТРКИ - Тест по русскому языку как иностранному; Thang điểm hoặc cấp độ = ТРКИ; Tương đương bậc 3 = ТРКИ-1; Tương đương bậc 4 = ТРКИ-2. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ5.
+- Kiểu viết: Văn nói, tiếng lóng hoặc viết tắt của sinh viên (vd: "ktx", "hb", "đrl", "sđt", "cho em hỏi xíu").
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Nga; Chứng chỉ = ТРКИ - Тест по русскому языку как иностранному; Thang điểm hoặc cấp độ = ТРКИ; Tương đương bậc 3 = ТРКИ-1; Tương đương bậc 4 = ТРКИ-2. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ5.
 
 ### V4-010
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Anh; Chứng chỉ = TOEIC (4 kỹ năng); Thang điểm hoặc cấp độ = Nghe, Đọc, Nói, Viết; Tương đương bậc 3 = Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149; Tương đương bậc 4 = Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ5.
+- Kiểu viết: Gõ không dấu hoặc có lỗi gõ, như nhắn vội trên điện thoại.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Anh; Chứng chỉ = TOEIC (4 kỹ năng); Thang điểm hoặc cấp độ = Nghe, Đọc, Nói, Viết; Tương đương bậc 3 = Nghe 275 - 399; Đọc 275 - 384; Nói 120 - 159; Viết 120 - 149; Tương đương bậc 4 = Nghe 400 - 489; Đọc 385 - 454; Nói 160 - 179; Viết 150 - 179. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ5.
 
 ### V4-011
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Anh; Chứng chỉ = TOEFL ITP; Thang điểm hoặc cấp độ = TOEFL ITP; Tương đương bậc 3 = 450 - 499. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ5.
+- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Anh; Chứng chỉ = TOEFL ITP; Thang điểm hoặc cấp độ = TOEFL ITP; Tương đương bậc 3 = 450 - 499. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ5.
 
 ### V4-012
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Văn nói, tiếng lóng hoặc viết tắt của sinh viên (vd: "ktx", "hb", "đrl", "sđt", "cho em hỏi xíu").
-- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Trung Quốc; Chứng chỉ = Hanyu Shuiping Kaoshi (HSK); Thang điểm hoặc cấp độ = HSK; Tương đương bậc 3 = HSK bậc 3; Tương đương bậc 4 = HSK bậc 4. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ5.
-
-### V4-013
-- Khóa của sinh viên: K51
-- Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Văn nói, tiếng lóng hoặc viết tắt của sinh viên (vd: "ktx", "hb", "đrl", "sđt", "cho em hỏi xíu").
-- Yêu cầu 1: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Hình thức đào tạo = Chính quy; Thời gian học tập chuẩn = 04 năm học; Thời gian học tập tối đa = 06 năm học; Quy tắc đối với sinh viên liên thông = Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ.. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ6.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
+- Yêu cầu 1: hỏi một giá trị trong bảng "Bảng tham chiếu quy đổi chứng chỉ ngoại ngữ tương đương bậc 3 và bậc 4", ở dòng: Ngôn ngữ = Tiếng Trung Quốc; Chứng chỉ = Hanyu Shuiping Kaoshi (HSK); Thang điểm hoặc cấp độ = HSK; Tương đương bậc 3 = HSK bậc 3; Tương đương bậc 4 = HSK bậc 4. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ5.
 
 ### V4-014
 - Khóa của sinh viên: K48-K49
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
 - Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Chương trình đào tạo = Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học; Thời gian học tập chuẩn = 2,5 năm học; Thời gian học tập tối đa = 5 năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ7.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Chương trình đào tạo = Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học; Thời gian học tập chuẩn = 2,5 năm học; Thời gian học tập tối đa = 5 năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ6.
 
 ### V4-015
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Chương trình đào tạo = Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học; Thời gian học tập chuẩn = 3 năm học; Thời gian học tập tối đa = 6 năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ8.
-
-### V4-016
-- Khóa của sinh viên: K50
-- Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Chương trình đào tạo = Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học; Thời gian học tập chuẩn = 2,5 năm học; Thời gian học tập tối đa = 5 năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ8.
-
-### V4-017
-- Khóa của sinh viên: K51
-- Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Hình thức đào tạo = Vừa làm vừa học; Thời gian học tập chuẩn = 05 năm học; Thời gian học tập tối đa = 7,5 năm học; Quy tắc đối với sinh viên liên thông = Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ.. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ6.
+- Kiểu viết: Gõ không dấu hoặc có lỗi gõ, như nhắn vội trên điện thoại.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Chương trình đào tạo = Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học; Thời gian học tập chuẩn = 3 năm học; Thời gian học tập tối đa = 6 năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ7.
 
 ### V4-018
 - Khóa của sinh viên: K48-K49
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Chương trình đào tạo = Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học; Thời gian học tập chuẩn = 1,5 năm học; Thời gian học tập tối đa = 3 năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ7.
+- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Chương trình đào tạo = Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học; Thời gian học tập chuẩn = 1,5 năm học; Thời gian học tập tối đa = 3 năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ6.
 
 ### V4-019
 - Khóa của sinh viên: K48-K49
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
-- Yêu cầu 1: hỏi một giá trị trong bảng "Mức học bổng khuyến khích học tập", ở dòng: Loại học bổng = Giỏi; Công thức = Số tín chỉ x định mức học phí 01 tín chỉ x 1,25; Hệ số = 1.25; Căn cứ học phí = định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ9.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
+- Yêu cầu 1: hỏi một giá trị trong bảng "Mức học bổng khuyến khích học tập", ở dòng: Loại học bổng = Giỏi; Công thức = Số tín chỉ x định mức học phí 01 tín chỉ x 1,25; Hệ số = 1.25; Căn cứ học phí = định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ8.
 
 ### V4-021
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Gõ không dấu hoặc có lỗi gõ, như nhắn vội trên điện thoại.
-- Yêu cầu 1: hỏi một giá trị trong bảng "Điều kiện xét học bổng khuyến khích học tập", ở dòng: Tiêu chí = Khối lượng học tập thông thường; Yêu cầu = Tích lũy ít nhất 15 tín chỉ theo kế hoạch; các tín chỉ dùng để xét phải đạt và không tính tín chỉ trả nợ, cải thiện hoặc tương đương. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ10.
+- Kiểu viết: Văn nói, tiếng lóng hoặc viết tắt của sinh viên (vd: "ktx", "hb", "đrl", "sđt", "cho em hỏi xíu").
+- Yêu cầu 1: hỏi một giá trị trong bảng "Điều kiện xét học bổng khuyến khích học tập", ở dòng: Tiêu chí = Khối lượng học tập thông thường; Yêu cầu = Tích lũy ít nhất 15 tín chỉ theo kế hoạch; các tín chỉ dùng để xét phải đạt và không tính tín chỉ trả nợ, cải thiện hoặc tương đương. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ9.
 
 ### V4-022
 - Khóa của sinh viên: K51
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
 - Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
-- Yêu cầu 1: hỏi một giá trị trong bảng "Mức học bổng khuyến khích học tập", ở dòng: Loại học bổng = Giỏi; Công thức = Số tín chỉ x định mức học phí 01 tín chỉ x 1,25; Hệ số = 1.25; Căn cứ học phí = định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ11.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Mức học bổng khuyến khích học tập", ở dòng: Loại học bổng = Giỏi; Công thức = Số tín chỉ x định mức học phí 01 tín chỉ x 1,25; Hệ số = 1.25; Căn cứ học phí = định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ10.
 
 ### V4-023
 - Khóa của sinh viên: K48-K49
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
 - Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi một giá trị trong bảng "Xếp loại học bổng khuyến khích học tập", ở dòng: Mục = Giỏi; Khoảng điểm học bổng = 3.20-3.672; Khoảng điểm học tập = 3.20-3.59; Điều kiện điểm rèn luyện = >=80. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ9.
+- Yêu cầu 1: hỏi một giá trị trong bảng "Xếp loại học bổng khuyến khích học tập", ở dòng: Mục = Giỏi; Khoảng điểm học bổng = 3.20-3.672; Khoảng điểm học tập = 3.20-3.59; Điều kiện điểm rèn luyện = >=80. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ8.
 
 ### V4-024
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
-- Yêu cầu 1: hỏi một giá trị trong bảng "Mức học bổng khuyến khích học tập", ở dòng: Loại học bổng = Giỏi; Công thức = Số tín chỉ x định mức học phí 01 tín chỉ x 1,25; Hệ số = 1.25; Căn cứ học phí = định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ10.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
+- Yêu cầu 1: hỏi một giá trị trong bảng "Mức học bổng khuyến khích học tập", ở dòng: Loại học bổng = Giỏi; Công thức = Số tín chỉ x định mức học phí 01 tín chỉ x 1,25; Hệ số = 1.25; Căn cứ học phí = định mức học phí 01 tín chỉ, phụ thuộc vào ngành học và mức thu học phí của năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại; nếu đó là một khoảng giá trị, sinh viên nêu một giá trị cụ thể trong khoảng, không chép nguyên khoảng. Dựa trên đoạn Đ9.
 
 ### V4-025
 - Khóa của sinh viên: K51
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Gõ không dấu hoặc có lỗi gõ, như nhắn vội trên điện thoại.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
 - Yêu cầu 1: hỏi cách tính theo công thức "Công thức tính điểm trung bình chung"; có thể đưa số liệu của bản thân để nhờ tính. Dựa trên đoạn Đ3.
 
 ### V4-026
 - Khóa của sinh viên: K48-K49
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi cách tính theo công thức "Công thức tính điểm học bổng"; có thể đưa số liệu của bản thân để nhờ tính. Dựa trên đoạn Đ9.
+- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
+- Yêu cầu 1: hỏi cách tính theo công thức "Công thức tính điểm học bổng"; có thể đưa số liệu của bản thân để nhờ tính. Dựa trên đoạn Đ8.
 
 ### V4-027
 - Khóa của sinh viên: K50
@@ -143,29 +137,38 @@
 ### V4-028
 - Khóa của sinh viên: K50
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Văn nói, tiếng lóng hoặc viết tắt của sinh viên (vd: "ktx", "hb", "đrl", "sđt", "cho em hỏi xíu").
-- Yêu cầu 1: hỏi cách tính theo công thức "Công thức tính điểm học bổng"; có thể đưa số liệu của bản thân để nhờ tính. Dựa trên đoạn Đ10.
+- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
+- Yêu cầu 1: hỏi cách tính theo công thức "Công thức tính điểm học bổng"; có thể đưa số liệu của bản thân để nhờ tính. Dựa trên đoạn Đ9.
 
 ### V4-029
 - Khóa của sinh viên: K51
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
-- Yêu cầu 1: hỏi cách tính theo công thức "Công thức tính điểm học bổng"; có thể đưa số liệu của bản thân để nhờ tính. Dựa trên đoạn Đ11.
+- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
+- Yêu cầu 1: hỏi cách tính theo công thức "Công thức tính điểm học bổng"; có thể đưa số liệu của bản thân để nhờ tính. Dựa trên đoạn Đ10.
 
 ### V4-030
 - Khóa của sinh viên: K48-K49
 - Loại câu hỏi: Câu hỏi đơn: một yêu cầu tra một giá trị trong bảng.
-- Kiểu viết: Dài, kể hoàn cảnh của bản thân trước rồi mới hỏi; có thể có chi tiết thừa.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
 - Yêu cầu 1: hỏi cách tính theo công thức "Công thức tính điểm trung bình chung"; có thể đưa số liệu của bản thân để nhờ tính. Dựa trên đoạn Đ1.
 
-### V4-152
-- Khóa của sinh viên: K48-K49
-- Loại câu hỏi: Một tin nhắn chứa 4 yêu cầu độc lập (nhiều hơn 3).
+### V4-069
+- Khóa của sinh viên: K51
+- Loại câu hỏi: Câu hỏi đơn: một yêu cầu về quy định.
 - Kiểu viết: Gõ không dấu hoặc có lỗi gõ, như nhắn vội trên điện thoại.
-- Yêu cầu 1: hỏi một giá trị trong bảng "Mức học bổng khuyến khích học tập", ở dòng: Loại học bổng = Giỏi; Công thức = Số tín chỉ x định mức học phí 01 tín chỉ x 1,25; Hệ số = 1.25; Căn cứ học phí = định mức học phí 01 tín chỉ tự nhiên hoặc xã hội, tùy ngành học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ9.
-- Yêu cầu 2: hỏi hệ quả nếu vi phạm hoặc không đáp ứng, hoặc một trường hợp ngoại lệ. Dựa trên đoạn Đ12.
-- Yêu cầu 3: hỏi một giá trị trong bảng "Thời gian học tập chuẩn và tối đa", ở dòng: Chương trình đào tạo = Đào tạo đại học cấp bằng thứ nhất; Thời gian học tập chuẩn = 5 năm học; Thời gian học tập tối đa = 9 năm học. Sinh viên nêu phần mình đã biết và hỏi phần còn lại. Dựa trên đoạn Đ7.
-- Yêu cầu 4: hỏi địa chỉ văn phòng của "Đoàn Thanh niên và Hội Sinh viên Trường". Dựa trên đoạn Đ13.
+- Yêu cầu 1: hỏi thủ tục: cần làm gì, hồ sơ gì, nộp ở đâu, trong bao lâu (nếu đoạn không có nội dung đó, hỏi một điều khác mà đoạn thực sự nêu và ghi loại đã hỏi vào ghi_chu). Dựa trên đoạn Đ11.
+
+### V4-072
+- Khóa của sinh viên: K51
+- Loại câu hỏi: Câu hỏi đơn: một yêu cầu về quy định.
+- Kiểu viết: Tự nhiên, như sinh viên nhắn hỏi bình thường (có dấu, câu ngắn gọn).
+- Yêu cầu 1: hỏi thủ tục: cần làm gì, hồ sơ gì, nộp ở đâu, trong bao lâu (nếu đoạn không có nội dung đó, hỏi một điều khác mà đoạn thực sự nêu và ghi loại đã hỏi vào ghi_chu). Dựa trên đoạn Đ12.
+
+### V4-074
+- Khóa của sinh viên: K51
+- Loại câu hỏi: Câu hỏi đơn: một yêu cầu về quy định.
+- Kiểu viết: Văn nói, tiếng lóng hoặc viết tắt của sinh viên (vd: "ktx", "hb", "đrl", "sđt", "cho em hỏi xíu").
+- Yêu cầu 1: hỏi thủ tục: cần làm gì, hồ sơ gì, nộp ở đâu, trong bao lâu (nếu đoạn không có nội dung đó, hỏi một điều khác mà đoạn thực sự nêu và ghi loại đã hỏi vào ghi_chu). Dựa trên đoạn Đ13.
 
 ## Các đoạn sổ tay
 
@@ -774,117 +777,7 @@ Ghi chú: Đối với một số chứng chỉ ngoại ngữ quốc tế không
 dụng khác do Hiệu trưởng quyết định.
 ```
 
-### Đ6 (K51) Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 3. Chương trình đào tạo và thời gian học tập
-```text
-Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh
-Phần:
-Chương: Chương I - NHỮNG QUY ĐỊNH CHUNG
-Điều: Điều 3.
-Tiêu đề: Chương trình đào tạo và thời gian học tập
-Nội dung:
-Điều 3. Chương trình đào tạo và thời gian học tập
-1. CTĐT là một hệ thống các hoạt động giáo dục, đào tạo được thiết
-kế và tổ chức thực hiện nhằm đạt được mục tiêu đào tạo. CTĐT bao gồm
-mục tiêu, chuẩn đầu ra, khối lượng kiến thức, cấu trúc, nội dung, phương
-pháp và hình thức đánh giá đối với môn học, ngành học, trình độ đào tạo
-phù hợp với chuẩn nghề nghiệp và Khung trình độ quốc gia Việt Nam.
-2. CTĐT được xây dựng theo đơn vị tín chỉ, cấu trúc từ các học
-phần, trong đó phải có đủ các học phần bắt buộc và đáp ứng chuẩn CTĐT
-theo quy định hiện hành của Bộ Giáo dục và Đào tạo. Trong trường hợp
-đào tạo song ngành hoặc ngành chính – ngành phụ, CTĐT phải thể hiện
-rõ khối lượng học tập chung và riêng theo từng ngành.
-3. Nội dung, chuẩn đầu ra của CTĐT áp dụng chung đối với các
-hình thức đào tạo, phương thức tổ chức đào tạo và đối tượng người học
-khác nhau. Đối với người đã tốt nghiệp trình độ khác hoặc ngành khác,
-khối lượng học tập thực tế được xác định trên cơ sở công nhận, hoặc
-chuyển đổi tín chỉ đã tích lũy và miễn trừ học phần trong CTĐT trước.
-4. CTĐT được công khai đối với người học trước khi tuyển sinh và
-khi bắt đầu khóa học; những thay đổi, điều chỉnh liên quan đến CTĐT
-được thực hiện theo quy định hiện hành và công bố trước khi áp dụng,
-không gây tác động bất lợi cho sinh viên.
-5. Khối lượng của mỗi CTĐT trình độ đại học được thực hiện theo
-các quy định hiện hành của Bộ Giáo dục và Đào tạo.
-6. Thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa của
-CTĐT1
-a) Thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa đối
-với hình thức đào tạo chính quy được quy định như sau:
-Chương trình đào tạo
-Thời gian
-học tập chuẩn
-Thời gian
-học tập tối đa
-Đào tạo đại học cấp bằng thứ nhất
-04 năm học
-08 năm học
-Đào tạo liên thông từ trình độ cao đẳng
-lên trình độ đại học
-1,5 năm học
-03 năm học
-Đào tạo liên thông từ trình độ trung cấp
-lên trình độ đại học
-2,5 năm học
-05 năm học
-Đào tạo liên thông trình độ đại học đối
-với người đã có một bằng đại học
-02 năm học
-04 năm học
-1 Khoản này đã được sửa đổi, bổ sung tại khoản 1, Điều 1, Quyết định số 4743/QĐ-ĐHSP ngày 31/12/2024
-của Hiệu trưởng về sửa đổi, bổ sung một số điểm của Quy chế đào tạo trình độ đại học ban hành kèm theo Quyết định
-số 1410/QĐ-ĐHSP ngày 09/8/2021, áp dụng từ khoá tuyển sinh năm 2025 trở về sau. Cụ thể như sau:
-“a) Thời gian học tập chuẩn toàn khoá và thời gian học tập tối đa đối với hình thức đào tạo chính quy và đào tạo
-vừa làm vừa học được quy định như sau:
-Hình thức đào tạo
-Thời gian
-học tập chuẩn
-Thời gian
-học tập tối đa
-Chính quy
-04 năm học
-06 năm học
-Vừa làm vừa học
-05 năm học
-7,5 năm học
-b) Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn
-thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối
-lượng được miễn trừ.”
-b) Thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa đối
-với hình thức đào tạo vừa làm vừa học được quy định như sau:
-Chương trình đào tạo
-Thời gian
-học tập chuẩn
-Thời gian
-học tập tối đa
-Đào tạo đại học cấp bằng thứ nhất
-05 năm học
-09 năm học
-Đào tạo liên thông từ trình độ cao đẳng
-lên trình độ đại học
-02 năm học
-04 năm học
-Đào tạo liên thông từ trình độ trung cấp
-lên trình độ đại học
-03 năm học
-06 năm học
-Đào tạo liên thông trình độ đại học đối
-với người đã có một bằng đại học
-2,5 năm học
-05 năm học
-BẢNG/DANH SÁCH CHUẨN HÓA TỪ NGUỒN:
-
-Bảng: Thời gian học tập chuẩn và tối đa
-Phạm vi áp dụng: Áp dụng cho hình thức đào tạo chính quy theo nội dung sửa đổi, bổ sung có hiệu lực được nêu trong điều khoản nguồn.
-| Hình thức đào tạo | Thời gian học tập chuẩn | Thời gian học tập tối đa | Quy tắc đối với sinh viên liên thông |
-| --- | --- | --- | --- |
-| Chính quy | 04 năm học | 06 năm học | Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ. |
-
-Bảng: Thời gian học tập chuẩn và tối đa
-Phạm vi áp dụng: Áp dụng cho hình thức đào tạo vừa làm vừa học theo nội dung sửa đổi, bổ sung có hiệu lực được nêu trong điều khoản nguồn.
-| Hình thức đào tạo | Thời gian học tập chuẩn | Thời gian học tập tối đa | Quy tắc đối với sinh viên liên thông |
-| --- | --- | --- | --- |
-| Vừa làm vừa học | 05 năm học | 7,5 năm học | Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để sinh viên hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ. |
-```
-
-### Đ7 (K48-K49) Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 3. Chương trình đào tạo và thời gian học tập
+### Đ6 (K48-K49) Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 3. Chương trình đào tạo và thời gian học tập
 ```text
 Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh
 Phần:
@@ -981,7 +874,7 @@ Phạm vi áp dụng: Áp dụng cho hình thức đào tạo vừa làm vừa h
 | Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học | 2,5 năm học | 5 năm học |
 ```
 
-### Đ8 (K50) Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 3. Chương trình đào tạo và thời gian học tập
+### Đ7 (K50) Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 3. Chương trình đào tạo và thời gian học tập
 ```text
 Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh
 Phần:
@@ -1078,7 +971,7 @@ Phạm vi áp dụng: Áp dụng cho hình thức đào tạo vừa làm vừa h
 | Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học | 2,5 năm học | 5 năm học |
 ```
 
-### Đ9 (K48-K49) Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập
+### Đ8 (K48-K49) Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập
 ```text
 Tài liệu: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh
 Phần:
@@ -1145,7 +1038,7 @@ Giáo dục).
 4. Việc xét học bổng được thống nhất xét theo khóa học và ngành học.
 ```
 
-### Đ10 (K50) Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập
+### Đ9 (K50) Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập
 ```text
 Tài liệu: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh
 Phần:
@@ -1218,7 +1111,7 @@ Giáo dục).
 và nơi tổ chức đào tạo.
 ```
 
-### Đ11 (K51) Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập
+### Đ10 (K51) Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 27. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập
 ```text
 Tài liệu: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh
 Phần:
@@ -1304,62 +1197,131 @@ HBKKHT đối với chương trình thứ nhất, nhưng số tín chỉ đã đ
 học kỳ xét học bổng của chương trình thứ hai vẫn phải xếp loại đạt.
 ```
 
-### Đ12 (K48-K49) Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học
+### Đ11 (K51) Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên — Điều 12. Quyền lợi và trách nhiệm của sinh viên tham gia nghiên cứu khoa học
+```text
+Tài liệu: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên
+Phần:
+Chương: Chương IV - TRÁCH NHIỆM, QUYỀN CỦA SINH VIÊN THAM GIA NGHIÊN CỨU KHOA HỌC VÀ NGƯỜI HƯỚNG DẪN
+Điều: Điều 12.
+Tiêu đề: Quyền lợi và trách nhiệm của sinh viên tham gia nghiên cứu khoa học
+Nội dung:
+Điều 12. Quyền lợi và trách nhiệm của sinh viên tham gia nghiên
+cứu khoa học
+1. Quyền lợi của sinh viên
+a) Đề xuất, đăng ký đề tài NCKH;
+b) Mỗi sinh viên có thể tham gia nhiều đề tài, chịu trách nhiệm
+chính thực hiện một đề tài NCKH trong một năm học;
+c) Được nhận kinh phí thực hiện đề tài (theo đề cương được Hội
+đồng Khoa học và Đào tạo Trường xét duyệt) và các khoản hỗ trợ, khen
+thưởng khác theo quy định của Bộ và của Trường;
+d) Được sử dụng các thiết bị sẵn có của Trường để tiến hành NCKH;
+e) Công bố kết quả nghiên cứu trên các kỷ yếu, tập san, tạp chí khoa
+học, thông báo khoa học của Trường và các phương tiện truyền thông khác;
+f) Được bảo hộ quyền sở hữu trí tuệ đối với các kết quả nghiên cứu
+và công bố khoa học do sinh viên thực hiện theo quy định hiện hành;
+g) Được ưu tiên xét cấp học bổng, xét các danh hiệu thi đua và hình
+thức khen thưởng nếu có thành tích NCKH xuất sắc;
+h) Sinh viên có đề tài đạt các giải thưởng NCKH sẽ được cấp giấy
+chứng nhận đạt giải, giấy khen và được chuyển điểm vào điểm của môn
+học có liên quan (Quy định chuyển đổi điểm NCKH tại Điều 14).
+2. Trách nhiệm của sinh viên
+a) Thực hiện đề tài NCKH đã đăng ký và được phê duyệt;
+b) Tham gia các hội nghị, hội thảo khoa học và các hoạt động khoa
+học và công nghệ khác trong và ngoài Trường;
+c) Trung thực trong NCKH, chấp hành nghiêm chỉnh các quy định
+hiện hành về sở hữu trí tuệ và hoạt động khoa học và công nghệ;
+d) Tuân thủ sự hướng dẫn của giảng viên;
+e) Tuân thủ thể lệ, quy định của các giải thưởng NCKH;
+f) Trường hợp đề tài được cấp kinh phí mà sinh viên không giao
+nộp sản phẩm thì sẽ phải hoàn lại kinh phí đã nhận.
+```
+
+### Đ12 (K51) Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 31. Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học
+```text
+Tài liệu: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh
+Phần:
+Chương: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ
+Điều: Điều 31.
+Tiêu đề: Quy định về việc thôi học, chuyển trường, chuyển ngành, buộc thôi học
+Nội dung:
+Điều 31. Quy định về việc thôi học, chuyển trường, chuyển ngành,
+buộc thôi học
+1. Thôi học
+Sinh viên được phép thôi học nếu có đơn xin thôi học với lý do rõ
+ràng, hợp lệ và bồi hoàn đầy đủ kinh phí đào tạo.
+2. Chuyển trường
+a) Đối với sinh viên đào tạo trình độ đại học trúng tuyển từ năm 2021
+thực hiện theo Điều 17 Quy chế đào tạo trình độ đại học chính quy tại
+Trường Đại học Sư phạm Thành phố Hồ Chí Minh được ban hành kèm
+theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021 của Hiệu trưởng;
+b) Đối với sinh viên đào tạo trình độ đại học trúng tuyển từ năm
+2020 trở về trước thực hiện theo Quy chế đào tạo đại học và cao đẳng hệ
+chính quy theo hệ thống tín chỉ được ban hành kèm theo Quyết định số
+2045/QĐ-ĐHSP ngày 05/9/2016 của Hiệu trưởng;
+c) Đối với sinh viên đào tạo trình độ cao đẳng sư phạm ngành Giáo
+dục Mầm non trúng tuyển từ năm 2024 thực hiện theo Điều 17 Quy chế
+đào tạo trình độ cao đẳng ngành Giáo dục Mầm non tại phân hiệu của
+Trường Đại học Sư phạm Thành phố Hồ Chí Minh được ban hành kèm
+theo Quyết định số 3533/QĐ-ĐHSP ngày 07/12/2023 của Hiệu trưởng;
+d) Đối với sinh viên đào tạo trình độ cao đẳng sư phạm ngành Giáo
+dục Mầm non được tiếp nhận theo Quyết định số 1380/QĐ-ĐHSP ngày
+13/5/2024 thực hiện theo các quy định hiện hành của Trường Đại học Sư
+phạm Thành phố Hồ Chí Minh.
+3. Chuyển ngành
+a) Về đối tượng: chỉ được áp dụng cho những sinh viên đào tạo trình
+độ đại học thuộc khóa tuyển sinh từ năm 2021 trở về sau;
+b) Về điều kiện hồ sơ: thực hiện theo khoản 1 Điều 17 Quy chế đào
+tạo trình độ đại học chính quy tại Trường Đại học Sư phạm Thành phố
+Hồ Chí Minh được ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP
+ngày 08/9/2021 của Hiệu trưởng.
+4. Buộc thôi học
+Sinh viên bị buộc thôi học nếu vi phạm một trong các điểm sau:
+a) Sinh viên bị buộc thôi học nếu vi phạm Quy chế đào tạo trình độ
+đại học và cao đẳng hiện hành tại Trường;
+b) Xếp loại rèn luyện yếu, kém hai học kỳ liên tiếp lần thứ hai đối
+với sinh viên đào tạo trình độ đại học hoặc xếp loại rèn luyện kém cả năm
+lần thứ hai đối với sinh viên đào tạo trình độ cao đẳng sư phạm;
+c) Vi phạm kỷ luật theo quy định đến mức buộc thôi học.
+```
+
+### Đ13 (K51) Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh — Điều 19. Học cùng lúc hai chương trình
 ```text
 Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh
 Phần:
-Chương: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP
-Điều: Điều 13.
-Tiêu đề: Xử lý kết quả học tập đối với hình thức đào tạo vừa làm vừa học
+Chương: Chương IV - NHỮNG QUY ĐỊNH KHÁC ĐỐI VỚI SINH VIÊN
+Điều: Điều 19.
+Tiêu đề: Học cùng lúc hai chương trình
 Nội dung:
-Điều 13. Xử lý kết quả học tập đối với hình thức đào tạo vừa làm
-vừa học
-1. Cuối mỗi năm học, sinh viên bị cảnh báo học tập nếu vi phạm một
-trong các điều kiện sau:
-a) Điểm trung bình tích lũy đạt dưới 1,2 đối với sinh viên trình độ
-năm thứ nhất, dưới 1,4 đối với sinh viên trình độ năm thứ hai, dưới 1,6
-đối với sinh viên trình độ năm thứ ba, dưới 1,8 đối với sinh viên các năm
-tiếp theo;
-b) Tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24.
-2. Sinh viên chỉ được đăng ký học tập các học phần nhằm trả nợ
-và cải thiện điểm nếu bị cảnh báo học tập do vi phạm Điểm b khoản 1
+Điều 19. Học cùng lúc hai chương trình
+1. Đối với hình thức đào tạo chính quy, sinh viên có thể đăng ký
+học thêm các học phần của một chương trình khác, ngành khác khi điều
+kiện của Trường cho phép, nhưng chỉ được hưởng các quyền lợi chính
+thức và được xem xét công nhận tốt nghiệp chương trình thứ hai khi đã
+đăng ký thành công học chương trình thứ hai theo quy định tại khoản 2
 Điều này.
-3. Sinh viên bị buộc thôi học trong các trường hợp sau:
-a) Bị cảnh báo học tập 02 lần liên tiếp trong một khóa học;
-b) Bị cảnh báo học tập 03 lần không liên tiếp trong một khóa học;
-c) Thời gian học tập vượt quá giới hạn tối đa quy định tại Điều 3 của
-Quy chế này.
-4. Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được
-bảo lưu. Sinh viên được quyền yêu cầu cung cấp giấy chứng nhận điểm
-các học phần đã tích lũy.
-5. Quy trình, thủ tục cảnh báo học tập, buộc thôi học; việc thông báo
-hình thức áp dụng tới sinh viên được thực hiện theo các quy định hiện
-hành của Trường.
-```
-
-### Đ13 (K48-K49) Danh bạ trong Sổ tay sinh viên K48-K49
-```text
-21. Đoàn Thanh niên và Hội Sinh viên Trường
-+ Văn phòng Đoàn Thanh niên:
-Điện thoại liên lạc
-: (028) 38352020
-số máy nội bộ: 145
-Email
-: vpdoantn@hcmue.edu.vn
-Website
-: youth.hcmue.edu.vn
-Phòng làm việc
-: Nhà A, tầng trệt, P.001,
-số 280 An Dương Vương, Phường 4,
-Quận 5, TP. HCM.
-+ Văn phòng Hội Sinh viên:
-Điện thoại liên lạc
-: (028) 38352020
-số máy nội bộ: 208
-Email
-: vphoisinhvien@hcmue.edu.vn
-Phòng làm việc
-: Nhà A, tầng trệt, P.001,
-số 280 An Dương Vương, Phường 4,
-Quận 5, TP. HCM.
+2. Sinh viên được đăng ký học chương trình thứ hai sớm nhất khi đã
+được xếp trình độ năm thứ hai của chương trình thứ nhất. Tại thời điểm
+đăng ký, sinh viên phải đáp ứng một trong hai điều kiện sau và một số
+điều kiện bổ sung khác theo các quy định hiện hành của Trường về học
+cùng lúc hai chương trình:
+a) Học lực tính theo điểm trung bình tích lũy xếp loại khá trở lên và
+đáp ứng ngưỡng bảo đảm chất lượng của chương trình thứ hai trong năm
+tuyển sinh;
+b) Học lực tính theo điểm trung bình tích lũy xếp loại trung bình
+và đáp ứng điều kiện trúng tuyển của chương trình thứ hai trong năm
+tuyển sinh.
+3. Trong quá trình sinh viên học cùng lúc hai chương trình, nếu điểm
+trung bình tích luỹ của chương trình thứ nhất đạt dưới điểm trung bình
+hoặc thuộc diện cảnh báo kết quả học tập thì bị buộc thôi học chương
+trình thứ hai ở học kỳ tiếp theo.
+4. Thời gian tối đa được phép học đối với sinh viên học cùng lúc hai
+chương trình là thời gian tối đa quy định cho chương trình thứ nhất, quy
+định tại Điều 3 của Quy chế này. Khi học chương trình thứ hai, sinh viên
+được công nhận kết quả của những học phần có nội dung và khối lượng
+kiến thức tương đương có trong chương trình thứ nhất.
+5. Sinh viên chỉ được xét tốt nghiệp chương trình thứ hai nếu có đủ
+điều kiện tốt nghiệp ở chương trình thứ nhất và đã đủ 02 năm tính từ thời
+điểm đăng ký thành công chương trình thứ hai.
+6. Quy trình, thủ tục, điều kiện đăng ký học và cấp bằng tốt nghiệp
+chương trình thứ hai được thực hiện theo quy định hiện hành của Trường.
 ```

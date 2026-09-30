@@ -1,0 +1,175 @@
+- phieu: V4-006
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Điểm học phần hệ 10 của em từ 5,5 đến 6,2 thì quy đổi sang điểm chữ là điểm gì và xếp loại đạt hay không đạt vậy ạ?"
+  dap_an_nhap: "Theo quy chế đào tạo, điểm học phần từ 5,5 đến 6,2 theo thang điểm 10 thuộc loại Đạt và được quy đổi sang thang điểm chữ là điểm C."
+  y_bat_buoc:
+    - "Thang điểm chữ: C"
+    - "Loại: Đạt"
+  nguon:
+    - "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-020
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Học kỳ này kết quả học tập của em xếp loại Khá, vậy để được xét học bổng khuyến khích học tập loại Khá thì điểm rèn luyện của em cần đạt từ loại nào trở lên ạ?"
+  dap_an_nhap: "Để được xét học bổng khuyến khích học tập loại Khá khi có kết quả học tập loại Khá, kết quả rèn luyện của bạn phải đạt từ loại Khá trở lên (đồng thời không bị kỷ luật từ mức khiển trách trở lên và tích lũy đủ số tín chỉ theo quy định)."
+  y_bat_buoc:
+    - "Kết quả rèn luyện: Khá trở lên"
+    - "Loại học bổng: Khá"
+  nguon:
+    - "Đ2: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-041
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu vp khoa lịch sử nằm ở phòng nào, tầng mấy vậy ạ?"
+  dap_an_nhap: "Văn phòng làm việc của Khoa Lịch sử ở Nhà B, tầng 4, P.408, P.409, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  y_bat_buoc:
+    - "Nhà B, tầng 4, P.408, P.409"
+    - "số 280 An Dương Vương, phường Chợ Quán, TP. HCM"
+  nguon:
+    - "Đ3: Danh bạ trong Sổ tay sinh viên K51, 7. Khoa Lịch sử"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-064
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu quy định đeo thẻ sv khi lên trường đi học hoặc làm việc với các đơn vị như thế nào vậy ạ?"
+  dap_an_nhap: "Người học phải đeo đúng thẻ sinh viên/học viên do Trường phát hành khi đến lớp học, sinh hoạt lớp, sinh hoạt đoàn thể, làm việc với các đơn vị trong Trường; đồng thời phải bảo quản, giữ gìn thẻ cẩn thận và không cho người khác mượn thẻ."
+  y_bat_buoc:
+    - "Đeo đúng thẻ sinh viên/học viên do Trường phát hành khi đến lớp học, sinh hoạt lớp, sinh hoạt đoàn thể, làm việc với các đơn vị trong Trường"
+    - "Phải bảo quản, giữ gìn thẻ cẩn thận, không cho người khác mượn thẻ"
+  nguon:
+    - "Đ4: Quy định quy tắc ứng xử của viên chức, người lao động và người học Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 12"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-112
+  khong_phu_hop: "Đoạn Đ5 không chứa quy định về thủ tục chuyển ngành, chuyển nơi học (hồ sơ gồm những gì, nộp ở đâu, thời gian giải quyết bao lâu mà chỉ dẫn chiếu quy định hiện hành); đoạn Đ6 chỉ liệt kê nhiệm vụ và tổ chức của các khoa, không có nội dung về hệ quả vi phạm hoặc trường hợp ngoại lệ."
+  hoi_thoai: []
+  dap_an_nhap: ""
+  y_bat_buoc: []
+  nguon: []
+  hanh_vi: ""
+  ghi_chu: ""
+- phieu: V4-128
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi Phòng Công nghệ Thông tin hỗ trợ những công việc gì liên quan đến sinh viên vậy ạ? Với lại Trung tâm Ngoại ngữ của trường thì hỗ trợ sinh viên những việc gì ạ?"
+  dap_an_nhap: "Các công việc liên quan đến sinh viên của hai đơn vị gồm:\n1. Phòng Công nghệ Thông tin:\n- Quản lý email của sinh viên được cấp theo tên miền của Trường Đại học Sư phạm Thành phố Hồ Chí Minh;\n- Quản lý trang thông tin điện tử của Trường;\n- Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ;\n- Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh;\n- Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường;\n- Các công tác khác có liên quan đến công nghệ thông tin.\n\n2. Trung tâm Ngoại ngữ:\nTổ chức các loại hình lớp học ngoại ngữ, luyện thi, tổ chức thi các chứng chỉ ngoại ngữ quốc gia và phối hợp tổ chức thi cấp chứng chỉ ngoại ngữ quốc tế, cụ thể:\n- Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao;\n- Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;\n- Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1 – N5,… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên."
+  y_bat_buoc:
+    - "Phòng CNTT: Quản lý email của sinh viên được cấp theo tên miền của Trường Đại học Sư phạm Thành phố Hồ Chí Minh"
+    - "Phòng CNTT: Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ"
+    - "Phòng CNTT: Quản lý trang thông tin điện tử, quản lý kỹ thuật hệ thống phần mềm, phụ trách phòng máy chủ và hệ thống mạng trung tâm"
+    - "Trung tâm Ngoại ngữ: Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện kỹ năng ngoại ngữ"
+    - "Trung tâm Ngoại ngữ: Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam"
+    - "Trung tâm Ngoại ngữ: Giảng dạy các Chương trình Ngoại ngữ Quốc tế (TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1 – N5,...) và phối hợp tổ chức thi cấp chứng chỉ ngoại ngữ quốc tế"
+  nguon:
+    - "Đ7: Danh bạ trong Sổ tay sinh viên K50, 1. Phòng Công nghệ Thông tin"
+    - "Đ8: Danh bạ trong Sổ tay sinh viên K50, 19. Trung tâm Ngoại ngữ"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-130
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu sđt của khoa vật lý là số nào ạ, với lại ngành sinh học ứng dụng là thuộc khoa nào vậy ạ?"
+  dap_an_nhap: "- Số điện thoại liên lạc của Khoa Vật lý: (028) 38352020, số máy nội bộ: 109, 110.\n- Ngành Sinh học ứng dụng thuộc Khoa Sinh học."
+  y_bat_buoc:
+    - "Số điện thoại Khoa Vật lý: (028) 38352020, số máy nội bộ: 109, 110"
+    - "Ngành Sinh học ứng dụng thuộc Khoa Sinh học"
+  nguon:
+    - "Đ9: Danh bạ trong Sổ tay sinh viên K50, 3. Khoa Vật lý"
+    - "Đ10: Danh bạ trong Sổ tay sinh viên K50"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-153
+  khong_phu_hop: "Đoạn Đ15 chỉ quy định các tiêu chí xác định điểm đánh giá rèn luyện và khung điểm từ 0 đến 10 điểm, không có nội dung về hệ quả nếu vi phạm hoặc không đáp ứng, hoặc trường hợp ngoại lệ như yêu cầu 5."
+  hoi_thoai: []
+  dap_an_nhap: ""
+  y_bat_buoc: []
+  nguon: []
+  hanh_vi: ""
+  ghi_chu: ""
+- phieu: V4-166
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi giữa khóa K50 và K51 thì quy định xử lý thế nào nếu sinh viên vi phạm kỷ luật không chấp hành viết bản tự kiểm điểm hoặc không đến dự buổi họp xét kỷ luật của trường ạ? Hai khóa có khác nhau không?"
+  dap_an_nhap: "Quy định xử lý kỷ luật đối với các trường hợp này ở khóa K50 và K51 là hoàn toàn giống nhau, cụ thể:\n- Trường hợp sinh viên có khuyết điểm không chấp hành việc làm bản tự kiểm điểm thì Hội đồng vẫn họp để xử lý trên cơ sở các chứng cứ thu thập được.\n- Trường hợp sinh viên vi phạm kỷ luật đã được mời mà không đến dự (nếu không có lý do chính đáng) thì Hội đồng vẫn tiến hành họp và xét thêm khuyết điểm thiếu ý thức tổ chức kỷ luật."
+  y_bat_buoc:
+    - "Quy định của khóa K50 và khóa K51 là hoàn toàn giống nhau"
+    - "Không chấp hành làm bản tự kiểm điểm: Hội đồng vẫn họp để xử lý trên cơ sở các chứng cứ thu thập được"
+    - "Được mời mà không đến dự không có lý do chính đáng: Hội đồng vẫn tiến hành họp và xét thêm khuyết điểm thiếu ý thức tổ chức kỷ luật"
+  nguon:
+    - "Đ16: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 35"
+    - "Đ17: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 35"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-171
+  khong_phu_hop: "Đoạn Đ18 và Đ19 chỉ quy định việc sử dụng kết quả rèn luyện (Điều 14), hoàn toàn không chứa thông tin về thủ tục (cần làm gì, hồ sơ gì, nộp ở đâu, trong bao lâu)."
+  hoi_thoai: []
+  dap_an_nhap: ""
+  y_bat_buoc: []
+  nguon: []
+  hanh_vi: ""
+  ghi_chu: ""
+- phieu: V4-182
+  khong_phu_hop: "Đoạn Đ20 chỉ ghi 'Ngành Sư phạm tiếng Nga thuộc None', không chứa tên khoa quản lý hợp lệ và không có bất kỳ thông tin liên hệ nào (email, số điện thoại, văn phòng làm việc)."
+  hoi_thoai: []
+  dap_an_nhap: ""
+  y_bat_buoc: []
+  nguon: []
+  hanh_vi: ""
+  ghi_chu: ""
+- phieu: V4-196
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Quy định về trách nhiệm của các khoa đào tạo trong công tác quản lý sinh viên ngoại trú đối với khóa K50 như thế nào vậy ạ?"
+    - vai: tro_ly
+      noi_dung: "Đối với khóa K50, các khoa đào tạo có 3 trách nhiệm: (1) Phối hợp các bên liên quan thực hiện công tác quản lý sinh viên ngoại trú, triển khai đăng ký ngoại trú và cập nhật thông tin thay đổi nơi tạm trú đúng hạn; (2) Phối hợp tổ chức triển khai kế hoạch quản lý sinh viên ngoại trú hằng năm của Trường; (3) Phối hợp với Phòng CTCT&HSSV và chính quyền địa phương giải quyết những vấn đề phát sinh."
+    - vai: sinh_vien
+      noi_dung: "Còn đối với khóa K51 thì sao ạ?"
+  dap_an_nhap: "Đối với khóa K51, quy định về trách nhiệm của các khoa đào tạo trong công tác quản lý sinh viên ngoại trú hoàn toàn giống khóa K50, cụ thể bao gồm:\n1. Phối hợp các bên liên quan thực hiện nội dung công tác quản lý sinh viên ngoại trú, triển khai các nội dung liên quan về đăng ký ngoại trú của sinh viên, cập nhật thông tin thay đổi nơi tạm trú theo đúng thời hạn quy định.\n2. Phối hợp các bên liên quan tổ chức triển khai thực hiện kế hoạch công tác quản lý sinh viên ngoại trú hằng năm của Trường.\n3. Phối hợp với Phòng CTCT&HSSV và chính quyền địa phương giải quyết những vấn đề phát sinh trong công tác quản lý sinh viên ngoại trú."
+  y_bat_buoc:
+    - "Khóa K51 có quy định giống khóa K50"
+    - "Phối hợp các bên liên quan thực hiện nội dung công tác quản lý sinh viên ngoại trú, triển khai các nội dung liên quan về đăng ký ngoại trú của sinh viên, cập nhật thông tin thay đổi nơi tạm trú theo đúng thời hạn quy định"
+    - "Phối hợp các bên liên quan tổ chức triển khai thực hiện kế hoạch công tác quản lý sinh viên ngoại trú hằng năm của Trường"
+    - "Phối hợp với Phòng CTCT&HSSV và chính quyền địa phương giải quyết những vấn đề phát sinh trong công tác quản lý sinh viên ngoại trú"
+  nguon:
+    - "Đ21: Quy định ngoại trú đối với sinh viên đào tạo trình độ đại học, cao đẳng ngành Giáo dục Mầm non hình thức chính quy của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+    - "Đ22: Quy định ngoại trú đối với sinh viên đào tạo trình độ đại học, cao đẳng ngành Giáo dục Mầm non hình thức chính quy của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-207
+  khong_phu_hop: "Đoạn Đ23 chỉ quy định về quyền lợi của cố vấn học tập (Điều 5), hoàn toàn không chứa nội dung về hệ quả vi phạm, không đáp ứng hoặc trường hợp ngoại lệ."
+  hoi_thoai: []
+  dap_an_nhap: ""
+  y_bat_buoc: []
+  nguon: []
+  hanh_vi: ""
+  ghi_chu: ""
+- phieu: V4-229
+  khong_phu_hop: ""
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ cho em hỏi học phí kỳ 1 năm học 2024-2025 của ngành Sư phạm Toán khóa K50 cụ thể là bao nhiêu tiền và hạn chót nộp là ngày mấy vậy ạ?"
+  dap_an_nhap: "Rất tiếc là Sổ tay sinh viên không có thông tin chi tiết về mức học phí cụ thể cũng như thời hạn nộp học phí cho từng học kỳ hay năm học. Bạn vui lòng theo dõi thông báo đóng học phí chính thức trên cổng thông tin đào tạo hoặc liên hệ Phòng Kế hoạch - Tài chính của trường để được hướng dẫn chi tiết nhé."
+  y_bat_buoc:
+    - "Nói rõ Sổ tay sinh viên không có thông tin về số tiền học phí cụ thể và hạn nộp học phí của từng năm học/học kỳ"
+    - "Gợi ý liên hệ Phòng Kế hoạch - Tài chính hoặc theo dõi thông báo chính thức của trường"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-239
+  khong_phu_hop: ""
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu mai thời tiết khu quận 5 có mưa to ngập đường không ạ, tính ghé ktx bạn chơi mà sợ mưa quá?"
+  dap_an_nhap: "Xin lỗi bạn, mình chỉ hỗ trợ giải đáp các thông tin về quy chế, quy định và dịch vụ sinh viên trong Sổ tay sinh viên Trường Đại học Sư phạm TP.HCM nên không thể cung cấp thông tin dự báo thời tiết. Bạn vui lòng tra cứu trên các ứng dụng dự báo thời tiết nhé!"
+  y_bat_buoc:
+    - "Từ chối lịch sự trả lời câu hỏi về thời tiết ngoài phạm vi"
+    - "Nêu rõ chỉ hỗ trợ thông tin quy định, quy chế và dịch vụ sinh viên trong Sổ tay sinh viên của trường"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""

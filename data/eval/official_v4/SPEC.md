@@ -122,6 +122,14 @@ author nor its models wrote.
 - The overall mean is over the designed mix (multi-request and boundary
   questions are over-weighted on purpose), not an estimate of accuracy on real
   traffic; results are reported per family as well.
+- **Reranker timeouts** (added 2026-09-30 during the run, before any score was
+  read): cases whose answer records a reranker fallback for a timeout or
+  request error are rerun whole (generation and judge). The list comes from
+  telemetry only, before the judge output is opened. The rerun result is kept
+  whether better or worse; a case that times out again is retried up to three
+  times, then kept as its last attempt and counted as "reranker unavailable".
+  The headline uses the rerun results (the system as designed); the first-run
+  figure and the timeout rate are reported too.
 - A run that fails part-way is completed by rerunning only the failed cases.
   Gold found wrong after the run is not edited; it is reported with both
   figures.

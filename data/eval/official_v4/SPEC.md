@@ -80,7 +80,8 @@ author nor its models wrote.
 |---|---|---|
 | Draw tickets and batches | `scripts/draw_v4_tickets.py` | done (246 tickets, 13 batches) |
 | Pilot 1 (15 tickets) | Gemini 3.8 Flash | done, questions discarded (below) |
-| Pilot 2: batch 00 of the redraw | Gemini 3.8 Flash | pending |
+| Batch 00 (pilot 2, 15 tickets) | Gemini 3.8 Flash | done: 15 of 15 written, all facts found in their excerpts, 1 reclassified (AUTHORING_LOG.md) |
+| Check each batch | `scripts/check_v4_authored.py N` | done for 00 |
 | Batches 01–12 | external author | pending |
 | Variants (G): rewrite 36 authored questions | external author | pending (needs the authored base) |
 | Planner gold labels; fact check against the data; overlap check with v1–v3 | maintainer, scripts | pending |

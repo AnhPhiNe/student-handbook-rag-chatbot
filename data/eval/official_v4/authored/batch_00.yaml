@@ -1,0 +1,225 @@
+- phieu: V4-006
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi nếu điểm học phần của em tổng kết được 6,0 theo thang điểm 10 thì quy đổi sang thang điểm chữ là điểm gì và được xếp loại Đạt hay Không đạt vậy ạ?"
+  dap_an_nhap: "Theo quy định, điểm học phần 6,0 (thuộc khoảng 5,5 – 6,2 theo thang điểm 10) được quy đổi sang thang điểm chữ là C và xếp loại Đạt."
+  y_bat_buoc:
+    - "Thang điểm chữ: C"
+    - "Loại: Đạt"
+  nguon:
+    - "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-020
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ em chào thầy cô ạ. Kỳ vừa rồi em gặp một số chuyện gia đình nên việc học bị ảnh hưởng khá nhiều, thi cử không được như ý nên điểm học tập của em chỉ được xếp loại Khá thôi. Tuy nhiên em vẫn cố gắng đi sinh hoạt đoàn thể và tham gia các hoạt động đầy đủ nên điểm rèn luyện của em đạt loại Tốt. Em biết trường mình có chính sách cấp học bổng khuyến khích học tập cho sinh viên, không biết với kết quả học tập loại Khá và điểm rèn luyện loại Tốt như trường hợp của em thì có thể được xét nhận loại học bổng nào vậy ạ?"
+  dap_an_nhap: "Theo quy định tiêu chuẩn xếp loại học bổng khuyến khích học tập, sinh viên có kết quả học tập loại Khá và kết quả rèn luyện loại Khá trở lên (như trường hợp điểm rèn luyện loại Tốt của bạn) sẽ được xem xét cấp học bổng loại Khá (với điều kiện đáp ứng đầy đủ các tiêu chuẩn chung khác như số tín chỉ tích lũy, các tín chỉ đều đạt và không bị kỷ luật)."
+  y_bat_buoc:
+    - "Được xem xét cấp học bổng loại Khá"
+    - "Điều kiện kết quả học tập: Khá"
+    - "Điều kiện kết quả rèn luyện: Khá trở lên"
+  nguon:
+    - "Đ2: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-041
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ chào thầy cô, em là tân sinh viên mới vào trường nên chưa thông thuộc sơ đồ các phòng ban ở cơ sở chính 280 An Dương Vương. Chiều nay em có việc gấp cần liên hệ trực tiếp với Khoa Lịch sử để nộp bổ sung giấy tờ và xin chữ ký xác nhận của khoa, mà em đi vòng quanh mấy dãy nhà tìm không thấy biển hiệu của khoa ở đâu cả. Thầy cô cho em hỏi địa chỉ văn phòng làm việc chính xác của Khoa Lịch sử nằm ở dãy nhà nào, tầng mấy và phòng bao nhiêu ạ?"
+  dap_an_nhap: "Văn phòng làm việc của Khoa Lịch sử đặt tại: Nhà B, tầng 4, P.408, P.409, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  y_bat_buoc:
+    - "Nhà B, tầng 4, P.408, P.409"
+    - "Số 280 An Dương Vương, phường Chợ Quán, TP. HCM"
+  nguon:
+    - "Đ3: Danh bạ trong Sổ tay sinh viên K51"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-064
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ cho em hỏi điều kiện để sinh viên được xét và công nhận tốt nghiệp hệ đại học chính quy là gì ạ?"
+  dap_an_nhap: "Sinh viên được xét và công nhận tốt nghiệp khi có đủ các điều kiện sau:\n1. Tích lũy đủ học phần, số tín chỉ và hoàn thành các nội dung bắt buộc khác theo yêu cầu của CTĐT, đạt chuẩn đầu ra của CTĐT;\n2. Điểm trung bình tích lũy của toàn khóa học đạt từ trung bình trở lên;\n3. Tại thời điểm xét tốt nghiệp không bị truy cứu trách nhiệm hình sự hoặc không đang trong thời gian bị kỷ luật ở mức đình chỉ học tập."
+  y_bat_buoc:
+    - "Tích lũy đủ học phần, số tín chỉ và hoàn thành các nội dung bắt buộc khác theo yêu cầu của CTĐT, đạt chuẩn đầu ra của CTĐT"
+    - "Điểm trung bình tích lũy của toàn khóa học đạt từ trung bình trở lên"
+    - "Tại thời điểm xét tốt nghiệp không bị truy cứu trách nhiệm hình sự hoặc không đang trong thời gian bị kỷ luật ở mức đình chỉ học tập"
+  nguon:
+    - "Đ4: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 15"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-112
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi nếu vi phạm quy định về công tác ngoại trú thì sinh viên sẽ bị xử lý thế nào ạ? Với lại đối tượng nào được hưởng chính sách hỗ trợ học bổng và phương tiện, đồ dùng học tập cho sinh viên khuyết tật vậy ạ?"
+  dap_an_nhap: "1. Về xử lý vi phạm ngoại trú: Sinh viên vi phạm quy định về công tác ngoại trú, tùy theo mức độ vi phạm sẽ bị Trường xử lý kỷ luật theo các quy định hiện hành.\n2. Về đối tượng hỗ trợ sinh viên khuyết tật: Đối tượng được hưởng chính sách là sinh viên hệ chính quy bị tàn tật, khuyết tật thuộc hộ nghèo, hộ cận nghèo theo quy định của Thủ tướng Chính phủ."
+  y_bat_buoc:
+    - "Vi phạm ngoại trú: tùy theo mức độ vi phạm sẽ bị Trường xử lý kỷ luật theo các quy định hiện hành"
+    - "Đối tượng hỗ trợ khuyết tật: sinh viên hệ chính quy bị tàn tật, khuyết tật thuộc hộ nghèo, hộ cận nghèo theo quy định của Thủ tướng Chính phủ"
+  nguon:
+    - "Đ5: Quy định ngoại trú đối với sinh viên đào tạo trình độ đại học, cao đẳng ngành Giáo dục Mầm non hình thức chính quy của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 16"
+    - "Đ6: Thông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ phương tiện, đồ dùng học tập đối với sinh viên hệ chính quy là người khuyết tật thuộc hộ nghèo, hộ cận nghèo, năm học 2025 – 2026"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-128
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi ngành Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài) thuộc khoa nào quản lý ạ? Với lại Phòng Tổ chức – Hành chính có những công việc nào liên quan trực tiếp đến sinh viên vậy ạ?"
+  dap_an_nhap: "1. Ngành Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài) thuộc Khoa Ngữ văn quản lý.\n2. Những công việc của Phòng Tổ chức – Hành chính liên quan đến sinh viên gồm:\n- Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền;\n- Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên."
+  y_bat_buoc:
+    - "Khoa Ngữ văn"
+    - "Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền"
+    - "Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên"
+  nguon:
+    - "Đ7: Danh bạ trong Sổ tay sinh viên K48-K49"
+    - "Đ8: Danh bạ trong Sổ tay sinh viên K48-K49"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-130
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em chào thầy cô ạ, kỳ này em đang tìm hiểu để chuẩn bị đăng ký học cùng lúc hai chương trình. Em dự định ngành thứ hai của mình sẽ là ngành Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh) vì em rất yêu thích môn Toán và muốn có thêm cơ hội việc làm sau này. Em có nghe bạn bè bảo là khi học song bằng thì trường chỉ xét học bổng khuyến khích học tập cho chương trình thứ nhất thôi, không biết điều đó có đúng không ạ và các tín chỉ của chương trình thứ hai có bị bắt buộc phải đạt hết không? Ngoài ra cho em hỏi thêm là ngành Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh) này là do khoa nào quản lý vậy ạ?"
+  dap_an_nhap: "1. Về học bổng khi học cùng lúc hai chương trình: Trường chỉ xét, cấp học bổng khuyến khích học tập đối với chương trình thứ nhất; tuy nhiên, số tín chỉ bạn đã đăng ký ở học kỳ xét học bổng của chương trình thứ hai vẫn bắt buộc phải xếp loại đạt.\n2. Ngành Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh) thuộc Khoa Toán – Tin học quản lý."
+  y_bat_buoc:
+    - "Chỉ xét, cấp HBKKHT đối với chương trình thứ nhất"
+    - "Số tín chỉ đã đăng ký ở học kỳ xét học bổng của chương trình thứ hai vẫn phải xếp loại đạt"
+    - "Khoa Toán – Tin học"
+  nguon:
+    - "Đ2: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+    - "Đ9: Danh bạ trong Sổ tay sinh viên K51"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-153
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em có mấy câu hỏi sau nhờ giải đáp giúp em với ạ:\n1. Điểm học bổng khuyến khích học tập được tính theo công thức cụ thể nào?\n2. Sinh viên là người dân tộc thiểu số thuộc diện hộ nghèo nộp hồ sơ xin hỗ trợ chi phí học tập mấy lần trong năm học?\n3. Đào tạo liên thông từ trung cấp lên đại học hình thức vừa làm vừa học có thời gian học tập chuẩn là 3 năm thì thời gian học tập tối đa là bao nhiêu năm?\n4. Sinh viên có được dùng địa chỉ email hay logo có tên miền của trường để đăng ký tài khoản mạng xã hội không?"
+  dap_an_nhap: "1. Công thức tính điểm học bổng:\nĐiểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100 (trong đó Điểm rèn luyện / 25 là quy đổi về thang điểm 4).\n2. Về nộp hồ sơ hỗ trợ chi phí học tập: Sinh viên thuộc diện hỗ trợ chi phí học tập chỉ phải nộp hồ sơ 01 lần vào đầu năm học (riêng đối với sinh viên thuộc diện hộ nghèo, hộ cận nghèo thì vào tháng 01 hằng năm phải bổ sung giấy chứng nhận hộ nghèo, hộ cận nghèo để làm căn cứ xét hỗ trợ cho năm đó).\n3. Đối với chương trình đào tạo liên thông từ trình độ trung cấp lên trình độ đại học theo hình thức vừa làm vừa học, thời gian học tập tối đa là 6 năm học.\n4. Sinh viên không được sử dụng logo, địa chỉ, điện thoại, thư điện tử có tên miền chính thức của các đơn vị thuộc, trực thuộc và của Trường để đăng ký thông tin trên các trang mạng xã hội không vì mục đích công việc."
+  y_bat_buoc:
+    - "Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100"
+    - "Nộp hồ sơ 01 lần vào đầu năm học (tháng 01 hằng năm bổ sung giấy chứng nhận hộ nghèo, hộ cận nghèo)"
+    - "Thời gian học tập tối đa: 6 năm học"
+    - "Không sử dụng logo, địa chỉ, điện thoại, thư điện tử có tên miền chính thức của các đơn vị thuộc, trực thuộc và của Trường để đăng ký thông tin trên các trang mạng xã hội không vì mục đích công việc"
+  nguon:
+    - "Đ10: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+    - "Đ11: Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên hệ chính quy là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo, năm học 2024 – 2025, Mục II"
+    - "Đ12: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+    - "Đ13: Quy định quy tắc ứng xử của viên chức, người lao động và người học Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 16"
+  hanh_vi: tra_loi
+  ghi_chu: "Yêu cầu 4: Đ13 không có thủ tục, chuyển sang hỏi quy định về việc sử dụng email, logo của trường để đăng ký mạng xã hội."
+
+- phieu: V4-166
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, bộ hồ sơ đánh giá đrl cấp cơ sở của khóa K50 thì gồm có những loại giấy tờ nào ạ? Với lại bên K51 thì văn bản hướng dẫn lập hồ sơ đrl được ban hành kèm theo quyết định số mấy z ad?"
+  dap_an_nhap: "- Đối với khóa K50 (Đ14), hồ sơ đánh giá rèn luyện sinh viên cấp cơ sở gồm:\n1. Bộ hồ sơ đánh giá rèn luyện của các lớp thuộc khoa, phân hiệu quản lý (lưu tại khoa, phân hiệu);\n2. Biên bản họp Hội đồng đánh giá kết quả rèn luyện cấp cơ sở (Thư ký và Chủ tịch Hội đồng cấp cơ sở ký biên bản) (lưu tại khoa, phân hiệu và gửi Hội đồng cấp Trường 01 bản);\n3. Bảng kết quả đánh giá rèn luyện của sinh viên đã được Hội đồng cấp cơ sở thông qua (lưu tại khoa và gửi Hội đồng cấp Trường 01 bản).\n- Đối với khóa K51 (Đ15), Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2) được ban hành kèm theo Quyết định số 2000/QĐ-ĐHSP ngày 15 tháng 7 năm 2024 của Hiệu trưởng Trường Đại học Sư phạm Thành phố Hồ Chí Minh."
+  y_bat_buoc:
+    - "K50: Bộ hồ sơ đánh giá rèn luyện của các lớp thuộc khoa, phân hiệu quản lý (lưu tại khoa, phân hiệu)"
+    - "K50: Biên bản họp Hội đồng đánh giá kết quả rèn luyện cấp cơ sở (lưu tại khoa, phân hiệu và gửi Hội đồng cấp Trường 01 bản)"
+    - "K50: Bảng kết quả đánh giá rèn luyện của sinh viên đã được Hội đồng cấp cơ sở thông qua (lưu tại khoa và gửi Hội đồng cấp Trường 01 bản)"
+    - "K51: Ban hành kèm theo Quyết định số 2000/QĐ-ĐHSP ngày 15 tháng 7 năm 2024 của Hiệu trưởng"
+  nguon:
+    - "Đ14: Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2), Mục II"
+    - "Đ15: Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2)"
+  hanh_vi: tra_loi
+  ghi_chu: "Yêu cầu 2: Đ15 không có chi tiết thủ tục hồ sơ, chuyển sang hỏi số quyết định ban hành văn bản hướng dẫn đánh giá rèn luyện của K51."
+
+- phieu: V4-171
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, các đợt xét tốt nghiệp chính thức cho sv chính quy giữa K50 với K48-K49 có khác gì nhau ko ạ, mỗi năm có mấy đợt và thường tổ chức vào tháng mấy z ad?"
+  dap_an_nhap: "Quy định về các đợt xét tốt nghiệp chính thức của sinh viên đào tạo theo hình thức chính quy giữa khóa K50 và khóa K48-K49 là hoàn toàn giống nhau:\nCả hai khóa đều có 03 đợt xét tốt nghiệp chính thức trong năm học, thường được tổ chức vào tháng 5, tháng 8 và tháng 10 (ngoài ra Hiệu trưởng có thể quyết định các đợt xét tốt nghiệp bổ sung căn cứ điều kiện cụ thể từng năm học)."
+  y_bat_buoc:
+    - "Cả hai khóa K50 và K48-K49 đều quy định giống nhau"
+    - "Có 03 đợt xét tốt nghiệp chính thức"
+    - "Thường được tổ chức vào tháng 5, tháng 8 và tháng 10"
+  nguon:
+    - "Đ16: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 15"
+    - "Đ4: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 15"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-182
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ chào thầy cô, em hiện đang theo học ngành Công nghệ Thông tin tại trường mình. Tình hình là em đang cần chuẩn bị một số giấy tờ xin hoãn nghĩa vụ quân sự và xin bảng điểm tiến độ học tập để bổ sung hồ sơ xin thực tập, nhưng em chưa biết văn phòng của khoa quản lý ngành mình ở chỗ nào và liên hệ ra sao để hỏi thủ tục trước. Thầy cô cho em xin thông tin liên hệ cụ thể gồm số điện thoại, số máy nhánh nội bộ, email và địa chỉ văn phòng làm việc của khoa quản lý ngành Công nghệ Thông tin với ạ, em cảm ơn nhiều!"
+  dap_an_nhap: "Ngành Công nghệ Thông tin thuộc Khoa Công nghệ – Thông tin quản lý. Thông tin liên hệ của khoa như sau:\n- Số điện thoại liên lạc: (028) 38352020 (số nội bộ: 209, 210)\n- Email: khoacntt@hcmue.edu.vn\n- Website: khoacntt.hcmue.edu.vn\n- Văn phòng làm việc: Nhà B, tầng 5, P.506, P.507, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+  y_bat_buoc:
+    - "Khoa Công nghệ – Thông tin"
+    - "Số điện thoại: (028) 38352020, số nội bộ: 209, 210"
+    - "Email: khoacntt@hcmue.edu.vn"
+    - "Văn phòng: Nhà B, tầng 5, P.506, P.507, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
+  nguon:
+    - "Đ17: Danh bạ trong Sổ tay sinh viên K48-K49"
+    - "Đ18: Danh bạ khoa"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-196
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, theo quy định bên K50 thì kế hoạch hoạt động NCKH của sinh viên bao gồm những nội dung nào z ad?"
+    - vai: tro_ly
+      noi_dung: "Theo Điều 6, kế hoạch hoạt động NCKH của sinh viên K50 gồm các nội dung:\na) Xác định danh mục đề tài, giao đề tài, triển khai thực hiện đề tài và tổ chức đánh giá đề tài NCKH của sinh viên theo quy định chung của Bộ Giáo dục và Đào tạo và của Trường;\nb) Tổ chức hội nghị NCKH của sinh viên và các hình thức hoạt động khoa học và công nghệ khác của sinh viên;\nc) Tham gia “Giải thưởng khoa học và công nghệ dành cho sinh viên trong cơ sở giáo dục đại học” và các giải thưởng khác dành cho sinh viên;\nd) Tổ chức triển khai ứng dụng tiến bộ khoa học và công nghệ vào thực tiễn trong các lĩnh vực giáo dục và đào tạo, kinh tế – xã hội, an ninh, quốc phòng;\nđ) Tổ chức hoạt động thông tin khoa học và công nghệ của sinh viên."
+    - vai: sinh_vien
+      noi_dung: "Dạ vậy còn bên K51 thì sao ad?"
+  dap_an_nhap: "Đối với khóa K51, quy định về nội dung kế hoạch hoạt động NCKH của sinh viên cũng hoàn toàn tương tự khóa K50 (theo Điều 6), bao gồm:\na) Xác định danh mục đề tài, giao đề tài, triển khai thực hiện đề tài và tổ chức đánh giá đề tài NCKH của sinh viên theo quy định chung của Bộ Giáo dục và Đào tạo và của Trường;\nb) Tổ chức hội nghị NCKH của sinh viên và các hình thức hoạt động khoa học và công nghệ khác của sinh viên;\nc) Tham gia “Giải thưởng khoa học và công nghệ dành cho sinh viên trong cơ sở giáo dục đại học” và các giải thưởng khác dành cho sinh viên;\nd) Tổ chức triển khai ứng dụng tiến bộ khoa học và công nghệ vào thực tiễn trong các lĩnh vực giáo dục và đào tạo, kinh tế – xã hội, an ninh, quốc phòng;\nđ) Tổ chức hoạt động thông tin khoa học và công nghệ của sinh viên."
+  y_bat_buoc:
+    - "Nội dung kế hoạch NCKH của sinh viên K51 quy định giống K50"
+    - "Xác định danh mục đề tài, giao đề tài, triển khai thực hiện đề tài và tổ chức đánh giá đề tài NCKH của sinh viên theo quy định chung của Bộ Giáo dục và Đào tạo và của Trường"
+    - "Tổ chức hội nghị NCKH của sinh viên và các hình thức hoạt động khoa học và công nghệ khác của sinh viên"
+    - "Tham gia “Giải thưởng khoa học và công nghệ dành cho sinh viên trong cơ sở giáo dục đại học” và các giải thưởng khác dành cho sinh viên"
+    - "Tổ chức triển khai ứng dụng tiến bộ khoa học và công nghệ vào thực tiễn trong các lĩnh vực giáo dục và đào tạo, kinh tế – xã hội, an ninh, quốc phòng"
+    - "Tổ chức hoạt động thông tin khoa học và công nghệ của sinh viên"
+  nguon:
+    - "Đ19: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 6"
+    - "Đ20: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 6"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-207
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Chào anh/chị ạ, chuyện là học kỳ này em có đăng ký một môn học mà thầy cô phổ biến đây là học phần đánh giá theo hình thức đạt hoặc không đạt không phân mức chứ không chấm điểm A, B, C. Do là lần đầu học môn dạng này nên em chưa rõ quy định, anh/chị cho em hỏi đối với các môn chỉ yêu cầu đạt không phân mức như thế thì sinh viên cần đạt tối thiểu bao nhiêu điểm theo thang điểm 10 để được tính là đạt và quy đổi ra điểm chữ gì vậy ạ?"
+    - vai: tro_ly
+      noi_dung: "Đối với các học phần thuộc loại đạt không phân mức, bạn cần đạt từ 5,0 điểm trở lên theo thang điểm 10 để được đánh giá là Đạt và được quy đổi ra điểm chữ là P (không tính vào điểm trung bình học tập)."
+    - vai: sinh_vien
+      noi_dung: "Dạ em hiểu rồi, nhưng mà lỡ như bài thi của em làm không tốt lắm, giả sử nó chỉ được có 4,5 điểm hệ 10 thôi thì kết quả của nó sẽ bị tính là chưa đạt đúng không ạ? Và khi đó thì nó có được quy đổi thành chữ P hay bị tính vào điểm trung bình học tập của cả kỳ không anh/chị?"
+  dap_an_nhap: "Nếu điểm đánh giá của học phần đó chỉ đạt 4,5 điểm (thuộc khoảng dưới 5,0 theo thang điểm 10) thì kết quả được xếp loại là Chưa đạt. Khi đó, điểm của nó không được quy đổi thành điểm chữ P và cũng không tính vào điểm trung bình học tập."
+  y_bat_buoc:
+    - "Kết quả xếp loại: Chưa đạt (khi dưới 5,0 điểm)"
+    - "Điểm chữ: Không quy đổi thành P"
+    - "Tính vào điểm trung bình học tập: Không"
+  nguon:
+    - "Đ21: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-229
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "ad oi tra cuu giup e xem e ten nguyen van an mssv 51.01.103.045 da co ten trog ds dc nhan hbkkht hoc ky 1 chua a"
+  dap_an_nhap: "Sổ tay sinh viên không lưu trữ thông tin dữ liệu cá nhân của từng sinh viên như điểm số hay danh sách nhận học bổng cụ thể. Để kiểm tra danh sách sinh viên được nhận học bổng khuyến khích học tập, bạn vui lòng theo dõi thông báo trên trang thông tin chính thức của trường hoặc liên hệ trực tiếp Phòng Công tác Chính trị và Học sinh Sinh viên (Phòng CTCT&HSSV) để được hỗ trợ kiểm tra nhé."
+  y_bat_buoc:
+    - "Nói rõ Sổ tay sinh viên không có dữ liệu cá nhân của từng sinh viên"
+    - "Gợi ý kiểm tra thông báo chính thức hoặc liên hệ Phòng Công tác Chính trị và Học sinh Sinh viên (Phòng CTCT&HSSV)"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+
+- phieu: V4-239
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, tối nay gần ktx trường mình bên Q5 có quán lẩu bò nào ngon bổ rẻ để dẫn nhóm bạn đi ăn ko mn chỉ em zới?"
+  dap_an_nhap: "Chào bạn, trợ lý chỉ hỗ trợ giải đáp các thông tin liên quan đến quy chế đào tạo, quy định và dịch vụ sinh viên của Trường Đại học Sư phạm TP.HCM. Rất tiếc trợ lý không thể tư vấn các địa điểm ăn uống, ẩm thực bên ngoài trường. Chúc bạn tìm được quán ăn ưng ý nhé!"
+  y_bat_buoc:
+    - "Từ chối lịch sự vì câu hỏi không thuộc phạm vi quy chế, đào tạo hoặc dịch vụ sinh viên của nhà trường"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""

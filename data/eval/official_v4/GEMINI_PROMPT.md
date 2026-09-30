@@ -17,6 +17,8 @@ Bạn giúp tôi soạn câu hỏi kiểm thử cho một trợ lý hỏi đáp 
 
 Nếu một yêu cầu không hỏi được đúng kiểu phiếu nêu (ví dụ phiếu bảo hỏi thủ tục nhưng đoạn sổ tay không có thủ tục), hãy hỏi một điều khác mà đoạn đó thực sự nêu và ghi vào `ghi_chu` loại câu đã hỏi. Không bao giờ bịa thông tin ngoài đoạn sổ tay.
 
+Với phiếu **so sánh giữa hai khóa** hoặc **hội thoại đổi khóa**, hai yêu cầu phải hỏi cùng một nội dung cho hai khóa; nếu phải đổi loại câu, đổi giống nhau cho cả hai.
+
 Chỉ khi **cả phiếu không thể viết trung thực** mới điền `khong_phu_hop` với lý do và bỏ trống các trường khác.
 
 ## Định dạng trả về

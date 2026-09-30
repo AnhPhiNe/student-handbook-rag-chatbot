@@ -1,0 +1,368 @@
+- phieu: V4-031
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho mình hỏi số điện thoại của Phòng Khảo thí và Đảm bảo chất lượng là bao nhiêu vậy ạ?"
+  dap_an_nhap: "Số điện thoại liên lạc của Phòng Khảo thí và Đảm bảo chất lượng là (028) 38352020, số máy nội bộ: 146, 147, 218, 219.[cite: 2]"
+  y_bat_buoc:
+    - "(028) 38352020[cite: 2]"
+    - "số máy nội bộ: 146, 147, 218, 219[cite: 2]"
+  nguon:
+    - "Đ1: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-032
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi văn phòng làm việc của Phòng Khảo thí và Đảm bảo chất lượng ở đâu ạ?"
+  dap_an_nhap: "Văn phòng làm việc của Phòng Khảo thí và Đảm bảo chất lượng ở Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.[cite: 2]"
+  y_bat_buoc:
+    - "Nhà A, tầng 2, P.202, P.206[cite: 2]"
+    - "số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM[cite: 2]"
+  nguon:
+    - "Đ2: Danh bạ trong Sổ tay sinh viên K48-K49[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-033
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, mail của phòng đào tạo là gì v mng?"
+  dap_an_nhap: "Email của Phòng Đào tạo là phongdt@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "phongdt@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ3: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-034
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Địa chỉ email của Phòng Công nghệ Thông tin là gì vậy ạ?"
+  dap_an_nhap: "Email của Phòng Công nghệ Thông tin là phongcntt@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "phongcntt@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ4: Danh bạ trong Sổ tay sinh viên K51[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-035
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạo này em đang chuẩn bị làm bài thuyết trình với tiểu luận kết thúc môn nên cần lên thư viện tìm ít tài liệu tham khảo, nhưng em ở trọ khá xa trường tận Thủ Đức lận, sợ chạy qua mà trúng lúc thư viện nghỉ hoặc không có người hướng dẫn. Cho em hỏi các số điện thoại liên lạc của Thư viện trường mình để em liên hệ trước được không ạ?"
+  dap_an_nhap: "Số điện thoại liên lạc của Thư viện gồm: Giám đốc: (028) 35261042; Hướng dẫn thông tin: (028) 38352020 – 231; Dịch vụ thông tin: (028) 38308905 – 234; Phòng nghiệp vụ: (028) 38352020 – 233; Phòng đọc: (028) 38352020 – 232.[cite: 2]"
+  y_bat_buoc:
+    - "Giám đốc: (028) 35261042[cite: 2]"
+    - "Hướng dẫn thông tin: (028) 38352020 – 231[cite: 2]"
+    - "Dịch vụ thông tin: (028) 38308905 – 234[cite: 2]"
+    - "Phòng nghiệp vụ: (028) 38352020 – 233[cite: 2]"
+    - "Phòng đọc: (028) 38352020 – 232[cite: 2]"
+  nguon:
+    - "Đ5: Danh bạ trong Sổ tay sinh viên K51[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-036
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho mình hỏi văn phòng của Phòng Thanh tra Đào tạo ở phòng mấy, tầng mấy vậy?"
+  dap_an_nhap: "Văn phòng làm việc của Phòng Thanh tra Đào tạo tại Nhà A, tầng 2, P.209, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.[cite: 2]"
+  y_bat_buoc:
+    - "Nhà A, tầng 2, P.209[cite: 2]"
+    - "số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM[cite: 2]"
+  nguon:
+    - "Đ6: Danh bạ trong Sổ tay sinh viên K48-K49[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-037
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em xin địa chỉ email của Khoa Tâm lý học với ạ."
+  dap_an_nhap: "Email của Khoa Tâm lý học là khoatlh@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "khoatlh@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ7: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-038
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Email liên hệ của Khoa Lịch sử là gì vậy ạ?"
+  dap_an_nhap: "Email của Khoa Lịch sử là khoalichsu@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "khoalichsu@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ8: Danh bạ trong Sổ tay sinh viên K48-K49[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-039
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Địa chỉ email của Khoa Khoa học Giáo dục là gì vậy bạn?"
+  dap_an_nhap: "Email của Khoa Khoa học Giáo dục là khoakhgd@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "khoakhgd@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ9: Danh bạ trong Sổ tay sinh viên K51[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-040
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho mình hỏi email của Khoa Giáo dục Tiểu học là gì thế?"
+  dap_an_nhap: "Email của Khoa Giáo dục Tiểu học là khoagdth@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "khoagdth@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ10: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-042
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi số điện thoại liên lạc của Khoa Tiếng Nhật là số nào ạ?"
+  dap_an_nhap: "Số điện thoại liên lạc của Khoa Tiếng Nhật là (028) 38352020, số máy nội bộ: 174.[cite: 2]"
+  y_bat_buoc:
+    - "(028) 38352020[cite: 2]"
+    - "số máy nội bộ: 174[cite: 2]"
+  nguon:
+    - "Đ11: Danh bạ trong Sổ tay sinh viên K48-K49[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-043
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Ngành Ngôn ngữ Nhật thuộc khoa nào quản lý vậy ạ?"
+  dap_an_nhap: "Ngành Ngôn ngữ Nhật thuộc Khoa Tiếng Nhật.[cite: 2]"
+  y_bat_buoc:
+    - "Khoa Tiếng Nhật[cite: 2]"
+  nguon:
+    - "Đ12: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-044
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em là sinh viên năm nhất mới vào trường, đợt này đang tìm hiểu thông tin về ngành mình học để biết sau này liên hệ xin giấy tờ với hỗ trợ học tập cho tiện. Anh/chị cho em hỏi ngành Giáo dục Tiểu học thì thuộc khoa nào quản lý vậy ạ?"
+  dap_an_nhap: "Ngành Giáo dục Tiểu học thuộc Khoa Giáo dục Tiểu học.[cite: 2]"
+  y_bat_buoc:
+    - "Khoa Giáo dục Tiểu học[cite: 2]"
+  nguon:
+    - "Đ13: Danh bạ trong Sổ tay sinh viên K51[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-045
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "nganh viet nam hoc thuoc khoa nao the b"
+  dap_an_nhap: "Ngành Việt Nam học thuộc Khoa Ngữ văn.[cite: 2]"
+  y_bat_buoc:
+    - "Khoa Ngữ văn[cite: 2]"
+  nguon:
+    - "Đ14: Danh bạ trong Sổ tay sinh viên K48-K49[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-046
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho mình hỏi ngành Giáo dục Thể chất thuộc khoa nào vậy?"
+  dap_an_nhap: "Ngành Giáo dục Thể chất thuộc Khoa Giáo dục Thể chất.[cite: 2]"
+  y_bat_buoc:
+    - "Khoa Giáo dục Thể chất[cite: 2]"
+  nguon:
+    - "Đ15: Danh bạ trong Sổ tay sinh viên K51[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-047
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, ngành Tiếng Việt và văn hoá Việt Nam dành cho sinh viên nước ngoài thì thuộc khoa nào v ạ?"
+  dap_an_nhap: "Ngành Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài) thuộc Khoa Ngữ văn.[cite: 2]"
+  y_bat_buoc:
+    - "Khoa Ngữ văn[cite: 2]"
+  nguon:
+    - "Đ16: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-048
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho m hoi nganh dia ly hoc thuoc khoa nao zay"
+  dap_an_nhap: "Ngành Địa lý học thuộc Khoa Địa lí.[cite: 2]"
+  y_bat_buoc:
+    - "Khoa Địa lí[cite: 2]"
+  nguon:
+    - "Đ17: Danh bạ trong Sổ tay sinh viên K48-K49[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-049
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Mình cần hỏi về các nội dung liên quan đến công tác đào tạo được thông báo trên cổng thông tin trực tuyến thì liên hệ ai và ở đâu vậy ạ?"
+  dap_an_nhap: "Bạn liên hệ Phòng Đào tạo tại Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM; điện thoại: (028) 38352020; email: phongdt@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "Phòng Đào tạo[cite: 2]"
+    - "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM[cite: 2]"
+    - "(028) 38352020[cite: 2]"
+    - "phongdt@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ18: Danh bạ trong Sổ tay sinh viên K51[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-050
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, em muốn tham gia mấy hoạt động ngoại khóa trong và ngoài khu nội trú để rèn luyện kỹ năng thì liên hệ ở đâu v ạ?"
+  dap_an_nhap: "Bạn liên hệ Ký túc xá tại địa chỉ 351A Lạc Long Quân, phường Hoà Bình, TP. HCM; điện thoại: (028) 38650758; email: ktx@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "Ký túc xá[cite: 2]"
+    - "351A Lạc Long Quân, phường Hoà Bình, TP. HCM[cite: 2]"
+    - "(028) 38650758[cite: 2]"
+    - "ktx@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ19: Danh bạ trong Sổ tay sinh viên K51[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-051
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em muốn tìm hiểu và nộp hồ sơ xét tuyển học cùng lúc hai chương trình song ngành thì liên hệ ai và đến đâu ạ?"
+  dap_an_nhap: "Bạn liên hệ Phòng Đào tạo tại Nhà A, tầng 1, P.106, P.107, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM; điện thoại: (028) 38352020; email: phongdt@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "Phòng Đào tạo[cite: 2]"
+    - "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM[cite: 2]"
+    - "(028) 38352020[cite: 2]"
+    - "phongdt@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ20: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-052
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Mình cần làm thẻ và nhận thẻ BHYT thì liên hệ ở đâu và gặp ai vậy ạ?"
+  dap_an_nhap: "Bạn liên hệ Trạm Y tế tại Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM; điện thoại: (028) 38352020; email: tramyte@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "Trạm Y tế[cite: 2]"
+    - "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM[cite: 2]"
+    - "(028) 38352020[cite: 2]"
+    - "tramyte@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ21: Danh bạ trong Sổ tay sinh viên K48-K49[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-053
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, em muốn được tư vấn phương pháp học tập hiệu quả cho sv bậc đại học thì liên hệ ai ở đâu v ạ?"
+  dap_an_nhap: "Bạn liên hệ Viện Nghiên cứu Giáo dục tại địa chỉ 115 Hai Bà Trưng, Quận 1, TP. HCM; điện thoại: (028) 38224813; email: vienncgd@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "Viện Nghiên cứu Giáo dục[cite: 2]"
+    - "115 Hai Bà Trưng, Quận 1, TP. HCM[cite: 2]"
+    - "(028) 38224813[cite: 2]"
+    - "vienncgd@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ22: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-054
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em muốn liên hệ hỏi về việc xây dựng và triển khai kế hoạch thực tập, thực tế năm học thì liên hệ đơn vị nào và ở đâu ạ?"
+  dap_an_nhap: "Bạn liên hệ Phòng Đào tạo tại Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM; điện thoại: (028) 38352020; email: phongdt@hcmue.edu.vn.[cite: 2]"
+  y_bat_buoc:
+    - "Phòng Đào tạo[cite: 2]"
+    - "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM[cite: 2]"
+    - "(028) 38352020[cite: 2]"
+    - "phongdt@hcmue.edu.vn[cite: 2]"
+  nguon:
+    - "Đ23: Danh bạ trong Sổ tay sinh viên K48-K49[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-075
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi người học liên thông có được xét cấp học bổng khuyến khích học tập không ạ?"
+  dap_an_nhap: "Theo quy định, học bổng khuyến khích học tập chỉ được cấp cho sinh viên hệ chính quy đang học tập tại Trường; người học liên thông không được xét cấp.[cite: 2]"
+  y_bat_buoc:
+    - "chỉ được cấp cho sinh viên hệ chính quy đang học tập tại Trường[cite: 2]"
+    - "người học liên thông không được xét cấp[cite: 2]"
+  nguon:
+    - "Đ24: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 26[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-076
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Trong công tác quản lý sinh viên thì công tác hành chính gồm những nội dung cụ thể nào vậy ạ?"
+  dap_an_nhap: "Công tác hành chính trong quản lý sinh viên bao gồm: tổ chức tiếp nhận thí sinh trúng tuyển, sắp xếp, bố trí sinh viên vào các lớp; chỉ định Ban cán sự lớp (lớp trưởng, lớp phó) lâm thời, làm thẻ sinh viên; thống kê, tổng hợp dữ liệu và quản lý, lưu trữ hồ sơ liên quan đến sinh viên; giải quyết các công việc hành chính có liên quan đến sinh viên.[cite: 2]"
+  y_bat_buoc:
+    - "tiếp nhận thí sinh trúng tuyển, sắp xếp, bố trí sinh viên vào các lớp[cite: 2]"
+    - "chỉ định Ban cán sự lớp (lớp trưởng, lớp phó) lâm thời, làm thẻ sinh viên[cite: 2]"
+    - "thống kê, tổng hợp dữ liệu và quản lý, lưu trữ hồ sơ liên quan đến sinh viên[cite: 2]"
+    - "giải quyết các công việc hành chính có liên quan đến sinh viên[cite: 2]"
+  nguon:
+    - "Đ25: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 5[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ25 không nêu hệ quả vi phạm hay trường hợp ngoại lệ, chuyển sang hỏi nội dung quy định (nội dung công tác hành chính trong quản lý sinh viên)."
+- phieu: V4-077
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, ai chỉ định đại diện lớp học phần và bạn này có trách nhiệm gì v ạ?"
+  dap_an_nhap: "Đại diện lớp học phần do giảng viên phụ trách lớp học phần chỉ định và có trách nhiệm báo cáo việc chấp hành nội quy, quy định, quy chế của sinh viên với khoa.[cite: 2]"
+  y_bat_buoc:
+    - "giảng viên phụ trách lớp học phần chỉ định[cite: 2]"
+    - "báo cáo việc chấp hành nội quy, quy định, quy chế của sinh viên với khoa[cite: 2]"
+  nguon:
+    - "Đ26: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 26[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ26 không nêu hệ quả vi phạm hay trường hợp ngoại lệ, chuyển sang hỏi người chỉ định và trách nhiệm của đại diện lớp học phần."
+- phieu: V4-078
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Những trường hợp nào thì cá nhân sinh viên không được xét khen thưởng toàn diện, định kỳ cuối năm học vậy ạ?"
+  dap_an_nhap: "Không xét khen thưởng đối với sinh viên bị kỷ luật hoặc có điểm thi kết thúc học phần ở lần thi thứ nhất trong học kỳ hoặc năm học đó dưới mức trung bình.[cite: 2]"
+  y_bat_buoc:
+    - "bị kỷ luật[cite: 2]"
+    - "có điểm thi kết thúc học phần ở lần thi thứ nhất trong học kỳ hoặc năm học đó dưới mức trung bình[cite: 2]"
+  nguon:
+    - "Đ27: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 32[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-080
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Sinh viên sư phạm phải bồi hoàn kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt trong những trường hợp nào vậy ạ?"
+  dap_an_nhap: "Đối tượng phải bồi hoàn kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt gồm: sinh viên sư phạm đã hưởng chính sách không công tác trong ngành giáo dục sau 02 năm kể từ ngày có quyết định công nhận tốt nghiệp; sinh viên sư phạm đã hưởng chính sách và công tác trong ngành giáo dục nhưng không đủ thời gian công tác theo quy định; sinh viên sư phạm được hưởng chính sách đang trong thời gian đào tạo nhưng chuyển sang ngành đào tạo khác, tự thôi học, không hoàn thành CTĐT hoặc bị kỷ luật buộc thôi học.[cite: 2]"
+  y_bat_buoc:
+    - "không công tác trong ngành giáo dục sau 02 năm kể từ ngày có quyết định công nhận tốt nghiệp[cite: 2]"
+    - "công tác trong ngành giáo dục nhưng không đủ thời gian công tác theo quy định[cite: 2]"
+    - "chuyển sang ngành đào tạo khác, tự thôi học, không hoàn thành CTĐT hoặc bị kỷ luật buộc thôi học[cite: 2]"
+  nguon:
+    - "Đ28: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 6[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-083
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Nếu vi phạm quy định các kỳ thi và bị lập biên bản kỷ luật thì sinh viên bị trừ điểm rèn luyện ở Phần I như thế nào ạ?"
+  dap_an_nhap: "Khi vi phạm quy định các kỳ thi và bị lập biên bản hình thức kỷ luật, điểm trừ được tính cho tất cả những lần vi phạm và không vượt quá khung 20 điểm như sau: Khiển trách: lần đầu - 2 điểm, lần thứ 2 trở lên - 4 điểm/lần; Cảnh cáo: lần đầu - 3 điểm, lần thứ 2 trở lên - 6 điểm/lần; Đình chỉ thi: lần đầu - 4 điểm, lần thứ 2 trở lên - 8 điểm/lần.[cite: 2]"
+  y_bat_buoc:
+    - "Khiển trách: lần đầu - 2 điểm, lần thứ 2 trở lên - 4 điểm/lần[cite: 2]"
+    - "Cảnh cáo: lần đầu - 3 điểm, lần thứ 2 trở lên - 6 điểm/lần[cite: 2]"
+    - "Đình chỉ thi: lần đầu - 4 điểm, lần thứ 2 trở lên - 8 điểm/lần[cite: 2]"
+    - "Điểm trừ được tính tất cả những lần vi phạm và không vượt quá khung 20 điểm[cite: 2]"
+  nguon:
+    - "Đ29: Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1), Phần I. Đánh giá về ý thức tham gia học tập (Tối đa 20 điểm)[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-084
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, sv sư phạm được hỗ trợ tiền chi phí sinh hoạt bao nhiêu 1 tháng và tối đa mấy tháng trong năm học v ạ?"
+  dap_an_nhap: "Sinh viên sư phạm được Nhà nước hỗ trợ 3,63 triệu đồng/tháng để chi trả chi phí sinh hoạt trong thời gian học tập tại trường. Thời gian hỗ trợ tiền đóng học phí và chi phí sinh hoạt được xác định theo số tháng thực tế học tập tại trường theo quy định, nhưng không quá 10 tháng/năm học.[cite: 2]"
+  y_bat_buoc:
+    - "3,63 triệu đồng/tháng[cite: 2]"
+    - "không quá 10 tháng/năm học[cite: 2]"
+  nguon:
+    - "Đ30: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 4[cite: 2]"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ30 không nêu hệ quả vi phạm hay trường hợp ngoại lệ, chuyển sang hỏi mức hỗ trợ chi phí sinh hoạt và thời gian hỗ trợ tối đa trong năm học."

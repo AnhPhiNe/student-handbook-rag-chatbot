@@ -28,6 +28,7 @@ BEHAVIOUR = {  # ticket expectation -> author labels accepted for it
 }
 INFORMAL_MARKERS = re.compile(
     r"(?i)\b(xíu|z|ạ\?|ko|k|dc|đc|ktx|hb|hbkkht|đrl|drl|sđt|sdt|sv|ad|mn|nha|nhé|vậy|zới|oi|ơi|e)\b")
+CITE_MARK = re.compile(r"\[cite:[^\]]*\]")
 FACT_TOKEN = re.compile(
     r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"          # email
     r"|(?:https?://)?[\w-]+(?:\.[\w-]+)*\.(?:edu|com|gov|org)\.vn\S*"  # web address
@@ -46,8 +47,18 @@ def _labels(batch: list[dict]) -> dict[str, tuple]:
     return {label: key for key, label in labels.items()}
 
 
+def load_authored(batch_number: int) -> list[dict]:
+    """An authored batch as saved, without the "[cite: N]" marks Gemini adds to attached files."""
+    text = (OUT / "authored" / f"batch_{batch_number:02d}.yaml").read_text(encoding="utf-8")
+    return yaml.safe_load(CITE_MARK.sub("", text))
+
+
 def _has_diacritics(text: str) -> bool:
     return any(unicodedata.decomposition(c) for c in text if c.isalpha() and ord(c) > 127 and c not in "đĐ")
+
+
+def _words(text: str) -> list[str]:
+    return re.findall(r"\w+", unicodedata.normalize("NFC", text).lower())
 
 
 def _squash(text: str) -> str:
@@ -60,7 +71,7 @@ def check(batch_number: int) -> list[str]:
     by_id = {t["id"]: t for t in batch}
     labels = _labels(batch)
     sources = {_source_key(r["source"]): r["source"] for t in batch for r in t["requests"]}
-    authored = yaml.safe_load((OUT / "authored" / f"batch_{batch_number:02d}.yaml").read_text(encoding="utf-8"))
+    authored = load_authored(batch_number)
 
     report: list[str] = []
     ids = [case["phieu"] for case in authored]
@@ -112,6 +123,13 @@ def check(batch_number: int) -> list[str]:
                           and not re.fullmatch(r"\d", tok)})
         if missing and ticket["requests"]:
             notes.append(f"not in its excerpts: {missing}")
+        if ticket["requests"] and case.get("hanh_vi", "").startswith("tra_loi"):
+            evidence_words = set(_words(" ".join(sources[k]["text"] for k in ticket_keys if k in sources)))
+            for fact in case.get("y_bat_buoc") or []:
+                words = [w for w in _words(fact.split(":", 1)[-1]) if len(w) > 1]
+                found = sum(w in evidence_words for w in words) / len(words) if words else 1.0
+                if found < 0.8:
+                    notes.append(f"fact {found:.0%} in excerpts: {fact[:80]}")
         if case.get("ghi_chu"):
             notes.append(f"author note: {case['ghi_chu']}")
         report.append(f"{ticket['id']} {ticket['cell']} [{style}]: " + ("; ".join(notes) if notes else "ok"))

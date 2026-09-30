@@ -72,8 +72,9 @@ author nor its models wrote.
   something else the article states and records the kind in `ghi_chu`.
 - **Main campus only:** records and articles naming the branch campus
   (Phân hiệu Long An) are left out. The filter matched "phân hiệu" and "Long An" only, so K51
-  faculty records of the Gia Lai branch (no such words in the record) could be drawn:
-  V4-104 and V4-200. They are kept (AUTHORING_LOG.md).
+  faculty records of both branches whose text says neither (emails such as
+  `longan.khcb@`, addresses in Tây Ninh or Gia Lai) could be drawn: V4-104, V4-142
+  and V4-200. They are kept (AUTHORING_LOG.md).
 - **Free tickets:** out-of-domain and not-in-handbook tickets (F) have no source;
   the author invents them.
 
@@ -84,7 +85,7 @@ author nor its models wrote.
 | Draw tickets and batches | `scripts/draw_v4_tickets.py` | done (246 tickets, 13 batches) |
 | Pilot 1 (15 tickets) | Gemini 3.8 Flash | done, questions discarded (below) |
 | Batch 00 (pilot 2, 15 tickets) | Gemini 3.8 Flash | done: 15 of 15 written, all facts found in their excerpts, 1 reclassified (AUTHORING_LOG.md) |
-| Check each batch | `scripts/check_v4_authored.py N` | done for 00–07 |
+| Check each batch | `scripts/check_v4_authored.py N` | done for 00–08 |
 | Batch 01 (30 tickets) | Gemini 3.8 Flash | done: 30 of 30 written, all facts found in their excerpts; 3 consequence tickets asked another kind, as allowed |
 | Batch 02 (25 tickets) | Gemini 3.8 Flash | done: 25 of 25 written, all facts found in their excerpts; 5 of 10 procedure tickets asked another kind |
 | Batch 03 (28 tickets) | Gemini 3.8 Flash | done: 28 of 28 written; facts in their excerpts, and the three computed scholarship scores recomputed correct |
@@ -92,7 +93,8 @@ author nor its models wrote.
 | Batch 05 (14 tickets) | Gemini 3.8 Flash | done: 14 of 14 written; all facts in their excerpts |
 | Batch 06 (14 tickets) | Gemini 3.8 Flash | done: 14 of 14 written; facts in their excerpts, the computed score (3,40) recomputed correct |
 | Batch 07 (22 tickets) | Gemini 3.8 Flash | done: 22 of 22 written; facts in their excerpts, the computed scores (3,56, 3,70, 3,52) recomputed correct |
-| Batches 08–12 | external author | pending |
+| Batch 08 (11 tickets) | Gemini 3.8 Flash | done: 11 of 11 written; facts in their excerpts, the computed average (3,50) recomputed correct |
+| Batches 09–12 | external author | pending |
 | Fact check against the data; overlap check with v1–v3; clusters | scripts | pending |
 | Owner review of a random sample of about 30 cases | owner | pending |
 | Freeze and run once, end to end | | pending |

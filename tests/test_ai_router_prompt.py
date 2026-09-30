@@ -256,7 +256,8 @@ def test_prompt_clarifies_selectors_without_weakening_grounding() -> None:
     assert "hoặc thông tin liên hệ của đơn vị đó" in PLANNER_PROMPT_TEXT
     registry = compact_registry_for_prompt()
     assert "Chọn theo kết quả cần tra, không theo riêng tên loại học bổng" in registry
-    assert "unit=tên đơn vị phụ trách; office=địa chỉ hoặc vị trí làm việc" in registry
+    assert "unit=tên đơn vị phụ trách; phone=điện thoại kèm số máy nội bộ" in registry
+    assert "office=địa chỉ hoặc vị trí làm việc" in registry
     assert "không chỉ theo từ 'phòng'" in registry
 
 

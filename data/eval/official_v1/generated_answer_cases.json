@@ -11435,6 +11435,7 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [
@@ -11622,6 +11623,7 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [
@@ -14815,6 +14817,7 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [

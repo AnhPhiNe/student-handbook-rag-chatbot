@@ -46,6 +46,9 @@ PLUMBING = {
     "source_service_ids", "extraction_method", "needs_manual_review",
     "program_name_source", "faculty_name_source", "raw_program_name", "aliases",
     "faculty_aliases", "summary", "unit",
+    # Matching machinery on a foreign-language row (score_mode, entity_aliases),
+    # read by the lookup and never shown as an answer.
+    "input_requirements",
 }
 
 # Each answerable field maps to the wording its tool's registry text must contain,
@@ -58,7 +61,6 @@ ADVERTISED: dict[str, dict[str, str]] = {
         "level_or_scale": "điểm ngoại ngữ",
         "equivalent_level_3": "bậc tương đương",
         "equivalent_level_4": "bậc tương đương",
-        "input_requirements": "điều kiện của chứng chỉ",
     },
     "study_duration": {
         "Chương trình đào tạo": "loại chương trình",
@@ -76,7 +78,7 @@ ADVERTISED: dict[str, dict[str, str]] = {
         "academic_score_range": "điểm học tập",
         "conduct_score_condition": "rèn luyện",
         "academic_classification": "xếp loại học tập",
-        "conduct_classification_condition": "xếp loại rèn luyện",
+        "conduct_classification_condition": "học tập và rèn luyện",
         "scholarship_score_range": "điểm học bổng",
         "criterion": "điều kiện xét",
         "requirement": "điều kiện xét",

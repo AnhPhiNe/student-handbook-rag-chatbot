@@ -9,13 +9,17 @@ cases:
       The K51 handbook lists two branch faculties with nearly the same name:
       "Khoa Khoa học – Tự nhiên" (Long An branch) and "Khoa Khoa học Tự nhiên"
       (Gia Lai branch). The question names neither branch, so the gold's
-      Gia Lai address alone is too narrow.
+      Gia Lai address alone is too narrow. The system's runtime directories
+      leave out both branches (main campus only), so the expected answer is
+      that the main-campus directory has no such faculty.
     y_bat_buoc:
       - >-
-        Địa chỉ văn phòng khoa: chấp nhận địa chỉ Gia Lai (Văn phòng Khoa – Nhà K,
-        Số 126 Lê Thánh Tôn, phường Diên Hồng, tỉnh Gia Lai), địa chỉ Long An
-        (Khu Hiệu bộ, Số 934, Quốc lộ 1A, phường Khánh Hậu, tỉnh Tây Ninh), cả hai,
-        hoặc hỏi lại sinh viên học ở phân hiệu nào
+        Địa chỉ văn phòng khoa: chấp nhận nói rằng danh bạ cơ sở chính không có
+        khoa này (hoặc khoa này thuộc phân hiệu), hỏi lại sinh viên học ở phân hiệu
+        nào, hoặc nêu địa chỉ Gia Lai (Văn phòng Khoa – Nhà K, Số 126 Lê Thánh Tôn,
+        phường Diên Hồng, tỉnh Gia Lai) hay Long An (Khu Hiệu bộ, Số 934, Quốc lộ
+        1A, phường Khánh Hậu, tỉnh Tây Ninh). Sai nếu đưa địa chỉ của một khoa khác
+        ở cơ sở chính như thể đó là khoa được hỏi
       - "Bước 1: CVHT thông báo cho lớp trưởng về quy trình, thời gian chấm ĐRL"
       - "Bước 2: Sinh viên tự đánh giá kèm minh chứng gửi BCS lớp"
       - "Bước 3: BCS lớp, BCH Chi đoàn, BCH Chi hội, CVHT chấm lại điểm"

@@ -78,7 +78,8 @@ author nor its models wrote.
   (Phân hiệu Long An) are left out. The filter matched "phân hiệu" and "Long An" only, so K51
   faculty records of both branches whose text says neither (emails such as
   `longan.khcb@`, addresses in Tây Ninh or Gia Lai) could be drawn: V4-104, V4-142
-  and V4-200. They are kept (AUTHORING_LOG.md).
+  and V4-200. They are kept (AUTHORING_LOG.md). The draw read the extraction files; the
+  system's runtime directories already leave both branches out.
 - **Free tickets:** out-of-domain and not-in-handbook tickets (F) have no source;
   the author invents them.
 

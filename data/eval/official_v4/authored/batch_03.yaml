@@ -1,0 +1,368 @@
+- phieu: V4-001
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Kỳ này điểm trung bình tích lũy của em được 1.6 theo thang điểm 4 thì xếp loại học lực gì vậy ạ?"
+  dap_an_nhap: "Điểm trung bình tích lũy đạt 1.6 (thuộc khoảng từ 1,0 đến dưới 2,0) được xếp loại học lực Yếu."
+  y_bat_buoc:
+    - "Xếp loại Yếu"
+    - "Thang điểm 4 từ 1,0 đến dưới 2,0"
+  nguon:
+    - "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-002
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Học phần chỉ tính đạt/không đạt mà điểm hệ 10 em chỉ được 4.2 thì có được tính là đạt không, có quy đổi sang điểm P và tính vào điểm trung bình học tập không ạ?"
+  dap_an_nhap: "Học phần chỉ yêu cầu đạt không phân mức nếu có điểm thang điểm 10 dưới 5,0 (như mức 4.2) thì kết quả là Chưa đạt, không được quy đổi thành P và không tính vào điểm trung bình học tập."
+  y_bat_buoc:
+    - "Kết quả: Chưa đạt"
+    - "Thang điểm 10 dưới 5,0"
+    - "Không quy đổi thành P"
+    - "Không tính vào điểm trung bình học tập"
+  nguon:
+    - "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-003
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Điểm trung bình học kỳ của em được 3.75 thang điểm 4 thì xếp loại học lực nào vậy ạ?"
+  dap_an_nhap: "Điểm trung bình học kỳ đạt 3.75 (nằm trong khoảng từ 3,6 đến 4,0) được xếp loại học lực Xuất sắc."
+  y_bat_buoc:
+    - "Xếp loại Xuất sắc"
+    - "Thang điểm 4 từ 3,6 đến 4,0"
+  nguon:
+    - "Đ3: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-004
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Điểm trung bình tích lũy của em là 2.3 thì xếp loại học lực gì vậy ạ?"
+  dap_an_nhap: "Điểm trung bình tích lũy đạt 2.3 (thuộc khoảng từ 2,0 đến dưới 2,5) được xếp loại học lực Trung bình."
+  y_bat_buoc:
+    - "Xếp loại Trung bình"
+    - "Thang điểm 4 từ 2,0 đến dưới 2,5"
+  nguon:
+    - "Đ4: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-005
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Môn học của em được điểm chữ C+ thì quy đổi sang thang điểm 4 được bao nhiêu điểm ạ?"
+  dap_an_nhap: "Điểm chữ C+ khi quy đổi sang thang điểm 4 tương ứng là 2,5."
+  y_bat_buoc:
+    - "Thang điểm chữ C+"
+    - "Thang điểm 4: 2,5"
+  nguon:
+    - "Đ3: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-007
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em muốn xét chuẩn đầu ra ngoại ngữ tương đương bậc 3 bằng tiếng Trung thì cần nộp chứng chỉ HSK bậc mấy ạ?"
+  dap_an_nhap: "Đối với tiếng Trung Quốc, chứng chỉ Hanyu Shuiping Kaoshi (HSK) yêu cầu đạt HSK bậc 3 để được quy đổi tương đương bậc 3."
+  y_bat_buoc:
+    - "Tiếng Trung Quốc / Hanyu Shuiping Kaoshi (HSK)"
+    - "Tương đương bậc 3 là HSK bậc 3"
+  nguon:
+    - "Đ5: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Phụ lục"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-008
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ em chào thầy cô ạ, chuyện là em đang tự học tiếng Hàn để nộp xét chuẩn đầu ra ra trường cho kịp tiến độ tốt nghiệp. Tuần trước em vừa thi xong đợt thi chứng chỉ TOPIK II bên ngoài và đang chờ báo điểm, nhưng nghe mấy anh chị bảo phải đạt số điểm nhất định chứ không phải có chứng chỉ là xong. Thầy cô cho em hỏi cụ thể là chứng chỉ TOPIK II cần đạt bao nhiêu điểm thì mới được công nhận tương đương bậc 4 ạ?"
+  dap_an_nhap: "Đối với tiếng Hàn Quốc, chứng chỉ TOPIK II cần đạt cấp độ TOPIK II (150) để được quy đổi tương đương bậc 4."
+  y_bat_buoc:
+    - "Chứng chỉ TOPIK II"
+    - "Tương đương bậc 4 là TOPIK II (150)"
+  nguon:
+    - "Đ5: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Phụ lục"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-009
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, em tính nộp cđr ngoại ngữ bằng tiếng Nga chứng chỉ ТРКИ á, thì phải đạt cấp độ ТРКИ mấy mới tương đương bậc 3 vậy ạ?"
+  dap_an_nhap: "Đối với tiếng Nga, chứng chỉ ТРКИ (Тест по русскому языку как иностранному) cần đạt trình độ ТРКИ-1 để được công nhận tương đương bậc 3."
+  y_bat_buoc:
+    - "Tiếng Nga / chứng chỉ ТРКИ"
+    - "Tương đương bậc 3 là ТРКИ-1"
+  nguon:
+    - "Đ5: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Phụ lục"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-010
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hoi bang toeic 4 ky nang de dat tuong duong bac 3 thi diem nghe doc voi noi viet tung phan can bao nhieu a? dot nay e thi ve dc nghe 320 doc 310 noi 130 viet 130 thi co dat bac 3 ko"
+  dap_an_nhap: "Để đạt chuẩn tương đương bậc 3 với chứng chỉ TOEIC (4 kỹ năng), điểm từng phần yêu cầu như sau: Nghe: 275 – 399; Đọc: 275 – 384; Nói: 120 – 159; Viết: 120 – 149. Mức điểm bạn đạt được (Nghe 320, Đọc 310, Nói 130, Viết 130) đều nằm trong các khoảng điểm yêu cầu nên đạt tương đương bậc 3."
+  y_bat_buoc:
+    - "Nghe: 275 – 399"
+    - "Đọc: 275 – 384"
+    - "Nói: 120 – 159"
+    - "Viết: 120 – 149"
+    - "Mức điểm của sinh viên đạt tương đương bậc 3"
+  nguon:
+    - "Đ5: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Phụ lục"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-011
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em chào thầy cô, đợt hè vừa rồi em có dành thời gian ôn thi chứng chỉ tiếng Anh TOEFL ITP tại trung tâm bên ngoài và mới nhận bảng điểm hôm qua. Kết quả bài thi của em đạt 470 điểm. Em đang lo không biết mức điểm này đã đủ điều kiện để công nhận chuẩn đầu ra ngoại ngữ tương đương bậc 3 của trường mình chưa, hay phải thi lại để lấy điểm cao hơn ạ? Thầy cô giải đáp giúp em với."
+  dap_an_nhap: "Theo bảng tham chiếu quy đổi chứng chỉ ngoại ngữ, chứng chỉ TOEFL ITP đạt mức điểm từ 450 – 499 được công nhận tương đương bậc 3. Do đó, kết quả 470 điểm của bạn đủ điều kiện để được công nhận tương đương bậc 3."
+  y_bat_buoc:
+    - "Chứng chỉ TOEFL ITP"
+    - "Khoảng điểm tương đương bậc 3: 450 – 499"
+    - "Mức điểm 470 đạt tương đương bậc 3"
+  nguon:
+    - "Đ5: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Phụ lục"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-012
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Nếu em muốn đạt chuẩn đầu ra ngoại ngữ tương đương bậc 4 thì chứng chỉ HSK tiếng Trung phải đạt từ bậc mấy trở lên ạ?"
+  dap_an_nhap: "Theo quy định, đối với tiếng Trung Quốc, chứng chỉ Hanyu Shuiping Kaoshi (HSK) cần đạt trình độ HSK bậc 4 để được công nhận tương đương bậc 4."
+  y_bat_buoc:
+    - "Hanyu Shuiping Kaoshi (HSK)"
+    - "Tương đương bậc 4 là HSK bậc 4"
+  nguon:
+    - "Đ5: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Phụ lục"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-014
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Chương trình đào tạo liên thông đại học cho người đã có một bằng đại học hệ vừa làm vừa học có thời gian chuẩn là 2,5 năm thì thời gian học tập tối đa là bao nhiêu năm vậy ạ?"
+  dap_an_nhap: "Đối với hình thức đào tạo vừa làm vừa học, chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học có thời gian học tập chuẩn là 2,5 năm học và thời gian học tập tối đa là 5 năm học."
+  y_bat_buoc:
+    - "Thời gian học tập chuẩn: 2,5 năm học"
+    - "Thời gian học tập tối đa: 5 năm học"
+    - "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học (vừa làm vừa học)"
+  nguon:
+    - "Đ6: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-015
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho e hoi he vua lam vua hoc lien thong tu trung cap len dai hoc thi hoc toi da may nam vay a? e biet thoi gian chuan la 3 nam roi"
+  dap_an_nhap: "Đối với hình thức đào tạo vừa làm vừa học, chương trình đào tạo liên thông từ trình độ trung cấp lên trình độ đại học có thời gian học tập chuẩn là 3 năm học và thời gian học tập tối đa là 6 năm học."
+  y_bat_buoc:
+    - "Thời gian học tập chuẩn: 3 năm học"
+    - "Thời gian học tập tối đa: 6 năm học"
+    - "Liên thông từ trình độ trung cấp lên trình độ đại học (vừa làm vừa học)"
+  nguon:
+    - "Đ7: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-018
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ em chào phòng đào tạo, em tốt nghiệp cao đẳng xong thì trúng tuyển liên thông lên đại học hệ chính quy của trường mình. Do hoàn cảnh gia đình kỳ này em phải đi làm thêm nhiều nên tính giãn tiến độ ra một chút để đỡ áp lực. Em có biết thời gian đào tạo chuẩn của chương trình liên thông từ cao đẳng lên đại học là 1,5 năm, nhưng không rõ trường cho phép sinh viên học tối đa bao nhiêu năm để em liệu sắp xếp kế hoạch học tập ạ?"
+  dap_an_nhap: "Theo quy chế đào tạo đối với hình thức chính quy, chương trình đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học có thời gian học tập chuẩn là 1,5 năm học và thời gian học tập tối đa là 3 năm học."
+  y_bat_buoc:
+    - "Thời gian học tập chuẩn: 1,5 năm học"
+    - "Thời gian học tập tối đa: 3 năm học"
+    - "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học (chính quy)"
+  nguon:
+    - "Đ6: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-019
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Học bổng khuyến khích học tập loại Giỏi được tính theo công thức và hệ số như thế nào vậy ạ?"
+  dap_an_nhap: "Mức học bổng khuyến khích học tập loại Giỏi được tính theo công thức: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25 (hệ số là 1.25). Định mức học phí 1 tín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học của sinh viên."
+  y_bat_buoc:
+    - "Học bổng loại Giỏi: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25"
+    - "Hệ số: 1.25"
+    - "Định mức học phí 1 tín chỉ tự nhiên hoặc xã hội tùy thuộc vào ngành học"
+  nguon:
+    - "Đ8: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-021
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, để được xét hb kht thì trong học kỳ cần tích lũy tối thiểu bao nhiêu tín chỉ theo kế hoạch, và mấy tín chỉ trả nợ hay cải thiện có được tính vô không ạ?"
+  dap_an_nhap: "Để xét học bổng khuyến khích học tập, tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn hoặc bằng 15 tín chỉ theo kế hoạch trong chương trình đào tạo của khóa học (tất cả các tín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương đương,…)."
+  y_bat_buoc:
+    - "Tích lũy lớn hơn hoặc bằng 15 tín chỉ theo kế hoạch"
+    - "Tất cả các tín chỉ đều phải đạt"
+    - "Không bao gồm các tín chỉ trả nợ, cải thiện, tương đương"
+  nguon:
+    - "Đ9: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-022
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thầy cô cho em hỏi xíu ạ, kỳ rồi em ráng cày cuốc thi cử thì điểm học tập với điểm rèn luyện đều đạt mức Giỏi, chắc là đủ tiêu chuẩn nhận học bổng khuyến khích học tập loại Giỏi rồi. Em đang tính xem mình sẽ nhận được tầm bao nhiêu tiền để chuẩn bị đóng học phí kỳ sau đỡ phiền bố mẹ gửi lên. Thầy cô cho em hỏi công thức và hệ số tính học bổng loại Giỏi là như thế nào, và mức học phí một tín chỉ để nhân vào được tính dựa trên căn cứ gì ạ?"
+  dap_an_nhap: "Mức học bổng khuyến khích học tập loại Giỏi được tính theo công thức: Số tín chỉ x định mức học phí 01 tín chỉ x 1,25 (hệ số là 1,25). Mức học phí 01 tín chỉ được xác định phụ thuộc vào ngành học của sinh viên và quy định mức thu học phí trong năm học đó."
+  y_bat_buoc:
+    - "Công thức: Số tín chỉ x định mức học phí 01 tín chỉ x 1,25"
+    - "Hệ số: 1,25"
+    - "Mức học phí 01 tín chỉ phụ thuộc vào ngành học của sinh viên và quy định mức thu học phí trong năm học đó"
+  nguon:
+    - "Đ10: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-023
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Để được xét học bổng khuyến khích học tập loại Giỏi thì cần đáp ứng điểm học tập, điểm rèn luyện và điểm học bổng trong khoảng nào ạ?"
+  dap_an_nhap: "Để đạt học bổng khuyến khích học tập loại Giỏi, sinh viên cần đáp ứng: điểm học bổng từ 3.20 đến 3.672; điểm học tập từ 3.20 đến 3.59; và điểm rèn luyện đạt từ 80 trở lên (>= 80)."
+  y_bat_buoc:
+    - "Điểm học bổng: từ 3.20 đến 3.672"
+    - "Điểm học tập: 3.20 – 3.59"
+    - "Điểm rèn luyện: >= 80"
+  nguon:
+    - "Đ8: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-024
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Học bổng khuyến khích học tập loại Giỏi được tính theo công thức và hệ số như thế nào, định mức học phí tính theo căn cứ gì ạ?"
+  dap_an_nhap: "Học bổng khuyến khích học tập loại Giỏi được tính theo công thức: Số tín chỉ x định mức học phí 1 tín chỉ x 1,25 (hệ số là 1,25). Mức học phí 1 tín chỉ được xác định phụ thuộc vào ngành học của sinh viên và quy định mức thu học phí trong năm học đó."
+  y_bat_buoc:
+    - "Công thức: Số tín chỉ x định mức học phí 1 tín chỉ x 1,25"
+    - "Hệ số: 1,25"
+    - "Mức học phí 1 tín chỉ phụ thuộc vào ngành học của sinh viên và quy định mức thu học phí trong năm học đó"
+  nguon:
+    - "Đ9: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-025
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi công thức tính điểm trung bình chung học kỳ của trường mình được quy định như thế nào vậy ạ?"
+  dap_an_nhap: "Điểm trung bình chung học kỳ được tính theo công thức: A = Σ(ai × ni) / Σ(ni) và làm tròn đến 2 chữ số thập phân. Trong đó: A là điểm trung bình chung học kỳ; ai là điểm của học phần thứ i; ni là số tín chỉ của học phần thứ i; n là tổng số học phần."
+  y_bat_buoc:
+    - "Công thức: A = Σ(ai × ni) / Σ(ni)"
+    - "Làm tròn đến 2 chữ số thập phân"
+    - "A là điểm trung bình chung học kỳ"
+    - "ai là điểm của học phần thứ i"
+    - "ni là số tín chỉ của học phần thứ i"
+    - "n là tổng số học phần"
+  nguon:
+    - "Đ3: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-026
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ em chào thầy cô, kỳ vừa rồi em hoàn thành xong các môn thi và điểm rèn luyện cũng đã có trên hệ thống rồi. Em có điểm học tập hệ 4 là 3.30 và điểm rèn luyện là 85. Em muốn biết chính xác cách tính điểm xét học bổng khuyến khích học tập của trường để xem mình đạt bao nhiêu điểm, thầy cô hướng dẫn công thức và tính giúp em với ạ."
+  dap_an_nhap: "Công thức tính điểm học bổng là: Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100 (trong đó Điểm rèn luyện / 25 là quy đổi về thang điểm 4). Với điểm học tập là 3.30 và điểm rèn luyện là 85, điểm học bổng của bạn được tính như sau: (3.30 x 80 + (85 / 25) x 20) / 100 = (264 + 3.4 x 20) / 100 = (264 + 68) / 100 = 3.32."
+  y_bat_buoc:
+    - "Công thức: Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100"
+    - "Điểm rèn luyện / 25 là quy đổi về thang điểm 4"
+    - "Điểm học bổng tính ra là 3.32"
+  nguon:
+    - "Đ8: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-027
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Trường mình tính điểm trung bình chung học kỳ theo công thức nào và làm tròn mấy chữ số thập phân vậy ạ?"
+  dap_an_nhap: "Điểm trung bình chung học kỳ được tính theo công thức: A = Σ(ai × ni) / Σ(ni) và được làm tròn đến 2 chữ số thập phân. Trong đó: A là điểm trung bình chung học kỳ; ai là điểm của học phần thứ i; ni là số tín chỉ của học phần thứ i; n là tổng số học phần."
+  y_bat_buoc:
+    - "Công thức: A = Σ(ai × ni) / Σ(ni)"
+    - "Làm tròn đến 2 chữ số thập phân"
+    - "A là điểm trung bình chung học kỳ"
+    - "ai là điểm của học phần thứ i"
+    - "ni là số tín chỉ của học phần thứ i"
+    - "n là tổng số học phần"
+  nguon:
+    - "Đ4: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-028
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em chào thầy cô ạ, học kỳ này em đang phấn đấu săn học bổng để phụ giúp gia đình tiền sinh hoạt phí. Kết thúc kỳ vừa rồi, điểm học tập của em là 3.45 và điểm rèn luyện được 80 điểm. Em nghe nói trường tính điểm xét học bổng kết hợp cả điểm học tập lẫn rèn luyện nhưng chưa rõ cụ thể công thức thế nào. Thầy cô chỉ giúp em công thức tính điểm học bổng và tính thử điểm của em với ạ."
+  dap_an_nhap: "Điểm học bổng được tính theo công thức: Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100 (trong đó Điểm rèn luyện / 25 là quy đổi về thang điểm 4). Với điểm học tập là 3.45 và điểm rèn luyện là 80, điểm học bổng của bạn là: (3.45 x 80 + (80 / 25) x 20) / 100 = (276 + 3.2 x 20) / 100 = (276 + 64) / 100 = 3.40."
+  y_bat_buoc:
+    - "Công thức: Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100"
+    - "Điểm rèn luyện / 25 là quy đổi về thang điểm 4"
+    - "Điểm học bổng tính ra là 3.40"
+  nguon:
+    - "Đ9: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-029
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thầy cô ơi, em vừa mới có điểm tổng kết học kỳ xong, điểm học tập của em là 3.55 còn điểm rèn luyện được 90 điểm. Em không rõ công thức tính điểm học bổng khuyến khích học tập của trường mình như thế nào để xếp loại từ cao xuống thấp. Thầy cô cho em xin công thức và tính giúp điểm học bổng của em với ạ."
+  dap_an_nhap: "Điểm học bổng được tính theo công thức: Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100 (trong đó Điểm rèn luyện / 25 là quy đổi về thang điểm 4). Với điểm học tập 3.55 và điểm rèn luyện 90, điểm học bổng của bạn là: (3.55 x 80 + (90 / 25) x 20) / 100 = (284 + 3.6 x 20) / 100 = (284 + 72) / 100 = 3.56."
+  y_bat_buoc:
+    - "Công thức: Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100"
+    - "Điểm rèn luyện / 25 là quy đổi về thang điểm 4"
+    - "Điểm học bổng tính ra là 3.56"
+  nguon:
+    - "Đ10: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-030
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi công thức tính điểm trung bình chung tích lũy của trường mình được quy định như thế nào vậy ạ?"
+  dap_an_nhap: "Điểm trung bình chung tích lũy được tính theo công thức: A = Σ(ai × ni) / Σ(ni) và làm tròn đến 2 chữ số thập phân. Trong đó: A là điểm trung bình chung tích lũy; ai là điểm của học phần thứ i; ni là số tín chỉ của học phần thứ i; n là tổng số học phần."
+  y_bat_buoc:
+    - "Công thức: A = Σ(ai × ni) / Σ(ni)"
+    - "Làm tròn đến 2 chữ số thập phân"
+    - "A là điểm trung bình chung tích lũy"
+    - "ai là điểm của học phần thứ i"
+    - "ni là số tín chỉ của học phần thứ i"
+    - "n là tổng số học phần"
+  nguon:
+    - "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-069
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "sinh vien tham gia nckh thi co dc nhan kinh phi gi ko a voi neu dat giai thuong nckh thi co dc chuyen diem mon hoc ko"
+  dap_an_nhap: "Theo quy định, sinh viên tham gia nghiên cứu khoa học được nhận kinh phí thực hiện đề tài (theo đề cương được Hội đồng Khoa học và Đào tạo Trường xét duyệt) và các khoản hỗ trợ, khen thưởng khác theo quy định của Bộ và của Trường. Nếu có đề tài đạt giải thưởng NCKH, sinh viên sẽ được cấp giấy chứng nhận đạt giải, giấy khen và được chuyển điểm vào điểm của môn học có liên quan."
+  y_bat_buoc:
+    - "Được nhận kinh phí thực hiện đề tài (theo đề cương được Hội đồng Khoa học và Đào tạo Trường xét duyệt)"
+    - "Được nhận các khoản hỗ trợ, khen thưởng khác theo quy định của Bộ và của Trường"
+    - "Sinh viên có đề tài đạt giải thưởng NCKH được cấp giấy chứng nhận đạt giải, giấy khen"
+    - "Được chuyển điểm vào điểm của môn học có liên quan"
+  nguon:
+    - "Đ11: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 12"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ11 không có thông tin thủ tục, hồ sơ, nơi nộp và thời hạn giải quyết; chuyển sang hỏi quyền lợi của sinh viên khi tham gia NCKH (nhận kinh phí và chuyển đổi điểm môn học)"
+- phieu: V4-072
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Sinh viên muốn xin thôi học thì cần làm những thủ tục gì và có điều kiện gì không ạ?"
+  dap_an_nhap: "Sinh viên được phép thôi học nếu có đơn xin thôi học với lý do rõ ràng, hợp lệ và bồi hoàn đầy đủ kinh phí đào tạo."
+  y_bat_buoc:
+    - "Có đơn xin thôi học với lý do rõ ràng, hợp lệ"
+    - "Bồi hoàn đầy đủ kinh phí đào tạo"
+  nguon:
+    - "Đ12: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 31"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ12 chỉ quy định điều kiện nộp đơn thôi học và bồi hoàn kinh phí, không nêu chi tiết nơi nộp và thời hạn giải quyết"
+- phieu: V4-074
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, em tính đk học cùng lúc hai chương trình (song bằng) thì từ năm mấy mới dc đăng ký và cần đk điểm tích lũy ntn ạ?"
+  dap_an_nhap: "Sinh viên được đăng ký học chương trình thứ hai sớm nhất khi đã được xếp trình độ năm thứ hai của chương trình thứ nhất. Tại thời điểm đăng ký, sinh viên phải đáp ứng một trong hai điều kiện: (1) Học lực theo điểm trung bình tích lũy xếp loại khá trở lên và đáp ứng ngưỡng bảo đảm chất lượng của chương trình thứ hai trong năm tuyển sinh; hoặc (2) Học lực theo điểm trung bình tích lũy xếp loại trung bình và đáp ứng điều kiện trúng tuyển của chương trình thứ hai trong năm tuyển sinh (cùng các điều kiện bổ sung khác theo quy định hiện hành của Trường)."
+  y_bat_buoc:
+    - "Sớm nhất khi đã được xếp trình độ năm thứ hai của chương trình thứ nhất"
+    - "Điểm trung bình tích lũy xếp loại khá trở lên và đáp ứng ngưỡng bảo đảm chất lượng của chương trình thứ hai trong năm tuyển sinh"
+    - "Điểm trung bình tích lũy xếp loại trung bình và đáp ứng điều kiện trúng tuyển của chương trình thứ hai trong năm tuyển sinh"
+  nguon:
+    - "Đ13: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 19"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ13 không nêu cụ thể nơi nộp hay thời hạn giải quyết hồ sơ (khoản 6 dẫn chiếu quy định hiện hành), chuyển sang hỏi điều kiện và thời điểm được phép đăng ký học cùng lúc hai chương trình"

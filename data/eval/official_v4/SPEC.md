@@ -51,6 +51,10 @@ author nor its models wrote.
   20%, no diacritics or typos 15%, long context 15%.
 - **Variants** are scored with their base case as one cluster, so a pair does not
   count as two independent observations.
+- **Repeated content.** The three cohorts' handbooks share many articles and the
+  two formulas, so some tickets ask the same thing. Cases whose required facts
+  overlap by 80% or more (word 3-grams) are scored as one cluster, decided from the
+  authored gold before any run. This only widens the intervals.
 - **Over-limit tickets** (four or five requests) accept either answering them or
   asking the student to choose at most three.
 
@@ -81,9 +85,10 @@ author nor its models wrote.
 | Draw tickets and batches | `scripts/draw_v4_tickets.py` | done (246 tickets, 13 batches) |
 | Pilot 1 (15 tickets) | Gemini 3.8 Flash | done, questions discarded (below) |
 | Batch 00 (pilot 2, 15 tickets) | Gemini 3.8 Flash | done: 15 of 15 written, all facts found in their excerpts, 1 reclassified (AUTHORING_LOG.md) |
-| Check each batch | `scripts/check_v4_authored.py N` | done for 00, 01, 02 |
+| Check each batch | `scripts/check_v4_authored.py N` | done for 00–03 |
 | Batch 01 (30 tickets) | Gemini 3.8 Flash | done: 30 of 30 written, all facts found in their excerpts; 3 consequence tickets asked another kind, as allowed |
 | Batch 02 (25 tickets) | Gemini 3.8 Flash | done: 25 of 25 written, all facts found in their excerpts; 5 of 10 procedure tickets asked another kind |
+| Batch 03 (28 tickets) | Gemini 3.8 Flash | done: 28 of 28 written; facts in their excerpts, and the three computed scholarship scores recomputed correct |
 | Batches 01–12 | external author | pending |
 | Variants (G): rewrite 36 authored questions | external author | pending (needs the authored base) |
 | Planner gold labels; fact check against the data; overlap check with v1–v3 | maintainer, scripts | pending |

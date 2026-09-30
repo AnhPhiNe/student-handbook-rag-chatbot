@@ -48,6 +48,11 @@ def load_rows(run: Path, use_reruns: bool) -> tuple[list[dict[str, Any]], list[s
             if not path.exists():
                 continue
             for row in json.loads(path.read_text(encoding="utf-8"))["cases"]:
+                # A failed judge carries no score, so it never replaces a row
+                # that has one: attempts are ordered by name, and a judge-only
+                # retry may sort after the full rerun that already succeeded.
+                if not (row.get("judge") or {}).get("ok") and score(rows.get(row["id"], {})) is not None:
+                    continue
                 rows[row["id"]] = row
                 replaced.append(f"{row['id']}@{attempt.name}")
     return list(rows.values()), replaced

@@ -140,8 +140,8 @@ author nor its models wrote.
   reranker-timeout rule applies to both runs. A later switch of the deployed
   reranker to 4B would be a choice made on this test set, and its v4 figure
   would be reported as such.
-- **Reranker choice by non-inferiority** (owner, 2026-09-30, before any v4
-  score was read; replaces "the headline stays the 8B run" above): compare
+- **Reranker choice by non-inferiority** (owner, 2026-09-30; SUPERSEDED the same
+  day by the Voyage decision below, before any v4 score was read; replaced "the headline stays the 8B run" above): compare
   the 4B and 8B runs case by case over the 246 cases, both after their
   timeout reruns. Deploy 4B, and make its run the headline, if all three hold:
   mean `answer_correctness` of 4B is no more than 0.02 below 8B; 4B has no
@@ -153,6 +153,34 @@ author nor its models wrote.
   on official_v1 (0.970 against 0.990). A retrieval-only comparison on
   official_v1 (`--suite retrieval --scope pure`, both rerankers) is reported
   as supporting evidence and is not part of the rule.
+- **Deployed reranker: Voyage rerank-3** (owner, 2026-09-30, before any v4 score
+  was read; supersedes the 4B/8B non-inferiority rule above). Measured on the
+  155 `official_v1` retrieval questions with one shared set of 24 RRF
+  candidates built by the frozen code, one call per question
+  (`scripts/compare_rerankers.py`, `data/eval/reports/reranker_compare_v1/`):
+
+  | Reranker | gold parent in top 5 | gold parent first | p50 | p90 | max |
+  |---|---|---|---|---|---|
+  | none (RRF order) | 148/155 | 0.826 | - | - | - |
+  | Qwen3-Reranker-4B (DeepInfra) | 153/155 | 0.903 | 1.40 s | 1.76 s | 9.16 s |
+  | Qwen3-Reranker-8B (DeepInfra, 2026-09-29) | 155/155 | 0.923 | 1.6 s | 4.7 s | 9.3 s |
+  | **Voyage rerank-3 (MongoDB)** | **155/155** | **0.942** | **0.76 s** | **0.85 s** | **1.35 s** |
+  | Voyage rerank-3-lite | 154/155 | 0.929 | 0.75 s | 0.84 s | 1.66 s |
+
+  The choice rests on availability and latency with ranking quality at least
+  equal to 8B: the DeepInfra 8B endpoint stalled for over four hours on
+  2026-09-30 (30-60 s per call), which cost 105 of 246 cases their reranker in
+  the 8B run. rerank-3 against 8B is 0.942 against 0.923, about three
+  questions, which this set cannot separate. Measured once per reranker, on a
+  development set, at one point in time; the 8B row is the 2026-09-29
+  measurement because its endpoint was unusable.
+
+- **Two runs are reported.** Run A (headline, hold-out) is the frozen system
+  with Voyage rerank-3 and no other change. Run B (not a hold-out) adds the
+  five general fixes written after run 4B's failures were read
+  (`docs/DESIGN_DECISIONS.md`); its figure is reported as "after fixes" and
+  never as the hold-out result, because the fixes were chosen with knowledge of
+  v4. The 4B and 8B runs become ablations.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

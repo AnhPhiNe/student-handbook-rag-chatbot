@@ -49,6 +49,35 @@ cases:
     y_bat_buoc:
       - "không được sử dụng tài sản, trang thiết bị, phương tiện công để làm việc riêng"
 
+  V4-082:
+    reason: >-
+      The gold answers from the list of school-level conduct files (Phụ lục 2,
+      mục III), which names "Quyết định tạm nghỉ học, buộc thôi học" without
+      conditions, so it reads as if one weak or poor conduct grade leads to a
+      decision. The rule that answers the question is Điều 14 khoản 5 of the
+      K51 conduct regulation (and Điều 30, 31 of the student-affairs
+      regulation): weak or poor in two consecutive semesters.
+    y_bat_buoc:
+      - "Xếp loại rèn luyện yếu, kém hai học kỳ liên tiếp: phải tạm ngừng học (tạm dừng tiến độ học tập) ít nhất một học kỳ ở học kỳ tiếp theo"
+      - "Yếu, kém hai học kỳ liên tiếp lần thứ hai: bị buộc thôi học"
+
+  V4-140:
+    reason: >-
+      For "tư vấn nghề nghiệp, việc làm" the handbook names two units: Phòng
+      CTCT&HSSV ("phối hợp ... tư vấn nghề nghiệp, việc làm") and Trung tâm Hỗ
+      trợ sinh viên và Phát triển khởi nghiệp ("giới thiệu việc làm", "ngày hội
+      việc làm"). The gold accepts only the first.
+    y_bat_buoc:
+      - "Công thức tính điểm học bổng: (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100"
+      - "Điểm rèn luyện / 25 là quy đổi về thang điểm 4"
+      - "Kết quả tính với số liệu đã cho: 3,52"
+      - >-
+        Đơn vị tư vấn nghề nghiệp, việc làm: Phòng Công tác chính trị và Học sinh,
+        sinh viên (Nhà A, tầng 1, P.108, P.109, P.110; (028) 38352020;
+        hopthusinhvien@hcmue.edu.vn) hoặc Trung tâm Hỗ trợ sinh viên và Phát triển
+        khởi nghiệp (Nhà A, tầng 1, P.101; (028) 38352020; csaed@hcmue.edu.vn), với
+        liên hệ đúng của đơn vị được nêu
+
 rules:
   F.refuse_in_domain:
     cases: [V4-229, V4-230, V4-231, V4-232, V4-233, V4-234, V4-235, V4-236]

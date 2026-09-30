@@ -120,6 +120,8 @@ def check(batch_number: int) -> list[str]:
         asked = _squash(question)
         missing = sorted({tok for tok in FACT_TOKEN.findall(claims)
                           if _squash(tok) not in evidence and _squash(tok) not in asked
+                          # "06" in the gold matches "6" in the handbook
+                          and _squash(tok.lstrip("0") or tok) not in evidence
                           and not re.fullmatch(r"\d", tok)})
         if missing and ticket["requests"]:
             notes.append(f"not in its excerpts: {missing}")

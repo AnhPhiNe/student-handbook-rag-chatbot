@@ -757,17 +757,79 @@ them; with the fix it sees them (29 flags).
 For the thesis, the evaluation's correct answer is therefore "faithful to the
 student's own handbook", and the table above is a limitation of that choice.
 
-Found while measuring, not fixed:
+Found while measuring, and fixed afterwards (next section):
 
 - **V4-020**: asked about academic "Khá" with conduct "Tốt" under K51's
   classification table, the composer often reads "Khá trở lên" as excluding
   "Tốt" and denies the scholarship: wrong in about 6 of 8 draws under v3.31 and
-  fewer under v3.32. Resolving the classification pair in the scholarship lookup
-  would take the reasoning away from the composer.
-- **"TOEIC bao nhiêu điểm thì đạt chuẩn đầu ra bậc 3?"** goes to RAG, which does
-  not hold the equivalence table (table rows are not embedded), and the answer
-  says nothing was found. The foreign-language tool's description, "không xác
-  lập chuẩn đầu ra bắt buộc", likely steers "đạt chuẩn đầu ra" away from it.
+  fewer under v3.32.
+- **"IELTS 5.0 có đạt chuẩn đầu ra bậc 3 không?"** and similar questions go to
+  RAG. The equivalence table is printed as an appendix inside the article
+  "Điều 8. Tổ chức thực hiện", so RAG reaches it only when that article is
+  retrieved; otherwise the answer says nothing was found.
+
+## Minimum levels and "does my value meet the condition" (2026-10-01)
+
+**Minimum levels (V4-020).** Each "<level> trở lên" cell of a
+classification table keeps the handbook's wording. Its row gains
+`<column>_admitted_levels`, for example "Tốt; Xuất sắc"
+(`src/retrieval/core/ordinal_labels.py`). Composer v3.33 also states the order
+of the academic and conduct scales. Live pipeline, K51:
+
+| Academic + conduct | Answer |
+|---|---|
+| Giỏi + Xuất sắc | Giỏi |
+| Khá + Xuất sắc | Khá |
+| Khá + Tốt | Khá |
+| Xuất sắc + Tốt | Giỏi |
+
+All four are right.
+
+**A value checked against a condition (planner v56).** v56 adds one general
+rule to v53: "Hỏi giá trị cụ thể có đạt điều kiện không → structured tra giá
+trị + RAG đọc điều kiện". It names no tool or topic. Planner probes (K51,
+counts of a lookup task, with RAG beside it for the two "đạt chuẩn đầu ra"
+questions):
+
+| Question | v53 | v56 |
+|---|---:|---:|
+| IELTS 5.0 có đạt chuẩn đầu ra bậc 3 không | 0/3 | 4/4 |
+| TOEFL iBT 45 có đủ chuẩn đầu ra không | 1/3 | 4/4 |
+| TOEIC 4 kỹ năng muốn bậc 4 thì từng kỹ năng cần bao nhiêu (v1 036) | 8/8 | 8/8 |
+
+On another topic, "Điểm rèn luyện 60 có đủ điều kiện xét học bổng không"
+became a conduct lookup plus RAG 3/3. That question was not planned under v53.
+
+**A first attempt that regressed.** The first version had two problems:
+
+- It split each minimum-level cell into one row per admitted level, which
+  replaced the handbook's cells.
+- It rewrote the foreign-language tool description around the "chuẩn đầu ra"
+  question.
+
+official_v1 fell from 134 to 131/135:
+
+- 057 and 060: the rows no longer matched the handbook.
+- 036: the planner went to RAG in 3 of 8 draws. With the general rule and the
+  original description it is back to 8/8, so the tailored description was the
+  harmful part and was dropped.
+
+The final version (`1a9ccd3d`) scores **133/135** on official_v1, against
+134/135 before. Both failures are known unstable cases:
+
+- 032: the planner writes the levels as "3"/"4" instead of "bậc 3"/"bậc 4"
+  in 2 of 6 draws.
+- 096: the planner asks `requested_field=office` instead of `unit` in 2 of 6
+  draws.
+
+093, which failed before, passed.
+
+**Not fixed.** "TOEIC bao nhiêu điểm thì đạt chuẩn đầu ra bậc 3?" gives no
+value to check and still goes to RAG (1 of 3 draws under v56 reached the table). A
+wider rule ("hoặc cần giá trị nào để đạt") did not change it and was not kept.
+Splitting the appendix out of Điều 8 in the index would fix the RAG side. That
+means rebuilding and re-uploading the index, so it is left for a later data
+build.
 
 ## The judge against a second rater (2026-10-01)
 

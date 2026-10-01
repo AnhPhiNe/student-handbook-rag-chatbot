@@ -15,7 +15,7 @@ tools:
     selection_mode: table_first
     # regulation tables (structured_tables_registry table_type) this tool reads
     table_types: [foreign_language]
-    description: "Quy đổi chứng chỉ/điểm ngoại ngữ sang bậc tương đương, kể cả hỏi điểm nào đạt chuẩn đầu ra bậc 3/4; bậc phải đạt dùng RAG."
+    description: "Quy đổi chứng chỉ/điểm ngoại ngữ sang bậc tương đương (3/4) và ngược lại; bậc phải đạt dùng RAG."
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:

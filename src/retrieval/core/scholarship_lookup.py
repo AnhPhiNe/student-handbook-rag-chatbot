@@ -8,7 +8,7 @@ from src.common.cohort import (
 )
 from src.common.text import fold_text
 from src.common.text import slot_values as _slot_values
-from src.retrieval.core.ordinal_labels import spell_out_minimum_levels
+from src.retrieval.core.ordinal_labels import annotate_minimum_levels
 from src.retrieval.core.structured_lookup import in_range
 
 LABEL_ALIASES = {
@@ -138,7 +138,7 @@ def scholarship_table_lookup(
     if not candidates:
         return None
 
-    table = {**candidates[0], "rows": spell_out_minimum_levels(list(candidates[0].get("rows") or []))}
+    table = {**candidates[0], "rows": annotate_minimum_levels(list(candidates[0].get("rows") or []))}
     rows, score = _rows_for_slots(score_or_label, table)
     if not rows:
         return None

@@ -698,11 +698,9 @@ class StructuredLookupTest(unittest.TestCase):
                 resolved = resolution.result["resolved_result"]
                 self.assertEqual(len(resolved["items"]), 1)
                 self.assertEqual(resolved["result"][result_field], expected)
-                # K51 states some conditions as a minimum ("Tốt trở lên"); the
-                # composer is shown one row per admitted level, 6 rows -> 9.
                 self.assertEqual(
                     len(resolution.result["display_rows"]),
-                    3 if aspect == "amount" else 9,
+                    3 if aspect == "amount" else 6,
                 )
 
         ambiguous = resolve_structured_task(
@@ -730,7 +728,7 @@ class StructuredLookupTest(unittest.TestCase):
 
         self.assertIsNotNone(ambiguous)
         self.assertNotIn("resolved_result", ambiguous.result)
-        self.assertEqual(len(ambiguous.result["display_rows"]), 9)
+        self.assertEqual(len(ambiguous.result["display_rows"]), 6)
 
     def test_study_duration_training_mode_selects_only_the_requested_table(self) -> None:
         from src.generation.structured_result_presenter import build_structured_results

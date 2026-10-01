@@ -1,11 +1,11 @@
-"""Spell out a "<level> trở lên" table cell as one row per level it admits.
+"""List the levels a "<level> trở lên" table cell admits, next to the cell.
 
 K51's scholarship table states some conditions as a minimum level, for example
 academic "Giỏi" with conduct "Tốt trở lên". Asked about academic Giỏi with
-conduct Xuất sắc, the composer found no row that matched word for word and
-denied the scholarship in two of three tries. A row for every admitted level
-leaves it a row to read, not a comparison to make. The handbook's own wording
-stays on each derived row.
+conduct Xuất sắc, the composer found no cell that matched word for word and
+denied the scholarship in two of three tries. Each such cell now keeps the
+handbook's wording, and the row gains `<column>_admitted_levels`, the levels
+the cell admits, so the composer reads a list instead of making a comparison.
 """
 from __future__ import annotations
 
@@ -32,11 +32,11 @@ def _scale_of(values: list[str]) -> tuple[str, ...] | None:
     return None
 
 
-def spell_out_minimum_levels(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Replace each "<level> trở lên" cell by one row per admitted level.
+def annotate_minimum_levels(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Add `<column>_admitted_levels` beside each "<level> trở lên" cell.
 
-    A cell that names no level of its column's scale is left as it is, and so is
-    every row without such a cell. Derived rows carry `condition_in_handbook`.
+    Rows and their cells are kept as the handbook prints them. A cell that names
+    no level of its column's scale gets no annotation.
     """
     columns = {key for row in rows for key, value in row.items() if isinstance(value, str)}
     scales = {}
@@ -49,17 +49,13 @@ def spell_out_minimum_levels(rows: list[dict[str, Any]]) -> list[dict[str, Any]]
 
     out: list[dict[str, Any]] = []
     for row in rows:
-        expanded = [dict(row)]
+        annotated = dict(row)
         for column, scale in scales.items():
             match = _AT_LEAST.match(str(row.get(column) or ""))
             folded = [fold_text(level) for level in scale]
-            if not match or fold_text(match.group(1)) not in folded:
-                continue
-            admitted = scale[folded.index(fold_text(match.group(1))):]
-            expanded = [
-                {**variant, column: level, "condition_in_handbook": row[column]}
-                for variant in expanded
-                for level in admitted
-            ]
-        out.extend(expanded)
+            if match and fold_text(match.group(1)) in folded:
+                annotated[f"{column}_admitted_levels"] = list(
+                    scale[folded.index(fold_text(match.group(1))):]
+                )
+        out.append(annotated)
     return out

@@ -186,7 +186,7 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
         router._plan_response_format_payload(),
     )
     # v52 adds the v1-review rules; v53 restores the v49 only-if conditions verbatim;
-    # v56 adds the value-meets-condition rule (about 60 characters over v53's budget;
+    # v56 adds the value-meets-condition rule (about 90 characters over v53's budget;
     # v54 and v55 were discarded "where" experiments).
     # Character-based estimates, not provider tokenizer or billing counts.
     assert stats["total_chars"] <= 33600

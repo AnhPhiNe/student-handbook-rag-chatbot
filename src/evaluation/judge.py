@@ -273,6 +273,13 @@ def _authorized_packet_evidence_units(context: str) -> list[str]:
             document = str(source.get("document_title") or "")
             if document:
                 units.append(f"{prefix} | Document: {document}")
+            # The composer names the handbook a source is printed in and repeats
+            # its currency note; both reach it through the packet, so a judge
+            # without them reads the note as an unsupported claim.
+            for field, label in (("printed_in", "Printed in"), ("currency_note", "Currency note")):
+                value = str(source.get(field) or "").strip()
+                if value:
+                    units.append(f"{prefix} | {label}: {value}")
             body = str(source.get("content") or "")
             for evidence_unit in _split_evidence_units(body):
                 units.append(f"{prefix} | {evidence_unit}")

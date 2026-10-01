@@ -63,3 +63,18 @@ def test_the_composer_is_told_to_name_the_handbook_and_carry_the_note() -> None:
 
     assert "Nêu rõ câu trả lời dựa theo sổ tay nào, theo printed_in" in prompt
     assert "thêm nguyên nội dung currency_note" in prompt
+
+
+def test_the_judge_sees_the_handbook_and_the_note_the_composer_was_given() -> None:
+    """Otherwise a note the composer was told to repeat reads as an unsupported claim."""
+
+    from src.evaluation.judge import _authorized_packet_evidence_units
+
+    _, context = render_answer_prompt("q", {"units": [_unit(
+        "K48-K49",
+        {"source_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28", "source_cohort": "K48-K49"},
+    )]})
+    units = _authorized_packet_evidence_units(context)
+
+    assert any("Printed in: Sổ tay sinh viên khóa K48-K49" in u for u in units)
+    assert any("Currency note:" in u and "1999/QĐ-ĐHSP" in u for u in units)

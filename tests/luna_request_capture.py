@@ -1,7 +1,7 @@
 """Capture what the planner sends to OpenAI, offline, for the golden request test.
 
-The fixture tests/fixtures/luna_planner_request_v54.json records the requests of
-the measured Luna v54 configuration (v53 plus one rule, re-measured on official_v1).
+The fixture tests/fixtures/luna_planner_request_v56.json records the requests of
+the measured Luna v56 configuration (v53 plus one rule, re-measured on official_v1).
 Refactors must leave these requests byte-identical.
 """
 from __future__ import annotations

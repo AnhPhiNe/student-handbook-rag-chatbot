@@ -169,3 +169,19 @@ def test_generated_scholarship_formula_provenance_matches_each_cohort() -> None:
             "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
         ),
     }
+
+
+def test_gpa_formula_result_carries_its_rounding_rule() -> None:
+    """The handbook states the rounding in the formula's own clause, and the
+    composer sees only the lookup result, never the rule's raw excerpt."""
+
+    rules = json.loads(
+        (Path(__file__).resolve().parents[1] / "data/processed/tables/formula_rules.json")
+        .read_text(encoding="utf-8")
+    )
+    for cohort in ("K48-K49", "K50", "K51"):
+        gpa = formula_lookup("", rules, cohort, slots={"formula_type": "gpa_weighted_average"})
+        assert gpa["rounding"] == "Làm tròn đến 2 chữ số thập phân"
+        # The scholarship formula states no rounding; none is invented for it.
+        scholarship = formula_lookup("", rules, cohort, slots={"formula_type": "scholarship_score"})
+        assert scholarship["rounding"] is None

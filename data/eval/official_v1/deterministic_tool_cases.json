@@ -10636,6 +10636,7 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [
@@ -10841,6 +10842,7 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [
@@ -11045,6 +11047,7 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [
@@ -12139,7 +12142,9 @@
             "ttnnsp.edu.vn"
           ],
           "internal_numbers": [],
-          "offices": [],
+          "offices": [
+            "Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+          ],
           "source_pages": [
             138
           ],
@@ -12156,9 +12161,9 @@
           "phone": "(028) 38355084",
           "email": "trungtamnn@hcmue.edu.vn",
           "website": "ttnnsp.edu.vn",
-          "office": "",
+          "office": "Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Trung tâm Ngoại ngữ phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên",
-          "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: \nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: ",
+          "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: \nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
@@ -16270,6 +16275,7 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [
@@ -16984,7 +16990,9 @@
             "ttnnsp.edu.vn"
           ],
           "internal_numbers": [],
-          "offices": [],
+          "offices": [
+            "Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+          ],
           "source_pages": [
             138
           ],
@@ -17001,9 +17009,9 @@
           "phone": "(028) 38355084",
           "email": "trungtamnn@hcmue.edu.vn",
           "website": "ttnnsp.edu.vn",
-          "office": "",
+          "office": "Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Trung tâm Ngoại ngữ phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên",
-          "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: \nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: ",
+          "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: \nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,

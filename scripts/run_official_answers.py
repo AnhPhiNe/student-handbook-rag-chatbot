@@ -28,7 +28,11 @@ def _snapshot(suite: str, case_path, answer_config=None, shared_plans=None) -> d
     router = AIRouter.from_config()
     answer_config = Path(answer_config or "configs/answer_generation.yaml")
     answer_llm = yaml.safe_load((ROOT / answer_config).read_text(encoding="utf-8"))["llm"]
-    reranker = yaml.safe_load((ROOT / "configs/retrieval.yaml").read_text(encoding="utf-8")).get("reranker", {})
+    from src.retrieval.runtime_config import load_retrieval_runtime_config
+
+    # The effective config, so a run with STUDENT_RAG_RETRIEVAL_CONFIG records its own reranker.
+    retrieval_config = os.environ.get("STUDENT_RAG_RETRIEVAL_CONFIG") or "configs/retrieval.yaml"
+    reranker = load_retrieval_runtime_config().get("reranker", {})
     return {
         "suite": suite,
         "created_at": datetime.now(timezone.utc).isoformat(),
@@ -39,6 +43,7 @@ def _snapshot(suite: str, case_path, answer_config=None, shared_plans=None) -> d
         "dataset_sha256": hashlib.sha256(case_path.read_bytes()).hexdigest(),
         "pipeline_version": PIPELINE_VERSION,
         "retrieval_mode": DEFAULT_RETRIEVAL_MODE,
+        "retrieval_config": retrieval_config,
         "reranker": {"enabled": bool(reranker.get("enabled")), "model": reranker.get("model")},
         "planner": {"provider": router.provider, "model": router.model_name,
                     "prompt_version": ROUTER_PROMPT_VERSION,

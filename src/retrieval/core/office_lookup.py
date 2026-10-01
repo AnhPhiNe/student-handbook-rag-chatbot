@@ -78,10 +78,14 @@ def _summarize_office(record: dict[str, Any]) -> dict[str, Any]:
     internal_numbers = record.get("internal_numbers") or _extract_internal_numbers(
         raw_text
     )
+    # A faculty's handbook entry lists contacts only; the lines after it describe
+    # the careers of its programs, which the keyword guess below would present
+    # as the faculty's duties (31 of the 34 faculty entries it matched).
+    derived = [] if record.get("faculty_profile_id") else _extract_responsibilities(raw_text)
     responsibilities = (
         record.get("responsibilities")
         or record.get("services")
-        or _extract_responsibilities(raw_text)
+        or derived
     )
     if record.get("service"):
         responsibilities = [str(record["service"])] + [

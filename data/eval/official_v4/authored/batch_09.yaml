@@ -1,0 +1,213 @@
+- phieu: V4-157
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ cho em hỏi, với hình thức vừa làm vừa học có thời gian đào tạo chuẩn là 5 năm thì thời gian học tập tối đa của khóa K50 và K51 khác nhau thế nào ạ? Mỗi khóa được học tối đa bao nhiêu năm vậy ạ?"
+  dap_an_nhap: "Đối với hình thức đào tạo vừa làm vừa học có thời gian học tập chuẩn là 5 năm (đào tạo đại học cấp bằng thứ nhất):\n- Khóa K50: Thời gian học tập tối đa là 9 năm học.\n- Khóa K51: Thời gian học tập tối đa là 7,5 năm học."
+  y_bat_buoc:
+    - "Khóa K50: thời gian học tập tối đa là 9 năm học"
+    - "Khóa K51: thời gian học tập tối đa là 7,5 năm học"
+  nguon:
+    - "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+    - "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-158
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ em chào thầy cô. Em là sinh viên K51 mới vào trường, kỳ vừa rồi em ráng cày cuốc dữ lắm, kết quả học tập của em vừa công bố được loại Xuất sắc, còn điểm rèn luyện thì đạt loại Tốt. Em đang thắc mắc không biết với kết quả như vậy thì bên K51 tụi em sẽ được xếp học bổng loại gì ạ? Sẵn tiện em có nhỏ bạn thân học khóa K48 cũng đang ngóng học bổng, hai đứa ngồi so sánh với nhau xem quy chế hai khóa có gì khác không, nên thầy cô cho em hỏi thêm là đối với các anh chị khóa K48-K49 thì đối tượng nào mới được xét học bổng khuyến khích học tập, có yêu cầu gì về thời gian học tập chuẩn không ạ?"
+  dap_an_nhap: "- Đối với khóa K51: Sinh viên có kết quả học tập loại Xuất sắc và kết quả rèn luyện loại Tốt sẽ được xét cấp học bổng khuyến khích học tập loại Giỏi.\n- Đối với khóa K48-K49: Đối tượng xét HBKKHT là tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của khóa học; không xét HBKKHT đối với sinh viên học quá thời gian học tập chuẩn."
+  y_bat_buoc:
+    - "Khóa K51: học tập Xuất sắc và rèn luyện Tốt được xét học bổng loại Giỏi"
+    - "Khóa K48-K49: đối tượng là sinh viên đại học chính quy theo kế hoạch của khóa học, không xét đối với sinh viên học quá thời gian học tập chuẩn"
+  nguon:
+    - "Đ3: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+    - "Đ4: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-159
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thầy cô cho em hỏi về quy định học bổng khuyến khích học tập giữa khóa K50 và K48-K49 với ạ. Ở khóa K50, vào học kỳ II năm cuối thì sinh viên cần đăng ký từ bao nhiêu tín chỉ trở lên để được xét học bổng? Còn ở khóa K48-K49, mức học bổng loại Khá với hệ số 1.0 được tính theo công thức và căn cứ học phí như thế nào ạ?"
+  dap_an_nhap: "- Khóa K50: Đối với học kỳ II năm cuối, sinh viên phải đăng ký từ 06 tín chỉ trở lên (hoặc từ 6 tín chỉ trở lên) để được xét học bổng khuyến khích học tập.\n- Khóa K48-K49: Học bổng loại Khá (hệ số 1.0) được tính theo công thức: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0. Trong đó, định mức học phí 1 tín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học của sinh viên được phân loại là tự nhiên hay xã hội."
+  y_bat_buoc:
+    - "Khóa K50: học kỳ II năm cuối đăng ký từ 06 tín chỉ trở lên (hoặc từ 6 tín chỉ trở lên)"
+    - "Khóa K48-K49: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0 (hoặc 1,0)"
+  nguon:
+    - "Đ5: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+    - "Đ4: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-160
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu ạ, bảng quy đổi điểm chữ sang thang 4 của K50 với K48-K49 có giống nhau ko ta? Bên K50 thì điểm chữ B đổi ra thang 4 được mấy chấm, còn bên K48-K49 thì điểm C+ quy đổi sang thang 4 là bao nhiêu vậy ạ?"
+  dap_an_nhap: "Theo bảng quy đổi điểm chữ sang thang điểm 4 của cả hai khóa:\n- Khóa K50: Điểm chữ B quy đổi sang thang điểm 4 là 3,0.\n- Khóa K48-K49: Điểm chữ C+ quy đổi sang thang điểm 4 là 2,5."
+  y_bat_buoc:
+    - "Khóa K50: điểm B quy đổi thành 3,0"
+    - "Khóa K48-K49: điểm C+ quy đổi thành 2,5"
+  nguon:
+    - "Đ6: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+    - "Đ7: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-161
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Chào thầy cô ạ, chuyện là em là tân sinh viên K51, ngay từ đầu năm em đã đặt mục tiêu săn học bổng loại Xuất sắc để đỡ đần chi phí cho gia đình vì ba mẹ em ở quê làm nông vất vả lắm. Em có tìm hiểu sơ thì biết học bổng Xuất sắc của K51 có hệ số là 1.5, nhưng em chưa rõ công thức tính cụ thể mức tiền nhận được và căn cứ học phí 01 tín chỉ được xác định ra sao. Với lại em có anh họ học khóa K50 bảo hồi trước muốn đạt học bổng Xuất sắc thì điểm học tập phải đạt tầm 3.80, vậy cho em hỏi thêm là ở khóa K50 thì điều kiện điểm rèn luyện và khoảng điểm học bổng để đạt loại Xuất sắc được quy định cụ thể như thế nào, hai khóa có gì khác nhau không ạ?"
+  dap_an_nhap: "- Khóa K51: Mức học bổng loại Xuất sắc được tính theo công thức: Số tín chỉ x định mức học phí 01 tín chỉ x 1,5. Trong đó, mức học phí 01 tín chỉ được xác định phụ thuộc vào ngành học của sinh viên và quy định mức thu học phí trong năm học đó.\n- Khóa K50: Để đạt học bổng loại Xuất sắc, sinh viên cần có điểm học bổng từ 3,60 đến 4,0 (điểm học tập: 3,60 – 4,0) và điểm rèn luyện phải đạt từ 90 điểm trở lên (>= 90)."
+  y_bat_buoc:
+    - "Khóa K51: công thức Số tín chỉ x định mức học phí 01 tín chỉ x 1,5 (hoặc 1.5)"
+    - "Khóa K51: mức học phí 01 tín chỉ phụ thuộc vào ngành học của sinh viên và quy định mức thu học phí trong năm học đó"
+    - "Khóa K50: điểm học bổng từ 3,60 đến 4,0 (hoặc 3.60 đến 4.0)"
+    - "Khóa K50: điểm rèn luyện >= 90"
+  nguon:
+    - "Đ3: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+    - "Đ5: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-162
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em chào thầy cô ạ. Em là sinh viên khóa K49, đợt này vừa thi xong mấy môn điều kiện thì em lo quá vì có một môn chỉ yêu cầu đạt/không đạt mà em làm bài không tốt, nhắm chừng chỉ được khoảng 4.5 điểm hệ 10 thôi. Thầy cô cho em hỏi đối với khóa K48-K49 thì học phần đạt/không đạt không phân mức mà bị dưới 5,0 điểm như vậy thì kết quả ra sao, có được quy đổi thành điểm P hay tính vào điểm trung bình học tập không ạ? Ngoài ra em cũng đang làm ban cán sự lớp kèm thêm mấy bạn khóa K50 sinh hoạt chung, có bạn K50 bị trừ điểm rèn luyện dữ quá kỳ này chắc chỉ được tầm 30 điểm, em muốn hỏi để so sánh quy định xem ở khóa K50 nếu điểm rèn luyện dưới 35 điểm thì bị xếp loại rèn luyện gì ạ?"
+  dap_an_nhap: "- Khóa K48-K49: Đối với học phần chỉ yêu cầu đạt/không đạt không phân mức, nếu điểm thang 10 dưới 5,0 thì kết quả là Chưa đạt, không quy đổi thành điểm P và không tính vào điểm trung bình học tập.\n- Khóa K50: Điểm rèn luyện dưới 35 điểm (như 30 điểm) thì xếp loại rèn luyện Kém."
+  y_bat_buoc:
+    - "Khóa K48-K49: điểm dưới 5,0 thì kết quả Chưa đạt, không quy đổi thành P, không tính vào điểm trung bình học tập"
+    - "Khóa K50: điểm rèn luyện dưới 35 điểm xếp loại Kém"
+  nguon:
+    - "Đ8: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+    - "Đ9: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-163
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ thầy cô cho em hỏi về việc xếp loại điểm rèn luyện giữa khóa K50 và K51 ạ. Ở khóa K50 nếu sinh viên đạt 40 điểm rèn luyện thì xếp loại gì, và ở khóa K51 nếu chỉ được 30 điểm rèn luyện thì xếp loại gì vậy ạ?"
+  dap_an_nhap: "Theo bảng phân loại kết quả rèn luyện của cả hai khóa:\n- Khóa K50: Điểm rèn luyện từ 35 đến dưới 50 điểm (như 40 điểm) được xếp loại Yếu.\n- Khóa K51: Điểm rèn luyện dưới 35 điểm (như 30 điểm) được xếp loại Kém."
+  y_bat_buoc:
+    - "Khóa K50: từ 35 đến dưới 50 điểm (hoặc 40 điểm) xếp loại Yếu"
+    - "Khóa K51: dưới 35 điểm (hoặc 30 điểm) xếp loại Kém"
+  nguon:
+    - "Đ9: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9"
+    - "Đ10: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-164
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu ạ, thời gian học tập tối đa của K48-K49 với K51 khác nhau như thế nào vậy ạ? Bên K48-K49 đào tạo liên thông từ trung cấp lên đh chính quy chuẩn 2,5 năm thì thời gian tối đa là mấy năm? Còn bên K51 hệ chính quy chuẩn 4 năm thì được học tối đa mấy năm, với sv liên thông thì tính tgian tối đa thế nào ạ?"
+  dap_an_nhap: "- Khóa K48-K49: Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học hình thức chính quy có thời gian học tập chuẩn là 2,5 năm học và thời gian học tập tối đa là 5 năm học.\n- Khóa K51: Đào tạo chính quy có thời gian học tập chuẩn là 04 năm học và thời gian học tập tối đa là 06 năm học. Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ."
+  y_bat_buoc:
+    - "Khóa K48-K49: đào tạo liên thông từ trung cấp lên đại học chính quy có thời gian học tập tối đa là 5 năm học"
+    - "Khóa K51: chính quy có thời gian học tập tối đa là 06 năm học (hoặc 6 năm học)"
+    - "Khóa K51: đối với sinh viên liên thông đã được miễn trừ tín chỉ tích lũy, thời gian tối đa xác định trên cơ sở thời gian chuẩn toàn khóa giảm tương ứng với khối lượng được miễn trừ"
+  nguon:
+    - "Đ11: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+    - "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-165
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ cho em hỏi về quy định học bổng khuyến khích học tập giữa khóa K48-K49 và K51 ạ. Ở khóa K48-K49, mức học bổng loại Giỏi với hệ số 1.25 được tính theo công thức và căn cứ học phí như thế nào? Còn ở khóa K51, ngoài điều kiện kết quả học tập và rèn luyện từ loại Khá trở lên thì có yêu cầu gì về mức độ kỷ luật không ạ?"
+  dap_an_nhap: "- Khóa K48-K49: Mức học bổng loại Giỏi được tính theo công thức: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25. Tín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học của sinh viên được phân loại là tự nhiên hay xã hội.\n- Khóa K51: Điều kiện về kỷ luật để được xét, cấp học bổng khuyến khích học tập là sinh viên không bị kỷ luật từ mức khiển trách trở lên trong học kỳ."
+  y_bat_buoc:
+    - "Khóa K48-K49: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25 (hoặc 1,25)"
+    - "Khóa K51: không bị kỷ luật từ mức khiển trách trở lên"
+  nguon:
+    - "Đ4: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
+    - "Đ3: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-167
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ cho em hỏi, thủ tục đăng ký nhận hỗ trợ tiền đóng học phí và chi phí sinh hoạt cho sinh viên sư phạm giữa khóa K50 và khóa K51 được quy định như thế nào ạ? Hồ sơ và thời hạn nộp đơn của hai khóa có gì khác nhau không ạ?"
+  dap_an_nhap: "Thủ tục đăng ký hỗ trợ tiền đóng học phí và chi phí sinh hoạt của sinh viên sư phạm giữa khóa K50 và K51 về cơ bản giống nhau ở các mốc thời gian và hồ sơ:\n- Thời hạn nộp hồ sơ: Trong thời hạn 30 ngày kể từ ngày nhận được thông báo trúng tuyển, sinh viên nộp Đơn đề nghị hưởng và cam kết bồi hoàn học phí, chi phí sinh hoạt đến cơ sở đào tạo giáo viên (nộp trực tiếp, qua bưu điện hoặc trực tuyến nếu có). Sinh viên chỉ nộp 01 bộ hồ sơ cho 01 lần đầu đề nghị hỗ trợ trong cả thời gian học.\n- Thời hạn xét duyệt: Trong thời hạn 15 ngày kể từ ngày kết thúc nhận đơn đăng ký, cơ sở đào tạo giáo viên thống nhất với cơ quan giao nhiệm vụ, đặt hàng (ở K50 có thêm đấu thầu) để xác nhận và thông báo cho sinh viên được hưởng chính sách hỗ trợ.\n- Về công khai danh sách: Khóa K50 công khai danh sách trên trang thông tin điện tử của cơ sở đào tạo giáo viên; còn khóa K51 quy định công khai trên Cổng thông tin điện tử của địa phương và trang thông tin điện tử của cơ sở đào tạo giáo viên chậm nhất sau 05 ngày làm việc kể từ khi hoàn thành xét duyệt."
+  y_bat_buoc:
+    - "thời hạn nộp đơn: trong thời hạn 30 ngày kể từ ngày nhận được thông báo trúng tuyển"
+    - "Đơn đề nghị hưởng và cam kết bồi hoàn học phí, chi phí sinh hoạt"
+    - "chỉ nộp 01 bộ hồ sơ cho 01 lần đầu đề nghị hỗ trợ trong cả thời gian học"
+    - "thời hạn xét duyệt: trong thời hạn 15 ngày kể từ ngày kết thúc nhận đơn đăng ký"
+    - "công khai danh sách trên trang thông tin điện tử của cơ sở đào tạo (ở K51 có thêm Cổng thông tin điện tử của địa phương, chậm nhất sau 05 ngày làm việc kể từ khi hoàn thành xét duyệt)"
+  nguon:
+    - "Đ12: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 7"
+    - "Đ13: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 7"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-172
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu ạ, quy định về trang phục và tác phong làm việc của trường mình áp dụng cho K50 với K51 có gì khác nhau ko ạ? Cụ thể là quy định về việc mặc trang phục, mang giày dép với hút thuốc lá trong trường giữa 2 khóa thế nào vậy ạ?"
+  dap_an_nhap: "Quy định về trang phục, tác phong làm việc giữa khóa K50 và K51 là hoàn toàn giống nhau:\n- Về trang phục và giày dép: Phải mặc trang phục gọn gàng, lịch sự, đi giày hoặc dép có quai hậu; đeo thẻ, biển tên, có tư thế, tác phong nghiêm túc, lịch sự.\n- Về thuốc lá: Không hút thuốc lá (kể cả thuốc lá điện tử) trong khuôn viên Trường; gương mẫu chấp hành các quy định của pháp luật về phòng, chống tác hại của thuốc lá.\n- Ngoài ra, không được uống rượu, bia trong cơ quan, trước và trong giờ làm việc, giờ nghỉ trưa các ngày làm việc; chấp hành nghiêm giờ giấc làm việc."
+  y_bat_buoc:
+    - "trang phục gọn gàng, lịch sự, đi giày hoặc dép có quai hậu"
+    - "đeo thẻ, biển tên"
+    - "không hút thuốc lá (kể cả thuốc lá điện tử) trong khuôn viên Trường"
+    - "quy định giữa K50 và K51 là giống nhau (hoặc không có sự khác biệt)"
+  nguon:
+    - "Đ14: Quy định quy tắc ứng xử của viên chức, người lao động và người học Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 4"
+    - "Đ15: Quy định quy tắc ứng xử của viên chức, người lao động và người học Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 4"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-174
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ em chào thầy cô, em là sinh viên K51. Chuyện là đợt này trong lớp em có mấy bạn lơ là việc đánh giá rèn luyện quá, thậm chí có bạn còn bảo quên không tự đánh giá trên hệ thống luôn, làm ban cán sự như tụi em nhắc nhở mệt mỏi ghê. Với lại có bạn trước đó lỡ vi phạm quy chế thi bị nhà trường kỷ luật khiển trách nữa. Em lo không biết điểm rèn luyện của các bạn sẽ bị ảnh hưởng thế nào, và cũng muốn tìm hiểu xem quy định này ở khóa K51 so với các khóa trước như K48-K49 có khác biệt gì không. Thầy cô cho em hỏi giữa K51 và K48-K49 thì sinh viên không thực hiện tự đánh giá rèn luyện hoặc sinh viên bị kỷ luật mức khiển trách thì sẽ phải chịu hệ quả như thế nào khi xếp loại rèn luyện ạ?"
+  dap_an_nhap: "Quy định về các trường hợp này giữa khóa K51 và khóa K48-K49 là giống nhau:\n- Sinh viên không thực hiện tự đánh giá kết quả rèn luyện theo quy định sẽ nhận điểm 0 và xếp loại rèn luyện kém (xét theo từng học kỳ).\n- Trong thời gian sinh viên bị kỷ luật mức khiển trách, khi đánh giá kết quả rèn luyện không được vượt quá loại khá."
+  y_bat_buoc:
+    - "không thực hiện tự đánh giá: nhận điểm 0 và xếp loại rèn luyện kém (xét theo từng học kỳ)"
+    - "bị kỷ luật mức khiển trách: kết quả rèn luyện không được vượt quá loại khá"
+    - "quy định giữa K51 và K48-K49 là giống nhau"
+  nguon:
+    - "Đ16: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+    - "Đ17: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-176
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho e hoi diem hoc phan thang 10 tu 8.5 den 10 voi tu 5.5 den 6.2 thi quy doi ra diem chu gi vay a, ca 2 deu la loai dat dung ko"
+  dap_an_nhap: "Theo bảng quy đổi thang điểm 10 sang điểm chữ:\n- Điểm thang 10 từ 8,5 – 10: Xếp loại Đạt, thang điểm chữ là A.\n- Điểm thang 10 từ 5,5 – 6,2: Xếp loại Đạt, thang điểm chữ là C.\nCả hai mức điểm đều được xếp loại Đạt."
+  y_bat_buoc:
+    - "thang điểm 10 từ 8,5 - 10: loại Đạt, thang điểm chữ là A"
+    - "thang điểm 10 từ 5,5 - 6,2: loại Đạt, thang điểm chữ là C"
+  nguon:
+    - "Đ8: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-177
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ cho em hỏi, ở hình thức vừa làm vừa học thì thời gian học tập chuẩn và tối đa giữa chương trình liên thông từ trung cấp lên đại học với liên thông đại học cho người đã có một bằng đại học khác nhau như thế nào ạ?"
+  dap_an_nhap: "Đối với hình thức đào tạo vừa làm vừa học:\n- Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học: Thời gian học tập chuẩn là 3 năm học, thời gian học tập tối đa là 6 năm học.\n- Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học: Thời gian học tập chuẩn là 2,5 năm học, thời gian học tập tối đa là 5 năm học."
+  y_bat_buoc:
+    - "đào tạo liên thông từ trung cấp lên đại học: thời gian học tập chuẩn 3 năm học, thời gian học tập tối đa 6 năm học"
+    - "đào tạo liên thông đối với người đã có một bằng đại học: thời gian học tập chuẩn 2,5 năm học, thời gian học tập tối đa 5 năm học"
+  nguon:
+    - "Đ11: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-178
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ cho em hỏi đối với hình thức chính quy, thời gian học tập chuẩn và tối đa của chương trình đào tạo đại học cấp bằng thứ nhất khác gì so với chương trình đào tạo liên thông từ trung cấp lên đại học ạ?"
+  dap_an_nhap: "Đối với hình thức đào tạo chính quy:\n- Đào tạo đại học cấp bằng thứ nhất: Thời gian học tập chuẩn là 4 năm học, thời gian học tập tối đa là 8 năm học.\n- Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học: Thời gian học tập chuẩn là 2,5 năm học, thời gian học tập tối đa là 5 năm học."
+  y_bat_buoc:
+    - "đào tạo đại học cấp bằng thứ nhất: thời gian học tập chuẩn 4 năm học, thời gian học tập tối đa 8 năm học"
+    - "đào tạo liên thông từ trung cấp lên đại học: thời gian học tập chuẩn 2,5 năm học, thời gian học tập tối đa 5 năm học"
+  nguon:
+    - "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+- phieu: V4-179
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thầy cô cho em hỏi ở hệ vừa làm vừa học, thời gian học tập chuẩn và tối đa của chương trình đại học cấp bằng thứ nhất khác gì so với chương trình liên thông từ cao đẳng lên đại học ạ?"
+  dap_an_nhap: "Đối với hình thức đào tạo vừa làm vừa học:\n- Đào tạo đại học cấp bằng thứ nhất: Thời gian học tập chuẩn là 5 năm học, thời gian học tập tối đa là 9 năm học.\n- Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học: Thời gian học tập chuẩn là 2 năm học, thời gian học tập tối đa là 4 năm học."
+  y_bat_buoc:
+    - "đào tạo đại học cấp bằng thứ nhất: thời gian học tập chuẩn 5 năm học, thời gian học tập tối đa 9 năm học"
+    - "đào tạo liên thông từ cao đẳng lên đại học: thời gian học tập chuẩn 2 năm học, thời gian học tập tối đa 4 năm học"
+  nguon:
+    - "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""

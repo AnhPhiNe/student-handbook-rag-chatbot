@@ -1,0 +1,22 @@
+# Authoring log
+
+Every decision about an authored case, made before any system run (SPEC.md,
+rule 4). Questions are never edited; a case is dropped or reclassified here,
+with its reason.
+
+| Case | Batch | Decision | Reason |
+|---|---|---|---|
+| V4-166 | 00 | Reclassified from `C.cohorts_regulation` to `B.cross_cohort` (kept) | The K51 excerpt had no procedure, so the author asked a different question for each cohort; the case is a valid two-request question but not a comparison. From batch 01 the prompt says both requests of a comparison change together |
+| Batch 01 | 01 | Kept as saved; the checker drops the `[cite: 2]` marks | Gemini adds these marks when the batch is attached as a file; they are not part of the text |
+| V4-078, V4-079 | 01, 02 | Kept; scored as one cluster | The same article (Quy chế công tác sinh viên, Điều 32) in two cohorts' handbooks gave the same question twice |
+| V4-086, V4-087 | 02 | Kept; scored as one cluster | The same article (Quy định ngoại trú, Điều 10) in two cohorts' handbooks gave the same question twice |
+| V4-104, V4-200 | 07, 10 | Kept | They ask about K51 faculty records of the Gia Lai branch, which the draw's branch filter missed (it matched "phân hiệu" and "Long An"). Correction 2026-09-30: the system does not hold these units. The draw read the extraction files (`K51_faculty_directory.json`), which keep them; the runtime directories are built with a filter on `longan.`/`gialai.` emails and "tỉnh Gia Lai" and contain no branch record. V4-200 scores only its main-campus second turn; V4-104's gold is widened (below). Both branches are out of scope (owner, 2026-09-30) |
+| V4-142 | 08 | Kept; expected behaviour taken as answer plus refusal | It asks for the phone of "Tổ Khoa học cơ bản", a Long An branch unit the filter missed (email longan.khcb@…); the record has no phone, so the author answered the other request and said the handbook gives none, which is the right behaviour |
+| V4-154 | 04 | Kept; reported with the API limit | At 1,616 characters it is over the 1,000-character question limit, so the deployed API would refuse it; the evaluation runs the pipeline directly and scores it, and the report says so |
+| V4-104 | 07 | Kept; gold widened (`gold_adjustments.yaml`) | K51 lists two branch faculties with nearly the same name, Long An "Khoa Khoa học – Tự nhiên" and Gia Lai "Khoa Khoa học Tự nhiên"; the question names neither, so the Long An address, both, or asking which branch also count |
+| V4-172 | 09 | Kept; gold widened | The gold gives the staff dress rule (Điều 4, viên chức, người lao động) as the students' rule; the students' rule is Điều 12 of the same document. Either article counts for the dress part; the no-smoking rule stays required |
+| V4-211 | 11 | Kept; required facts narrowed | The question asks only about using public property for private work; the other two parts of the clause are no longer required |
+| V4-229 to V4-236 | 00, 12 | Kept; scoring rule added | The suggested channel in a refusal may be any relevant official one, not only the gold's |
+| V4-082 | 02 | Kept; required facts replaced | The gold quotes the list of school-level conduct files, which reads as if one weak or poor conduct grade brings a suspension decision; the rule that answers the question (Quy chế đánh giá rèn luyện, Điều 14.5) needs two consecutive semesters |
+| V4-140 | 07 | Kept; gold widened | The handbook gives job counselling to both Phòng CTCT&HSSV and Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp; either counts, with that unit's contacts |
+| All 246 | all | Gold review done 2026-09-30 | By the system author with Claude, not an independent human rater. Every case: the checker's automatic tests (numbers, emails, phones and web addresses found in the excerpts; required facts at least 80% worded as in the excerpts) and a reading of question, gold and required facts. Read against the source text: every regulation-based case, every C, D, E and F case, and a sample of the table and directory cases; the other table and directory cases were checked against the drawn table row or record only. Searched the whole handbook where a case needed it (K51 durations after amendment 4743, K51 grade scales, the students' dress rule, the conduct-grade consequences, which units hold job support, the refusal cases' missing information). Found and fixed six golds; did not re-derive every value from the PDF |

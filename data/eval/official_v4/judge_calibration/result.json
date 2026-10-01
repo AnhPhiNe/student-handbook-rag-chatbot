@@ -1,0 +1,70 @@
+{
+  "judge_below_1": {
+    "n": 36,
+    "judge_mean": 0.606,
+    "rater_mean": 0.812,
+    "mean_judge_minus_rater": -0.207,
+    "within_0_25": 22
+  },
+  "judge_1_sample": {
+    "n": 30,
+    "judge_mean": 1.0,
+    "rater_mean": 1.0,
+    "mean_judge_minus_rater": 0.0,
+    "within_0_25": 30
+  },
+  "run_mean": {
+    "judge": 0.942,
+    "rater_estimate": 0.973
+  },
+  "pass_agreement": {
+    "judge>=0.8": {
+      "both_pass": 42,
+      "judge_only": [
+        "V4-111",
+        "V4-148"
+      ],
+      "rater_only": [
+        "V4-025",
+        "V4-117",
+        "V4-138",
+        "V4-143",
+        "V4-186",
+        "V4-197",
+        "V4-225"
+      ],
+      "neither": 15
+    },
+    "judge>=1.0": {
+      "both_pass": 30,
+      "judge_only": [],
+      "rater_only": [
+        "V4-025",
+        "V4-028",
+        "V4-030",
+        "V4-056",
+        "V4-104",
+        "V4-116",
+        "V4-117",
+        "V4-138",
+        "V4-140",
+        "V4-143",
+        "V4-147",
+        "V4-181",
+        "V4-186",
+        "V4-188",
+        "V4-195",
+        "V4-197",
+        "V4-219",
+        "V4-225",
+        "V4-232"
+      ],
+      "neither": 17
+    }
+  },
+  "rater_labels": {
+    "C": 49,
+    "I": 15,
+    "W": 2
+  }
+}

@@ -89,17 +89,26 @@ def _level_from_text(row: dict[str, Any], query_norm: str) -> str | None:
     level_3_norm = normalize_text(row.get("equivalent_level_3"))
     level_4_norm = normalize_text(row.get("equivalent_level_4"))
 
-    if "bac 4" in query_norm and ("bac 4" in level_4_norm or "4" in level_4_norm):
+    def contains_label(text: str, label: str) -> bool:
+        # A longer code such as N30 must not be read as the table's N3.
+        return re.search(rf"\b{re.escape(label)}\b", text) is not None
+
+    # A question that names the level is answered by that column whenever the
+    # table fills it. The column holds a score range ("46 - 93", "Nghe 275 -
+    # 399") as often as a level name, so it must not be searched for the digit:
+    # requiring a standalone "4" loses every range row, and a substring "4"
+    # matches "46 - 93" only by accident.
+    if contains_label(query_norm, "bac 4") and level_4_norm:
         return "bac_4"
-    if "bac 3" in query_norm and ("bac 3" in level_3_norm or "3" in level_3_norm):
+    if contains_label(query_norm, "bac 3") and level_3_norm:
         return "bac_3"
-    if "n3" in query_norm and "n3" in level_4_norm:
+    if contains_label(query_norm, "n3") and contains_label(level_4_norm, "n3"):
         return "bac_4"
-    if "n4" in query_norm and "n4" in level_3_norm:
+    if contains_label(query_norm, "n4") and contains_label(level_3_norm, "n4"):
         return "bac_3"
-    if "b2" in query_norm and "b2" in level_4_norm:
+    if contains_label(query_norm, "b2") and contains_label(level_4_norm, "b2"):
         return "bac_4"
-    if "b1" in query_norm and "b1" in level_3_norm:
+    if contains_label(query_norm, "b1") and contains_label(level_3_norm, "b1"):
         return "bac_3"
     return None
 

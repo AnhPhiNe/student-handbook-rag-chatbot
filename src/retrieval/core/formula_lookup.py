@@ -137,6 +137,7 @@ def _find_formula(
                 "rule_name": rule.get("rule_name"),
                 "formula_text": rule.get("formula_text"),
                 "variables": rule.get("variables") or {},
+                "rounding": rule.get("rounding"),
                 "source_article": rule.get("source_article"),
                 "source_pages": rule.get("source_pages") or [],
                 "cohort": rule.get("cohort"),

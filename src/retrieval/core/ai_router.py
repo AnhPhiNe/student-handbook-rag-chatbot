@@ -36,7 +36,7 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 # Comma-separated OpenAI keys for the planner's key pool.
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
-ROUTER_PROMPT_VERSION = "structured-regulation-v53-restore-conditions"
+ROUTER_PROMPT_VERSION = "structured-regulation-v56-value-meets-condition"
 
 
 # Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
@@ -149,7 +149,8 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   trực tiếp trả được kết quả. Phân biệt giá trị trong bảng với chính sách sử
   dụng giá trị đó: bảng tham chiếu không tự xác lập mức nào là bắt buộc, ai phải
   áp dụng hoặc điều kiện nào cần đạt. Các kết luận chính sách này dùng RAG, trừ
-  khi TOOLS.use nói rõ có chứa. Hỏi thông tin riêng mà chỉ hệ thống
+  khi TOOLS.use nói rõ có chứa. Hỏi giá trị cụ thể có đạt điều kiện không →
+  structured tra giá trị + RAG đọc điều kiện. Hỏi thông tin riêng mà chỉ hệ thống
   nhà trường có, không nằm trong Sổ tay (vd. điểm đã công bố, kết quả xét duyệt,
   tình trạng đơn) → RAG để báo Sổ tay không có thông tin này.
 - clarify: khi task thiếu slot required, có tham chiếu thật sự mơ hồ, hoặc người

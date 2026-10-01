@@ -185,11 +185,13 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
         dynamic_prompt,
         router._plan_response_format_payload(),
     )
-    # v52 adds the v1-review rules; v53 restores the v49 only-if conditions verbatim.
+    # v52 adds the v1-review rules; v53 restores the v49 only-if conditions verbatim;
+    # v56 adds the value-meets-condition rule (about 90 characters over v53's budget;
+    # v54 and v55 were discarded "where" experiments).
     # Character-based estimates, not provider tokenizer or billing counts.
-    assert stats["total_chars"] <= 33500
-    assert stats["estimated_input_tokens"] <= 8375
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v53-restore-conditions"
+    assert stats["total_chars"] <= 33600
+    assert stats["estimated_input_tokens"] <= 8400
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v56-value-meets-condition"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 
@@ -256,7 +258,8 @@ def test_prompt_clarifies_selectors_without_weakening_grounding() -> None:
     assert "hoặc thông tin liên hệ của đơn vị đó" in PLANNER_PROMPT_TEXT
     registry = compact_registry_for_prompt()
     assert "Chọn theo kết quả cần tra, không theo riêng tên loại học bổng" in registry
-    assert "unit=tên đơn vị phụ trách; office=địa chỉ hoặc vị trí làm việc" in registry
+    assert "unit=tên đơn vị phụ trách; phone=điện thoại kèm số máy nội bộ" in registry
+    assert "office=địa chỉ hoặc vị trí làm việc" in registry
     assert "không chỉ theo từ 'phòng'" in registry
 
 

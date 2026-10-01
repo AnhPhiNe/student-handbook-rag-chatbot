@@ -62,12 +62,26 @@ def _has_field(record: dict[str, Any], field: str) -> bool:
     return any(record.get(key) for key in keys)
 
 
+def _same_service_unit(items: list[Any], source_key: str, cohort: str | None) -> bool:
+    """Several service rows may identify one unit, but never mix cohorts."""
+
+    if not all(isinstance(item, dict) and is_validated_source_applicable(item, cohort)
+               for item in items):
+        return False
+    keys = [_keys(item, [source_key]) for item in items]
+    return (
+        len(keys[0]) == 1
+        and all(key == keys[0] for key in keys)
+        and len({normalize_cohort(item.get("cohort")) for item in items}) == 1
+    )
+
+
 def resolve_relationship(
     source_result: dict[str, Any], *, source_lookup: str,
     requested_field: Any, cohort: str | None,
     relationships: dict[str, Any], catalogs: dict[str, list[dict[str, Any]]],
 ) -> dict[str, Any]:
-    """Join only a unique source to declared target keys within one cohort."""
+    """Join only a unique source entity to declared target keys within one cohort."""
 
     spec = relationships.get(source_lookup)
     if not isinstance(spec, dict):
@@ -78,7 +92,13 @@ def resolve_relationship(
     source_items = source_result.get("result")
     if not isinstance(source_items, list) or not source_items:
         return source_result
-    if len(source_items) != 1:
+    # Services have one row per activity, so an exact unit name can select
+    # several rows without making the unit ambiguous. Keep every source row
+    # as evidence; only the shared, declared unit key is used for the join.
+    if len(source_items) != 1 and not (
+        source_lookup == "student_service"
+        and _same_service_unit(source_items, spec["source_key"], cohort)
+    ):
         return {
             "lookup_type": source_lookup,
             "needs_clarification": True,

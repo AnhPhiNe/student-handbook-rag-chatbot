@@ -1,0 +1,261 @@
+- phieu: V4-223
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, đrl kỳ này của em được 75 điểm thì xếp loại gì dạ? Với lại môn chỉ tính đạt/không đạt thì em có bị tính là chưa đạt không ad?"
+  dap_an_nhap: "Với điểm rèn luyện 75 điểm, bạn được xếp loại Khá.[cite: 2] Đối với học phần đánh giá đạt/không đạt không phân mức, bạn vui lòng cung cấp điểm theo thang điểm 10 của học phần đó để biết kết quả đạt hay chưa đạt (dưới 5,0 điểm là chưa đạt, từ 5,0 điểm trở lên là đạt).[cite: 2]"
+  y_bat_buoc:
+    - "Xếp loại Khá[cite: 2]"
+    - "hỏi lại điểm thang điểm 10 của sinh viên ở học phần đó"
+  nguon:
+    - "Đ1: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9[cite: 2]"
+    - "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10[cite: 2]"
+  hanh_vi: tra_loi_va_hoi_lai
+  ghi_chu: ""
+- phieu: V4-224
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em muốn xin địa chỉ email của Phòng Sau Đại học ạ. Với lại cho em hỏi điểm môn vừa rồi của em có bị quy thành điểm F+ không ạ?"
+  dap_an_nhap: "Địa chỉ email của Phòng Sau Đại học là phongsdh@hcmue.edu.vn.[cite: 2] Về điểm môn học, bạn vui lòng cung cấp điểm theo thang điểm 10 của học phần đó để biết có bị quy đổi thành điểm F+ (không đạt, áp dụng cho khoảng điểm 3,0 – 3,9) hay không.[cite: 2]"
+  y_bat_buoc:
+    - "phongsdh@hcmue.edu.vn[cite: 2]"
+    - "hỏi lại điểm thang điểm 10 của sinh viên"
+  nguon:
+    - "Đ3: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+    - "Đ4: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10[cite: 2]"
+  hanh_vi: tra_loi_va_hoi_lai
+  ghi_chu: ""
+- phieu: V4-225
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Học kỳ này em có kết quả học tập loại Xuất sắc và rèn luyện loại Tốt thì được xét học bổng khuyến khích học tập loại nào ạ? Cho em hỏi thêm là học lực của em có bị xếp loại Kém không ạ?"
+  dap_an_nhap: "Với kết quả học tập Xuất sắc và rèn luyện loại Tốt, bạn đủ điều kiện xét học bổng khuyến khích học tập loại Giỏi.[cite: 2] Về xếp loại học lực, bạn vui lòng cung cấp điểm trung bình theo thang điểm 4 để xác định học lực (điểm dưới 1,0 mới xếp loại Kém).[cite: 2]"
+  y_bat_buoc:
+    - "loại Giỏi[cite: 2]"
+    - "hỏi lại điểm trung bình thang điểm 4 của sinh viên"
+  nguon:
+    - "Đ5: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27[cite: 2]"
+    - "Đ6: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11[cite: 2]"
+  hanh_vi: tra_loi_va_hoi_lai
+  ghi_chu: ""
+- phieu: V4-226
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em muốn mua và in ấn giáo trình phục vụ học tập thì liên hệ đơn vị nào và ở đâu ạ? Tiện cho em hỏi chứng chỉ tiếng Nhật JLPT của em có được công nhận tương đương bậc 3 chuẩn đầu ra không ạ?"
+  dap_an_nhap: "Để in ấn giáo trình phục vụ học tập, bạn liên hệ Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh tại Nhà A, tầng trệt: P.007, tầng 1: P.114, tầng 2: P.212, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.[cite: 2] Đối với chứng chỉ tiếng Nhật JLPT, bạn cần cung cấp cấp độ cụ thể của chứng chỉ để xác định quy đổi (cấp độ N4 tương đương bậc 3, cấp độ N3 tương đương bậc 4).[cite: 2]"
+  y_bat_buoc:
+    - "Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh[cite: 2]"
+    - "Nhà A, tầng trệt: P.007, tầng 1: P.114, tầng 2: P.212, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM[cite: 2]"
+    - "hỏi lại cấp độ chứng chỉ JLPT của sinh viên"
+  nguon:
+    - "Đ7: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+    - "Đ8: Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ cho sinh viên tốt nghiệp các ngành đào tạo trình độ đại học của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 8[cite: 2]"
+  hanh_vi: tra_loi_va_hoi_lai
+  ghi_chu: ""
+- phieu: V4-227
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em cần hỏi về việc xây dựng thời khóa biểu và đăng ký học phần thì liên hệ ai, ở phòng nào ạ? Tiện thể điểm học tập kỳ này của em là 3.6, nhờ trường tính giúp điểm xét học bổng của em với ạ."
+  dap_an_nhap: "Về việc xây dựng thời khóa biểu và tổ chức đăng ký học phần, bạn liên hệ Phòng Đào tạo tại Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.[cite: 2] Để tính điểm học bổng theo công thức: Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100, bạn vui lòng cung cấp thêm điểm rèn luyện của mình.[cite: 2]"
+  y_bat_buoc:
+    - "Phòng Đào tạo[cite: 2]"
+    - "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM[cite: 2]"
+    - "hỏi lại điểm rèn luyện của sinh viên"
+  nguon:
+    - "Đ9: Danh bạ trong Sổ tay sinh viên K51[cite: 2]"
+    - "Đ5: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27[cite: 2]"
+  hanh_vi: tra_loi_va_hoi_lai
+  ghi_chu: ""
+- phieu: V4-228
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, môn em bị điểm D+ thì quy sang thang 4 được mấy điểm v ad? Tiện thể cho em hỏi môn Triết của em có được điểm C không ạ?"
+  dap_an_nhap: "Điểm chữ D+ được quy đổi sang thang điểm 4 là 1,5 điểm.[cite: 2] Để biết môn Triết của bạn có đạt điểm chữ C (tương ứng thang điểm 10 từ 5,5 đến 6,2) hay không, bạn vui lòng cung cấp điểm thang điểm 10 của môn học đó.[cite: 2]"
+  y_bat_buoc:
+    - "1,5[cite: 2]"
+    - "hỏi lại điểm thang điểm 10 của sinh viên"
+  nguon:
+    - "Đ10: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11[cite: 2]"
+    - "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10[cite: 2]"
+  hanh_vi: tra_loi_va_hoi_lai
+  ghi_chu: ""
+- phieu: V4-230
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "ad oi cho em hoi em co ten trong danh sach nhan hoc bong ky 1 nam nay chua a, mssv cua em la 50.01.101.088"
+  dap_an_nhap: "Sổ tay sinh viên không lưu trữ dữ liệu cá nhân về danh sách sinh viên được nhận học bổng. Bạn vui lòng liên hệ Phòng Công tác chính trị và Học sinh sinh viên hoặc Văn phòng Khoa để tra cứu danh sách cụ thể."
+  y_bat_buoc:
+    - "nói rõ sổ tay không có thông tin này"
+    - "gợi ý liên hệ Phòng Công tác Chính trị và Học sinh sinh viên hoặc Văn phòng Khoa"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-231
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, hạn chót đóng tiền ktx học kỳ 1 năm nay là ngày mấy z ad? Với tiền phòng ktx kỳ này bao nhiêu tiền v ạ?"
+  dap_an_nhap: "Sổ tay sinh viên không có thông tin về mốc thời gian hạn chót nộp tiền và mức phí ký túc xá cụ thể của từng năm học. Bạn vui lòng liên hệ Ban Quản lý Ký túc xá để được thông tin chính xác."
+  y_bat_buoc:
+    - "nói rõ sổ tay không có thông tin này"
+    - "gợi ý liên hệ Ban Quản lý Ký túc xá"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-232
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Dạ em chào anh chị, em là sinh viên K49 ngành Sư phạm Toán. Đợt thi kết thúc học phần vừa rồi do em bị ốm phải nằm viện mấy ngày nên lỡ mất buổi thi môn Xác suất thống kê. Em có xin giấy ra viện và giấy khám của bác sĩ đầy đủ rồi. Anh chị cho em hỏi thầy Trưởng khoa Toán hiện tại tên là gì và cho em xin số điện thoại cá nhân của thầy với ạ để em gọi điện trực tiếp xin thầy duyệt đơn thi bổ sung chứ em sợ trễ hạn quá ạ."
+  dap_an_nhap: "Sổ tay sinh viên không cung cấp thông tin cá nhân như họ tên hay số điện thoại riêng của lãnh đạo đơn vị. Bạn vui lòng liên hệ trực tiếp Văn phòng Khoa Toán hoặc nộp hồ sơ, giấy tờ minh chứng về Phòng Khảo thí và Đảm bảo chất lượng theo đúng quy trình để được xem xét bố trí thi bổ sung."
+  y_bat_buoc:
+    - "nói rõ sổ tay không có thông tin này"
+    - "gợi ý liên hệ Văn phòng Khoa hoặc Phòng Khảo thí và Đảm bảo chất lượng"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-233
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, tra giùm em xem điểm đrl kỳ vừa rồi của em với ad, mssv của em là 50.01.601.015, em tìm hoài không ra điểm ạ."
+  dap_an_nhap: "Sổ tay sinh viên không lưu trữ dữ liệu cá nhân nên không hỗ trợ tra cứu điểm rèn luyện của từng sinh viên. Bạn vui lòng đăng nhập vào cổng thông tin sinh viên của trường hoặc liên hệ Cố vấn học tập, Ban cán sự lớp để kiểm tra điểm của mình."
+  y_bat_buoc:
+    - "nói rõ sổ tay không có thông tin này"
+    - "gợi ý đăng nhập cổng thông tin sinh viên hoặc liên hệ Cố vấn học tập/Ban cán sự lớp"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-234
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, học phí 1 tín chỉ của ngành Sư phạm Hóa học năm nay cụ thể là bao nhiêu tiền vậy ad? Với lại chừng nào hết hạn đóng học phí z ad?"
+  dap_an_nhap: "Sổ tay sinh viên không có thông tin về định mức thu học phí cụ thể cho từng tín chỉ theo từng năm học cũng như mốc thời hạn đóng học phí. Bạn vui lòng xem thông báo thu học phí trên cổng thông tin sinh viên hoặc liên hệ Phòng Kế hoạch - Tài chính để được hỗ trợ."
+  y_bat_buoc:
+    - "nói rõ sổ tay không có thông tin này"
+    - "gợi ý liên hệ Phòng Kế hoạch - Tài chính hoặc xem thông báo trên cổng thông tin sinh viên"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-235
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi danh sách sinh viên được nhận học bổng khuyến khích học tập kỳ 1 năm học này đã được công bố chưa ạ, và em có thể xem ở đâu?"
+  dap_an_nhap: "Sổ tay sinh viên không có thông tin về thời gian công bố hay danh sách sinh viên được nhận học bổng của học kỳ cụ thể. Bạn vui lòng theo dõi thông báo trên trang thông tin của Phòng Công tác chính trị và Học sinh sinh viên hoặc liên hệ Văn phòng Khoa để được giải đáp."
+  y_bat_buoc:
+    - "nói rõ sổ tay không có thông tin này"
+    - "gợi ý liên hệ Phòng Công tác Chính trị và Học sinh sinh viên hoặc Văn phòng Khoa"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-236
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, thầy dạy môn Tâm lý học giáo dục lớp em tiết 1-3 sáng thứ 2 tên gì với cho em xin sđt cá nhân của thầy để em xin phép nghỉ học buổi sau với ạ?"
+  dap_an_nhap: "Sổ tay sinh viên không có thông tin về danh tính giảng viên phụ trách từng lớp học phần cụ thể cũng như số điện thoại cá nhân của giảng viên. Bạn vui lòng xem thông tin trên thời khóa biểu ở cổng thông tin sinh viên hoặc liên hệ ban cán sự lớp để xin kênh liên lạc phù hợp."
+  y_bat_buoc:
+    - "nói rõ sổ tay không có thông tin này"
+    - "gợi ý tra cứu thời khóa biểu trên cổng thông tin sinh viên hoặc liên hệ ban cán sự lớp"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-237
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thời tiết tại Thành phố Hồ Chí Minh ngày mai có mưa không bạn, mình định đi cắm trại ngoài trời?"
+  dap_an_nhap: "Tôi chỉ hỗ trợ giải đáp các thông tin về quy chế, quy định và dịch vụ sinh viên của Trường Đại học Sư phạm TP.HCM. Rất tiếc tôi không thể cung cấp thông tin dự báo thời tiết cho bạn."
+  y_bat_buoc:
+    - "từ chối lịch sự do câu hỏi ngoài phạm vi hỗ trợ của sổ tay sinh viên"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-238
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "chi minh cach nau canh chua ca loc mien tay ngon voi b oi"
+  dap_an_nhap: "Tôi chỉ hỗ trợ cung cấp thông tin liên quan đến quy chế, quy định và dịch vụ sinh viên của Trường Đại học Sư phạm TP.HCM. Rất tiếc câu hỏi về công thức nấu ăn nằm ngoài phạm vi hỗ trợ của tôi."
+  y_bat_buoc:
+    - "từ chối lịch sự do câu hỏi ngoài phạm vi hỗ trợ của sổ tay sinh viên"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-240
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "viet giup minh doan code python tinh tong cac so chan tu 1 den 100 voi"
+  dap_an_nhap: "Tôi là trợ lý hỗ trợ các thông tin về quy chế, quy định học vụ và công tác sinh viên của Trường Đại học Sư phạm TP.HCM. Tôi không hỗ trợ viết mã nguồn hoặc giải bài tập lập trình, bạn vui lòng tự thực hiện bài tập nhé."
+  y_bat_buoc:
+    - "từ chối lịch sự do câu hỏi ngoài phạm vi hỗ trợ của sổ tay sinh viên"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-241
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, quanh cơ sở 280 ADV có quán cà phê nào yên tĩnh, wifi mạnh để cày deadline không ad?"
+  dap_an_nhap: "Tôi chỉ hỗ trợ thông tin liên quan đến các quy chế, quy định và dịch vụ sinh viên trong Sổ tay sinh viên của trường. Rất tiếc tôi không thể gợi ý các quán cà phê bên ngoài trường."
+  y_bat_buoc:
+    - "từ chối lịch sự do câu hỏi ngoài phạm vi hỗ trợ của sổ tay sinh viên"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-242
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Bạn có thể hướng dẫn mình cách lắp ráp một bộ máy tính để bàn để học đồ họa được không?"
+  dap_an_nhap: "Tôi chỉ hỗ trợ giải đáp các thắc mắc về quy định học tập, chính sách và dịch vụ sinh viên tại Trường Đại học Sư phạm TP.HCM. Rất tiếc tôi không thể hỗ trợ hướng dẫn lắp ráp thiết bị phần cứng máy tính."
+  y_bat_buoc:
+    - "từ chối lịch sự do câu hỏi ngoài phạm vi hỗ trợ của sổ tay sinh viên"
+  nguon: []
+  hanh_vi: tu_choi
+  ghi_chu: ""
+- phieu: V4-243
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Quy định về hồ sơ đánh giá rèn luyện sinh viên cấp cơ sở gồm những gì vậy ạ? Với lại gần trường có quán cơm tấm nào ngon không bạn?"
+  dap_an_nhap: "Theo quy định, hồ sơ đánh giá rèn luyện sinh viên cấp cơ sở gồm có:
+1. Bộ hồ sơ đánh giá rèn luyện của các lớp thuộc khoa, phân hiệu quản lý (lưu tại khoa, phân hiệu);[cite: 2]
+2. Biên bản họp Hội đồng đánh giá kết quả rèn luyện cấp cơ sở (Thư ký và Chủ tịch Hội đồng cấp cơ sở ký biên bản) (lưu tại khoa, phân hiệu và gửi Hội đồng cấp Trường 01 bản);[cite: 2]
+3. Bảng kết quả đánh giá rèn luyện của sinh viên đã được Hội đồng cấp cơ sở thông qua (lưu tại khoa và gửi Hội đồng cấp Trường 01 bản).[cite: 2]
+Còn về việc gợi ý quán ăn ngoài trường, nội dung này nằm ngoài phạm vi hỗ trợ của sổ tay sinh viên nên tôi không thể giải đáp."
+  y_bat_buoc:
+    - "Bộ hồ sơ đánh giá rèn luyện của các lớp thuộc khoa, phân hiệu quản lý (lưu tại khoa, phân hiệu)[cite: 2]"
+    - "Biên bản họp Hội đồng đánh giá kết quả rèn luyện cấp cơ sở (Thư ký và Chủ tịch Hội đồng cấp cơ sở ký biên bản) (lưu tại khoa, phân hiệu và gửi Hội đồng cấp Trường 01 bản)[cite: 2]"
+    - "Bảng kết quả đánh giá rèn luyện của sinh viên đã được Hội đồng cấp cơ sở thông qua (lưu tại khoa và gửi Hội đồng cấp Trường 01 bản)[cite: 2]"
+    - "từ chối trả lời câu hỏi về quán ăn ngoài trường"
+  nguon:
+    - "Đ11: Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Phụ lục 2), Mục II. Hồ sơ đánh giá rèn luyện sinh viên cấp cơ sở[cite: 2]"
+  hanh_vi: tra_loi_va_tu_choi
+  ghi_chu: ""
+- phieu: V4-244
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi ngành Ngôn ngữ Nga thuộc khoa nào vậy ạ? Sẵn tiện cho em hỏi thủ tục xin visa du lịch Hàn Quốc tự túc gồm những giấy tờ gì ạ?"
+  dap_an_nhap: "Ngành Ngôn ngữ Nga thuộc Khoa Tiếng Nga.[cite: 2] Còn về thủ tục xin visa du lịch Hàn Quốc, nội dung này nằm ngoài phạm vi quy chế và dịch vụ sinh viên của trường nên tôi không thể hỗ trợ bạn."
+  y_bat_buoc:
+    - "Khoa Tiếng Nga[cite: 2]"
+    - "từ chối trả lời thủ tục xin visa du lịch"
+  nguon:
+    - "Đ12: Danh bạ trong Sổ tay sinh viên K50[cite: 2]"
+  hanh_vi: tra_loi_va_tu_choi
+  ghi_chu: ""
+- phieu: V4-245
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "cho em hỏi xíu, ban cán sự lớp mà hoàn thành xuất sắc nhiệm vụ thì được cộng mấy điểm đrl ở phần V dạ? Với ad biết cách trị mụn trứng cá tuổi dậy thì hiệu quả không chỉ em với."
+  dap_an_nhap: "Theo khung điểm rèn luyện ở Phần V, sinh viên giữ chức vụ Ban cán sự lớp nếu Hoàn thành Xuất sắc nhiệm vụ sẽ được 3 điểm.[cite: 2] Về cách trị mụn trứng cá, câu hỏi này nằm ngoài phạm vi tư vấn quy chế và dịch vụ sinh viên của trường nên tôi không thể giải đáp."
+  y_bat_buoc:
+    - "3 điểm[cite: 2]"
+    - "từ chối trả lời về cách trị mụn trứng cá"
+  nguon:
+    - "Đ13: Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1), Phần V. Đánh giá về ý thức và kết quả tham gia công tác phụ trách lớp, các đoàn thể, tổ chức trong nhà trường; đạt thành tích xuất sắc trong học tập, rèn luyện (Tối đa 10 điểm)[cite: 2]"
+  hanh_vi: tra_loi_va_tu_choi
+  ghi_chu: ""
+- phieu: V4-246
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi địa chỉ email của Khoa Địa lí là gì ạ? Sẵn tiện cho em hỏi giá vé xem phim ở rạp CGV vào cuối tuần là bao nhiêu vậy ạ?"
+  dap_an_nhap: "Địa chỉ email của Khoa Địa lí là khoadialy@hcmue.edu.vn.[cite: 2] Còn câu hỏi về giá vé xem phim tại rạp CGV nằm ngoài phạm vi thông tin của sổ tay sinh viên nên tôi không thể giải đáp."
+  y_bat_buoc:
+    - "khoadialy@hcmue.edu.vn[cite: 2]"
+    - "từ chối trả lời về giá vé xem phim rạp CGV"
+  nguon:
+    - "Đ14: Danh bạ trong Sổ tay sinh viên K48-K49[cite: 2]"
+  hanh_vi: tra_loi_va_tu_choi
+  ghi_chu: ""

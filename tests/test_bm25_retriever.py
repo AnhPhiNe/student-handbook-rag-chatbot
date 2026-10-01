@@ -1,3 +1,5 @@
+import pytest
+
 from src.retrieval.core.bm25_retriever import BM25Retriever
 
 
@@ -241,3 +243,53 @@ def test_bm25_ranks_by_score_not_by_a_title_in_the_query(tmp_path) -> None:
     results = retriever.search_bm25("Vì sao sinh viên bị cảnh báo học tập?", top_k=4)
 
     assert results[0][1]["chunk_id"] == "relevant"
+
+
+@pytest.mark.parametrize("fallback_tokenizer", [False, True])
+def test_unaccented_query_matches_accented_title_in_selected_cohort(
+    monkeypatch, tmp_path, fallback_tokenizer,
+) -> None:
+    if fallback_tokenizer:
+        monkeypatch.setattr("src.retrieval.core.bm25_retriever.underthesea", None)
+    retriever = BM25Retriever(
+        vocabulary_path=tmp_path / "missing.yaml",
+        program_directory_path=tmp_path / "missing.json",
+    )
+    expected = _chunk("expected", "Điểm trung bình phải đáp ứng yêu cầu.", cohort="K51")
+    expected["metadata"]["title"] = "Cảnh báo học tập"
+    wrong_cohort = _chunk("wrong-cohort", expected["content"], cohort="K50")
+    wrong_cohort["metadata"]["title"] = expected["metadata"]["title"]
+    retriever.build_bm25_index([
+        wrong_cohort, expected,
+        _chunk("other-1", "Thủ tục đăng ký nội trú.", cohort="K51"),
+        _chunk("other-2", "Mượn sách tại thư viện.", cohort="K51"),
+        _chunk("other-3", "Quy định nghiên cứu khoa học.", cohort="K51"),
+    ])
+
+    results = retriever.sparse_search(
+        "canh bao hoc tap", top_k=1, cohort="K51",
+        chunk_types=["regulation"], content_types=["regulation_text"],
+    )
+
+    assert [item["chunk_id"] for item in results] == ["expected"]
+    assert results[0]["content"] == expected["content"]
+    assert results[0]["metadata"]["title"] == "Cảnh báo học tập"
+
+
+def test_accented_query_still_distinguishes_folded_homonyms(monkeypatch, tmp_path) -> None:
+    monkeypatch.setattr("src.retrieval.core.bm25_retriever.underthesea", None)
+    retriever = BM25Retriever(
+        vocabulary_path=tmp_path / "missing.yaml",
+        program_directory_path=tmp_path / "missing.json",
+    )
+    retriever.build_bm25_index([
+        _chunk("different-word", "Sinh viên nghĩ gì.", cohort="K51"),
+        _chunk("expected", "Sinh viên nghỉ học.", cohort="K51"),
+        _chunk("other-1", "Thủ tục đăng ký nội trú.", cohort="K51"),
+        _chunk("other-2", "Mượn sách tại thư viện.", cohort="K51"),
+        _chunk("other-3", "Quy định nghiên cứu khoa học.", cohort="K51"),
+    ])
+
+    results = retriever.search_bm25("nghỉ", top_k=1)
+
+    assert results[0][1]["chunk_id"] == "expected"

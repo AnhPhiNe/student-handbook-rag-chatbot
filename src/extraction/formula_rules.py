@@ -29,6 +29,9 @@ def extract_formula_rules(sections: list[dict[str, Any]]) -> list[dict[str, Any]
                         "ai": "Điểm của học phần thứ i",
                         "ni": "Số tín chỉ của học phần thứ i",
                     },
+                    # Stated in the same clause as the formula, so an answer that
+                    # gives the formula without it is incomplete.
+                    "rounding": "Làm tròn đến 2 chữ số thập phân",
                     "source_article": article,
                     "source_title": section.get("title"),
                     "source_pages": pages,

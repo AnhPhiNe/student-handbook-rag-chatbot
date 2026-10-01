@@ -64,7 +64,7 @@ The web app also includes a GPA calculator, credit and tuition tools, scholarshi
 
 - **The LLM plans and the code verifies.** OpenAI `gpt-6-luna` returns a `QueryPlan` under a strict JSON schema: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer drops any slot value that does not appear in the question, checks lookup types and cohorts against the registry, and turns a task it cannot trust into a clarifying question or a RAG task. The plan is never trusted blindly.
 - **Exact facts come from tables, not from generation.** Nine lookup capabilities run over reviewed JSON catalogs: grading scales, foreign-language equivalency, scholarship classification, study duration, formulas, and office, faculty, program and student-service directories. A unique match becomes a `resolved_result` that the writer is instructed to keep verbatim.
-- **Hybrid retrieval.** `BAAI/bge-m3` dense search in Qdrant (embeddings from the DeepInfra API) and in-process BM25 each return 24 children, fused with reciprocal rank fusion (k = 60). `Qwen/Qwen3-Reranker-8B` on DeepInfra reorders those 24, and the children are grouped into their full parent articles from MongoDB (top 5). An offline cross-reference graph adds related-article links for the UI.
+- **Hybrid retrieval.** `BAAI/bge-m3` dense search in Qdrant (embeddings from the DeepInfra API) and in-process BM25 each return 24 children, fused with reciprocal rank fusion (k = 60). Voyage `rerank-3` reorders those 24, and the children are grouped into their full parent articles from MongoDB (top 5). An offline cross-reference graph adds related-article links for the UI.
 - **Cohort isolation end to end.** Every task runs per cohort, and retrieved sources and citations are filtered to the cohort that was asked for.
 - **Graceful degradation.** Each provider has a quota-aware key pool with per-key RPM, TPM and daily limits that honors the provider's retry hints. Reranking fails open to the RRF order, and a failed query embedding leaves BM25 serving alone. A planner failure falls back to a safe RAG plan. Admission control allows 3 concurrent requests, a queue of 10 and a 30 s wait, with a configurable per-client rate limit.
 - **Reproducible data.** One command rebuilds the corpus from the PDFs, and the rebuild is byte-for-byte deterministic. A build manifest of hashes, counts and target collections ties the Qdrant and MongoDB contents to one build ID.
@@ -81,7 +81,7 @@ flowchart TD
     Normalizer -->|structured task| Lookup["Structured lookup<br/>reviewed JSON tables and directories"]
     Normalizer -->|RAG task| Retrieve["Hybrid retrieval<br/>bge-m3 dense + BM25, 24 each, RRF k=60"]
     Normalizer -->|clarify task| Clarify["Clarifying question"]
-    Retrieve --> Rerank["Qwen3-Reranker-8B on the 24 children<br/>fails open to the RRF order"]
+    Retrieve --> Rerank["Voyage rerank-3 on the 24 children<br/>fails open to the RRF order"]
     Rerank --> Parents["Parent articles<br/>MongoDB"]
     Lookup --> Merge["Merge tasks<br/>keep task and cohort scope"]
     Parents --> Merge
@@ -241,7 +241,7 @@ flowchart TD
     Dense --> RRF["Reciprocal rank fusion, k = 60<br/>pool of 24"]
     Lex --> RRF
     RRF -->|"neither returns anything"| None["No evidence for this task"]
-    RRF --> Rerank["Qwen3-Reranker-8B on DeepInfra<br/>all 24 children, 10 s timeout"]
+    RRF --> Rerank["Voyage rerank-3<br/>all 24 children, 10 s timeout"]
     Rerank -->|valid scores| Group["Group children by parent article<br/>parent score = best child<br/>keep the top 5 parents"]
     Rerank -.->|"no key · HTTP error · timeout · invalid reply"| Group
     Group --> Mongo[("MongoDB parents<br/>with an in-process LRU cache")]
@@ -398,7 +398,7 @@ labelled as such ([dataset notes](data/eval/official_v2/README.md)).
 > [!NOTE]
 > These results measure the stack of 2026-09-12: Qwen3 planner on Groq, Gemini 3.1
 > Flash-Lite composer, a local `bge-m3` model, Cohere reranking and the v33 data. The
-> current stack (Luna planner, DeepSeek composer, `bge-m3` over an API, Qwen3-Reranker-8B,
+> current stack (Luna planner, DeepSeek composer, `bge-m3` over an API, Voyage rerank-3,
 > v35 data) will be measured once, on the `official_v3` hold-out, when the project closes.
 
 `official_v2`'s hold-out run: 2026-09-12, commit `d09e970`, planner Qwen3 `v43` on Groq,
@@ -530,7 +530,7 @@ Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`.
 
 - Python 3.11 and Node.js 20
 - A Qdrant collection and a MongoDB database loaded from the v35 build (see [Offline build](#offline-build))
-- API keys for OpenAI (planner), DeepSeek (composer and directory selector) and DeepInfra (BGE-M3 embeddings and the Qwen3-Reranker-8B reranker). LangSmith (tracing) is optional.
+- API keys for OpenAI (planner), DeepSeek (composer and directory selector) and DeepInfra (BGE-M3 embeddings) and Voyage (the rerank-3 reranker). LangSmith (tracing) is optional.
 
 ### Backend
 
@@ -551,7 +551,8 @@ Interactive API docs are then served at `http://127.0.0.1:8000/docs`.
 | `OPENAI_API_KEY` | yes | Planner (`gpt-6-luna`, strict QueryPlan schema; settings in `configs/ai_router.yaml`) |
 | `GROQ_API_KEYS` | no | Evaluation judge only |
 | `DEEPSEEK_API_KEY` | yes | Composer (`llm`) and directory selector, which picks the service, office, faculty or program a student names when no name matches exactly (`directory_selector`); both in `configs/answer_generation.yaml` |
-| `DEEPINFRA_API_KEY` | yes | BGE-M3 query and document embeddings, and the Qwen3-Reranker-8B reranker (`configs/retrieval.yaml`); a reranker failure keeps the RRF order |
+| `DEEPINFRA_API_KEY` | yes | BGE-M3 query and document embeddings |
+| `VOYAGE_API_KEY` | yes | The Voyage `rerank-3` reranker (`configs/retrieval.yaml`); a reranker failure keeps the RRF order |
 | `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT` | no | Request tracing and user feedback |
 | `STUDENT_RAG_CORS_ORIGINS` | no | Comma-separated browser origins allowed to call the API (needed when the frontend is on another domain) |
 | `STUDENT_RAG_ADMIN_API_KEY` | no | Enables `/health/artifacts` through the `X-Admin-API-Key` header |

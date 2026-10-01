@@ -1,5 +1,6 @@
 import logging
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -125,7 +126,21 @@ class BM25Retriever:
             # Absolute fallback
             tokens.extend(text_for_segmentation.lower().split())
 
-        return [t for t in tokens if t.strip()]
+        # Index and query both spellings. Retaining the accented token gives
+        # exact Vietnamese words a score in addition to their plain variant;
+        # only scoring tokens change, never the returned source text.
+        expanded_tokens = []
+        for token in tokens:
+            if not token.strip():
+                continue
+            expanded_tokens.append(token)
+            plain = "".join(
+                char for char in unicodedata.normalize("NFD", token.replace("đ", "d"))
+                if unicodedata.category(char) != "Mn"
+            )
+            if plain != token:
+                expanded_tokens.append(plain)
+        return expanded_tokens
 
     def build_bm25_index(self, chunks: list[dict[str, Any]]):
         """Build a BM25 retriever from normalized chunk records."""

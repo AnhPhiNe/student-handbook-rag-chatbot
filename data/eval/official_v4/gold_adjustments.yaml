@@ -1,0 +1,94 @@
+# Gold adjustments made before any system run (AUTHORING_LOG.md).
+# The authored YAML stays as Gemini wrote it; these entries replace the named
+# fields when v4 is converted to the runner's case format. Questions are never
+# changed here.
+
+cases:
+  V4-104:
+    reason: >-
+      The K51 handbook lists two branch faculties with nearly the same name:
+      "Khoa Khoa học – Tự nhiên" (Long An branch) and "Khoa Khoa học Tự nhiên"
+      (Gia Lai branch). The question names neither branch, so the gold's
+      Gia Lai address alone is too narrow. The system's runtime directories
+      leave out both branches (main campus only), so the expected answer is
+      that the main-campus directory has no such faculty.
+    y_bat_buoc:
+      - >-
+        Địa chỉ văn phòng khoa: chấp nhận nói rằng danh bạ cơ sở chính không có
+        khoa này (hoặc khoa này thuộc phân hiệu), hỏi lại sinh viên học ở phân hiệu
+        nào, hoặc nêu địa chỉ Gia Lai (Văn phòng Khoa – Nhà K, Số 126 Lê Thánh Tôn,
+        phường Diên Hồng, tỉnh Gia Lai) hay Long An (Khu Hiệu bộ, Số 934, Quốc lộ
+        1A, phường Khánh Hậu, tỉnh Tây Ninh). Sai nếu đưa địa chỉ của một khoa khác
+        ở cơ sở chính như thể đó là khoa được hỏi
+      - "Bước 1: CVHT thông báo cho lớp trưởng về quy trình, thời gian chấm ĐRL"
+      - "Bước 2: Sinh viên tự đánh giá kèm minh chứng gửi BCS lớp"
+      - "Bước 3: BCS lớp, BCH Chi đoàn, BCH Chi hội, CVHT chấm lại điểm"
+      - "Bước 4: Họp lớp thông qua (trên 50% ý kiến đồng ý, có biên bản), nộp hồ sơ lên Hội đồng cấp cơ sở"
+      - "Bước 5: Hội đồng cấp cơ sở (khoa, phân hiệu) họp xét, báo cáo Trưởng đơn vị thông qua, trình lên Hội đồng cấp Trường"
+      - "Bước 6: Hội đồng cấp Trường họp xét trình Hiệu trưởng quyết định công nhận"
+      - "Bước 7: Công bố công khai trước 20 ngày trước khi ban hành quyết định chính thức và cập nhật phần mềm"
+
+  V4-172:
+    reason: >-
+      The gold answers from Điều 4 of the conduct rules, which binds staff
+      (viên chức, người lao động), and presents it as the students' rule. The
+      same document has a students' dress rule, Điều 12 (Quy định về trang
+      phục, người học), identical in K50 and K51. The no-smoking rule appears
+      only in Điều 4 but covers the whole campus.
+    y_bat_buoc:
+      - "quy định giữa K50 và K51 là giống nhau (hoặc không có sự khác biệt)"
+      - >-
+        Trang phục: chấp nhận Điều 12 cho người học (gọn gàng, lịch sự, kín đáo,
+        phù hợp thuần phong mỹ tục; đeo thẻ sinh viên) hoặc Điều 4 cho viên chức,
+        người lao động (gọn gàng, lịch sự, đi giày hoặc dép có quai hậu; đeo thẻ,
+        biển tên), hoặc cả hai
+      - "không hút thuốc lá (kể cả thuốc lá điện tử) trong khuôn viên Trường"
+
+  V4-211:
+    reason: >-
+      The student asks only whether staff may use public property for private
+      work. The gold also requires the rest of the same clause (not acting in
+      the institution's name, building a green workplace), which the question
+      does not ask for; a correct "no" answer would fail on them.
+    y_bat_buoc:
+      - "không được sử dụng tài sản, trang thiết bị, phương tiện công để làm việc riêng"
+
+  V4-082:
+    reason: >-
+      The gold answers from the list of school-level conduct files (Phụ lục 2,
+      mục III), which names "Quyết định tạm nghỉ học, buộc thôi học" without
+      conditions, so it reads as if one weak or poor conduct grade leads to a
+      decision. The rule that answers the question is Điều 14 khoản 5 of the
+      K51 conduct regulation (and Điều 30, 31 of the student-affairs
+      regulation): weak or poor in two consecutive semesters.
+    y_bat_buoc:
+      - "Xếp loại rèn luyện yếu, kém hai học kỳ liên tiếp: phải tạm ngừng học (tạm dừng tiến độ học tập) ít nhất một học kỳ ở học kỳ tiếp theo"
+      - "Yếu, kém hai học kỳ liên tiếp lần thứ hai: bị buộc thôi học"
+
+  V4-140:
+    reason: >-
+      For "tư vấn nghề nghiệp, việc làm" the handbook names two units: Phòng
+      CTCT&HSSV ("phối hợp ... tư vấn nghề nghiệp, việc làm") and Trung tâm Hỗ
+      trợ sinh viên và Phát triển khởi nghiệp ("giới thiệu việc làm", "ngày hội
+      việc làm"). The gold accepts only the first.
+    y_bat_buoc:
+      - "Công thức tính điểm học bổng: (Điểm học tập x 80 + Điểm rèn luyện / 25 x 20) / 100"
+      - "Điểm rèn luyện / 25 là quy đổi về thang điểm 4"
+      - "Kết quả tính với số liệu đã cho: 3,52"
+      - >-
+        Đơn vị tư vấn nghề nghiệp, việc làm: Phòng Công tác chính trị và Học sinh,
+        sinh viên (Nhà A, tầng 1, P.108, P.109, P.110; (028) 38352020;
+        hopthusinhvien@hcmue.edu.vn) hoặc Trung tâm Hỗ trợ sinh viên và Phát triển
+        khởi nghiệp (Nhà A, tầng 1, P.101; (028) 38352020; csaed@hcmue.edu.vn), với
+        liên hệ đúng của đơn vị được nêu
+
+rules:
+  F.refuse_in_domain:
+    cases: [V4-229, V4-230, V4-231, V4-232, V4-233, V4-234, V4-235, V4-236]
+    rule: >-
+      The required suggestion ("gợi ý liên hệ ...") is met by any relevant
+      official channel (the unit the handbook names for the topic, the faculty
+      office, the adviser, the class officers, or the school's official
+      notices or student portal), not only the channel the gold names. The
+      scored core is saying the handbook does not hold the information and not
+      inventing it.

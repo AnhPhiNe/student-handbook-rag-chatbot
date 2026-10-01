@@ -107,7 +107,7 @@ tools:
     selection_mode: table_first
     # regulation tables (structured_tables_registry table_type) this tool reads
     table_types: [scholarship]
-    description: Tra mức tiền, công thức tiền, hệ số, căn cứ học phí hoặc xếp loại HBKKHT kèm mức điểm học tập và rèn luyện của từng loại trong bảng.
+    description: Tra mức tiền, công thức tiền, hệ số, căn cứ học phí hoặc xếp loại HBKKHT của từng loại kèm khoảng điểm học bổng, điểm học tập và rèn luyện, hoặc xếp loại học tập và rèn luyện tương ứng.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -118,10 +118,10 @@ tools:
         type: string
         verification_role: reading_intent
         enum: [amount, classification]
-        description: "Bảng được hỏi: amount=mức tiền, công thức tiền, hệ số, căn cứ học phí; classification=mức điểm học tập và rèn luyện của từng loại. Chọn theo kết quả cần tra, không theo riêng tên loại học bổng. Không cung cấp khi hỏi tổng quan."
+        description: "Bảng được hỏi: amount=mức tiền, công thức tiền, hệ số, căn cứ học phí; classification=khoảng điểm học bổng, điểm học tập và rèn luyện, hoặc xếp loại tương ứng của từng loại; hỏi điểm học bổng phải đạt bao nhiêu là classification, không phải công thức. Chọn theo kết quả cần tra, không theo riêng tên loại học bổng. Không cung cấp khi hỏi tổng quan."
         span_aliases:
           amount: [mức tiền, mức học bổng, hệ số]
-          classification: [xếp loại, loại học bổng]
+          classification: [xếp loại, loại học bổng, điểm học bổng, khoảng điểm]
       score_or_label:
         type: [string, number]
         verification_role: result_input
@@ -231,7 +231,8 @@ tools:
         verification_role: reading_intent
         enum: [unit, phone, email, office, website, all]
         description: >-
-          unit=tên đơn vị phụ trách; office=địa chỉ hoặc vị trí làm việc;
+          unit=tên đơn vị phụ trách; phone=điện thoại kèm số máy nội bộ;
+          office=địa chỉ hoặc vị trí làm việc;
           all=thông tin liên hệ tổng hợp. Hỏi ai/đơn vị nào phụ trách hoặc hỗ trợ
           một việc → unit; hỏi làm một việc 'ở phòng nào', 'đơn vị nào' hay 'gặp
           ai' khi chưa biết tên đơn vị cũng là unit. Hỏi nơi làm việc, tòa nhà/tầng/số phòng, hoặc một đơn
@@ -268,7 +269,7 @@ tools:
         type: string
         verification_role: reading_intent
         enum: [phone, email, office, website, services, all]
-        description: Trường đầu ra; office=địa chỉ/vị trí, services=danh sách dịch vụ của đơn vị, all=thông tin liên hệ tổng hợp.
+        description: Trường đầu ra; phone=điện thoại kèm số máy nội bộ, office=địa chỉ/vị trí, services=danh sách dịch vụ của đơn vị, all=thông tin liên hệ tổng hợp.
         span_aliases:
           phone: [số điện thoại, điện thoại, sđt, phone]
           email: [email, thư điện tử]
@@ -297,7 +298,7 @@ tools:
         type: string
         verification_role: reading_intent
         enum: [phone, email, office, website, all]
-        description: Trường liên hệ của khoa; office=địa chỉ/vị trí, all=thông tin liên hệ tổng hợp.
+        description: Trường liên hệ của khoa; phone=điện thoại kèm số máy nội bộ, office=địa chỉ/vị trí, all=thông tin liên hệ tổng hợp.
         span_aliases:
           phone: [số điện thoại, điện thoại, sđt, phone]
           email: [email, thư điện tử]
@@ -311,7 +312,7 @@ tools:
   program:
     data_category: directory_table
     presentation_type: table
-    description: Tra ngành, khoa phụ trách và liên hệ khoa; ngành kèm email khoa là một task.
+    description: Tra ngành, khoa phụ trách, liên hệ khoa và cơ hội nghề nghiệp sau khi tốt nghiệp của ngành; ngành kèm email khoa là một task.
     intents: [direct_value, list_items, exists]
     required_slots:
       direct_value: [program_or_faculty, requested_field]
@@ -325,8 +326,8 @@ tools:
       requested_field:
         type: string
         verification_role: reading_intent
-        enum: [faculty, programs, exists, email, phone, website, office, all]
-        description: faculty=khoa phụ trách ngành; programs=danh sách ngành; exists=kiểm tra tồn tại; email/phone/website/office/all=liên hệ khoa phụ trách ngành qua relationship, office là địa chỉ. Không tạo task phụ thuộc để tra khoa chưa biết tên.
+        enum: [faculty, programs, exists, career, email, phone, website, office, all]
+        description: faculty=khoa phụ trách ngành; programs=danh sách ngành; career=cơ hội nghề nghiệp, ra trường làm gì; exists=kiểm tra tồn tại; email/phone/website/office/all=liên hệ khoa phụ trách ngành qua relationship, office là địa chỉ. Không tạo task phụ thuộc để tra khoa chưa biết tên.
       scope:
         type: string
         verification_role: reading_intent
@@ -342,7 +343,7 @@ tools:
 
   formula:
     presentation_type: table
-    description: "Cách tính/quan hệ toán học: điểm học bổng từ điểm học tập và rèn luyện=scholarship_score; GPA có trọng số=gpa_weighted_average. Không dùng cho mức tiền, điều kiện hay xếp loại học bổng."
+    description: "Cách tính/quan hệ toán học: điểm học bổng từ điểm học tập và rèn luyện=scholarship_score; GPA có trọng số=gpa_weighted_average. Không dùng cho mức tiền, điều kiện, xếp loại hay khoảng điểm học bổng phải đạt: các mức đó nằm trong bảng scholarship_classification."
     intents: [formula]
     required_slots:
       formula: [formula_type]

@@ -1,0 +1,219 @@
+- phieu: V4-205
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Nếu em chuyển chỗ trọ thì phải cập nhật thông tin nơi cư trú mới ở đâu vậy ạ?"
+    - vai: tro_ly
+      noi_dung: "Bạn cập nhật địa chỉ nơi cư trú mới thông qua Cổng thông tin điện tử sinh viên của Trường nhé[cite: 1]."
+    - vai: sinh_vien
+      noi_dung: "Dạ vậy việc này có quy định thời hạn tối đa trong bao lâu kể từ ngày chuyển không ạ?"
+  dap_an_nhap: "Khi có sự thay đổi về nơi cư trú, sinh viên có nghĩa vụ cập nhật địa chỉ nơi cư trú trong thời hạn tối đa là 20 ngày, kể từ ngày thay đổi nơi cư trú[cite: 1]."
+  y_bat_buoc:
+    - "thời hạn tối đa là 20 ngày[cite: 1]"
+    - "kể từ ngày thay đổi nơi cư trú[cite: 1]"
+  nguon:
+    - "Đ1: Quy định ngoại trú đối với sinh viên đào tạo trình độ đại học, cao đẳng ngành Giáo dục Mầm non hình thức chính quy của Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 6"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-210
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Hạn chót để nộp hồ sơ xin nghỉ học tạm thời là khi nào vậy ạ?"
+    - vai: tro_ly
+      noi_dung: "Hạn cuối để sinh viên gửi hồ sơ xin nghỉ học tạm thời là trước khi thi học kỳ 04 tuần nhé[cite: 1]."
+    - vai: sinh_vien
+      noi_dung: "Dạ vậy các quy định và điều kiện để được giải quyết việc này cụ thể như thế nào ạ?"
+  dap_an_nhap: "Quy định về điều kiện và hồ sơ nghỉ học tạm thời như sau[cite: 1]:\n- Về điều kiện[cite: 1]: Được quy định tại khoản 1 Điều 16 Quy chế đào tạo trình độ đại học chính quy (hoặc Quy chế đào tạo trình độ CĐ ngành GD Mầm non nếu học CĐ)[cite: 1]; sinh viên phải hoàn thành ít nhất một học kỳ (đối với sinh viên đại học chính quy trúng tuyển từ năm 2020 trở về trước phải có điểm TBCTL từ 2.00 trở lên)[cite: 1]; không nợ học phí và được Phòng Kế hoạch – Tài chính xác nhận tại thời điểm làm hồ sơ[cite: 1].\n- Về hồ sơ[cite: 1]: Gồm đơn xin tạm nghỉ học có xác nhận đồng ý của Trưởng khoa hoặc Giám đốc phân hiệu[cite: 1], các minh chứng kèm theo[cite: 1], bảng điểm do Phòng Khảo thí và Đảm bảo chất lượng cấp (đối với sinh viên đại học trúng tuyển từ 2020 trở về trước)[cite: 1]. Hạn cuối nộp hồ sơ là trước khi thi học kỳ 04 tuần[cite: 1]."
+  y_bat_buoc:
+    - "hoàn thành ít nhất một học kỳ[cite: 1]"
+    - "không nợ học phí và được Phòng Kế hoạch – Tài chính xác nhận[cite: 1]"
+    - "đơn xin tạm nghỉ học được Trưởng khoa hoặc Giám đốc phân hiệu xác nhận đồng ý[cite: 1]"
+    - "hạn cuối gửi hồ sơ là trước khi thi học kỳ 04 tuần[cite: 1]"
+  nguon:
+    - "Đ2: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 30"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-211
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi địa chỉ văn phòng của Khoa Toán – Tin học ở đâu ạ?"
+    - vai: tro_ly
+      noi_dung: "Văn phòng làm việc của Khoa Toán – Tin học ở tại: Nhà B, tầng 5, P.503, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM[cite: 1]."
+    - vai: sinh_vien
+      noi_dung: "Dạ em cảm ơn. Thầy cô cho em hỏi thêm là theo quy định, viên chức và người lao động của trường có được dùng tài sản công để làm việc riêng không ạ?"
+  dap_an_nhap: "Theo quy tắc ứng xử của Trường, viên chức và người lao động không được nhân danh cơ quan, tổ chức, không sử dụng tài sản, trang thiết bị, phương tiện công để làm việc riêng; đồng thời phải tích cực xây dựng không gian xanh, sạch, đẹp và môi trường công sở văn minh, thân thiện[cite: 1]."
+  y_bat_buoc:
+    - "không nhân danh cơ quan, tổ chức[cite: 1]"
+    - "không sử dụng tài sản, trang thiết bị, phương tiện công để làm việc riêng[cite: 1]"
+    - "tích cực xây dựng không gian xanh, sạch, đẹp và môi trường công sở văn minh, thân thiện[cite: 1]"
+  nguon:
+    - "Đ4: Quy định quy tắc ứng xử của viên chức, người lao động và người học Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-212
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em học đại học chính quy cấp bằng thứ nhất với thời gian chuẩn là 4 năm, vậy thời gian học tập tối đa được quy định là mấy năm ạ?"
+    - vai: tro_ly
+      noi_dung: "Thời gian học tập tối đa đối với chương trình đào tạo đại học cấp bằng thứ nhất hình thức chính quy là 8 năm học[cite: 1]."
+    - vai: sinh_vien
+      noi_dung: "Dạ cho em hỏi thêm là cố vấn học tập có trách nhiệm gì trong việc hỗ trợ kế hoạch học tập cho sinh viên ạ?"
+  dap_an_nhap: "Theo quy định, cố vấn học tập có nhiệm vụ tư vấn và hướng dẫn sinh viên xây dựng kế hoạch học tập cho từng học kỳ và cho toàn khóa học; đồng thời tư vấn và hướng dẫn sinh viên đăng ký, điều chỉnh kế hoạch học tập phù hợp với năng lực và hoàn cảnh dựa trên kết quả học tập của sinh viên[cite: 1]."
+  y_bat_buoc:
+    - "Tư vấn và hướng dẫn sinh viên xây dựng kế hoạch học tập cho từng học kỳ và cho toàn khóa học[cite: 1]"
+    - "Tư vấn và hướng dẫn sinh viên đăng ký, điều chỉnh kế hoạch học tập phù hợp với năng lực và hoàn cảnh dựa trên kết quả học tập của sinh viên[cite: 1]"
+  nguon:
+    - "Đ6: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 23"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ6 không có nội dung về hệ quả vi phạm hoặc trường hợp ngoại lệ; chuyển sang hỏi trách nhiệm của cố vấn học tập."
+
+- phieu: V4-213
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "e tot nghiep som so voi tgian chuan thi hk cuoi can tich luy toi thieu bao nhiu tin chi de dc xet hbkkht vay a?"
+    - vai: tro_ly
+      noi_dung: "Trường hợp sinh viên tốt nghiệp sớm so với thời gian học tập chuẩn thì tổng số tín chỉ tích lũy đã học ở học kỳ cuối để xét HBKKHT được phép nhỏ hơn 15 tín chỉ nhé[cite: 1]."
+    - vai: sinh_vien
+      noi_dung: "da e hieu r. cho e hoi them la quy trinh xet sv vao o ktx nha truong dc thuc hien ntn vay a?"
+  dap_an_nhap: "Quy trình xét sinh viên vào ở ký túc xá gồm 7 bước[cite: 1]:\n- Bước 1: Kiểm tra tình trạng và số lượng chỗ nội trú[cite: 1]\n- Bước 2: Thông báo đăng ký nội trú[cite: 1]\n- Bước 3: Nhận hồ sơ và rà soát điều kiện theo quy định[cite: 1]\n- Bước 4: Xem xét, trình Hội đồng phê duyệt danh sách[cite: 1]\n- Bước 5: Họp Hội đồng[cite: 1]\n- Bước 6: Công bố Quyết định[cite: 1]\n- Bước 7: Tiếp nhận sinh viên[cite: 1]"
+  y_bat_buoc:
+    - "Bước 1: Kiểm tra tình trạng và số lượng chỗ nội trú[cite: 1]"
+    - "Bước 2: Thông báo đăng ký nội trú[cite: 1]"
+    - "Bước 3: Nhận hồ sơ và rà soát điều kiện theo quy định[cite: 1]"
+    - "Bước 4: Xem xét, trình Hội đồng phê duyệt danh sách[cite: 1]"
+    - "Bước 5: Họp Hội đồng[cite: 1]"
+    - "Bước 6: Công bố Quyết định[cite: 1]"
+    - "Bước 7: Tiếp nhận sinh viên[cite: 1]"
+  nguon:
+    - "Đ8: Quy trình xét sinh viên vào ở ký túc xá, Quy trình xét sinh viên vào ở ký túc xá"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-214
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thầy cô cho em hỏi điểm trung bình chung học kỳ được tính theo công thức nào vậy ạ?"
+    - vai: tro_ly
+      noi_dung: "Điểm trung bình chung học kỳ, năm học và tích lũy được tính theo công thức A = Σ(ai × ni) / Σ(ni) (ai là điểm học phần thứ i, ni là số tín chỉ học phần thứ i) và làm tròn đến 2 chữ số thập phân[cite: 1]."
+    - vai: sinh_vien
+      noi_dung: "Em cảm ơn ạ. Cho em hỏi thêm là theo quy định thì nội dung công tác của cố vấn học tập gồm những việc gì ạ?"
+  dap_an_nhap: "Theo quy định, cố vấn học tập là người nắm vững quy chế, quy định, chương trình và kế hoạch đào tạo của Trường, các yêu cầu và nhiệm vụ học tập của sinh viên để tư vấn, hỗ trợ sinh viên[cite: 1]. Cố vấn học tập thực hiện các nội dung chính sau[cite: 1]:\na) Hướng dẫn sinh viên xây dựng kế hoạch học tập và rèn luyện[cite: 1];\nb) Tư vấn cho sinh viên nắm rõ chiến lược phát triển của Trường để sinh viên có định hướng, kế hoạch cho bản thân[cite: 1];\nc) Phối hợp các đơn vị liên quan hỗ trợ sinh viên giải quyết các vấn đề về công tác đào tạo, công tác quản lý sinh viên và các vấn đề khác[cite: 1]."
+  y_bat_buoc:
+    - "Hướng dẫn sinh viên xây dựng kế hoạch học tập và rèn luyện[cite: 1]"
+    - "Tư vấn cho sinh viên nắm rõ chiến lược phát triển của Trường để sinh viên có định hướng, kế hoạch cho bản thân[cite: 1]"
+    - "Phối hợp các đơn vị liên quan hỗ trợ sinh viên giải quyết các vấn đề về công tác đào tạo, công tác quản lý sinh viên và các vấn đề khác[cite: 1]"
+  nguon:
+    - "Đ10: Quy định công tác cố vấn học tập cho sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-215
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em học hệ chính quy cấp bằng đại học thứ nhất với thời gian chuẩn là 4 năm, vậy thời gian học tối đa của khóa em là mấy năm ạ?"
+    - vai: tro_ly
+      noi_dung: "Thời gian học tập tối đa đối với chương trình đào tạo đại học cấp bằng thứ nhất hình thức chính quy là 8 năm học[cite: 1]."
+    - vai: sinh_vien
+      noi_dung: "Dạ em rõ rồi. Tiện cho em hỏi nếu muốn xin nghỉ học tạm thời vì lý do cá nhân thì cần đáp ứng những điều kiện gì ạ?"
+  dap_an_nhap: "Để được xin nghỉ học tạm thời vì lý do cá nhân khác, sinh viên phải đáp ứng các điều kiện sau[cite: 1]:\n- Đã phải học tối thiểu 01 học kỳ[cite: 1];\n- Không thuộc các trường hợp bị xem xét buộc thôi học hoặc xem xét kỷ luật[cite: 1];\n- Phải làm đơn trình bày rõ lý do có xác nhận của Trưởng khoa quản lý sinh viên, có bảng điểm hợp lệ và giấy tờ liên quan gửi về Phòng CTCT và HSSV ít nhất 2 tuần trước khi học kỳ mới bắt đầu[cite: 1]."
+  y_bat_buoc:
+    - "đã phải học tối thiểu 01 học kỳ[cite: 1]"
+    - "không thuộc các trường hợp bị xem xét buộc thôi học hoặc xem xét kỷ luật[cite: 1]"
+    - "làm đơn gửi Phòng CTCT và HSSV ít nhất 2 tuần trước khi học kỳ mới bắt đầu[cite: 1]"
+  nguon:
+    - "Đ12: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 16"
+  hanh_vi: tra_loi
+  ghi_chu: ""
+
+- phieu: V4-216
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Em chào thầy cô, đợt này em đang chuẩn bị hồ sơ vay vốn tín dụng sinh viên ở ngân hàng chính sách xã hội dưới quê, họ yêu cầu phải có giấy xác nhận của nhà trường gửi về gấp trước ngày 15. Do tuần này em đang bị sốt xuất huyết phải nằm viện điều trị nên không lên trực tiếp văn phòng trường ở An Dương Vương được, em muốn gửi thư điện tử để nhờ thầy cô hướng dẫn gửi giấy qua bưu điện. Thầy cô cho em xin địa chỉ email của Phòng Công tác chính trị và Học sinh, sinh viên để em liên hệ với ạ?"
+    - vai: tro_ly
+      noi_dung: "Email liên lạc của Phòng Công tác chính trị và Học sinh, sinh viên là phongctct@hcmue.edu.vn và hopthusinhvien@hcmue.edu.vn[cite: 1]."
+    - vai: sinh_vien
+      noi_dung: "Dạ em nhận được thông tin rồi, em cảm ơn thầy cô nhiều ạ. Thầy cô cho em hỏi thêm một việc nữa với ạ. Năm học vừa rồi em cố gắng học tập rất nhiều nên cả hai kỳ điểm GPA đều trên 3.6 và điểm rèn luyện cũng đạt Xuất sắc, lớp em các bạn cũng bảo em thuộc diện được khen thưởng sinh viên xuất sắc của trường. Em muốn hỏi là để được nhà trường xét khen thưởng cuối năm cho cá nhân thì quy trình thủ tục thực hiện như thế nào và do những đơn vị nào phối hợp đề nghị lên Hiệu trưởng vậy ạ?"
+  dap_an_nhap: "Theo quy định, thủ tục xét khen thưởng cuối năm học đối với cá nhân có thành tích xuất sắc như sau[cite: 1]:\n- Cuối năm học, Phòng CTCT và HSSV phối hợp với các khoa tiến hành thống kê danh sách sinh viên xuất sắc để xét khen thưởng[cite: 1].\n- Căn cứ vào thành tích đạt được trong học tập và rèn luyện của sinh viên, Phòng CTCT và HSSV lập danh sách và đề nghị Hội đồng Khen thưởng và Kỷ luật sinh viên xét và đề nghị Hiệu trưởng công nhận danh hiệu đối với cá nhân[cite: 1].\n(Lưu ý: Vào đầu năm học, sinh viên phải đăng ký danh hiệu thi đua cá nhân do Phòng CTCT và HSSV tổ chức)[cite: 1]."
+  y_bat_buoc:
+    - "Cuối năm học, Phòng CTCT và HSSV phối hợp với các khoa tiến hành thống kê danh sách sinh viên xuất sắc để xét khen thưởng[cite: 1]"
+    - "Căn cứ vào thành tích đạt được trong học tập và rèn luyện của sinh viên, Phòng CTCT và HSSV lập danh sách và đề nghị Hội đồng Khen thưởng và Kỷ luật sinh viên xét[cite: 1]"
+    - "đề nghị Hiệu trưởng công nhận danh hiệu đối với cá nhân[cite: 1]"
+  nguon:
+    - "Đ14: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 34"
+  hanh_vi: tra_loi
+  ghi_chu: "Đoạn Đ14 không có nội dung về hệ quả vi phạm hoặc trường hợp ngoại lệ; chuyển sang hỏi về thủ tục, trình tự xét khen thưởng cá nhân cuối năm học."
+
+- phieu: V4-217
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi với kết quả điểm của em thì có được xếp loại học lực Trung bình không ạ?"
+  dap_an_nhap: "Bạn chưa cung cấp điểm trung bình của mình. Bạn vui lòng cho biết điểm trung bình học kỳ, năm học hoặc tích lũy theo thang điểm 4 của bạn là bao nhiêu để mình kiểm tra nhé (theo quy định, xếp loại Trung bình áp dụng cho điểm thang 4 từ 2,0 đến dưới 2,5)[cite: 1]."
+  y_bat_buoc:
+    - "hỏi lại điểm trung bình (học kỳ, năm học hoặc tích lũy) theo thang điểm 4 của sinh viên là bao nhiêu"
+  nguon:
+    - "Đ15: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
+  hanh_vi: hoi_lai
+  ghi_chu: ""
+
+- phieu: V4-218
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, kỳ này em được xét hb loại Giỏi thì được nhận bao nhiêu tiền zậy ạ?"
+  dap_an_nhap: "Theo quy định, mức HBKKHT loại Giỏi được tính theo công thức: Số tín chỉ x định mức học phí 01 tín chỉ x 1,25 (mức học phí phụ thuộc vào ngành học và quy định năm học)[cite: 1]. Để tính được số tiền chính xác, bạn vui lòng cho biết số tín chỉ bạn tích lũy trong học kỳ xét học bổng và bạn đang học ngành nào (hoặc định mức học phí 01 tín chỉ của ngành bạn) nhé[cite: 1]."
+  y_bat_buoc:
+    - "hỏi lại số tín chỉ tích lũy trong học kỳ của sinh viên"
+    - "hỏi lại ngành học của sinh viên hoặc định mức học phí 01 tín chỉ của ngành"
+  nguon:
+    - "Đ7: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
+  hanh_vi: hoi_lai
+  ghi_chu: ""
+
+- phieu: V4-219
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi xíu, em học đh cấp bằng thứ nhất thì thời gian học tập tối đa là mấy năm zậy ad?"
+  dap_an_nhap: "Bạn vui lòng cho biết bạn đang theo học hình thức đào tạo nào (chính quy hay vừa làm vừa học) nhé[cite: 1]. Vì theo quy định đối với chương trình đào tạo đại học cấp bằng thứ nhất[cite: 1]:\n- Hình thức chính quy: Thời gian chuẩn là 4 năm, tối đa là 8 năm học[cite: 1].\n- Hình thức vừa làm vừa học: Thời gian chuẩn là 5 năm, tối đa là 9 năm học[cite: 1]."
+  y_bat_buoc:
+    - "hỏi lại sinh viên theo học hình thức đào tạo nào (chính quy hay vừa làm vừa học)"
+  nguon:
+    - "Đ5: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: hoi_lai
+  ghi_chu: ""
+
+- phieu: V4-220
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi em thi kết thúc môn được 4,5 điểm (điểm D) thì có được tính là đạt môn không ạ?"
+  dap_an_nhap: "Bạn vui lòng cho biết học phần bạn đạt điểm D (4,5) là học phần giáo dục đại cương/chung thuộc nhóm nền tảng hay là học phần còn lại[cite: 1]? Vì theo quy định[cite: 1]:\n- Đối với học phần thuộc nhóm nền tảng: Điểm 4,0 - 4,7 (điểm D) được tính là Đạt[cite: 1].\n- Đối với các học phần còn lại: Điểm 4,0 - 4,7 (điểm D) bị tính là Không đạt[cite: 1]."
+  y_bat_buoc:
+    - "hỏi lại học phần sinh viên đạt điểm D thuộc nhóm nền tảng (giáo dục đại cương/học phần chung) hay thuộc các học phần còn lại"
+  nguon:
+    - "Đ16: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
+  hanh_vi: hoi_lai
+  ghi_chu: ""
+
+- phieu: V4-221
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Thầy cô cho em hỏi người học liên thông từ trình độ trung cấp lên trình độ đại học thì thời gian học tập tối đa là mấy năm ạ?"
+  dap_an_nhap: "Bạn vui lòng cho biết bạn đang theo học hình thức chính quy hay vừa làm vừa học nhé[cite: 1]. Vì đối với chương trình liên thông từ trung cấp lên đại học[cite: 1]:\n- Hình thức chính quy: Thời gian học tập chuẩn là 2,5 năm học, tối đa là 5 năm học[cite: 1].\n- Hình thức vừa làm vừa học: Thời gian học tập chuẩn là 3 năm học, tối đa là 6 năm học[cite: 1]."
+  y_bat_buoc:
+    - "hỏi lại sinh viên theo học hình thức đào tạo nào (chính quy hay vừa làm vừa học)"
+  nguon:
+    - "Đ5: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: hoi_lai
+  ghi_chu: ""
+
+- phieu: V4-222
+  hoi_thoai:
+    - vai: sinh_vien
+      noi_dung: "Cho em hỏi đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học thì thời gian học tập tối đa được quy định là bao nhiêu năm ạ?"
+  dap_an_nhap: "Bạn vui lòng cung cấp thông tin chương trình đào tạo của bạn là hình thức chính quy hay vừa làm vừa học nhé[cite: 1]. Vì theo quy định đối với người đã có một bằng đại học[cite: 1]:\n- Hình thức chính quy: Thời gian học tập chuẩn là 2 năm học, tối đa là 4 năm học[cite: 1].\n- Hình thức vừa làm vừa học: Thời gian học tập chuẩn là 2,5 năm học, tối đa là 5 năm học[cite: 1]."
+  y_bat_buoc:
+    - "hỏi lại sinh viên theo học hình thức đào tạo nào (chính quy hay vừa làm vừa học)"
+  nguon:
+    - "Đ11: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
+  hanh_vi: hoi_lai
+  ghi_chu: ""

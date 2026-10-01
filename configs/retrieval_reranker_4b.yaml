@@ -1,0 +1,41 @@
+# Ablation only (official_v4, 2026-09-30): configs/retrieval.yaml with the 4B reranker.
+# The deployed system uses configs/retrieval.yaml (8B).
+# BGE-M3 served by DeepInfra (OpenAI-compatible embeddings API). Its vectors
+# equal the local sentence-transformers model's, so collections built locally
+# stay valid. A query waits query_timeout_seconds per try (query_retries more
+# tries), then retrieval falls back to BM25.
+embedding:
+  model_name: BAAI/bge-m3
+  dimension: 1024
+  normalize_embeddings: true
+  api_url: https://api.deepinfra.com/v1/openai/embeddings
+  api_key_env_var: DEEPINFRA_API_KEY
+  query_timeout_seconds: 5
+  query_retries: 1
+  document_batch_size: 64
+  document_concurrency: 8
+
+retrieval:
+  # Parents handed to the composer.
+  default_top_k: 5
+  # Child chunks taken from dense search and from BM25, kept after RRF fusion
+  # and all sent to the reranker. On official_v1 (RRF only) 24 holds a gold
+  # child for 155/155 queries, 16 for 154/155; 40 adds nothing.
+  candidate_children: 24
+
+runtime:
+  qdrant_timeout_seconds: 60
+  parent_cache_max_entries: 2048
+
+# Qwen3-Reranker-8B on DeepInfra reranks every RRF child; on failure retrieval
+# keeps the RRF order. It replaced Cohere rerank-v4.0-fast on 2026-09-29 (see
+# src/retrieval/core/reranker.py for the measurements). One call with 24
+# candidates took p50 1.6 s, p90 4.7 s, max 9.3 s; with an 8 s timeout 3 of 30
+# live calls fell back, so it waits 10 s, without retry.
+reranker:
+  enabled: true
+  model: Qwen/Qwen3-Reranker-4B
+  api_url: https://api.deepinfra.com/v1/inference
+  api_key_env_var: DEEPINFRA_API_KEY
+  instruction: Given a student question, retrieve handbook passages that answer it
+  timeout_seconds: 10

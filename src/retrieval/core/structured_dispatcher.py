@@ -18,6 +18,7 @@ from .catalog_relationship import resolve_relationship
 from .directory_selector import DirectorySelector
 from .office_lookup import normalize_text, office_lookup
 from .program_lookup import program_lookup
+from .ordinal_labels import annotate_minimum_levels
 from .scholarship_lookup import scholarship_table_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import scoring_lookup_from_reference
@@ -379,7 +380,9 @@ def _reference_table_lookup(
     )
     leaf_lookups: list[dict[str, Any]] = []
     for table in candidates:
-        rows = [dict(row) for row in table.get("rows") or [] if isinstance(row, dict)]
+        rows = annotate_minimum_levels(
+            [dict(row) for row in table.get("rows") or [] if isinstance(row, dict)]
+        )
         source_section = table.get("source_parent_id") or table.get("source_section_id")
         resolved_rows = (
             _rows_resolved_in_table(lookup_type, table, slots=slots, cohort=cohort)

@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import copy
 import json
 import re
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
+
+import yaml
 
 from src.common.cohort import (
     admission_years_for_cohort,
@@ -22,7 +27,8 @@ from .amendment_precedence import (
 )
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.30-table-rows-verbatim-document"
+HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.33-minimum-levels"
 
 
 def build_answer_prompt_bundle(
@@ -54,6 +60,7 @@ def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
     The pipeline builds the packet from retrieval; a composer replay renders a
     recorded packet through this same function, so both prompts are identical.
     """
+    packet = _with_handbook_labels(packet)
     required_units = [
         {
             "task_id": unit["task_id"],
@@ -71,7 +78,7 @@ def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
 
 ĐẦU VÀO
 - AUTHORIZED_EVIDENCE_BY_UNIT gồm các đơn vị cần trả lời; mỗi đơn vị là một ý của câu hỏi cho một cohort.
-- Trong mỗi đơn vị: question là ý cần trả lời; mode=structured (kết quả tra bảng, danh bạ), rag (đoạn quy chế) hoặc clarify; coverage=covered (có căn cứ), uncovered (chưa tìm thấy căn cứ) hoặc needs_clarification (cần hỏi lại); primary_evidence là các nguồn được phép dùng, mỗi nguồn có source_ref, document_title (tên văn bản), article_label (Điều, nếu văn bản chia theo Điều), content và role.
+- Trong mỗi đơn vị: question là ý cần trả lời; mode=structured (kết quả tra bảng, danh bạ), rag (đoạn quy chế) hoặc clarify; coverage=covered (có căn cứ), uncovered (chưa tìm thấy căn cứ) hoặc needs_clarification (cần hỏi lại); primary_evidence là các nguồn được phép dùng, mỗi nguồn có source_ref, document_title (tên văn bản), article_label (Điều, nếu văn bản chia theo Điều), content, role, printed_in (sổ tay in nguồn đó) và có thể có currency_note (lưu ý về văn bản mới hơn).
 - role=candidate là mặc định: nguồn hệ thống tìm được cho đơn vị, có thể chỉ liên quan một phần. role=target chỉ có khi câu hỏi nêu đích danh một Điều khớp với nguồn đó.
 
 Mọi mục dưới đây là bắt buộc.
@@ -91,6 +98,7 @@ Mọi mục dưới đây là bắt buộc.
 - admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp; dùng metadata này để đối chiếu phạm vi áp dụng, không tự suy năm tuyển sinh từ mã khóa. Nếu tập năm có nhiều phần tử, không tự chọn một năm; nếu chưa xác định được trường hợp áp dụng, trình bày các trường hợp có căn cứ và nêu thông tin còn thiếu.
 - Với câu hỏi có/không, không trả lời bằng chữ "Có" hoặc "Không"; nêu kết luận thành câu đầy đủ, nhắc lại điều được hỏi (được hay không được làm gì, có bị hay không bị điều gì). Chỉ kết luận một việc được phép hay bị cấm, hoặc một kết quả có xảy ra hay không, khi evidence trực tiếp xác lập đúng điều được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm.
 - Nếu có applicable_amendments, áp dụng nội dung mới nhất trong đúng phạm vi nhưng không nhắc nhãn kỹ thuật amendment.
+- Điều kiện "từ mức X trở lên" được đáp ứng bởi X và mọi mức cao hơn trên cùng thang; "không vượt quá X" là X hoặc thấp hơn. Thang học lực: Kém < Yếu < Trung bình < Khá < Giỏi < Xuất sắc; thang rèn luyện: Kém < Yếu < Trung bình < Khá < Tốt < Xuất sắc. Một mức cao hơn mức tối thiểu vẫn đạt điều kiện, không phải "không khớp".
 - Khi document_title nêu năm học mà văn bản áp dụng (vd. một thông báo cho một năm học), nêu năm học đó cùng kết luận để người đọc biết phạm vi thời gian của nội dung.
 
 3. KHI THIẾU CĂN CỨ HOẶC CẦN HỎI LẠI
@@ -107,6 +115,8 @@ Mọi mục dưới đây là bắt buộc.
 - Nội dung rag có thể chứa bảng đã được chuyển thành dòng, mỗi dòng dạng "- Tên bảng › nhóm › mục: giá trị" (dấu "–" cũng dùng để nối các phần). Mỗi dòng là một hàng độc lập; các dòng liền nhau thường có chung phần đầu và chỉ khác nhãn mục ở cuối. Chỉ lấy giá trị từ dòng có nhãn mục khớp đúng điều được hỏi, không lấy giá trị của dòng kề bên có nhãn khác.
 - Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
 - Chép nguyên văn từng ký tự mọi email, số điện thoại, đường link, mã số và số hiệu văn bản từ evidence; không sửa, rút gọn hay tự điền phần còn thiếu.
+- Khi câu hỏi cần thông tin liên hệ của một đơn vị, nêu đủ các trường liên hệ mà evidence của đơn vị đó có: số điện thoại kèm số máy nội bộ (internal_numbers) khi danh bạ có, email, địa chỉ văn phòng, website. Số máy nội bộ là một phần của số điện thoại, không phải chi tiết phụ được phép bỏ.
+- Khi nêu một công thức, nêu kèm quy tắc làm tròn và các định nghĩa đi cùng công thức đó trong evidence; công thức thiếu quy tắc làm tròn là trả lời thiếu.
 
 5. TRÌNH BÀY
 - Khi evidence có article_label, nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ. Khi nguồn không có article_label (thông báo, hướng dẫn, quy trình, biểu mẫu), nêu tên văn bản theo document_title. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
@@ -114,6 +124,8 @@ Mọi mục dưới đây là bắt buộc.
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
 - Không hiển thị quá trình suy luận, metadata kỹ thuật hoặc tự tạo mục nguồn.
 - Dùng từ ngữ của sinh viên, vd. "khóa K51"; không dùng các từ kỹ thuật của đầu vào như cohort, evidence, source_ref hoặc role.
+- Nêu rõ câu trả lời dựa theo sổ tay nào, theo printed_in của nguồn được dùng (vd. "Theo Sổ tay sinh viên khóa K50 (năm học 2024 – 2025), …"), để người hỏi tìm lại được trong sổ tay đó. Nếu printed_in là sổ tay của khóa khác với khóa của đơn vị, nói rõ văn bản được in trong sổ tay đó.
+- Nếu nguồn được dùng có currency_note, thêm nguyên nội dung currency_note thành một câu lưu ý ở cuối phần trả lời của đơn vị, mỗi văn bản một lần; không suy đoán nội dung của văn bản mới hơn.
 
 AUTHORIZED_EVIDENCE_BY_UNIT
 {evidence_context}
@@ -126,6 +138,41 @@ Các đơn vị bắt buộc phải xử lý theo đúng thứ tự:
 
 Chỉ xuất câu trả lời cuối cùng cho sinh viên."""
     return prompt, evidence_context
+
+
+@lru_cache(maxsize=1)
+def _handbook_currency() -> tuple[dict[str, str], tuple[tuple[str, str], ...]]:
+    """School year of each handbook, and the currency notes keyed by section-id prefix."""
+
+    data = yaml.safe_load(HANDBOOK_CURRENCY_PATH.read_text(encoding="utf-8")) or {}
+    years = {str(cohort): str(year) for cohort, year in (data.get("handbook_years") or {}).items()}
+    notes = tuple(
+        (str(prefix), " ".join(str(entry["note"]).split()))
+        for entry in data.get("notes") or []
+        for prefix in entry.get("sources") or []
+    )
+    return years, notes
+
+
+def _with_handbook_labels(packet: dict[str, Any]) -> dict[str, Any]:
+    """Name the handbook each source is printed in, and attach its currency note.
+
+    Answers follow the student's own handbook (configs/handbook_currency.yaml),
+    so a source is labelled with the cohort that printed it, which differs from
+    the student's cohort only for a document validated to apply across cohorts.
+    """
+    years, notes = _handbook_currency()
+    labelled = copy.deepcopy(packet)
+    for unit in labelled.get("units") or []:
+        for source in unit.get("primary_evidence") or []:
+            cohort = str(source.get("source_cohort") or unit.get("cohort") or "")
+            if cohort in years:
+                source["printed_in"] = f"Sổ tay sinh viên khóa {cohort} (năm học {years[cohort]})"
+            source_id = str(source.get("source_id") or "")
+            note = next((text for prefix, text in notes if source_id.startswith(prefix)), None)
+            if note:
+                source["currency_note"] = note
+    return labelled
 
 
 def build_authorized_evidence_packet(

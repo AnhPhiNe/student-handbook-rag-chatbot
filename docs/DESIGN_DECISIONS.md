@@ -31,7 +31,7 @@ reports are listed at the end.
 | Composer | DeepSeek flash, thinking off, prompt v3.30 | Gemini 3.1 Flash-Lite; DeepSeek thinking low | Same quality as Gemini with 0 failures against 20/150; thinking low judged the same (correctness 0.991 against 0.988) and 3 s slower |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
-| Reranker | Qwen3-Reranker-8B on DeepInfra, on all 24 fused children | None; Cohere rerank-v4.0-fast; Qwen3-Reranker 0.6B, 4B | hit@1 0.923 / hit@5 1.000 against Cohere 0.897 / 0.981 and none 0.832 / 0.955 |
+| Reranker | Voyage `rerank-3`, on all 24 fused children (2026-09-30) | Qwen3-Reranker-8B, 4B, 0.6B on DeepInfra; Cohere rerank-v4.0-fast; none | first 0.942 / top-5 155/155 at p90 0.85 s, against 8B 0.923 / 155 at p90 4.7 s, 4B 0.903 / 153, Cohere 0.897, none 0.832 / 148. Chosen for availability: the DeepInfra 8B endpoint stalled for over four hours on 2026-09-30 |
 | Lexical search | BM25 fused with RRF (k = 60), scored by BM25 only | Dense only; BM25 with a title-match rule | RRF + rerank beats dense + rerank; the title rule cost hit@1 and 3× BM25 time |
 | Candidate depth | 24 children for dense, BM25, fusion and rerank | 16, 40 | 24 holds the first gold child for 155/155 questions, 16 for 154/155 |
 | Tables | Reviewed JSON tables for lookup; readable tables kept in parents; no table rows embedded | The composer reading tables from retrieved text | The composer picked the wrong row of a range table in every try (sup_05, grade_remaining) |
@@ -428,7 +428,7 @@ calls fell back to RRF. Any failure keeps the RRF order.
 | Start-up warm-up | Build the pipeline and the retriever, wait up to 180 s for BM25 | On the live Space the first RAG question took 23.3 s and the second 6.9 s, because the retriever and the BM25 index were built on first use; with the retriever warmed, the first took 7.5 s (`ac565c1c`) |
 | Planner rate limits | 500 requests a minute, no local token limit; after a 429 wait up to 10 s, then the safe RAG plan | The account allows 500 RPM and 200,000 TPM for `gpt-6-luna`. A plan costs about 9,400 tokens (948 calls), so tokens bind first at about 21 questions a minute, which OpenAI enforces with 429s. The old local cap of 30 a minute (the free Groq limit of the Qwen era) failed the 31st question in a minute, and with a single key one 429 failed every question for 30 s; both now plan normally or fall back to RAG (offline simulation, `e7a19a21`) |
 | Queue wait | 30 s (was 15 s) | A queued request waits for an active answer to finish, and answers took about 7 s at p50 and 9–10 s at p90 (`56453c13`) |
-| Reranker timeout | 10 s, no retry | Cohere went from 5 s to 8 s when 24 candidates took up to 4.0 s; for Qwen3-Reranker-8B (max 9.3 s) 3 of 30 live calls fell back at 8 s. A retry would only double the wait at an overloaded service |
+| Reranker timeout | 10 s, no retry | Cohere went from 5 s to 8 s when 24 candidates took up to 4.0 s; for Qwen3-Reranker-8B (max 9.3 s) 3 of 30 live calls fell back at 8 s; Voyage rerank-3 peaked at 1.35 s, so the 10 s budget is now slack. A retry would only double the wait at an overloaded service |
 | Query embedding | 5 s timeout, 1 retry; on failure BM25 serves alone | Retrieval used to return nothing when the embedding call failed; with the API embedder a timeout now costs ranking quality, not the answer |
 | Skipped rerank | Logged as a warning and recorded in telemetry | Trial-key limits used to skip reranking silently, dropping hit@1 from 0.897 to 0.832 |
 | No answer cache, no Redis (2026-09-30) | Every question runs the planner, retrieval and composer. The public visit counter is one MongoDB document (`app_metrics`, `$inc` with upsert, 3 s timeouts); `STUDENT_RAG_VISIT_COUNTER=false` keeps a developer machine from counting | The answer cache was keyed by the exact question plus the evidence, and only 4 of 78 real requests hit it, most of them tests; a hit also made "Tạo lại" return the same answer. A semantic cache was rejected: a near-duplicate question can need a different cohort or article, and a wrong cached answer costs more than a composer call. Without the cache, Redis held only the visit counter, and MongoDB already serves the parent articles, so one service was dropped. On 2026-09-29 the Redis client had also had no timeouts, and the visit endpoint had blocked the event loop (fixed in `dbd23e29` before the removal) |
@@ -524,6 +524,402 @@ smoke the fix moved hallucination from 2/10 to 0/10 on the same answers. The
 2026-09-28 run was judged before the fix, when the composer did not yet name
 documents.
 
+## Held-out end-to-end result (official_v4, 2026-09-30)
+
+`official_v4` is 246 authored questions over 229 clusters, written against the
+handbook and frozen before any of them was run (`data/eval/official_v4/SPEC.md`
+fixes the metrics, the cluster bootstrap and the rerun rules). Full figures and
+caveats are in `data/eval/official_v4/RESULTS.md`.
+
+| | Run A, hold-out | Run B, after the fixes |
+|---|---:|---:|
+| Commit | `d3db167e` | `c23e027a` |
+| **answer_correctness** | **0.926** | **0.942** |
+| 95% CI over clusters | 0.899 – 0.950 | 0.920 – 0.962 |
+| Hallucination rate | 0.093 | 0.130 |
+| Critical false passes | 0 | 0 |
+| Answers scoring 0.0 | 5 | 2 |
+
+Run A is the hold-out: its code predates any sight of a v4 answer. Run B adds
+the five fixes below, which were written after the 4B ablation was read, so it
+describes the deployed system and is never quoted as a hold-out figure.
+
+Run C (`1a9ccd3d`, 2026-10-01) adds the fixes of the sections below. Because
+the Groq keys hit their daily cap, both run B and run C were judged by the same
+model on DeepInfra. On run B's answers the two providers agree: 0.942 against
+0.937, and 206 of 246 scores are identical. Run C scores **0.959** (CI 0.938 –
+0.978) against run B's 0.937. The paired difference is +0.022, CI [-0.001,
++0.045], so the improvement is likely but not established. The criteria for
+further fixes, set before reading, were a regression caused by the fixes or a
+serious false statement not already known; neither was met. Details are in
+`data/eval/official_v4/RESULTS.md`.
+
+Paired over clusters, B − A is +0.016 with a 95% CI of [−0.008, +0.041]: over
+the whole set the improvement is not established. It is established where it
+was expected — unaccented and mistyped questions gained +0.124 (CI +0.034 to
++0.233, 0.834 → 0.958), which is what the BM25 fix targets — and absent
+everywhere else (−0.013, CI −0.036 to +0.007).
+
+The rising hallucination rate is the judge objecting to detail beyond the
+sources on answers it also scores correct: 23 of run B's 32 flagged cases score
+1.0. Wrong answers fell from 5 to 2, and both of run B's wrong answers came
+from planner and composer variance rather than from a fix (in one the query
+plan and the resolved table row are identical in both runs).
+
+### The five fixes, found by reading the 4B ablation
+
+| Fix | What was wrong |
+|---|---|
+| `bm25_retriever` indexes and queries both spellings | an unaccented question could not match accented handbook text |
+| `catalog_relationship` accepts several service rows of one unit | a service question could not join to its office |
+| `scholarship_lookup` matches a label as a whole word | "khác" was read as "Khá" |
+| `foreign_language_lookup` matches a code as a whole word, and answers a named level from that column whenever the table fills it | "N30" was read as "N3"; a level column holding a score range was never matched |
+| `query_plan` gives a single-task follow-up the standalone query | the scope named earlier in the conversation was dropped |
+
+Only the BM25 fix has a measured end-to-end benefit. The `query_plan` fix was
+compared on `official_v2`'s 25 follow-ups against the pre-patch normalizer with
+one planner call feeding both: it changed 6 questions and lost no scope term,
+which passes its criterion without showing a gain. The two whole-word fixes
+carry regression tests and no measured v4 effect.
+
+### Availability during the runs
+
+Both runs were made from one home network on a day when every provider was
+slow; a request that runs no model took 1.5–2.4 s. Run A's first pass lost
+dense retrieval to the 5 s embedding timeout in 108 of 246 cases (those cases
+scored 0.932 against 0.924 for the intact ones, so the BM25 fallback held), and
+the rule for rerunning them was added after those scores were read, which
+`RESULTS.md` states. Reruns and run B used
+`configs/retrieval_eval_patient.yaml`, which raises the embedding and reranker
+waits to 30 s and changes nothing else; deployment keeps `configs/retrieval.yaml`.
+Whether the deployed timeouts should rise has to be decided on latency measured
+from the deployment, not from this network.
+
+## Fixes after reading the official_v4 answers (2026-10-01)
+
+Every run B answer below 1.0 and every answer the judge flagged (43 cases) was
+read against its required facts and the source data. Six answers stated
+something false; the rest were incomplete or correct with extra detail. Three
+causes were in what a description told a model, not in the data:
+
+| Gap | Evidence | Fix |
+|---|---|---|
+| The scholarship table holds `scholarship_score_range`, but only the formula tool advertised "điểm học bổng" | V4-148 computed 3.20–3.60 where the table says 3.672; V4-150 sent the student to compute it | The classification aspect names the score range and the K51 columns; the formula tool hands range questions back |
+| Directory lookups return `internal_numbers`, the composer dropped them | 9 cases asked for an extension, the payload held it 9 times, the answer printed it 4 times | `requested_field=phone` includes the extension; the composer gives every contact field the evidence has |
+| The GPA rounding rule sat only in `raw_excerpt`, which the lookup never passed on | V4-025, V4-030 | A `rounding` field on the rule, carried in the lookup result |
+
+`scripts/audit_tool_descriptions.py` now checks that every answerable field in
+the data is named in its tool's registry text, and `tests/test_tool_description_audit.py`
+fails on a new gap. Four known gaps remain: the scholarship tool reads the
+eligibility and score-formula tables, but no value of `aspect` selects them, so
+they are unreachable rather than unadvertised; reaching them needs code.
+
+Not fixed, with the reason:
+
+- **V4-070, dormitory application.** The service directory comes from the
+  handbook's directory table, which lists no dormitory application for the
+  student affairs office; that duty is in the office's numbered responsibilities
+  in the regulations, a second source. Merging it changes every unit's services.
+- **V4-107, graduate office routed to RAG.** The service directory holds the
+  exact answer; the planner chose RAG for "liên hệ ở đâu để tìm hiểu quy chế".
+  This is the "where" boundary that prompts v54 and v55 failed to fix.
+- **Needless clarification (V4-100, V4-145, V4-092).** The prompt already forbids
+  it; the planner did not follow the rule.
+- **V4-003, V4-204.** Composer and planner variance: V4-003 had the same plan and
+  the same resolved row as the run that answered correctly.
+
+The registry text is part of the planner prompt, so `official_v1` was planned
+again (`official_v1_deterministic_20260930T174119Z`, graded with the v10
+contract the baseline used): **130/135**, against 133/135 before. Four cases
+newly failed and one newly passed. Each newly failing case was planned again
+under the old and the new prompt:
+
+| Case | Old prompt | New prompt | Reading |
+|---|---:|---:|---|
+| 003 "Môn đại cương 8,8 được A chưa?", keeps `course_scope=foundation` | 10/20 | 5/20 | unstable under both prompts; the baseline pass was a coin flip |
+| 032 TOPIK II, keeps "bậc 3"/"bậc 4" | 19/20 | 18/20 | no difference |
+| 038 TOEFL iBT, keeps "bậc 3"/"bậc 4" | 5/5 | 5/5 | the failed run was a rare draw |
+| 122 certificate office, plans `student_service` | 4/5 | 4/5 | no difference |
+
+No case shows an effect of the change that its variance does not explain, so
+the 130 against 133 is read as planner variance. Case 003 is a standing
+instability of the scoring boundary, not a new one.
+
+## Structured data of the three cohorts, checked against the handbook (2026-10-01)
+
+Prompted by an owner's question the system could not answer ("học cntt ra trường
+làm gì"), the structured layer of K48-K49, K50 and K51 was checked whole:
+coverage per cohort, fields left empty though the source holds a value, text
+leaking between records, and the K51 amendments.
+
+What held:
+
+- Every table type and directory exists for all three cohorts.
+- Decision 4743/QĐ-ĐHSP amends seven points of the training regulation from the
+  2025 intake (K51). Two are tables, and both are applied: study duration
+  (chính quy 04/06 years, vừa làm vừa học 05/7,5) and the split grade scale (D and
+  D+ pass for foundation courses, fail for the rest). The other five are rules,
+  read by RAG with `amendments.json`.
+- The foreign-language table exists only in the K50 handbook (Decision 3215);
+  its own Điều 1 covers intakes from 2022, so it serves all three cohorts.
+
+Three defects, fixed:
+
+| Defect | Scope | Fix |
+|---|---|---|
+| Career sections unreachable | all 129 program records; the planner judged the question out of domain or sent it to RAG, where no chunk holds a career section | the program tool names careers and offers `requested_field=career` |
+| Addresses under "Phòng làm việc" not read | 4 units (Trung tâm Ngoại ngữ, Trung tâm Tin học, Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp, Đoàn Thanh niên – Hội Sinh viên) in K48-K49 and K50: 26 service rows and their profiles without an address | the extractor reads every address label, including Trung tâm Tin học's "Văn phòng ghi danh" |
+| A faculty given its programs' careers as duties | 31 of the 34 faculties the keyword guess matched | faculties get no text-derived duties |
+
+`scripts/audit_extraction.py` now checks every table cell, formula and directory
+contact value against its source text, and every labelled contact value in the
+source against its field. Run on the catalogs before the fix it reports the 26
+rows; after it, only the scholarship eligibility table, a faithful short
+restatement of Điều 27 that no `aspect` selects yet.
+
+Measured after the fixes, at `a1b82a6b`:
+
+- **Career questions.** Nine questions over different programs and wordings
+  (abbreviated, unaccented, colloquial), planned three times each: 27 of 27 go
+  to the program tool for careers, against 0 of 9 before; a tenth, asking where
+  the IT faculty's office is, stays with the faculty tool 3 of 3. Asked end to
+  end, the answers quote the handbook's career sections.
+- **official_v1 planner: 134/135** (v10 contract). Runs of this prompt family
+  have scored 133, 130 and 134; the one failure, 093, plans the same way under
+  the old and the new prompt (9 of 10 plans correct under each).
+- **Composer v3.31**, replayed on run B's 246 evidence packets and judged:
+  answer correctness 0.942 → **0.958**, paired over clusters **+0.015**, 95% CI
+  [+0.002, +0.030]. The four answers that had dropped an extension now give it;
+  unsupported-claim flags fell from 32 to 22. One critical false pass appeared,
+  V4-148: the packet (planned by run B) holds only the scholarship formula, and
+  both prompt versions derived a wrong range from it; with the new tool
+  descriptions the planner sends that question to the scholarship table in 10
+  of 10 plans. This is v4 data, so it is not a hold-out result.
+
+Not covered: no cell was compared character by character with the PDF, only
+with the extracted handbook text; each program's faculty is checked by count
+and presence, not record by record against the handbook; K52 is not in the
+data.
+
+## The RAG branch, checked against the handbooks (2026-10-01)
+
+What the index holds, and how retrieval and section text compare with the PDFs:
+
+- **Index complete and in sync**: 541 sections (MongoDB holds 541) and 3,800
+  chunks (Qdrant holds 3,800); every section has at least one chunk, none empty.
+- **Retrieval on official_v4** (run B): 160 of 162 cases got every section their
+  current question needs (98.8%). For a follow-up only the current turn's
+  section is required; v4's expected list also names the previous turn's. The
+  two misses retrieved nothing by design: V4-070 was planned to the directory,
+  V4-100 asked back.
+- **Coverage against each handbook's table of contents**: every regulation,
+  policy and notice is indexed. Out of scope and left out: the college-level
+  preschool regulation (Quyết định 3533, a branch-campus programme) and the
+  branch-campus sections. Not indexed: the school overview (all three cohorts),
+  the museum and historic-site lists (K48-K49, K50), K51's dormitory flowchart
+  page (the procedure itself is indexed) and K48-K49's research-report appendix.
+- **Section text**: 96–97% of the regulation sentences in the PDFs are in a
+  section; the rest are preambles, signatures, forms, table rows stored as
+  tables, and out-of-scope text. No section swallows another article's heading,
+  carries a page header, holds a broken table or duplicates another of its
+  cohort. Two sections are cut (K50 and K51 advising regulation, Điều 4), losing
+  a cross-reference. Recorded page numbers: 451 sections right, 2 wrong.
+- **Amendments**: all 7 of K51's amendments attach to the right sections; of the
+  7 v4 cases that received one, 6 scored 1.0.
+- A claim made during the audit and withdrawn: the handbook's "Một số công việc
+  của các phòng và trung tâm" table is not missing information. Its seven
+  matters are in the service directory in the units' own words, and the
+  production selector picked the right unit for 23 of 24 student phrasings.
+
+## Answers follow the student's own handbook (owner decision, 2026-10-01)
+
+Reading the handbooks' own clauses showed that a cohort's handbook can be out of
+date for rules that bind every intake:
+
+| K48-K49 handbook | Since replaced or reissued |
+|---|---|
+| Student affairs regulation, Quyết định 989 (2022) | Quyết định 1999 (2024), "thay thế cho Quyết định số 989"; consolidated as Quyết định 2535 (2025, K51), "áp dụng cho tất cả các khoá tuyển sinh" |
+| Conduct assessment regulation, Quyết định 2650 (2022) | Quyết định 2000 (2024), "thay thế Quyết định số 2650" |
+| Academic advising regulation, Quyết định 134 (2014) | Quyết định 2001 (2024), printed in K50 and K51 |
+| Fee and support notices of 2022–2023 | each handbook prints its own year's; K51 prints 2025–2026 |
+
+K50's student affairs regulation is likewise superseded by K51's consolidated
+text. The difference matters: K51 states the scholarship rule by classification
+pairs, K48-K49 and K50 by score ranges.
+
+The owner chose to keep answers faithful to the student's own handbook, because
+a K49 student who checks an answer against the K49 handbook must find it there.
+So the composer names the handbook of the sources it uses ("Theo Sổ tay sinh
+viên khóa K50 (năm học 2024 – 2025)"), and when a source belongs to a document
+listed in `configs/handbook_currency.yaml` it adds that document's note, which
+says what is newer and where it is printed. Every note quotes its basis and
+claims a replacement only where a "thay thế" clause says so. Newer content is
+never substituted, and the three documents printed only in later handbooks
+(off-campus residence, conduct code of 2023, talented-learner policy) are not
+offered to the earlier cohorts.
+
+Measured at `ecda6cda`, composer v3.32 replayed on run B's 246 packets: the
+handbook is named in 233 answers and a note appears in 71; answer correctness
+0.959 against v3.31's 0.958 (paired +0.002, 95% CI [-0.012, +0.015]). The judge
+first read the notes as unsupported (flags 22 → 36) because its context omitted
+them; with the fix it sees them (29 flags).
+
+For the thesis, the evaluation's correct answer is therefore "faithful to the
+student's own handbook", and the table above is a limitation of that choice.
+
+Found while measuring, and fixed afterwards (next section):
+
+- **V4-020**: asked about academic "Khá" with conduct "Tốt" under K51's
+  classification table, the composer often reads "Khá trở lên" as excluding
+  "Tốt" and denies the scholarship: wrong in about 6 of 8 draws under v3.31 and
+  fewer under v3.32.
+- **"IELTS 5.0 có đạt chuẩn đầu ra bậc 3 không?"** and similar questions go to
+  RAG. The equivalence table is printed as an appendix inside the article
+  "Điều 8. Tổ chức thực hiện", so RAG reaches it only when that article is
+  retrieved; otherwise the answer says nothing was found.
+
+## Minimum levels and "does my value meet the condition" (2026-10-01)
+
+**Minimum levels (V4-020).** Each "<level> trở lên" cell of a
+classification table keeps the handbook's wording. Its row gains
+`<column>_admitted_levels`, for example "Tốt; Xuất sắc"
+(`src/retrieval/core/ordinal_labels.py`). Composer v3.33 also states the order
+of the academic and conduct scales. Live pipeline, K51:
+
+| Academic + conduct | Answer |
+|---|---|
+| Giỏi + Xuất sắc | Giỏi |
+| Khá + Xuất sắc | Khá |
+| Khá + Tốt | Khá |
+| Xuất sắc + Tốt | Giỏi |
+
+All four are right.
+
+**A value checked against a condition (planner v56).** v56 adds one general
+rule to v53: "Hỏi giá trị cụ thể có đạt điều kiện không → structured tra giá
+trị + RAG đọc điều kiện". It names no tool or topic. Planner probes (K51,
+counts of a lookup task, with RAG beside it for the two "đạt chuẩn đầu ra"
+questions):
+
+| Question | v53 | v56 |
+|---|---:|---:|
+| IELTS 5.0 có đạt chuẩn đầu ra bậc 3 không | 0/3 | 4/4 |
+| TOEFL iBT 45 có đủ chuẩn đầu ra không | 1/3 | 4/4 |
+| TOEIC 4 kỹ năng muốn bậc 4 thì từng kỹ năng cần bao nhiêu (v1 036) | 8/8 | 8/8 |
+
+On another topic, "Điểm rèn luyện 60 có đủ điều kiện xét học bổng không"
+became a conduct lookup plus RAG 3/3. That question was not planned under v53.
+
+**A first attempt that regressed.** The first version had two problems:
+
+- It split each minimum-level cell into one row per admitted level, which
+  replaced the handbook's cells.
+- It rewrote the foreign-language tool description around the "chuẩn đầu ra"
+  question.
+
+official_v1 fell from 134 to 131/135:
+
+- 057 and 060: the rows no longer matched the handbook.
+- 036: the planner went to RAG in 3 of 8 draws. With the general rule and the
+  original description it is back to 8/8, so the tailored description was the
+  harmful part and was dropped.
+
+The final version (`1a9ccd3d`) scores **133/135** on official_v1, against
+134/135 before. Both failures are known unstable cases:
+
+- 032: the planner writes the levels as "3"/"4" instead of "bậc 3"/"bậc 4"
+  in 2 of 6 draws.
+- 096: the planner asks `requested_field=office` instead of `unit` in 2 of 6
+  draws.
+
+093, which failed before, passed.
+
+**Not fixed.** "TOEIC bao nhiêu điểm thì đạt chuẩn đầu ra bậc 3?" gives no
+value to check and still goes to RAG (1 of 3 draws under v56 reached the table). A
+wider rule ("hoặc cần giá trị nào để đạt") did not change it and was not kept.
+Splitting the appendix out of Điều 8 in the index would fix the RAG side. That
+means rebuilding and re-uploading the index, so it is left for a later data
+build.
+
+## The judge against a second rater (2026-10-01)
+
+The judge (gpt-oss-120b on Groq) was compared with a second rater, Claude
+(Opus 5.5), on official_v4 run B (`official_v4_answers_20260930T152637Z`). This
+is a model-to-model check, not a human calibration.
+
+**Sample.** Every answer the judge scored below 1.0 (36) and 30 of the 210 it
+scored 1.0, drawn with seed 20261001 (`data/eval/official_v4/judge_calibration/sample.json`).
+
+**Rubric.** Fixed before reading. Each answer was scored against the question,
+the gold answer and the required facts, and checked in the handbook data where
+a claim was in doubt:
+
+- 1: everything asked is answered correctly;
+- 0.75: the core is right but one asked detail is missing;
+- 0.5: one part of a multi-part question is right;
+- 0.25: mostly wrong;
+- 0: wrong, or a "not found" for an answerable question.
+
+Each answer also got a label:
+
+- C: the student gets a correct answer to what was asked;
+- I: incomplete;
+- W: states something false.
+
+Gold facts that the question did not ask for, such as an email when only the
+address was asked, were not required. A missing internal extension counted
+only when the question asked for the phone number.
+
+**Blindness.** The scores were written to `my_scores.tsv` before the judge's
+scores were opened. The 30 answers the judge scored 1.0 had not been read
+before. The 36 lower ones had, during the audit above, together with the
+judge's flags. Their scores are therefore not independent of the judge.
+
+`python -m scripts.judge_calibration` gives (`result.json`):
+
+| Stratum | n | Judge mean | Rater mean | Within ±0.25 |
+|---|---:|---:|---:|---:|
+| Judge 1.0 (random 30 of 210) | 30 | 1.000 | 1.000 | 30/30 |
+| Judge below 1.0 (all) | 36 | 0.606 | 0.812 | 22/36 |
+| Whole run, rater reweighted by stratum | 246 | 0.942 | 0.973 | |
+
+- **No false pass at 1.0 in the sample.** Every answer the judge scored 1.0
+  was correct to the rater. With 0 of 30, the rate of false passes among the
+  210 is below about 10% at 95% (rule of three).
+- **The judge is stricter than the correctness criterion.** 19 of the 36
+  answers it scored below 1.0 are correct to the rater. Most of its deductions
+  are for gold facts the question did not ask for:
+  - phone or email when only the unit or address was asked: V4-143, V4-131, V4-145;
+  - the standard duration when only the maximum was asked: V4-197;
+  - the rounding rule: V4-025.
+
+  In one case it named facts as missing that the answer contains: V4-117, the
+  GPA condition and the 2025 re-entry clause. So the reported 0.942 is a
+  conservative figure; the rater's estimate is 0.973.
+- **One soft false pass.** The judge gave V4-148 0.85, but the answer stated
+  the scholarship score range as 3.20 to below 3.60; the handbook gives
+  3.20–3.67. At a pass line of 0.8, the judge passes 2 answers the rater does
+  not (V4-111 incomplete, V4-148 wrong) and fails 7 the rater finds correct.
+- **Real failures in the sample.**
+  - 2 answers state something false: V4-003 (3.75 classed Giỏi) and V4-148.
+  - 4 fail a whole part of the question:
+    - V4-100, V4-092: needless clarification;
+    - V4-107: the "where" boundary;
+    - V4-204: "not found" for the support centre's services.
+  - 11 more miss a detail that was asked.
+
+  These are the cases already listed as fixed or as known limitations above.
+
+**Use.** The judge's scores rank runs and find failures, since every run is
+scored by the same judge. They are not an absolute measure of how often
+students get a correct answer, which is probably higher than the score.
+
+**Limits.**
+- The second rater is a model, not the owner or a student.
+- The low stratum was not read blind.
+- Ten disagreements are left for the owner to re-score: V4-117, V4-148,
+  V4-070, V4-225, V4-143, V4-186, V4-197, V4-145, V4-138 and V4-111.
+
 ## What these measurements do not show
 
 - A comparison with plain RAG (no planner) or with a long-context model given the
@@ -538,8 +934,9 @@ documents.
   about 1–2% of the development cases (v1 092, v3 003, 007, 085), and the student
   gets a "not found" answer. Real questions after the deploy will show whether
   it matters.
-- The judge's agreement with a human rater; both datasets were written by one
-  author from handbook content, not collected from real students.
+- The judge's agreement with a human rater. It was compared only with a second
+  model (see "The judge against a second rater"). Both datasets were written by
+  one author from handbook content, not collected from real students.
 - Combinations not run, such as Qwen3-Embedding-8B with Qwen3-Reranker-8B.
 - Whether the composer sends students to units the evidence does not name. When
   the handbook does not say where to go, the composer sometimes suggests an
@@ -588,6 +985,10 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Thinking off against low, judged | `measurements_20260928/results/v330/` (`off_judge.json`, `low_judge.json`) |
 | End-to-end development questions | `supplementary_questions_20260928T231521Z` |
 | Planner input with and without the slang rewrite | `official_v1_deterministic_20260929T045740Z` (with), `…T051501Z` (without) |
+| official_v4 run A (hold-out) and run B (after the fixes) | `official_v4_answers_20260930T112153Z` (run A, in the `student_handbook_rag_voyage` worktree) and `official_v4_answers_20260930T152637Z` (run B), each with its `v4_report.json`; ablations `…T060046Z` (8B, 105 cases without a reranker) and `…T063041Z` (4B) |
+| Reranker comparison on v1 with shared candidates | `reranker_compare_v1/` and `reranker_compare_v1_patched/` |
+| query_plan normalizer, patched against frozen | `plan_normalizer_compare/` |
+| Structured lookup audit over every table and cohort | `structured_lookup_audit/` |
 | Retrieval with and without query expansion | `official_v1_retrieval_20260929T045526Z` (with), `…T052455Z` (without) |
 | Slang probe | `measurements_20260928/results/slang_probe/` (`slang_probe.py`) |
 | "Where" questions and table-adjacent rules | `table_adjacent_questions_20260929_run1-3` and `regwhere_v53_20260929_run1-3` (v53); `where_v54_20260929_run1-3`, `official_v1_deterministic_20260929T124205Z` and `official_v2_deterministic_20260929T125553Z` (v54); `where_all_v55_20260929_run1-3` (v55); `official_v2_deterministic_20260929T111444Z` (v53, before the fact-lock grounding fix) |

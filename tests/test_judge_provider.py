@@ -1,7 +1,7 @@
 """The judge runs the same model on Groq (default) or DeepInfra, and records which."""
 import pytest
 
-from src.evaluation.judge import GroqJudgeClient, JudgeConfig, judge_key_pool
+from src.evaluation.judge import JUDGE_METRICS, GroqJudgeClient, JudgeConfig, judge_key_pool
 
 
 def test_unknown_provider_is_rejected() -> None:
@@ -25,3 +25,22 @@ def test_provider_comes_from_the_environment_and_is_recorded(monkeypatch, tmp_pa
     result = client.judge({"question": "q", "answer": "a", "required_facts": [], "evidence": []})
     assert client.config.provider == "deepinfra"
     assert result["provider"] == "deepinfra"
+
+
+def test_workers_judge_every_case_once(monkeypatch, tmp_path) -> None:
+    from src.evaluation.answers import judge_answers
+
+    calls = []
+
+    class Client:
+        def judge(self, packet):
+            calls.append(packet)
+            return {"ok": True, "scores": {**{m: 1.0 for m in JUDGE_METRICS}, "unsupported_claim": False, "critical_false_pass": False}}
+
+    monkeypatch.setenv("STUDENT_RAG_JUDGE_WORKERS", "4")
+    cases = [{"id": f"C{i}", "query": "q", "required_facts": []} for i in range(10)]
+    answers = [{"id": f"C{i}", "answer": "a", "status": "answered"} for i in range(10)]
+    report = judge_answers(cases, answers, checkpoint_path=tmp_path / "cp.json", resume=False,
+                           judge_client=Client(), checkpoint_context={"t": 1})
+    assert len(calls) == 10
+    assert [row["id"] for row in report["cases"]] == [c["id"] for c in cases]

@@ -67,13 +67,14 @@ def judge_key_pool(keys: list[str], config: JudgeConfig) -> KeyPool:
     if not keys:
         raise ValueError(f"Missing {key_env} for the generated-answer Judge")
     # Groq's free tier has per-minute and daily token caps; DeepInfra is paid
-    # per token, so only the request rate is limited there.
+    # per token and allows many concurrent requests, so only a loose request
+    # rate is kept there.
     groq = config.provider == "groq"
     return KeyPool(
         keys,
         KeyPoolConfig(
             name=f"{config.provider}_judge",
-            rpm_limit_per_key=config.rpm_limit_per_key,
+            rpm_limit_per_key=config.rpm_limit_per_key if groq else 600,
             tpm_limit_per_key=config.tpm_limit_per_key if groq else None,
             tpd_limit_per_key=config.tpd_limit_per_key if groq else None,
             cooldown_seconds=config.cooldown_seconds,

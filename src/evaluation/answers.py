@@ -9,6 +9,7 @@ import re
 import time
 import unicodedata
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Callable
 
@@ -205,25 +206,12 @@ def judge_answers(
     client = judge_client or GroqJudgeClient()
     answers = {row["id"]: row for row in answer_cache}
     judged = {row["id"]: row for row in existing}
-    progress = progress_cases(
-        cases,
-        limit=limit,
-        desc="Judging Answers",
-    )
-    for case in progress:
-        progress.set_postfix_str(str(case.get("id") or "unknown"))
-        if case["id"] in judged:
-            progress.set_postfix(
-                {"case": case.get("id"), "cache": 1},
-                refresh=False,
-            )
-            continue
+    def judge_one(case: dict[str, Any]) -> dict[str, Any]:
         answer = answers.get(case["id"], {})
         packet = compact_judge_packet(case, answer)
         started = time.perf_counter()
         result = client.judge(packet)
-        deterministic = _answer_checks(case, answer)
-        judged[case["id"]] = {
+        return {
             "id": case["id"],
             "case_type": case.get("case_type"),
             "topic": case.get("topic"),
@@ -236,29 +224,41 @@ def judge_answers(
             "effective_query": answer.get("effective_query"),
             "query_handling": answer.get("query_handling"),
             "judge": result,
-            **deterministic,
+            **_answer_checks(case, answer),
             "judge_latency_ms": (time.perf_counter() - started) * 1000,
             "packet_required_fact_coverage": len(
                 packet["required_facts_present_in_packet"]
             )
             / max(1, len(case.get("required_facts") or [])),
         }
-        progress.set_postfix(
-            {
-                "case": case.get("id"),
-                "ok": int(bool(result.get("ok"))),
-                "ms": int((time.perf_counter() - started) * 1000),
-            },
-            refresh=False,
-        )
-        save_eval_checkpoint(checkpoint_path, list(judged.values()), identity=identity)
+
+    # One request judges one answer; workers only send several requests at once.
+    workers = max(1, int(os.environ.get("STUDENT_RAG_JUDGE_WORKERS") or 1))
+    todo = [case for case in cases[:limit] if case["id"] not in judged]
+    progress = progress_cases(todo, limit=None, desc="Judging Answers")
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {pool.submit(judge_one, case): case for case in todo}
+        for future in as_completed(futures):
+            row = future.result()
+            judged[row["id"]] = row
+            progress.update(1)
+            progress.set_postfix(
+                {
+                    "case": row["id"],
+                    "ok": int(bool(row["judge"].get("ok"))),
+                    "ms": int(row["judge_latency_ms"]),
+                },
+                refresh=False,
+            )
+            save_eval_checkpoint(checkpoint_path, list(judged.values()), identity=identity)
+    progress.close()
     rows = [judged[c["id"]] for c in cases[:limit] if c["id"] in judged]
     valid = [row for row in rows if (row.get("judge") or {}).get("ok")]
     summary = {
         "n": len(rows),
         "judged_n": len(valid),
         "judge_model": "openai/gpt-oss-120b",
-        "judge_provider": client.config.provider,
+        "judge_provider": getattr(getattr(client, "config", None), "provider", None),
     }
     for metric in (
         "faithfulness",

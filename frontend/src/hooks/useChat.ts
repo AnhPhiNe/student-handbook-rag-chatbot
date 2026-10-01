@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { getApiClientHeaders } from '../utils/clientIdentity';
+import { completeStream, requireStreamTerminal } from '../utils/streamCompletion';
 
 export interface Citation {
   chunk_id: string;
@@ -244,7 +245,10 @@ export function useChat(cohort: string = 'K48-K49') {
 
       while (true) {
         const { value, done } = await reader.read();
-        if (done) break;
+        if (done) {
+          requireStreamTerminal(streamDone);
+          break;
+        }
 
         buffer += decoder.decode(value, { stream: true });
         const parts = buffer.split('\n\n');
@@ -297,15 +301,14 @@ export function useChat(cohort: string = 'K48-K49') {
                   capturedCitations = data.citations_used;
                 }
                 
-                if (eventType === 'error' && data.error_message) {
-                  targetBotContent = data.error_message;
-                  streamError = true;
-                }
+                const completion = completeStream(eventType, data, targetBotContent, streamError);
+                targetBotContent = completion.content;
+                streamError = completion.failed;
                 
                 let confidence: 'high' | 'medium' | 'low' = 'low';
-                if (capturedCitations.length > 0 || capturedStructuredResults.length > 0) confidence = 'high';
+                if (!streamError && (capturedCitations.length > 0 || capturedStructuredResults.length > 0)) confidence = 'high';
 
-                if (targetBotContent.includes("Hiện tại mình chưa gọi được mô hình AI")) {
+                if (streamError || targetBotContent.includes("Hiện tại mình chưa gọi được mô hình AI")) {
                   setSystemStatus('error');
                 } else {
                   setSystemStatus('normal');
@@ -337,17 +340,19 @@ export function useChat(cohort: string = 'K48-K49') {
       let errMsg = "Xin lỗi, đã có lỗi kết nối xảy ra.";
       if (isTimeout) errMsg = "Hệ thống AI hiện đang quá tải hoặc phản hồi chậm. Vui lòng thử lại sau nhé!";
       if (isRateLimit) errMsg = "Bạn hỏi hơi nhanh rồi đấy! Vui lòng đợi khoảng 1 phút rồi hỏi tiếp để tránh spam hệ thống nhé 🛑";
+      const completion = completeStream('error', { error_message: errMsg }, targetBotContent, streamError);
       
       setMessages(prev => prev.map(m => 
         m.id === botMsgId ? { 
           ...m, 
-          content: errMsg, 
+          content: completion.content,
           isStreaming: false,
           responseTimeMs,
           confidence: 'low'
         } : m
       ));
       setIsTyping(false);
+      setProgressMessage('');
     }
   }, [cohort]);
 

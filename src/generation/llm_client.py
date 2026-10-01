@@ -46,6 +46,7 @@ class PooledLLMClient:
         max_attempts = max(1, self.max_retries + 1)
         last_error_type = None
         last_error_message = None
+        failed_usage = None
         name = type(self).__name__
 
         while attempts < max_attempts:
@@ -79,6 +80,7 @@ class PooledLLMClient:
             except Exception as exc:
                 last_error_type = self._classify_error(exc)
                 last_error_message = str(exc)
+                failed_usage = getattr(exc, "usage", None)
 
                 if last_error_type == "rate_limit":
                     print(
@@ -106,6 +108,7 @@ class PooledLLMClient:
             "error_message": last_error_message or f"Unknown {self.provider_label} API error.",
             "attempts": attempts,
             "model_used": self.model_name,
+            **({"usage": failed_usage} if isinstance(failed_usage, dict) else {}),
         }
 
     def _retry_delay(self, attempt_index: int) -> float:

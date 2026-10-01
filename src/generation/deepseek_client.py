@@ -15,6 +15,24 @@ DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 REASONING_EFFORTS = ("none", "low", "high", "max")
 
 
+class IncompleteGenerationError(RuntimeError):
+    """A provider ended without a complete answer; retrying cannot repair it."""
+
+    def __init__(self, finish_reason: str | None, usage: dict[str, int]) -> None:
+        self.error_type = {
+            "length": "output_truncated",
+            "content_filter": "content_filtered",
+            None: "incomplete_stream",
+        }.get(finish_reason, "invalid_completion")
+        self.usage = usage
+        super().__init__(f"DeepSeek answer is incomplete (finish_reason={finish_reason!r}).")
+
+
+def _require_complete(finish_reason: str | None, usage: dict[str, int]) -> None:
+    if finish_reason != "stop":
+        raise IncompleteGenerationError(finish_reason, usage)
+
+
 def deepseek_key_pool_config(config: dict[str, Any] | None) -> KeyPoolConfig:
     """DeepSeek key limits; it caps concurrency, so only a request rate applies."""
 
@@ -122,10 +140,9 @@ class DeepSeekClient(PooledLLMClient):
         response = self._request(prompt, client or self._create_client(self.available_keys[0]))
         choice = response.choices[0]
         text = (choice.message.content or "").strip()
-        if not text and choice.finish_reason == "length":
-            # Thinking counts toward max_tokens; a long think leaves no answer.
-            raise RuntimeError(f"DeepSeek used all {self.max_output_tokens} output tokens before answering.")
-        return text, self._usage(getattr(response, "usage", None), prompt, text)
+        usage = self._usage(getattr(response, "usage", None), prompt, text)
+        _require_complete(getattr(choice, "finish_reason", None), usage)
+        return text, usage
 
     def _generate_stream_once(
         self, prompt: str, *, client: Any | None = None
@@ -135,11 +152,14 @@ class DeepSeekClient(PooledLLMClient):
                                stream=True, stream_options={"include_usage": True})
         usage_obj = None
         text = ""
+        finish_reason = None
         try:
             for chunk in stream:
                 if getattr(chunk, "usage", None) is not None:
                     usage_obj = chunk.usage
                 for choice in getattr(chunk, "choices", None) or []:
+                    if getattr(choice, "finish_reason", None) is not None:
+                        finish_reason = choice.finish_reason
                     # delta.reasoning_content carries thinking; only content is the answer.
                     content = getattr(choice.delta, "content", None)
                     if content:
@@ -149,10 +169,14 @@ class DeepSeekClient(PooledLLMClient):
             close = getattr(stream, "close", None)
             if callable(close):
                 close()
-        return self._usage(usage_obj, prompt, text)
+        usage = self._usage(usage_obj, prompt, text)
+        _require_complete(finish_reason, usage)
+        return usage
 
     @staticmethod
     def _classify_error(exc: Exception) -> str:
+        if isinstance(exc, IncompleteGenerationError):
+            return exc.error_type
         if isinstance(exc, NoAvailableKey):
             return "rate_limit"
         if isinstance(exc, TimeoutError):

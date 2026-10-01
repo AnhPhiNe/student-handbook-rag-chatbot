@@ -843,7 +843,16 @@ class AnswerPipeline:
                 extra={"trace_id": trace_id},
             )
             terminal_status = "api_error"
-            terminal_error_type = type(exc).__name__
+            terminal_error_type = getattr(exc, "error_type", None) or type(exc).__name__
+            if isinstance(getattr(exc, "usage", None), dict):
+                _record_generation_usage(
+                    tracker, model=llm_client.model_name, usage=exc.usage,
+                    start_time=start_time_llm,
+                    end_time=datetime.now(timezone.utc).isoformat(),
+                    metadata={"error_type": terminal_error_type},
+                )
+            if final_tail := cleaner.finish():
+                yield {"type": "token", "text": final_tail}
             if cleaner.parts:
                 final_answer_for_citations = cleaner.text
             else:

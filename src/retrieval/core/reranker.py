@@ -99,8 +99,13 @@ def _voyage_scores(body: Any, count: int) -> tuple[list[float], int, float | Non
     if len(data) != count:
         raise ValueError("voyage returned a different number of documents")
     scores = [0.0] * count
+    seen: set[int] = set()
     for item in data:
-        scores[int(item["index"])] = float(item["relevance_score"])
+        index = item["index"]
+        if type(index) is not int or not 0 <= index < count or index in seen:
+            raise ValueError("voyage returned invalid or duplicate document indices")
+        seen.add(index)
+        scores[index] = float(item["relevance_score"])
     usage = body.get("usage") if isinstance(body.get("usage"), dict) else {}
     return scores, int(usage.get("total_tokens") or 0), None
 
@@ -135,6 +140,7 @@ class Reranker:
             "reranker_enabled": self.config.enabled,
             "reranker_applied": False,
             "reranker_model": self.config.model,
+            "reranker_provider": self.config.provider,
             "reranker_candidate_chunks": len(scored_chunks),
             "reranker_latency_ms": 0.0,
             "reranker_fallback_reason": None,

@@ -137,6 +137,7 @@ Copy-RequiredFile "configs\retrieval.yaml" "configs\retrieval.yaml"
 Copy-RequiredFile "configs\hcmue_slang_dictionary.yaml" "configs\hcmue_slang_dictionary.yaml"
 Copy-RequiredFile "configs\office_aliases.yaml" "configs\office_aliases.yaml"
 Copy-RequiredFile "configs\structured_lookup_registry.yaml" "configs\structured_lookup_registry.yaml"
+Copy-RequiredFile "configs\handbook_currency.yaml" "configs\handbook_currency.yaml"
 Copy-RequiredFile "Dockerfile" "Dockerfile"
 Copy-RequiredFile ".dockerignore" ".dockerignore"
 Copy-RequiredFile "requirements.txt" "requirements.txt"
@@ -189,7 +190,7 @@ license: mit
 
 Backend-only deployment for the HCMUE AI student handbook assistant.
 
-Runtime: FastAPI, OpenAI Luna planner, BGE-M3, Qdrant, BM25, Qwen3-Reranker-8B reranking that falls back to RRF, MongoDB, and a DeepSeek composer.
+Runtime: FastAPI, OpenAI Luna planner, BGE-M3, Qdrant, BM25, Voyage rerank-3 reranking that falls back to RRF, MongoDB, and a DeepSeek composer.
 
 Source repository: https://github.com/AnhPhiNe/student-handbook-rag-chatbot
 "@ | Set-Content -LiteralPath (Join-Path $TempDir "README.md") -Encoding utf8

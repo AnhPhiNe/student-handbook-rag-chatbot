@@ -116,6 +116,18 @@ def test_missing_key_or_disabled_reranker_makes_no_call() -> None:
     post.assert_not_called()
 
 
+@pytest.mark.parametrize("indices", [[0, 0, 2, 3], [-1, 1, 2, 3], [0, 1, 2, 4],
+                                    [0, 1, 2, 3.0], [0, True, 2, 3], ["0", 1, 2, 3]])
+def test_invalid_voyage_indices_fail_open(indices):
+    body = {"data": [{"index": index, "relevance_score": 0.9} for index in indices]}
+    candidates = _candidates()
+    ranked, telemetry = Reranker(RerankerConfig(), api_key="k",
+                                post=Mock(return_value=_response(body=body))).rerank("q", candidates)
+    assert ranked == candidates
+    assert telemetry["reranker_applied"] is False
+    assert telemetry["reranker_fallback_reason"] == "invalid_response"
+
+
 def test_the_configured_provider_is_used_and_an_unknown_one_is_refused() -> None:
     config = RerankerConfig.from_config({"provider": "DeepInfra", "model": "m", "api_url": "https://x"})
     assert (config.provider, config.model) == ("deepinfra", "m")

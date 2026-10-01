@@ -111,6 +111,37 @@ def test_wrong_scale_does_not_emit_k51_candidate_arithmetic(span):
     assert packet["units"][0]["resolution_status"] == "evidence_only"
 
 
+@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+def test_reference_level_with_partial_scores_reaches_executor_and_composer(cohort):
+    query = "TOEIC 4 kỹ năng: Nói 130, Viết 130; Nghe và Đọc cần khoảng nào cho bậc 3?"
+    task = _task(query, "foreign_language", {
+        "certificate_or_language": "TOEIC", "score_or_level": "bậc 3",
+        "speaking_score": 130, "writing_score": 130,
+    }, {"certificate_or_language": "TOEIC 4 kỹ năng", "score_or_level": "bậc 3",
+        "speaking_score": "130", "writing_score": "130"}, cohorts=(cohort,))
+    result, packet = _run(query, [task], cohort=cohort)
+    assert result["coverage_by_task"]["t1"] == "covered"
+    assert result["task_results"][0]["resolution_by_cohort"][cohort] == "evidence_only"
+    assert not result["structured_result"].get("resolved_result")
+    assert result["citations"]
+    unit = packet["units"][0]
+    assert unit["cohort"] == cohort and unit["coverage"] == "covered"
+    assert unit["primary_evidence"] and unit["allowed_source_refs"]
+    assert all(not evidence.get("resolved_result") for evidence in unit["primary_evidence"])
+    text = json.dumps(unit, ensure_ascii=False)
+    assert "TOEIC" in text and "275" in text and "399" in text
+
+
+def test_personal_component_scores_without_level_still_require_missing_inputs():
+    query = "TOEIC Nói 130, Viết 130 thì tương đương bậc mấy?"
+    task = _task(query, "foreign_language", {
+        "certificate_or_language": "TOEIC", "speaking_score": 130, "writing_score": 130,
+    }, {"certificate_or_language": "TOEIC", "speaking_score": "130", "writing_score": "130"})
+    result, packet = _run(query, [task])
+    assert packet["units"][0]["coverage"] == "needs_clarification"
+    assert not (result["structured_result"] or {}).get("resolved_result")
+
+
 @pytest.mark.parametrize("literal,expected", [("3,6/4", True), ("3,6/10", False)])
 def test_academic_table_checks_input_scale_not_just_value(literal, expected):
     query = f"Xếp loại học lực với GPA {literal}?"

@@ -82,6 +82,31 @@ def _answer(pipeline, transport):
     return events[-1]["status"], "".join(e["text"] for e in events if e["type"] == "token")
 
 
+@pytest.mark.parametrize("partial", ["Phần ngắn đã nhận.", "Phần đã nhận. " * 60])
+def test_truncated_stream_keeps_the_cleaned_tail_and_emits_terminal_failure(partial):
+    from src.generation.deepseek_client import IncompleteGenerationError
+    from src.api.sse_events import StreamEventBuilder
+
+    pipeline, llm = _pipeline([])
+    llm.model_name = "offline-fake"
+
+    def fail_stream(prompt):
+        yield partial
+        raise IncompleteGenerationError("length", {"input": 10, "output": 8192, "total": 8202})
+
+    llm.generate_stream.side_effect = fail_stream
+    events = list(pipeline.answer_stream("Quy định?", cohort="K51"))
+    assert "".join(e["text"] for e in events if e["type"] == "token") == partial.strip()
+    done = events[-1]
+    assert done["status"] == "api_error" and done["error_type"] == "output_truncated"
+    assert done["tracker"].get_steps()[-1]["output_tokens"] == 8192
+    llm.generate_stream.assert_called_once()
+    builder = StreamEventBuilder(request_id="offline")
+    builder.prepare_done(done)
+    assert '"status": "api_error"' in builder.done()
+    assert '"error_type": "output_truncated"' in builder.done()
+
+
 @pytest.mark.parametrize("transport", ["sync", "stream"])
 @pytest.mark.parametrize("chunks", [[], [" \n\t"], ["```markdown\n", "Nguồn:\n- S1"]])
 def test_empty_final_answer_falls_back(transport, chunks):

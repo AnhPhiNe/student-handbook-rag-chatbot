@@ -769,6 +769,85 @@ Found while measuring, not fixed:
   says nothing was found. The foreign-language tool's description, "không xác
   lập chuẩn đầu ra bắt buộc", likely steers "đạt chuẩn đầu ra" away from it.
 
+## The judge against a second rater (2026-10-01)
+
+The judge (gpt-oss-120b on Groq) was compared with a second rater, Claude
+(Opus 5.5), on official_v4 run B (`official_v4_answers_20260930T152637Z`). This
+is a model-to-model check, not a human calibration.
+
+**Sample.** Every answer the judge scored below 1.0 (36) and 30 of the 210 it
+scored 1.0, drawn with seed 20261001 (`data/eval/official_v4/judge_calibration/sample.json`).
+
+**Rubric.** Fixed before reading. Each answer was scored against the question,
+the gold answer and the required facts, and checked in the handbook data where
+a claim was in doubt:
+
+- 1: everything asked is answered correctly;
+- 0.75: the core is right but one asked detail is missing;
+- 0.5: one part of a multi-part question is right;
+- 0.25: mostly wrong;
+- 0: wrong, or a "not found" for an answerable question.
+
+Each answer also got a label:
+
+- C: the student gets a correct answer to what was asked;
+- I: incomplete;
+- W: states something false.
+
+Gold facts that the question did not ask for, such as an email when only the
+address was asked, were not required. A missing internal extension counted
+only when the question asked for the phone number.
+
+**Blindness.** The scores were written to `my_scores.tsv` before the judge's
+scores were opened. The 30 answers the judge scored 1.0 had not been read
+before. The 36 lower ones had, during the audit above, together with the
+judge's flags. Their scores are therefore not independent of the judge.
+
+`python -m scripts.judge_calibration` gives (`result.json`):
+
+| Stratum | n | Judge mean | Rater mean | Within ±0.25 |
+|---|---:|---:|---:|---:|
+| Judge 1.0 (random 30 of 210) | 30 | 1.000 | 1.000 | 30/30 |
+| Judge below 1.0 (all) | 36 | 0.606 | 0.812 | 22/36 |
+| Whole run, rater reweighted by stratum | 246 | 0.942 | 0.973 | |
+
+- **No false pass at 1.0 in the sample.** Every answer the judge scored 1.0
+  was correct to the rater. With 0 of 30, the rate of false passes among the
+  210 is below about 10% at 95% (rule of three).
+- **The judge is stricter than the correctness criterion.** 19 of the 36
+  answers it scored below 1.0 are correct to the rater. Most of its deductions
+  are for gold facts the question did not ask for:
+  - phone or email when only the unit or address was asked: V4-143, V4-131, V4-145;
+  - the standard duration when only the maximum was asked: V4-197;
+  - the rounding rule: V4-025.
+
+  In one case it named facts as missing that the answer contains: V4-117, the
+  GPA condition and the 2025 re-entry clause. So the reported 0.942 is a
+  conservative figure; the rater's estimate is 0.973.
+- **One soft false pass.** The judge gave V4-148 0.85, but the answer stated
+  the scholarship score range as 3.20 to below 3.60; the handbook gives
+  3.20–3.67. At a pass line of 0.8, the judge passes 2 answers the rater does
+  not (V4-111 incomplete, V4-148 wrong) and fails 7 the rater finds correct.
+- **Real failures in the sample.**
+  - 2 answers state something false: V4-003 (3.75 classed Giỏi) and V4-148.
+  - 4 fail a whole part of the question:
+    - V4-100, V4-092: needless clarification;
+    - V4-107: the "where" boundary;
+    - V4-204: "not found" for the support centre's services.
+  - 11 more miss a detail that was asked.
+
+  These are the cases already listed as fixed or as known limitations above.
+
+**Use.** The judge's scores rank runs and find failures, since every run is
+scored by the same judge. They are not an absolute measure of how often
+students get a correct answer, which is probably higher than the score.
+
+**Limits.**
+- The second rater is a model, not the owner or a student.
+- The low stratum was not read blind.
+- Ten disagreements are left for the owner to re-score: V4-117, V4-148,
+  V4-070, V4-225, V4-143, V4-186, V4-197, V4-145, V4-138 and V4-111.
+
 ## What these measurements do not show
 
 - A comparison with plain RAG (no planner) or with a long-context model given the
@@ -783,8 +862,9 @@ Found while measuring, not fixed:
   about 1–2% of the development cases (v1 092, v3 003, 007, 085), and the student
   gets a "not found" answer. Real questions after the deploy will show whether
   it matters.
-- The judge's agreement with a human rater; both datasets were written by one
-  author from handbook content, not collected from real students.
+- The judge's agreement with a human rater. It was compared only with a second
+  model (see "The judge against a second rater"). Both datasets were written by
+  one author from handbook content, not collected from real students.
 - Combinations not run, such as Qwen3-Embedding-8B with Qwen3-Reranker-8B.
 - Whether the composer sends students to units the evidence does not name. When
   the handbook does not say where to go, the composer sometimes suggests an

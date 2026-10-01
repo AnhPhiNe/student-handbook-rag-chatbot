@@ -544,6 +544,16 @@ Run A is the hold-out: its code predates any sight of a v4 answer. Run B adds
 the five fixes below, which were written after the 4B ablation was read, so it
 describes the deployed system and is never quoted as a hold-out figure.
 
+Run C (`1a9ccd3d`, 2026-10-01) adds the fixes of the sections below. Because
+the Groq keys hit their daily cap, both run B and run C were judged by the same
+model on DeepInfra. On run B's answers the two providers agree: 0.942 against
+0.937, and 206 of 246 scores are identical. Run C scores **0.959** (CI 0.938 –
+0.978) against run B's 0.937. The paired difference is +0.022, CI [-0.001,
++0.045], so the improvement is likely but not established. The criteria for
+further fixes, set before reading, were a regression caused by the fixes or a
+serious false statement not already known; neither was met. Details are in
+`data/eval/official_v4/RESULTS.md`.
+
 Paired over clusters, B − A is +0.016 with a 95% CI of [−0.008, +0.041]: over
 the whole set the improvement is not established. It is established where it
 was expected — unaccented and mistyped questions gained +0.124 (CI +0.034 to

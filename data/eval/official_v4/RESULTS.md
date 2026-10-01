@@ -150,10 +150,84 @@ The reranker choice itself was measured on `official_v1` with one shared set of
 | **Voyage rerank-3** | **0.942** | **155/155** | **0.76 s** |
 | Voyage rerank-3-lite | 0.929 | 154/155 | — |
 
+## Run C: the system after reading the v4 answers (2026-10-01)
+
+Run C contains every fix of 2026-10-01: the registry fields, the directory
+labels, the handbook labels and currency notes, the minimum levels, and
+planner v56 (see `docs/DESIGN_DECISIONS.md`). Most of them were written after
+reading v4 answers, so run C is **not a hold-out**.
+
+| | |
+|---|---|
+| Commit | `1a9ccd3d`, clean tree |
+| Report | `data/eval/reports/official_v4_answers_20261001T082203Z` |
+| Retrieval | patient config, Voyage `rerank-3` |
+| Answers | 246/246, no exceptions |
+| Dense-retrieval failures | 0 (log check), so no rerun |
+| Reranker fallbacks | 0 (log check), so no rerun |
+| Latency p50 / p95 | 10.3 s / 18.9 s (run B: 10.9 s / 23.7 s) |
+
+**Judge provider.** The Groq keys reached their daily token cap after 7 of
+246 judgements. Run C and run B were therefore both judged again by the same
+model, gpt-oss-120b, served by DeepInfra (`scripts/rejudge_run.py`, results in
+each run's `judge_deepinfra/`). The DeepInfra request asks for medium
+reasoning and has an output cap of 4,096 tokens. V4-111 and V4-117 had run
+out at 1,536 tokens before writing the JSON.
+
+The two providers agree on run B's answers:
+
+| | Result |
+|---|---|
+| Mean, Groq / DeepInfra | 0.942 / 0.937 |
+| Identical scores | 206 of 246 |
+| Within 0.25 | 236 of 246 |
+| Same pass decision at 0.8 | 232 of 246 |
+| Within 0.25 of the second rater's 66 scores, Groq / DeepInfra | 52 / 54 |
+
+Scores from the two providers are not mixed in one comparison.
+
+| Judged by DeepInfra | Run B | Run C |
+|---|---:|---:|
+| **answer_correctness** | 0.937 | **0.959** |
+| 95% CI over clusters | 0.913 – 0.959 | 0.938 – 0.978 |
+| Hallucination rate | 0.122 | 0.102 |
+| Answers scoring 0.0 | 4 | 4 |
+| Critical false passes | 0 | 0 |
+
+Paired over the clusters, run C minus run B is **+0.022**, 95% CI
+**[-0.001, +0.045]**. The CI touches zero, so the improvement is likely but
+not established. 14 cases moved up by 0.25 or more and 5 moved down.
+
+**Reading of the cases.** Two criteria were fixed before the scores were
+read: a regression caused by the fixes, or a serious false statement not
+already known. Neither was met.
+
+- The 5 cases that moved down:
+  - V4-072 and V4-145 have the same plan as in run B, and both answers give
+    what was asked; the score moved with the judge or the composer.
+  - V4-049 (service contact sent to RAG) and V4-209 (pronoun follow-up
+    answered with a clarification) are planner variance. Planned 6 times
+    each, v56 chose the lookup 5/6 and 5/6, against v53's 4/6 and 3/6.
+  - V4-175 picked the ungraded pass/fail lookup. The composer then left the
+    4,8–5,4 band unanswered while the row was in its evidence. v56 kept the
+    two scoring lookups in 4 of 6 plans against v53's 6 of 6, a difference
+    too small to read; it is kept as a case to watch.
+- Every flagged or unfamiliar answer below 1.0 was read: V4-111, V4-114,
+  V4-118, V4-144, V4-147, V4-181, V4-218, V4-236 and V4-035. None states
+  something false.
+  - V4-114's "đầu tháng 10/2025" deadline for first-year students is in the
+    K51 notice.
+  - V4-147 contains the GPA that the judge called missing.
+  - The rest are the known incomplete answers.
+
+A Groq judgement of run C, for continuity with the run A and run B figures
+above, is scheduled after the daily cap resets. It does not change the
+comparison above, which uses one provider for both runs.
+
 ## What these results do not establish
 
 - **Run B is not a hold-out.** Its figure describes the deployed system; the
-  hold-out claim rests on run A alone.
+  hold-out claim rests on run A alone. The same holds for run C.
 - **Three of the five fixes are unmeasured here.** The unaccented gain is
   attributable to the BM25 fix. The `query_plan` follow-up fix was compared on
   `official_v2`'s 25 follow-ups and changed 6 questions without losing or
@@ -161,8 +235,10 @@ The reranker choice itself was measured on `official_v1` with one shared set of
   `scholarship_lookup` and `foreign_language_lookup` fixes have regression
   tests and no measured effect on v4.
 - **The judge is not calibrated against the owner.** Every figure here is one
-  model's reading. Its flagging of correct answers as unsupported is visible in
-  the 23 cases above.
+  model's reading. It was compared only with a second model
+  (`judge_calibration/`): no false pass among 30 perfect scores, and stricter
+  than the correctness criterion on the rest. Its flagging of correct answers
+  as unsupported is visible in the 23 cases above.
 - **The structured-lookup audit is blind to the five fixed bugs.** Run against
   the code before the fixes it also reports no findings, which is stated in
   `scripts/audit_structured_lookups.py`. It establishes row selection, not

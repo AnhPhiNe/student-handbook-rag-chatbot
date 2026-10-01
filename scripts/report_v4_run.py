@@ -74,10 +74,15 @@ def main() -> None:
     run = Path(args.run)
     rows, replaced = load_rows(run, args.reruns)
     snapshot = json.loads((run / "run_snapshot.json").read_text(encoding="utf-8"))
-    answers = json.loads((run / "answer_cache.json").read_text(encoding="utf-8"))
+    # A judge_<provider> folder from scripts.rejudge_run holds only the judge output.
+    answers_path = run / "answer_cache.json"
+    if not answers_path.exists():
+        answers_path = run.parent / "answer_cache.json"
+    answers = json.loads(answers_path.read_text(encoding="utf-8"))
 
     integrity = {
         "commit": snapshot["git_commit"][:8], "tree_dirty": snapshot["git_dirty"],
+        "judge_provider": snapshot.get("judge_provider", "groq"),
         "reranker": snapshot["reranker"], "dataset_sha256": snapshot["dataset_sha256"][:16],
         "answers": len(answers), "exceptions": sum(a.get("status") == "exception" for a in answers),
         "judged": len(rows), "judge_failed": sum(1 for r in rows if score(r) is None),
@@ -128,8 +133,18 @@ def main() -> None:
         moved = [{"id": c["id"], "family": c["topic"], "cell": c["case_type"],
                   "this_run": v, "other_run": other.get(c["id"])}
                  for c, v in scored if other.get(c["id"]) is not None and abs(other[c["id"]] - v) >= 0.25]
+        diffs: dict[str, list[float]] = defaultdict(list)
+        for case, value in scored:
+            if other.get(case["id"]) is not None:
+                diffs[case["cluster"]].append(value - other[case["id"]])
+        diff_low, diff_high = cluster_ci(diffs)
         report["compare"] = {
-            "other_run": Path(args.compare).name,
+            "other_run": str(Path(args.compare)),
+            "paired_difference": {
+                "n": sum(len(v) for v in diffs.values()),
+                "mean": round(statistics.fmean(d for v in diffs.values() for d in v), 3),
+                "ci95_over_clusters": [round(diff_low, 3), round(diff_high, 3)],
+            },
             "better_here": sorted(m["id"] for m in moved if m["this_run"] > m["other_run"]),
             "worse_here": sorted(m["id"] for m in moved if m["this_run"] < m["other_run"]),
             "cases": moved,

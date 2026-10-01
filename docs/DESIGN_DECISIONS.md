@@ -635,6 +635,62 @@ No case shows an effect of the change that its variance does not explain, so
 the 130 against 133 is read as planner variance. Case 003 is a standing
 instability of the scoring boundary, not a new one.
 
+## Structured data of the three cohorts, checked against the handbook (2026-10-01)
+
+Prompted by an owner's question the system could not answer ("học cntt ra trường
+làm gì"), the structured layer of K48-K49, K50 and K51 was checked whole:
+coverage per cohort, fields left empty though the source holds a value, text
+leaking between records, and the K51 amendments.
+
+What held:
+
+- Every table type and directory exists for all three cohorts.
+- Decision 4743/QĐ-ĐHSP amends seven points of the training regulation from the
+  2025 intake (K51). Two are tables, and both are applied: study duration
+  (chính quy 04/06 years, vừa làm vừa học 05/7,5) and the split grade scale (D and
+  D+ pass for foundation courses, fail for the rest). The other five are rules,
+  read by RAG with `amendments.json`.
+- The foreign-language table exists only in the K50 handbook (Decision 3215);
+  its own Điều 1 covers intakes from 2022, so it serves all three cohorts.
+
+Three defects, fixed:
+
+| Defect | Scope | Fix |
+|---|---|---|
+| Career sections unreachable | all 129 program records; the planner judged the question out of domain or sent it to RAG, where no chunk holds a career section | the program tool names careers and offers `requested_field=career` |
+| Addresses under "Phòng làm việc" not read | 4 units (Trung tâm Ngoại ngữ, Trung tâm Tin học, Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp, Đoàn Thanh niên – Hội Sinh viên) in K48-K49 and K50: 26 service rows and their profiles without an address | the extractor reads every address label, including Trung tâm Tin học's "Văn phòng ghi danh" |
+| A faculty given its programs' careers as duties | 31 of the 34 faculties the keyword guess matched | faculties get no text-derived duties |
+
+`scripts/audit_extraction.py` now checks every table cell, formula and directory
+contact value against its source text, and every labelled contact value in the
+source against its field. Run on the catalogs before the fix it reports the 26
+rows; after it, only the scholarship eligibility table, a faithful short
+restatement of Điều 27 that no `aspect` selects yet.
+
+Measured after the fixes, at `a1b82a6b`:
+
+- **Career questions.** Nine questions over different programs and wordings
+  (abbreviated, unaccented, colloquial), planned three times each: 27 of 27 go
+  to the program tool for careers, against 0 of 9 before; a tenth, asking where
+  the IT faculty's office is, stays with the faculty tool 3 of 3. Asked end to
+  end, the answers quote the handbook's career sections.
+- **official_v1 planner: 134/135** (v10 contract). Runs of this prompt family
+  have scored 133, 130 and 134; the one failure, 093, plans the same way under
+  the old and the new prompt (9 of 10 plans correct under each).
+- **Composer v3.31**, replayed on run B's 246 evidence packets and judged:
+  answer correctness 0.942 → **0.958**, paired over clusters **+0.015**, 95% CI
+  [+0.002, +0.030]. The four answers that had dropped an extension now give it;
+  unsupported-claim flags fell from 32 to 22. One critical false pass appeared,
+  V4-148: the packet (planned by run B) holds only the scholarship formula, and
+  both prompt versions derived a wrong range from it; with the new tool
+  descriptions the planner sends that question to the scholarship table in 10
+  of 10 plans. This is v4 data, so it is not a hold-out result.
+
+Not covered: no cell was compared character by character with the PDF, only
+with the extracted handbook text; each program's faculty is checked by count
+and presence, not record by record against the handbook; K52 is not in the
+data.
+
 ## What these measurements do not show
 
 - A comparison with plain RAG (no planner) or with a long-context model given the

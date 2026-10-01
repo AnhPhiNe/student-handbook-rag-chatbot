@@ -56,7 +56,7 @@ class DeepSeekClient(PooledLLMClient):
         model_name: str = "deepseek-flash",
         reasoning_effort: str = "none",
         temperature: float = 0.0,
-        max_output_tokens: int = 8192,
+        max_output_tokens: int | None = None,
         max_retries: int = 2,
         retry_base_delay_seconds: float = 2,
         retry_max_delay_seconds: float = 20,
@@ -79,7 +79,8 @@ class DeepSeekClient(PooledLLMClient):
         self.model_name = model_name
         self.reasoning_effort = effort
         self.temperature = float(temperature)
-        self.max_output_tokens = int(max_output_tokens)
+        # None omits max_tokens entirely; the provider's default still applies.
+        self.max_output_tokens = int(max_output_tokens) if max_output_tokens is not None else None
         self.max_retries = max(0, int(max_retries))
         self.retry_base_delay_seconds = float(retry_base_delay_seconds)
         self.retry_max_delay_seconds = float(retry_max_delay_seconds)
@@ -111,7 +112,7 @@ class DeepSeekClient(PooledLLMClient):
             model=self.model_name,
             messages=[{"role": "user", "content": prompt}],
             temperature=self.temperature,
-            max_tokens=self.max_output_tokens,
+            **({"max_tokens": self.max_output_tokens} if self.max_output_tokens is not None else {}),
             extra_body=thinking,
             **({"response_format": self.response_format} if self.response_format else {}),
             **options,

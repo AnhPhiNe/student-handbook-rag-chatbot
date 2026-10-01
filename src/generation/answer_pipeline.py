@@ -194,7 +194,7 @@ def create_composer_client(llm_config: dict[str, Any]) -> Any:
             model_name=llm_config["model_name"],
             reasoning_effort=llm_config.get("reasoning_effort", "none"),
             temperature=llm_config.get("temperature", 0.0),
-            max_output_tokens=llm_config.get("max_output_tokens", 8192),
+            max_output_tokens=llm_config.get("max_output_tokens"),
             max_retries=llm_config.get("max_retries", 2),
             retry_base_delay_seconds=llm_config.get("retry_base_delay_seconds", 2),
             retry_max_delay_seconds=llm_config.get("retry_max_delay_seconds", 20),

@@ -328,6 +328,34 @@ class ApiRoutesTest(unittest.TestCase):
             "Query must be at most 10 characters",
         )
 
+    def test_chat_transports_share_2000_character_boundary_without_truncation(self) -> None:
+        received = []
+
+        class RecordingService(FakeAnswerService):
+            def answer(self, query, **kwargs):
+                received.append(query)
+                return super().answer(query, **kwargs)
+
+            def answer_stream(self, query, **kwargs):
+                received.append(query)
+                yield from super().answer_stream(query, **kwargs)
+
+        app.dependency_overrides[get_answer_service] = lambda: RecordingService()
+        question = "ế" * 1999 + "🙂"
+        with patch.dict("os.environ", {"STUDENT_RAG_MAX_QUERY_CHARS": "2000",
+                                      "STUDENT_RAG_RATE_LIMIT_PER_MINUTE": "0",
+                                      "STUDENT_RAG_IP_RATE_LIMIT_PER_MINUTE": "0"}):
+            for endpoint in ("/chat", "/chat/stream"):
+                with self.subTest(endpoint=endpoint):
+                    response = self.client.post(endpoint, json={"query": question})
+                    self.assertEqual(response.status_code, 200)
+                    self.assertEqual(received[-1], question)
+                    before = len(received)
+                    rejected = self.client.post(endpoint, json={"query": question + "ế"})
+                    self.assertEqual(rejected.status_code, 400)
+                    self.assertEqual(rejected.json()["detail"], "Query must be at most 2000 characters")
+                    self.assertEqual(len(received), before)
+
     def test_chat_applies_optional_rate_limit(self) -> None:
         with patch.dict("os.environ", {"STUDENT_RAG_RATE_LIMIT_PER_MINUTE": "1"}):
             first = self.client.post("/chat", json={"query": "Email phong dao tao?"})

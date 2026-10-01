@@ -18,7 +18,10 @@ llm:
   reasoning_effort: none
   api_keys_env_var: DEEPSEEK_API_KEY
   temperature: 0.0
-  max_output_tokens: 8192
+  # Omit max_tokens from composer requests; no application output ceiling.
+  # DeepSeek still defaults to 8K with thinking off (not unlimited).
+  # https://api-docs.deepseek.com/api/create-chat-completion/
+  max_output_tokens: null
   max_retries: 2
   retry_base_delay_seconds: 2
   retry_max_delay_seconds: 20

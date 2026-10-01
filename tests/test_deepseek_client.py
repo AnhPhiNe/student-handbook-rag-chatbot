@@ -87,6 +87,49 @@ def test_stream_yields_answer_chunks_but_never_reasoning(monkeypatch):
     assert calls[0]["request"]["stream_options"] == {"include_usage": True}
 
 
+@pytest.mark.parametrize("stream", [False, True])
+def test_provider_request_omits_max_tokens_when_no_application_ceiling(monkeypatch, stream):
+    import json
+
+    requests = []
+
+    def respond(request):
+        requests.append(json.loads(request.content))
+        return httpx.Response(200, json={"id": "offline", "object": "chat.completion",
+            "created": 0, "model": "deepseek-flash", "choices": [],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 0, "total_tokens": 1}})
+
+    with httpx.Client(transport=httpx.MockTransport(respond)) as http_client:
+        with openai.OpenAI(api_key="offline", base_url="https://api.deepseek.com",
+                           http_client=http_client, max_retries=0) as sdk:
+            response = _client(monkeypatch, max_output_tokens=None)._request("PROMPT", sdk, stream=stream)
+            if stream:
+                response.close()
+    assert "max_tokens" not in requests[0]
+    assert "max_completion_tokens" not in requests[0]
+    assert requests[0]["thinking"] == {"type": "disabled"}
+
+
+def test_composer_default_and_explicit_caps_do_not_change_selector_budgets(monkeypatch):
+    import copy
+    import yaml
+    from src.generation.answer_pipeline import create_composer_client, create_directory_selector
+
+    monkeypatch.setattr(module, "load_project_env", lambda: None)
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "offline-deepseek-key")
+    with open("configs/answer_generation.yaml", encoding="utf-8") as file:
+        config = yaml.safe_load(file)
+    assert create_composer_client(config["llm"]).max_output_tokens is None
+    without_setting = {key: value for key, value in config["llm"].items() if key != "max_output_tokens"}
+    assert create_composer_client(without_setting).max_output_tokens is None
+    explicit = copy.deepcopy(config["llm"])
+    explicit["max_output_tokens"] = 16384
+    assert create_composer_client(explicit).max_output_tokens == 16384
+    selector = create_directory_selector(config["directory_selector"])
+    assert selector.client.max_output_tokens == 200
+    assert selector.thinking_client.max_output_tokens == 4096
+
+
 def _status_error(status):
     response = httpx.Response(status, request=httpx.Request("POST", "https://api.deepseek.com/chat/completions"))
     return openai.APIStatusError("failure", response=response, body={})

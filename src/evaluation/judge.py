@@ -418,8 +418,13 @@ class GroqJudgeClient:
         request_fn: Callable[[str, str, JudgeConfig], tuple[str, dict[str, int]]]
         | None = None,
     ) -> None:
+        provider = os.environ.get("STUDENT_RAG_JUDGE_PROVIDER") or "groq"
+        # DeepInfra counts gpt-oss reasoning in max_tokens: the longest answers
+        # (V4-111, V4-117) ran out at 1,536 before writing the JSON and needed
+        # about 2,000. Responses that end earlier are unaffected by the cap.
         self.config = config or JudgeConfig(
-            provider=os.environ.get("STUDENT_RAG_JUDGE_PROVIDER") or "groq"
+            provider=provider,
+            max_output_tokens=1536 if provider == "groq" else 4096,
         )
         key_env = JUDGE_PROVIDERS[self.config.provider]["key_env"]
         keys = [key.strip() for key in (os.environ.get(key_env) or "").split(",")]

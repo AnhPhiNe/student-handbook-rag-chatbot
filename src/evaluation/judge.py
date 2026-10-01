@@ -12,6 +12,13 @@ from src.common.key_pool import KeyPool, KeyPoolConfig
 
 
 PINNED_JUDGE_MODEL = "openai/gpt-oss-120b"
+# The same open-weight model served by two providers. Scores from different
+# providers are not compared with each other: a run and its baseline are judged
+# by one provider (STUDENT_RAG_JUDGE_PROVIDER, default groq).
+JUDGE_PROVIDERS = {
+    "groq": {"key_env": "GROQ_API_KEYS", "base_url": None},
+    "deepinfra": {"key_env": "DEEPINFRA_API_KEY", "base_url": "https://api.deepinfra.com/v1/openai"},
+}
 JUDGE_METRICS = (
     "faithfulness",
     "answer_relevancy",
@@ -34,6 +41,7 @@ class JudgeConfig:
     """Define model and quota settings for automated answer judging."""
 
     model_name: str = PINNED_JUDGE_MODEL
+    provider: str = "groq"
     temperature: float = 0.0
     max_output_tokens: int = 1536
     max_retries: int = 2
@@ -48,22 +56,28 @@ class JudgeConfig:
     def __post_init__(self) -> None:
         if self.model_name != PINNED_JUDGE_MODEL:
             raise ValueError(f"V8 Judge must use exactly {PINNED_JUDGE_MODEL}")
+        if self.provider not in JUDGE_PROVIDERS:
+            raise ValueError(f"Unknown judge provider {self.provider!r}")
 
 
 def judge_key_pool(keys: list[str], config: JudgeConfig) -> KeyPool:
     """Groq key pool for the judge; it waits up to max_quota_wait_seconds for a key."""
 
+    key_env = JUDGE_PROVIDERS[config.provider]["key_env"]
     if not keys:
-        raise ValueError("Missing GROQ_API_KEYS for the generated-answer Judge")
+        raise ValueError(f"Missing {key_env} for the generated-answer Judge")
+    # Groq's free tier has per-minute and daily token caps; DeepInfra is paid
+    # per token, so only the request rate is limited there.
+    groq = config.provider == "groq"
     return KeyPool(
         keys,
         KeyPoolConfig(
-            name="groq_judge",
+            name=f"{config.provider}_judge",
             rpm_limit_per_key=config.rpm_limit_per_key,
-            tpm_limit_per_key=config.tpm_limit_per_key,
-            tpd_limit_per_key=config.tpd_limit_per_key,
+            tpm_limit_per_key=config.tpm_limit_per_key if groq else None,
+            tpd_limit_per_key=config.tpd_limit_per_key if groq else None,
             cooldown_seconds=config.cooldown_seconds,
-            state_path=str(config.state_path),
+            state_path=str(config.state_path if groq else Path("data/cache/deepinfra_judge_key_state.json")),
             wait_when_limited=True,
             max_wait_seconds=config.max_quota_wait_seconds,
         ),
@@ -393,7 +407,7 @@ def parse_judge_json(text: str) -> dict[str, Any]:
 
 
 class GroqJudgeClient:
-    """Evaluate generated answers through a quota-aware Groq client."""
+    """Evaluate generated answers through a quota-aware client (Groq by default)."""
 
     def __init__(
         self,
@@ -403,8 +417,11 @@ class GroqJudgeClient:
         request_fn: Callable[[str, str, JudgeConfig], tuple[str, dict[str, int]]]
         | None = None,
     ) -> None:
-        self.config = config or JudgeConfig()
-        keys = [key.strip() for key in (os.environ.get("GROQ_API_KEYS") or "").split(",")]
+        self.config = config or JudgeConfig(
+            provider=os.environ.get("STUDENT_RAG_JUDGE_PROVIDER") or "groq"
+        )
+        key_env = JUDGE_PROVIDERS[self.config.provider]["key_env"]
+        keys = [key.strip() for key in (os.environ.get(key_env) or "").split(",")]
         self.pool = pool or judge_key_pool([key for key in keys if key], self.config)
         self.request_fn = request_fn or self._request
 
@@ -424,6 +441,7 @@ class GroqJudgeClient:
                 return {
                     "ok": True,
                     "model_id": self.config.model_name,
+                    "provider": self.config.provider,
                     "key_fingerprint": fingerprint,
                     "attempts": attempt,
                     "usage": usage,
@@ -443,6 +461,7 @@ class GroqJudgeClient:
         return {
             "ok": False,
             "model_id": self.config.model_name,
+            "provider": self.config.provider,
             "attempts": self.config.max_retries + 1,
             "error": last_error,
             "parse_error": "json_parse_error" if "json" in last_error.lower() else None,
@@ -452,17 +471,30 @@ class GroqJudgeClient:
     def _request(
         key: str, prompt: str, config: JudgeConfig
     ) -> tuple[str, dict[str, int]]:
-        from groq import Groq
+        if config.provider == "groq":
+            from groq import Groq
 
-        client = Groq(
-            api_key=key, timeout=config.request_timeout_seconds, max_retries=0
-        )
+            client = Groq(
+                api_key=key, timeout=config.request_timeout_seconds, max_retries=0
+            )
+        else:
+            from openai import OpenAI
+
+            client = OpenAI(
+                api_key=key,
+                base_url=JUDGE_PROVIDERS[config.provider]["base_url"],
+                timeout=config.request_timeout_seconds,
+                max_retries=0,
+            )
         response = client.chat.completions.create(
             model=config.model_name,
             messages=[{"role": "user", "content": prompt}],
             temperature=config.temperature,
             max_tokens=config.max_output_tokens,
             response_format={"type": "json_object"},
+            # Groq serves gpt-oss at medium reasoning by default; ask other
+            # providers for the same rather than rely on their defaults.
+            **({} if config.provider == "groq" else {"reasoning_effort": "medium"}),
         )
         usage = getattr(response, "usage", None)
         return str(response.choices[0].message.content or ""), {

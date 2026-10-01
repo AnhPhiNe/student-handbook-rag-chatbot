@@ -258,6 +258,7 @@ def judge_answers(
         "n": len(rows),
         "judged_n": len(valid),
         "judge_model": "openai/gpt-oss-120b",
+        "judge_provider": client.config.provider,
     }
     for metric in (
         "faithfulness",

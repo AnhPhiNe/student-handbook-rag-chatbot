@@ -14,7 +14,7 @@ from fastapi import HTTPException, Request
 
 from src.common.env_loader import env_float, env_int
 
-DEFAULT_MAX_QUERY_CHARS = 1000
+DEFAULT_MAX_QUERY_CHARS = 2000
 DEFAULT_RATE_LIMIT_PER_MINUTE = 5
 DEFAULT_IP_RATE_LIMIT_PER_MINUTE = 120
 DEFAULT_MAX_CONCURRENT_CHAT = 3

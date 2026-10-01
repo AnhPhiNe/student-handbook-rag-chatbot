@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
+import { MAX_QUERY_CHARS as MAX_CHARS, queryLengthState } from '../utils/queryLength';
 
 const PLACEHOLDERS = [
   "Học bổng khuyến khích học tập cần điều kiện gì?",
@@ -7,8 +8,6 @@ const PLACEHOLDERS = [
   "Sinh viên năm 4 cần lưu ý gì về chuẩn đầu ra?",
   "Mất thẻ sinh viên thì phải làm sao?"
 ];
-
-const MAX_CHARS = 1000;
 
 interface ChatInputProps {
   onSend: (text: string) => void;
@@ -27,9 +26,7 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
   
   const placeholder = PLACEHOLDERS[placeholderIdx];
 
-  const charCount = input.length;
-  const isNearLimit = charCount > MAX_CHARS * 0.8;
-  const isOverLimit = charCount > MAX_CHARS;
+  const { normalizedText, charCount, isNearLimit, isOverLimit } = queryLengthState(input);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -57,13 +54,13 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
         setTimeout(() => setShowLimitWarning(false), 2500);
         return; // Chỉ cho phép hàng đợi 1 tin
       }
-      setQueuedMessage(input);
+      setQueuedMessage(normalizedText);
       setInput('');
       return;
     }
 
     isSubmittingRef.current = true;
-    onSend(input);
+    onSend(normalizedText);
     setInput('');
     
     // Debounce chống click đúp (Double-click guard)

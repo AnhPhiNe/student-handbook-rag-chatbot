@@ -627,7 +627,7 @@ Conversation history lives in the browser's `sessionStorage` and is sent with ea
 | Concern | Implementation |
 |---|---|
 | Admission control | At most 3 chats at a time, a queue of 10 and a 30 s wait; beyond that, HTTP 503 for `/chat` or a `server_busy` event for `/chat/stream` |
-| Rate limits | Code defaults are 5 requests per minute per client, 120 per minute per IP and a 1,000-character question limit, all overridable; the shipped `.env.example` raises the per-client limit to 20/min and tightens the question limit to 500 characters. Over the limit returns HTTP 429 with `Retry-After` |
+| Rate limits | Code defaults are 5 requests per minute per client, 120 per minute per IP and a 2,000-character question limit, all overridable; the shipped `.env.example` raises the per-client limit to 20/min and keeps the 2,000-character limit. Rate-limit rejection returns HTTP 429 with `Retry-After`; an oversized question returns HTTP 400 without truncation |
 | Provider quotas | One `KeyPool` per provider rotates keys under per-key request, token and daily limits and cools a key down after a 429 |
 | Caching | A router cache for plans only. Answers are not cached: exact repeats were 4 of 78 real requests, and a cached reply defeated the regenerate button |
 | Observability | One LangSmith trace per request, with child runs and token usage for the planner and the composer; feedback is attached to the same run |

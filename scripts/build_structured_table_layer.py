@@ -780,24 +780,40 @@ def extract_websites(raw_text: str) -> list[str]:
     return sorted(matches)
 
 
+# The handbook labels an address "Văn phòng làm việc" or "Phòng làm việc", and a
+# registration desk "Văn phòng ghi danh". Reading only the first label left four
+# units of K48-K49 and K50 without any address.
+_ADDRESS_LABEL = re.compile(
+    r"(văn phòng làm việc|(?<!văn )phòng làm việc|văn phòng ghi danh)\s*:?",
+    re.IGNORECASE,
+)
+
+
 def extract_office(raw_text: str) -> str:
+    """Every labelled address of a unit; labels are kept when there is more than one.
+
+    A "+ ..." line opens a sub-unit (the Youth Union and the Student Association
+    share one entry), so its addresses are named after it.
+    """
     lines = [line.strip(" :") for line in raw_text.splitlines() if line.strip()]
-    office_lines: list[str] = []
-    capture = False
+    blocks: list[tuple[str, str, list[str]]] = []
+    current: list[str] | None = None
+    sub_unit = ""
     for line in lines:
         norm = normalize_text(line)
-        if "van phong lam viec" in norm:
-            capture = True
-            inline_value = re.split(
-                r"văn phòng làm việc\s*:?",
-                line,
-                maxsplit=1,
-                flags=re.IGNORECASE,
-            )[-1].strip(" :")
-            if inline_value and normalize_text(inline_value) != norm:
-                office_lines.append(inline_value)
+        if line.startswith("+"):
+            sub_unit = line.lstrip("+ ").rstrip(" :")
+            current = None
             continue
-        if capture and (
+        label = _ADDRESS_LABEL.search(line)
+        if label:
+            current = []
+            blocks.append((sub_unit, label.group(1), current))
+            inline_value = line[label.end():].strip(" :")
+            if inline_value:
+                current.append(inline_value)
+            continue
+        if current is not None and (
             "nhung cong viec" in norm
             or "dien thoai" in norm
             or "email" in norm
@@ -808,10 +824,20 @@ def extract_office(raw_text: str) -> str:
             or "muc tieu dao tao" in norm
             or "so tay sinh vien khoa" in norm
         ):
-            break
-        if capture:
-            office_lines.append(line)
-    return compact_text(" ".join(office_lines))
+            current = None
+            continue
+        if current is not None and line:
+            current.append(line)
+
+    addresses = [(unit, label, compact_text(" ".join(parts))) for unit, label, parts in blocks]
+    addresses = [entry for entry in addresses if entry[2]]
+    if len(addresses) == 1:
+        return addresses[0][2]
+    named = []
+    for unit, label, address in addresses:
+        label = label[:1].upper() + label[1:]
+        named.append(f"{unit} – {label}: {address}" if unit else f"{label}: {address}")
+    return "; ".join(named)
 
 
 def extract_responsibilities(raw_text: str) -> list[str]:

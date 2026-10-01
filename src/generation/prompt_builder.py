@@ -22,7 +22,7 @@ from .amendment_precedence import (
 )
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.30-table-rows-verbatim-document"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.31-every-contact-field-and-rounding"
 
 
 def build_answer_prompt_bundle(

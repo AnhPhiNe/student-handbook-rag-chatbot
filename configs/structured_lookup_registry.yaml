@@ -312,7 +312,7 @@ tools:
   program:
     data_category: directory_table
     presentation_type: table
-    description: Tra ngành, khoa phụ trách và liên hệ khoa; ngành kèm email khoa là một task.
+    description: Tra ngành, khoa phụ trách, liên hệ khoa và cơ hội nghề nghiệp sau khi tốt nghiệp của ngành; ngành kèm email khoa là một task.
     intents: [direct_value, list_items, exists]
     required_slots:
       direct_value: [program_or_faculty, requested_field]
@@ -326,8 +326,8 @@ tools:
       requested_field:
         type: string
         verification_role: reading_intent
-        enum: [faculty, programs, exists, email, phone, website, office, all]
-        description: faculty=khoa phụ trách ngành; programs=danh sách ngành; exists=kiểm tra tồn tại; email/phone/website/office/all=liên hệ khoa phụ trách ngành qua relationship, office là địa chỉ. Không tạo task phụ thuộc để tra khoa chưa biết tên.
+        enum: [faculty, programs, exists, career, email, phone, website, office, all]
+        description: faculty=khoa phụ trách ngành; programs=danh sách ngành; career=cơ hội nghề nghiệp, ra trường làm gì; exists=kiểm tra tồn tại; email/phone/website/office/all=liên hệ khoa phụ trách ngành qua relationship, office là địa chỉ. Không tạo task phụ thuộc để tra khoa chưa biết tên.
       scope:
         type: string
         verification_role: reading_intent

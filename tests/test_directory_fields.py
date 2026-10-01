@@ -48,3 +48,34 @@ def test_a_faculty_is_not_given_its_programs_career_lines_as_duties() -> None:
     with_careers = [f for f in faculty if "Cơ hội nghề nghiệp" in str(f.get("raw_text") or "")]
     assert with_careers, "fixture premise: some faculty entries carry their programs' career text"
     assert all(not _summarize_office(f).get("responsibilities") for f in with_careers)
+
+
+def test_a_program_career_question_resolves_to_the_program_and_carries_its_career_section() -> None:
+    """The handbook gives every program a "Cơ hội nghề nghiệp sau khi tốt nghiệp"
+    section; it is reachable only through the program tool, because program
+    records are not in the search index."""
+    import json
+    from pathlib import Path
+
+    from src.retrieval.core.query_plan import QUERY_PLAN_SCHEMA_VERSION, normalize_query_plan
+    from src.retrieval.core.structured_dispatcher import resolve_structured_task
+
+    root = Path(__file__).resolve().parents[1]
+    programs = json.loads((root / "data/processed/directories/program_directory.json").read_text(encoding="utf-8"))
+    faculty = json.loads((root / "data/processed/directories/student_faculty_profiles.json").read_text(encoding="utf-8"))
+    query = "Ngành Công nghệ thông tin ra trường làm gì?"
+    plan, errors = normalize_query_plan({
+        "schema_version": QUERY_PLAN_SCHEMA_VERSION, "context_mode": "standalone", "out_of_domain": False,
+        "tasks": [{"id": "t1", "question": query, "mode": "structured", "lookup_type": "program",
+                   "intent": "direct_value", "cohorts": ["K51"],
+                   "slots": {"program_or_faculty": "Công nghệ thông tin", "requested_field": "career"},
+                   "slot_spans": {"program_or_faculty": "Công nghệ thông tin", "requested_field": "ra trường làm gì"}}],
+    }, query=query, selected_cohort="K51")
+    assert not errors
+
+    resolution = resolve_structured_task(
+        plan["tasks"][0], query=query, cohort="K51", formula_rules=[], office_directory=[],
+        student_service_directory=[], student_faculty_profiles=faculty,
+        structured_tables_registry=[], program_directory=programs)
+
+    assert "lập trình viên" in json.dumps(resolution.result, ensure_ascii=False)

@@ -51,6 +51,10 @@ PLUMBING = {
     "input_requirements",
 }
 
+# A program record's raw text is its answer: the handbook's career section for
+# the program. Elsewhere raw text is the entry the fields were read from.
+RAW_TEXT_IS_ANSWER = {"program"}
+
 # Each answerable field maps to the wording its tool's registry text must contain,
 # lowercased. The wording is what a student would use, because that is what the
 # planner matches the question against.
@@ -122,6 +126,7 @@ ADVERTISED: dict[str, dict[str, str]] = {
     "program": {
         "program_name": "ngành",
         "faculty_name": "khoa",
+        "raw_text": "nghề nghiệp",
     },
     "student_service": {
         "service": "dịch vụ",
@@ -158,7 +163,8 @@ def fields_of_tools() -> dict[str, set[str]]:
             records = json.loads((ROOT / f"data/processed/directories/{DIRECTORIES[tool]}.json")
                                  .read_text(encoding="utf-8"))
             found[tool] = {field for record in records for field in record}
-    return {tool: fields - PLUMBING for tool, fields in found.items()}
+    return {tool: fields - (PLUMBING - ({"raw_text"} if tool in RAW_TEXT_IS_ANSWER else set()))
+            for tool, fields in found.items()}
 
 
 def registry_text() -> dict[str, str]:

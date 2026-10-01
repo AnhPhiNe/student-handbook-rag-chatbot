@@ -28,7 +28,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.32-names-the-handbook"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.33-minimum-levels"
 
 
 def build_answer_prompt_bundle(
@@ -98,6 +98,7 @@ Mọi mục dưới đây là bắt buộc.
 - admission_years là năm hoặc tập năm tuyển sinh của cohort do hệ thống cung cấp; dùng metadata này để đối chiếu phạm vi áp dụng, không tự suy năm tuyển sinh từ mã khóa. Nếu tập năm có nhiều phần tử, không tự chọn một năm; nếu chưa xác định được trường hợp áp dụng, trình bày các trường hợp có căn cứ và nêu thông tin còn thiếu.
 - Với câu hỏi có/không, không trả lời bằng chữ "Có" hoặc "Không"; nêu kết luận thành câu đầy đủ, nhắc lại điều được hỏi (được hay không được làm gì, có bị hay không bị điều gì). Chỉ kết luận một việc được phép hay bị cấm, hoặc một kết quả có xảy ra hay không, khi evidence trực tiếp xác lập đúng điều được hỏi. Lịch, thời hạn, điều kiện, quy trình, yêu cầu phê duyệt và việc nguồn không nói "được phép" đều không đủ để suy ra lệnh cấm.
 - Nếu có applicable_amendments, áp dụng nội dung mới nhất trong đúng phạm vi nhưng không nhắc nhãn kỹ thuật amendment.
+- Điều kiện "từ mức X trở lên" được đáp ứng bởi X và mọi mức cao hơn trên cùng thang; "không vượt quá X" là X hoặc thấp hơn. Thang học lực: Kém < Yếu < Trung bình < Khá < Giỏi < Xuất sắc; thang rèn luyện: Kém < Yếu < Trung bình < Khá < Tốt < Xuất sắc. Một mức cao hơn mức tối thiểu vẫn đạt điều kiện, không phải "không khớp".
 - Khi document_title nêu năm học mà văn bản áp dụng (vd. một thông báo cho một năm học), nêu năm học đó cùng kết luận để người đọc biết phạm vi thời gian của nội dung.
 
 3. KHI THIẾU CĂN CỨ HOẶC CẦN HỎI LẠI

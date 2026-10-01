@@ -44,3 +44,29 @@ def test_workers_judge_every_case_once(monkeypatch, tmp_path) -> None:
                            judge_client=Client(), checkpoint_context={"t": 1})
     assert len(calls) == 10
     assert [row["id"] for row in report["cases"]] == [c["id"] for c in cases]
+
+
+def test_retry_failed_judges_only_the_failed_rows(monkeypatch, tmp_path) -> None:
+    from src.evaluation.answers import judge_answers
+
+    outcomes = {"C0": True, "C1": False}
+
+    class Client:
+        def __init__(self):
+            self.seen = []
+
+        def judge(self, packet):
+            self.seen.append(packet["case_id"] if "case_id" in packet else packet.get("id"))
+            ok = outcomes.pop(next(iter(outcomes)), True) if outcomes else True
+            scores = {**{m: 1.0 for m in JUDGE_METRICS}, "unsupported_claim": False, "critical_false_pass": False}
+            return {"ok": True, "scores": scores} if ok else {"ok": False, "error": "timeout"}
+
+    cases = [{"id": f"C{i}", "query": "q", "required_facts": []} for i in range(2)]
+    answers = [{"id": f"C{i}", "answer": "a", "status": "answered"} for i in range(2)]
+    kwargs = dict(checkpoint_path=tmp_path / "cp.json", checkpoint_context={"t": 1})
+    first = judge_answers(cases, answers, resume=False, judge_client=Client(), **kwargs)
+    assert first["summary"]["judged_n"] == 1
+    client = Client()
+    second = judge_answers(cases, answers, resume=True, judge_client=client, retry_failed=True, **kwargs)
+    assert len(client.seen) == 1
+    assert second["summary"]["judged_n"] == 2

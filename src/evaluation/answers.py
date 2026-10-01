@@ -193,8 +193,13 @@ def judge_answers(
     limit: int | None = None,
     judge_client: GroqJudgeClient | None = None,
     checkpoint_context: dict[str, Any] | None = None,
+    retry_failed: bool = False,
 ) -> dict[str, Any]:
-    """Score generated answers with the configured automated judge."""
+    """Score generated answers with the configured automated judge.
+
+    With retry_failed, answers whose judge call failed are judged again and
+    every scored row is kept.
+    """
 
     identity = eval_checkpoint_identity(
         cases,
@@ -205,7 +210,11 @@ def judge_answers(
     existing = load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
     client = judge_client or GroqJudgeClient()
     answers = {row["id"]: row for row in answer_cache}
-    judged = {row["id"]: row for row in existing}
+    judged = {
+        row["id"]: row
+        for row in existing
+        if not retry_failed or (row.get("judge") or {}).get("ok")
+    }
     def judge_one(case: dict[str, Any]) -> dict[str, Any]:
         answer = answers.get(case["id"], {})
         packet = compact_judge_packet(case, answer)

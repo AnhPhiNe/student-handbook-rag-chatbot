@@ -6,7 +6,8 @@
 Answers from rerun attempts replace the first-run answers, as in the report.
 The result goes to <run>/judge_<provider>/ and is read with
 `python -m scripts.report_v4_run --run <run>/judge_<provider>` (no --reruns).
-Compare two runs only when both were judged by the same provider.
+Compare two runs only when both were judged by the same provider. Running it
+again resumes and judges only the answers whose judge call failed.
 """
 from __future__ import annotations
 
@@ -47,7 +48,7 @@ def main() -> None:
     context = {**snapshot, "rejudge_of": run.name, "judge_provider": provider}
     (out / "run_snapshot.json").write_text(json.dumps(context, ensure_ascii=False, indent=2), encoding="utf-8")
     judged = judge_answers(cases, merged_answers(run), checkpoint_path=out / "judge_checkpoint.json",
-                           resume=True, checkpoint_context=context)
+                           resume=True, checkpoint_context=context, retry_failed=True)
     (out / "generated_answer_judge.json").write_text(json.dumps(judged, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(judged["summary"], ensure_ascii=False)[:600], flush=True)
 

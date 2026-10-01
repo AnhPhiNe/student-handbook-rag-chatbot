@@ -691,6 +691,84 @@ with the extracted handbook text; each program's faculty is checked by count
 and presence, not record by record against the handbook; K52 is not in the
 data.
 
+## The RAG branch, checked against the handbooks (2026-10-01)
+
+What the index holds, and how retrieval and section text compare with the PDFs:
+
+- **Index complete and in sync**: 541 sections (MongoDB holds 541) and 3,800
+  chunks (Qdrant holds 3,800); every section has at least one chunk, none empty.
+- **Retrieval on official_v4** (run B): 160 of 162 cases got every section their
+  current question needs (98.8%). For a follow-up only the current turn's
+  section is required; v4's expected list also names the previous turn's. The
+  two misses retrieved nothing by design: V4-070 was planned to the directory,
+  V4-100 asked back.
+- **Coverage against each handbook's table of contents**: every regulation,
+  policy and notice is indexed. Out of scope and left out: the college-level
+  preschool regulation (Quyết định 3533, a branch-campus programme) and the
+  branch-campus sections. Not indexed: the school overview (all three cohorts),
+  the museum and historic-site lists (K48-K49, K50), K51's dormitory flowchart
+  page (the procedure itself is indexed) and K48-K49's research-report appendix.
+- **Section text**: 96–97% of the regulation sentences in the PDFs are in a
+  section; the rest are preambles, signatures, forms, table rows stored as
+  tables, and out-of-scope text. No section swallows another article's heading,
+  carries a page header, holds a broken table or duplicates another of its
+  cohort. Two sections are cut (K50 and K51 advising regulation, Điều 4), losing
+  a cross-reference. Recorded page numbers: 451 sections right, 2 wrong.
+- **Amendments**: all 7 of K51's amendments attach to the right sections; of the
+  7 v4 cases that received one, 6 scored 1.0.
+- A claim made during the audit and withdrawn: the handbook's "Một số công việc
+  của các phòng và trung tâm" table is not missing information. Its seven
+  matters are in the service directory in the units' own words, and the
+  production selector picked the right unit for 23 of 24 student phrasings.
+
+## Answers follow the student's own handbook (owner decision, 2026-10-01)
+
+Reading the handbooks' own clauses showed that a cohort's handbook can be out of
+date for rules that bind every intake:
+
+| K48-K49 handbook | Since replaced or reissued |
+|---|---|
+| Student affairs regulation, Quyết định 989 (2022) | Quyết định 1999 (2024), "thay thế cho Quyết định số 989"; consolidated as Quyết định 2535 (2025, K51), "áp dụng cho tất cả các khoá tuyển sinh" |
+| Conduct assessment regulation, Quyết định 2650 (2022) | Quyết định 2000 (2024), "thay thế Quyết định số 2650" |
+| Academic advising regulation, Quyết định 134 (2014) | Quyết định 2001 (2024), printed in K50 and K51 |
+| Fee and support notices of 2022–2023 | each handbook prints its own year's; K51 prints 2025–2026 |
+
+K50's student affairs regulation is likewise superseded by K51's consolidated
+text. The difference matters: K51 states the scholarship rule by classification
+pairs, K48-K49 and K50 by score ranges.
+
+The owner chose to keep answers faithful to the student's own handbook, because
+a K49 student who checks an answer against the K49 handbook must find it there.
+So the composer names the handbook of the sources it uses ("Theo Sổ tay sinh
+viên khóa K50 (năm học 2024 – 2025)"), and when a source belongs to a document
+listed in `configs/handbook_currency.yaml` it adds that document's note, which
+says what is newer and where it is printed. Every note quotes its basis and
+claims a replacement only where a "thay thế" clause says so. Newer content is
+never substituted, and the three documents printed only in later handbooks
+(off-campus residence, conduct code of 2023, talented-learner policy) are not
+offered to the earlier cohorts.
+
+Measured at `ecda6cda`, composer v3.32 replayed on run B's 246 packets: the
+handbook is named in 233 answers and a note appears in 71; answer correctness
+0.959 against v3.31's 0.958 (paired +0.002, 95% CI [-0.012, +0.015]). The judge
+first read the notes as unsupported (flags 22 → 36) because its context omitted
+them; with the fix it sees them (29 flags).
+
+For the thesis, the evaluation's correct answer is therefore "faithful to the
+student's own handbook", and the table above is a limitation of that choice.
+
+Found while measuring, not fixed:
+
+- **V4-020**: asked about academic "Khá" with conduct "Tốt" under K51's
+  classification table, the composer often reads "Khá trở lên" as excluding
+  "Tốt" and denies the scholarship: wrong in about 6 of 8 draws under v3.31 and
+  fewer under v3.32. Resolving the classification pair in the scholarship lookup
+  would take the reasoning away from the composer.
+- **"TOEIC bao nhiêu điểm thì đạt chuẩn đầu ra bậc 3?"** goes to RAG, which does
+  not hold the equivalence table (table rows are not embedded), and the answer
+  says nothing was found. The foreign-language tool's description, "không xác
+  lập chuẩn đầu ra bắt buộc", likely steers "đạt chuẩn đầu ra" away from it.
+
 ## What these measurements do not show
 
 - A comparison with plain RAG (no planner) or with a long-context model given the

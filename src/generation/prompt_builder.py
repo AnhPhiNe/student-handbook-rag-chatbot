@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import copy
 import json
 import re
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
+
+import yaml
 
 from src.common.cohort import (
     admission_years_for_cohort,
@@ -22,7 +27,8 @@ from .amendment_precedence import (
 )
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.31-every-contact-field-and-rounding"
+HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.32-names-the-handbook"
 
 
 def build_answer_prompt_bundle(
@@ -54,6 +60,7 @@ def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
     The pipeline builds the packet from retrieval; a composer replay renders a
     recorded packet through this same function, so both prompts are identical.
     """
+    packet = _with_handbook_labels(packet)
     required_units = [
         {
             "task_id": unit["task_id"],
@@ -71,7 +78,7 @@ def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
 
 ĐẦU VÀO
 - AUTHORIZED_EVIDENCE_BY_UNIT gồm các đơn vị cần trả lời; mỗi đơn vị là một ý của câu hỏi cho một cohort.
-- Trong mỗi đơn vị: question là ý cần trả lời; mode=structured (kết quả tra bảng, danh bạ), rag (đoạn quy chế) hoặc clarify; coverage=covered (có căn cứ), uncovered (chưa tìm thấy căn cứ) hoặc needs_clarification (cần hỏi lại); primary_evidence là các nguồn được phép dùng, mỗi nguồn có source_ref, document_title (tên văn bản), article_label (Điều, nếu văn bản chia theo Điều), content và role.
+- Trong mỗi đơn vị: question là ý cần trả lời; mode=structured (kết quả tra bảng, danh bạ), rag (đoạn quy chế) hoặc clarify; coverage=covered (có căn cứ), uncovered (chưa tìm thấy căn cứ) hoặc needs_clarification (cần hỏi lại); primary_evidence là các nguồn được phép dùng, mỗi nguồn có source_ref, document_title (tên văn bản), article_label (Điều, nếu văn bản chia theo Điều), content, role, printed_in (sổ tay in nguồn đó) và có thể có currency_note (lưu ý về văn bản mới hơn).
 - role=candidate là mặc định: nguồn hệ thống tìm được cho đơn vị, có thể chỉ liên quan một phần. role=target chỉ có khi câu hỏi nêu đích danh một Điều khớp với nguồn đó.
 
 Mọi mục dưới đây là bắt buộc.
@@ -116,6 +123,8 @@ Mọi mục dưới đây là bắt buộc.
 - Không chèn mã nguồn như [S1] vào câu trả lời; giao diện hiển thị nguồn riêng.
 - Không hiển thị quá trình suy luận, metadata kỹ thuật hoặc tự tạo mục nguồn.
 - Dùng từ ngữ của sinh viên, vd. "khóa K51"; không dùng các từ kỹ thuật của đầu vào như cohort, evidence, source_ref hoặc role.
+- Nêu rõ câu trả lời dựa theo sổ tay nào, theo printed_in của nguồn được dùng (vd. "Theo Sổ tay sinh viên khóa K50 (năm học 2024 – 2025), …"), để người hỏi tìm lại được trong sổ tay đó. Nếu printed_in là sổ tay của khóa khác với khóa của đơn vị, nói rõ văn bản được in trong sổ tay đó.
+- Nếu nguồn được dùng có currency_note, thêm nguyên nội dung currency_note thành một câu lưu ý ở cuối phần trả lời của đơn vị, mỗi văn bản một lần; không suy đoán nội dung của văn bản mới hơn.
 
 AUTHORIZED_EVIDENCE_BY_UNIT
 {evidence_context}
@@ -128,6 +137,41 @@ Các đơn vị bắt buộc phải xử lý theo đúng thứ tự:
 
 Chỉ xuất câu trả lời cuối cùng cho sinh viên."""
     return prompt, evidence_context
+
+
+@lru_cache(maxsize=1)
+def _handbook_currency() -> tuple[dict[str, str], tuple[tuple[str, str], ...]]:
+    """School year of each handbook, and the currency notes keyed by section-id prefix."""
+
+    data = yaml.safe_load(HANDBOOK_CURRENCY_PATH.read_text(encoding="utf-8")) or {}
+    years = {str(cohort): str(year) for cohort, year in (data.get("handbook_years") or {}).items()}
+    notes = tuple(
+        (str(prefix), " ".join(str(entry["note"]).split()))
+        for entry in data.get("notes") or []
+        for prefix in entry.get("sources") or []
+    )
+    return years, notes
+
+
+def _with_handbook_labels(packet: dict[str, Any]) -> dict[str, Any]:
+    """Name the handbook each source is printed in, and attach its currency note.
+
+    Answers follow the student's own handbook (configs/handbook_currency.yaml),
+    so a source is labelled with the cohort that printed it, which differs from
+    the student's cohort only for a document validated to apply across cohorts.
+    """
+    years, notes = _handbook_currency()
+    labelled = copy.deepcopy(packet)
+    for unit in labelled.get("units") or []:
+        for source in unit.get("primary_evidence") or []:
+            cohort = str(source.get("source_cohort") or unit.get("cohort") or "")
+            if cohort in years:
+                source["printed_in"] = f"Sổ tay sinh viên khóa {cohort} (năm học {years[cohort]})"
+            source_id = str(source.get("source_id") or "")
+            note = next((text for prefix, text in notes if source_id.startswith(prefix)), None)
+            if note:
+                source["currency_note"] = note
+    return labelled
 
 
 def build_authorized_evidence_packet(

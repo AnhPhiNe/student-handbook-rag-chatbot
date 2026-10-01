@@ -1,0 +1,86 @@
+# Answers follow the student's own cohort handbook and name it (owner decision,
+# 2026-10-01). A student who checks an answer against their own handbook must
+# find it there, so content from a later handbook is never substituted. When a
+# cited section belongs to a document that a later handbook replaced, amended or
+# reissued for a newer school year, the composer adds the note below, which only
+# says what is newer and where it is printed.
+#
+# A note applies to every section whose id starts with one of its `sources`.
+# `basis` quotes the clause that establishes the note; a note claims a
+# replacement only where the newer document says "thay thế".
+
+handbook_years:
+  K48-K49: "2022 – 2023"
+  K50: "2024 – 2025"
+  K51: "2025 – 2026"
+
+notes:
+  - sources: [K48-K49_K48_49_QuyCheCongTacSinhVien_]
+    note: >-
+      Quy chế công tác sinh viên in trong Sổ tay khóa K48-K49 (Quyết định 989/QĐ-ĐHSP năm 2022)
+      đã được thay thế bởi quy chế ban hành kèm Quyết định 1999/QĐ-ĐHSP ngày 15/7/2024. Văn bản
+      hợp nhất mới nhất (Quyết định 2535/QĐ-ĐHSP ngày 11/7/2025) in trong Sổ tay khóa K51 và áp dụng
+      cho tất cả các khóa tuyển sinh, nên quy định hiện hành có thể khác.
+    basis: >-
+      Sổ tay K50 tr. 84, Điều 40: "thay thế cho Quyết định số 989/QĐ-ĐHSP"; Sổ tay K51 tr. 81:
+      "và áp dụng cho tất cả các khoá tuyển sinh".
+
+  - sources: [K50_QuyCheCongTacSinhVien_]
+    note: >-
+      Sổ tay khóa K51 in văn bản hợp nhất mới hơn của quy chế này (Quyết định 2535/QĐ-ĐHSP ngày
+      11/7/2025), áp dụng cho tất cả các khóa tuyển sinh, nên quy định hiện hành có thể khác.
+    basis: >-
+      Sổ tay K51 tr. 55, tiêu đề "VĂN BẢN HỢP NHẤT Quy chế Công tác sinh viên"; tr. 81: "và áp dụng
+      cho tất cả các khoá tuyển sinh".
+
+  - sources:
+      - K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_
+      - K48-K49_PhieuDanhGiaRenLuyen_
+      - K48-K49_HuongDanLapHoSoRenLuyen_
+    note: >-
+      Quy chế đánh giá kết quả rèn luyện in trong Sổ tay khóa K48-K49 (Quyết định 2650/QĐ-ĐHSP năm
+      2022) đã được thay thế bởi quy chế ban hành kèm Quyết định 2000/QĐ-ĐHSP ngày 15/7/2024, in
+      trong Sổ tay khóa K50 và K51, nên quy định hiện hành có thể khác.
+    basis: >-
+      Sổ tay K50 tr. 102, Điều 18: "thay thế Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022".
+
+  - sources: [K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_]
+    note: >-
+      Quy định công tác cố vấn học tập in trong Sổ tay khóa K48-K49 được ban hành năm 2014; Sổ tay
+      khóa K50 và K51 in quy định mới hơn (Quyết định 2001/QĐ-ĐHSP năm 2024), nên quy định hiện
+      hành có thể khác.
+    basis: >-
+      Sổ tay K48-K49 tr. 64 (Quyết định 134/QĐ-ĐHSP ngày 13/01/2014); Sổ tay K51 tr. 82 (Quyết định
+      2001/QĐ-ĐHSP ngày 15/7/2024) và tr. 87, Điều 10, thay thế Quyết định 3738/QĐ-ĐHSP ngày
+      02/12/2022. No clause names Quyết định 134, so the note says "mới hơn", not "thay thế".
+
+  - sources: [K48-K49_QuyTacUngXuSinhVien_]
+    note: >-
+      Sổ tay khóa K50 và K51 còn in Quy định quy tắc ứng xử của viên chức, người lao động và người
+      học (Quyết định 969/QĐ-ĐHSP ngày 21/4/2023), áp dụng cho người học đang học tập tại Trường.
+    basis: >-
+      Sổ tay K51 tr. 123, Điều 1 khoản 2: "áp dụng đối với viên chức, người lao động và người học
+      đang làm việc, học tập, nghiên cứu tại Trường".
+
+  - sources:
+      - K48-K49_ThongBaoMienGiamHocPhi_
+      - K48-K49_ThongBaoHoTroChiPhiHocTap_
+      - K48-K49_ThongBaoHocBongNguoiKhuyetTat_
+      - K50_ThongBaoMienGiamHocPhi_
+      - K50_ThongBaoHoTroChiPhiHocTap_
+      - K50_ThongBaoHocBongNguoiKhuyetTat_
+    note: >-
+      Đây là thông báo in trong sổ tay của một năm học trước; mỗi năm học Trường ban hành thông báo
+      mới, và thông báo gần nhất có trong sổ tay được in trong Sổ tay khóa K51 (năm học 2025 – 2026).
+    basis: >-
+      Mục lục Sổ tay K48-K49 (tr. 186), K50 (tr. 212–213), K51 (tr. 226–227): mỗi sổ tay in thông
+      báo của năm học của nó, K51 in thông báo năm học 2025 – 2026.
+
+  - sources:
+      - K51_ThongBaoMienGiamHocPhi_
+      - K51_ThongBaoHoTroChiPhiHocTap_
+      - K51_ThongBaoHocBongNguoiKhuyetTat_
+    note: >-
+      Đây là thông báo cho năm học 2025 – 2026; mỗi năm học Trường ban hành thông báo mới.
+    basis: >-
+      Sổ tay K51 tr. 157: "THÔNG BÁO … năm học 2025 – 2026".

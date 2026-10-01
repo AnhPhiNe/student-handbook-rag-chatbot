@@ -12,6 +12,9 @@ from src.retrieval.core.structured_dispatcher import resolve_structured_task
     ({}, None),
     ({"score_or_level": "bậc 4", "speaking_score": "điểm Nói"}, None),
     ({"score_or_level": "bậc 3 và bậc 4"}, None),
+    ({"score_or_level": "bậc 3", "speaking_score": 130}, None),
+    ({"score_or_level": ["bậc 3", "bậc 4"], "speaking_score": 130}, None),
+    ({"score_or_level": "bậc 9", "speaking_score": 130}, {"listening_score", "writing_score"}),
     ({"speaking_score": "điểm Nói", "writing_score": "điểm Viết"}, None),
     ({"score_or_level": 650}, {"listening_score", "speaking_score", "writing_score"}),
     ({"speaking_score": 160}, {"listening_score", "writing_score"}),
@@ -25,6 +28,7 @@ def test_component_guard_distinguishes_requested_fields_from_scores(certificate,
     # not a hard-coded TOEIC four-skill list.
     candidates = [{"rows": [{
         "certificate": certificate,
+        "equivalent_level_3": "100–150", "equivalent_level_4": "151–200",
         "input_requirements": {
             "score_mode": "per_component",
             "required_components": ["listening", "speaking", "writing"],
@@ -52,12 +56,26 @@ def test_scalar_certificate_has_no_component_requirement():
     ) is None
 
 
+@pytest.mark.parametrize("level", ["N3", "N4", "B1", ["bậc 3", "N3"]])
+@pytest.mark.parametrize("certificates", ["TOEIC", ["TOEIC", "JLPT"], ["TOEIC", "Cambridge"]])
+def test_another_certificates_level_does_not_bypass_component_inputs(level, certificates):
+    registry = json.loads(Path("data/processed/tables/structured_tables_registry.json").read_text(encoding="utf-8"))
+    result = _reference_input_clarification(
+        "foreign_language", candidates=[t for t in registry if t.get("table_type") == "foreign_language"],
+        cohort="K50", slots={"certificate_or_language": certificates, "score_or_level": level,
+                             "speaking_score": 130, "writing_score": 130},
+    )
+    assert result and set(result["missing_slots"]) == {"listening_score", "reading_score"}
+
+
 @pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
 @pytest.mark.parametrize("slots,clarify", [
     ({"certificate_or_language": "TOEIC", "score_or_level": "bậc 4", "speaking_score": "điểm Nói"}, False),
     ({"certificate_or_language": "TOEIC", "score_or_level": "bậc 3 và bậc 4"}, False),
     ({"certificate_or_language": "TOEIC"}, False),
     ({"certificate_or_language": "TOEIC", "speaking_score": 160}, True),
+    ({"certificate_or_language": "TOEIC", "score_or_level": "bậc 3", "speaking_score": 130,
+      "writing_score": 130}, False),
     ({"certificate_or_language": "TOEIC", "listening_score": 400, "reading_score": 400,
       "speaking_score": 160, "writing_score": 150}, False),
     ({"certificate_or_language": "IELTS", "score_or_level": 6.0}, False),

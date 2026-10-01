@@ -13,7 +13,7 @@ from src.common.score import grounded_score, parse_score
 from src.common.text import slot_values
 
 from .formula_lookup import formula_lookup
-from .foreign_language_lookup import foreign_language_lookup
+from .foreign_language_lookup import foreign_language_lookup, is_reference_level_selector
 from .catalog_relationship import resolve_relationship
 from .directory_selector import DirectorySelector
 from .office_lookup import normalize_text, office_lookup
@@ -157,7 +157,7 @@ def _bind_formula_source(
     return bound
 
 
-def _reference_input_clarification(
+def _reference_component_gap(
     lookup_type: str,
     *,
     candidates: list[dict[str, Any]],
@@ -174,14 +174,8 @@ def _reference_input_clarification(
     if lookup_type != "foreign_language":
         return None
 
-    entity_values = slots.get("certificate_or_language")
-    if isinstance(entity_values, list):
-        entity_text = " ".join(
-            str(value).strip() for value in entity_values if str(value).strip()
-        )
-    else:
-        entity_text = str(entity_values or "")
-    entity_norm = normalize_text(entity_text)
+    entity_norms = [normalize_text(value) for value in slot_values(slots.get("certificate_or_language"))
+                    if value is not None and str(value).strip()]
     input_rows: list[dict[str, Any]] = []
     for table in candidates:
         for row in table.get("rows") or []:
@@ -201,8 +195,10 @@ def _reference_input_clarification(
             )
             if any(
                 candidate_norm
+                and entity_norm
                 and (candidate_norm in entity_norm or entity_norm in candidate_norm)
                 for candidate_norm in map(normalize_text, declared_names)
+                for entity_norm in entity_norms
             ):
                 input_rows.append(row)
 
@@ -257,6 +253,28 @@ def _reference_input_clarification(
         ),
         "content_type": "structured_lookup_clarification",
     }
+
+
+def _reference_input_clarification(
+    lookup_type: str,
+    *,
+    candidates: list[dict[str, Any]],
+    cohort: str | None,
+    slots: dict[str, Any],
+) -> dict[str, Any] | None:
+    gap = _reference_component_gap(
+        lookup_type, candidates=candidates, cohort=cohort, slots=slots,
+    )
+    # Candidates are already cohort-scoped. Reuse the certificate lookup's row
+    # selection: a JLPT N3 column must not exempt a TOEIC score requirement.
+    selected = foreign_language_lookup("", candidates, slots=slots) if gap is not None else None
+    if gap is not None and is_reference_level_selector(
+        slots.get("score_or_level"), (selected or {}).get("items") or [],
+    ):
+        # A requested reference column needs no personal score for every skill.
+        # Partial scores remain context, not proof of a personal equivalency.
+        return None
+    return gap
 
 
 def _select_reference_tables(
@@ -490,6 +508,10 @@ def _unique_reference_resolution(
         return resolved if isinstance(resolved.get("result"), dict) else None
 
     if lookup_type == "foreign_language":
+        if _reference_component_gap(
+            lookup_type, candidates=selected_tables, cohort=cohort, slots=slots,
+        ) is not None:
+            return None  # Partial personal scores may show thresholds, never a fact lock.
         resolved = foreign_language_lookup(
             query,
             selected_tables,

@@ -13,9 +13,10 @@ reports are listed at the end.
   and pick models, so its scores are optimistic. `official_v2` is spent in the
   same way. The 21 questions in `data/eval/development/supplementary_questions.yaml`
   are development questions for the new v35 content.
-- **The hold-out is `official_v3`.** Its planner suite was run once, on
-  2026-09-27 (below). No result from it may be used to change the system; any
-  later run of it is a post-fix measurement.
+- **Historical hold-outs.** `official_v3` retains its first planner result of
+  2026-09-27, but was used after that run and is now spent. `official_v4` run A
+  is the historical end-to-end hold-out; B/C are post-fix measurements. No new
+  hold-out or production result is claimed for subsequent offline hardening.
 - **Noise.** On the 135-case deterministic suite, a small prompt change flips
   2–3 borderline cases either way, so a difference of 3 or fewer cases is
   treated as a tie. Paired comparisons use McNemar's test on the cases where
@@ -27,8 +28,8 @@ reports are listed at the end.
 
 | Component | Chosen | Alternatives measured | Deciding evidence |
 |---|---|---|---|
-| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema, prompt v53 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | 133/135 on v1 with p95 5.8 s; DeepSeek low 128/135 with p95 18 s; Qwen lost 28 requests to free-tier limits |
-| Composer | DeepSeek flash, thinking off, prompt v3.30 | Gemini 3.1 Flash-Lite; DeepSeek thinking low | Same quality as Gemini with 0 failures against 20/150; thinking low judged the same (correctness 0.991 against 0.988) and 3 s slower |
+| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema, prompt v56 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | Latest recorded v1: 133/135, p95 7.68 s (2026-10-01); the original model selection and later prompt changes are detailed below |
+| Composer | DeepSeek flash, thinking off, prompt v3.33 | Gemini 3.1 Flash-Lite; DeepSeek thinking low | Originally chosen for equivalent quality without Gemini's failed calls; v4 Run C records the later v3.33 stack, not a new isolated model comparison |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
 | Reranker | Voyage `rerank-3`, on all 24 fused children (2026-09-30) | Qwen3-Reranker-8B, 4B, 0.6B on DeepInfra; Cohere rerank-v4.0-fast; none | first 0.942 / top-5 155/155 at p90 0.85 s, against 8B 0.923 / 155 at p90 4.7 s, 4B 0.903 / 153, Cohere 0.897, none 0.832 / 148. Chosen for availability: the DeepInfra 8B endpoint stalled for over four hours on 2026-09-30 |
@@ -928,8 +929,9 @@ students get a correct answer, which is probably higher than the score.
   (`--retrieval-mode no_graph`, `--retrieval-mode vector_only`, fixed in
   `dfcc2dc8` so that `vector_only` really skips BM25), but no run of them has
   been reported; the dense-only numbers above come from the reranker scripts.
-- End-to-end answer quality of the final stack on a hold-out. `official_v3`
-  has only a planner suite, and prompt v53 was written after its run.
+- End-to-end answer quality of later fixes on a new hold-out. `official_v4`
+  run A is the historical hold-out; B/C and subsequent fixes are post-fix.
+  `official_v3` has only a planner suite and was used after its first run.
 - How often the planner sends a question about a table value to RAG. It is
   about 1–2% of the development cases (v1 092, v3 003, 007, 085), and the student
   gets a "not found" answer. Real questions after the deploy will show whether

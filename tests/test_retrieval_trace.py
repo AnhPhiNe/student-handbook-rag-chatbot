@@ -15,6 +15,7 @@ BM25 = [(12.0, _chunk("c")), (11.0, _chunk("a"))]
 FUSED = [(0.033, _chunk("a")), (0.016, _chunk("c")), (0.016, _chunk("b"))]
 RERANKED = [(0.97, _chunk("c")), (0.51, _chunk("a")), (0.02, _chunk("b"))]
 TELEMETRY = {"reranker_applied": True, "reranker_model": "Qwen/Qwen3-Reranker-8B",
+             "reranker_provider": "deepinfra",
              "reranker_latency_ms": 1800.0, "reranker_input_tokens": 11000, "reranker_cost": 0.00055}
 
 
@@ -44,6 +45,18 @@ def test_a_retrieval_records_ranks_from_every_list_and_the_rerank_call():
 
 def test_nothing_is_recorded_outside_a_request():
     _trace().record(TELEMETRY, RERANKED, DENSE, BM25, FUSED)  # no tracker: no error, nothing kept
+
+
+def test_voyage_is_traced_as_voyage_with_its_model_and_usage():
+    tracker = UsageTracker()
+    with tracking(tracker):
+        _trace().record({**TELEMETRY, "reranker_provider": "voyage",
+                         "reranker_model": "rerank-3", "reranker_cost": None},
+                        RERANKED, DENSE, BM25, FUSED)
+    rerank = tracker.get_steps()[1]
+    assert rerank["metadata"]["provider"] == "voyage"
+    assert rerank["model"] == "rerank-3"
+    assert rerank["input_tokens"] == 11000
 
 
 def test_langsmith_gets_a_retriever_run_and_the_rerank_price():

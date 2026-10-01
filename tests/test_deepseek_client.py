@@ -8,7 +8,7 @@ import pytest
 
 from src.common.key_pool import KeyPoolConfig
 from src.generation import deepseek_client as module
-from src.generation.deepseek_client import DeepSeekClient
+from src.generation.deepseek_client import DeepSeekClient, IncompleteGenerationError
 
 
 def _client(monkeypatch, **kwargs) -> DeepSeekClient:
@@ -40,13 +40,13 @@ def _fake_openai(monkeypatch, responses):
     return calls
 
 
-def _completion(text="Câu trả lời.", reasoning="PRIVATE REASONING"):
-    return NS(choices=[NS(message=NS(content=text, reasoning_content=reasoning))],
+def _completion(text="Câu trả lời.", reasoning="PRIVATE REASONING", finish_reason="stop"):
+    return NS(choices=[NS(message=NS(content=text, reasoning_content=reasoning), finish_reason=finish_reason)],
               usage=NS(prompt_tokens=100, completion_tokens=20, total_tokens=120))
 
 
-def _chunk(content=None, reasoning=None, usage=None):
-    choices = [] if usage else [NS(delta=NS(content=content, reasoning_content=reasoning))]
+def _chunk(content=None, reasoning=None, usage=None, finish_reason=None):
+    choices = [] if usage else [NS(delta=NS(content=content, reasoning_content=reasoning), finish_reason=finish_reason)]
     return NS(choices=choices, usage=usage)
 
 
@@ -70,6 +70,7 @@ def test_request_sets_thinking_and_returns_only_the_answer(monkeypatch, effort, 
 
 def test_stream_yields_answer_chunks_but_never_reasoning(monkeypatch):
     stream = [_chunk(reasoning="PRIVATE REASONING"), _chunk("Câu "), _chunk("trả lời."),
+              _chunk(finish_reason="stop"),
               _chunk(usage=NS(prompt_tokens=10, completion_tokens=5, total_tokens=15))]
     calls = _fake_openai(monkeypatch, [iter(stream)])
     generator = _client(monkeypatch).generate_stream("PROMPT")
@@ -89,6 +90,51 @@ def test_stream_yields_answer_chunks_but_never_reasoning(monkeypatch):
 def _status_error(status):
     response = httpx.Response(status, request=httpx.Request("POST", "https://api.deepseek.com/chat/completions"))
     return openai.APIStatusError("failure", response=response, body={})
+
+
+@pytest.mark.parametrize(("finish_reason", "error_type"), [
+    ("length", "output_truncated"), ("content_filter", "content_filtered"),
+    ("tool_calls", "invalid_completion"), (None, "incomplete_stream"),
+])
+@pytest.mark.parametrize("text", ["", "Câu trả lời bị cắt"])
+def test_incomplete_sync_answer_is_not_success_and_not_retried(monkeypatch, finish_reason, error_type, text):
+    calls = _fake_openai(monkeypatch, [_completion(text=text, finish_reason=finish_reason), _completion()])
+    result = _client(monkeypatch).generate("PROMPT")
+    assert not result["ok"] and result["error_type"] == error_type
+    assert result["attempts"] == len(calls) == 1
+    assert result["usage"]["total"] == 120
+
+
+@pytest.mark.parametrize(("finish_reason", "error_type"), [
+    ("length", "output_truncated"), ("content_filter", "content_filtered"),
+    (None, "incomplete_stream"),
+])
+@pytest.mark.parametrize("partial", ["", "Phần đầu."])
+def test_incomplete_stream_preserves_tokens_closes_and_does_not_retry(monkeypatch, finish_reason, error_type, partial):
+    class Stream:
+        closed = False
+
+        def __iter__(self):
+            if partial:
+                yield _chunk(partial)
+            if finish_reason:
+                yield _chunk(finish_reason=finish_reason)
+            yield _chunk(usage=NS(prompt_tokens=10, completion_tokens=5, total_tokens=15))
+
+        def close(self):
+            self.closed = True
+
+    source = Stream()
+    calls = _fake_openai(monkeypatch, [source, iter([_chunk("Retry", finish_reason="stop")])])
+    client = _client(monkeypatch)
+    stream = client.generate_stream("PROMPT")
+    if partial:
+        assert next(stream) == partial
+    with pytest.raises(IncompleteGenerationError) as failed:
+        next(stream)
+    assert failed.value.error_type == error_type
+    assert failed.value.usage["total"] == 15
+    assert source.closed and len(calls) == 1
 
 
 @pytest.mark.parametrize(("error", "kind"), [

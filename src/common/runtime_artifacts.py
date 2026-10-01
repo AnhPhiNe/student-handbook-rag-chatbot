@@ -11,6 +11,7 @@ RUNTIME_FILES = (
     "configs/hcmue_slang_dictionary.yaml",
     "configs/structured_lookup_registry.yaml",
     "configs/office_aliases.yaml",
+    "configs/handbook_currency.yaml",
     "data/processed/tables/formula_rules.json",
     "data/processed/tables/structured_tables_registry.json",
     "data/processed/directories/student_service_directory.json",

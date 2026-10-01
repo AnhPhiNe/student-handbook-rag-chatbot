@@ -64,7 +64,7 @@ def test_hf_deploy_readme_describes_the_fail_open_reranker() -> None:
         encoding="utf-8"
     )
 
-    assert "Qwen3-Reranker-8B reranking that falls back to RRF" in script
+    assert "Voyage rerank-3 reranking that falls back to RRF" in script
 
 
 def test_docker_context_keeps_the_manifest_declared_table_audit() -> None:

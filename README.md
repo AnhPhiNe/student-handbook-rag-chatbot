@@ -105,7 +105,7 @@ flowchart TD
 ### Request lifecycle
 
 1. **Receive.** The API validates the question, the selected cohort and the recent conversation history, then admits the request.
-2. **Plan.** Student slang and abbreviations are expanded, then the planner splits the question into typed tasks. The normalizer validates and canonicalizes that plan before anything runs.
+2. **Plan.** The planner reads the student's own words and splits the question into typed tasks. The normalizer validates and canonicalizes that plan before anything runs; slang rewriting is applied to retrieval queries.
 3. **Execute.** Each task runs per cohort. Structured tasks read reviewed tables and directories. RAG tasks retrieve narrative chunks, rerank them and expand them to full articles. Clarify tasks carry the question to ask.
 4. **Guard.** Task results are merged without mixing cohorts. If nothing can be answered, the request stops with an explicit status and no composer call.
 5. **Compose.** The evidence packet goes to the DeepSeek composer. The model answers the covered tasks and asks for anything missing.
@@ -399,7 +399,10 @@ labelled as such ([dataset notes](data/eval/official_v2/README.md)).
 > These results measure the stack of 2026-09-12: Qwen3 planner on Groq, Gemini 3.1
 > Flash-Lite composer, a local `bge-m3` model, Cohere reranking and the v33 data. The
 > current stack (Luna planner, DeepSeek composer, `bge-m3` over an API, Voyage rerank-3,
-> v35 data) will be measured once, on the `official_v3` hold-out, when the project closes.
+> v35 data) has separate results in [official_v4/RESULTS.md](data/eval/official_v4/RESULTS.md).
+> Run A is the historical hold-out; runs B/C are post-fix measurements. `official_v3`
+> was used after its first run and is no longer a clean hold-out. These scores do
+> not certify the later offline hardening changes or the public deployment.
 
 `official_v2`'s hold-out run: 2026-09-12, commit `d09e970`, planner Qwen3 `v43` on Groq,
 composer Gemini 3.1 Flash-Lite, judge `openai/gpt-oss-120b`. Production: `official_v1`'s

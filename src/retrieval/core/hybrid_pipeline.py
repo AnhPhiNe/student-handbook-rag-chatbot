@@ -144,7 +144,8 @@ class _RetrievalTrace:
         if reranked and self.rerank_started:
             tracker.record(
                 "Reranker", str(telemetry.get("reranker_model") or ""), rerank_tokens, 0, rerank_tokens,
-                self.rerank_started, ended, {"provider": "deepinfra", "candidates": len(fused)},
+                self.rerank_started, ended,
+                {"provider": telemetry.get("reranker_provider"), "candidates": len(fused)},
                 total_cost=telemetry.get("reranker_cost"),
             )
 

@@ -113,6 +113,15 @@ def _level_from_text(row: dict[str, Any], query_norm: str) -> str | None:
     return None
 
 
+def is_reference_level_selector(value: Any, rows: list[dict[str, Any]]) -> bool:
+    """A shared selector must name a reference column in every selected row."""
+    selectors = _slot_values(value)
+    return bool(rows) and bool(selectors) and all(
+        _level_from_text(row, normalize_text(selector)) is not None
+        for row in rows for selector in selectors
+    )
+
+
 def _build_result_row(
     row: dict[str, Any],
     matched_level: str | None,

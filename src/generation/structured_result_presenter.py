@@ -319,4 +319,6 @@ def public_regulation_citations(citations: Any) -> list[Any]:
 
     if not isinstance(citations, list):
         return []
-    return [item for item in citations if not is_structured_result_citation(item)]
+    return [{key: value for key, value in item.items() if key != "raw_table_context"}
+            if isinstance(item, dict) else item
+            for item in citations if not is_structured_result_citation(item)]

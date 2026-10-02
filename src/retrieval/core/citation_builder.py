@@ -262,6 +262,7 @@ def build_citations_from_vector_results(
                 "retrieval_purpose": item.get("retrieval_purpose"),
                 "content": sanitize_citation_content(raw_content),
                 "relevant_excerpt": sanitize_citation_content(focused_content),
+                **({"raw_table_context": metadata["raw_table_context"]} if metadata.get("raw_table_context") else {}),
             }
         )
 

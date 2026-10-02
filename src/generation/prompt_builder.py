@@ -226,6 +226,7 @@ def build_authorized_evidence_packet(
             rendered
             for source, budget in zip(authorized_sources, budgets, strict=True)
             if (rendered := _source_for_unit(source, unit, budget))["content"]
+            or rendered.get("table_context_unavailable")
         ]
         amendments = collect_applicable_amendments(
             retrieval_result,
@@ -496,6 +497,7 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
             source_parent_id=source_id,
         ),
         "has_regulation_context": citation.get("chunk_type") in {"structured_lookup", "formula_rule"},
+        **({"raw_table_context": citation["raw_table_context"]} if citation.get("raw_table_context") else {}),
     }
 
 
@@ -570,7 +572,7 @@ def _source_for_unit(
             **source,
             "content": limit_context(content, max_chars),
         }.items()
-        if key not in {"parent_content", "has_regulation_context"}
+        if key not in {"parent_content", "has_regulation_context", "raw_table_context"}
     }
     if unit.get("mode") == "structured" and source.get("has_regulation_context") and source.get("parent_content"):
         table_content = str(source.get("content") or "")
@@ -578,12 +580,25 @@ def _source_for_unit(
         remaining = max(0, max_chars - len(result["content"]))
         if remaining:
             result["source_context"] = limit_context(str(source["parent_content"]), remaining)
+    elif unit.get("mode") == "rag" and source.get("raw_table_context"):
+        # Put the matched original table first; never the search description.
+        raw_table = str(source["raw_table_context"])
+        result["content"] = (raw_table if len(raw_table) <= max_chars else
+                             "Bảng gốc không đủ budget để cung cấp đầy đủ; chưa có căn cứ cho các giá trị trong bảng.")
+        result["content"] = limit_context(result["content"], max_chars)
+        if len(raw_table) > max_chars:
+            result["table_context_unavailable"] = "context_budget"
+        remaining = max(0, max_chars - len(result["content"]))
+        if remaining:
+            result["source_context"] = limit_context(str(source.get("parent_content") or source.get("content") or ""), remaining)
     return result
 
 
 def _source_content_for_unit(source: dict[str, Any], unit: dict[str, Any]) -> str:
     if unit.get("mode") == "rag" and source.get("parent_content"):
-        return str(source["parent_content"])
+        return str(source.get("raw_table_context") or "") + str(source["parent_content"])
+    if unit.get("mode") == "rag" and source.get("raw_table_context"):
+        return str(source["raw_table_context"]) + str(source.get("content") or "")
     if unit.get("mode") == "structured" and source.get("has_regulation_context") and source.get("parent_content"):
         return str(source.get("content") or "") + str(source["parent_content"])
     return str(source.get("content") or "")

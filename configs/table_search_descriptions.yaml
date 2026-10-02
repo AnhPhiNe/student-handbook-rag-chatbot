@@ -1,0 +1,238 @@
+# Offline search text authored and source-reviewed directly by Codex.
+# Not an independent human review, policy authority, or runtime routing rule.
+# Keys are copied from the canonical registry; metadata is never authored here.
+schema_version: table-search-reviewed-text-v1
+description_version: table-description-reviewed-v2
+source_hashes:
+  structured_tables: 39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568
+  parent_docstore: 0ca99bea19f2c574c328aa05680d75370f1da27a9137ff767efad4f09ab2e306
+descriptions:
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9","K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"]'
+    content: >-
+      Tra phân loại tổng điểm rèn luyện thang 100 trong sổ tay K48-K49,
+      gồm Xuất sắc, Tốt, Khá, Trung bình, Yếu và Kém theo từng khung điểm.
+      Đây là bảng phân loại theo điểm; kết luận khi có kỷ luật hoặc xét toàn khóa
+      còn phải đối chiếu các giới hạn trong điều khoản nguồn.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_amount"]'
+    content: >-
+      Tra công thức mức tiền học bổng khuyến khích học tập (HBKKHT) loại Khá,
+      Giỏi và Xuất sắc trong sổ tay K48-K49, gồm số tín chỉ, hệ số và định mức
+      học phí một tín chỉ tự nhiên hoặc xã hội tùy ngành học.
+      Bảng không cho một số tiền cố định và không phải bảng điều kiện được cấp học bổng.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_classification"]'
+    content: >-
+      Tra xếp loại học bổng khuyến khích học tập (HBKKHT) Khá, Giỏi, Xuất sắc
+      trong sổ tay K48-K49 theo khoảng điểm học bổng, khoảng điểm học tập hệ 4
+      và điều kiện điểm rèn luyện hệ 100 tương ứng.
+      Bảng không thay thế công thức tính điểm học bổng, công thức tiền
+      hoặc toàn bộ điều kiện xét cấp học bổng trong quy định.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_eligibility"]'
+    content: >-
+      Tra các điều kiện xét học bổng khuyến khích học tập (HBKKHT) cho sinh viên
+      chính quy trong sổ tay K48-K49: thời gian học tập chuẩn, kết quả học tập,
+      rèn luyện, kỷ luật và khối lượng tín chỉ được tính để xét.
+      Bảng có trường hợp học kỳ II năm cuối; việc cấp học bổng còn phải
+      đối chiếu đầy đủ quy định và phạm vi quỹ học bổng trong nguồn.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_score_formula"]'
+    content: >-
+      Tra công thức tính điểm xếp hạng học bổng khuyến khích học tập (HBKKHT)
+      trong sổ tay K48-K49 từ điểm học tập thang 4 và điểm rèn luyện thang 100.
+      Đây là công thức điểm học bổng, không phải công thức mức tiền,
+      bảng xếp loại hay quyết định đủ điều kiện được cấp học bổng.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10","K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"]'
+    content: >-
+      Tra quy đổi điểm học phần thang 10 sang điểm chữ A, B+, B, C+, C, D+, D,
+      F+ và F, kèm phân loại Đạt hoặc Không đạt trong sổ tay K48-K49.
+      Bảng dành cho học phần được tính vào điểm trung bình học tập (GPA),
+      không phải bảng học phần chỉ yêu cầu đạt và không tính GPA.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10","K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded"]'
+    content: >-
+      Tra đánh giá học phần chỉ yêu cầu đạt, không phân mức và không tính vào
+      điểm trung bình học tập (GPA) trong sổ tay K48-K49.
+      Bảng nêu ngưỡng điểm thang 10, kết quả Đạt hoặc Chưa đạt và cách quy đổi
+      thành điểm chữ P; không dùng thang điểm chữ phân mức của môn tính GPA.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11","K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"]'
+    content: >-
+      Tra xếp loại học lực theo điểm trung bình thang 4 (GPA) trong sổ tay
+      K48-K49, gồm Xuất sắc, Giỏi, Khá, Trung bình, Yếu và Kém.
+      Bảng áp dụng cho điểm trung bình học kỳ, năm học hoặc tích lũy;
+      không phải bảng quy đổi điểm học phần thang 10 hay phân loại rèn luyện.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11","K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4"]'
+    content: >-
+      Tra quy đổi điểm chữ học phần A, B+, B, C+, C, D+, D, F+ và F sang
+      điểm số thang 4 để tính điểm trung bình học tập (GPA) trong sổ tay K48-K49.
+      Bảng không quy đổi trực tiếp từ điểm thang 10, không xếp loại học lực
+      và không bao gồm những điểm chữ đặc biệt nằm ngoài các hàng đã liệt kê.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3","K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"]'
+    content: >-
+      Tra thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa
+      của hình thức đào tạo chính quy trong sổ tay K48-K49.
+      Bảng phân biệt đại học cấp bằng thứ nhất, liên thông từ cao đẳng,
+      liên thông từ trung cấp và liên thông khi đã có một bằng đại học.
+  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3","K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc"]'
+    content: >-
+      Tra thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa
+      của hình thức đào tạo vừa làm vừa học (VLVH) trong sổ tay K48-K49.
+      Bảng phân biệt đại học cấp bằng thứ nhất, liên thông từ cao đẳng,
+      liên thông từ trung cấp và liên thông khi đã có một bằng đại học.
+  - key: '["K50","K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9","K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"]'
+    content: >-
+      Tra phân loại tổng điểm rèn luyện thang 100 trong sổ tay K50,
+      gồm Xuất sắc, Tốt, Khá, Trung bình, Yếu và Kém theo từng khung điểm.
+      Đây là bảng phân loại theo điểm; kết luận xét toàn khóa khi có kỷ luật
+      còn phải đối chiếu giới hạn trong điều khoản nguồn.
+  - key: '["K50","K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8","K50_foreign_language_equivalency_dieu8"]'
+    content: >-
+      Tra phụ lục bảng tham chiếu văn bằng hoặc chứng chỉ ngoại ngữ tương đương
+      bậc 3 và bậc 4 Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam,
+      từ nguồn sổ tay K50.
+      Bảng có TOEFL iBT/ITP, IELTS, Cambridge/Linguaskill, TOEIC 4 kỹ năng
+      Nghe, Đọc, Nói, Viết với điểm từng kỹ năng; TCF/DELF tiếng Pháp,
+      HSK tiếng Trung Quốc, JLPT tiếng Nhật, ТРКИ tiếng Nga và TOPIK II tiếng Hàn Quốc.
+      Phạm vi áp dụng từ khóa tuyển sinh năm 2022 trở về sau theo Điều 1,
+      trong phạm vi ngành và các ngoại lệ mà điều đó quy định.
+      Bảng tra mức tương đương, không tự xác lập TOEIC là chứng chỉ bắt buộc
+      hoặc kết luận đủ điều kiện tốt nghiệp khi thiếu quy định liên quan.
+  - key: '["K50","K50_QuyCheCongTacSinhVien_Chuong5_Dieu27","scholarship_amount"]'
+    content: >-
+      Tra công thức mức tiền học bổng khuyến khích học tập (HBKKHT) loại Khá,
+      Giỏi và Xuất sắc trong sổ tay K50, gồm số tín chỉ, hệ số và định mức
+      học phí một tín chỉ phụ thuộc ngành học và mức thu học phí của năm học.
+      Bảng không cho một số tiền cố định và không phải bảng điều kiện được cấp học bổng.
+  - key: '["K50","K50_QuyCheCongTacSinhVien_Chuong5_Dieu27","scholarship_classification"]'
+    content: >-
+      Tra xếp loại học bổng khuyến khích học tập (HBKKHT) Khá, Giỏi, Xuất sắc
+      trong sổ tay K50 theo khoảng điểm học bổng, khoảng điểm học tập hệ 4
+      và điều kiện điểm rèn luyện hệ 100 tương ứng.
+      Bảng không thay thế công thức tính điểm học bổng, công thức tiền
+      hoặc toàn bộ điều kiện xét cấp học bổng trong quy định.
+  - key: '["K50","K50_QuyCheCongTacSinhVien_Chuong5_Dieu27","scholarship_eligibility"]'
+    content: >-
+      Tra các điều kiện xét học bổng khuyến khích học tập (HBKKHT) cho sinh viên
+      chính quy trong sổ tay K50: thời gian học tập chuẩn, kết quả học tập,
+      rèn luyện, kỷ luật và khối lượng tín chỉ được tính để xét.
+      Bảng có trường hợp học kỳ II năm cuối; việc cấp học bổng còn phải
+      đối chiếu đầy đủ quy định và phạm vi quỹ học bổng trong nguồn.
+  - key: '["K50","K50_QuyCheCongTacSinhVien_Chuong5_Dieu27","scholarship_score_formula"]'
+    content: >-
+      Tra công thức tính điểm xếp hạng học bổng khuyến khích học tập (HBKKHT)
+      trong sổ tay K50 từ điểm học tập thang 4 và điểm rèn luyện thang 100.
+      Đây là công thức điểm học bổng, không phải công thức mức tiền,
+      bảng xếp loại hay quyết định đủ điều kiện được cấp học bổng.
+  - key: '["K50","K50_QuyCheDaoTao_Chuong3_Dieu10","K50_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"]'
+    content: >-
+      Tra quy đổi điểm học phần thang 10 sang điểm chữ A, B+, B, C+, C, D+, D,
+      F+ và F, kèm phân loại Đạt hoặc Không đạt trong sổ tay K50.
+      Bảng dành cho học phần được tính vào điểm trung bình học tập (GPA),
+      không phải bảng học phần chỉ yêu cầu đạt và không tính GPA.
+  - key: '["K50","K50_QuyCheDaoTao_Chuong3_Dieu10","K50_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded"]'
+    content: >-
+      Tra đánh giá học phần chỉ yêu cầu đạt, không phân mức và không tính vào
+      điểm trung bình học tập (GPA) trong sổ tay K50.
+      Bảng nêu ngưỡng điểm thang 10, kết quả Đạt hoặc Chưa đạt và cách quy đổi
+      thành điểm chữ P; không dùng thang điểm chữ phân mức của môn tính GPA.
+  - key: '["K50","K50_QuyCheDaoTao_Chuong3_Dieu11","K50_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"]'
+    content: >-
+      Tra xếp loại học lực theo điểm trung bình thang 4 (GPA) trong sổ tay K50,
+      gồm Xuất sắc, Giỏi, Khá, Trung bình, Yếu và Kém.
+      Bảng áp dụng cho điểm trung bình học kỳ, năm học hoặc tích lũy;
+      không phải bảng quy đổi điểm học phần thang 10 hay phân loại rèn luyện.
+  - key: '["K50","K50_QuyCheDaoTao_Chuong3_Dieu11","K50_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4"]'
+    content: >-
+      Tra quy đổi điểm chữ học phần A, B+, B, C+, C, D+, D, F+ và F sang
+      điểm số thang 4 để tính điểm trung bình học tập (GPA) trong sổ tay K50.
+      Bảng không quy đổi trực tiếp từ điểm thang 10, không xếp loại học lực
+      và không bao gồm những điểm chữ đặc biệt nằm ngoài các hàng đã liệt kê.
+  - key: '["K50","K50_QuyCheDaoTao_Chuong1_Dieu3","K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"]'
+    content: >-
+      Tra thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa
+      của hình thức đào tạo chính quy trong sổ tay K50.
+      Bảng phân biệt đại học cấp bằng thứ nhất, liên thông từ cao đẳng,
+      liên thông từ trung cấp và liên thông khi đã có một bằng đại học.
+  - key: '["K50","K50_QuyCheDaoTao_Chuong1_Dieu3","K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc"]'
+    content: >-
+      Tra thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa
+      của hình thức đào tạo vừa làm vừa học (VLVH) trong sổ tay K50.
+      Bảng phân biệt đại học cấp bằng thứ nhất, liên thông từ cao đẳng,
+      liên thông từ trung cấp và liên thông khi đã có một bằng đại học.
+  - key: '["K51","K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9","K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification"]'
+    content: >-
+      Tra phân loại tổng điểm rèn luyện thang 100 trong sổ tay K51,
+      gồm Xuất sắc, Tốt, Khá, Trung bình, Yếu và Kém theo từng khung điểm.
+      Đây là bảng phân loại theo điểm; kết luận xét toàn khóa khi có kỷ luật
+      còn phải đối chiếu giới hạn trong điều khoản nguồn.
+  - key: '["K51","K51_QuyCheCongTacSinhVien_Chuong5_Dieu27","scholarship_amount"]'
+    content: >-
+      Tra công thức mức tiền học bổng khuyến khích học tập (HBKKHT) loại Khá,
+      Giỏi và Xuất sắc trong sổ tay K51, gồm số tín chỉ, hệ số và định mức
+      học phí một tín chỉ phụ thuộc ngành học và mức thu học phí của năm học.
+      Bảng không cho một số tiền cố định và không phải bảng điều kiện được cấp học bổng.
+  - key: '["K51","K51_QuyCheCongTacSinhVien_Chuong5_Dieu27","scholarship_classification"]'
+    content: >-
+      Tra loại học bổng khuyến khích học tập (HBKKHT) Khá, Giỏi, Xuất sắc
+      trong sổ tay K51 theo tổ hợp xếp loại học tập và xếp loại rèn luyện.
+      Bảng này dùng các loại Xuất sắc, Giỏi, Khá, Tốt và điều kiện từ một loại
+      trở lên, không biểu diễn bằng khoảng điểm học bổng.
+      Kết luận được cấp học bổng vẫn cần các điều kiện xét trong quy định nguồn.
+  - key: '["K51","K51_QuyCheCongTacSinhVien_Chuong5_Dieu27","scholarship_eligibility"]'
+    content: >-
+      Tra các điều kiện xét học bổng khuyến khích học tập (HBKKHT) cho sinh viên
+      chính quy trong sổ tay K51: thời gian học tập chuẩn, học tập, rèn luyện,
+      kỷ luật và khối lượng tín chỉ được tính để xét.
+      Bảng phân biệt học kỳ cuối theo chương trình chuẩn theo khóa tuyển sinh,
+      tốt nghiệp sớm và học cùng lúc hai chương trình.
+      Đây không phải bảng mức tiền hay bảo đảm được cấp học bổng.
+  - key: '["K51","K51_QuyCheCongTacSinhVien_Chuong5_Dieu27","scholarship_score_formula"]'
+    content: >-
+      Tra công thức tính điểm xếp hạng học bổng khuyến khích học tập (HBKKHT)
+      trong sổ tay K51 từ điểm học tập thang 4 và điểm rèn luyện thang 100.
+      Đây là công thức điểm học bổng, không phải công thức mức tiền,
+      bảng xếp loại hay quyết định đủ điều kiện được cấp học bổng.
+  - key: '["K51","K51_QuyCheDaoTao_Chuong3_Dieu10","K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_foundation"]'
+    content: >-
+      Tra quy đổi điểm học phần thang 10 sang điểm chữ A, B+, B, C+, C, D+, D,
+      F+ và F, kèm phân loại Đạt hoặc Không đạt cho học phần tính GPA
+      thuộc nhóm nền tảng, tức giáo dục đại cương hoặc học phần chung, trong sổ tay K51.
+      Bảng thuộc nội dung sửa đổi áp dụng từ khóa tuyển sinh năm 2025 trở về sau.
+      Chỉ dùng đúng nhóm học phần đã nêu, không áp dụng cho môn không tính GPA.
+  - key: '["K51","K51_QuyCheDaoTao_Chuong3_Dieu10","K51_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_remaining"]'
+    content: >-
+      Tra quy đổi điểm học phần thang 10 sang điểm chữ A, B+, B, C+, C, D+, D,
+      F+ và F, kèm phân loại Đạt hoặc Không đạt cho các học phần tính GPA
+      còn lại ngoài nhóm nền tảng, trong sổ tay K51.
+      Bảng thuộc nội dung sửa đổi áp dụng từ khóa tuyển sinh năm 2025 trở về sau.
+      Chỉ dùng đúng nhóm học phần đã nêu, không áp dụng cho môn không tính GPA.
+  - key: '["K51","K51_QuyCheDaoTao_Chuong3_Dieu10","K51_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded"]'
+    content: >-
+      Tra đánh giá học phần chỉ yêu cầu đạt, không phân mức và không tính vào
+      điểm trung bình học tập (GPA) trong sổ tay K51.
+      Bảng nêu ngưỡng điểm thang 10, kết quả Đạt hoặc Chưa đạt và cách quy đổi
+      thành điểm chữ P; không dùng thang điểm chữ phân mức của môn tính GPA.
+  - key: '["K51","K51_QuyCheDaoTao_Chuong3_Dieu11","K51_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"]'
+    content: >-
+      Tra xếp loại học lực theo điểm trung bình thang 4 (GPA) trong sổ tay K51,
+      gồm Xuất sắc, Giỏi, Khá, Trung bình, Yếu và Kém.
+      Bảng áp dụng cho điểm trung bình học kỳ, năm học hoặc tích lũy;
+      không phải bảng quy đổi điểm học phần thang 10 hay phân loại rèn luyện.
+  - key: '["K51","K51_QuyCheDaoTao_Chuong3_Dieu11","K51_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4"]'
+    content: >-
+      Tra quy đổi điểm chữ học phần A, B+, B, C+, C, D+, D, F+ và F sang
+      điểm số thang 4 để tính điểm trung bình học tập (GPA) trong sổ tay K51.
+      Bảng không quy đổi trực tiếp từ điểm thang 10, không xếp loại học lực
+      và không bao gồm những điểm chữ đặc biệt nằm ngoài các hàng đã liệt kê.
+  - key: '["K51","K51_QuyCheDaoTao_Chuong1_Dieu3","K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"]'
+    content: >-
+      Tra thời gian học tập chuẩn toàn khóa và tối đa của hình thức đào tạo
+      chính quy theo nội dung sửa đổi trong sổ tay K51,
+      áp dụng từ khóa tuyển sinh năm 2025 trở về sau.
+      Bảng có quy tắc xác định thời gian tối đa đối với sinh viên liên thông
+      đã được miễn trừ tín chỉ, nhưng không cung cấp phép tính tự động từ
+      số tín chỉ miễn trừ.
+  - key: '["K51","K51_QuyCheDaoTao_Chuong1_Dieu3","K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc"]'
+    content: >-
+      Tra thời gian học tập chuẩn toàn khóa và tối đa của hình thức đào tạo
+      vừa làm vừa học (VLVH) theo nội dung sửa đổi trong sổ tay K51,
+      áp dụng từ khóa tuyển sinh năm 2025 trở về sau.
+      Bảng có quy tắc xác định thời gian tối đa đối với sinh viên liên thông
+      đã được miễn trừ tín chỉ, nhưng không cung cấp phép tính tự động từ
+      số tín chỉ miễn trừ.

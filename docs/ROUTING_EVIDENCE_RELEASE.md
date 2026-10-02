@@ -100,3 +100,80 @@ unsupported cohorts, zero-budget diagnostics, protected report destinations and
 public/internal payload separation. No case-specific routing rule was introduced.
 All generated candidate files remain outside canonical data and are not committed
 as a replacement corpus. Commit stages were kept separate as requested.
+
+## Stage 3 — directly authored and source-reviewed search text
+
+User requested Codex itself write and review the descriptions, without calling a
+separate generation model. Scope: all 35 tables, offline only; preserve metadata
+v1 as the comparison baseline, canonical facts, source files, gold and production.
+Starting checkpoint is `7217745e`. No new routing rule or runtime LLM is added.
+
+`configs/table_search_descriptions.yaml` freezes 35 Vietnamese descriptions
+(`table-description-reviewed-v2`), each two to four sentences. These are reviewed
+against the canonical table rows, applicability and their full source parents.
+The foreign-language scope also uses the parent containing Article 1. This is
+Codex's source review, not an independent human review or a new policy authority.
+No benchmark questions or gold were used to author the text. Numeric thresholds,
+money amounts and actual formulas remain in raw evidence, not the search text;
+scale identifiers and source-scope years are included where needed.
+
+The v1 review identified three pairs of identical duration descriptions inside
+the same cohort/parent, 12 tables whose applicability was absent from search text,
+and 13 descriptions exposing technical English column names. Reviewed text names
+training mode, relevant course scope, scales and supported outputs in Vietnamese.
+Duration descriptions describe only their own training mode rather than inserting
+the other mode's search keywords as a negation. K51 scholarship classification
+describes combinations of academic/conduct classifications, unlike K48-K49/K50's
+numeric-range tables. Formula descriptions distinguish scholarship points from
+money and include input scales. Foreign-language text identifies the appendix,
+certificates and separate TOEIC components, without making TOEIC compulsory.
+Classification tables do not promise policy eligibility or override exceptions.
+
+The review file can supply only an exact composite key and text for each approved
+table. It pins the registry and full-parent artifact hashes. Missing, duplicate,
+unknown or stale entries and metadata overrides fail before building. Generated
+metadata, identities, source hashes, source pages and applicability are unchanged
+except for the description-version marker. Only search text is replaced.
+
+Build with `python -m scripts.build_table_search_candidate --descriptions
+configs/table_search_descriptions.yaml --output <new-separate-output>`. Omitting
+`--descriptions` still produces metadata v1. The reviewed candidate namespace also
+includes the review file's SHA-256, so changing text cannot reuse the old namespace
+silently. Preserve the existing v1 artifacts; do not regenerate over them.
+The builder refuses any destination containing one of its generated filenames,
+including a partially populated candidate directory; use a new output directory.
+
+The lexical measurement command accepts the same optional `--descriptions` and
+records text version/hash. Run it only after freezing text; do not tune the text
+against the frozen development fixture. Training-mode unit probes also check the
+exact matched table inside a common parent, which parent Hit@5 alone cannot test.
+These checks cannot prove live dense/rerank or final-answer improvements.
+
+No embedding, remote collection write, API inference, push or HF deployment is
+part of this step. The previously approved 35-description embedding publication
+is paused pending this review and a working read-only vector preflight. No remote
+candidate collection has been created. Default retrieval configuration is unchanged.
+
+Stage 3 verification: 1,423 backend tests passed (the same two dependency warnings),
+including 42 focused candidate/text tests. Full CI-equivalent backend lint,
+deploy-artifact checks and diff whitespace checks passed. Final Standards review:
+zero actionable findings after correcting output overwrite protection. Final Spec
+review: zero actionable findings; all 35 descriptions checked against sources.
+Canonical source data, README, production configuration and gold were not edited.
+
+Frozen review-file SHA-256:
+`73ebe0333f53941ada328dcd5445b0dd47f3bf114594fee320f2d2e9cc4538d7`.
+Generated reviewed-text SHA-256:
+`838acdb45041fdae1dfef6ab96121d42b31270c216e248b71499b63bb6471d73`.
+Proposed reviewed namespaces: `student_handbook_table_search_f3c77e0908bc` /
+`parent_docs_table_search_f3c77e0908bc`. Neither was created remotely. Existing
+metadata-v1 output hash remains
+`546ef1cfb66d9db6c1268817c3ab59bb32d779715d2b6f2bfb0210238d8e3b17`.
+
+After freezing text, the unchanged 15-case development fixture measured BM25
+parent Hit@5 at 12/15 without handles and 15/15 with reviewed handles. Metadata v1
+also measured 15/15, so this is not a measured improvement over v1. Six separate
+description-corpus probes distinguish training-mode tables within each cohort's
+shared parent. They establish that the earlier text collision is removed, not
+end-to-end answer accuracy or live retrieval quality. The frozen text was not
+revised in response to development benchmark results.

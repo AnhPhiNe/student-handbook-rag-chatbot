@@ -1,5 +1,7 @@
 param(
     [switch]$DryRun,
+    [string]$CandidateArtifacts = "",
+    [string]$PythonExecutable = "python",
     [string]$CommitMessage = "",
     [ValidateNotNullOrEmpty()]
     [string]$QdrantCollection = "student_handbook_semantic_v35",
@@ -110,6 +112,13 @@ Write-Host " Hugging Face Backend-Only Deployment"
 Write-Host "=============================================="
 Write-Host ""
 
+if (-not $DryRun) {
+    $sourceStatus = & git -C $RootDir status --porcelain
+    if ($LASTEXITCODE -ne 0 -or $sourceStatus) {
+        throw "Real deployment requires a clean source worktree. Use -DryRun for local validation."
+    }
+}
+
 Write-Host "[1/5] Preparing history-preserving package directory..."
 Assert-InWorkspace $TempDir
 if (Test-Path -LiteralPath $TempDir) {
@@ -160,8 +169,30 @@ Copy-RequiredJsonArtifact "data\processed\chunks\all_docstore_items.json" "data\
 Copy-RequiredJsonArtifact "data\processed\chunks\child_parent_chunks.json" "data\processed\chunks\child_parent_chunks.json"
 Copy-RequiredJsonArtifact "data\processed\metadata\build_manifest.json" "data\processed\metadata\build_manifest.json"
 
+if (-not [string]::IsNullOrWhiteSpace($CandidateArtifacts)) {
+    Write-Host "Preparing the verified candidate runtime overlay..."
+    Push-Location $RootDir
+    try {
+        & $PythonExecutable -X utf8 -m scripts.build_candidate_runtime_bundle --candidate $CandidateArtifacts --output $TempDir
+        if ($LASTEXITCODE -ne 0) {
+            throw "Candidate runtime bundle validation failed. No package will be pushed."
+        }
+    }
+    finally {
+        Pop-Location
+    }
+}
+
 $packagedManifestPath = Join-Path $TempDir "data\processed\metadata\build_manifest.json"
 $packagedManifest = Get-Content -Raw -LiteralPath $packagedManifestPath | ConvertFrom-Json
+if (-not [string]::IsNullOrWhiteSpace($CandidateArtifacts)) {
+    if (-not $PSBoundParameters.ContainsKey("QdrantCollection")) {
+        $QdrantCollection = $packagedManifest.storage_targets.qdrant_collection
+    }
+    if (-not $PSBoundParameters.ContainsKey("MongoCollection")) {
+        $MongoCollection = $packagedManifest.storage_targets.mongo_parent_collection
+    }
+}
 if ($packagedManifest.storage_targets.qdrant_collection -ne $QdrantCollection) {
     throw "Unexpected Qdrant target in packaged build manifest: $($packagedManifest.storage_targets.qdrant_collection)"
 }

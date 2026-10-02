@@ -297,3 +297,67 @@ unchanged as normalized source; planner source, configurations, canonical data,
 gold and README have no diff from the starting checkpoint. Main-agent review
 completed after the partial reviewer reports. There were no inference calls or
 remote writes, and the unrelated dirty primary checkout was preserved.
+
+## Stage 6 — portable candidate runtime package, offline only
+
+Approved scope: package the already-published reviewed candidate without changing
+the canonical corpus, prompt, gold, public API or production environment. Starting
+checkpoint is `3c259bbb`. This stage performs no inference, embedding, remote
+verification, collection write, GitHub push or Hugging Face deployment.
+
+`scripts.build_candidate_runtime_bundle` validates the frozen candidate, source
+hashes, embedding configuration and completed publication verification before
+writing a separate runtime overlay. It refuses protected/frozen destinations,
+existing overlays, customized environment samples and conflicting source bytes.
+The saved publication report is evidence from Stage 4, not a fresh remote check.
+
+The runtime manifest keeps source build ID `build-0e6fa69b1de57a12dc1a`, matching
+the unchanged source snapshot and tags on the published remote records. Its
+canonical narrative artifact still contains 3,800 children; the original
+table-separation audit is not rewritten. An explicit `indexed_artifacts` list
+adds the 35 reviewed search descriptions, making the index count 3,835. The
+manifest pins description/review/candidate/publication hashes separately.
+`verify_remote_build` understands this declaration while retaining the 3,800
+default for legacy manifests. No generated artifact is edited in place.
+
+Only the packaged manifest/config/sample environment select the candidate stores:
+`student_handbook_table_search_f3c77e0908bc` and
+`parent_docs_table_search_f3c77e0908bc`. The table registry path becomes the
+portable `data/processed/tables/structured_tables_registry.json`. The packaged
+sample sets both Qdrant collection variables explicitly to prevent a stale hybrid
+alias from silently selecting another collection. It contains no credentials;
+the repository's sample environment, retrieval config and manifest are unchanged.
+
+`deploy_hf_backend.ps1` accepts optional `-CandidateArtifacts` and
+`-PythonExecutable`. Without the candidate option its v35 defaults remain intact.
+A real deployment now requires a clean source worktree before any network step.
+Explicit collection overrides must match the packaged manifest. Docker inclusion
+and Git byte-preservation rules include the description artifact. The generated
+HF metadata README exists only inside the package; the repository README is not
+edited. A dry-run does not clone, commit or push an HF repository.
+
+Offline checks cover immutable source bytes, portable table loading, publication
+failure guards, destination guards, legacy/extended index counts, malformed
+declarations and local readiness with mocked dependencies. Final backend suite:
+1,486 tests passed, with the same two dependency deprecation warnings; 29 focused
+packaging/configuration tests passed. Lint and diff whitespace checks passed.
+
+The actual PowerShell dry-run completed and staged artifact/hash checks passed.
+Importing the staged runtime loaded all 35 table descriptions and returned ready
+with dummy credentials and mocked ready dependencies. That is a local packaging
+check, NOT proof of live Qdrant/Mongo availability or HF readiness. The generated
+runtime manifest SHA-256 is
+`39a30516b865d2c35281be47ce99886ae56cce4fbcaa32b57d1147d89238934d`;
+runtime retrieval-config SHA-256 is
+`09174ad5da435529cb50a1bebdcb9439c1c7c15ac700cd6e2bb56cdcc19cd977`.
+The package and bundle report remain untracked generated output.
+
+Review: main-agent Spec review found no outstanding scope/contract defect in this
+packaging diff; main-agent Standards review found no blocking readability or
+speculative abstraction issue. These are not independent reviewer reports. The
+parallel reviewers from Stage 5 did not finish because of their usage limit.
+
+Next gate is a separately approved, bounded end-to-end development smoke against
+this candidate with frozen prompts. Check final answers, evidence/citations,
+cohort/scope and latency; include the known TOEIC qualification/noise concern.
+Do not promote the candidate or claim production readiness from offline tests.

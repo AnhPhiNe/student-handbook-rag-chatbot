@@ -20,6 +20,19 @@ from src.common.storage_config import (
 MANIFEST_PATH = Path("data/processed/metadata/build_manifest.json")
 
 
+def indexed_record_count(manifest: dict[str, Any]) -> int:
+    """Count the explicitly indexed artifacts, retaining the narrative-only default."""
+    names = (manifest.get("index_contract") or {}).get("indexed_artifacts", ["child_chunks"])
+    if (not isinstance(names, list) or not names or any(not isinstance(name, str) for name in names)
+            or len(names) != len(set(names)) or "child_chunks" not in names):
+        raise RuntimeError("Invalid indexed artifact names in build manifest.")
+    artifacts = manifest.get("artifacts") or {}
+    if any(name not in artifacts or type(artifacts[name].get("count")) is not int
+           or artifacts[name]["count"] <= 0 for name in names):
+        raise RuntimeError("Indexed artifact missing a positive declared count.")
+    return sum(artifacts[name]["count"] for name in names)
+
+
 def _load_manifest_and_targets() -> tuple[dict[str, Any], str, str, str]:
     load_project_env(override=False)
     if not MANIFEST_PATH.is_file():
@@ -139,10 +152,7 @@ def verify_remote_build() -> dict[str, Any]:
         for document in documents
     }
 
-    expected_child_count = int(
-        ((manifest.get("artifacts") or {}).get("child_chunks") or {}).get("count")
-        or 0
-    )
+    expected_child_count = indexed_record_count(manifest)
     expected_parent_count = int(
         ((manifest.get("artifacts") or {}).get("parent_docstore") or {}).get("count")
         or 0

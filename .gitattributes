@@ -11,3 +11,4 @@ data/processed/chunks/child_parent_chunks.json -text whitespace=cr-at-eol
 data/processed/tables/structured_tables_registry.json -text whitespace=cr-at-eol
 data/processed/graphs/document_edges.json -text whitespace=cr-at-eol
 data/processed/metadata/structured_table_embedding_audit.json -text whitespace=cr-at-eol
+data/processed/metadata/table_search_descriptions.json -text whitespace=cr-at-eol

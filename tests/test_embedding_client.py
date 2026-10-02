@@ -74,3 +74,25 @@ def test_missing_key_fails_at_construction(monkeypatch) -> None:
     monkeypatch.delenv("TEST_EMBEDDING_KEY")
     with pytest.raises(RuntimeError, match="TEST_EMBEDDING_KEY"):
         EmbeddingClient(CONFIG, post=Mock())
+
+
+@pytest.mark.parametrize("configured,attempts", [(None, 5), (1, 2), (0, 1)])
+def test_document_retry_policy_is_bounded_without_changing_default(monkeypatch, configured, attempts):
+    monkeypatch.setattr("src.retrieval.core.embedding_model.time.sleep", lambda _: None)
+    config = {**CONFIG, **({"document_retries": configured} if configured is not None else {})}
+    post = Mock(side_effect=requests.Timeout("slow"))
+    with pytest.raises(requests.Timeout):
+        EmbeddingClient(config, post=post).embed_documents(["one document"])
+    assert post.call_count == attempts
+
+
+@pytest.mark.parametrize("indexes", [[0, 0], [0, 2], [1, 2], [0]])
+def test_document_response_indexes_must_bind_each_input_once(monkeypatch, indexes):
+    monkeypatch.setattr("src.retrieval.core.embedding_model.time.sleep", lambda _: None)
+    response = _response([[3.0, 4.0]] * len(indexes))
+    for item, index in zip(response.json.return_value["data"], indexes):
+        item["index"] = index
+    post = Mock(return_value=response)
+    with pytest.raises(ValueError, match="indexes"):
+        EmbeddingClient({**CONFIG, "document_retries": 1}, post=post).embed_documents(["first", "second"])
+    assert post.call_count == 2

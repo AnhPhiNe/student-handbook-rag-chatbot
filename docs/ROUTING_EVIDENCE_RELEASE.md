@@ -177,3 +177,61 @@ description-corpus probes distinguish training-mode tables within each cohort's
 shared parent. They establish that the earlier text collision is removed, not
 end-to-end answer accuracy or live retrieval quality. The frozen text was not
 revised in response to development benchmark results.
+
+## Stage 4 — approved full re-embedding and candidate publication
+
+User explicitly approved re-embedding all 3,835 search records with parallel API
+batches, then testing new MongoDB/Qdrant collections. This supersedes the earlier
+35-only embedding limit, not production activation. Starting checkpoint is
+`e5ca4706`. Keep v35, frozen source data/descriptions, README and gold unchanged.
+
+`scripts.publish_table_search_candidate` validates the entire frozen corpus and
+source hashes before paid work. Use batches of 64, 32 concurrent workers and at
+most one retry per batch. EmbeddingClient defaults remain unchanged; only the
+publisher sets the new optional document retry configuration. Save full vectors
+locally before upload, refuse existing targets and never delete collections.
+MongoDB stores unchanged full parents; embeddings belong in Qdrant only.
+
+The publisher checks every remote payload/vector against the local artifact and
+every remote parent against source data, then verifies baseline counts unchanged.
+No old vectors need to be fetched or reused. Keep partial candidate resources and
+saved vectors on failure, report the failed stage, and do not activate them.
+The first live check is 15 frozen development retrieval probes using new stores,
+actual embedding/RRF/reranking and source hydration. It is not a planner/composer
+benchmark or proof of policy-complete final answers. No HF switch or push occurs.
+
+Stage 4 result: full re-embedding completed with 32 workers, batch 64, 65 API
+requests (60 batches plus retries) and 324,386 reported input tokens. Embedding
+elapsed time was 13.59 seconds; upload and exhaustive read-back are additional
+time, not included in that figure. Saved vectors have shape 3,835 × 1,024 and
+SHA-256 `22fd8cf62ac03a531c40cf584c92d1e6d202905cf1004d6a8ed718fdcffbed2c`.
+The new stores contain exactly 3,835 vectors and 541 unchanged parents. Every
+vector/payload/parent matched the local artifacts; v35 counts stayed 3,800/541.
+No source PDF rebuild, production environment change or baseline write occurred.
+
+The live 15-case development run completed: parent Hit@5 15/15, expected table
+family hydration 15/15, dense success 15/15, Voyage applied 15/15; no execution
+errors, unauthorized cohort sources, incorrect parent provenance or raw tables
+were observed. Retrieval p95 was 2.82 seconds (first query 3.94 seconds); it is not
+planner or end-to-end latency and excludes initialization. All three foreign
+language probes also retrieved an Article 4 policy parent alongside the appendix.
+
+Family hydration is deliberately NOT exact query/scope correctness: duration
+probes hydrated both training-mode tables, and the K51 grade probe hydrated both
+course groups. Returned raw tables keep their applicability; composer behavior
+and evidence budgeting across these sources still require end-to-end validation.
+The fixture is known development data, not a new held-out score. No planner or
+composer was called, so no final-answer accuracy or production readiness is claimed.
+
+Offline verification: 1,451 backend tests passed (same two dependency warnings),
+full CI-equivalent backend lint/artifact/diff checks passed. Standards: zero final
+actionable findings after provider pinning, vector-index binding and live failure
+handling corrections. Spec: zero final actionable findings after validating both
+existing and added cohort/provenance fields and labeling family coverage accurately.
+
+Runtime report paths are under the separate candidate output directory:
+`publication_report.json`, `embeddings_full.npy` and `live_retrieval_report.json`.
+The original candidate manifest stays frozen as a build record; publication status
+is recorded separately, not by rewriting its historical `embedding_created=false`.
+Live report SHA-256:
+`c7d259e5d113dd82e1ab142781860ee07cdd0eb9860e7a507f22368d1c8169a7`.

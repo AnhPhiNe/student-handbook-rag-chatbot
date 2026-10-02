@@ -1,4 +1,5 @@
 import logging
+import json
 import threading
 import time
 from collections.abc import Callable, Iterator
@@ -22,7 +23,7 @@ from .answer_formatter import (
     format_final_response,
     sources_section_start,
 )
-from .answer_guardrails import build_fallback_answer, is_low_confidence
+from .answer_guardrails import build_fallback_answer, build_scoped_score_answer, is_low_confidence
 from .citation_formatter import prioritize_citations_by_answer_anchors
 from .deepseek_client import DeepSeekClient
 from .prompt_builder import (
@@ -36,7 +37,7 @@ from .verbatim_identifiers import IdentifierCorrector
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 COMPOSER_PROVIDERS = {"deepseek"}
 
-PIPELINE_VERSION = "v79-no-answer-cache"
+PIPELINE_VERSION = "v80-scoped-resolved-evidence"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
@@ -477,6 +478,12 @@ class AnswerPipeline:
                 retrieval_result.get("retrieved_items") or []
             )
             telemetry["prompt_chars"] = len(prepared.prompt)
+        scoped_answer = build_scoped_score_answer(
+            json.loads(prepared.context_used), retrieval_result.get("query_plan") or {},
+        )
+        if scoped_answer is not None:
+            prepared.terminal_status = "answered"
+            prepared.terminal_answer = scoped_answer
         return prepared
 
     def answer(

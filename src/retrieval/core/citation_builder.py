@@ -269,6 +269,38 @@ def build_citations_from_vector_results(
     return citations
 
 
+def scoped_resolved_rows(citation: dict[str, Any]) -> list[dict[str, Any]]:
+    """Read complete per-table resolutions from trusted structured evidence.
+
+    These are conditional results, not one globally resolved result. An
+    incomplete group keeps its original representation for the composer.
+    """
+    if citation.get("evidence_kind") != "structured_result":
+        return []
+    try:
+        payload = json.loads(str(citation.get("content") or ""))
+    except (TypeError, ValueError):
+        return []
+    if not isinstance(payload, dict):
+        return []
+    tables = payload.get("tables", [payload])
+    if not isinstance(tables, list) or not tables:
+        return []
+    resolved = []
+    for table in tables:
+        if not isinstance(table, dict) or not table.get("table_id"):
+            return []
+        rows = table.get("resolved_rows")
+        if not isinstance(rows, list) or not rows or not all(
+            isinstance(item, dict) and item.get("table_id") == table["table_id"]
+            and isinstance(item.get("row"), dict) and item["row"]
+            for item in rows
+        ):
+            return []
+        resolved.extend(rows)
+    return resolved
+
+
 def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, Any]]:
     """Build source-bound citations for deterministic structured evidence."""
     if not isinstance(lookup_result, dict) or not lookup_result:

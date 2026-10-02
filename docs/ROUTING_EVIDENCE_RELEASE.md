@@ -361,3 +361,73 @@ Next gate is a separately approved, bounded end-to-end development smoke against
 this candidate with frozen prompts. Check final answers, evidence/citations,
 cohort/scope and latency; include the known TOEIC qualification/noise concern.
 Do not promote the candidate or claim production readiness from offline tests.
+
+## Stage 7 — explicit conditional scoring evidence (2026-10-03)
+
+The approved 12-case candidate smoke produced ten answers; the last two requests
+received local HTTP 429 before planning. They have not been rerun. Its saved
+`release_08` answer incorrectly opened with C for 5.2/10, then correctly described
+D+ for both K51 course groups. The saved planner selected scoring/graded; the
+resolver had already computed D+ with pass status in the foundation table and
+fail status in the remaining-course table. The same contradiction was observed
+in the user's website screenshot. These observations are not a new held-out score.
+
+This correction preserves source facts and arithmetic.
+`scoped_resolved_rows` recognizes complete conditional rows from trusted structured
+citations, checking that each row belongs to its declared table. The packet
+exposes these as explicit `resolved_rows` and focused content instead of requiring
+another interval search inside the display table. Full parent text remains
+in `source_context` for policy conditions. Full raw tables, public response fields
+and source records remain unchanged for UI/audit. Incomplete groups, invalid or
+wrong-scale inputs and ordinary RAG evidence keep their existing representation.
+
+Conditional rows remain evidence-only: there is no new global fact lock and no
+forced choice between mutually exclusive course scopes. Citation merging binds
+them to their task and execution cohort, so two tasks with different operands
+cannot share each other's computed rows even when they cite the same parent.
+Same-task sibling tables still merge; existing unique `resolved_result` behavior
+is unchanged. Budget truncation cannot retain an unbounded explicit row field.
+
+No K51 ID, 5.2 threshold, D+ answer or particular question is introduced as a
+runtime rule. The change uses the resolver's existing table identities and rows.
+Planner/composer instruction text, prompt versions, production config, README,
+canonical data and evaluation gold remain unchanged. Pipeline version is now
+`v80-scoped-resolved-evidence` to identify the changed evidence presentation.
+
+The first implementation only focused this evidence. The user approved six
+DeepSeek composer replays (limit 18 requests including retries). All six completed
+with one request each, no retry and no other provider calls. The ambiguous query
+still produced C in two of three attempts; the explicit-scope, two-entity and /4
+controls answered correctly. The historical reports remain saved separately.
+Focusing evidence alone therefore was NOT accepted as a fix.
+
+The final correction uses `build_scoped_score_answer` for a complete plan of pure
+direct scoring lookups (`grade_10_to_letter` or `pass_threshold`) when every unit
+has complete, source-bound conditional rows with scope labels. It presents each
+verified row and its scope directly through the existing terminal-answer path,
+with `status=answered` and `llm_called=false`. It never calculates another grade,
+merges the scopes into a global fact or asks a composer to reinterpret intervals.
+Known-scope fact locks, policy/list questions, mixed plans, explicit amendments
+and incomplete evidence retain the existing composer path. This is a domain
+presentation function, not a post-hoc regex replacement of model text.
+
+Verification: 37 new offline tests cover eleven numeric values, range boundaries,
+decimal spellings, unknown/known scope, wrong scale, two task orders, same-parent
+input isolation, RAG/cohort isolation, malformed/partial groups, UI source-table
+preservation, context budget, deterministic sync/SSE output and guards that keep
+policy/mixed/incomplete plans outside the direct renderer. All 1,523 backend
+tests passed, with the same two dependency
+deprecation warnings. Lint and deployment source-artifact/hash checks passed.
+Final local HTTP verification posted the original query to both `/chat` and
+`/chat/stream` using the saved plan/evidence. Both returned HTTP 200, identical
+D+ answers, separate pass/fail scopes, two public structured tables and
+`llm_called=false`. No inference was needed for this final check. Offline executor
+tests additionally exercise actual normalization/resolution/source binding, not
+only the saved packet. This proves the direct-answer path for the covered contract;
+it is not a new live planner/retrieval measurement or evidence of HF deployment.
+
+Local output reports: `scoped_score_fix_replay_20261003` holds the six paid replays
+of the rejected first implementation; `scoped_score_final_offline_20261003` holds
+the final HTTP/SSE check. Original smoke reports, gold and source hashes remain
+unchanged. The TOEIC warning concern and two rate-limited smoke cases remain
+separate release items.

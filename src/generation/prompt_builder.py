@@ -19,6 +19,7 @@ from src.common.legal_reference import (
     normalize_article_label,
 )
 from src.common.text import fold_text
+from src.retrieval.core.citation_builder import scoped_resolved_rows
 
 from .amendment_precedence import (
     ApplicableAmendment,
@@ -443,6 +444,7 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
     )
     content = str(citation.get("content") or citation.get("document") or "").strip()
     parent_content = str(citation.get("parent_content") or "").strip()
+    conditional_rows = scoped_resolved_rows(citation)
     article_label = normalize_article_label(
         citation.get("article_label"),
         citation.get("parent_article"),
@@ -472,6 +474,11 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
             or metadata.get("applicability_validated")
         ),
         "applicability": citation.get("applicability") or metadata.get("applicability"),
+        **(
+            {"resolved_rows": copy.deepcopy(conditional_rows),
+             "resolved_rows_cohort": citation.get("cohort") or metadata.get("cohort")}
+            if conditional_rows else {}
+        ),
         **(
             {
                 # Keep the exact selected result, inputs and provenance; full
@@ -511,7 +518,9 @@ def _source_supports_unit(source: dict[str, Any], unit: dict[str, Any]) -> bool:
     target_cohort = None if unit["cohort"] == "default" else unit["cohort"]
     # Source applicability permits sharing a document, not a lookup result
     # computed for a different execution cohort of the same task.
-    result_cohort = normalize_cohort(source.get("resolved_result_cohort"))
+    result_cohort = normalize_cohort(
+        source.get("resolved_result_cohort") or source.get("resolved_rows_cohort")
+    )
     if result_cohort and result_cohort != normalize_cohort(target_cohort):
         return False
     return is_validated_source_applicable(source, target_cohort)
@@ -573,10 +582,18 @@ def _source_for_unit(
             **source,
             "content": limit_context(content, max_chars),
         }.items()
-        if key not in {"parent_content", "has_regulation_context", "raw_table_context"}
+        if key not in {"parent_content", "has_regulation_context", "raw_table_context", "resolved_rows_cohort"}
     }
+    if unit.get("mode") != "structured":
+        result.pop("resolved_rows", None)
+    elif source.get("resolved_rows"):
+        # Foreground the already-computed conditional rows, not every other
+        # numeric interval in the display table. The full source context below
+        # still supplies policy conditions; API/UI tables remain unchanged.
+        if len(_structured_content(source)) > max_chars:
+            result.pop("resolved_rows", None)
     if unit.get("mode") == "structured" and source.get("has_regulation_context") and source.get("parent_content"):
-        table_content = str(source.get("content") or "")
+        table_content = _structured_content(source)
         result["content"] = limit_context(table_content, max_chars)
         remaining = max(0, max_chars - len(result["content"]))
         if remaining:
@@ -601,7 +618,16 @@ def _source_content_for_unit(source: dict[str, Any], unit: dict[str, Any]) -> st
     if unit.get("mode") == "rag" and source.get("raw_table_context"):
         return str(source["raw_table_context"]) + str(source.get("content") or "")
     if unit.get("mode") == "structured" and source.get("has_regulation_context") and source.get("parent_content"):
-        return str(source.get("content") or "") + str(source["parent_content"])
+        return _structured_content(source) + str(source["parent_content"])
+    if unit.get("mode") == "structured":
+        return _structured_content(source)
+    return str(source.get("content") or "")
+
+
+def _structured_content(source: dict[str, Any]) -> str:
+    """Use conditional lookup rows when every selected table was resolved."""
+    if source.get("resolved_rows"):
+        return _to_pretty_json({"resolved_rows": source["resolved_rows"]})
     return str(source.get("content") or "")
 
 

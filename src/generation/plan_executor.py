@@ -17,6 +17,7 @@ from src.common.cohort import is_validated_source_applicable
 from src.retrieval.core.citation_builder import (
     build_citation_from_lookup,
     enrich_citations_with_parent_details,
+    scoped_resolved_rows,
 )
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.hybrid_pipeline import (
@@ -798,12 +799,15 @@ class PlanExecutor:
             key = (
                 str(citation.get("cohort") or "default"),
                 str(canonical_source_id or ""),
-                # A fact lock belongs to this task/input, not every question
-                # citing the same article. Keep unlocked source fusion unchanged.
+                # Computed results belong to this task/input, including
+                # conditional rows which must never become a global fact lock.
                 (
                     tuple(sorted(citation.get("supports_task_ids") or [])),
                     json.dumps(citation["resolved_result"], sort_keys=True, default=str),
-                ) if citation.get("resolved_result") is not None else None,
+                ) if citation.get("resolved_result") is not None else (
+                    tuple(sorted(citation.get("supports_task_ids") or []))
+                    if scoped_resolved_rows(citation) else None
+                ),
                 _directory_record_ids(citation),
                 _table_evidence_identity(citation),
             )

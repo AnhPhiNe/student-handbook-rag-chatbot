@@ -803,7 +803,13 @@ def test_structured_legacy_fallback_preserves_full_table() -> None:
     assert "full_table" in prompt
 
 
-def test_applicable_amendment_is_kept_in_the_unit() -> None:
+def test_applicable_amendment_is_kept_in_the_unit(monkeypatch) -> None:
+    # A related footnote needs an authoritative target, not a guessed neighbor.
+    monkeypatch.setattr("src.generation.amendment_precedence.load_amendment_registry", lambda: ({
+        "target_parent_id": "article-10",
+        "replacement_text": "Sinh viên học cải thiện được dùng điểm đạt cao nhất làm điểm chính thức.",
+        "cohort": "K51", "applicability": {"kind": "min_admission_year", "year": 2025},
+    },))
     amendment_note = (
         "Điểm này đã được sửa đổi tại Quyết định 4743. "
         "Việc sửa đổi, bổ sung áp dụng từ khoá tuyển sinh năm 2025 trở về sau. "

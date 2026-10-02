@@ -232,6 +232,7 @@ def build_authorized_evidence_packet(
             retrieval_result,
             query=unit["question"],
             cohort=None if unit["cohort"] == "default" else unit["cohort"],
+            allowed_primary_parent_ids={source["source_id"] for source in authorized_sources},
         )
         packet_units.append(
             {

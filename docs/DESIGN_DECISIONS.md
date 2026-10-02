@@ -1,7 +1,8 @@
 # Design decisions and the measurements behind them
 
-Every component of the current system was chosen by measuring it against the
-alternatives. This document collects those comparisons in one place: what was
+The measured component choices and later candidate changes are recorded below.
+Not every later change has a full end-to-end comparison; candidate-only checks
+are labelled explicitly. This document collects the comparisons: what was
 compared, on which data, what the numbers were, and why the choice was made.
 The dated logs of each experiment are in [archive/](archive/README.md); the raw
 reports are listed at the end.
@@ -28,14 +29,14 @@ reports are listed at the end.
 
 | Component | Chosen | Alternatives measured | Deciding evidence |
 |---|---|---|---|
-| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema, prompt v56 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | Latest recorded v1: 133/135, p95 7.68 s (2026-10-01); the original model selection and later prompt changes are detailed below |
-| Composer | DeepSeek flash, thinking off, prompt v3.33 | Gemini 3.1 Flash-Lite; DeepSeek thinking low | Originally chosen for equivalent quality without Gemini's failed calls; v4 Run C records the later v3.33 stack, not a new isolated model comparison |
+| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; candidate prompt v57 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | Latest recorded full v1 belongs to v56: 133/135, p95 7.68 s (2026-10-01). It is not a full v57 measurement; see the 2026-10-02 candidate section |
+| Composer | DeepSeek flash, thinking off; candidate prompt v3.34 | Gemini 3.1 Flash-Lite; DeepSeek thinking low | Originally chosen for equivalent quality without Gemini's failed calls; v4 Run C measures v3.33, not the later candidate or a new isolated model comparison |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
 | Reranker | Voyage `rerank-3`, on all 24 fused children (2026-09-30) | Qwen3-Reranker-8B, 4B, 0.6B on DeepInfra; Cohere rerank-v4.0-fast; none | first 0.942 / top-5 155/155 at p90 0.85 s, against 8B 0.923 / 155 at p90 4.7 s, 4B 0.903 / 153, Cohere 0.897, none 0.832 / 148. Chosen for availability: the DeepInfra 8B endpoint stalled for over four hours on 2026-09-30 |
 | Lexical search | BM25 fused with RRF (k = 60), scored by BM25 only | Dense only; BM25 with a title-match rule | RRF + rerank beats dense + rerank; the title rule cost hit@1 and 3× BM25 time |
 | Candidate depth | 24 children for dense, BM25, fusion and rerank | 16, 40 | 24 holds the first gold child for 155/155 questions, 16 for 154/155 |
-| Tables | Reviewed JSON tables for lookup; readable tables kept in parents; no table rows embedded | The composer reading tables from retrieved text | The composer picked the wrong row of a range table in every try (sup_05, grade_remaining) |
+| Tables | Reviewed JSON for lookup; tables kept in full parents; candidate adds 35 source-reviewed search descriptions, not numeric rows | The composer reading tables from retrieved text | Range-reading failures justify deterministic fact locks. Search descriptions only locate the original table; candidate coverage and limits are recorded below |
 | Planner input | The student's own words | 156 slang rules rewriting the question first | 133/135 without the rewrite against 132/135 with it; the 12 rewritten questions pass either way |
 | Retrieval query | Slang rewritten to handbook wording | The student's own words | On 61 slang-reworded questions hit@5 61/61 with the rewrite against 58/61 without |
 
@@ -421,6 +422,35 @@ calls fell back to RRF. Any failure keeps the RRF order.
   to v34, so the new content (GPA formula, Decree 116 links, the faculty tasks
   page, main-campus scope) added no noise. All 21 development questions about it
   retrieve a correct source (before the reranker change).
+
+### Table-search candidate and task-local evidence (2026-10-02)
+
+The candidate adds 35 frozen, source-reviewed Vietnamese descriptions to 3,800
+narrative chunks. Metadata/cohort/provenance and raw tables stay canonical; the
+descriptions locate sources and are not facts for generation. All 3,835 records
+were re-embedded into separate Qdrant/MongoDB candidate collections. v35 is kept
+unchanged. Publication, hashes and staged verification are in
+[ROUTING_EVIDENCE_RELEASE.md](ROUTING_EVIDENCE_RELEASE.md).
+
+Measured on 15 known development queries: BM25 parent Hit@5 is 12/15 without
+handles and 15/15 with them; metadata-v1 and reviewed-v2 descriptions both score
+15/15, so natural wording has no demonstrated gain over metadata v1. Live candidate
+retrieval found the expected parent and table family for 15/15, with retrieval
+p95 2.82 seconds. Family coverage is not exact table/scope correctness or answer
+accuracy. One real TOEIC SSE question retrieved the appendix and copied all four
+score components correctly, but added an unrelated student-affairs warning and
+used recognition wording that could imply TOEIC is compulsory. It took 19.06
+seconds. These are development observations, not a new hold-out or production claim.
+
+The later offline audit found two evidence-contract defects: same-parent merge
+discarded a later task's hydrated table; amendment selection could use the other
+task's primary parents. Hydrated representations now stay task-local (ordinary
+source fusion and final public citation dedup remain), and amendment targets must
+belong to the current unit's authorized parents before ranking/limits. These are
+general runtime fixes; no query-specific routing, answer_groups or DAG is added.
+Planner v57 and composer v3.34 prompt text is unchanged by the evidence fix.
+The candidate is not yet promoted into the deploy/build contract or activated on
+HF, and the live TOEIC answer-quality limitations remain pending verification.
 
 ## Operations
 

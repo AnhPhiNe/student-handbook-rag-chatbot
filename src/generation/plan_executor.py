@@ -92,6 +92,21 @@ def _directory_record_ids(entry: dict[str, Any]) -> tuple[str, ...] | None:
     return tuple(record_ids) or None
 
 
+def _table_evidence_identity(entry: dict[str, Any]) -> tuple[Any, ...] | None:
+    """A hydrated table representation belongs to its retrieving task.
+
+    Canonical parent identity alone cannot merge a table handle with another
+    task's different table or plain-parent evidence. Public citations can still
+    deduplicate the parent after composition; ordinary source fusion is unchanged.
+    """
+    metadata = entry.get("metadata") or {}
+    context = entry.get("raw_table_context") or metadata.get("raw_table_context")
+    if not context:
+        return None
+    supports = entry.get("supports_task_ids") or metadata.get("supports_task_ids") or []
+    return tuple(sorted(supports)), str(context)
+
+
 @dataclass(frozen=True)
 class StructuredCatalogs:
     """Reviewed source catalogs the structured resolver reads."""
@@ -429,6 +444,12 @@ class PlanExecutor:
             coverage_by_task,
             max_sources=self.public_source_limit,
         )
+        supports_by_source: dict[str, list[str]] = {}
+        for index, citation in enumerate(selected_citations):
+            supports = supports_by_source.setdefault(str(citation.get("chunk_id") or index), [])
+            for task_id in citation.get("supports_task_ids") or []:
+                if task_id not in supports:
+                    supports.append(task_id)
         # Task summaries deliberately remain conservative. A partially covered
         # multi-cohort task can still contribute an answerable composition unit.
         covered_any = any(
@@ -480,13 +501,7 @@ class PlanExecutor:
             ),
             "task_results": task_results,
             "coverage_by_task": coverage_by_task,
-            "supports_task_ids": {
-                str(citation.get("chunk_id") or index): citation.get(
-                    "supports_task_ids"
-                )
-                or []
-                for index, citation in enumerate(selected_citations)
-            },
+            "supports_task_ids": supports_by_source,
             "needs_llm_answer": covered_any,
             "needs_clarification": bool(clarify_any and not covered_any),
             "clarification_question": clarification_questions[0]
@@ -752,6 +767,7 @@ class PlanExecutor:
                     or ""
                 ),
                 _directory_record_ids(item),
+                _table_evidence_identity(item),
             )
             if key not in merged:
                 merged[key] = dict(item)
@@ -789,6 +805,7 @@ class PlanExecutor:
                     json.dumps(citation["resolved_result"], sort_keys=True, default=str),
                 ) if citation.get("resolved_result") is not None else None,
                 _directory_record_ids(citation),
+                _table_evidence_identity(citation),
             )
             if key not in merged:
                 merged[key] = dict(citation)

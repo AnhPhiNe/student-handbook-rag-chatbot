@@ -235,3 +235,65 @@ The original candidate manifest stays frozen as a build record; publication stat
 is recorded separately, not by rewriting its historical `embedding_created=false`.
 Live report SHA-256:
 `c7d259e5d113dd82e1ab142781860ee07cdd0eb9860e7a507f22368d1c8169a7`.
+
+## Stage 5 — task-local evidence fixes after the read-only audit
+
+Approved implementation starts from `fd62acc8` and fixes two offline-reproduced
+contracts only. Keep the planner/composer prompt text and versions, canonical
+source data, gold, public response schema and production configuration unchanged.
+No inference, re-embedding, remote write, push or deployment is part of this stage.
+
+- Hydrated raw-table evidence stays task-local when items/citations share a
+  canonical parent. The merge identity includes task support plus the hydrated
+  representation; a table cannot replace a sibling table or a plain source for
+  another task. Identical same-task duplicates still merge, ordinary parent
+  fusion is unchanged, and public parent citations deduplicate after composition.
+  The existing source-support diagnostic map unions task IDs instead of losing
+  one when the parent has multiple internal representations.
+- Amendment selection receives the unit's authorized parent IDs before registry
+  selection, relevance ranking and item limits. Both registry records and parsed
+  footnotes must amend an authorized primary parent. Related footnotes remain
+  usable through their declared authoritative target; an unknown related target
+  is not guessed from adjacency. Cohort/admission-year checks remain unchanged.
+
+Regression fixtures cover both task orders, same-parent duration/grade tables,
+plain RAG + table RAG, structured fact lock + table RAG, cross-cohort rejection,
+low context budget, duplicate source behavior, source-support aggregation, real
+K51 amendments across RAG/structured tasks, shared authorized parents, relevance
+budget starvation, related targets, and wrong cohort/year. Fake composers verify
+sync and SSE receive the corrected packet without calling a provider. No exact
+question, program, certificate or benchmark ID is used as a runtime rule.
+
+One old prompt-builder fixture was corrected to declare the related footnote's
+authoritative target. Its previous expectation implicitly guessed that a note
+in Article 11 amended Article 10, which the new authorization contract forbids.
+This changes a synthetic unit fixture, not evaluation gold or source metadata.
+
+The observed TOEIC warning and qualification issue is still a known composer
+limitation. These runtime fixes do not claim to fix it. Candidate promotion,
+portable registry paths, deploy/build identity, HF readiness and any live E2E
+smoke remain subsequent release work; saved publication/retrieval reports stay
+unchanged as historical measurements.
+
+Review status: the two parallel reviewers supplied partial findings and offline
+checks without identifying an introduced defect, but hit their usage limit before
+their final reports. This is not recorded as a completed two-axis review. The main
+agent completed the diff review and added a real pure-structured executor regression
+alongside the synthetic task-isolation fixtures. That regression verifies the K51
+canonical failing row remains fact-locked and its full source context reaches the
+composer without RAG items or provider calls.
+
+Known pre-existing limit: the amendment collector discovers primary parents from
+`retrieved_items`, so a pure structured answer does not emit a separate registry
+amendment list just from its citations. Canonical amended tables and the full
+parent `source_context` are still supplied. This stage does not expand that
+mechanism or claim all amendment paths have been redesigned.
+
+Final offline verification: 1,473 backend tests passed with the same two dependency
+warnings; 69 focused task-isolation/prompt-builder tests passed. CI-equivalent
+backend lint, deploy-artifact/hash checks and diff whitespace checks passed.
+AST source comparison confirms the composer prompt renderer is byte-for-byte
+unchanged as normalized source; planner source, configurations, canonical data,
+gold and README have no diff from the starting checkpoint. Main-agent review
+completed after the partial reviewer reports. There were no inference calls or
+remote writes, and the unrelated dirty primary checkout was preserved.

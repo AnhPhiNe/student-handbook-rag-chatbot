@@ -15,7 +15,7 @@ tools:
     selection_mode: table_first
     # regulation tables (structured_tables_registry table_type) this tool reads
     table_types: [foreign_language]
-    description: "Quy đổi chứng chỉ/điểm ngoại ngữ đã nêu sang bậc tương đương hoặc liệt kê bảng quy đổi; không xác lập chuẩn đầu ra bắt buộc."
+    description: "Tra bảng quy đổi chứng chỉ/điểm ngoại ngữ sang bậc tương đương, gồm kỹ năng, kể cả khi chưa biết điểm/bậc; không tự xác lập chuẩn đầu ra bắt buộc. Hỏi chuẩn tốt nghiệp cần nguồn quy định cùng bảng tham chiếu qua RAG."
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -67,7 +67,7 @@ tools:
     selection_mode: table_first
     # regulation tables (structured_tables_registry table_type) this tool reads
     table_types: [study_duration]
-    description: Tra thời gian học chuẩn/tối đa theo hệ đào tạo và loại chương trình.
+    description: Tra thời gian học chuẩn/tối đa theo hệ đào tạo và loại chương trình trong sổ tay của khóa; chưa rõ phạm vi thì giữ các trường hợp. Không tính thời gian còn lại từ tín chỉ miễn; điều kiện gia hạn/bảo lưu dùng RAG.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -107,7 +107,7 @@ tools:
     selection_mode: table_first
     # regulation tables (structured_tables_registry table_type) this tool reads
     table_types: [scholarship]
-    description: Tra mức tiền, công thức tiền, hệ số, căn cứ học phí hoặc xếp loại HBKKHT của từng loại kèm khoảng điểm học bổng, điểm học tập và rèn luyện, hoặc xếp loại học tập và rèn luyện tương ứng.
+    description: Tra mức tiền, công thức tiền, hệ số, căn cứ học phí hoặc xếp loại HBKKHT của từng loại kèm khoảng điểm học bổng, điểm học tập và rèn luyện, hoặc xếp loại học tập và rèn luyện tương ứng. Mức tiền phụ thuộc tín chỉ/học phí, không phải số tiền cố định. Tổng quan không điền aspect để lấy cả bảng điều kiện xét và thang điểm tham chiếu; quyền hưởng, ngoại lệ và kết luận được cấp học bổng cần quy định RAG.
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -125,7 +125,7 @@ tools:
       score_or_label:
         type: [string, number]
         verification_role: result_input
-        description: Điểm hoặc tên loại học bổng được hỏi (vd. Khá, Giỏi), dùng cho cả amount và classification; điền khi người hỏi nêu.
+        description: Điểm học bổng hoặc tên loại học bổng được hỏi (vd. Khá, Giỏi), dùng cho cả amount và classification; không coi riêng điểm học tập/rèn luyện là điểm học bổng. Điền khi người hỏi nêu.
     table_selector:
       slot: aspect
       values:
@@ -166,6 +166,7 @@ tools:
       score_or_grade:
         type: [string, number]
         verification_role: result_input
+        description: "Giá trị đầu vào theo operation: điểm học phần hệ 10, điểm chữ, GPA hệ 4 hoặc tổng điểm rèn luyện hệ 100. Giữ cả thang điểm người dùng nêu, không tự quy đổi."
       course_scope:
         type: string
         verification_role: result_input
@@ -199,6 +200,8 @@ tools:
           table_subtypes: [conduct_classification]
     scope_selector:
       slot: course_scope
+      # Scope changes course-grade/pass tables, not letter-to-4 or GPA/conduct tables.
+      applies_to_operations: [grade_10_to_letter, pass_threshold, pass_fail_ungraded]
       values:
         foundation:
           table_id_suffixes: [grade_scale_foundation, grade_scale_general]
@@ -215,7 +218,7 @@ tools:
   student_service:
     data_category: directory_table
     presentation_type: contact_card
-    description: Tìm đơn vị/liên hệ xử lý một dịch vụ vận hành cụ thể; trách nhiệm theo quy chế, chính sách hoặc thủ tục dùng RAG.
+    description: Từ việc cần hỗ trợ, tìm đơn vị/liên hệ xử lý dịch vụ vận hành trong danh bạ, không cần biết tên đơn vị. Hỏi ai xử lý một thủ tục vẫn tra dịch vụ; hỏi các bước, điều kiện hoặc trách nhiệm pháp quy dùng RAG.
     intents: [direct_value, contact]
     default_intent: contact
     required_slots:
@@ -255,7 +258,7 @@ tools:
   office:
     data_category: directory_table
     presentation_type: contact_card
-    description: "Tra liên hệ, địa chỉ hoặc dịch vụ của một đơn vị được nêu tên. Trách nhiệm theo quy chế, quy định, thủ tục hoặc biểu mẫu dùng RAG."
+    description: "Tra liên hệ, địa chỉ hoặc dịch vụ của đơn vị đã nêu tên trong danh bạ phòng ban/đơn vị dịch vụ. Đơn vị học thuật trong danh bạ khoa dùng faculty; chỉ biết việc cần hỗ trợ dùng student_service. Trách nhiệm pháp quy, các bước thủ tục hoặc biểu mẫu dùng RAG."
     intents: [contact]
     default_intent: contact
     required_slots:
@@ -284,7 +287,7 @@ tools:
   faculty:
     data_category: directory_table
     presentation_type: contact_card
-    description: Tra email, số điện thoại, website hoặc địa chỉ của một Khoa cụ thể; không dùng cho câu hỏi danh sách ngành.
+    description: Tra email, số điện thoại kèm số nội bộ, website hoặc địa chỉ của đơn vị học thuật có hồ sơ trong danh bạ khoa, gồm Khoa/Tổ; không dùng cho danh sách ngành hoặc trách nhiệm pháp quy.
     intents: [contact]
     default_intent: contact
     required_slots:
@@ -312,7 +315,7 @@ tools:
   program:
     data_category: directory_table
     presentation_type: table
-    description: Tra ngành, khoa phụ trách, liên hệ khoa và cơ hội nghề nghiệp sau khi tốt nghiệp của ngành; ngành kèm email khoa là một task.
+    description: Tra danh sách/sự có mặt của ngành, khoa phụ trách, liên hệ khoa và cơ hội nghề nghiệp ghi trong sổ tay của khóa; ngành kèm email khoa là một task. Không xác nhận tuyển sinh hiện tại, điểm chuẩn hoặc thị trường việc làm ngoài sổ tay.
     intents: [direct_value, list_items, exists]
     required_slots:
       direct_value: [program_or_faculty, requested_field]
@@ -343,7 +346,7 @@ tools:
 
   formula:
     presentation_type: table
-    description: "Cách tính/quan hệ toán học: điểm học bổng từ điểm học tập và rèn luyện=scholarship_score; GPA có trọng số=gpa_weighted_average. Không dùng cho mức tiền, điều kiện, xếp loại hay khoảng điểm học bổng phải đạt: các mức đó nằm trong bảng scholarship_classification."
+    description: "Tra công thức và định nghĩa biến/thang điểm/làm tròn có trong nguồn: điểm học bổng từ điểm học tập và rèn luyện=scholarship_score; GPA có trọng số=gpa_weighted_average. Mức tiền, xếp loại hoặc khoảng điểm học bổng dùng scholarship_classification; điều kiện áp dụng, quyền hưởng và ngoại lệ dùng RAG. Không phải calculator số học tổng quát."
     intents: [formula]
     required_slots:
       formula: [formula_type]

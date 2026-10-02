@@ -305,6 +305,9 @@ class PlanExecutor:
         cohort_coverage: dict[str, str] = {}
         resolution_by_cohort: dict[str, str] = {}
         clarification_by_cohort: dict[str, str] = {}
+        execution_mode_by_cohort: dict[str, str] = {}
+        retrieval_fallback_by_cohort: dict[str, str] = {}
+        structured_failure_by_cohort: dict[str, str] = {}
         task_citations: list[dict[str, Any]] = []
         task_items: list[dict[str, Any]] = []
         related_references: list[dict[str, Any]] = []
@@ -327,6 +330,11 @@ class PlanExecutor:
                 )
             cohort_key = str(task_cohort or "default")
             cohort_coverage[cohort_key] = sub_result["coverage"]
+            execution_mode_by_cohort[cohort_key] = sub_result.get("execution_mode", mode)
+            if sub_result.get("retrieval_fallback_reason"):
+                retrieval_fallback_by_cohort[cohort_key] = sub_result["retrieval_fallback_reason"]
+            if sub_result.get("structured_failure_reason"):
+                structured_failure_by_cohort[cohort_key] = sub_result["structured_failure_reason"]
             if mode == "structured":
                 resolution_by_cohort[cohort_key] = sub_result.get("resolution_status", "unavailable")
             task_evidence.extend(sub_result.get("evidence") or [])
@@ -361,6 +369,9 @@ class PlanExecutor:
                 "coverage": coverage,
                 "coverage_by_cohort": cohort_coverage,
                 "resolution_by_cohort": resolution_by_cohort,
+                "execution_mode_by_cohort": execution_mode_by_cohort,
+                "retrieval_fallback_by_cohort": retrieval_fallback_by_cohort,
+                "structured_failure_by_cohort": structured_failure_by_cohort,
                 "clarification_by_cohort": clarification_by_cohort,
                 "evidence": task_evidence,
                 "citation_count": len(task_citations),
@@ -440,7 +451,9 @@ class PlanExecutor:
             }
         else:
             structured_result = None
-        task_modes = {str(task.get("mode")) for task in (plan.get("tasks") or [])}
+        task_modes = {mode for result in task_results
+                      for mode in ((result.get("execution_mode_by_cohort") or {}).values()
+                                   or [str(result.get("mode"))])}
         executable_modes = task_modes - {"clarify"}
         if len(executable_modes) > 1:
             execution_mode = "mixed"
@@ -514,11 +527,22 @@ class PlanExecutor:
         if not resolution or not resolution.result:
             return {
                 "resolution_status": "unavailable",
+                "structured_failure_reason": "unknown_resolution",
                 "coverage": "uncovered",
                 "evidence": [],
                 "citations": [],
                 "retrieved_items": [],
             }
+        if resolution.result_kind == "unavailable":
+            reason = resolution.result.get("unavailable_reason")
+            if reason == "no_source":
+                # One retrieval attempt, never another planner/structured call.
+                fallback = self._execute_planned_rag_task(task=task, task_id=task_id, cohort=cohort)
+                return {**fallback, "execution_mode": "rag", "resolution_status": "unavailable",
+                        "retrieval_fallback_reason": reason}
+            return {"resolution_status": "unavailable", "coverage": "uncovered",
+                    "structured_failure_reason": reason, "evidence": [], "citations": [],
+                    "retrieved_items": []}
         if resolution.result_kind == "clarification":
             return {
                 "resolution_status": "needs_clarification",

@@ -28,7 +28,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.33-minimum-levels"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.34-source-context"
 
 
 def build_answer_prompt_bundle(
@@ -80,6 +80,7 @@ def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
 - AUTHORIZED_EVIDENCE_BY_UNIT gồm các đơn vị cần trả lời; mỗi đơn vị là một ý của câu hỏi cho một cohort.
 - Trong mỗi đơn vị: question là ý cần trả lời; mode=structured (kết quả tra bảng, danh bạ), rag (đoạn quy chế) hoặc clarify; coverage=covered (có căn cứ), uncovered (chưa tìm thấy căn cứ) hoặc needs_clarification (cần hỏi lại); primary_evidence là các nguồn được phép dùng, mỗi nguồn có source_ref, document_title (tên văn bản), article_label (Điều, nếu văn bản chia theo Điều), content, role, printed_in (sổ tay in nguồn đó) và có thể có currency_note (lưu ý về văn bản mới hơn).
 - role=candidate là mặc định: nguồn hệ thống tìm được cho đơn vị, có thể chỉ liên quan một phần. role=target chỉ có khi câu hỏi nêu đích danh một Điều khớp với nguồn đó.
+- source_context (nếu có) là văn bản của chính nguồn bảng/công thức, cùng source_ref; dùng để xét điều kiện/ngoại lệ của kết luận, không phải nguồn từ task khác. Coverage chỉ cho biết có evidence, không bảo đảm mọi ý đã có căn cứ.
 
 Mọi mục dưới đây là bắt buộc.
 
@@ -110,6 +111,7 @@ Mọi mục dưới đây là bắt buộc.
 4. BẢNG VÀ SỐ LIỆU
 - Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vào Markdown vì giao diện đã hiển thị dữ liệu đó riêng.
 - Hệ thống tra sẵn hàng cho bạn bất cứ khi nào tra được (resolved_result, resolved_rows); phải dùng đúng hàng đó, không chọn lại hàng hay dò lại khoảng giá trị. resolved_result là kết quả đã chốt khi chỉ một phạm vi áp dụng.
+- Kết quả tra bảng không tự xác lập quyền hưởng hoặc kết luận chính sách cuối. Giữ nguyên giá trị đã tra nhưng xét điều kiện/ngoại lệ trong source_context và evidence của đúng đơn vị; thiếu căn cứ thì nói rõ phần chưa xác lập.
 - resolved_rows trong từng bảng là kết quả riêng của phạm vi bảng đó khi nhiều phạm vi cùng áp dụng; nêu từng trường hợp kèm phạm vi, không gộp thành một kết quả duy nhất.
 - Chỉ khi evidence không có resolved_result lẫn resolved_rows thì mới tự đọc bảng: chọn bảng đúng phạm vi áp dụng rồi lấy kết quả từ đúng hàng và cột tương ứng, giữ nguyên quan hệ giữa các giá trị và nhãn kết quả. Không ghép giá trị giữa các bảng hoặc hàng. Nếu còn nhiều bảng hoặc hàng áp dụng, trình bày các trường hợp có căn cứ, không tự chọn một kết quả duy nhất.
 - Nội dung rag có thể chứa bảng đã được chuyển thành dòng, mỗi dòng dạng "- Tên bảng › nhóm › mục: giá trị" (dấu "–" cũng dùng để nối các phần). Mỗi dòng là một hàng độc lập; các dòng liền nhau thường có chung phần đầu và chỉ khác nhãn mục ở cuối. Chỉ lấy giá trị từ dòng có nhãn mục khớp đúng điều được hỏi, không lấy giá trị của dòng kề bên có nhãn khác.
@@ -126,6 +128,7 @@ Mọi mục dưới đây là bắt buộc.
 - Dùng từ ngữ của sinh viên, vd. "khóa K51"; không dùng các từ kỹ thuật của đầu vào như cohort, evidence, source_ref hoặc role.
 - Nêu rõ câu trả lời dựa theo sổ tay nào, theo printed_in của nguồn được dùng (vd. "Theo Sổ tay sinh viên khóa K50 (năm học 2024 – 2025), …"), để người hỏi tìm lại được trong sổ tay đó. Nếu printed_in là sổ tay của khóa khác với khóa của đơn vị, nói rõ văn bản được in trong sổ tay đó.
 - Nếu nguồn được dùng có currency_note, thêm nguyên nội dung currency_note thành một câu lưu ý ở cuối phần trả lời của đơn vị, mỗi văn bản một lần; không suy đoán nội dung của văn bản mới hơn.
+- Không thêm currency_note của nguồn chỉ xuất hiện trong danh sách nhưng không hỗ trợ nội dung trả lời; không kéo lưu ý của chính sách khác vào kết luận.
 
 AUTHORIZED_EVIDENCE_BY_UNIT
 {evidence_context}
@@ -387,7 +390,8 @@ def _composition_units(
                     "question": str(
                         task.get("question") or result.get("question") or ""
                     ).strip(),
-                    "mode": str(task.get("mode") or result.get("mode") or "rag"),
+                    "mode": str((result.get("execution_mode_by_cohort") or {}).get(cohort_key)
+                                or task.get("mode") or result.get("mode") or "rag"),
                     "cohort": cohort_key,
                     "coverage": coverage,
                     "resolution_status": (result.get("resolution_by_cohort") or {}).get(cohort_key),
@@ -491,6 +495,7 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
             parent_content,
             source_parent_id=source_id,
         ),
+        "has_regulation_context": citation.get("chunk_type") in {"structured_lookup", "formula_rule"},
     }
 
 
@@ -559,19 +564,28 @@ def _source_for_unit(
     """
 
     content = _source_content_for_unit(source, unit)
-    return {
+    result = {
         key: value
         for key, value in {
             **source,
             "content": limit_context(content, max_chars),
         }.items()
-        if key != "parent_content"
+        if key not in {"parent_content", "has_regulation_context"}
     }
+    if unit.get("mode") == "structured" and source.get("has_regulation_context") and source.get("parent_content"):
+        table_content = str(source.get("content") or "")
+        result["content"] = limit_context(table_content, max_chars)
+        remaining = max(0, max_chars - len(result["content"]))
+        if remaining:
+            result["source_context"] = limit_context(str(source["parent_content"]), remaining)
+    return result
 
 
 def _source_content_for_unit(source: dict[str, Any], unit: dict[str, Any]) -> str:
     if unit.get("mode") == "rag" and source.get("parent_content"):
         return str(source["parent_content"])
+    if unit.get("mode") == "structured" and source.get("has_regulation_context") and source.get("parent_content"):
+        return str(source.get("content") or "") + str(source["parent_content"])
     return str(source.get("content") or "")
 
 

@@ -8,6 +8,7 @@ from src.common.cohort import (
     is_cohort_applicable,
     is_validated_source_applicable,
     normalize_cohort,
+    valid_cohorts,
 )
 from src.common.score import grounded_score, parse_score
 from src.common.text import slot_values
@@ -22,7 +23,7 @@ from .ordinal_labels import annotate_minimum_levels
 from .scholarship_lookup import scholarship_table_lookup
 from .study_duration_lookup import study_duration_lookup
 from .structured_lookup import scoring_lookup_from_reference
-from .structured_routing import load_lookup_registry, validate_fact_lock_inputs
+from .structured_routing import load_lookup_registry, validate_fact_lock_inputs, validate_structured_task
 
 
 _REGISTRY = load_lookup_registry()
@@ -51,6 +52,8 @@ class StructuredResolution:
         """Separate evidence availability from a uniquely resolved value."""
         if self.result_kind == "clarification":
             return "needs_clarification"
+        if self.result_kind == "unavailable":
+            return "unavailable"
         return "resolved" if self.result.get("resolved_result") else "evidence_only"
 
 
@@ -277,6 +280,15 @@ def _reference_input_clarification(
     return gap
 
 
+def _matches_reference_spec(table: dict[str, Any], spec: dict[str, Any]) -> bool:
+    """Match one complete registry selector, never a cross-product of fields."""
+    for key, table_key in (("table_types", "table_type"), ("table_subtypes", "table_subtype")):
+        if spec.get(key) and table.get(table_key) not in spec[key]:
+            return False
+    suffixes = tuple(spec.get("table_id_suffixes") or [])
+    return not suffixes or str(table.get("table_id") or "").endswith(suffixes)
+
+
 def _select_reference_tables(
     lookup_type: str,
     slots: dict[str, Any] | None,
@@ -288,13 +300,14 @@ def _select_reference_tables(
     tool = _LOOKUP_TOOL_SPECS.get(lookup_type, {})
     for selector_name in ("table_selector", "scope_selector"):
         selector = tool.get(selector_name) or {}
-        slot_values = runtime_slots.get(selector.get("slot"))
-        if isinstance(slot_values, list):
-            selector_values = [str(value) for value in slot_values if str(value).strip()]
-        elif slot_values is None or not str(slot_values).strip():
+        applicable_operations = selector.get("applies_to_operations")
+        selector_input = runtime_slots.get(selector.get("slot"))
+        if isinstance(selector_input, list):
+            selector_values = [str(value) for value in selector_input if str(value).strip()]
+        elif selector_input is None or not str(selector_input).strip():
             selector_values = []
         else:
-            selector_values = [str(slot_values)]
+            selector_values = [str(selector_input)]
         specs = [
             (selector.get("values") or {}).get(value)
             for value in selector_values
@@ -302,23 +315,21 @@ def _select_reference_tables(
         specs = [spec for spec in specs if isinstance(spec, dict)]
         if not specs:
             continue
-        def matches_spec(table: dict[str, Any], spec: dict[str, Any]) -> bool:
-            table_types = spec.get("table_types") or []
-            if table_types and table.get("table_type") not in table_types:
-                return False
-            table_subtypes = spec.get("table_subtypes") or []
-            if table_subtypes and table.get("table_subtype") not in table_subtypes:
-                return False
-            suffixes = tuple(spec.get("table_id_suffixes") or [])
-            if suffixes and not str(table.get("table_id") or "").endswith(suffixes):
-                return False
-            return True
+        scoped_operation_specs = []
+        if applicable_operations:
+            operation_specs = (tool.get("table_selector") or {}).get("values") or {}
+            operations = slot_values(runtime_slots.get("operation")) or list(operation_specs)
+            scoped_operation_specs = [operation_specs[operation] for operation in operations
+                                      if operation in applicable_operations and operation in operation_specs]
 
         # A list of selector values means the union of complete selector
         # specifications.  Combining each field independently would create a
         # cross-product and could select a table that matches no real value.
         candidates = [
-            table for table in candidates if any(matches_spec(table, spec) for spec in specs)
+            table for table in candidates
+            if (applicable_operations and not any(
+                _matches_reference_spec(table, spec) for spec in scoped_operation_specs
+            )) or any(_matches_reference_spec(table, spec) for spec in specs)
         ]
     return candidates
 
@@ -615,8 +626,8 @@ def resolve_structured_task(
     Four families: reference tables (scoring, scholarship, foreign language,
     study duration and the other regulation tables), directories (student
     services, offices, faculties), the program catalog, and formulas. A
-    ``None`` return leaves the caller free to use its RAG fallback; ambiguous
-    directory matches instead return an explicit clarification result.
+    ``None`` has no classified cause and must not trigger a fallback. A known
+    missing source returns an unavailable result; ambiguity returns clarification.
     """
 
     lookup_type = str(task.get("lookup_type") or "").strip()
@@ -642,16 +653,18 @@ def resolve_structured_task(
     if lookup_type in directories:
         return _resolve_directory(
             lookup_type, task, slots, query=query, cohort=effective_cohort,
-            directories=directories, directory_selector=directory_selector,
+            directories=directories, directory_selector=directory_selector, grounding=grounding or query,
         )
     if lookup_type == "program":
         return _resolve_program(
             task, slots, query=query, cohort=effective_cohort,
             program_directory=program_directory,
-            faculty_profiles=student_faculty_profiles or [],
+            faculty_profiles=student_faculty_profiles or [], grounding=grounding or query,
             directory_selector=directory_selector,
         )
     if lookup_type == "formula":
+        if formula_rules and not any(is_validated_source_applicable(rule, effective_cohort) for rule in formula_rules):
+            return _missing_source(task, query, effective_cohort, grounding or query, formula_rules)
         result = formula_lookup(query, formula_rules, cohort=effective_cohort, slots=slots)
         result = _bind_formula_source(result, structured_tables_registry, cohort=effective_cohort)
         return _resolution(lookup_type, "formula_lookup", result, result_kind="formula")
@@ -676,13 +689,21 @@ def _resolve_reference_table(
     state it.
     """
     resolution_slots = _grounded_resolution_slots(task, slots, grounding) if lookup_type == "scoring" else slots
-    candidates = _select_reference_tables(lookup_type, slots, [
+    family = [
         table for table in structured_tables_registry
         if table.get("data_category") == "regulation_table"
         and table.get("table_type") in _REFERENCE_TABLE_TYPES[lookup_type]
-        and is_validated_source_applicable(table, cohort)
-        and isinstance(table.get("rows"), list) and table["rows"]
-    ])
+    ]
+    scoped = [table for table in family if is_validated_source_applicable(table, cohort)]
+    if family and not scoped:
+        return _missing_source(task, query, cohort, grounding, family)
+    if any(not isinstance(table.get("rows"), list) or not table["rows"]
+           or not all(isinstance(row, dict) and row for row in table["rows"])
+           for table in scoped):
+        return _unavailable(lookup_type, cohort, "invalid_catalog")
+    candidates = _select_reference_tables(lookup_type, slots, scoped)
+    if scoped and not candidates:
+        return _unavailable(lookup_type, cohort, "selector_conflict")
     result = _reference_table_lookup(
         lookup_type,
         query=query,
@@ -794,6 +815,7 @@ def _resolve_directory(
     cohort: str | None,
     directories: dict[str, list[dict[str, Any]]],
     directory_selector: DirectorySelector | None,
+    grounding: str,
 ) -> StructuredResolution | None:
     """Find the service, office or faculty the student names; ask when it is unclear."""
     candidate_text = (
@@ -808,6 +830,12 @@ def _resolve_directory(
         cohort=cohort,
         selector=directory_selector,
     )
+    # A configured selector's verified NONE differs from unknown resolution.
+    # Empty catalogs or unavailable/ambiguous selectors cannot authorize RAG.
+    if result is None and directory_selector is not None and any(
+        is_validated_source_applicable(item, cohort) for item in directories[lookup_type]
+    ):
+        return _missing_source(task, query, cohort, grounding, directories[lookup_type])
     if result is not None and result.get("resolution_status") in {"ambiguous", "unresolved"}:
         options = result.get("clarification_options") or []
         if options:
@@ -861,6 +889,7 @@ def _resolve_program(
     program_directory: list[dict[str, Any]],
     faculty_profiles: list[dict[str, Any]],
     directory_selector: DirectorySelector | None,
+    grounding: str,
 ) -> StructuredResolution | None:
     """Answer from the program catalog: does a program exist, list them, or find its faculty."""
     candidate_text = _slot_value(task, "program_or_faculty") or query
@@ -884,6 +913,8 @@ def _resolve_program(
         scope=scope,
         selector=directory_selector,
     )
+    if result is None and directory_selector is not None and program_directory:
+        return _missing_source(task, query, cohort, grounding, program_directory)
     if result is not None:
         result = resolve_relationship(
             result, source_lookup="program", requested_field=requested_field,
@@ -895,6 +926,45 @@ def _resolve_program(
 
 def _result_kind(result: dict[str, Any] | None) -> str:
     return "clarification" if result and result.get("needs_clarification") else "structured"
+
+
+def _unavailable(lookup_type: str, cohort: str | None, reason: str) -> StructuredResolution:
+    """Keep a known failure cause without changing the resolver interface."""
+    return StructuredResolution(
+        lookup_type=lookup_type, strategy="structured_lookup", result_kind="unavailable",
+        result={"lookup_type": lookup_type, "cohort": cohort, "unavailable_reason": reason},
+        target_chunk_types=[],
+    )
+
+
+def _missing_source(
+    task: dict[str, Any], query: str, cohort: str | None, grounding: str,
+    catalog: list[dict[str, Any]],
+) -> StructuredResolution:
+    """Only a validated request with no pending clarification may fall back."""
+    errors = validate_structured_task({**task, "cohort": cohort}, query=query, grounding_context=grounding)
+    lookup_type = str(task.get("lookup_type") or "")
+    # Missing cohort/identity/content is corruption or an unknown source, not
+    # proof that this cohort has no answer. Fail closed before authorizing RAG.
+    identity_fields = {
+        "formula": "rule_id", "program": "program_name", "student_service": "service",
+        "office": "unit_name", "faculty": "unit_name",
+    }
+    healthy = bool(catalog) and all(
+        isinstance(item, dict) and normalize_cohort(item.get("cohort")) in valid_cohorts()
+        and item.get(identity_fields.get(lookup_type, "table_id"))
+        and (item.get("source_parent_id") or item.get("document_id") or item.get("source_pages"))
+        and (bool(item.get("formula_text")) if lookup_type == "formula" else
+             bool(item.get("raw_text") and item.get("faculty_name")) if lookup_type == "program" else
+             (isinstance(item.get("rows"), list) and bool(item["rows"])
+              and all(isinstance(row, dict) and row for row in item["rows"]))
+             if lookup_type in _REFERENCE_TABLE_TYPES else
+             bool(item.get("raw_text") or item.get("service") or item.get("phones") or item.get("emails")))
+        for item in catalog
+    )
+    reason = ("invalid_catalog" if not healthy else
+              "invalid_input" if errors or task.get("clarification_question") else "no_source")
+    return _unavailable(lookup_type, cohort, reason)
 
 
 def _resolution(

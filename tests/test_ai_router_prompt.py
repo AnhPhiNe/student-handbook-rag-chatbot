@@ -43,7 +43,7 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     assert "values" in prompt_registry
     assert 'formula_type":{"type":"string","values":["scholarship_score","gpa_weighted_average"]}' in prompt_registry
     assert "điểm học bổng từ điểm học tập và rèn luyện=scholarship_score" in prompt_registry
-    assert "Điểm hoặc tên loại học bổng được hỏi" in prompt_registry
+    assert "Điểm học bổng hoặc tên loại học bổng được hỏi" in prompt_registry
     assert '"aspect":{"type":"string"' in prompt_registry
     assert '"values":{"amount":"mức tiền","classification":"xếp loại"}' in prompt_registry
     assert '"secondary_bridge":"liên thông từ trung cấp"' in prompt_registry
@@ -52,7 +52,8 @@ def test_compact_registry_omits_prompt_only_noise() -> None:
     scholarship_contract = prompt_registry.split("scholarship_classification|", 1)[1].split(
         "\n", 1
     )[0]
-    assert "điều kiện" not in scholarship_contract
+    assert "bảng điều kiện xét" in scholarship_contract
+    assert "kết luận được cấp học bổng cần quy định RAG" in scholarship_contract
     assert "công thức tiền" in scholarship_contract
     assert "căn cứ học phí" in scholarship_contract
     scoring_contract = prompt_registry.split("scoring|", 1)[1].split("\n", 1)[0]
@@ -185,13 +186,11 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
         dynamic_prompt,
         router._plan_response_format_payload(),
     )
-    # v52 adds the v1-review rules; v53 restores the v49 only-if conditions verbatim;
-    # v56 adds the value-meets-condition rule (about 90 characters over v53's budget;
-    # v54 and v55 were discarded "where" experiments).
+    # v57 clarifies real registry capabilities and policy/reference retrieval.
     # Character-based estimates, not provider tokenizer or billing counts.
-    assert stats["total_chars"] <= 33600
-    assert stats["estimated_input_tokens"] <= 8400
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v56-value-meets-condition"
+    assert stats["total_chars"] <= 35500
+    assert stats["estimated_input_tokens"] <= 8875
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v57-reference-and-policy"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 

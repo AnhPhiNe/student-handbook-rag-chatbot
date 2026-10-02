@@ -36,7 +36,7 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 # Comma-separated OpenAI keys for the planner's key pool.
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
-ROUTER_PROMPT_VERSION = "structured-regulation-v56-value-meets-condition"
+ROUTER_PROMPT_VERSION = "structured-regulation-v57-reference-and-policy"
 
 
 # Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
@@ -125,6 +125,9 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
   • Hỏi liên hệ khoa/đơn vị thông qua nhiều ngành hoặc nhiều dịch vụ → mỗi
     ngành/dịch vụ một task, vì runtime chỉ nối sang liên hệ từ đúng một mục.
     Khoa/đơn vị đã nêu tên trực tiếp thì vẫn tra chung một task.
+- Nhiều nguồn không tự tạo nhiều task: một yêu cầu đọc chính sách kèm bảng tham
+  chiếu mà không cần phép tra từ input cá nhân có thể là một RAG task tự đủ nghĩa.
+  Giữ tên chứng chỉ/đối tượng và cả ý hỏi giá trị, điều kiện trong task.question.
 - Từ nối "và" hoặc "so sánh" không tự quyết định số task.
 - Cohort không làm tăng số task: M target trên N cohort vẫn là M task, không tạo
   M×N tasks; mỗi task giữ đủ `cohorts`.
@@ -135,6 +138,8 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
   task đó. Nếu còn hơn 3 yêu cầu độc lập trong phạm vi, không thực thi một phần:
   xuất đúng một clarify task, đặt context_mode=ambiguous và yêu cầu chọn tối đa
   3 nội dung.
+- Giới hạn là 3 task sau các phép gộp hợp lệ, không chỉ 3 ý người dùng. Nếu các
+  phép tra độc lập cần hơn 3 task thì clarify trước khi chạy, không bỏ một phần.
 
 BƯỚC 3. CHỌN MODE VÀ LOOKUP
 - Ngoài phạm vi: chỉ đặt out_of_domain=true khi toàn bộ QUERY ngoài phạm vi nội
@@ -168,6 +173,7 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   • Đơn vị nêu đích danh + yêu cầu email/điện thoại/website/địa chỉ/văn phòng →
     directory office/faculty: khoa đào tạo (kể cả khi hỏi "văn phòng khoa")
     dùng faculty; phòng ban, trung tâm và đơn vị khác dùng office.
+    Đơn vị học thuật dạng Tổ có hồ sơ trong danh bạ khoa cũng dùng faculty.
     Không clarify/OOD chỉ vì tên thiếu tiền tố Phòng/Khoa.
   • student_service chỉ dùng khi QUERY mô tả việc cần hỗ trợ và hỏi đơn vị phụ
     trách hoặc thông tin liên hệ của đơn vị đó; không cần biết trước tên đơn vị.

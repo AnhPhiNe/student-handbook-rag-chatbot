@@ -808,3 +808,31 @@ scores require a separate measured run/report; no correctness/hallucination
 improvement is inferred from offline preservation checks. Runtime routing,
 composer, HTTP/SSE, README and source data remain unchanged. This stage ends
 with a separate local commit, without push or deployment.
+
+## Stage 17 — approved eight-output judge v3 smoke (2026-10-03)
+
+User requested step 1: judge-only smoke on 033/129, supported controls 039/142,
+wrong historical-answer controls 029/056/059, and clarification control 145.
+One frozen run used evaluator `cb4ad7c5`, packet v3, the same Groq
+`openai/gpt-oss-120b` rubric/model/configuration, capped at three attempts/case
+and 24 total requests. 8/8 judgments were valid in 23.03 seconds; actual API
+requests were nine (eight HTTP 200, one HTTP 401 recovered by key rotation).
+
+All intended smoke checks passed: 033/129 correctness and faithfulness are
+1.0 with no unsupported flag (v2 had faithfulness 0.8 and flags); 039/142
+remain supported; the missing-GPA clarification is accepted. Each of the three
+wrong historical answers still has correctness 0.0. These negative controls
+are not counted as correct chatbot answers merely because the smoke succeeds.
+
+All three negative controls receive faithfulness/citation 1.0 and unsupported
+false because they follow their generic catalog evidence, despite wrong
+application to the query. Correctness is therefore essential alongside
+faithfulness/unsupported diagnostics. Zero unsupported flags among these eight
+does not establish a zero hallucination rate. This is a one-shot targeted
+measurement on historical outputs, not a full benchmark of the fixed runtime.
+
+Historical inputs/reports retain their checksums. No planner/composer,
+embedding/reranking, source-store or telemetry call, prompt/gold edit, extra
+rerun, push or deployment occurred. Exact inputs, raw judgments and provider
+attempts are under local `output/judge_v3_smoke_cb4ad7c5_20261003/REVIEW.md`.
+Only this results note is committed afterward on the existing candidate branch.

@@ -720,3 +720,48 @@ Next, subject to separate payload/budget approval, judge-only remeasurement must
 use a new report path for the old answers. It does not replace a fresh answer
 benchmark of the fixed runtime and must not overwrite the historical report.
 No API, push or deployment was performed in this stage.
+
+## Stage 15 — approved judge-only remeasurement of saved answers (2026-10-03)
+
+User agreed to rejudge all 150 historical answers with packet v2. One frozen
+run used evaluator `4f87c395`, the same Groq `openai/gpt-oss-120b` judge/rubric
+and existing request policy, capped at three attempts/case and 450 total.
+150/150 judgments completed in 389.95 seconds; actual requests were 157
+(150 HTTP 200, seven HTTP 401 recovered by key rotation/retry). No planner,
+composer, embedding, reranker, source-store or telemetry calls occurred.
+
+The answer runtime remains `284d5a91`; this remeasurement does not evaluate new
+answers from the routing correction in 6f3a817c. All original dataset, answers,
+judge scores and report hashes remain unchanged. New results are separate under
+local `output/judge_remeasurement_4f87c395_20261003/`, with exact payload/prompt
+hashes, per-attempt records and `comparison.json`.
+
+Raw mean scores old -> new: correctness 97.75 -> 97.93/100, faithfulness
+95.55 -> 98.74/100, citation correctness 98.26 -> 97.68/100. Unsupported flags
+change from 18/150 to 4/150 (2.67%): all eighteen old flags disappear, and
+029/033/059/129 are newly flagged. This reflects changed evidence presentation
+plus stochastic judge variation, not changed runtime behavior. No numeric
+correctness/pass-percentage claim is derived from these mean judge scores.
+
+Correctness remains zero for wrong historical answers 029/056/059. 056's new
+faithfulness is 1.0 and unsupported is false despite the wrong department:
+following a provided generic catalog is not sufficient policy correctness.
+Likewise critical_false_pass=0 does not mean there are no serious answer errors.
+The successful twelve-case new-runtime smoke is reported separately in Stage 13.
+
+Manual review confirms residual compaction omissions in two new flags: 033's
+military-service exception exists in the original Article 16 composer evidence
+but is absent from the compact judge packet; 129's Article 11 source_context
+has exclusions from GPA that Composer stated, but that whole block is dropped
+while less relevant scholarship evidence remains. Both have raw correctness
+1.0, faithfulness 0.8. The rationale does not identify each exact clause, so
+these omissions are evidence of measurement limitations, not a complete causal
+account of judge scores. No packet or rubric was tuned during/after the run,
+and no further API calls are made to remove the flags.
+
+The 2.67% rate is therefore reported as a raw judge flag rate, not a fully
+verified hallucination rate for the current chatbot. Future publication should
+retain packet versions and qualify these limitations; a fresh runtime result
+must not combine old answer scores with the separate routing smoke. Source
+checks after completion were clean, and historical artifact hashes were verified.
+Only this results note is committed afterward; no push or deployment occurs.

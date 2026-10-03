@@ -474,3 +474,45 @@ two dependency deprecation warnings. CI-equivalent lint, deploy-artifact/hash
 checks and diff whitespace checks passed. The retained Stage 7 evidence/provenance
 files have no diff in this removal. No executable source/test caller of the
 deleted direct-answer helper remains.
+
+## Stage 9 — approved low-reasoning composer probe (2026-10-03)
+
+User explicitly authorized eight prepared outputs, sending handbook-derived
+prompts/evidence to `https://api.deepseek.com/chat/completions`, capped at 24
+requests including retries. The first execution was rejected before starting
+because payload/destination approval needed to be explicit; it made zero calls.
+After the user's explicit confirmation, the frozen run completed on `6487ca55`.
+
+The separate test YAML changes only `llm.reasoning_effort` from none to low. Model,
+prompt, evidence, 60-second attempt timeout, retry policy and omitted max_tokens
+remain fixed. Three ambiguous-grade repetitions and two controls have identical
+prompt hashes to historical none replays. Boundary/conditional-policy fixtures
+use real offline normalization/resolution and canonical parents; other inputs
+reuse saved evidence. This is composer validation, not fresh live planning/RAG.
+
+All eight requests succeeded once, actually sent low and invoked the composer.
+No retry, truncation, other provider or judge call occurred. The 5.2/10 ambiguous
+query returned consistent D+ with separate foundation/remaining pass statuses in
+3/3 attempts, versus 1/3 correct in the earlier identical-prompt none replay.
+Both boundary values, two entity-score-scope pairs and the /4 operand were handled
+correctly. The graduation answer retained the rule requiring repetition below C.
+
+Required numeric/condition checks passed for 8/8 outputs. Strict source review
+fully confirms 7/8: the graduation answer additionally asserts that graduation
+courses belong to the remaining-course group, which is not directly established
+by the supplied source. Its repeat conclusion is correct without that assertion.
+This probe therefore does not claim 100% fully grounded answer accuracy.
+
+Observed replay wall p50/p95 is 7.30/11.56 seconds, excluding live planner/retrieval.
+Composer-only usage is 76,833 input and 12,735 output tokens; 11,029 reasoning
+tokens are included in output, not additional. Historical router usage retained
+in the saved result/tracker is excluded because the router was not called.
+Omitting max_tokens retains the same application policy, but provider default
+maxima differ (8K none / 64K thinking). This historical comparison is not a fully
+isolated or randomized A/B, and eight outputs do not establish production reliability.
+
+The candidate remains on the composer path. No canonical configuration, gold,
+source data, prompt or production setting changed during this run. Low is a
+candidate for the next existing answer-regression run; no default switch or
+deployment is performed from this small probe alone. Source review and raw
+outputs are under local `output/composer_low_probe_20261003/`; prior reports remain.

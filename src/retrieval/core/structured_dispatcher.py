@@ -822,6 +822,7 @@ def _resolve_directory(
         _slot_value(task, _DIRECTORY_CANDIDATE_SLOT[lookup_type], "faculty", "office", "program_or_faculty")
         or query
     )
+    requested_field = slots.get("requested_field") or ""
     result = office_lookup(
         query,
         directories[lookup_type],
@@ -829,6 +830,7 @@ def _resolve_directory(
         lookup_type=lookup_type,
         cohort=cohort,
         selector=directory_selector,
+        requested_field=requested_field,
     )
     # A configured selector's verified NONE differs from unknown resolution.
     # Empty catalogs or unavailable/ambiguous selectors cannot authorize RAG.
@@ -855,7 +857,6 @@ def _resolve_directory(
             result_kind="clarification",
             target_chunk_types=[],
         )
-    requested_field = slots.get("requested_field") or ""
     # A grounded directory record remains valid structured evidence even
     # when it does not contain the optional field requested by the user.
     # The Composer receives the record and must state that the available

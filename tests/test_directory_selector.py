@@ -37,7 +37,7 @@ def _faculty(text: str, client: ScriptedClient) -> dict | None:
 
 def test_prompt_is_pinned_to_its_version() -> None:
     prompt, ids = render_prompt("faculty", "khoa Hàn", FACULTIES[:2])
-    assert SELECTOR_PROMPT_VERSION == "directory-selector-v2-whole-question"
+    assert SELECTOR_PROMPT_VERSION == "directory-selector-v3-task-context"
     assert list(ids) == ["S01", "S02"]
     assert prompt == FIXTURE.read_text(encoding="utf-8")
 

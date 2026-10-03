@@ -202,7 +202,7 @@ def test_missing_directory_source_uses_original_grounding_not_rewrite():
         "slot_spans": {"program_or_faculty": "SP Dược"}}
     cats = catalogs()
     result = resolve_structured_task(t, query=query, grounding=original, cohort="K51",
-        **vars(cats), directory_selector=SimpleNamespace(select=lambda *a: Selection(NONE)))
+        **vars(cats), directory_selector=SimpleNamespace(select=lambda *a, **kw: Selection(NONE)))
     assert result.result["unavailable_reason"] == "no_source"
 
 

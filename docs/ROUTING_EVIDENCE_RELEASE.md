@@ -548,3 +548,94 @@ all 1,524 backend tests passed (the same two dependency warnings). Lint,
 deploy-artifact/hash checks and diff whitespace checks passed. Broader API
 regression has not started and its larger egress/request scope remains separate
 from the completed eight-output approval.
+
+## Stage 11 — approved 150-case current-pipeline regression (2026-10-03)
+
+The user explicitly approved one fresh run over the existing 150 answer cases,
+including OpenAI planning, DeepSeek composition/catalog selection, DeepInfra
+query embedding, Voyage reranking and Groq judging. All payloads/destinations
+and retry-inclusive caps were approved. The run used frozen `284d5a91`, Luna
+medium, composer low and the reviewed table-search candidate collections. It
+did not write either collection, export LangSmith traces or change production.
+
+All 150 cases completed without a final pipeline exception: 146 answered,
+two asked for missing information and two were out of domain. All 150 planner
+requests succeeded with no fallback; 146 calls actually invoked composer low.
+Provider request counts were OpenAI 150, DeepSeek 156 (146 composer and ten
+selector calls), DeepInfra 86, Voyage 80 and Groq 156. Twelve embedding timeout
+attempts across six cases fell back to BM25; six judge HTTP 401 attempts were
+recovered through key rotation. These attempt failures remain in the report.
+
+Raw judge scores were correctness 97.75/100, faithfulness 95.55/100 and citation
+correctness 98.26/100. These are mean model scores, not verified percentages of
+correct cases. Warm local pipeline p50/p95 was 13.17/24.99 seconds, excluding
+judge and startup. This is neither an isolated reasoning A/B, a new hold-out,
+nor validation of the deployed HF HTTP/SSE path.
+
+Source review confirmed substantive routing/evidence errors in 029, 056 and
+059: generic complaint-service records were supplied instead of the specific
+graduation-review/training-conduct provisions. Raw unsupported flags were
+18/150. Sixteen flags involved details present in the original composer packet
+but lost by the judge's omission of `source_context` or later compaction; 056
+was a real scope error and 125 was a questionable scoped-absence flag. No raw
+score was rewritten and no corrected hallucination rate is claimed. Judge
+packet repair/rejudging is a separate task, not included in Stage 12.
+
+The raw run and manual review are preserved locally under
+`output/answer_regression_low_20261003/`, including the frozen runtime, dataset,
+provider attempts, full composer packets, raw judgments and `REVIEW.md`.
+
+## Stage 12 — minimal directory task-context correction, offline (2026-10-03)
+
+User approved fixing on the already-clean `codex/routing-evidence-coverage`
+branch, testing offline and making a separate local commit. The primary
+`eval/official-v4` checkout and its unrelated edits remain untouched. No new
+branch or worktree was created.
+
+Changes are limited to two concerns:
+
+1. When the service selector needs an LLM, it now receives the full **task**
+   question, the extracted service hint and scalar/list `requested_field`.
+   The hint no longer replaces the question. Each hint is still selected
+   independently; unrelated tasks and raw chat history are not supplied.
+2. Selector instructions and the planner's registry tool-use text agree that
+   a generic duty does not prove authority for every specialized situation.
+   Equivalent wording is allowed; insufficient catalog support means `none`,
+   not nearest-record guessing. Missing contact columns in the selector's
+   compact list do not by themselves invalidate the identified unit.
+
+No output schema, gold facts, source data, public HTTP shape, composer prompt,
+model configuration or second-look/fallback policy changed. Exact name/alias
+matching remains the identity fast path, and same-unit `ambiguous -> match`
+grouping remains unchanged. Both are retained limitations: no independent
+semantic verifier was added, and an erroneous match still bypasses second-look
+and RAG. The existing verified-none path, cohort/catalog/input checks and
+single RAG attempt are reused; API/JSON/ID failures still ask for clarification.
+
+Selector prompt identity is `directory-selector-v3-task-context`; pipeline
+trace identity is `v82-directory-task-context`. The planner system prompt and
+schema remain v57; its existing registry digest distinguishes changed tool
+instructions in plan-cache keys. A separate request snapshot
+`luna_planner_request_v57_service_scope.json` changes exactly the three tool-use
+occurrences in the captured request scenarios. The original v56/v57 snapshots
+and historical reports remain unchanged.
+
+Offline verification: 130 focused tests and all **1,544 backend tests** passed,
+including 20 new task-context/outcome tests. Coverage includes normalization,
+removed ungrounded slots, field arrays, missing contact targets, aliases,
+multiple hints, task/history isolation, same-unit grouping, cross-cohort
+filtering, valid-none fallback and fail-closed malformed/unknown/ambiguous
+outputs. The three failed queries pass through real normalization/resolution/
+execution with a **scripted none decision and fixture retrieval**; their correct
+source/cohort/provenance reaches the composer packet. This proves plumbing,
+not that live Luna/DeepSeek/retrieval will now answer the three cases correctly.
+
+External socket connections were forbidden in the offline test process; local
+loopback was allowed for Windows asyncio's internal socketpair. The first full
+attempt blocked that internal loopback and failed API fixtures; after fixing
+only the test harness and saving the revised request snapshot separately, the
+full suite passed with the same two dependency deprecation warnings. Lint,
+deploy-artifact/hash checks and whitespace checks passed. No inference API was
+called, no model-accuracy/latency improvement was measured and nothing was
+pushed or deployed. A bounded live smoke with normal service/alias controls
+requires a separate approval before claiming semantic improvement.

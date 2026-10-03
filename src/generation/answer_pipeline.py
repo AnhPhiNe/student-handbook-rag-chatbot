@@ -36,7 +36,7 @@ from .verbatim_identifiers import IdentifierCorrector
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
 COMPOSER_PROVIDERS = {"deepseek"}
 
-PIPELINE_VERSION = "v81-composer-scoped-evidence"
+PIPELINE_VERSION = "v82-directory-task-context"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(

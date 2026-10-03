@@ -218,7 +218,7 @@ tools:
   student_service:
     data_category: directory_table
     presentation_type: contact_card
-    description: Từ việc cần hỗ trợ, tìm đơn vị/liên hệ xử lý dịch vụ vận hành trong danh bạ, không cần biết tên đơn vị. Hỏi ai xử lý một thủ tục vẫn tra dịch vụ; hỏi các bước, điều kiện hoặc trách nhiệm pháp quy dùng RAG.
+    description: Tra đơn vị/liên hệ cho dịch vụ vận hành được danh bạ trực tiếp mô tả, không cần biết tên đơn vị. Không suy nhiệm vụ chung thành thẩm quyền xử lý mọi tình huống chuyên biệt. Hỏi thẩm quyền hoặc trách nhiệm theo quy chế, các bước, điều kiện hoặc thời hạn xử lý dùng RAG.
     intents: [direct_value, contact]
     default_intent: contact
     required_slots:

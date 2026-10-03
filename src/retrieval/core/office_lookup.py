@@ -210,12 +210,15 @@ def office_lookup(
     lookup_type: str = "office",
     cohort: str | None = None,
     selector: DirectorySelector | None = None,
+    requested_field: str | list[str] | None = None,
 ) -> dict[str, Any] | None:
     """Find the directory records the student names within one cohort.
 
     Each name in `candidate_text` is selected on its own. A name that fits
     several units, or that the selector could not decide, stops the lookup
-    with a clarification; a name with no unit is skipped.
+    with a clarification; a name with no unit is skipped. For services, the
+    LLM also receives the whole task query and requested field, never just the
+    extracted name. Exact name/alias matching remains an identity fast path.
     """
     names = [str(value).strip() for value in slot_values(candidate_text) if str(value).strip()]
     if not names:
@@ -233,7 +236,11 @@ def office_lookup(
     chosen: list[dict[str, Any]] = []
     traces: list[dict[str, Any]] = []
     for name in names:
-        selection = select_records(selector, lookup_type, name, candidates)
+        selection = select_records(
+            selector, lookup_type, name, candidates,
+            question=query if lookup_type == "student_service" else None,
+            requested_field=requested_field,
+        )
         traces.append({"text": name, **selection.trace()})
         if selection.status == AMBIGUOUS:
             return _clarification_response(selection.records, candidate_text=name, selection=traces)

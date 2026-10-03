@@ -995,3 +995,63 @@ fields, provider settings, gold, source data and README remain unchanged. No
 source-store rebuild, remote/API request, push or deployment is performed.
 Stage three (task-local target roles) and stage four (existence evidence) are
 not included in this commit. The user's separate dirty checkout is preserved.
+
+## Stage 21 — task-local evidence targets, offline (2026-10-03)
+
+The user requested stage three from `5917633c`. The existing role assignment
+used both task and whole-request article references. A sibling naming Article 16
+could promote that candidate in a GPA task; two named tasks could also lose their
+own target because the whole query named both Article 11 and Article 16. The
+mistake affected prompt metadata and context-budget priority, not retrieval IDs.
+
+Target assignment now reads the task's own question first. Original-query
+fallback is allowed only for one logical task (including multiple cohort units)
+or an unplanned retrieval, and only when local text names no article. Sibling
+and clarification-task references cannot supply a target. A request naming
+multiple articles does not get a unique target merely because retrieval found
+one of them. A requested article still needs one unique authorized source
+identity; different documents or applicable source editions stay candidates.
+Multiple representations of the same canonical article can share target role.
+
+Review found that a singleton missing identity could otherwise become a target
+through a positional/display ID. Normalization now records privately whether
+source identity exists before assigning a `source-N` display fallback. The role
+gate checks that distinction, and the private flag is stripped before the
+composer packet. Missing/blank identity keeps evidence but not target priority.
+One old direct-helper fixture was given explicit source IDs for its valid-target
+control; separate tests cover absent identity without relaxing the gate.
+
+The allocator, source applicability checks, citation fusion, fact locks,
+amendment authorization and sync/SSE paths are unchanged. A fused parent may
+be target for one task and candidate for another. A structured task keeps its
+verified row and source context while a RAG sibling keeps full regulation text;
+neither representation nor result scope is borrowed from the other.
+
+The first 21 tests reproduced 15 failures on the prior implementation. Final
+identity/provenance, fallback, ambiguity and mixed-path controls bring the new
+suite to 29 tests; 221 focused tests pass. Fixtures include real K50/K51 parents,
+the real normalizer and executor, low-budget target-tail preservation and fake
+sync/stream composers. They verify packet metadata/preservation, not live answer
+accuracy or latency. Standards and Spec reviews have no remaining actionable
+stage-three finding after the missing-identity correction.
+All **1,745 backend tests** pass on the final implementation, with the same two
+dependency deprecation warnings; lint, deployment-artifact and whitespace checks
+pass. Two stalled sandbox full-suite processes were stopped rather than counted
+as results. The completed full run used the same network-blocking harness with
+scoped filesystem permission, without changing global Git configuration.
+Role-only inspection of 146 saved answer-run packets and 12 saved smoke packets
+finds no role changes and preserves all non-role fields; four terminal cases
+have no composer packet. This is saved-output compatibility, not new inference
+or answer-quality measurement; historical artifacts remain unchanged.
+
+The composer instruction template and its v3.34 identifier remain unchanged;
+the evidence roles received by it intentionally change. Pipeline identity is
+`v86-task-local-evidence-targets`. No new model call, task graph, semantic document
+matcher, HTTP field or data build is introduced. Unfamiliar article wording,
+missing task-local references in multi-task plans and ambiguous documents can
+remain candidate-only; target means priority among authorized sources, not proof
+that the source completely answers the question.
+
+Prompt/gold/source-data/provider configurations, README and historical reports
+are preserved. Stage four (program-existence evidence) remains separate. This
+stage is committed locally only, without inference API, push or deployment.

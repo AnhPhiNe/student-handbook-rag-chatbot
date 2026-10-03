@@ -199,6 +199,7 @@ def build_authorized_evidence_packet(
         fallback_cohort=fallback_cohort,
         fallback_question=query,
     )
+    single_logical_task = len({unit["task_id"] for unit in units}) == 1
     source_groups: list[list[dict[str, Any]]] = []
     for unit in units:
         authorized_sources = [
@@ -208,6 +209,7 @@ def build_authorized_evidence_packet(
             authorized_sources,
             unit_question=unit["question"],
             original_query=query,
+            allow_query_fallback=single_logical_task,
         )
         source_groups.append(authorized_sources)
 
@@ -435,13 +437,14 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
     )
     if isinstance(applicable_cohorts, str):
         applicable_cohorts = [applicable_cohorts]
-    source_id = str(
+    source_identity = str(
         citation.get("source_parent_id")
         or citation.get("parent_section_id")
         or citation.get("chunk_id")
         or citation.get("document_id")
-        or f"source-{index}"
-    )
+        or ""
+    ).strip()
+    source_id = source_identity or f"source-{index}"
     content = str(citation.get("content") or citation.get("document") or "").strip()
     parent_content = str(citation.get("parent_content") or "").strip()
     conditional_rows = scoped_resolved_rows(citation)
@@ -459,6 +462,7 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
     return {
         "source_ref": f"S{index}",
         "source_id": source_id,
+        "_has_source_identity": bool(source_identity),
         "title": citation.get("title") or metadata.get("title"),
         "document_title": citation.get("document_identity") or metadata.get("document_title"),
         "article_label": article_label,
@@ -531,27 +535,42 @@ def _assign_evidence_roles(
     *,
     unit_question: str,
     original_query: str,
+    allow_query_fallback: bool = False,
 ) -> list[dict[str, Any]]:
-    """Mark one uniquely requested article without treating rank as authority."""
+    """Mark a uniquely requested source within this task's authorized evidence.
 
-    query_text = fold_text(f"{unit_question} {original_query}")
+    Other tasks' article references cannot supply a target or change its budget.
+    One logical task (including cohort variants) or an unplanned request may
+    use the original question only when its local question names no article.
+    """
+    query_text = fold_text(unit_question)
     article_numbers = set(re.findall(r"\bdieu\s+(\d+)\b", query_text))
+    if not article_numbers and allow_query_fallback:
+        article_numbers = set(re.findall(r"\bdieu\s+(\d+)\b", fold_text(original_query)))
     article_matches = [
         index
         for index, source in enumerate(sources)
         if _article_number(source.get("article_label")) in article_numbers
     ]
 
-    target_index: int | None = None
-    if len(article_matches) == 1:
-        target_index = article_matches[0]
-
-    if target_index is None:
-        return [{**source, "role": "candidate"} for source in sources]
+    target_indexes: set[int] = set()
+    if len(article_numbers) == 1 and all(
+        sources[index].get("_has_source_identity", bool(sources[index].get("source_id")))
+        for index in article_matches
+    ):
+        identities = {
+            (sources[index]["source_id"], sources[index].get("source_cohort"),
+             sources[index].get("document_title"))
+            for index in article_matches
+        }
+        # Multiple representations of one canonical source are not different
+        # documents. Unknown identity or distinct editions remain ambiguous.
+        if len(identities) == 1:
+            target_indexes = set(article_matches)
     return [
         {
             **source,
-            "role": "target" if index == target_index else "candidate",
+            "role": "target" if index in target_indexes else "candidate",
         }
         for index, source in enumerate(sources)
     ]
@@ -582,7 +601,7 @@ def _source_for_unit(
             **source,
             "content": limit_context(content, max_chars),
         }.items()
-        if key not in {"parent_content", "has_regulation_context", "raw_table_context", "resolved_rows_cohort"}
+        if key not in {"parent_content", "has_regulation_context", "raw_table_context", "resolved_rows_cohort", "_has_source_identity"}
     }
     if unit.get("mode") != "structured":
         result.pop("resolved_rows", None)

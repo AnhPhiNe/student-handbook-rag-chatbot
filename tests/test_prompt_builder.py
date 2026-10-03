@@ -1163,7 +1163,8 @@ def test_prompt_describes_candidate_as_the_default_role() -> None:
     """
     from src.generation.prompt_builder import _assign_evidence_roles
 
-    sources = [{"article_label": "Điều 14"}, {"article_label": "Điều 30"}]
+    sources = [{"source_id": "article-14", "article_label": "Điều 14"},
+               {"source_id": "article-30", "article_label": "Điều 30"}]
     roles = _assign_evidence_roles(sources, unit_question="Nghỉ học tạm thời cần gì?",
                                    original_query="Nghỉ học tạm thời cần gì?")
     assert {source["role"] for source in roles} == {"candidate"}

@@ -12,6 +12,7 @@ from src.common.key_pool import KeyPool, KeyPoolConfig
 
 
 PINNED_JUDGE_MODEL = "openai/gpt-oss-120b"
+JUDGE_PACKET_VERSION = "judge-packet-v2-source-context"
 # The same open-weight model served by two providers. Scores from different
 # providers are not compared with each other: a run and its baseline are judged
 # by one provider (STUDENT_RAG_JUDGE_PROVIDER, default groq).
@@ -92,7 +93,11 @@ def compact_judge_packet(
     *,
     max_input_tokens: int = 5_000,
 ) -> dict[str, Any]:
-    """Build a bounded packet while preserving required facts when available."""
+    """Compact actual evidence, prioritizing required facts and answer claims.
+
+    Lexical matches only order source text; they do not decide whether an
+    answer is correct. Never manufacture evidence from the answer or gold.
+    """
     actual_citations = (
         answer_record.get("citations_used") or answer_record.get("citations") or []
     )
@@ -118,34 +123,55 @@ def compact_judge_packet(
     answer_terms = set(
         re.findall(r"\w+", str(answer_record.get("answer") or "").lower())
     )
-    sentences = _split_evidence_units(structured_context)
-    if authorized_packet_units:
-        sentences.extend(authorized_packet_units)
+    if authorized_packet_units is not None:
+        # This packet is what Composer was authorized to use. Execution JSON
+        # outside it can contain other task/cohort records and is not evidence.
+        sentences = authorized_packet_units
     elif legacy_composer_context:
+        sentences = _split_evidence_units(structured_context)
         sentences.extend(_source_aware_composer_units(legacy_composer_context))
     else:
+        sentences = _split_evidence_units(structured_context)
         sentences.extend(_split_evidence_units(fallback_context))
+    sentences = list(dict.fromkeys(sentences))
+    unit_terms = {line: set(re.findall(r"\w+", line.lower())) for line in sentences}
 
     selected: list[str] = []
+    # Preserve support for extra conditions actually stated in the answer, not
+    # just its main gold fact. Match against source units only, before packing.
     for fact in required:
         fact_norm = " ".join(fact.lower().split())
-        match = next(
+        match = min(
             (
                 line
                 for line in sentences
                 if _fact_matches_context(fact_norm, " ".join(line.lower().split()))
             ),
-            None,
+            key=len,
+            default=None,
         )
         if match and match not in selected:
+            selected.append(match)
+
+    # An answer may paraphrase a clause while also naming its handbook/article.
+    # Anchor each claim to its closest real source unit, rather than let long
+    # sources containing many common answer words crowd out short conditions.
+    # This only selects evidence; the judge still checks entailment and numbers.
+    for claim in _split_evidence_units(str(answer_record.get("answer") or "")[:5_000]):
+        claim_terms = set(re.findall(r"\w+", claim.lower()))
+        match = max(
+            sentences,
+            key=lambda line: len(claim_terms & unit_terms[line]) / max(1, len(claim_terms | unit_terms[line])),
+            default=None,
+        )
+        if match and claim_terms & unit_terms[match] and match not in selected:
             selected.append(match)
 
     ranked = sorted(
         sentences,
         key=lambda line: (
-            bool(re.search(r"\d", line)),
-            len(query_terms & set(re.findall(r"\w+", line.lower()))),
-            len(answer_terms & set(re.findall(r"\w+", line.lower()))),
+            len(answer_terms & unit_terms[line]),
+            len(query_terms & unit_terms[line]),
         ),
         reverse=True,
     )
@@ -168,6 +194,7 @@ def compact_judge_packet(
         if isinstance(citation, dict)
     ]
     packet = {
+        "packet_version": JUDGE_PACKET_VERSION,
         "case_id": case["id"],
         "query": case["query"],
         "cohort": case.get("cohort"),
@@ -203,10 +230,8 @@ def compact_judge_packet(
     used = 0
     for line in selected:
         if used + len(line) + 1 > budget_chars:
-            remaining = budget_chars - used - 1
-            if remaining >= 180:
-                compact.append(line[:remaining].rsplit(" ", 1)[0])
-                used = budget_chars
+            # Cutting a clause can remove its exception/negation or split a
+            # table row. Omit the complete unit and expose the omission instead.
             continue
         compact.append(line)
         used += len(line) + 1
@@ -220,6 +245,12 @@ def compact_judge_packet(
             " ".join(packet["retrieved_context"].lower().split()),
         )
     ]
+    packet["evidence_compaction"] = {
+        "candidate_units": len(sentences),
+        "retained_units": len(compact),
+        "omitted_units": len(sentences) - len(compact),
+        "partial_units": 0,
+    }
     return packet
 
 
@@ -256,15 +287,15 @@ def _source_aware_composer_units(context: str) -> list[str]:
     return units
 
 
-def _authorized_packet_evidence_units(context: str) -> list[str]:
-    """Extract evidence text from the current task-bound Composer packet."""
+def _authorized_packet_evidence_units(context: str) -> list[str] | None:
+    """Extract the Composer packet, distinguishing empty from legacy evidence."""
 
     try:
         packet = json.loads(context)
     except (TypeError, json.JSONDecodeError):
-        return []
+        return None
     if not isinstance(packet, dict) or not isinstance(packet.get("units"), list):
-        return []
+        return None
 
     units: list[str] = []
     for task_unit in packet["units"]:
@@ -296,13 +327,27 @@ def _authorized_packet_evidence_units(context: str) -> list[str]:
                 if value:
                     units.append(f"{prefix} | {label}: {value}")
             body = str(source.get("content") or "")
-            for evidence_unit in _split_evidence_units(body):
-                units.append(f"{prefix} | {evidence_unit}")
+            try:
+                structured_body = json.loads(body)
+            except ValueError:
+                structured_body = None
+            if isinstance(structured_body, (dict, list)):
+                # Splitting at an address such as 'TP. HCM.' would break a
+                # JSON record and can reorder fields from different entities.
+                units.append(f"{prefix} | {body}")
+            else:
+                for evidence_unit in _split_evidence_units(body):
+                    units.append(f"{prefix} | {evidence_unit}")
+            source_context = str(source.get("source_context") or "").strip()
+            if source_context:
+                # Keep the source's original scope, qualifiers and table layout
+                # together. This is supplied evidence, not a new parent lookup.
+                units.append(f"{prefix} | Source context: {source_context}")
             resolved_result = source.get("resolved_result")
             if resolved_result is not None:
                 units.append(
                     f"{prefix} | Resolved result: "
-                    f"{_bounded_json(resolved_result, max_chars=2_000)}"
+                    f"{json.dumps(resolved_result, ensure_ascii=False, default=str)}"
                 )
         for amendment in task_unit.get("applicable_amendments") or []:
             if not isinstance(amendment, dict):

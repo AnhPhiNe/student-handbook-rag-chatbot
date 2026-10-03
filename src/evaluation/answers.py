@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .dataset import stable_json_hash
-from .judge import GroqJudgeClient, compact_judge_packet
+from .judge import JUDGE_PACKET_VERSION, GroqJudgeClient, compact_judge_packet
 from .metrics import (
     bootstrap_mean_ci,
     safe_mean,
@@ -204,7 +204,7 @@ def judge_answers(
     identity = eval_checkpoint_identity(
         cases,
         suite="judge",
-        context=checkpoint_context,
+        context={**(checkpoint_context or {}), "judge_packet_version": JUDGE_PACKET_VERSION},
         answer_cache_hash=stable_json_hash(answer_cache),
     )
     existing = load_eval_checkpoint(checkpoint_path, resume=resume, identity=identity)
@@ -233,6 +233,8 @@ def judge_answers(
             "effective_query": answer.get("effective_query"),
             "query_handling": answer.get("query_handling"),
             "judge": result,
+            "judge_packet_version": packet["packet_version"],
+            "packet_evidence_compaction": packet["evidence_compaction"],
             **_answer_checks(case, answer),
             "judge_latency_ms": (time.perf_counter() - started) * 1000,
             "packet_required_fact_coverage": len(
@@ -268,6 +270,7 @@ def judge_answers(
         "judged_n": len(valid),
         "judge_model": "openai/gpt-oss-120b",
         "judge_provider": getattr(getattr(client, "config", None), "provider", None),
+        "judge_packet_version": JUDGE_PACKET_VERSION,
     }
     for metric in (
         "faithfulness",

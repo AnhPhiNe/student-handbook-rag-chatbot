@@ -639,3 +639,84 @@ deploy-artifact/hash checks and whitespace checks passed. No inference API was
 called, no model-accuracy/latency improvement was measured and nothing was
 pushed or deployed. A bounded live smoke with normal service/alias controls
 requires a separate approval before claiming semantic improvement.
+
+## Stage 13 — approved twelve-case E2E selector-scope smoke (2026-10-03)
+
+User approved one frozen run on `6f3a817c`: three original failures, three
+development paraphrases and six existing controls, with explicit payload/API
+destinations and retry-inclusive caps. All twelve answered and manual source
+review confirmed the required answers. The six specialized queries took RAG
+directly and received the correct same-cohort provisions, rather than generic
+complaint-directory records. This does not isolate selector-prompt improvement
+from registry routing instructions or model variation.
+
+42 provider attempts all returned HTTP 200: OpenAI 12, DeepSeek 18 (12 composer
+and six selector), DeepInfra six and Voyage six. The KTX selector fast pass
+returned none; its existing low second-look correctly identified the service,
+then the email came from the catalog. Composer had no retries. Warm pipeline
+p50/p95 was 12.83/23.70 seconds; no judge, LangSmith, collection writes or
+production deployment occurred.
+
+The intended office control 109 actually routed to student_service, so no live
+office-path coverage is claimed. Faculty 112 used exact matching; program 116
+invoked the selector. No multi-entity live case was included. The 056 answers
+correctly kept the distinction between seven days after council-approved
+results and twenty days after provisional online results, supported by separate
+provisions in the provided K50 packet. Results are under local
+`output/selector_scope_smoke_6f3a817c/REVIEW.md`; source stayed clean at 6f3a817c.
+
+## Stage 14 — source-faithful judge compaction, offline (2026-10-03)
+
+User approved evaluator repair, offline tests and a separate local commit.
+No new inference is authorized by this stage. Only evaluation code/tests and
+this release log change; routing, composer prompt/model configuration, source
+data, gold, deterministic contract, HTTP/SSE and README remain unchanged.
+
+Judge extraction now retains each primary source's actual `source_context`,
+including scope/conditions and table layout. Structured JSON and resolved_result
+are kept intact instead of being split at address punctuation or truncated to
+invalid JSON. The canonical composer packet is authoritative: execution JSON,
+related references and public citations outside it cannot add evidence. An
+empty authorized packet stays empty. Historical/legacy extraction remains as
+fallback only when there is no recognized canonical packet.
+
+Compaction preserves required source facts and anchors individual answer claims
+to related **actual** source units with lexical overlap, then ranks remaining
+evidence. This selects evidence, not entailment/correctness; neither answer nor
+gold becomes retrieved evidence. The packer no longer cuts a unit halfway
+through its qualification; oversized units are omitted whole, with omission
+counts exposed. Source omissions are still possible under a finite budget.
+
+Packet/report/checkpoint identity now carries `judge-packet-v2-source-context`.
+Old-version checkpoints cannot silently resume into the new measurement.
+Rubric, judge provider/model and request policies remain unchanged. Existing
+budget settings are not increased; estimated full prompt plus output maximum
+on the audited cases fits the existing 8K per-key token accounting. These are
+character-based estimates, not provider usage or a guaranteed 5K prompt ceiling.
+
+Offline reconstruction of all 150 saved answers restored complete source_context
+for fourteen reviewed structured cases, the missing conditions of 039 and the
+currency note of 142. The initial revision still lost 131's medical-certificate
+condition; per-claim anchoring corrected it before commit. Checksums confirm
+historical cases/answers/judgments/report are untouched, and wrong old answers
+029/056/059 are not corrected or supplied gold evidence by the evaluator.
+
+Eight lexical required-fact-coverage diagnostics decrease (041/049/112/114/121/
+127/130/144). Manual review finds the real source facts still present, including
+all units in the contact cases. Removing non-authorized execution fields and
+differences between a semantic gold summary and source wording explain these
+heuristic deltas; no threshold/alias/gold change is used to hide them. Coverage
+is not a new accuracy score. No new judge scores or hallucination rate are
+claimed before an approved API rejudging run.
+
+Verification: all **1,561 backend tests** passed, with 17 new preservation,
+authorization, provenance, atomic-packing, numeric negative-control and resume
+identity tests. Lint, deploy-artifact/hash and whitespace checks passed; the
+same two dependency deprecation warnings remain. External network was forbidden
+in the test harness. The offline audit and 150 rebuilt packets are preserved
+locally under `output/judge_packet_offline_20261003_verified/`.
+
+Next, subject to separate payload/budget approval, judge-only remeasurement must
+use a new report path for the old answers. It does not replace a fresh answer
+benchmark of the fixed runtime and must not overwrite the historical report.
+No API, push or deployment was performed in this stage.

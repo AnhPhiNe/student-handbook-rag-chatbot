@@ -516,3 +516,35 @@ source data, prompt or production setting changed during this run. Low is a
 candidate for the next existing answer-regression run; no default switch or
 deployment is performed from this small probe alone. Source review and raw
 outputs are under local `output/composer_low_probe_20261003/`; prior reports remain.
+
+## Stage 10 — adopt low in the release candidate (2026-10-03)
+
+User accepted the probe's eight required-answer outcomes and treats the extra
+graduation-group explanation as a minor caveat. The original strict source-review
+note remains in the historical report; no gold, answer or score is rewritten.
+
+Candidate `configs/answer_generation.yaml` now sets composer reasoning to low.
+This is the sole behavioral configuration change: model, input/output policy,
+60-second timeout, retries and directory-selector settings remain unchanged and
+match the probe's temporary profile. The primary checkout's user changes are
+preserved. The direct-answer bypass remains removed.
+
+An existing client-construction test now checks the intended default low rather
+than the old none setting. Previous prompt-v3.30 comparisons and none-based
+historical reports retain their original labels. Low is selected for the candidate,
+not silently applied to HF; broad answer regression and deployment checks remain.
+
+Preparation identified an important runner distinction: `run_official_answers
+--suite answers` performs fresh planning/retrieval, generation and LLM judging;
+it is not composer-only. The existing `replay_composer` reuses historical packets
+and explicitly assumes an unchanged packet builder, which is not true across the
+recent evidence fixes. A fresh regression must be labelled and budgeted accordingly;
+do not pass an old packet replay off as validation of this release pipeline.
+
+Verification: the candidate YAML is semantically identical to the low profile
+used in the approved probe; comparison with the previous candidate confirms only
+the composer effort changed. 90 focused configuration/client/packaging tests and
+all 1,524 backend tests passed (the same two dependency warnings). Lint,
+deploy-artifact/hash checks and diff whitespace checks passed. Broader API
+regression has not started and its larger egress/request scope remains separate
+from the completed eight-output approval.

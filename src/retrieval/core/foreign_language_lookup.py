@@ -6,6 +6,7 @@ from src.common.cohort import (
     is_cohort_applicable,
     normalize_cohort,
 )
+from src.common.score import parse_score
 from src.common.text import fold_text
 from src.common.text import slot_values as _slot_values
 
@@ -31,12 +32,6 @@ def _extract_numbers(text: str) -> list[float]:
         except ValueError:
             continue
     return values
-
-
-def _strip_cohort_numbers(text: str) -> str:
-    text = re.sub(r"\bk\s*\d{2}\b", " ", text)
-    text = re.sub(r"\bkhoa\s*\d{2}\b", " ", text)
-    return text
 
 
 def _parse_range(value: Any) -> tuple[float, float] | None:
@@ -245,8 +240,11 @@ def foreign_language_lookup(
 
     # Certificate names such as HSK4 can contain digits; only explicit
     # level/score slots are operands for numeric equivalency matching.
-    level_text = " ".join(str(value) for value in level_values)
-    numbers = _extract_numbers(_strip_cohort_numbers(normalize_text(level_text)))
+    # Personal inputs are scalar scores, not numbers embedded in level codes
+    # or source ranges. A denominator has no declared certificate scale here.
+    scores = [parse_score(value) for value in level_values]
+    numbers = [float(score.value) for score in scores
+               if score is not None and score.scale is None and score.value >= 0]
     matched_level = None
     matched_value = None
 
@@ -255,7 +253,7 @@ def foreign_language_lookup(
         multiple_levels = len(level_values) > 1
         text_level = None if multiple_levels else _level_from_text(row, query_norm)
         numeric_level = (
-            _level_from_numeric(row, numbers) if len(numbers) == 1 else None
+            _level_from_numeric(row, numbers) if not multiple_levels and len(numbers) == 1 else None
         )
         matched_level = text_level or numeric_level
         if numeric_level and not text_level and len(numbers) == 1:

@@ -529,7 +529,15 @@ def _unique_reference_resolution(
             cohort=cohort,
             slots=slots,
         )
-        return resolved if resolved and resolved.get("result_count") == 1 else None
+        # One certificate row does not prove a personal equivalency. Explicit
+        # reference-column requests can lock that row; personal scores need a
+        # completed numeric/textual equivalency, not merely a matching name.
+        if not resolved or resolved.get("result_count") != 1:
+            return None
+        if ((resolved.get("result") or {}).get("matched_level") is None
+                and not is_reference_level_selector(slots.get("score_or_level"), resolved.get("items") or [])):
+            return None
+        return resolved
 
     if lookup_type == "study_duration":
         resolved = study_duration_lookup(

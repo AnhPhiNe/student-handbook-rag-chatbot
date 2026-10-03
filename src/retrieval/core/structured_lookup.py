@@ -7,15 +7,6 @@ from src.common.score import parse_score
 from src.common.text import fold_text
 
 
-def extract_number(query: str) -> Optional[float]:
-    """Extract the first numeric value from text."""
-
-    match = re.search(r"\d+(?:[,.]\d+)?", query)
-    if not match:
-        return None
-    return float(match.group(0).replace(",", "."))
-
-
 def extract_numbers_from_text(text: str) -> list[float]:
     """Extract all numeric values from text in source order."""
 
@@ -23,11 +14,12 @@ def extract_numbers_from_text(text: str) -> list[float]:
     return [float(match.group(0).replace(",", ".")) for match in matches]
 
 
-def _parse_scoring_operand(value: Any) -> float | None:
-    """Parse a ten-point score while rejecting an incompatible scale."""
+def _parse_scoring_operand(value: Any, *, input_scale: int = 10) -> float | None:
+    """Parse one input, preserving its sign and validating the operation's scale."""
 
     score = parse_score(value)
-    if score is None or (score.scale is not None and score.scale != 10):
+    if (score is None or (score.scale is not None and score.scale != input_scale)
+            or not 0 <= score.value <= input_scale):
         return None
     return float(score.value)
 
@@ -92,7 +84,7 @@ def _single_slot_value(value: Any) -> Any | None:
     values = [item for item in value if item is not None and str(item).strip()]
     if not values:
         return None
-    normalized = {normalize_text(item) for item in values}
+    normalized = {parse_score(item) or normalize_text(item) for item in values}
     return values[0] if len(normalized) == 1 else None
 
 
@@ -132,8 +124,10 @@ def lookup_conduct_classification(
         return None
 
     # Map a conduct score to its deterministic classification.
-    value = extract_number(query)
+    value = _parse_scoring_operand(query, input_scale=100)
     if value is None:
+        if re.search(r"\d", query):
+            return None  # Invalid numeric input must not fall back to a label.
         normalized_query = normalize_text(query)
         for row in table["rows"]:
             label = normalize_text(row.get("label"))
@@ -169,7 +163,7 @@ def lookup_academic_classification(
     # Map a four-point GPA to its academic classification.
     """Resolve a four-point GPA classification."""
 
-    value = extract_number(query)
+    value = _parse_scoring_operand(query, input_scale=4)
     if value is None:
         return None
 
@@ -296,6 +290,7 @@ def scoring_lookup_from_reference(
     score = parse_score(operand)
     if input_scale is not None and (
         (score is not None and score.scale is not None and score.scale != input_scale)
+        or (score is not None and not 0 <= score.value <= input_scale)
         # Do not fall back to taking the first number of an unparsed phrase.
         # Pure classification/letter labels keep their existing lookup path.
         or (score is None and re.search(r"\d", str(operand)))

@@ -887,3 +887,52 @@ in the offline harness; global Git settings are untouched. Source data, README,
 historical reports and the user's separate dirty primary checkout are preserved.
 This correction is committed locally on the existing candidate branch; no push
 or deployment occurs.
+
+## Stage 19 — signed numeric inputs and completed fact locks, offline (2026-10-03)
+
+The user approved four small hardening stages after the two-branch audit.
+This stage addresses numeric parsing and fact-lock completion only. Task/input
+binding, per-task target roles and program-existence evidence are later stages,
+not silently included here. The starting candidate is `d2f11305`.
+
+The existing `parse_score` now supplies scalar inputs to GPA/conduct, foreign
+language and scholarship resolvers. The old input regexes that erased minus
+signs were removed. Scoring operations validate their declared 10/4/100 scales
+and bounds, including direct legacy calls. Distinct positive/negative list
+values no longer collapse through text normalization into conditional rows.
+Foreign-language lists also retain their original cardinality: discarding an
+invalid member cannot turn a multi-input request into one scalar equivalency.
+Source interval extraction remains unchanged, including compact range hyphens,
+decimal commas and inclusive/exclusive bounds. No new certificate-scale limits
+are invented where the source does not declare them; foreign/scholarship input
+fractions are not silently reduced to a scalar with an assumed scale.
+
+A unique certificate row alone no longer creates a fact lock for an unfinished
+personal equivalency. Unknown codes, unmatched scalar scores and complete TOEIC
+components without a computed level retain the reference table as evidence-only.
+No new four-component evaluator was added. Completed numeric/textual levels
+still lock; explicit validated reference-column requests (including both bậc 3
+and bậc 4) can still lock the verified source row without claiming a personal
+level. Full display/reference tables and provenance remain available.
+
+The existing longer-code tests previously expected `resolved_result` containing
+`matched_level=None`. They now require evidence-only and preserved reference
+columns; the positive-code tests still require the same completed level. This
+is a documented contract correction, not an edit to benchmark gold or historical
+results. Pipeline identity advances to `v84-numeric-resolution-safety`.
+
+The first 51 new tests reproduced 19 failures before implementation and passed
+afterward. Reference-column, source-range, direct-leaf and opposite-sign-list
+controls, including five mixed-list review regressions, bring the new suite
+to 66 tests. All **1,679 backend tests** pass; lint, deployment artifact and
+whitespace checks pass, with the same two dependency deprecation warnings.
+Standards review found no actionable issue. Spec review caught the mixed-list
+scalarization gap; the final guard and controls resolve it, leaving no
+actionable stage-one finding. Tests cross the real normalizer, canonical
+resolver, executor and composer sync/stream interfaces with external
+network disabled. Fake composer checks establish evidence preservation, not new
+LLM answer-quality or latency metrics. No model-specific prompt, case-name
+patch, architecture/schema/HTTP field change, provider-setting change or data
+rebuild was introduced. README, gold, source artifacts, previous reports and
+the user's dirty primary checkout are preserved. The stage ends in a local
+commit only, with no inference API, push or deployment.

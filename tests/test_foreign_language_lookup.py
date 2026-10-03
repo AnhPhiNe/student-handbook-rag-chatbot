@@ -37,7 +37,7 @@ def _resolve(tables, certificate, level):
         student_faculty_profiles=[], structured_tables_registry=tables, program_directory=[],
     )
     assert resolution is not None
-    return resolution.result["resolved_result"]
+    return resolution
 
 
 @pytest.mark.parametrize("certificate,level", [
@@ -46,11 +46,15 @@ def _resolve(tables, certificate, level):
     ("HSK", "bậc 30"), ("HSK", "bậc 40"),
 ])
 def test_longer_codes_do_not_match_a_level_prefix(language_tables, certificate, level):
-    result = _resolve(language_tables, certificate, level)
+    resolution = _resolve(language_tables, certificate, level)
 
-    assert result["result"]["matched_level"] is None
-    assert result["result"]["equivalent_level_3"]
-    assert result["result"]["equivalent_level_4"]
+    # An unmatched code must keep reference evidence, not an unresolved fact lock.
+    assert resolution.resolution_status == "evidence_only"
+    assert "resolved_result" not in resolution.result
+    row = next(r for r in resolution.result["display_rows"]
+               if certificate.casefold() in r["certificate"].casefold())
+    assert row["equivalent_level_3"]
+    assert row["equivalent_level_4"]
 
 
 @pytest.mark.parametrize("certificate,level,expected", [
@@ -63,7 +67,7 @@ def test_longer_codes_do_not_match_a_level_prefix(language_tables, certificate, 
 def test_complete_levels_and_numeric_scores_still_resolve(
     language_tables, certificate, level, expected,
 ):
-    result = _resolve(language_tables, certificate, level)
+    result = _resolve(language_tables, certificate, level).result["resolved_result"]
 
     assert result["result"]["matched_level"] == expected
 

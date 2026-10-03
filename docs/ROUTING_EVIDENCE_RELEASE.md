@@ -431,3 +431,46 @@ of the rejected first implementation; `scoped_score_final_offline_20261003` hold
 the final HTTP/SSE check. Original smoke reports, gold and source hashes remain
 unchanged. The TOEIC warning concern and two rate-limited smoke cases remain
 separate release items.
+
+## Stage 8 — remove only the direct-score answer branch (2026-10-03)
+
+User chose the existing composer pipeline and is testing reasoning `low` in the
+primary checkout. Independent review of commit `45a44a8a` found a scope problem:
+`direct_value` is a planner/normalizer label, not proof that the question asks
+only for a table value. A valid scoring plan for a grade plus graduation/repeat
+question could skip the composer and omit a condition already in source context.
+Scoring also normalizes an unsupported `open_question` intent to `direct_value`,
+so the former post-normalization intent guard test did not cover that behavior.
+
+This stage deletes `build_scoped_score_answer`, its import and the early answered
+return in `prepare_answer`. Complete scoring evidence once again reaches the
+composer through the existing sync/SSE path. It removes no other Stage 7 change:
+the explicit conditional rows, task/cohort binding, safe budget handling, full
+source context and public UI source tables remain. No replacement template,
+adapter, intent heuristic or case-specific rule is introduced.
+
+Pipeline identity becomes `v81-composer-scoped-evidence`. Planner/composer prompt
+instructions, gold, source data and model settings are unchanged by this commit.
+The primary checkout's uncommitted `reasoning_effort: low` and its other local
+changes are preserved; this worktree's model config is not silently synchronized
+with it. This is a code-only removal, not a deployment or a new measured choice
+of composer effort.
+
+Tests now require an actual fake-composer invocation for the conditional score
+path and final `llm_called=true` for sync/SSE. The graduation regression runs real
+normalization/resolution with both raw intents and both scoring operations,
+verifying the original question, resolved D+ rows and the repeat condition reach
+the composer. Existing range, scale, multi-task/cohort and evidence-budget tests
+remain. These tests verify routing/content delivery; they do not establish the
+answer quality of DeepSeek `low`.
+
+Historical Stage 7 reports describe the removed branch at its original commit.
+They remain untouched; the old offline `llm_called=false` result is not presented
+as a result of this restored composer pipeline. No inference, push, deployment
+or worktree/branch deletion occurs in this stage.
+
+Verification: 235 focused tests and all 1,524 backend tests passed, with the same
+two dependency deprecation warnings. CI-equivalent lint, deploy-artifact/hash
+checks and diff whitespace checks passed. The retained Stage 7 evidence/provenance
+files have no diff in this removal. No executable source/test caller of the
+deleted direct-answer helper remains.

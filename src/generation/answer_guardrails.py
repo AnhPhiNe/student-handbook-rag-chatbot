@@ -1,57 +1,6 @@
 from typing import Any
 
 
-def build_scoped_score_answer(packet: dict[str, Any], query_plan: dict[str, Any]) -> str | None:
-    """Present complete conditional grade rows for pure direct lookup requests.
-
-    Return None for policy questions, mixed plans or incomplete resolutions.
-    Every conditional scope stays separate; no global fact lock is created.
-    """
-    tasks = {task.get("id"): task for task in query_plan.get("tasks") or []}
-    units = packet.get("units") or []
-    if not units or {unit.get("task_id") for unit in units} != set(tasks):
-        return None
-    sections = []
-    for unit in units:
-        task = tasks[unit["task_id"]]
-        slots = task.get("slots") or {}
-        sources = unit.get("primary_evidence") or []
-        if (unit.get("mode") != "structured" or unit.get("coverage") != "covered"
-                or task.get("lookup_type") != "scoring" or task.get("intent") != "direct_value"
-                or slots.get("operation") not in ("grade_10_to_letter", "pass_threshold")
-                or unit.get("applicable_amendments") or len(sources) != 1):
-            return None
-        source = sources[0]
-        rows = source.get("resolved_rows")
-        operand = slots.get("score_or_grade")
-        if (not isinstance(rows, list) or not rows or source.get("resolved_result")
-                or isinstance(operand, (bool, list, dict)) or operand is None
-                or not source.get("printed_in") or not source.get("article_label")):
-            return None
-        lines = []
-        for item in rows:
-            row = item.get("row") or {}
-            if not all(isinstance(value, str) and value.strip() for value in (
-                    item.get("table_name"), item.get("applicability"),
-                    row.get("letter_grade"), row.get("status"), row.get("score_10_range"))):
-                return None
-            lines.append(
-                f"- **{item['table_name']}** ({item['applicability']}): "
-                f"điểm chữ **{row['letter_grade']}**, xếp loại **{row['status']}** "
-                f"(khoảng điểm **{row['score_10_range']}**)."
-            )
-        text = (f"Theo **{source['printed_in']}**, với điểm **{operand}**, "
-                f"kết quả theo **{source['article_label']}** cho từng phạm vi là:\n\n"
-                + "\n".join(lines)
-                + "\n\nĐối chiếu nhóm học phần của bạn với trường hợp tương ứng ở trên để xác định kết quả áp dụng.")
-        if source.get("currency_note"):
-            text += f"\n\nLưu ý: {source['currency_note']}"
-        if len(units) > 1:
-            text = f"**Khóa {unit['cohort']} — {unit['question']}**\n\n{text}"
-        sections.append(text)
-    return "\n\n".join(sections)
-
-
 def is_context_empty(retrieval_result: dict[str, Any]) -> bool:
     """Return whether neither retrieval nor structured lookup produced evidence."""
 

@@ -7,7 +7,6 @@ from types import SimpleNamespace
 import pytest
 
 from src.generation.answer_pipeline import AnswerPipeline
-from src.generation.answer_guardrails import build_scoped_score_answer
 from src.generation.plan_executor import PlanExecutor, StructuredCatalogs
 from src.generation.prompt_builder import build_authorized_evidence_packet
 from src.generation.structured_result_presenter import build_structured_results
@@ -149,74 +148,89 @@ def test_incomplete_or_untrusted_groups_do_not_become_explicit_resolutions(fault
     assert scoped_resolved_rows(citation) == []
 
 
-@pytest.mark.parametrize("streaming", [False, True])
-def test_conditional_grade_answer_uses_verified_rows_without_composer_sync_and_sse(source_data, streaming):
-    question, result = execute(source_data, [score_task()])
+def compose(question, result, streaming, inspect_packet):
+    prompts = []
+    def answer_from_prompt(prompt):
+        prompts.append(prompt)
+        context, _ = json.JSONDecoder().raw_decode(prompt.split("\nAUTHORIZED_EVIDENCE_BY_UNIT\n", 1)[1])
+        return inspect_packet(context)
     class Composer:
         def generate(self, prompt):
-            pytest.fail("Verified conditional rows must not be reinterpreted by a composer")
+            return {"ok": True, "text": answer_from_prompt(prompt), "model_used": "fake", "usage": {}}
         def generate_stream(self, prompt):
-            pytest.fail("Verified conditional rows must not be reinterpreted by a composer")
+            yield answer_from_prompt(prompt)
+            return {"model_used": "fake", "usage": {}}
     pipeline = AnswerPipeline(llm_client=Composer())
     pipeline._run_retrieval = lambda *a, **kw: result
     if streaming:
         events = list(pipeline.answer_stream(question, cohort="K51"))
         assert events[-1]["status"] == "answered"
         answer = "".join(e.get("text", "") for e in events if e["type"] == "token")
-        metadata = next(e for e in events if e["type"] == "metadata")
-        assert metadata["llm_called"] is False and len(metadata["structured_results"]) == 2
+        metadata = [e for e in events if e["type"] == "metadata"][-1]
+        assert metadata["llm_called"] is True and metadata["structured_results"]
     else:
         response = pipeline.answer(question, cohort="K51")
         answer = response["answer"]
-        assert response["llm_called"] is False and response["status"] == "answered"
-        assert len(response["structured_results"]) == 2
-    assert answer.count("điểm chữ **D+**") == 2 and "điểm chữ **C**" not in answer
-    assert "**Đạt**" in answer and "**Không đạt**" in answer and "Điều 10" in answer
+        assert response["llm_called"] is True and response["status"] == "answered"
+        assert response["structured_results"]
+    assert len(prompts) == 1
+    return answer
 
 
-@pytest.mark.parametrize("fault", ["policy", "list", "mixed", "partial", "wrong_operation", "amendment", "no_scope_label"])
-def test_direct_renderer_does_not_take_over_policy_or_incomplete_requests(source_data, fault):
+@pytest.mark.parametrize("streaming", [False, True])
+def test_conditional_grade_rows_reach_composer_sync_and_sse(source_data, streaming):
     question, result = execute(source_data, [score_task()])
-    composed, plan = packet(question, result), copy.deepcopy(result["query_plan"])
-    if fault == "policy":
-        plan["tasks"][0]["intent"] = "open_question"
-    elif fault == "list":
-        plan["tasks"][0]["intent"] = "list_items"
-    elif fault == "mixed":
-        composed["units"].append({"task_id": "t2", "mode": "rag", "coverage": "covered", "cohort": "K51",
-                                  "question": "Quy định học lại", "allowed_source_refs": [], "primary_evidence": []})
-        plan["tasks"].append({"id": "t2", "mode": "rag"})
-    elif fault == "partial":
-        composed["units"][0]["coverage"] = "uncovered"
-    elif fault == "wrong_operation":
-        plan["tasks"][0]["slots"]["operation"] = "academic_classification"
-    elif fault == "amendment":
-        composed["units"][0]["applicable_amendments"] = [{"content": "New conditions"}]
-    else:
-        del composed["units"][0]["primary_evidence"][0]["resolved_rows"][0]["applicability"]
-    # Labelling happens in the real prompt renderer before presentation.
-    from src.generation.prompt_builder import render_answer_prompt
-    _, context = render_answer_prompt(question, composed)
-    assert build_scoped_score_answer(json.loads(context), plan) is None
+    def inspect(context):
+        unit = context["units"][0]
+        source = unit["primary_evidence"][0]
+        assert unit["resolution_status"] == "evidence_only"
+        assert "resolved_result" not in source
+        assert [item["row"]["letter_grade"] for item in source["resolved_rows"]] == ["D+", "D+"]
+        assert source["source_context"]
+        return "D+: nền tảng Đạt, học phần còn lại Không đạt."
+    assert compose(question, result, streaming, inspect) == "D+: nền tảng Đạt, học phần còn lại Không đạt."
+
+
+@pytest.mark.parametrize("streaming", [False, True])
+@pytest.mark.parametrize("intent", ["direct_value", "open_question"])
+@pytest.mark.parametrize("operation", ["grade_10_to_letter", "pass_threshold"])
+def test_graduation_condition_survives_normalization_and_reaches_composer(source_data, streaming, intent, operation):
+    question = "K51 Môn tính GPA được 5,2/10; nếu là học phần tốt nghiệp thì có cần làm lại không?"
+    planned = score_task()
+    planned.update(question=question, intent=intent)
+    planned["slots"]["operation"] = operation
+    question, result = execute(source_data, [planned])
+    # Scoring normalizes unsupported intents to direct_value: that label alone
+    # never proves that the student asked only for a numeric/table value.
+    assert result["query_plan"]["tasks"][0]["intent"] == "direct_value"
+    def inspect(context):
+        unit = context["units"][0]
+        assert "học phần tốt nghiệp" in unit["question"]
+        source = unit["primary_evidence"][0]
+        assert {item["row"]["letter_grade"] for item in source["resolved_rows"]} == {"D+"}
+        assert "dưới C" in source["source_context"] and "phải thực hiện lại" in source["source_context"]
+        return "Học phần tốt nghiệp dưới C phải thực hiện lại; giá trị tra bảng là D+."
+    answer = compose(question, result, streaming, inspect)
+    assert "phải thực hiện lại" in answer
 
 
 @pytest.mark.parametrize("score,letter", [("4,5/10", "D"), ("5,5/10", "C"), ("6,3/10", "C+"), ("8,0/10", "B+")])
-def test_direct_renderer_uses_catalog_results_for_other_values(source_data, score, letter):
+def test_composer_receives_catalog_results_for_other_values(source_data, score, letter):
     question, result = execute(source_data, [score_task(score)])
-    pipeline = AnswerPipeline()
-    pipeline._run_retrieval = lambda *a, **kw: result
-    pipeline._get_llm_client = lambda: pytest.fail("No composer for complete conditional rows")
-    answer = pipeline.answer(question, cohort="K51")["answer"]
-    assert answer.count(f"điểm chữ **{letter}**") == 2
+    def inspect(context):
+        rows = context["units"][0]["primary_evidence"][0]["resolved_rows"]
+        assert {item["row"]["letter_grade"] for item in rows} == {letter}
+        return f"Điểm chữ {letter}."
+    assert compose(question, result, False, inspect) == f"Điểm chữ {letter}."
 
 
-def test_direct_renderer_keeps_two_scores_in_separate_answer_sections(source_data):
+def test_composer_receives_two_scores_in_separate_units(source_data):
     question, result = execute(source_data, [score_task("5,2/10"), score_task("6,2/10")])
-    pipeline = AnswerPipeline()
-    pipeline._run_retrieval = lambda *a, **kw: result
-    pipeline._get_llm_client = lambda: pytest.fail("No composer for complete conditional rows")
-    answer = pipeline.answer(question, cohort="K51")["answer"]
-    sections = answer.split("**Khóa K51 — ")[1:]
-    assert len(sections) == 2
-    assert sections[0].count("điểm chữ **D+**") == 2 and "điểm chữ **C**" not in sections[0]
-    assert sections[1].count("điểm chữ **C**") == 2 and "điểm chữ **D+**" not in sections[1]
+    def inspect(context):
+        units = context["units"]
+        assert len(units) == 2
+        for unit, letter in zip(units, ("D+", "C")):
+            assert len(unit["primary_evidence"]) == 1
+            assert {item["row"]["letter_grade"] for item in unit["primary_evidence"][0]["resolved_rows"]} == {letter}
+        return "Môn 5,2/10 là D+; môn 6,2/10 là C."
+    assert compose(question, result, False, inspect) == "Môn 5,2/10 là D+; môn 6,2/10 là C."

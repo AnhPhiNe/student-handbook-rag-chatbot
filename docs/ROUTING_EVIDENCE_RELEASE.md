@@ -1055,3 +1055,61 @@ that the source completely answers the question.
 Prompt/gold/source-data/provider configurations, README and historical reports
 are preserved. Stage four (program-existence evidence) remains separate. This
 stage is committed locally only, without inference API, push or deployment.
+
+## Stage 22 — per-program existence evidence, offline (2026-10-04)
+
+The user approved the fourth hardening stage from clean `1a833f90`. Previously
+program existence stored `exists`/`not_found_note` outside the real-record result
+list, while citations serialized that list alone. A scalar NONE became `[]` in
+the composer packet; a mixed name list kept only matches and used any match as
+the whole-request boolean. The UI also had no row for a missing program.
+
+The program lookup now retains one outcome per queried name: match or not_found,
+the scoped boolean, actual matching program summaries and cohort/catalog scope.
+The existing real-record `result`, program count and faculty counts stay intact
+for callers/evaluators/joins. Scalar `exists` is compatible; list `exists` is
+true only when all requested names matched, not merely any one. Composer and UI
+use the per-name outcomes. No fake program or record ID is created for a missing
+name. Catalog document identity and pages survive even when no record matches.
+Empty input/missing catalog does not prove absence. Selector ambiguity, malformed
+JSON, unknown IDs or pure API failure keep the existing whole-lookup clarification
+path; a previously valid NONE followed by a failed optional second look retains
+the existing selector policy, rather than inventing a new success/failure rule.
+
+Only `program_exists` citations consume the new outcome payload. The existing
+generic display-row projection shows positives and negatives without a frontend
+or top-level HTTP schema change. Other program actions retain their original
+record citation shape. Internal selector replies are not copied into outcomes.
+Two tasks or two cohort executions keep their respective names/results through
+source fusion and composition; negative proof never becomes a global fact lock.
+
+Spec review caught default-budget loss on a supported 45-name/three-cohort
+comparison: embedding full career paragraphs in existence outcomes produced
+truncated JSON at the ordinary 160,000-character context budget. Pure existence
+citations now compact matches to canonical record identity, names and provenance;
+the original lookup records stay full. Mixed existence/career requests retain
+their career detail through the existing requested_field signal. The budget
+engine and limits are unchanged. The real 45-name comparison now retains all
+135 outcomes as complete JSON; its query fits the existing 2,000-character input
+limit. Requests that genuinely exceed context capacity still have the existing
+truncation limitations; no unbounded coverage is claimed.
+
+The first 24 tests reproduced 18 failures on the old implementation. Alias,
+fusion, non-mutation and budget/detail controls bring the new suite to 31 tests;
+161 focused tests pass. All 129 actual program records produce identity-bound
+positive outcomes. Fixtures test scalar/mixed/reversed match/NONE, all three
+cohorts, failed/ambiguous selectors, missing inputs/catalogs, full source
+provenance, generic UI rows, independent tasks and fake sync/stream composers.
+Scripted valid NONE replies test evidence preservation, not the semantic accuracy
+of the real selector or composer; no new answer-quality score is claimed.
+All **1,776 backend tests** pass on the final implementation, with the same two
+dependency deprecation warnings. Lint, deployment-artifact and whitespace checks
+pass. Standards review has no actionable finding; Spec review's budget-loss
+finding is corrected, with no remaining stage-four blocker.
+
+Pipeline identity is `v87-program-existence-evidence`. Prompt instructions,
+models, strict schema, resolver interfaces, gold, source artifacts, README,
+historical reports and the user's dirty primary checkout remain unchanged.
+No new agent/graph/lookup engine, source-store build, inference API, push or
+deployment is introduced. This completes the four approved offline stages;
+live smoke and deployment require separate authorization and measurements.

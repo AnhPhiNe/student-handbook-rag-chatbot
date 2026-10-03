@@ -366,7 +366,24 @@ def build_citation_from_lookup(lookup_result: dict[str, Any]) -> list[dict[str, 
     if not (source_pages or source_section or document_id or source_label):
         return []
 
-    content_value = lookup_result.get("result")
+    content_value = (
+        lookup_result.get("existence_results")
+        if lookup_result.get("lookup_scope") == "program_exists"
+        else lookup_result.get("result")
+    )
+    if (lookup_result.get("lookup_scope") == "program_exists"
+            and isinstance(content_value, list)
+            and "career" not in (lookup_result.get("requested_field") or [])):
+        # Existence proof needs identities/provenance, not every career paragraph.
+        # Keep full records in the lookup; mixed career requests retain details.
+        fields = {"record_id", "program_name", "faculty_name", "cohort", "document_id",
+                  "source_pages", "source_section", "faculty_name_source", "quality_status"}
+        content_value = [{**outcome, "matched_programs": [
+            {key: value for key, value in record.items() if key in fields}
+            for record in outcome.get("matched_programs") or []
+        ]} for outcome in content_value]
+    if content_value is None:
+        content_value = lookup_result.get("result")
     if content_value is None:
         content_value = lookup_result.get("items")
     if content_value is None:

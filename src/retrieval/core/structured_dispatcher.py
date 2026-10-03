@@ -925,6 +925,8 @@ def _resolve_program(
     if result is None and directory_selector is not None and program_directory:
         return _missing_source(task, query, cohort, grounding, program_directory)
     if result is not None:
+        if action == "exists" and not result.get("needs_clarification"):
+            result = {**result, "requested_field": requested_field}
         result = resolve_relationship(
             result, source_lookup="program", requested_field=requested_field,
             cohort=cohort, relationships=_RELATIONSHIPS,

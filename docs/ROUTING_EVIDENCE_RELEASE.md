@@ -936,3 +936,62 @@ patch, architecture/schema/HTTP field change, provider-setting change or data
 rebuild was introduced. README, gold, source artifacts, previous reports and
 the user's dirty primary checkout are preserved. The stage ends in a local
 commit only, with no inference API, push or deployment.
+
+## Stage 20 — task/cohort and grounded-input consistency, offline (2026-10-03)
+
+The user requested continuation of stage two from clean commit `e88c409a`.
+Validation still grounds supplied inputs in the original query and only its
+referenced visible history. A new bounded check runs after each task's contract
+validation but before compatible/cohort-variant merging. Explicit task-cohort
+contradictions and incomplete explicit comparisons become task-local
+clarifications; executable siblings are retained. The existing unambiguous
+single-task/single-cohort override is preserved. A single follow-up uses its
+validated standalone question for consistency, not just the current short turn.
+The check never reassigns a student's score or a task's cohort.
+
+Numeric consistency uses the existing signed, scale-preserving grounded parser
+and registry input roles. A supplied value is not rejected merely because a
+paraphrase omits it. A different grounded sibling operand in the same slot may
+prove a conflict only when the task question anchors to the original user text;
+explicit denominator contradictions are also checked. Document locators, cohort
+identifiers and credit quantities are not personal score operands. No semantic
+selector meaning is reinterpreted and no semantic repair/model call is added.
+
+Spec review caught two overblocking cases in the first implementation: three
+course credits coinciding with a sibling GPA of 3.0, and a K51 request quoting
+a table explicitly printed in the K50 handbook. The final implementation masks
+credit quantities, requires user-clause anchoring for sibling-input conflicts,
+and excludes explicit printed-source locators from execution-cohort checks.
+Plain handbook requests and handbook comparisons still retain their scopes.
+Regression controls cover both reviewed cases and the opposite valid cases.
+
+This is not proof of semantic ownership or complete question decomposition.
+Paraphrased clauses not anchored to user text, semantic negation or conditions,
+and a conflicting number not supplied by any sibling may remain outside the
+detector. Explicit scale contradictions still inspect task prose: a planner
+inventing a new condition with the same value on another scale may be asked to
+clarify; this does not authorize trusting that invented condition. Printed-book
+and non-score quantity recognition is a small syntax heuristic, not a general
+Vietnamese parsing engine. Further changes require evidence rather than an
+expanding keyword policy list.
+
+The first 28 tests reproduced 15 failures on the previous normalizer. Review
+counterexamples and controls bring the new suite to 37 tests, spanning RAG and
+structured tasks, comparison completeness, three cohort defaults, scope versus
+source edition, signed values/scales, reversed order, referenced history,
+non-mutating validation, preserved siblings and composer sync/stream packets.
+Offline re-normalization of 150 saved answer-run plans and 12 saved routing
+smoke plans adds no binding diagnostics; historical plans/answers/reports are
+unchanged. This is a compatibility check, not a new runtime accuracy score.
+All **1,716 backend tests** pass on the final implementation, with the same two
+dependency deprecation warnings. Lint, deployment-artifact and whitespace checks
+pass. Spec review confirms the reported overblocking cases are corrected; the
+remaining scale-condition ambiguity above is retained as a detector limitation.
+
+Normalizer identity advances to `v32-task-binding-safety` to keep old cached
+decisions from bypassing the new checks; pipeline identity is
+`v85-task-binding-safety`. Prompt, strict schema, resolver interfaces, HTTP/SSE
+fields, provider settings, gold, source data and README remain unchanged. No
+source-store rebuild, remote/API request, push or deployment is performed.
+Stage three (task-local target roles) and stage four (existence evidence) are
+not included in this commit. The user's separate dirty checkout is preserved.

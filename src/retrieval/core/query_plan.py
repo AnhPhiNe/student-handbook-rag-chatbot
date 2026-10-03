@@ -12,7 +12,8 @@ from src.common.cohort import (
     normalize_cohort,
     valid_cohorts,
 )
-from src.common.text import fold_text
+from src.common.score import grounded_score, parse_score
+from src.common.text import fold_text, slot_values
 
 from .structured_routing import (
     load_lookup_registry,
@@ -21,7 +22,7 @@ from .structured_routing import (
 )
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v31-null-slot-omission"
+QUERY_PLAN_NORMALIZER_VERSION = "v32-task-binding-safety"
 QUERY_PLAN_STRICT_SCHEMA_VERSION = "v2-field-descriptions"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
@@ -443,6 +444,23 @@ def normalize_query_plan(
         tasks.append(task)
         errors.extend(f"{task['id']}:{error}" for error in task_errors)
 
+    single_question = (query if context_mode == "standalone" else standalone_query)
+    binding_errors = _validate_task_bindings(
+        tasks, source_text=f"{query}\n{grounding_context}", registry=registry,
+        single_question=single_question if len(raw_tasks) == 1 else None,
+    )
+    for index, task in enumerate(tasks):
+        if task_errors := binding_errors.get(task["id"]):
+            errors.extend(f"{task['id']}:{error}" for error in task_errors)
+            tasks[index] = _clarify_task(
+                task["id"], task.get("question") or query,
+                cohorts=task.get("cohorts"),
+                clarification="Mình chưa ghép chắc chắn yêu cầu này với đúng khóa và dữ kiện. "
+                              "Bạn có thể nêu lại yêu cầu cùng khóa và các giá trị tương ứng không?",
+                validation_errors=[*(task.get("validation_errors") or []), *task_errors],
+                normalization_warnings=task.get("normalization_warnings"),
+            )
+
     tasks = _merge_compatible_structured_tasks(tasks)
     tasks = _merge_cohort_variant_tasks(tasks)
     if (
@@ -583,6 +601,83 @@ def _clarification_plan(
         "planner_fallback": fallback,
         "planner_validation_errors": errors if errors is not None else [],
     }
+
+
+def _task_numeric_operands(
+    task: dict[str, Any], source_text: str, registry: dict[str, Any],
+) -> dict[str, list[str]]:
+    """Collect supplied scalar operands grounded in user text, never task prose."""
+    if task.get("mode") != "structured":
+        return {}
+    schema = (registry.get("tools", {}).get(task.get("lookup_type")) or {}).get("slot_schema") or {}
+    operands: dict[str, list[str]] = {}
+    for name, value in (task.get("slots") or {}).items():
+        spec = schema.get(name) or {}
+        if spec.get("verification_role", "result_input") != "result_input" or spec.get("enum") or spec.get("canonical_values"):
+            continue
+        for item in slot_values(value):
+            if parse_score(item) is None:
+                continue
+            score = grounded_score(item, (task.get("slot_spans") or {}).get(name), source_text)
+            if score is not None:
+                operands.setdefault(name, []).append(
+                    f"{score.value}/{score.scale}" if score.scale is not None else str(score.value)
+                )
+    return operands
+
+
+def _validate_task_bindings(
+    tasks: list[dict[str, Any]], *, source_text: str, registry: dict[str, Any],
+    single_question: str | None,
+) -> dict[str, list[str]]:
+    """Reject explicit self-contradictions, not missing or paraphrased information.
+
+    This bounded consistency check does not reinterpret semantic selectors or
+    assign an entity's value. Validated user grounding remains authoritative.
+    A sibling-operand conflict additionally requires an anchored user clause;
+    paraphrased omissions, unrelated quantities and source-book locators are
+    not proof of ownership. Explicit denominator conflicts remain detectable.
+    """
+    numeric = [_task_numeric_operands(task, source_text, registry) for task in tasks]
+    errors: dict[str, list[str]] = {}
+    for index, task in enumerate(tasks):
+        if task.get("mode") == "clarify":
+            continue
+        question = single_question or str(task.get("question") or "")
+        # An explicitly printed source edition is not the student's execution
+        # cohort. Plain "theo sổ tay K50" requests and comparisons are not removed.
+        scope_question = re.sub(
+            rf"(?i)(?:được\s+)?in\s+(?:trong|ở|tại)\s+(?:cuốn\s+)?sổ\s+tay"
+            rf"(?:\s+sinh\s+viên)?\s*(?:khóa\s+)?{build_cohort_token_regex().pattern}", " ", question,
+        )
+        explicit = set(extract_cohorts_from_query(scope_question))
+        comparison = any(phrase in _fold_query(scope_question) for phrase in _COMPARISON_PHRASES)
+        task_errors: list[str] = []
+        if (len(explicit) == 1 or (explicit and comparison)) and explicit != set(task.get("cohorts") or []):
+            task_errors.append("task_cohort_conflict")
+        # Article/paragraph locators and cohort IDs are not personal operands.
+        numeric_question = re.sub(r"(?i)\b(?:điều|khoản|mục)\s+\d+[a-zđ]?\b", " ", question)
+        numeric_question = re.sub(r"(?i)(?<!\w)[+-]?\d+(?:[.,]\d+)?\s*(?:tín\s+chỉ|credits?)\b", " ", numeric_question)
+        clause = " ".join(question.casefold().split()).rstrip(" ?.!;")
+        anchored_clause = bool(clause) and clause in " ".join(source_text.casefold().split())
+        for name, values in numeric[index].items():
+            peers = [value for other_index, other in enumerate(numeric) if other_index != index
+                     for value in other.get(name, [])]
+            for value in values:
+                if grounded_score(value, numeric_question, numeric_question) is not None:
+                    continue
+                score = parse_score(value)
+                local = grounded_score(str(score.value), numeric_question, numeric_question)
+                scale_conflict = (local is not None and local.scale is not None
+                                  and score.scale is not None and local.scale != score.scale)
+                if scale_conflict or (anchored_clause and any(
+                    grounded_score(peer, numeric_question, numeric_question) is not None for peer in peers
+                )):
+                    task_errors.append(f"task_operand_conflict:{name}")
+                    break
+        if task_errors:
+            errors[task["id"]] = task_errors
+    return errors
 
 
 def _normalize_task(

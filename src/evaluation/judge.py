@@ -12,7 +12,7 @@ from src.common.key_pool import KeyPool, KeyPoolConfig
 
 
 PINNED_JUDGE_MODEL = "openai/gpt-oss-120b"
-JUDGE_PACKET_VERSION = "judge-packet-v2-source-context"
+JUDGE_PACKET_VERSION = "judge-packet-v3-source-clauses"
 # The same open-weight model served by two providers. Scores from different
 # providers are not compared with each other: a run and its baseline are judged
 # by one provider (STUDENT_RAG_JUDGE_PROVIDER, default groq).
@@ -260,6 +260,24 @@ def _split_evidence_units(text: str) -> list[str]:
     ]
 
 
+def _numbered_source_clauses(text: str) -> list[str]:
+    """Keep each numbered provision complete, including its subpoints/tables.
+
+    Split only at existing top-level numbered lines. Without that structure,
+    retain the whole text: a punctuation or arbitrary character split can
+    detach an exception or a table's scope from the provision it qualifies.
+    """
+    starts = [match.start() for match in re.finditer(r"(?m)^\d+\.\s+\S", text)]
+    if len(starts) < 2:
+        return [text.strip()] if text.strip() else []
+    # Repeat an existing introduction with every clause so a scope restriction
+    # above the numbering cannot be detached when only a later clause fits.
+    intro = text[:starts[0]].strip()
+    boundaries = [*starts, len(text)]
+    return ["\n\n".join(part for part in (intro, text[start:end].strip()) if part)
+            for start, end in zip(boundaries, boundaries[1:])]
+
+
 def _source_aware_composer_units(context: str) -> list[str]:
     """Keep each Composer evidence sentence attached to its source identity."""
     blocks = re.split(
@@ -336,13 +354,16 @@ def _authorized_packet_evidence_units(context: str) -> list[str] | None:
                 # JSON record and can reorder fields from different entities.
                 units.append(f"{prefix} | {body}")
             else:
-                for evidence_unit in _split_evidence_units(body):
+                clauses = _numbered_source_clauses(body)
+                evidence_units = clauses if len(clauses) > 1 else _split_evidence_units(body)
+                for evidence_unit in evidence_units:
                     units.append(f"{prefix} | {evidence_unit}")
             source_context = str(source.get("source_context") or "").strip()
             if source_context:
-                # Keep the source's original scope, qualifiers and table layout
-                # together. This is supplied evidence, not a new parent lookup.
-                units.append(f"{prefix} | Source context: {source_context}")
+                # Smaller complete provisions fit the packet without dropping
+                # an entire article or cutting qualifications/tables midway.
+                for clause in _numbered_source_clauses(source_context):
+                    units.append(f"{prefix} | Source context: {clause}")
             resolved_result = source.get("resolved_result")
             if resolved_result is not None:
                 units.append(

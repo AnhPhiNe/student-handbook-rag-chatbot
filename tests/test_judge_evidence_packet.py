@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import copy
 import json
+from pathlib import Path
 
 import pytest
 
@@ -11,6 +12,7 @@ from src.evaluation.judge import (
     JUDGE_METRICS,
     JUDGE_PACKET_VERSION,
     _authorized_packet_evidence_units,
+    _numbered_source_clauses,
     build_judge_prompt,
     compact_judge_packet,
 )
@@ -75,6 +77,59 @@ def test_atomic_source_context_does_not_lose_a_later_exception():
     units = _authorized_packet_evidence_units(record("q", [source(content="Đủ điểm.", source_context=policy)])["context_used"])
     contexts = [unit for unit in units if "Source context:" in unit]
     assert len(contexts) == 1 and contexts[0].endswith(policy)
+
+
+def test_numbered_provision_keeps_all_subconditions_table_and_exception():
+    first = "Điều 8. Áp dụng\n\n1. Các điều kiện:\na) Có minh chứng;\nb) Đúng phạm vi.\n\n| Loại | Điểm |\n| A | 3.6 |\n\nNgoại lệ: thiếu hồ sơ thì không áp dụng."
+    second = "2. Nghĩa vụ báo cáo."
+    clauses = _numbered_source_clauses(first + "\n\n" + second)
+    assert clauses == [first, "Điều 8. Áp dụng\n\n" + second]
+    assert "| Loại | Điểm |\n| A | 3.6 |" in clauses[0]
+    assert "Ngoại lệ: thiếu hồ sơ thì không áp dụng." in clauses[0]
+
+
+def test_source_intro_scope_follows_a_later_selected_clause():
+    intro = "Chỉ áp dụng cho học phần nền tảng, không áp dụng cho các học phần khác."
+    clauses = _numbered_source_clauses(intro + "\n\n1. Hồ sơ đăng ký.\n\n2. Điều kiện đạt là đủ điểm và đủ minh chứng.")
+    assert len(clauses) == 2
+    assert all(clause.startswith(intro + "\n\n") for clause in clauses)
+    assert "2. Điều kiện đạt là đủ điểm và đủ minh chứng." in clauses[1]
+
+
+def test_decimal_values_and_table_rows_do_not_create_clause_boundaries():
+    text = "Điểm trung bình tối thiểu:\n3.6 hoặc cao hơn.\n| 1. Loại A | 3.6 |\nĐiều kiện kèm theo: đủ hồ sơ."
+    assert _numbered_source_clauses(text) == [text]
+
+
+def test_long_article_can_keep_short_relevant_provision_without_truncation():
+    relevant = "2. Sinh viên chưa có minh chứng không được xét kết quả; không tự suy từ điểm số."
+    article = "1. Trách nhiệm báo cáo. " + "Các đơn vị phải báo cáo theo học kỳ. " * 140 + "\n\n" + relevant
+    answer = record("Sinh viên chưa có minh chứng không được xét kết quả.", [source(content="Điểm 8.", source_context=article)])
+    packet = compact_judge_packet(case("Có được xét kết quả không?"), answer, max_input_tokens=700)
+    assert "Source context: " + relevant in packet["retrieved_context"]
+    assert packet["evidence_compaction"]["partial_units"] == 0
+    assert "1. Trách nhiệm báo cáo." not in packet["retrieved_context"]
+
+
+@pytest.mark.parametrize("case_id,markers", [
+    ("official_ans_033", ["Được điều động vào lực lượng vũ trang", "Vì lý do cá nhân khác",
+                          "không thuộc các trường hợp bị xem xét buộc thôi học", "Hai tuần trước khi hết thời gian tạm dừng"]),
+    ("official_ans_129", ["Những điểm chữ không được quy định", "Những học phần không nằm trong yêu cầu",
+                          "chương trình thứ nhất", "06 năm học", "7,5 năm học"]),
+])
+def test_saved_output_keeps_omitted_conditions_in_real_default_packet(case_id, markers):
+    fixture_path = Path(__file__).parent / "fixtures/judge_compaction_saved_outputs.json"
+    fixture = next(row for row in json.loads(fixture_path.read_text(encoding="utf-8")) if row["case"]["id"] == case_id)
+    before = copy.deepcopy(fixture)
+    packet = compact_judge_packet(fixture["case"], fixture["answer_record"])
+    compact = " ".join(packet["retrieved_context"].split()).casefold()
+    original = " ".join(fixture["answer_record"]["context_used"].split()).casefold()
+    for marker in markers:
+        assert marker.casefold() in original
+        assert marker.casefold() in compact
+    assert fixture == before
+    assert packet["evidence_compaction"]["partial_units"] == 0
+    assert packet["answer"] == fixture["answer_record"]["answer"]
 
 
 def test_structured_json_is_not_split_inside_an_address_or_reordered():

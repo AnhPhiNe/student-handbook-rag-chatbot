@@ -765,3 +765,46 @@ retain packet versions and qualify these limitations; a fresh runtime result
 must not combine old answer scores with the separate routing smoke. Source
 checks after completion were clean, and historical artifact hashes were verified.
 Only this results note is committed afterward; no push or deployment occurs.
+
+## Stage 16 — numbered source clauses in judge packets, offline (2026-10-03)
+
+User approved the small evaluator correction for the remaining observed
+omissions. Packet v3 (`judge-packet-v3-source-clauses`) splits authorized source
+text at existing top-level numbered provision lines. Subpoints, qualifications
+and tables within each provision stay together. An introduction before the
+numbering is repeated verbatim for every provision so a shared scope restriction
+cannot disappear when a later provision is selected. Unnumbered source_context
+remains atomic; valid JSON records are untouched. No business-name/query rules,
+new LLM verifier, schema layer or provider/token-setting change was introduced.
+
+This addresses the measured granularity problem: 033's full leave-policy
+provision now retains the military exception together with its other reasons,
+and 129's relevant GPA exclusions fit separately from the rest of Article 11.
+Task/cohort/source metadata remains attached. Required-fact/answer ranking,
+rubric, gold and whole-unit packing are unchanged. The format-based splitter is
+a bounded heuristic, not proof of all possible policy dependencies; unfamiliar
+formatting, cross-provision dependencies or an oversized individual provision
+can still need manual review.
+
+Offline reconstruction of all 150 saved packets confirms all 19 reviewed
+evidence checks (the previous 16, medical condition 131, and 033/129). Maximum
+full prompt estimate is 5,880 tokens; no source/output ceiling was raised.
+Lexical coverage decreases only at 147, an unanswerable personal scholarship
+list query whose gold describes system access/abstention behavior. Handbook
+policy text is not proof of personal-list access; its original abstention
+answer and source evidence remain unchanged. The diagnostic delta is retained,
+not hidden through gold/threshold edits.
+
+Verification: **1,567 backend tests** pass, including six new clause/scope,
+decimal/table, long-article and real saved-output regressions. The fixture copies
+033/129 composer packets/answers and only citation fields actually used by the
+compactor; case ids never enter implementation logic. Lint, deployment artifact
+hashes and whitespace checks pass with the same two dependency warnings.
+Historical source/case/answer/judge report hashes remain unchanged. Offline
+results live under `output/judge_clause_packets_offline_20261003_final/`.
+
+No API was called; scores from Stage 15 remain labelled packet v2. New v3
+scores require a separate measured run/report; no correctness/hallucination
+improvement is inferred from offline preservation checks. Runtime routing,
+composer, HTTP/SSE, README and source data remain unchanged. This stage ends
+with a separate local commit, without push or deployment.

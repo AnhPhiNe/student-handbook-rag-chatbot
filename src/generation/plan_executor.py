@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from src.common.cohort import is_validated_source_applicable
+from src.common.source_identity import directory_evidence_identity
 from src.retrieval.core.citation_builder import (
     build_citation_from_lookup,
     enrich_citations_with_parent_details,
@@ -68,29 +69,6 @@ def _merge_structured_citation_content(
     if not tables:
         return str(existing.get("content") or "")
     return json.dumps({"tables": tables}, ensure_ascii=False, indent=2, default=str)
-
-
-def _directory_record_ids(entry: dict[str, Any]) -> tuple[str, ...] | None:
-    """The record ids behind a directory evidence entry, or None for other evidence.
-
-    A directory lookup cites its whole catalog (source_parent_id is e.g.
-    "student_faculty_profiles"), so two tasks that name different units share
-    that id. Their records must stay apart when task outputs are merged:
-    otherwise "email Khoa Toán, sđt Khoa CNTT" keeps only the first unit and
-    gives it to both tasks.
-    """
-    try:
-        payload = json.loads(str(entry.get("content") or ""))
-    except (TypeError, ValueError):
-        return None
-    if not isinstance(payload, list):
-        return None
-    record_ids = sorted(
-        str(record["record_id"])
-        for record in payload
-        if isinstance(record, dict) and record.get("record_id")
-    )
-    return tuple(record_ids) or None
 
 
 def _table_evidence_identity(entry: dict[str, Any]) -> tuple[Any, ...] | None:
@@ -767,7 +745,7 @@ class PlanExecutor:
                     or metadata.get("source_parent_id")
                     or ""
                 ),
-                _directory_record_ids(item),
+                directory_evidence_identity(item),
                 _table_evidence_identity(item),
             )
             if key not in merged:
@@ -808,7 +786,7 @@ class PlanExecutor:
                     tuple(sorted(citation.get("supports_task_ids") or []))
                     if scoped_resolved_rows(citation) else None
                 ),
-                _directory_record_ids(citation),
+                directory_evidence_identity(citation),
                 _table_evidence_identity(citation),
             )
             if key not in merged:

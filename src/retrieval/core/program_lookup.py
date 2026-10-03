@@ -25,6 +25,7 @@ def _normalize_faculty_name(value: Any) -> str:
 
 def _program_summary(record: dict[str, Any]) -> dict[str, Any]:
     summary = {
+        "record_id": record.get("record_id"),
         "program_name": record.get("program_name"),
         "faculty_name": record.get("faculty_name"),
         "source_pages": record.get("source_pages") or [],

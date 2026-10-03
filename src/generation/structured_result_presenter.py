@@ -20,6 +20,7 @@ _INTERNAL_FIELDS = {
     "lexical_score",
     "quality_status",
     "raw_text",
+    "record_id",
     "score",
     "selection_method",
     "semantic_score",

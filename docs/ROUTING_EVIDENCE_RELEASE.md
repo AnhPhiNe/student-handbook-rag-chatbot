@@ -836,3 +836,54 @@ embedding/reranking, source-store or telemetry call, prompt/gold edit, extra
 rerun, push or deployment occurred. Exact inputs, raw judgments and provider
 attempts are under local `output/judge_v3_smoke_cb4ad7c5_20261003/REVIEW.md`.
 Only this results note is committed afterward on the existing candidate branch.
+
+## Stage 18 — catalog record identity through evidence fusion, offline (2026-10-03)
+
+The pre-push audit reproduced a pre-existing loss of independently selected
+records in multi-task questions. Office summaries omitted `office_profile_id`
+from their generic `record_id`; program summaries dropped their existing
+`record_id`. Two different records in the same cohort/catalog therefore had
+the same fusion key. The second record disappeared while task support and
+source pages were combined. Independent lookup was correct; downstream evidence
+fusion was not. Synthetic tests supplying IDs had missed the formatting step.
+
+The user approved a general correction. Both summaries now preserve existing
+catalog identities. The shared identity helper lives in the existing
+`source_identity` module and is used by executor item/citation fusion and final
+citation deduplication. The latter had also collapsed distinct faculty/service
+records after their executor evidence had already been kept separate.
+
+A complete record-ID list can still share evidence across tasks that request
+the same records. A missing, blank or partial ID list instead retains task-local
+evidence and its payload, without deriving an ID from a name or guessing
+equivalence. Cohort/catalog provenance remains part of the surrounding identity.
+Ordinary RAG parent fusion and task-bound raw tables/fact locks are unchanged;
+even JSON-list regulation text is not classified as directory evidence.
+Program IDs remain internal rather than becoming UI table columns.
+
+Runtime identity advances to `v83-directory-evidence-identity`. No prompt, model
+setting, schema, HTTP/SSE field, gold fact or source artifact changes. No new
+resolver layer, LLM verifier, database build or API call is introduced.
+
+Verification uses real catalogs across all three cohorts: all 64 office, 69
+faculty, 232 service and 129 program records retain their original IDs and
+pages, with unique IDs within cohort. New regressions cover distinct records,
+reversed task order, legitimate repeated records, missing/partial identities,
+cross-cohort identity, final citations, display safety and the sync/stream
+composer interfaces. Forty-five initial tests reproduced 38 failures before
+the fix and all passed afterward; one additional RAG-JSON negative control
+brings the new suite to 46 tests. The targeted suite has 170 passing tests.
+All **1,613 backend tests** pass on the final implementation; lint, deployment
+artifact validation and whitespace checks pass. The two existing dependency
+deprecation warnings remain; no new warnings are introduced.
+
+Offline paired-task probes for all nine lookup branches (office, faculty,
+service, program, scoring, formula, duration, scholarship and foreign language)
+retain both expected records/values in composer evidence after the correction.
+These are evidence-preservation checks, not new model-answer accuracy scores.
+
+The Git ownership exception needed by snapshot tests is scoped to subprocesses
+in the offline harness; global Git settings are untouched. Source data, README,
+historical reports and the user's separate dirty primary checkout are preserved.
+This correction is committed locally on the existing candidate branch; no push
+or deployment occurs.

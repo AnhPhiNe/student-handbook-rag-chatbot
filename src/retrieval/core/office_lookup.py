@@ -94,7 +94,8 @@ def _summarize_office(record: dict[str, Any]) -> dict[str, Any]:
     return {
         "record_id": record.get("record_id")
         or record.get("service_id")
-        or record.get("faculty_profile_id"),
+        or record.get("faculty_profile_id")
+        or record.get("office_profile_id"),
         "service_id": record.get("service_id"),
         "service": record.get("service"),
         "aliases": record.get("aliases") or [],

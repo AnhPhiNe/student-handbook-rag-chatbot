@@ -1194,7 +1194,7 @@ v59; fallbacks caused by a concurrent run were re-planned):
 | Group | v58 | v59 |
 |---|---:|---:|
 | Specialised complaints → RAG (3 questions) | 9/9 | 9/9 |
-| Directory services incl. "quản lý" wording (6 questions) | 14/18 | 18/18 |
+| Directory services incl. "quản lý" wording (6 questions) | 12/18 | 18/18 |
 | Foreign language (4 questions, F2 six plans) | 12/12, F2 4/6 | 12/12, F2 6/6 |
 | Two courses, letter + Đạt/Không đạt | 2/3 (1 clarify) | 3/3 |
 

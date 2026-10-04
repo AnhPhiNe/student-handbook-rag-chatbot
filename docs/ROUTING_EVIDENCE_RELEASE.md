@@ -1213,3 +1213,45 @@ Prompt 35,750 characters, budget raised from 35,500 to 35,800. The full request
 is frozen as `luna_planner_request_v59_boundaries.json`; v56–v58 snapshots are
 kept. 1,789 backend tests pass. No final-answer benchmark of v59 has been run;
 the composer prompt is unchanged.
+
+## Stage 25 — v60/v61: the same boundaries without case wordings (2026-10-04, Claude)
+
+v59 fixed the measured failures partly by naming their words: "phụ trách, quản
+lý hay cấp" and "báo sai" come from the failing questions, and its reference-
+table example named the TOEIC case. Its 134/135 and probe gains were measured on
+those same questions, so they did not show the prompt generalises.
+
+- **v60** states both rules as concepts: choose student_service by the kind of
+  answer, not the verb; a request to review an existing result or decision
+  (khiếu nại, phúc khảo are the names of these procedures) follows its rules in
+  RAG; a policy question needing a reference-table value also looks the table
+  up. That last rule proved too broad: official_v1 130/135, four questions the
+  scholarship table answers alone gained a RAG task.
+- **v61** keeps the concepts and narrows the last rule by content: lookup plus
+  RAG only when the question needs a table value and a conclusion the table
+  does not hold (a required level, an entitlement); a value or row the table
+  holds is one structured task.
+
+**Fresh probes** written for this check, with expectations fixed before any run
+(14 questions not taken from any benchmark, three plans each), v58 → v61:
+
+| Group | v58 | v61 |
+|---|---:|---:|
+| Directory services, verbs not seen before (5) | 15/15 | 15/15 |
+| Review requests → RAG (3) | 9/9 | 9/9 |
+| Output standard by certificate → lookup + RAG (2) | 1/6 | 6/6 |
+| Scholarship classification: table looked up (1) | 0/3 | 3/3, with a RAG task for "được học bổng" |
+| Scoring and office controls (3) | 9/9 | 9/9 |
+
+**official_v1 deterministic, contract v10:** v61 133/135 (`…T080137Z`, no planner
+errors). 051 dropped its label slot once (6/6 correct when re-planned); 113 adds
+a RAG task for "yêu cầu học tập với rèn luyện" in 5/6 plans under v61 and 4/6
+under v59, so its v59 pass was a draw. v59 measured 134/135, v60 130/135, v57
+132/135. Prompt 35,784 characters (budget 35,800); the request is frozen as
+`luna_planner_request_v61.json`. 1,789 backend tests pass.
+
+Remaining quoted phrases in the planner input are format examples, the names of
+procedures above, and the student_service requested_field text ('ở phòng nào',
+'gặp ai', 'ở đâu'), which predates this branch and still separates "which
+unit" from "where". The registry's span aliases label control codes and repair
+spans; an off-list phrasing does not drop a control value (checked offline).

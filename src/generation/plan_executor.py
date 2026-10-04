@@ -14,9 +14,11 @@ from dataclasses import dataclass
 from typing import Any
 
 from src.common.cohort import is_validated_source_applicable
+from src.common.source_identity import directory_evidence_identity
 from src.retrieval.core.citation_builder import (
     build_citation_from_lookup,
     enrich_citations_with_parent_details,
+    scoped_resolved_rows,
 )
 from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.hybrid_pipeline import (
@@ -69,27 +71,19 @@ def _merge_structured_citation_content(
     return json.dumps({"tables": tables}, ensure_ascii=False, indent=2, default=str)
 
 
-def _directory_record_ids(entry: dict[str, Any]) -> tuple[str, ...] | None:
-    """The record ids behind a directory evidence entry, or None for other evidence.
+def _table_evidence_identity(entry: dict[str, Any]) -> tuple[Any, ...] | None:
+    """A hydrated table representation belongs to its retrieving task.
 
-    A directory lookup cites its whole catalog (source_parent_id is e.g.
-    "student_faculty_profiles"), so two tasks that name different units share
-    that id. Their records must stay apart when task outputs are merged:
-    otherwise "email Khoa Toán, sđt Khoa CNTT" keeps only the first unit and
-    gives it to both tasks.
+    Canonical parent identity alone cannot merge a table handle with another
+    task's different table or plain-parent evidence. Public citations can still
+    deduplicate the parent after composition; ordinary source fusion is unchanged.
     """
-    try:
-        payload = json.loads(str(entry.get("content") or ""))
-    except (TypeError, ValueError):
+    metadata = entry.get("metadata") or {}
+    context = entry.get("raw_table_context") or metadata.get("raw_table_context")
+    if not context:
         return None
-    if not isinstance(payload, list):
-        return None
-    record_ids = sorted(
-        str(record["record_id"])
-        for record in payload
-        if isinstance(record, dict) and record.get("record_id")
-    )
-    return tuple(record_ids) or None
+    supports = entry.get("supports_task_ids") or metadata.get("supports_task_ids") or []
+    return tuple(sorted(supports)), str(context)
 
 
 @dataclass(frozen=True)
@@ -305,6 +299,9 @@ class PlanExecutor:
         cohort_coverage: dict[str, str] = {}
         resolution_by_cohort: dict[str, str] = {}
         clarification_by_cohort: dict[str, str] = {}
+        execution_mode_by_cohort: dict[str, str] = {}
+        retrieval_fallback_by_cohort: dict[str, str] = {}
+        structured_failure_by_cohort: dict[str, str] = {}
         task_citations: list[dict[str, Any]] = []
         task_items: list[dict[str, Any]] = []
         related_references: list[dict[str, Any]] = []
@@ -327,6 +324,11 @@ class PlanExecutor:
                 )
             cohort_key = str(task_cohort or "default")
             cohort_coverage[cohort_key] = sub_result["coverage"]
+            execution_mode_by_cohort[cohort_key] = sub_result.get("execution_mode", mode)
+            if sub_result.get("retrieval_fallback_reason"):
+                retrieval_fallback_by_cohort[cohort_key] = sub_result["retrieval_fallback_reason"]
+            if sub_result.get("structured_failure_reason"):
+                structured_failure_by_cohort[cohort_key] = sub_result["structured_failure_reason"]
             if mode == "structured":
                 resolution_by_cohort[cohort_key] = sub_result.get("resolution_status", "unavailable")
             task_evidence.extend(sub_result.get("evidence") or [])
@@ -361,6 +363,9 @@ class PlanExecutor:
                 "coverage": coverage,
                 "coverage_by_cohort": cohort_coverage,
                 "resolution_by_cohort": resolution_by_cohort,
+                "execution_mode_by_cohort": execution_mode_by_cohort,
+                "retrieval_fallback_by_cohort": retrieval_fallback_by_cohort,
+                "structured_failure_by_cohort": structured_failure_by_cohort,
                 "clarification_by_cohort": clarification_by_cohort,
                 "evidence": task_evidence,
                 "citation_count": len(task_citations),
@@ -418,6 +423,12 @@ class PlanExecutor:
             coverage_by_task,
             max_sources=self.public_source_limit,
         )
+        supports_by_source: dict[str, list[str]] = {}
+        for index, citation in enumerate(selected_citations):
+            supports = supports_by_source.setdefault(str(citation.get("chunk_id") or index), [])
+            for task_id in citation.get("supports_task_ids") or []:
+                if task_id not in supports:
+                    supports.append(task_id)
         # Task summaries deliberately remain conservative. A partially covered
         # multi-cohort task can still contribute an answerable composition unit.
         covered_any = any(
@@ -440,7 +451,9 @@ class PlanExecutor:
             }
         else:
             structured_result = None
-        task_modes = {str(task.get("mode")) for task in (plan.get("tasks") or [])}
+        task_modes = {mode for result in task_results
+                      for mode in ((result.get("execution_mode_by_cohort") or {}).values()
+                                   or [str(result.get("mode"))])}
         executable_modes = task_modes - {"clarify"}
         if len(executable_modes) > 1:
             execution_mode = "mixed"
@@ -467,13 +480,7 @@ class PlanExecutor:
             ),
             "task_results": task_results,
             "coverage_by_task": coverage_by_task,
-            "supports_task_ids": {
-                str(citation.get("chunk_id") or index): citation.get(
-                    "supports_task_ids"
-                )
-                or []
-                for index, citation in enumerate(selected_citations)
-            },
+            "supports_task_ids": supports_by_source,
             "needs_llm_answer": covered_any,
             "needs_clarification": bool(clarify_any and not covered_any),
             "clarification_question": clarification_questions[0]
@@ -514,11 +521,22 @@ class PlanExecutor:
         if not resolution or not resolution.result:
             return {
                 "resolution_status": "unavailable",
+                "structured_failure_reason": "unknown_resolution",
                 "coverage": "uncovered",
                 "evidence": [],
                 "citations": [],
                 "retrieved_items": [],
             }
+        if resolution.result_kind == "unavailable":
+            reason = resolution.result.get("unavailable_reason")
+            if reason == "no_source":
+                # One retrieval attempt, never another planner/structured call.
+                fallback = self._execute_planned_rag_task(task=task, task_id=task_id, cohort=cohort)
+                return {**fallback, "execution_mode": "rag", "resolution_status": "unavailable",
+                        "retrieval_fallback_reason": reason}
+            return {"resolution_status": "unavailable", "coverage": "uncovered",
+                    "structured_failure_reason": reason, "evidence": [], "citations": [],
+                    "retrieved_items": []}
         if resolution.result_kind == "clarification":
             return {
                 "resolution_status": "needs_clarification",
@@ -727,7 +745,8 @@ class PlanExecutor:
                     or metadata.get("source_parent_id")
                     or ""
                 ),
-                _directory_record_ids(item),
+                directory_evidence_identity(item),
+                _table_evidence_identity(item),
             )
             if key not in merged:
                 merged[key] = dict(item)
@@ -758,13 +777,17 @@ class PlanExecutor:
             key = (
                 str(citation.get("cohort") or "default"),
                 str(canonical_source_id or ""),
-                # A fact lock belongs to this task/input, not every question
-                # citing the same article. Keep unlocked source fusion unchanged.
+                # Computed results belong to this task/input, including
+                # conditional rows which must never become a global fact lock.
                 (
                     tuple(sorted(citation.get("supports_task_ids") or [])),
                     json.dumps(citation["resolved_result"], sort_keys=True, default=str),
-                ) if citation.get("resolved_result") is not None else None,
-                _directory_record_ids(citation),
+                ) if citation.get("resolved_result") is not None else (
+                    tuple(sorted(citation.get("supports_task_ids") or []))
+                    if scoped_resolved_rows(citation) else None
+                ),
+                directory_evidence_identity(citation),
+                _table_evidence_identity(citation),
             )
             if key not in merged:
                 merged[key] = dict(citation)

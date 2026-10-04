@@ -224,6 +224,29 @@ A Groq judgement of run C, for continuity with the run A and run B figures
 above, is scheduled after the daily cap resets. It does not change the
 comparison above, which uses one provider for both runs.
 
+## Planner v61, then table search (2026-10-04)
+
+Post-fix measurements, judged like Run C (gpt-oss-120b on DeepInfra, packet
+`judge-packet-v3-source-clauses`), with the composer on DeepInfra at low reasoning.
+
+| | Run C (rejudged) | v61, v35 | v61, table search |
+|---|---:|---:|---:|
+| Commit | `1a9ccd3d` | `9111b71f` | `5a7797de` |
+| answer_correctness | 0.961 | 0.960 | 0.966 |
+| 95% CI over clusters | — | 0.942 – 0.977 | 0.949 – 0.981 |
+| Answers scoring 0.0 | 4 | 1 | 0 |
+| Critical false passes | 0 | 0 | 0 |
+
+- v61 against Run C: paired 0.000, CI [−0.023, +0.025]; 8 cases fixed, 10
+  lower, none with a serious falsehood (read case by case; V4-169, the only 0,
+  is a judge error).
+- Table search against v61 on the same replayed plans: paired +0.005, CI
+  [−0.008, +0.020], no new 0. The pre-registered rule in `SPEC.md` is met.
+- Reruns: v61 V4-111 and V4-210 (composer timeout) and V4-234 (judge timeout);
+  table search V4-164 (composer timeout). No reranker was skipped.
+- Reports: `official_v4_answers_20261004T104406Z`,
+  `official_v4_answers_20261004T124930Z`.
+
 ## What these results do not establish
 
 - **Run B is not a hold-out.** Its figure describes the deployed system; the

@@ -70,3 +70,24 @@ def test_retry_failed_judges_only_the_failed_rows(monkeypatch, tmp_path) -> None
     second = judge_answers(cases, answers, resume=True, judge_client=client, retry_failed=True, **kwargs)
     assert len(client.seen) == 1
     assert second["summary"]["judged_n"] == 2
+
+
+def test_answer_workers_answer_every_case_once_in_dataset_order(monkeypatch, tmp_path):
+    import threading
+    from src.evaluation.answers import generate_answers
+
+    seen, lock = [], threading.Lock()
+
+    class Pipeline:
+        def answer(self, query, **kwargs):
+            with lock:
+                seen.append(query)
+            return {"status": "answered", "answer": f"a:{query}"}
+
+    monkeypatch.setenv("STUDENT_RAG_ANSWER_WORKERS", "4")
+    cases = [{"id": f"C{i}", "query": f"q{i}", "cohort": "K51"} for i in range(12)]
+    report = generate_answers(cases, cache_path=tmp_path / "answers.json", resume=False,
+                              pipeline_factory=Pipeline, checkpoint_context={"t": 1})
+    assert sorted(seen) == sorted(case["query"] for case in cases)
+    assert [row["id"] for row in report["cases"]] == [case["id"] for case in cases]
+    assert all(row["status"] == "answered" for row in report["cases"])

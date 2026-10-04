@@ -55,3 +55,4 @@ data/processed/chunks/*
 data/processed/metadata/*
 !data/processed/metadata/build_manifest.json
 !data/processed/metadata/structured_table_embedding_audit.json
+!data/processed/metadata/table_search_descriptions.json

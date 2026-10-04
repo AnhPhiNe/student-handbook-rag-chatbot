@@ -7,25 +7,39 @@ input:
   parent_docstore: data/processed/chunks/all_docstore_items.json
   program_directory: data/processed/directories/program_directory.json
 
-# Composer: DeepSeek flash with thinking off, chosen on 2026-09-27 over
-# Gemini 3.1 Flash-Lite (same quality on official_v1, no failed calls).
-# Thinking stays off (2026-09-28): with prompt v3.30, off and low gave the same
-# answers on the checks that do not need the judge (table-row reading, verbatim
-# contacts, notice years) while off is about 3 s faster per answer (p50).
+# Composer release candidate: DeepSeek flash with low reasoning (2026-10-03).
+# Eight targeted replays met the required facts; the ambiguous 5.2/10 query
+# returned D+ consistently in 3/3 tries versus 1/3 with none on identical prompts.
+# Broader answer regression is still pending. Historical off/low measurements
+# with prompt v3.30 are preserved in docs/DESIGN_DECISIONS.md.
 llm:
   provider: deepseek
+  # The DeepSeek API first (base_url absent): measured faster with low
+  # thinking than DeepInfra, which took 58-120 s on long questions (2026-10-04).
   model_name: deepseek-flash
-  reasoning_effort: none
+  reasoning_effort: low
   api_keys_env_var: DEEPSEEK_API_KEY
+  # The same DeepSeek-V4.1-Flash weights served by DeepInfra, used when the
+  # DeepSeek API cannot answer (no balance, key, rate limit, timeout, server or
+  # connection error) and when DEEPSEEK_API_KEY is empty. DeepInfra takes the
+  # same thinking parameters (checked: low thinks, none does not). Everything
+  # not overridden here is inherited. See src/generation/fallback_client.py.
+  fallback: &deepinfra
+    base_url: https://api.deepinfra.com/v1/openai
+    model_name: deepseek-ai/DeepSeek-V4.1-Flash
+    api_keys_env_var: DEEPINFRA_API_KEY
   temperature: 0.0
   # Omit max_tokens from composer requests; no application output ceiling.
-  # DeepSeek still defaults to 8K with thinking off (not unlimited).
+  # DeepSeek defaults to 64K with low thinking (not unlimited).
   # https://api-docs.deepseek.com/api/create-chat-completion/
   max_output_tokens: null
   max_retries: 2
   retry_base_delay_seconds: 2
   retry_max_delay_seconds: 20
-  request_timeout_seconds: 60
+  # Each network read waits up to 120 s. Low thinking on DeepInfra took 58-120 s
+  # for long questions (official_v4, 2026-10-04), so 60 s turned slow answers
+  # into errors when the fallback served them; waiting is better than failing.
+  request_timeout_seconds: 120
   max_context_chars: 160000
   # DeepSeek limits concurrency, not a request rate; this is only a local guard.
   key_pool:
@@ -40,6 +54,7 @@ directory_selector:
   model_name: deepseek-flash
   reasoning_effort: none
   api_keys_env_var: DEEPSEEK_API_KEY
+  fallback: *deepinfra
   max_output_tokens: 200
   max_retries: 1
   request_timeout_seconds: 15

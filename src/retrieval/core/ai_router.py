@@ -36,7 +36,7 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 # Comma-separated OpenAI keys for the planner's key pool.
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
-ROUTER_PROMPT_VERSION = "structured-regulation-v56-value-meets-condition"
+ROUTER_PROMPT_VERSION = "structured-regulation-v61-table-conclusions"
 
 
 # Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
@@ -107,7 +107,8 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
 - Chỉ gộp các khía cạnh bổ sung khi chúng cùng đối tượng, mode, lookup và phạm vi
   nguồn để tạo một answer target. Các trường hợp gộp:
   • Nhiều trường của cùng một đối tượng (vd. email và số điện thoại của một
-    phòng) → một task, requested_field là danh sách.
+    phòng) hoặc của cùng một hàng kết quả (vd. điểm chữ và Đạt/Không đạt của
+    một điểm) → một task; requested_field, nếu có, là danh sách.
   • Hỏi đơn vị/khoa rồi hỏi tiếp liên hệ của chính đơn vị/khoa đó (đơn vị phụ
     trách một dịch vụ rồi email của đơn vị đó; khoa của một ngành rồi email khoa
     đó) không phải phụ thuộc giữa task: runtime tự nối sang liên hệ, nên dùng một
@@ -125,6 +126,10 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
   • Hỏi liên hệ khoa/đơn vị thông qua nhiều ngành hoặc nhiều dịch vụ → mỗi
     ngành/dịch vụ một task, vì runtime chỉ nối sang liên hệ từ đúng một mục.
     Khoa/đơn vị đã nêu tên trực tiếp thì vẫn tra chung một task.
+- Cần cả giá trị trong một bảng tham chiếu của TOOLS và kết luận mà bảng không
+  chứa (mức bắt buộc, quyền hưởng) → task structured tra bảng, kể cả khi chưa nêu
+  giá trị cá nhân, và task RAG đọc quy định. Hỏi giá trị/hàng bảng có sẵn chỉ là
+  một task structured.
 - Từ nối "và" hoặc "so sánh" không tự quyết định số task.
 - Cohort không làm tăng số task: M target trên N cohort vẫn là M task, không tạo
   M×N tasks; mỗi task giữ đủ `cohorts`.
@@ -135,6 +140,8 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
   task đó. Nếu còn hơn 3 yêu cầu độc lập trong phạm vi, không thực thi một phần:
   xuất đúng một clarify task, đặt context_mode=ambiguous và yêu cầu chọn tối đa
   3 nội dung.
+- Giới hạn là 3 task sau các phép gộp hợp lệ, không chỉ 3 ý người dùng. Nếu các
+  phép tra độc lập cần hơn 3 task thì clarify trước khi chạy, không bỏ một phần.
 
 BƯỚC 3. CHỌN MODE VÀ LOOKUP
 - Ngoài phạm vi: chỉ đặt out_of_domain=true khi toàn bộ QUERY ngoài phạm vi nội
@@ -168,9 +175,12 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   • Đơn vị nêu đích danh + yêu cầu email/điện thoại/website/địa chỉ/văn phòng →
     directory office/faculty: khoa đào tạo (kể cả khi hỏi "văn phòng khoa")
     dùng faculty; phòng ban, trung tâm và đơn vị khác dùng office.
+    Đơn vị học thuật dạng Tổ có hồ sơ trong danh bạ khoa cũng dùng faculty.
     Không clarify/OOD chỉ vì tên thiếu tiền tố Phòng/Khoa.
-  • student_service chỉ dùng khi QUERY mô tả việc cần hỗ trợ và hỏi đơn vị phụ
-    trách hoặc thông tin liên hệ của đơn vị đó; không cần biết trước tên đơn vị.
+  • Chưa biết tên đơn vị và cần biết đơn vị thực hiện một việc hoặc liên hệ của
+    đơn vị đó → student_service; chọn theo loại đáp án, không theo động từ của
+    câu hỏi. Yêu cầu xem xét lại một kết quả hoặc quyết định đã có (khiếu nại,
+    phúc khảo) theo thủ tục quy chế → RAG. Giữ loại việc trong task.question.
   • Yêu cầu về cách tính hoặc quan hệ toán học giữa các thành phần dùng formula
     nếu TOOLS có công thức tương ứng, kể cả khi QUERY không viết từ "công thức".
 - So sánh là yêu cầu trình bày, không phải intent. Không dùng intent=compare;

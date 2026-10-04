@@ -34,6 +34,7 @@ class EmbeddingClient:
         self.query_retries = int(config.get("query_retries", 1))
         self.batch_size = int(config.get("document_batch_size", 64))
         self.concurrency = int(config.get("document_concurrency", 8))
+        self.document_retries = int(config.get("document_retries", 4))
         self._post = post
 
     def embed_query(self, text: str) -> list[float]:
@@ -47,7 +48,7 @@ class EmbeddingClient:
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         batches = [texts[i:i + self.batch_size] for i in range(0, len(texts), self.batch_size)]
         with ThreadPoolExecutor(self.concurrency) as pool:
-            results = pool.map(lambda batch: self._request(batch, timeout=180, retries=4)[0], batches)
+            results = pool.map(lambda batch: self._request(batch, timeout=180, retries=self.document_retries)[0], batches)
             return [vector for batch in results for vector in batch]
 
     def _request(
@@ -64,6 +65,8 @@ class EmbeddingClient:
                 response.raise_for_status()
                 body = response.json()
                 data = sorted(body["data"], key=lambda item: item["index"])
+                if [item["index"] for item in data] != list(range(len(texts))):
+                    raise ValueError("Embedding response indexes do not match input positions.")
                 vectors = [list(map(float, item["embedding"])) for item in data]
                 if len(vectors) != len(texts):
                     raise ValueError("Embedding response does not match its input.")

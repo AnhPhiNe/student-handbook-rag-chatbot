@@ -803,7 +803,13 @@ def test_structured_legacy_fallback_preserves_full_table() -> None:
     assert "full_table" in prompt
 
 
-def test_applicable_amendment_is_kept_in_the_unit() -> None:
+def test_applicable_amendment_is_kept_in_the_unit(monkeypatch) -> None:
+    # A related footnote needs an authoritative target, not a guessed neighbor.
+    monkeypatch.setattr("src.generation.amendment_precedence.load_amendment_registry", lambda: ({
+        "target_parent_id": "article-10",
+        "replacement_text": "Sinh viên học cải thiện được dùng điểm đạt cao nhất làm điểm chính thức.",
+        "cohort": "K51", "applicability": {"kind": "min_admission_year", "year": 2025},
+    },))
     amendment_note = (
         "Điểm này đã được sửa đổi tại Quyết định 4743. "
         "Việc sửa đổi, bổ sung áp dụng từ khoá tuyển sinh năm 2025 trở về sau. "
@@ -1157,7 +1163,8 @@ def test_prompt_describes_candidate_as_the_default_role() -> None:
     """
     from src.generation.prompt_builder import _assign_evidence_roles
 
-    sources = [{"article_label": "Điều 14"}, {"article_label": "Điều 30"}]
+    sources = [{"source_id": "article-14", "article_label": "Điều 14"},
+               {"source_id": "article-30", "article_label": "Điều 30"}]
     roles = _assign_evidence_roles(sources, unit_question="Nghỉ học tạm thời cần gì?",
                                    original_query="Nghỉ học tạm thời cần gì?")
     assert {source["role"] for source in roles} == {"candidate"}

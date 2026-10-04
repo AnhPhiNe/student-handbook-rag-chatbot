@@ -19,6 +19,7 @@ from src.common.legal_reference import (
     normalize_article_label,
 )
 from src.common.text import fold_text
+from src.retrieval.core.citation_builder import scoped_resolved_rows
 
 from .amendment_precedence import (
     ApplicableAmendment,
@@ -28,7 +29,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.33-minimum-levels"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.34-source-context"
 
 
 def build_answer_prompt_bundle(
@@ -80,6 +81,7 @@ def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
 - AUTHORIZED_EVIDENCE_BY_UNIT gồm các đơn vị cần trả lời; mỗi đơn vị là một ý của câu hỏi cho một cohort.
 - Trong mỗi đơn vị: question là ý cần trả lời; mode=structured (kết quả tra bảng, danh bạ), rag (đoạn quy chế) hoặc clarify; coverage=covered (có căn cứ), uncovered (chưa tìm thấy căn cứ) hoặc needs_clarification (cần hỏi lại); primary_evidence là các nguồn được phép dùng, mỗi nguồn có source_ref, document_title (tên văn bản), article_label (Điều, nếu văn bản chia theo Điều), content, role, printed_in (sổ tay in nguồn đó) và có thể có currency_note (lưu ý về văn bản mới hơn).
 - role=candidate là mặc định: nguồn hệ thống tìm được cho đơn vị, có thể chỉ liên quan một phần. role=target chỉ có khi câu hỏi nêu đích danh một Điều khớp với nguồn đó.
+- source_context (nếu có) là văn bản của chính nguồn bảng/công thức, cùng source_ref; dùng để xét điều kiện/ngoại lệ của kết luận, không phải nguồn từ task khác. Coverage chỉ cho biết có evidence, không bảo đảm mọi ý đã có căn cứ.
 
 Mọi mục dưới đây là bắt buộc.
 
@@ -110,6 +112,7 @@ Mọi mục dưới đây là bắt buộc.
 4. BẢNG VÀ SỐ LIỆU
 - Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vào Markdown vì giao diện đã hiển thị dữ liệu đó riêng.
 - Hệ thống tra sẵn hàng cho bạn bất cứ khi nào tra được (resolved_result, resolved_rows); phải dùng đúng hàng đó, không chọn lại hàng hay dò lại khoảng giá trị. resolved_result là kết quả đã chốt khi chỉ một phạm vi áp dụng.
+- Kết quả tra bảng không tự xác lập quyền hưởng hoặc kết luận chính sách cuối. Giữ nguyên giá trị đã tra nhưng xét điều kiện/ngoại lệ trong source_context và evidence của đúng đơn vị; thiếu căn cứ thì nói rõ phần chưa xác lập.
 - resolved_rows trong từng bảng là kết quả riêng của phạm vi bảng đó khi nhiều phạm vi cùng áp dụng; nêu từng trường hợp kèm phạm vi, không gộp thành một kết quả duy nhất.
 - Chỉ khi evidence không có resolved_result lẫn resolved_rows thì mới tự đọc bảng: chọn bảng đúng phạm vi áp dụng rồi lấy kết quả từ đúng hàng và cột tương ứng, giữ nguyên quan hệ giữa các giá trị và nhãn kết quả. Không ghép giá trị giữa các bảng hoặc hàng. Nếu còn nhiều bảng hoặc hàng áp dụng, trình bày các trường hợp có căn cứ, không tự chọn một kết quả duy nhất.
 - Nội dung rag có thể chứa bảng đã được chuyển thành dòng, mỗi dòng dạng "- Tên bảng › nhóm › mục: giá trị" (dấu "–" cũng dùng để nối các phần). Mỗi dòng là một hàng độc lập; các dòng liền nhau thường có chung phần đầu và chỉ khác nhãn mục ở cuối. Chỉ lấy giá trị từ dòng có nhãn mục khớp đúng điều được hỏi, không lấy giá trị của dòng kề bên có nhãn khác.
@@ -126,6 +129,7 @@ Mọi mục dưới đây là bắt buộc.
 - Dùng từ ngữ của sinh viên, vd. "khóa K51"; không dùng các từ kỹ thuật của đầu vào như cohort, evidence, source_ref hoặc role.
 - Nêu rõ câu trả lời dựa theo sổ tay nào, theo printed_in của nguồn được dùng (vd. "Theo Sổ tay sinh viên khóa K50 (năm học 2024 – 2025), …"), để người hỏi tìm lại được trong sổ tay đó. Nếu printed_in là sổ tay của khóa khác với khóa của đơn vị, nói rõ văn bản được in trong sổ tay đó.
 - Nếu nguồn được dùng có currency_note, thêm nguyên nội dung currency_note thành một câu lưu ý ở cuối phần trả lời của đơn vị, mỗi văn bản một lần; không suy đoán nội dung của văn bản mới hơn.
+- Không thêm currency_note của nguồn chỉ xuất hiện trong danh sách nhưng không hỗ trợ nội dung trả lời; không kéo lưu ý của chính sách khác vào kết luận.
 
 AUTHORIZED_EVIDENCE_BY_UNIT
 {evidence_context}
@@ -195,6 +199,7 @@ def build_authorized_evidence_packet(
         fallback_cohort=fallback_cohort,
         fallback_question=query,
     )
+    single_logical_task = len({unit["task_id"] for unit in units}) == 1
     source_groups: list[list[dict[str, Any]]] = []
     for unit in units:
         authorized_sources = [
@@ -204,6 +209,7 @@ def build_authorized_evidence_packet(
             authorized_sources,
             unit_question=unit["question"],
             original_query=query,
+            allow_query_fallback=single_logical_task,
         )
         source_groups.append(authorized_sources)
 
@@ -223,11 +229,13 @@ def build_authorized_evidence_packet(
             rendered
             for source, budget in zip(authorized_sources, budgets, strict=True)
             if (rendered := _source_for_unit(source, unit, budget))["content"]
+            or rendered.get("table_context_unavailable")
         ]
         amendments = collect_applicable_amendments(
             retrieval_result,
             query=unit["question"],
             cohort=None if unit["cohort"] == "default" else unit["cohort"],
+            allowed_primary_parent_ids={source["source_id"] for source in authorized_sources},
         )
         packet_units.append(
             {
@@ -387,7 +395,8 @@ def _composition_units(
                     "question": str(
                         task.get("question") or result.get("question") or ""
                     ).strip(),
-                    "mode": str(task.get("mode") or result.get("mode") or "rag"),
+                    "mode": str((result.get("execution_mode_by_cohort") or {}).get(cohort_key)
+                                or task.get("mode") or result.get("mode") or "rag"),
                     "cohort": cohort_key,
                     "coverage": coverage,
                     "resolution_status": (result.get("resolution_by_cohort") or {}).get(cohort_key),
@@ -428,15 +437,17 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
     )
     if isinstance(applicable_cohorts, str):
         applicable_cohorts = [applicable_cohorts]
-    source_id = str(
+    source_identity = str(
         citation.get("source_parent_id")
         or citation.get("parent_section_id")
         or citation.get("chunk_id")
         or citation.get("document_id")
-        or f"source-{index}"
-    )
+        or ""
+    ).strip()
+    source_id = source_identity or f"source-{index}"
     content = str(citation.get("content") or citation.get("document") or "").strip()
     parent_content = str(citation.get("parent_content") or "").strip()
+    conditional_rows = scoped_resolved_rows(citation)
     article_label = normalize_article_label(
         citation.get("article_label"),
         citation.get("parent_article"),
@@ -451,6 +462,7 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
     return {
         "source_ref": f"S{index}",
         "source_id": source_id,
+        "_has_source_identity": bool(source_identity),
         "title": citation.get("title") or metadata.get("title"),
         "document_title": citation.get("document_identity") or metadata.get("document_title"),
         "article_label": article_label,
@@ -466,6 +478,11 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
             or metadata.get("applicability_validated")
         ),
         "applicability": citation.get("applicability") or metadata.get("applicability"),
+        **(
+            {"resolved_rows": copy.deepcopy(conditional_rows),
+             "resolved_rows_cohort": citation.get("cohort") or metadata.get("cohort")}
+            if conditional_rows else {}
+        ),
         **(
             {
                 # Keep the exact selected result, inputs and provenance; full
@@ -491,6 +508,8 @@ def _normalize_source(citation: dict[str, Any], index: int) -> dict[str, Any]:
             parent_content,
             source_parent_id=source_id,
         ),
+        "has_regulation_context": citation.get("chunk_type") in {"structured_lookup", "formula_rule"},
+        **({"raw_table_context": citation["raw_table_context"]} if citation.get("raw_table_context") else {}),
     }
 
 
@@ -503,7 +522,9 @@ def _source_supports_unit(source: dict[str, Any], unit: dict[str, Any]) -> bool:
     target_cohort = None if unit["cohort"] == "default" else unit["cohort"]
     # Source applicability permits sharing a document, not a lookup result
     # computed for a different execution cohort of the same task.
-    result_cohort = normalize_cohort(source.get("resolved_result_cohort"))
+    result_cohort = normalize_cohort(
+        source.get("resolved_result_cohort") or source.get("resolved_rows_cohort")
+    )
     if result_cohort and result_cohort != normalize_cohort(target_cohort):
         return False
     return is_validated_source_applicable(source, target_cohort)
@@ -514,27 +535,42 @@ def _assign_evidence_roles(
     *,
     unit_question: str,
     original_query: str,
+    allow_query_fallback: bool = False,
 ) -> list[dict[str, Any]]:
-    """Mark one uniquely requested article without treating rank as authority."""
+    """Mark a uniquely requested source within this task's authorized evidence.
 
-    query_text = fold_text(f"{unit_question} {original_query}")
+    Other tasks' article references cannot supply a target or change its budget.
+    One logical task (including cohort variants) or an unplanned request may
+    use the original question only when its local question names no article.
+    """
+    query_text = fold_text(unit_question)
     article_numbers = set(re.findall(r"\bdieu\s+(\d+)\b", query_text))
+    if not article_numbers and allow_query_fallback:
+        article_numbers = set(re.findall(r"\bdieu\s+(\d+)\b", fold_text(original_query)))
     article_matches = [
         index
         for index, source in enumerate(sources)
         if _article_number(source.get("article_label")) in article_numbers
     ]
 
-    target_index: int | None = None
-    if len(article_matches) == 1:
-        target_index = article_matches[0]
-
-    if target_index is None:
-        return [{**source, "role": "candidate"} for source in sources]
+    target_indexes: set[int] = set()
+    if len(article_numbers) == 1 and all(
+        sources[index].get("_has_source_identity", bool(sources[index].get("source_id")))
+        for index in article_matches
+    ):
+        identities = {
+            (sources[index]["source_id"], sources[index].get("source_cohort"),
+             sources[index].get("document_title"))
+            for index in article_matches
+        }
+        # Multiple representations of one canonical source are not different
+        # documents. Unknown identity or distinct editions remain ambiguous.
+        if len(identities) == 1:
+            target_indexes = set(article_matches)
     return [
         {
             **source,
-            "role": "target" if index == target_index else "candidate",
+            "role": "target" if index in target_indexes else "candidate",
         }
         for index, source in enumerate(sources)
     ]
@@ -559,19 +595,58 @@ def _source_for_unit(
     """
 
     content = _source_content_for_unit(source, unit)
-    return {
+    result = {
         key: value
         for key, value in {
             **source,
             "content": limit_context(content, max_chars),
         }.items()
-        if key != "parent_content"
+        if key not in {"parent_content", "has_regulation_context", "raw_table_context", "resolved_rows_cohort", "_has_source_identity"}
     }
+    if unit.get("mode") != "structured":
+        result.pop("resolved_rows", None)
+    elif source.get("resolved_rows"):
+        # Foreground the already-computed conditional rows, not every other
+        # numeric interval in the display table. The full source context below
+        # still supplies policy conditions; API/UI tables remain unchanged.
+        if len(_structured_content(source)) > max_chars:
+            result.pop("resolved_rows", None)
+    if unit.get("mode") == "structured" and source.get("has_regulation_context") and source.get("parent_content"):
+        table_content = _structured_content(source)
+        result["content"] = limit_context(table_content, max_chars)
+        remaining = max(0, max_chars - len(result["content"]))
+        if remaining:
+            result["source_context"] = limit_context(str(source["parent_content"]), remaining)
+    elif unit.get("mode") == "rag" and source.get("raw_table_context"):
+        # Put the matched original table first; never the search description.
+        raw_table = str(source["raw_table_context"])
+        result["content"] = (raw_table if len(raw_table) <= max_chars else
+                             "Bảng gốc không đủ budget để cung cấp đầy đủ; chưa có căn cứ cho các giá trị trong bảng.")
+        result["content"] = limit_context(result["content"], max_chars)
+        if len(raw_table) > max_chars:
+            result["table_context_unavailable"] = "context_budget"
+        remaining = max(0, max_chars - len(result["content"]))
+        if remaining:
+            result["source_context"] = limit_context(str(source.get("parent_content") or source.get("content") or ""), remaining)
+    return result
 
 
 def _source_content_for_unit(source: dict[str, Any], unit: dict[str, Any]) -> str:
     if unit.get("mode") == "rag" and source.get("parent_content"):
-        return str(source["parent_content"])
+        return str(source.get("raw_table_context") or "") + str(source["parent_content"])
+    if unit.get("mode") == "rag" and source.get("raw_table_context"):
+        return str(source["raw_table_context"]) + str(source.get("content") or "")
+    if unit.get("mode") == "structured" and source.get("has_regulation_context") and source.get("parent_content"):
+        return _structured_content(source) + str(source["parent_content"])
+    if unit.get("mode") == "structured":
+        return _structured_content(source)
+    return str(source.get("content") or "")
+
+
+def _structured_content(source: dict[str, Any]) -> str:
+    """Use conditional lookup rows when every selected table was resolved."""
+    if source.get("resolved_rows"):
+        return _to_pretty_json({"resolved_rows": source["resolved_rows"]})
     return str(source.get("content") or "")
 
 

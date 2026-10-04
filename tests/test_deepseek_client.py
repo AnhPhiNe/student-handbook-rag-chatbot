@@ -117,6 +117,7 @@ def test_composer_default_and_explicit_caps_do_not_change_selector_budgets(monke
 
     monkeypatch.setattr(module, "load_project_env", lambda: None)
     monkeypatch.setenv("DEEPSEEK_API_KEY", "offline-deepseek-key")
+    monkeypatch.setenv("DEEPINFRA_API_KEY", "offline-deepinfra-key")
     with open("configs/answer_generation.yaml", encoding="utf-8") as file:
         config = yaml.safe_load(file)
     assert create_composer_client(config["llm"]).max_output_tokens is None
@@ -211,24 +212,33 @@ def test_rejects_missing_key_and_unknown_effort(monkeypatch):
         DeepSeekClient(reasoning_effort="medium")
 
 
-@pytest.mark.parametrize(("config_path", "effort"), [
-    ("configs/answer_generation.yaml", "none"),
-    ("configs/experiments/answer_deepseek_low.yaml", "low"),
+@pytest.mark.parametrize(("config_path", "effort", "model", "base_url", "timeout"), [
+    ("configs/answer_generation.yaml", "low", "deepseek-flash", "https://api.deepseek.com", 120),
+    ("configs/experiments/answer_deepseek_low.yaml", "low", "deepseek-flash", "https://api.deepseek.com", 60),
 ])
-def test_pipeline_builds_the_configured_deepseek_composer(monkeypatch, config_path, effort):
+def test_pipeline_builds_the_configured_deepseek_composer(monkeypatch, config_path, effort, model, base_url, timeout):
     from src.generation.answer_pipeline import AnswerPipeline
 
     monkeypatch.setattr(module, "load_project_env", lambda: None)
     monkeypatch.setenv("DEEPSEEK_API_KEY", "offline-deepseek-key")
+    monkeypatch.setenv("DEEPINFRA_API_KEY", "offline-deepinfra-key")
     pipeline = object.__new__(AnswerPipeline)
     pipeline.config = __import__("yaml").safe_load(
         open(config_path, encoding="utf-8"))
     pipeline._llm_client = None
     pipeline._component_init_lock = __import__("threading").Lock()
     client = pipeline._get_llm_client()
-    assert isinstance(client, DeepSeekClient)
     assert (client.model_name, client.reasoning_effort, client.request_timeout_seconds) == (
-        "deepseek-flash", effort, 60)
+        model, effort, timeout)
+    assert client.base_url == base_url
+    if pipeline.config["llm"].get("fallback"):
+        # The release falls back to the same weights on DeepInfra, same settings.
+        backup = client.fallback
+        assert (backup.model_name, backup.base_url, backup.reasoning_effort,
+                backup.request_timeout_seconds) == (
+            "deepseek-ai/DeepSeek-V4.1-Flash", "https://api.deepinfra.com/v1/openai", effort, timeout)
+    else:
+        assert isinstance(client, DeepSeekClient)
 
 
 def test_shared_plans_enable_the_planner_cache_only_for_the_run(monkeypatch, tmp_path):

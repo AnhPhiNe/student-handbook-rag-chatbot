@@ -6,6 +6,7 @@ from src.common.cohort import (
     is_cohort_applicable,
     normalize_cohort,
 )
+from src.common.score import parse_score
 from src.common.text import fold_text
 from src.common.text import slot_values as _slot_values
 from src.retrieval.core.ordinal_labels import annotate_minimum_levels
@@ -19,22 +20,6 @@ LABEL_ALIASES = {
 
 
 normalize_text = partial(fold_text, keep="+.,-")
-
-
-def _extract_numbers(query_norm: str) -> list[float]:
-    values: list[float] = []
-    for match in re.finditer(r"(?<!\d)(\d+(?:[,.]\d+)?)(?!\d)", query_norm):
-        try:
-            values.append(float(match.group(1).replace(",", ".")))
-        except ValueError:
-            continue
-    return values
-
-
-def _strip_cohort_numbers(query_norm: str) -> str:
-    query_norm = re.sub(r"\bk\s*\d{2}\b", " ", query_norm)
-    query_norm = re.sub(r"\bkhoa\s*\d{2}\b", " ", query_norm)
-    return query_norm
 
 
 def _filter_tables(
@@ -77,12 +62,19 @@ def _rows_for_slots(
     for item in values:
         item_norm = normalize_text(item)
         labels = _requested_labels(item_norm)
-        numbers = _extract_numbers(_strip_cohort_numbers(item_norm))
-        if not labels and len(numbers) != 1:
-            # Invalid values are normally rejected by the central contract;
-            # do not let a direct resolver call turn one into all rows.
+        score = parse_score(item)
+        item_score = None
+        if labels:
+            norm_labels = {normalize_text(label) for label in labels}
+            item_rows = [row for row in rows
+                         if normalize_text(row.get("label") or row.get("scholarship_level")) in norm_labels]
+        elif score is not None and score.scale is None and score.value >= 0:
+            # Match the scalar input, not numbers extracted from a label or fraction.
+            item_score = float(score.value)
+            item_rows = [row for row in rows
+                         if in_range(item_score, str(row.get("scholarship_score_range") or ""))]
+        else:
             continue
-        item_rows, item_score = _rows_for_query(item_norm, table)
         if item_score is not None:
             numeric_values.append(item_score)
         for row in item_rows:
@@ -91,34 +83,6 @@ def _rows_for_slots(
 
     matched_score = numeric_values[0] if len(numeric_values) == 1 else None
     return matched_rows, matched_score
-
-
-def _rows_for_query(
-    query_norm: str,
-    table: dict[str, Any],
-) -> tuple[list[dict[str, Any]], float | None]:
-    rows = list(table.get("rows") or [])
-    labels = _requested_labels(query_norm)
-    if labels:
-        norm_labels = {normalize_text(lbl) for lbl in labels}
-        return [
-            row
-            for row in rows
-            if normalize_text(row.get("label") or row.get("scholarship_level"))
-            in norm_labels
-        ], None
-
-    numbers = _extract_numbers(_strip_cohort_numbers(query_norm))
-    score = numbers[-1] if numbers else None
-    if score is None:
-        return rows, None
-
-    matched = [
-        row
-        for row in rows
-        if in_range(score, str(row.get("scholarship_score_range") or ""))
-    ]
-    return matched, score
 
 
 def scholarship_table_lookup(

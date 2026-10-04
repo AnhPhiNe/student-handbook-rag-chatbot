@@ -46,11 +46,16 @@ def _snapshot(suite: str, case_path, answer_config=None, shared_plans=None) -> d
         "retrieval_config": retrieval_config,
         "reranker": {"enabled": bool(reranker.get("enabled")), "model": reranker.get("model")},
         "planner": {"provider": router.provider, "model": router.model_name,
+                    "config": os.environ.get("STUDENT_RAG_ROUTER_CONFIG") or "configs/ai_router.yaml",
                     "prompt_version": ROUTER_PROMPT_VERSION,
                     "reasoning_effort": router.reasoning_effort,
                     "normalizer_version": QUERY_PLAN_NORMALIZER_VERSION},
+        "answer_workers": int(os.environ.get("STUDENT_RAG_ANSWER_WORKERS") or 1),
         "composer": {"provider": answer_llm.get("provider"), "model": answer_llm.get("model_name"),
+                     "base_url": answer_llm.get("base_url") or "https://api.deepseek.com",
                      "reasoning_effort": answer_llm.get("reasoning_effort"),
+                     # Which calls the fallback answered is in each answer's trace.
+                     "fallback": answer_llm.get("fallback"),
                      "config": answer_config.as_posix(), "prompt_version": ANSWER_PROMPT_VERSION},
         "shared_plans": Path(shared_plans).as_posix() if shared_plans else None,
         "storage": {key: os.environ.get(key) for key in

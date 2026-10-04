@@ -64,6 +64,7 @@ class DeepSeekClient(PooledLLMClient):
         api_keys_env_var: str = "DEEPSEEK_API_KEY",
         key_pool_config: KeyPoolConfig | dict[str, Any] | None = None,
         response_format: dict[str, Any] | None = None,
+        base_url: str | None = None,
     ) -> None:
         load_project_env()
         self.available_keys = [
@@ -77,6 +78,9 @@ class DeepSeekClient(PooledLLMClient):
         if effort not in REASONING_EFFORTS:
             raise ValueError(f"Unsupported DeepSeek reasoning effort: {effort}")
         self.model_name = model_name
+        # Another OpenAI-compatible host serving the same DeepSeek weights
+        # (e.g. DeepInfra) takes the same thinking parameters.
+        self.base_url = base_url or DEEPSEEK_BASE_URL
         self.reasoning_effort = effort
         self.temperature = float(temperature)
         # None omits max_tokens entirely; the provider's default still applies.
@@ -99,7 +103,7 @@ class DeepSeekClient(PooledLLMClient):
         """
         from openai import OpenAI
 
-        return OpenAI(api_key=api_key, base_url=DEEPSEEK_BASE_URL,
+        return OpenAI(api_key=api_key, base_url=self.base_url,
                       timeout=self.request_timeout_seconds, max_retries=0)
 
     def _request(self, prompt: str, client: Any, **options: Any) -> Any:

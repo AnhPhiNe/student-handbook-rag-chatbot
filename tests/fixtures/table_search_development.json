@@ -1,0 +1,21 @@
+{
+  "purpose": "Frozen development retrieval probes, not held-out answer-quality gold",
+  "source_build_id": "build-0e6fa69b1de57a12dc1a",
+  "cases": [
+    {"id":"foreign_48","cohort":"K48-K49","query":"TOEIC cần mấy kỹ năng và điểm từng kỹ năng để tương đương bậc 3?","table_subtype":"foreign_language_equivalency","source_cohort":"K50"},
+    {"id":"foreign_50","cohort":"K50","query":"TOEIC để tốt nghiệp cần thi những kỹ năng nào và điểm bao nhiêu?","table_subtype":"foreign_language_equivalency","source_cohort":"K50"},
+    {"id":"foreign_51","cohort":"K51","query":"IELTS và TOEIC quy đổi sang bậc ngoại ngữ nào?","table_subtype":"foreign_language_equivalency","source_cohort":"K50"},
+    {"id":"conduct_48","cohort":"K48-K49","query":"Xếp loại tổng điểm rèn luyện theo khung điểm thế nào?","table_subtype":"conduct_classification","source_cohort":"K48-K49"},
+    {"id":"conduct_50","cohort":"K50","query":"Bị cảnh cáo thì xếp loại rèn luyện toàn khóa có vượt mức Tốt không?","table_subtype":"conduct_classification","source_cohort":"K50"},
+    {"id":"conduct_51","cohort":"K51","query":"92 điểm rèn luyện được loại gì theo bảng?","table_subtype":"conduct_classification","source_cohort":"K51"},
+    {"id":"grade_48","cohort":"K48-K49","query":"Điểm học phần thang 10 quy đổi sang điểm chữ như thế nào?","table_subtype":"grade_scale","source_cohort":"K48-K49"},
+    {"id":"grade_50","cohort":"K50","query":"Bảng điểm chữ môn học theo điểm hệ 10","table_subtype":"grade_scale","source_cohort":"K50"},
+    {"id":"grade_51","cohort":"K51","query":"Học phần nền tảng có các mức điểm chữ và điểm hệ 10 nào?","table_subtype":"grade_scale","source_cohort":"K51"},
+    {"id":"scholarship_48","cohort":"K48-K49","query":"Mức tiền học bổng Xuất sắc tính theo hệ số học phí nào?","table_subtype":"scholarship_amount","source_cohort":"K48-K49"},
+    {"id":"scholarship_50","cohort":"K50","query":"Số tiền học bổng Giỏi dựa trên tín chỉ và học phí thế nào?","table_subtype":"scholarship_amount","source_cohort":"K50"},
+    {"id":"scholarship_51","cohort":"K51","query":"Tra hệ số mức học bổng Khá và căn cứ học phí","table_subtype":"scholarship_amount","source_cohort":"K51"},
+    {"id":"duration_48","cohort":"K48-K49","query":"Thời gian học chuẩn và tối đa hệ chính quy bằng thứ nhất","table_subtype":"study_duration","source_cohort":"K48-K49"},
+    {"id":"duration_50","cohort":"K50","query":"Liên thông chính quy học tối đa bao lâu theo loại chương trình?","table_subtype":"study_duration","source_cohort":"K50"},
+    {"id":"duration_51","cohort":"K51","query":"Chính quy thời gian học chuẩn và tối đa của khóa là bao nhiêu?","table_subtype":"study_duration","source_cohort":"K51"}
+  ]
+}

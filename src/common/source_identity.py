@@ -10,6 +10,40 @@ from src.common.cohort import normalize_cohort
 from src.common.legal_reference import normalize_article_label
 
 
+def directory_evidence_identity(entry: dict[str, Any]) -> tuple[Any, ...] | None:
+    """Distinguish record lists within a catalog; missing IDs stay task-local.
+
+    A catalog ID identifies the source, not its selected records. Only a complete
+    list of record IDs permits sharing across tasks. Other evidence retains its
+    existing parent/table identity; no record ID is invented from a unit name.
+    """
+    metadata = entry.get("metadata") or {}
+    chunk_type = entry.get("chunk_type") or metadata.get("chunk_type")
+    if entry.get("evidence_kind") != "structured_result" and chunk_type not in {
+        "office_directory", "faculty_directory", "program_directory",
+        "student_office_profile", "student_faculty_profile", "student_service_directory",
+    }:
+        return None
+    try:
+        payload = json.loads(str(entry.get("content") or ""))
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(payload, list):
+        return None
+    record_ids = [
+        str(record.get("record_id") or "").strip() if isinstance(record, dict) else ""
+        for record in payload
+    ]
+    if record_ids and all(record_ids):
+        return "records", tuple(sorted(record_ids))
+    supports = entry.get("supports_task_ids") or metadata.get("supports_task_ids") or []
+    return (
+        "task_local",
+        tuple(sorted(supports)),
+        json.dumps(payload, ensure_ascii=False, sort_keys=True, default=str),
+    )
+
+
 def canonical_article_source_id(
     *,
     document_identity: Any,

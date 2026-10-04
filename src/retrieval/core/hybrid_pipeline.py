@@ -21,6 +21,7 @@ from src.retrieval.core.graph_traverser import NetworkXGraphTraverser
 from src.retrieval.core.retrieval_mode import resolve_retrieval_mode
 from src.retrieval.core.runtime_health import set_bm25_runtime_status
 from src.retrieval.core.embedding_model import load_embedding_client
+from src.retrieval.core.table_search import ROLE as TABLE_SEARCH_ROLE, load_table_search, raw_table_for_handle, raw_table_context
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
 
@@ -286,6 +287,7 @@ class ChildParentHybridRetriever:
         retrieval = self.runtime_config.get("retrieval") or {}
         self.candidate_children = max(1, int(retrieval.get("candidate_children", 24)))
         embedding = self.runtime_config.get("embedding") or {}
+        self.table_search_tables = load_table_search(retrieval.get("table_search") or {}, collection_name)
         self.qdrant_client = QdrantClient(
             url=qdrant_url,
             api_key=qdrant_key,
@@ -510,6 +512,7 @@ class ChildParentHybridRetriever:
             scored_chunks=primary_scored,
             top_k_final=top_k_final,
             retrieval_telemetry=retrieval_telemetry,
+            cohort=cohort,
         )
         if eval_mode in {"vector_only", "no_graph"}:
             retrieval_telemetry["retrieval_latency_ms"] = (
@@ -690,11 +693,17 @@ class ChildParentHybridRetriever:
         scored_chunks: list[tuple[float, dict[str, Any]]],
         top_k_final: int,
         retrieval_telemetry: dict[str, Any] | None = None,
+        cohort: str | None = None,
     ) -> list[dict[str, Any]]:
         """Group top child/table matches back into parent-section result objects."""
         parent_groups: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
         parent_best_score: dict[str, float] = {}
         for score, chunk in scored_chunks:
+            if (chunk.get("metadata") or {}).get("corpus_role") == TABLE_SEARCH_ROLE and raw_table_for_handle(
+                chunk, getattr(self, "table_search_tables", {}), cohort,
+            ) is None:
+                # Disabled/stale handles must never be treated as source evidence.
+                continue
             parent_id = str(
                 (chunk.get("metadata") or {}).get("parent_section_id") or ""
             )
@@ -726,6 +735,12 @@ class ChildParentHybridRetriever:
                 continue
 
             parent_metadata = dict(parent.get("metadata") or {})
+            table_context = raw_table_context(parent_groups[parent_id], getattr(self, "table_search_tables", {}), parent, cohort)
+            if not table_context:
+                parent_groups[parent_id] = [(score, chunk) for score, chunk in parent_groups[parent_id]
+                                            if (chunk.get("metadata") or {}).get("corpus_role") != TABLE_SEARCH_ROLE]
+                if not parent_groups[parent_id]:
+                    continue
             focused_chunks = self._focused_chunks_for_parent(
                 scored_group=parent_groups[parent_id],
             )
@@ -742,6 +757,9 @@ class ChildParentHybridRetriever:
             # tables) for authorized RAG sources, subject to task/cohort checks
             # and the context budget; it is not limited to citation display.
             doc["content"] = focused_content or parent.get("content") or ""
+            if table_context:
+                # Public excerpt stays original source text, not internal JSON.
+                doc["content"] = parent.get("content") or ""
             doc["document"] = parent.get("content") or ""
             doc["metadata"] = {
                 **parent_metadata,
@@ -754,6 +772,7 @@ class ChildParentHybridRetriever:
                 "parent_source": "mongodb",
                 "child_source": "qdrant",
                 "retrieval_telemetry": retrieval_telemetry or {},
+                **({"raw_table_context": table_context} if table_context else {}),
                 "matched_child_chunks": [
                     {
                         "chunk_id": chunk.get("_id") or chunk.get("chunk_id"),

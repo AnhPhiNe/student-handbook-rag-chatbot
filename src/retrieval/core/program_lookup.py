@@ -12,7 +12,7 @@ from typing import Any
 from src.common.cohort import is_cohort_applicable, normalize_cohort
 from src.common.text import fold_text, slot_values
 
-from .directory_selector import AMBIGUOUS, UNAVAILABLE, DirectorySelector, select_records
+from .directory_selector import MATCH, NONE, DirectorySelector, select_records
 
 normalize_text = partial(fold_text, keep="")
 
@@ -25,6 +25,7 @@ def _normalize_faculty_name(value: Any) -> str:
 
 def _program_summary(record: dict[str, Any]) -> dict[str, Any]:
     summary = {
+        "record_id": record.get("record_id"),
         "program_name": record.get("program_name"),
         "faculty_name": record.get("faculty_name"),
         "source_pages": record.get("source_pages") or [],
@@ -131,24 +132,50 @@ def program_lookup(
 
     chosen: list[dict[str, Any]] = []
     traces: list[dict[str, Any]] = []
+    existence_results: list[dict[str, Any]] = []
     for name in (str(value).strip() for value in slot_values(candidate_text)):
         if not name:
             continue
         selection = select_records(selector, "program", name, catalog)
         traces.append({"text": name, **selection.trace()})
-        if selection.status in {AMBIGUOUS, UNAVAILABLE}:
+        if selection.status not in {MATCH, NONE}:
             # Undecided is not "no such program": ask rather than deny it.
             return _program_clarification(name, selection.records, cohort=normalized_cohort, selection=traces)
         chosen.extend(record for record in selection.records if record not in chosen)
+        if action == "exists":
+            existence_results.append({
+                "queried_program": name,
+                "status": "match" if selection.status == MATCH else "not_found",
+                "exists": selection.status == MATCH,
+                "matched_programs": [_program_summary(record) for record in selection.records],
+                "cohort": normalized_cohort,
+                "scope_note": f"Đối chiếu danh sách ngành đào tạo trong sổ tay sinh viên của khóa {normalized_cohort}; "
+                              "không xác nhận thông tin tuyển sinh hiện tại.",
+            })
     chosen = _sort_programs(chosen)
 
     if action == "exists":
+        if not existence_results:
+            return None  # No searched name is not evidence that a program is absent.
         result = _program_result(candidate_text, chosen, cohort=normalized_cohort,
                                  lookup_scope="program_exists", selection=traces)
-        result.update(searched_program=candidate_text, exists=bool(chosen),
-                      source_pages=_source_pages(catalog))
+        document_ids = {str(record["document_id"]) for record in catalog if record.get("document_id")}
+        result.update(
+            searched_program=candidate_text,
+            # Scalar compatibility; for a list this means all requested names matched.
+            exists=all(outcome["exists"] for outcome in existence_results),
+            existence_results=existence_results,
+            document_id=next(iter(document_ids)) if len(document_ids) == 1 else None,
+            source_pages=_source_pages(catalog),
+            display_rows=[{
+                "Ngành được hỏi": outcome["queried_program"],
+                "Kết quả tra cứu": "Tìm thấy trong danh mục sổ tay của khóa" if outcome["exists"] else
+                                  "Không tìm thấy trong danh mục sổ tay của khóa",
+                "Ngành khớp trong danh mục": "; ".join(record["program_name"] for record in outcome["matched_programs"]),
+            } for outcome in existence_results],
+        )
         if not chosen:
-            result["not_found_note"] = "Không có trong danh sách ngành đào tạo của khóa trong sổ tay sinh viên."
+            result["not_found_note"] = "Không tìm thấy mục phù hợp trong danh sách ngành đào tạo của khóa trong sổ tay sinh viên."
         return result
     if not chosen:
         return None

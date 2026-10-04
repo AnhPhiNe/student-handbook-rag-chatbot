@@ -1,7 +1,7 @@
 import re
 from typing import Any
 
-from src.common.source_identity import parse_source_pages
+from src.common.source_identity import directory_evidence_identity, parse_source_pages
 
 INTENT_CHUNK_PRIORITY = {
     "office_query": ["office_directory"],
@@ -102,6 +102,7 @@ def _citation_title(citation: dict[str, Any]) -> str:
 
 
 def _canonical_citation_identity(citation: dict[str, Any]) -> tuple[Any, ...]:
+    directory_identity = directory_evidence_identity(citation)
     for field in (
         "canonical_source_id",
         "source_parent_id",
@@ -112,12 +113,14 @@ def _canonical_citation_identity(citation: dict[str, Any]) -> tuple[Any, ...]:
     ):
         value = str(citation.get(field) or "").strip()
         if value:
+            if directory_identity is not None:
+                return (field, value.casefold(), citation.get("cohort"), directory_identity)
             return (field, value.casefold())
 
     title = _citation_title(citation).strip().casefold()
     pages = tuple(parse_source_pages(citation.get("source_pages")))
     cohort = str(citation.get("cohort") or "").strip().casefold()
-    return ("title_pages", cohort, title, pages)
+    return ("title_pages", cohort, title, pages, directory_identity)
 
 
 def _extract_article_references(value: Any) -> set[str]:

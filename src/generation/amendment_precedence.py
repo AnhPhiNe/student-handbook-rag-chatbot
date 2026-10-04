@@ -132,12 +132,15 @@ def collect_applicable_amendments(
     max_items: int = 4,
     max_replacement_chars: int = 5000,
     registry: tuple[dict[str, Any], ...] | None = None,
+    allowed_primary_parent_ids: set[str] | None = None,
 ) -> list[ApplicableAmendment]:
     """Extract query-relevant amendments that apply to the requested cohort.
 
     Amendment footnotes may be physically attached to the following parent
     section after PDF extraction. Inspecting both primary and graph-related
     parents preserves those notes without changing citation/source IDs.
+    When called for a composition unit, only its authorized primary parents
+    may receive amendments. Apply this before relevance ranking and truncation.
     """
 
     query_terms = _terms(query)
@@ -161,6 +164,10 @@ def collect_applicable_amendments(
         for item in retrieval_result.get("retrieved_items") or []
     }
     primary_parent_ids = set(primary_items_by_parent_id)
+    if allowed_primary_parent_ids is not None:
+        primary_items_by_parent_id = {parent_id: item for parent_id, item in primary_items_by_parent_id.items()
+                                      if parent_id in allowed_primary_parent_ids}
+        primary_parent_ids = set(primary_items_by_parent_id)
 
     # Curated registry records are authoritative. PDF extraction can omit a
     # closing quote at a page boundary, so requiring the footnote regex to
@@ -249,8 +256,6 @@ def collect_applicable_amendments(
                     # directly retrieved parent, never the section carrying it.
                     if target_parent_id not in primary_parent_ids:
                         continue
-                seen_replacements.add(replacement_key)
-
                 physical_parent_id = str(
                     metadata.get("parent_section_id")
                     or item.get("parent_section_id")
@@ -258,6 +263,9 @@ def collect_applicable_amendments(
                     or ""
                 )
                 source_parent_id = target_parent_id or physical_parent_id
+                if allowed_primary_parent_ids is not None and source_parent_id not in primary_parent_ids:
+                    continue
+                seen_replacements.add(replacement_key)
                 source_title = str(
                     metadata.get("title")
                     or metadata.get("section_title")

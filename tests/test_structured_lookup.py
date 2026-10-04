@@ -1156,7 +1156,9 @@ class StructuredLookupTest(unittest.TestCase):
             **kwargs,
         )
 
-        self.assertIsNone(cross_cohort)
+        self.assertEqual(cross_cohort.result_kind, "unavailable")
+        self.assertEqual(cross_cohort.result["unavailable_reason"], "no_source")
+        self.assertNotIn("rows", cross_cohort.result)
         self.assertIsNotNone(exact_cohort)
         self.assertEqual(len(exact_cohort.result["display_rows"]), 1)
 

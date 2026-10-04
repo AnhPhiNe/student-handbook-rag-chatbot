@@ -11,6 +11,20 @@ from src.retrieval.core.table_search import VERSION, build_table_descriptions
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def in_scope_tables(tables: list[dict], root: Path = ROOT) -> list[dict]:
+    """Drop the tables configs/corpus_scope.yaml leaves out of the search index.
+
+    They stay in the structured registry; the composer declines questions about
+    the forms of study they cover.
+    """
+    scope = yaml.safe_load((root / "configs/corpus_scope.yaml").read_text(encoding="utf-8")) or {}
+    excluded = {r["table_id"] for r in scope.get("exclude_tables") or []}
+    unknown = excluded - {t.get("table_id") for t in tables}
+    if unknown:
+        raise ValueError(f"Scope names unknown tables: {sorted(unknown)}")
+    return [t for t in tables if t.get("table_id") not in excluded]
+
+
 def assert_separate_output(root: Path, output: Path) -> None:
     """Reject canonical/source/report destinations, including other checkouts."""
     output = output.resolve()
@@ -65,7 +79,7 @@ def build_candidate(root: Path, output: Path, descriptions_path: Path | None = N
         if hashlib.sha256(raw).hexdigest() != record["sha256"]:
             raise ValueError("Baseline artifact hash mismatch")
         loaded[name] = json.loads(raw)
-    handles = build_table_descriptions(loaded["structured_tables"], loaded["parent_docstore"])
+    handles = build_table_descriptions(in_scope_tables(loaded["structured_tables"], root), loaded["parent_docstore"])
     description_source = None
     version = VERSION
     identity_input = source_path.read_text(encoding="utf-8") + version

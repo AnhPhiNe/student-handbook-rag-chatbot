@@ -17,7 +17,9 @@ from src.common.io import sha256_file
 
 
 ALLOWED_COHORTS = {"K48-K49", "K50", "K51"}
-GRANULARITIES = {"section_heading", "child"}
+# "child" is the per-line chunk of this builder; the others come from
+# scripts/structure_chunking.py (one khoản per chunk).
+GRANULARITIES = {"section_heading", "child", "clause", "clause_part", "article", "point"}
 REGULATION_CONTENT_TYPES = {"regulation_text", "regulation_sections", "regulation"}
 INDEXABLE_CONTENT_TYPES = REGULATION_CONTENT_TYPES
 CHUNK_TYPE_BY_CONTENT_TYPE = {}

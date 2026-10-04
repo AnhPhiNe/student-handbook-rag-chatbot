@@ -50,7 +50,9 @@ exclude_units:
   - {parent: "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31", unit: "2", items: ["c", "d"], reason: "Chuyển trường, chỉ áp dụng cho sinh viên cao đẳng sư phạm ngành Giáo dục Mầm non"}
   - {parent: "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14", unit: "6", reason: "Sử dụng kết quả rèn luyện, chỉ áp dụng cho sinh viên cao đẳng sư phạm"}
   - {parent: "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu14", unit: "6", reason: "Sử dụng kết quả rèn luyện, chỉ áp dụng cho sinh viên cao đẳng sư phạm"}
-# Applied to the structured registry and table search when they are rebuilt.
+# No table-search handle (no embedding). The tables stay in the structured registry,
+# because the study-duration tool the planner reads names both forms of study; the
+# composer (v3.35) declines a question about a form of study the assistant does not serve.
 exclude_tables:
   - {table_id: "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc", reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {table_id: "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc", reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}

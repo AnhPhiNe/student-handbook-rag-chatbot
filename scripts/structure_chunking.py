@@ -18,6 +18,7 @@ Out-of-scope articles, clauses and points (configs/corpus_scope.yaml) get no chu
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -302,8 +303,15 @@ def build_structure_chunks(
     header_mode: str | None = None,
     unit_mode: str = "clause",
     structured_tables: list[dict[str, Any]] | None = None,
+    drop_table_parents: set[str] | None = None,
     report: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
+    """Search chunks for every indexable parent.
+
+    ``drop_table_parents`` names parents whose tables were separated by the
+    reviewed table regions: their table rows live in the structured registry and
+    the table-search handles, never in narrative chunks.
+    """
     scope = scope or {}
     header_mode = header_mode or config.get("header", "document_article")
     if header_mode not in HEADER_MODES or unit_mode not in UNIT_MODES:
@@ -336,6 +344,10 @@ def build_structure_chunks(
         chunks.append(heading)
         seen: set[str] = set()
         for unit_index, unit in enumerate(units):
+            if drop_table_parents and parent_id in drop_table_parents:
+                unit.lead = [s for s in unit.lead if s.kind != "table"]
+                for item in unit.items:
+                    item.parts = [s for s in item.parts if s.kind != "table"]
             _drop_structured_rows(unit, parent, structured_tables)
             for part_index, (granularity, text, points) in enumerate(unit_texts(unit, config, unit_mode)):
                 text = text.strip()
@@ -371,6 +383,53 @@ def build_structure_chunks(
     return chunks
 
 
+def _without_build_id(record: dict[str, Any]) -> dict[str, Any]:
+    clean = {k: v for k, v in record.items() if k != "build_id"}
+    clean["metadata"] = {k: v for k, v in (record.get("metadata") or {}).items() if k != "build_id"}
+    return clean
+
+
+def publish_artifacts(root: Path = PROJECT_ROOT) -> dict[str, Any]:
+    """Replace data/processed children with structure chunks; local files only.
+
+    Parents are the published full parents (the documents MongoDB holds), so no
+    text a student is cited changes. Run scripts.build_artifact_manifest next to
+    stamp one build id and write the manifest.
+    """
+    from scripts.build_child_parent_index import validate_child_parent_chunks
+    from scripts.build_parent_child_artifacts import POLICY, REGIONS, artifact_digest
+
+    parent_path = root / "data/processed/chunks/all_docstore_items.json"
+    child_path = root / "data/processed/chunks/child_parent_chunks.json"
+    audit_path = root / "data/processed/metadata/structured_table_embedding_audit.json"
+    registry_path = root / "data/processed/tables/structured_tables_registry.json"
+    parents = [_without_build_id(p) for p in json.loads(parent_path.read_text(encoding="utf-8"))]
+    reviewed = {e["parent_id"] for e in json.loads(REGIONS.read_text(encoding="utf-8"))["parents"]}
+    report: dict[str, Any] = {}
+    chunks = build_structure_chunks(parents, config=load_config(root / CONFIG_PATH),
+                                    scope=load_scope(root / SCOPE_PATH),
+                                    drop_table_parents=reviewed, report=report)
+    for chunk in chunks:
+        chunk["metadata"].update(table_separation_policy=POLICY, corpus_role="narrative_child")
+    validate_child_parent_chunks(chunks, parents)
+    leftover = [c["_id"] for c in chunks if re.search(r"^\|", c["content"], re.MULTILINE)]
+    if leftover:
+        raise ValueError(f"Table rows left in narrative chunks: {leftover[:5]}")
+    audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    separation = audit["separation"]
+    if separation["artifact_content_sha256"]["parent_docstore"] != artifact_digest(parents):
+        raise ValueError("Parents differ from the separated build; rebuild the separation first")
+    separation["child_count"] = len(chunks)
+    separation["artifact_content_sha256"]["child_chunks"] = artifact_digest(chunks)
+    separation["child_builder"] = "structure_chunking"
+    child_path.write_text(json.dumps(chunks, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    audit.update(child_count=len(chunks), child_output_path=str(child_path),
+                 structured_registry_sha256=hashlib.sha256(registry_path.read_bytes()).hexdigest())
+    audit_path.write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return {"chunks": len(chunks), **{k: len(v) for k, v in report.items()},
+            "granularity": dict(Counter(c["metadata"]["chunk_granularity"] for c in chunks))}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--docstore", default="data/processed/chunks/all_docstore_items.json")
@@ -378,8 +437,15 @@ def main() -> None:
     parser.add_argument("--header", choices=HEADER_MODES)
     parser.add_argument("--unit", choices=UNIT_MODES, default="clause")
     parser.add_argument("--no-scope", action="store_true", help="Ignore configs/corpus_scope.yaml.")
-    parser.add_argument("--output", required=True)
+    parser.add_argument("--output", help="Write a chunk file for comparison only.")
+    parser.add_argument("--publish-artifacts", action="store_true",
+                        help="Replace data/processed children (local files); then run scripts.build_artifact_manifest.")
     args = parser.parse_args()
+    if args.publish_artifacts:
+        print(json.dumps(publish_artifacts(), ensure_ascii=False))
+        return
+    if not args.output:
+        parser.error("--output is required unless --publish-artifacts is given")
     parents = json.loads(Path(args.docstore).read_text(encoding="utf-8"))
     tables = json.loads(Path(args.registry).read_text(encoding="utf-8"))
     report: dict[str, Any] = {}

@@ -19,10 +19,11 @@ from src.api.routes.health import _build_manifest_matches_environment
 def candidate(tmp_path):
     directory = tmp_path / "frozen"
     record = build_candidate(ROOT, directory, ROOT / "configs/table_search_descriptions.yaml")
+    production = {"student_handbook_table_search_f3c77e0908bc": 3835, "parent_docs_table_search_f3c77e0908bc": 541}
     publication = {"completed": True, "stage": "complete", "storage_targets": record["storage_targets"],
-                   "model": record["embedding"]["model"], "baseline_before": {"qdrant": 3800, "mongo": 541},
-                   "baseline_after": {"qdrant": 3800, "mongo": 541},
-                   "verification": {"verified_vectors": 3835, "verified_parents": 541, "dimension": 1024,
+                   "model": record["embedding"]["model"], "baseline_before": production,
+                   "baseline_after": production,
+                   "verification": {"verified_vectors": 2909, "verified_parents": 541, "dimension": 1024,
                                     "distance": "Cosine", "payload_mismatches": 0, "vector_mismatches": 0,
                                     "parent_mismatches": 0}}
     (directory / "publication_report.json").write_text(json.dumps(publication), encoding="utf-8")
@@ -35,8 +36,8 @@ def test_portable_overlay_keeps_sources_and_runtime_manifest_consistent(tmp_path
                                         ROOT / "configs/retrieval.yaml", ROOT / ".env.example")}
     output = tmp_path / "runtime"
     report = build_runtime_bundle(ROOT, directory, output)
-    assert report["indexed_record_count"] == 3835 and report["narrative_child_count"] == 3800
-    assert report["description_count"] == 35 and report["parent_count"] == 541
+    assert report["indexed_record_count"] == 2909 and report["narrative_child_count"] == 2877
+    assert report["description_count"] == 32 and report["parent_count"] == 541
     assert report["model_calls"] == report["remote_writes"] == 0 and not report["remote_reverified"]
     manifest = json.loads((output / "data/processed/metadata/build_manifest.json").read_text(encoding="utf-8"))
     config = yaml.safe_load((output / "configs/retrieval.yaml").read_text(encoding="utf-8"))
@@ -44,7 +45,7 @@ def test_portable_overlay_keeps_sources_and_runtime_manifest_consistent(tmp_path
     assert registry == "data/processed/tables/structured_tables_registry.json"
     assert manifest["build_id"] == frozen["source_build_id"]
     assert manifest["storage_targets"] == frozen["storage_targets"]
-    assert indexed_record_count(manifest) == 3835
+    assert indexed_record_count(manifest) == 2909
     assert (output / DESCRIPTIONS_PATH).read_bytes() == Path(frozen["artifacts"]["table_descriptions"]["path"]).read_bytes()
     for name, artifact in manifest["artifacts"].items():
         if name != "table_search_descriptions":
@@ -58,7 +59,7 @@ def test_portable_overlay_keeps_sources_and_runtime_manifest_consistent(tmp_path
     assert contract["qdrant_collection"] == frozen["storage_targets"]["qdrant_collection"]
     assert contract["mongo_parent_collection"] == frozen["storage_targets"]["mongo_parent_collection"]
     assert _build_manifest_matches_environment()
-    assert len(load_table_search(config["retrieval"]["table_search"], contract["qdrant_collection"])) == 35
+    assert len(load_table_search(config["retrieval"]["table_search"], contract["qdrant_collection"])) == 35  # registry keeps all tables
     assert {p: p.read_bytes() for p in before} == before
 
 

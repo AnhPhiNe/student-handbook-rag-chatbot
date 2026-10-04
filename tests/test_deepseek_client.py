@@ -213,9 +213,7 @@ def test_rejects_missing_key_and_unknown_effort(monkeypatch):
 
 
 @pytest.mark.parametrize(("config_path", "effort", "model", "base_url"), [
-    # The release config reaches DeepSeek-V4.1-Flash through DeepInfra.
-    ("configs/answer_generation.yaml", "low", "deepseek-ai/DeepSeek-V4.1-Flash",
-     "https://api.deepinfra.com/v1/openai"),
+    ("configs/answer_generation.yaml", "low", "deepseek-flash", "https://api.deepseek.com"),
     ("configs/experiments/answer_deepseek_low.yaml", "low", "deepseek-flash", "https://api.deepseek.com"),
 ])
 def test_pipeline_builds_the_configured_deepseek_composer(monkeypatch, config_path, effort, model, base_url):
@@ -230,10 +228,17 @@ def test_pipeline_builds_the_configured_deepseek_composer(monkeypatch, config_pa
     pipeline._llm_client = None
     pipeline._component_init_lock = __import__("threading").Lock()
     client = pipeline._get_llm_client()
-    assert isinstance(client, DeepSeekClient)
     assert (client.model_name, client.reasoning_effort, client.request_timeout_seconds) == (
         model, effort, 60)
     assert client.base_url == base_url
+    if pipeline.config["llm"].get("fallback"):
+        # The release falls back to the same weights on DeepInfra, same settings.
+        backup = client.fallback
+        assert (backup.model_name, backup.base_url, backup.reasoning_effort,
+                backup.request_timeout_seconds) == (
+            "deepseek-ai/DeepSeek-V4.1-Flash", "https://api.deepinfra.com/v1/openai", effort, 60)
+    else:
+        assert isinstance(client, DeepSeekClient)
 
 
 def test_shared_plans_enable_the_planner_cache_only_for_the_run(monkeypatch, tmp_path):

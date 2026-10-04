@@ -16,14 +16,20 @@ input:
 # with prompt v3.30 are preserved in docs/DESIGN_DECISIONS.md.
 llm:
   provider: deepseek
-  # DeepSeek-V4.1-Flash served by DeepInfra (2026-10-04): the same weights the
-  # DeepSeek API calls deepseek-flash, after the DeepSeek balance ran out.
-  # DeepInfra takes the same thinking parameters (checked: low thinks, none
-  # does not). base_url absent means the DeepSeek API.
-  base_url: https://api.deepinfra.com/v1/openai
-  model_name: deepseek-ai/DeepSeek-V4.1-Flash
+  # The DeepSeek API first (base_url absent): measured faster with low
+  # thinking than DeepInfra, which took 58-120 s on long questions (2026-10-04).
+  model_name: deepseek-flash
   reasoning_effort: low
-  api_keys_env_var: DEEPINFRA_API_KEY
+  api_keys_env_var: DEEPSEEK_API_KEY
+  # The same DeepSeek-V4.1-Flash weights served by DeepInfra, used when the
+  # DeepSeek API cannot answer (no balance, key, rate limit, timeout, server or
+  # connection error) and when DEEPSEEK_API_KEY is empty. DeepInfra takes the
+  # same thinking parameters (checked: low thinks, none does not). Everything
+  # not overridden here is inherited. See src/generation/fallback_client.py.
+  fallback: &deepinfra
+    base_url: https://api.deepinfra.com/v1/openai
+    model_name: deepseek-ai/DeepSeek-V4.1-Flash
+    api_keys_env_var: DEEPINFRA_API_KEY
   temperature: 0.0
   # Omit max_tokens from composer requests; no application output ceiling.
   # DeepSeek defaults to 64K with low thinking (not unlimited).
@@ -44,10 +50,10 @@ llm:
 # names when no name matches exactly; see src/retrieval/core/directory_selector.py.
 directory_selector:
   provider: deepseek
-  base_url: https://api.deepinfra.com/v1/openai
-  model_name: deepseek-ai/DeepSeek-V4.1-Flash
+  model_name: deepseek-flash
   reasoning_effort: none
-  api_keys_env_var: DEEPINFRA_API_KEY
+  api_keys_env_var: DEEPSEEK_API_KEY
+  fallback: *deepinfra
   max_output_tokens: 200
   max_retries: 1
   request_timeout_seconds: 15

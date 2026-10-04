@@ -1,4 +1,5 @@
 import logging
+import os
 import threading
 import time
 from collections.abc import Callable, Iterator
@@ -8,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from src.common.cohort import resolve_cohort_from_query
-from src.common.env_loader import env_bool
+from src.common.env_loader import env_bool, load_project_env
 from src.common.io import load_json, load_yaml
 from src.retrieval.core.directory_selector import DirectorySelector
 from src.retrieval.core.slang_normalizer import SlangNormalizer
@@ -25,6 +26,7 @@ from .answer_formatter import (
 from .answer_guardrails import build_fallback_answer, is_low_confidence
 from .citation_formatter import prioritize_citations_by_answer_anchors
 from .deepseek_client import DeepSeekClient
+from .fallback_client import FallbackLLMClient
 from .prompt_builder import (
     DEFAULT_MAX_CONTEXT_CHARS,
     build_answer_prompt_bundle,
@@ -87,6 +89,8 @@ def _composer_trace_metadata(llm_client: Any, result: dict[str, Any], prompt: st
     }
     if result.get("ok") is False:
         metadata["error_type"] = result.get("error_type")
+    if result.get("fallback_from"):
+        metadata["fallback_from"] = result["fallback_from"]
     if env_bool("STUDENT_RAG_TRACE_PROMPTS"):
         metadata["prompt"] = prompt
     return metadata
@@ -186,11 +190,41 @@ class StreamAnswerCleaner:
 
 
 
+def with_fallback(build: Callable[[dict[str, Any]], Any], config: dict[str, Any]) -> Any:
+    """Build `config`'s client, wrapped with its `fallback` provider if one is set.
+
+    `fallback` overrides only what differs (base_url, model_name,
+    api_keys_env_var); reasoning, timeouts and retries are inherited. A
+    provider whose key variable is empty is left out, so removing a key
+    switches providers without editing the config.
+    """
+    backup = config.get("fallback")
+    if not backup:
+        return build(config)
+    load_project_env()
+    primary_config = {key: value for key, value in config.items() if key != "fallback"}
+    configs = [primary_config, {**primary_config, **backup}]
+    usable = [item for item in configs
+              if os.environ.get(item.get("api_keys_env_var", "DEEPSEEK_API_KEY"), "").strip()]
+    if not usable:
+        raise RuntimeError("Missing " + " and ".join(
+            item.get("api_keys_env_var", "DEEPSEEK_API_KEY") for item in configs) + ".")
+    if len(usable) == 1:
+        logger.warning("llm_fallback_unavailable", extra={"model": usable[0]["model_name"]})
+        return build(usable[0])
+    return FallbackLLMClient(build(usable[0]), build(usable[1]))
+
+
 def create_composer_client(llm_config: dict[str, Any]) -> Any:
     """Build the configured composer client (shared by the pipeline and replays)."""
     provider = llm_config.get("provider", "deepseek")
     if provider == "deepseek":
-        return DeepSeekClient(
+        return with_fallback(_composer_client, llm_config)
+    raise ValueError(f"Unsupported composer provider: {provider}")
+
+
+def _composer_client(llm_config: dict[str, Any]) -> DeepSeekClient:
+    return DeepSeekClient(
             model_name=llm_config["model_name"],
             reasoning_effort=llm_config.get("reasoning_effort", "none"),
             temperature=llm_config.get("temperature", 0.0),
@@ -203,7 +237,6 @@ def create_composer_client(llm_config: dict[str, Any]) -> Any:
             key_pool_config=llm_config.get("key_pool"),
             base_url=llm_config.get("base_url"),
         )
-    raise ValueError(f"Unsupported composer provider: {provider}")
 
 
 def create_directory_selector(selector_config: dict[str, Any]) -> DirectorySelector:
@@ -230,7 +263,8 @@ def create_directory_selector(selector_config: dict[str, Any]) -> DirectorySelec
         )
 
     retry = selector_config.get("thinking_retry")
-    return DirectorySelector(client(selector_config), client({**selector_config, **retry}) if retry else None)
+    return DirectorySelector(with_fallback(client, selector_config),
+                             with_fallback(client, {**selector_config, **retry}) if retry else None)
 
 
 class AnswerPipeline:

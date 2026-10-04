@@ -36,7 +36,10 @@ llm:
   max_retries: 2
   retry_base_delay_seconds: 2
   retry_max_delay_seconds: 20
-  request_timeout_seconds: 60
+  # Each network read waits up to 120 s. Low thinking on DeepInfra took 58-120 s
+  # for long questions (official_v4, 2026-10-04), so 60 s turned slow answers
+  # into errors when the fallback served them; waiting is better than failing.
+  request_timeout_seconds: 120
   max_context_chars: 160000
   # DeepSeek limits concurrency, not a request rate; this is only a local guard.
   key_pool:

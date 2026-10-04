@@ -36,7 +36,8 @@ def test_a_point_stays_with_the_sentence_that_says_what_it_is(chunks):
 
 def test_every_chunk_names_its_document_and_article_for_embedding_only(chunks):
     child = next(c for c in chunks if c["_id"].startswith("cp_K50_QuyCheDaoTao_Chuong3_Dieu12_u01"))
-    header = "Quy chế đào tạo › Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy"
+    header = ("Quy chế đào tạo › Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP"
+              " › Điều 12. Xử lý kết quả học tập đối với hình thức đào tạo chính quy")
     assert child["metadata"]["context_header"] == header
     assert child["embedding_text"] == f"{header}\n{child['content']}"
     assert header not in child["content"]  # the BM25 and display text stay the handbook's words

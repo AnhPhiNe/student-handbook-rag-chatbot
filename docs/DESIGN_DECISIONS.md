@@ -1015,8 +1015,8 @@ the rule; 1,011 of 3,259 children (31%) were lettered points without their
 lead-in. Search chunks are now one khoản with all its points
 (`scripts/structure_chunking.py`): median 208 characters, a khoản over 1,200 split
 into groups of points that repeat its lead-in. The embedding and rerank text start
-with "document › Điều N. title"; the content, BM25 text and citations are the
-handbook's words. Parents and small-to-big retrieval are unchanged.
+with "document › chapter › Điều N. title"; the content, BM25 text and citations are
+the handbook's words. Parents and small-to-big retrieval are unchanged.
 
 The owner set the scope in the same change (`configs/corpus_scope.yaml`): only
 what applies to main-campus chính quy university students is indexed. Six
@@ -1032,9 +1032,9 @@ the failure:
 | Variant | v1 primary@5 | v1 hit@1 | v1 MRR | dev primary@5 / hit@1 |
 |---|---:|---:|---:|---:|
 | Current chunks | 0.993 | 0.938 | 0.962 | 0.824 / 0.824 |
-| **Clause, "document › Điều"** | **1.000** | 0.952 | 0.974 | **1.000 / 1.000** |
+| Clause, "document › Điều" | 1.000 | 0.952 | 0.974 | 1.000 / 1.000 |
 | Clause, "Điều" only | 0.993 | 0.959 | 0.975 | 1.000 / 1.000 |
-| Clause, "document › chapter › Điều" | 1.000 | 0.966 | 0.981 | 1.000 / 1.000 |
+| **Clause, "document › chapter › Điều"** | **1.000** | **0.966** | **0.981** | **1.000 / 1.000** |
 | Point with lead-in, "document › Điều" | 1.000 | 0.966 | 0.981 | 1.000 / 1.000 |
 | Clause + cap of 3 children per article | 1.000 | 0.952 | 0.973 | 1.000 / 1.000 |
 | Clause + BM25 without repeated titles | 1.000 | 0.952 | 0.973 | 1.000 / 1.000 |
@@ -1043,10 +1043,22 @@ In scope, the clause chunks lose no case and gain official_ret_080 (second
 degree) and the three "rớt 3 môn" cases. The nine official_v1 cases asking about
 vừa làm vừa học now miss by design. A cap on children per article and BM25 without
 the repeated title fields changed nothing once chunks are clauses, so neither was
-kept. The chapter and point variants differ from the chosen one by two first
-ranks of 146, within the noise of a set the system was tuned on. Two reranker
+kept. The chapter in the context line moved two scholarship questions to first
+rank; because v1 was used to tune the system, official_v2's 93 retrieval cases
+settled it: first rank 0.860 (current), 0.903 ("document › Điều") and 0.935
+("document › chapter › Điều"), MRR 0.922, 0.950, 0.966, every required source in
+the top five for all three. The chapter variant won four v2 cases and lost one;
+one of the four may be a reranker call lost to a connection error. Points with
+their lead-in matched the chapter variant on v1 with more, repetitive chunks. Two reranker
 calls failed on a connection error and none on the rate limit at about 150 calls
 a minute, consistent with the raised Voyage limit.
+
+With the scope, the composer prompt (v3.35) says whom the assistant serves: a
+question naming another form, level or place of study is answered as outside
+that scope instead of with the chính quy rule. Over the clause index held in
+memory, three such questions (vừa làm vừa học twice, cao đẳng sư phạm once) were
+declined and "Thi rớt 3 môn có bị đuổi học không?" (K50) cited Điều 12 with the
+50% rule.
 
 ## What these measurements do not show
 

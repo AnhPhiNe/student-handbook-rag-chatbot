@@ -16,3 +16,17 @@ def test_reranker_reads_the_context_line_only_when_the_chunk_has_one():
     structured = chunk("a1", "A", content="2. Sinh viên bị buộc thôi học",
                        header="Quy chế đào tạo › Điều 12. Xử lý kết quả học tập")
     assert _rerank_text(structured) == "Quy chế đào tạo › Điều 12. Xử lý kết quả học tập\n2. Sinh viên bị buộc thôi học"
+
+
+def test_composer_answers_for_main_campus_regular_students_only():
+    import re
+
+    from src.generation.prompt_builder import render_answer_prompt
+
+    prompt, _ = render_answer_prompt("Hỏi thử", {"units": []})
+    prompt = " ".join(prompt.split())
+    assert "Trợ lý phục vụ sinh viên đại học hệ chính quy tại cơ sở chính" in prompt
+    assert "không dùng quy định của sinh viên đại học chính quy để trả lời thay" in prompt
+    # The rule names kinds of study, never a question or an article.
+    rule = prompt.split("Trợ lý phục vụ", 1)[1].split("- Trả lời đúng", 1)[0]
+    assert not re.search(r"Điều \d|rớt|đuổi học", rule)

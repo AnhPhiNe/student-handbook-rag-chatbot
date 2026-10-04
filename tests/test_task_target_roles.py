@@ -266,7 +266,7 @@ def test_role_change_does_not_modify_composer_instructions(parents):
     query = "Điều 11 Quy chế đào tạo K51 nói gì?"
     _, context = build_answer_prompt_bundle(query, {"citations": [source(parents, 11, "t1")]}, cohort="K51")
     result = json.loads(context)
-    assert result["answer_prompt_version"] == "student-handbook-answer-v3.34-source-context"
+    assert result["answer_prompt_version"] == "student-handbook-answer-v3.35-student-scope"
 
 
 def test_real_structured_and_rag_same_parent_keep_role_fact_lock_and_source_context(parents, monkeypatch):

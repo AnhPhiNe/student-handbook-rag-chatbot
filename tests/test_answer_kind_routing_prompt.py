@@ -15,16 +15,18 @@ from src.retrieval.core.query_plan import normalize_query_plan
 from src.retrieval.core.structured_routing import compact_registry_for_prompt
 
 
-def test_system_and_tool_use_agree_on_answer_kind_not_query_verbs():
+def test_system_and_tool_use_agree_on_service_versus_complaint_procedure():
     prompt = " ".join(PLANNER_SYSTEM_PROMPT.split())
     use = compact_registry_for_prompt().split("student_service|", 1)[1].split("\n", 1)[0]
-    assert "mục đích câu hỏi và phạm vi lookup, không theo một từ riêng lẻ" in prompt
-    assert "student_service chỉ dùng khi cần tên đơn vị/liên hệ cho một dịch vụ: tra danh bạ" in prompt
-    assert "không tự coi là hỏi thẩm quyền pháp quy" in prompt
-    assert "Tra tên đơn vị/liên hệ cho một dịch vụ" in use
-    assert "thẩm quyền hoặc trách nhiệm theo quy chế" in use
-    assert "Giữ loại việc và loại đơn vị được hỏi trong task.question" in prompt
-    assert "không suy nhiệm vụ chung thành thẩm quyền" in use
+    # v59: who handles a task is a directory lookup however it is phrased; a
+    # complaint or appeal about a specific result or decision follows its rules.
+    assert "dù diễn đạt là phụ trách, quản lý hay cấp" in prompt
+    assert "Khiếu nại, phúc khảo hoặc báo sai về một kết quả/quyết định cụ thể" in prompt
+    assert "nơi nhận, người giải quyết và thời hạn → RAG" in prompt
+    assert "Giữ loại việc trong task.question" in prompt
+    assert "Tra đơn vị đảm nhận một việc trong danh bạ dịch vụ" in use
+    assert "Khiếu nại/phúc khảo về một kết quả hay quyết định cụ thể" in use
+    assert "Selector" not in use  # the planner does not know the runtime selector
     for case_text in ("official_det_054", "official_det_098", "official_det_122",
                       "Phòng Quản trị", "phongkhaothi@", "Thanh tra"):
         assert case_text not in prompt and case_text not in use
@@ -35,11 +37,11 @@ def test_current_instructions_reach_the_serialized_request_and_cache_identity(mo
     router = AIRouter(cache_enabled=False, key_pool_config={"state_path": str(tmp_path / "key.json")})
     system = router._planner_system_prompt()
     request = router._build_plan_prompt("Đơn vị nào quản lý dịch vụ này?", cohort="K50", chat_history=[])
-    assert "mục đích câu hỏi và phạm vi lookup" in " ".join(system.split())
-    assert "Tra tên đơn vị/liên hệ cho một dịch vụ" in request
+    assert "dù diễn đạt là phụ trách, quản lý hay cấp" in " ".join(system.split())
+    assert "Tra đơn vị đảm nhận một việc trong danh bạ dịch vụ" in request
     key = router._cache_key("query", cohort="K50", chat_history=[])
     monkeypatch.setattr("src.retrieval.core.ai_router.ROUTER_PROMPT_VERSION",
-                        "structured-regulation-v57-reference-and-policy")
+                        "structured-regulation-v58-answer-kind-routing")
     assert router._cache_key("query", cohort="K50", chat_history=[]) != key
 
 
@@ -100,3 +102,21 @@ def test_service_selector_retains_specialized_scope_guard():
     assert "Hội đồng nào" in prompt
     assert "thẩm quyền xử lý mọi tình huống chuyên biệt" in prompt
     assert "Thiếu căn cứ thì chọn none" in prompt
+
+
+def test_scoring_operations_say_what_each_lookup_returns():
+    scoring = compact_registry_for_prompt().split("scoring|", 1)[1].split("\n", 1)[0]
+    assert "grade_10_to_letter trả điểm chữ kèm Đạt/Không đạt" in scoring
+    assert "hỏi cả hai vẫn một task" in scoring
+    assert "pass_fail_ungraded chỉ cho môn chấm đạt/không đạt, không tính GPA" in scoring
+    prompt = " ".join(PLANNER_SYSTEM_PROMPT.split())
+    assert "hoặc của cùng một hàng kết quả" in prompt
+
+
+def test_policy_questions_that_need_a_reference_table_also_look_it_up():
+    # RAG alone often misses an appendix table, so the lookup is not optional.
+    prompt = " ".join(PLANNER_SYSTEM_PROMPT.split())
+    assert "→ task structured tra bảng, kể cả khi chưa nêu điểm, và task RAG đọc quy định" in prompt
+    assert "có thể là một RAG task tự đủ nghĩa" not in prompt
+    use = compact_registry_for_prompt().split("foreign_language|", 1)[1].split("\n", 1)[0]
+    assert "cần bảng này cùng quy định qua RAG" in use

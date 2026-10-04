@@ -36,7 +36,7 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 # Comma-separated OpenAI keys for the planner's key pool.
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
-ROUTER_PROMPT_VERSION = "structured-regulation-v58-answer-kind-routing"
+ROUTER_PROMPT_VERSION = "structured-regulation-v59-service-and-score-boundaries"
 
 
 # Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
@@ -107,7 +107,8 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
 - Chỉ gộp các khía cạnh bổ sung khi chúng cùng đối tượng, mode, lookup và phạm vi
   nguồn để tạo một answer target. Các trường hợp gộp:
   • Nhiều trường của cùng một đối tượng (vd. email và số điện thoại của một
-    phòng) → một task, requested_field là danh sách.
+    phòng) hoặc của cùng một hàng kết quả (vd. điểm chữ và Đạt/Không đạt của
+    một điểm) → một task; requested_field, nếu có, là danh sách.
   • Hỏi đơn vị/khoa rồi hỏi tiếp liên hệ của chính đơn vị/khoa đó (đơn vị phụ
     trách một dịch vụ rồi email của đơn vị đó; khoa của một ngành rồi email khoa
     đó) không phải phụ thuộc giữa task: runtime tự nối sang liên hệ, nên dùng một
@@ -125,9 +126,9 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
   • Hỏi liên hệ khoa/đơn vị thông qua nhiều ngành hoặc nhiều dịch vụ → mỗi
     ngành/dịch vụ một task, vì runtime chỉ nối sang liên hệ từ đúng một mục.
     Khoa/đơn vị đã nêu tên trực tiếp thì vẫn tra chung một task.
-- Nhiều nguồn không tự tạo nhiều task: một yêu cầu đọc chính sách kèm bảng tham
-  chiếu mà không cần phép tra từ input cá nhân có thể là một RAG task tự đủ nghĩa.
-  Giữ tên chứng chỉ/đối tượng và cả ý hỏi giá trị, điều kiện trong task.question.
+- Hỏi chính sách cần giá trị của một bảng tham chiếu trong TOOLS (vd. chuẩn đầu
+  ra theo một chứng chỉ) → task structured tra bảng, kể cả khi chưa nêu điểm, và
+  task RAG đọc quy định; giữ tên chứng chỉ/đối tượng trong cả hai task.question.
 - Từ nối "và" hoặc "so sánh" không tự quyết định số task.
 - Cohort không làm tăng số task: M target trên N cohort vẫn là M task, không tạo
   M×N tasks; mỗi task giữ đủ `cohorts`.
@@ -175,10 +176,10 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
     dùng faculty; phòng ban, trung tâm và đơn vị khác dùng office.
     Đơn vị học thuật dạng Tổ có hồ sơ trong danh bạ khoa cũng dùng faculty.
     Không clarify/OOD chỉ vì tên thiếu tiền tố Phòng/Khoa.
-  • student_service chỉ dùng khi cần tên đơn vị/liên hệ cho một dịch vụ:
-    tra danh bạ, không tự coi là hỏi thẩm quyền pháp quy. Chọn theo mục đích
-    câu hỏi và phạm vi lookup, không theo một từ riêng lẻ; không cần biết tên
-    đơn vị. Giữ loại việc và loại đơn vị được hỏi trong task.question.
+  • Chưa biết tên đơn vị, hỏi đơn vị nào đảm nhận một việc hoặc liên hệ của đơn
+    vị đó → student_service, dù diễn đạt là phụ trách, quản lý hay cấp. Khiếu
+    nại, phúc khảo hoặc báo sai về một kết quả/quyết định cụ thể mà quy chế định
+    nơi nhận, người giải quyết và thời hạn → RAG. Giữ loại việc trong task.question.
   • Yêu cầu về cách tính hoặc quan hệ toán học giữa các thành phần dùng formula
     nếu TOOLS có công thức tương ứng, kể cả khi QUERY không viết từ "công thức".
 - So sánh là yêu cầu trình bày, không phải intent. Không dùng intent=compare;

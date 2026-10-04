@@ -15,7 +15,7 @@ tools:
     selection_mode: table_first
     # regulation tables (structured_tables_registry table_type) this tool reads
     table_types: [foreign_language]
-    description: "Tra bảng quy đổi chứng chỉ/điểm ngoại ngữ sang bậc tương đương, gồm kỹ năng, kể cả khi chưa biết điểm/bậc; không tự xác lập chuẩn đầu ra bắt buộc. Hỏi chuẩn tốt nghiệp cần nguồn quy định cùng bảng tham chiếu qua RAG."
+    description: "Tra bảng quy đổi chứng chỉ/điểm ngoại ngữ sang bậc tương đương, gồm kỹ năng, kể cả khi chưa biết điểm/bậc; không tự xác lập chuẩn đầu ra bắt buộc. Hỏi chuẩn tốt nghiệp theo chứng chỉ cần bảng này cùng quy định qua RAG."
     intents: [direct_value, list_items]
     default_intent: direct_value
     required_slots:
@@ -156,6 +156,7 @@ tools:
         type: string
         verification_role: reading_intent
         enum: [grade_10_to_letter, pass_fail_ungraded, letter_to_grade_4, academic_classification, conduct_classification, pass_threshold]
+        description: "grade_10_to_letter trả điểm chữ kèm Đạt/Không đạt của môn tính GPA, hỏi cả hai vẫn một task; pass_threshold chỉ hỏi qua môn hoặc điểm tối thiểu; pass_fail_ungraded chỉ cho môn chấm đạt/không đạt, không tính GPA."
         span_aliases:
           grade_10_to_letter: [quy đổi điểm chữ, đổi sang điểm chữ, điểm chữ gì]
           pass_fail_ungraded: [học phần đạt không phân mức, học phần chỉ yêu cầu đạt, không tính vào điểm trung bình]
@@ -218,7 +219,7 @@ tools:
   student_service:
     data_category: directory_table
     presentation_type: contact_card
-    description: Tra tên đơn vị/liên hệ cho một dịch vụ, không cần biết tên đơn vị. Selector đối chiếu dịch vụ được danh bạ trực tiếp mô tả, không suy nhiệm vụ chung thành thẩm quyền xử lý mọi tình huống chuyên biệt. Hỏi thẩm quyền hoặc trách nhiệm theo quy chế, các bước, điều kiện hoặc thời hạn xử lý dùng RAG.
+    description: Tra đơn vị đảm nhận một việc trong danh bạ dịch vụ và liên hệ của đơn vị đó, không cần biết tên đơn vị. Khiếu nại/phúc khảo về một kết quả hay quyết định cụ thể, các bước, điều kiện, thời hạn hoặc người giải quyết theo quy chế dùng RAG.
     intents: [direct_value, contact]
     default_intent: contact
     required_slots:

@@ -93,19 +93,7 @@ def generate_answers(
         if uses_default_pipeline:
             initialize_hybrid_retriever()
             wait_for_bm25_ready()
-        progress = progress_cases(
-            cases,
-            limit=limit,
-            desc="Generating Answers",
-        )
-        for case in progress:
-            progress.set_postfix_str(str(case.get("id") or "unknown"))
-            if case["id"] in by_id:
-                progress.set_postfix(
-                    {"case": case.get("id"), "cache": 1},
-                    refresh=False,
-                )
-                continue
+        def answer_one(case: dict[str, Any]) -> dict[str, Any]:
             started = time.perf_counter()
             try:
                 output = pipeline.answer(
@@ -114,30 +102,43 @@ def generate_answers(
                     **case_history_kwargs(case),
                 )
                 clean_output = {k: v for k, v in output.items() if k != "tracker"}
-                record = {
+                return {
                     "id": case["id"],
                     **clean_output,
                     "evaluation_retrieval_mode": DEFAULT_RETRIEVAL_MODE,
                     "latency_ms": (time.perf_counter() - started) * 1000,
                 }
             except Exception as exc:
-                record = {
+                return {
                     "id": case["id"],
                     "status": "exception",
                     "answer": "",
                     "error": str(exc),
                     "latency_ms": (time.perf_counter() - started) * 1000,
                 }
-            by_id[case["id"]] = record
-            progress.set_postfix(
-                {
-                    "case": case.get("id"),
-                    "status": record.get("status"),
-                    "ms": int(float(record.get("latency_ms") or 0)),
-                },
-                refresh=False,
-            )
-            save_eval_checkpoint(cache_path, list(by_id.values()), identity=identity)
+
+        # Several questions at once when STUDENT_RAG_ANSWER_WORKERS > 1; each
+        # question is still answered by the whole pipeline on its own. Latency
+        # under concurrency is not comparable with a sequential run.
+        workers = max(1, int(os.environ.get("STUDENT_RAG_ANSWER_WORKERS") or 1))
+        todo = [case for case in cases[:limit] if case["id"] not in by_id]
+        progress = progress_cases(todo, limit=None, desc="Generating Answers")
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = [executor.submit(answer_one, case) for case in todo]
+            for future in as_completed(futures):
+                record = future.result()
+                by_id[record["id"]] = record
+                progress.update(1)
+                progress.set_postfix(
+                    {
+                        "case": record["id"],
+                        "status": record.get("status"),
+                        "ms": int(float(record.get("latency_ms") or 0)),
+                    },
+                    refresh=False,
+                )
+                save_eval_checkpoint(cache_path, list(by_id.values()), identity=identity)
+        progress.close()
     finally:
         restore_env("STUDENT_RAG_OFFLINE_EVAL", previous_offline)
         restore_env("STUDENT_RAG_QUALITY_EVAL", previous_quality)

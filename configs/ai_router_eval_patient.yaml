@@ -1,0 +1,31 @@
+# Evaluation only (2026-10-04): the production planner with longer waits, so a
+# rate-limited key or a slow reply waits instead of falling back to RAG when
+# several questions run at once. Prompt, schema and model are unchanged.
+# Planner: OpenAI Luna with the strict QueryPlan schema. These are the settings
+# measured on official_v1/v3 (2026-09-27); evaluation runs disable the cache.
+model_name: gpt-6-luna
+reasoning_effort: medium
+max_output_tokens: 8192
+hard_max_output_tokens: 8192
+request_timeout_seconds: 60
+max_retries: 2
+cache_enabled: true
+cache_path: data/cache/planner_cache.json
+
+# The account allows 500 requests and 200,000 tokens per minute for gpt-6-luna.
+# A plan costs about 9,400 tokens (9,200 in, p50/p90 alike, over 948 calls), so
+# tokens bind first, at about 21 questions a minute. OpenAI enforces that limit
+# itself and answers 429 with a retry time; no local token limit is set, because
+# the pool reserves the estimated input plus the 8,192-token output cap (about
+# 17,000) and would admit only about 11 questions a minute. After a 429 the
+# planner waits for the key up to max_wait_seconds, then answers with the safe
+# RAG plan instead of an error.
+key_pool:
+  rpm_limit_per_key: 500
+  rpd_limit_per_key: null
+  tpm_limit_per_key: null
+  tpd_limit_per_key: null
+  cooldown_seconds: 30  # used only when a 429 carries no retry time
+  state_path: data/cache/planner_key_state.json
+  wait_when_limited: true
+  max_wait_seconds: 180

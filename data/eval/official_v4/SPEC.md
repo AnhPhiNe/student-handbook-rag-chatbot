@@ -181,6 +181,24 @@ author nor its models wrote.
   (`docs/DESIGN_DECISIONS.md`); its figure is reported as "after fixes" and
   never as the hold-out result, because the fixes were chosen with knowledge of
   v4. The 4B and 8B runs become ablations.
+- **Table-search choice by non-inferiority** (owner, 2026-10-04, before any
+  run B score was read): run B repeats the v61 run
+  (`official_v4_answers_20261004T104406Z`) with one change, the reviewed
+  table-search collections (`configs/retrieval_eval_patient_table_search.yaml`,
+  Qdrant `student_handbook_table_search_f3c77e0908bc`, Mongo
+  `parent_docs_table_search_f3c77e0908bc`). The v61 QueryPlans are replayed
+  from a shared plan cache, so the planner is not a second source of change;
+  cases whose v61 plan was a planner fallback are planned again and listed.
+  The composer is DeepInfra DeepSeek-V4.1-Flash low in both runs. Compare the
+  two runs case by case over the 246 cases, both after their timeout reruns,
+  with the same judge and packet. Deploy table search if both hold: the lower
+  bound of the 95% cluster interval of the paired `answer_correctness`
+  difference (B minus v61) is at least -0.03; and every case scored 0 in B
+  but not in v61 is shown, on review against its sources, to be a judge error.
+  Otherwise production keeps v35. Table search only has to be no worse: its
+  purpose is to find a table when the planner does not call a tool, which v4
+  rarely tests. Cases whose reranker was skipped (429 or timeout, read from
+  the run log) are rerun before scoring.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

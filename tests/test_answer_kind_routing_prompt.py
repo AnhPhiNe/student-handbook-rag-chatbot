@@ -1,0 +1,102 @@
+"""Offline instructions and authored-plan plumbing, not live model accuracy.
+
+Questions below are development controls. No expected routing is injected into
+the production prompt and no query-keyword repair is introduced in runtime.
+"""
+import json
+from pathlib import Path
+
+import pytest
+
+from src.retrieval.core.ai_router import AIRouter, PLANNER_SYSTEM_PROMPT
+from src.retrieval.core.directory_selector import DirectorySelector, render_prompt
+from src.retrieval.core.office_lookup import office_lookup
+from src.retrieval.core.query_plan import normalize_query_plan
+from src.retrieval.core.structured_routing import compact_registry_for_prompt
+
+
+def test_system_and_tool_use_agree_on_answer_kind_not_query_verbs():
+    prompt = " ".join(PLANNER_SYSTEM_PROMPT.split())
+    use = compact_registry_for_prompt().split("student_service|", 1)[1].split("\n", 1)[0]
+    assert "mục đích câu hỏi và phạm vi lookup, không theo một từ riêng lẻ" in prompt
+    assert "student_service chỉ dùng khi cần tên đơn vị/liên hệ cho một dịch vụ: tra danh bạ" in prompt
+    assert "không tự coi là hỏi thẩm quyền pháp quy" in prompt
+    assert "Tra tên đơn vị/liên hệ cho một dịch vụ" in use
+    assert "thẩm quyền hoặc trách nhiệm theo quy chế" in use
+    assert "Giữ loại việc và loại đơn vị được hỏi trong task.question" in prompt
+    assert "không suy nhiệm vụ chung thành thẩm quyền" in use
+    for case_text in ("official_det_054", "official_det_098", "official_det_122",
+                      "Phòng Quản trị", "phongkhaothi@", "Thanh tra"):
+        assert case_text not in prompt and case_text not in use
+
+
+def test_current_instructions_reach_the_serialized_request_and_cache_identity(monkeypatch, tmp_path):
+    monkeypatch.setenv("OPENAI_API_KEY", "offline-key")
+    router = AIRouter(cache_enabled=False, key_pool_config={"state_path": str(tmp_path / "key.json")})
+    system = router._planner_system_prompt()
+    request = router._build_plan_prompt("Đơn vị nào quản lý dịch vụ này?", cohort="K50", chat_history=[])
+    assert "mục đích câu hỏi và phạm vi lookup" in " ".join(system.split())
+    assert "Tra tên đơn vị/liên hệ cho một dịch vụ" in request
+    key = router._cache_key("query", cohort="K50", chat_history=[])
+    monkeypatch.setattr("src.retrieval.core.ai_router.ROUTER_PROMPT_VERSION",
+                        "structured-regulation-v57-reference-and-policy")
+    assert router._cache_key("query", cohort="K50", chat_history=[]) != key
+
+
+@pytest.mark.parametrize("query,mode,lookup,slots,spans", [
+    ("Phòng nào quản lý thiết bị trình chiếu trong lớp học?", "structured", "student_service",
+     {"service": "thiết bị trình chiếu", "requested_field": "unit"},
+     {"service": "thiết bị trình chiếu", "requested_field": "Phòng nào"}),
+    ("Giấy chứng nhận điểm do đơn vị nào cấp, và em gửi email cho đơn vị đó ở địa chỉ nào?",
+     "structured", "student_service", {"service": "Giấy chứng nhận điểm", "requested_field": ["unit", "email"]},
+     {"service": "Giấy chứng nhận điểm", "requested_field": "đơn vị nào cấp, và em gửi email"}),
+    ("Học bổng xuất sắc cần học tập và rèn luyện loại gì?", "structured", "scholarship_classification",
+     {"aspect": "classification", "score_or_label": "xuất sắc"},
+     {"aspect": "loại gì", "score_or_label": "xuất sắc"}),
+    ("Theo quy chế, Hội đồng nào giải quyết khiếu nại điểm rèn luyện?", "rag", None, {}, {}),
+    ("Quy trình và thời hạn giải quyết khiếu nại điểm là gì?", "rag", None, {}, {}),
+    ("Bị kỷ luật thì em có đủ điều kiện nhận học bổng không?", "rag", None, {}, {}),
+])
+def test_authored_answer_kind_plans_remain_executable_without_keyword_override(query, mode, lookup, slots, spans):
+    raw = {"schema_version": "v1", "context_mode": "standalone", "out_of_domain": False,
+           "normalized_query": query, "standalone_query": None, "referenced_turns": [],
+           "tasks": [{"id": "t1", "question": query, "mode": mode,
+                      "lookup_type": lookup, "intent": "open_question" if mode == "rag" else
+                      "contact" if lookup == "student_service" else "direct_value",
+                      "slots": slots, "slot_spans": spans, "cohorts": ["K50"],
+                      "clarification_question": None}]}
+    plan, errors = normalize_query_plan(raw, query=query, selected_cohort="K50")
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == mode
+    assert plan["tasks"][0]["lookup_type"] == lookup
+    assert plan["tasks"][0]["slots"] == slots
+
+
+@pytest.mark.parametrize("needle", ["trình chiếu", "chứng nhận điểm"])
+def test_real_catalog_service_identity_contacts_and_provenance_stay_intact(needle):
+    records = json.loads(Path("data/processed/directories/student_service_directory.json").read_text(encoding="utf-8"))
+    source, = [row for row in records if row["cohort"] == "K50" and needle in row["service"]]
+
+    class NoCalls:
+        def generate(self, *args, **kwargs):
+            pytest.fail("An exact catalog service must not require inference")
+
+    result = office_lookup(source["service"], records, candidate_text=source["service"],
+                           lookup_type="student_service", cohort="K50", requested_field=["unit", "email"],
+                           selector=DirectorySelector(NoCalls(), NoCalls()))
+    assert result["selection_method"] == "catalog_exact"
+    record, = result["result"]
+    assert record["unit_name"] == source["unit_name"]
+    assert record["emails"] == source["emails"]
+    assert record["record_id"] == source["service_id"]
+    assert record["cohort"] == "K50"
+    assert record["source_pages"] == source["source_pages"]
+
+
+def test_service_selector_retains_specialized_scope_guard():
+    prompt, _ = render_prompt("student_service", "khiếu nại", [],
+                             question="Hội đồng nào giải quyết khiếu nại điểm rèn luyện?",
+                             requested_field="unit")
+    assert "Hội đồng nào" in prompt
+    assert "thẩm quyền xử lý mọi tình huống chuyên biệt" in prompt
+    assert "Thiếu căn cứ thì chọn none" in prompt

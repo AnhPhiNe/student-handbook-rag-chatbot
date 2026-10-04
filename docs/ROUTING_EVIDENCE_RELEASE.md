@@ -1113,3 +1113,50 @@ historical reports and the user's dirty primary checkout remain unchanged.
 No new agent/graph/lookup engine, source-store build, inference API, push or
 deployment is introduced. This completes the four approved offline stages;
 live smoke and deployment require separate authorization and measurements.
+
+## Stage 23 — answer-kind routing clarification, offline (2026-10-04)
+
+The user approved a minimal, general clarification after the v53/v57 comparison
+and saved-plan answer replays. Those measurements do not isolate a single prompt
+line: they support testing a narrower directory/policy distinction, not a claim
+that the whole v57 prompt is worse. In particular, a RAG plan bypasses the
+directory selector; the selector's specialized-authority guard alone cannot
+correct that route or prevent a composer from overgeneralizing generic evidence.
+
+The first draft enumerated verbs taken from the observed failures. At the user's
+review, that list and the analogous verb sequence in student_service.use were
+removed. The final change replaces only the existing student_service bullet:
+asking for a service's unit/contact is a directory lookup, not automatically a
+request for statutory authority. Choose by the question's purpose and the
+lookup's scope, not an individual word; retain the kind of service and entity
+asked for in task.question. The tool description assigns catalog fit to the
+existing selector, while preserving the prohibition on inferring specialized
+authority from a general duty and the existing policy/procedure exclusions.
+The general RAG/structured rules, other tool descriptions, contact-field
+semantics, task splitting/limits, schema, normalization, resolver, composer and
+provider settings are not changed. No query-specific correction or department
+mapping is added. Format/scale/entity examples elsewhere describe actual
+runtime contracts and are not answers to particular benchmark questions.
+
+Prompt identity is v58-answer-kind-routing, so planner cache entries from v57
+are not reused. Historical v56/v57 request snapshots and evaluation outputs stay
+unchanged. A small v58 instruction snapshot reuses the v57 request baseline:
+the captured request must differ only in its system instructions and service
+tool-use line. Schema, other tools, scenarios and transport settings remain
+pinned. No extra runtime representation, parser or adapter is introduced.
+
+All **1,788 backend tests pass**, including 12 additional instruction/snapshot,
+authored-plan and real-catalog contract checks. The 215 focused API/routing/
+selector tests also pass with external socket connections blocked (local
+loopback remains available for Windows asyncio/TestClient). An initial overly
+broad test-only socket guard blocked asyncio's self-pipe and produced transport
+failures; correcting that guard, not application code, resolves them. Lint,
+deployment-artifact and whitespace checks pass. Existing prompt budget limits
+remain unchanged. Scripted plans/clients establish plumbing and preservation,
+not that Luna will follow the new instructions or that final answers improve.
+
+This change is local and uncommitted in codex/routing-evidence-coverage. The
+user's dirty eval/official-v4 checkout, gold, source corpus, database collections,
+README and production are unchanged. No inference API, push or deployment runs.
+Live targeted planner and final-answer evaluation needs separate approval; the
+old 132/135 measurement is still a v57 result, not a score for these instructions.

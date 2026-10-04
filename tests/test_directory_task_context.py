@@ -79,7 +79,7 @@ def test_service_prompt_distinguishes_identity_from_authority():
 def test_tool_use_has_the_same_scope_boundary_as_selector():
     service_contract = compact_registry_for_prompt().split("student_service|", 1)[1].split("\n", 1)[0]
     assert "danh bạ trực tiếp mô tả" in service_contract
-    assert "Không suy nhiệm vụ chung thành thẩm quyền" in service_contract
+    assert "không suy nhiệm vụ chung thành thẩm quyền" in service_contract
     assert "theo quy chế" in service_contract and "dùng RAG" in service_contract
     assert "Hỏi ai xử lý một thủ tục vẫn tra dịch vụ" not in service_contract
 

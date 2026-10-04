@@ -36,7 +36,7 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 # Comma-separated OpenAI keys for the planner's key pool.
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
-ROUTER_PROMPT_VERSION = "structured-regulation-v57-reference-and-policy"
+ROUTER_PROMPT_VERSION = "structured-regulation-v58-answer-kind-routing"
 
 
 # Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
@@ -175,8 +175,10 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
     dùng faculty; phòng ban, trung tâm và đơn vị khác dùng office.
     Đơn vị học thuật dạng Tổ có hồ sơ trong danh bạ khoa cũng dùng faculty.
     Không clarify/OOD chỉ vì tên thiếu tiền tố Phòng/Khoa.
-  • student_service chỉ dùng khi QUERY mô tả việc cần hỗ trợ và hỏi đơn vị phụ
-    trách hoặc thông tin liên hệ của đơn vị đó; không cần biết trước tên đơn vị.
+  • student_service chỉ dùng khi cần tên đơn vị/liên hệ cho một dịch vụ:
+    tra danh bạ, không tự coi là hỏi thẩm quyền pháp quy. Chọn theo mục đích
+    câu hỏi và phạm vi lookup, không theo một từ riêng lẻ; không cần biết tên
+    đơn vị. Giữ loại việc và loại đơn vị được hỏi trong task.question.
   • Yêu cầu về cách tính hoặc quan hệ toán học giữa các thành phần dùng formula
     nếu TOOLS có công thức tương ứng, kể cả khi QUERY không viết từ "công thức".
 - So sánh là yêu cầu trình bày, không phải intent. Không dùng intent=compare;

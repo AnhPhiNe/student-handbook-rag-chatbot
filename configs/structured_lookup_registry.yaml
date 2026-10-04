@@ -218,7 +218,7 @@ tools:
   student_service:
     data_category: directory_table
     presentation_type: contact_card
-    description: Tra đơn vị/liên hệ cho dịch vụ vận hành được danh bạ trực tiếp mô tả, không cần biết tên đơn vị. Không suy nhiệm vụ chung thành thẩm quyền xử lý mọi tình huống chuyên biệt. Hỏi thẩm quyền hoặc trách nhiệm theo quy chế, các bước, điều kiện hoặc thời hạn xử lý dùng RAG.
+    description: Tra tên đơn vị/liên hệ cho một dịch vụ, không cần biết tên đơn vị. Selector đối chiếu dịch vụ được danh bạ trực tiếp mô tả, không suy nhiệm vụ chung thành thẩm quyền xử lý mọi tình huống chuyên biệt. Hỏi thẩm quyền hoặc trách nhiệm theo quy chế, các bước, điều kiện hoặc thời hạn xử lý dùng RAG.
     intents: [direct_value, contact]
     default_intent: contact
     required_slots:

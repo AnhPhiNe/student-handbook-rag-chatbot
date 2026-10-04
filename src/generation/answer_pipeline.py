@@ -1,8 +1,11 @@
+import contextvars
 import logging
 import os
+import queue
 import threading
 import time
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator, Iterator
+from concurrent.futures import ThreadPoolExecutor
 from contextvars import ContextVar
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -27,6 +30,7 @@ from .answer_guardrails import build_fallback_answer, is_low_confidence
 from .citation_formatter import prioritize_citations_by_answer_anchors
 from .deepseek_client import DeepSeekClient
 from .fallback_client import FallbackLLMClient
+from .progress import describe_sources, reporting_to
 from .prompt_builder import (
     DEFAULT_MAX_CONTEXT_CHARS,
     build_answer_prompt_bundle,
@@ -764,6 +768,34 @@ class AnswerPipeline:
             "llm_called": llm_called,
         }
 
+    def _prepare_reporting_progress(
+        self, query: str, **kwargs: Any
+    ) -> Generator[dict[str, Any], None, PreparedAnswer]:
+        """Run ``prepare_answer`` on a worker thread, yielding the progress it reports.
+
+        Returns the PreparedAnswer (``yield from``). Planning and retrieval are
+        blocking calls, so without the thread the stream could only report
+        before or after all of them.
+        """
+        reports: queue.Queue[str] = queue.Queue()
+        context = contextvars.copy_context()
+
+        def prepare() -> PreparedAnswer:
+            with reporting_to(reports.put):
+                return self.prepare_answer(query, **kwargs)
+
+        with ThreadPoolExecutor(max_workers=1, thread_name_prefix="prepare-answer") as pool:
+            future = pool.submit(context.run, prepare)
+            while True:
+                try:
+                    message = reports.get(timeout=0.1)
+                except queue.Empty:
+                    if future.done() and reports.empty():
+                        break
+                    continue
+                yield {"type": "progress", "message": message}
+            return future.result()
+
     def answer_stream(
         self,
         query: str,
@@ -784,11 +816,10 @@ class AnswerPipeline:
         tracker = UsageTracker()
         trace_id = str(kwargs.get("trace_id") or "").strip() or None
 
-        yield {"type": "progress", "message": "Đang phân tích câu hỏi..."}
+        yield {"type": "progress", "message": "Đang phân tích câu hỏi…"}
 
         start_time_router = datetime.now(timezone.utc).isoformat()
-        yield {"type": "progress", "message": "Đang tìm kiếm thông tin trong Sổ tay..."}
-        prepared = self.prepare_answer(
+        prepared = yield from self._prepare_reporting_progress(
             query,
             chat_history=chat_history,
             cohort=cohort,
@@ -825,9 +856,11 @@ class AnswerPipeline:
             }
             return
 
-        yield {"type": "progress", "message": "Đang phân tích tài liệu tìm được..."}
         related_references = prepared.related_references
-        yield {"type": "progress", "message": "Đang tổng hợp câu trả lời..."}
+        yield {"type": "progress", "message": describe_sources(
+            len(prepared.public_retrieval_citations or []),
+            bool((retrieval_result or {}).get("structured_result")),
+        )}
         llm_called = False
         yield self._build_stream_metadata(
             retrieval_result,

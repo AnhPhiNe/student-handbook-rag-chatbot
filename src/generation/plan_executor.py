@@ -28,6 +28,8 @@ from src.retrieval.core.hybrid_pipeline import (
 )
 from src.retrieval.core.query_plan import grounding_text
 
+from .progress import describe_plan, report as report_progress
+
 
 def _merge_structured_citation_content(
     existing: dict[str, Any],
@@ -223,6 +225,7 @@ class PlanExecutor:
                 "out_of_domain": True,
             }
 
+        report_progress(describe_plan(plan.get("tasks") or [], cohort))
         grounding = grounding_text(query, plan, chat_history)
         try:
             task_executions = [

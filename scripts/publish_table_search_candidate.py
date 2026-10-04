@@ -80,7 +80,10 @@ def prepare_candidate(root: Path, directory: Path) -> dict:
     table_search = config["retrieval"]["table_search"]
     if (table_search["collection_name"] != targets["qdrant_collection"]
             or table_search["baseline_collection"] != source["storage_targets"]["qdrant_collection"]
-            or Path(table_search["registry_path"]).resolve() != (root / source["artifacts"]["structured_tables"]["path"]).resolve()
+            # The candidate may have been built in another checkout: the registry
+            # must be the same repository file, pinned by its hash below.
+            or not Path(table_search["registry_path"]).as_posix().endswith(
+                "/" + Path(source["artifacts"]["structured_tables"]["path"]).as_posix())
             or table_search["registry_sha256"] != source["artifacts"]["structured_tables"]["sha256"]):
         raise ValueError("Candidate retrieval contract mismatch")
     return {"manifest": candidate, "source": source, "chunks": chunks, "parents": parents,

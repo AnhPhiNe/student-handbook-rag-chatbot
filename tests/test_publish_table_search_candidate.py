@@ -112,6 +112,24 @@ def test_candidate_cannot_redirect_corpus_or_embedding_key(tmp_path, field, valu
         prepare_candidate(ROOT, tmp_path)
 
 
+@pytest.mark.parametrize("registry,accepted", [
+    # Built in another checkout of the repository: same file, same hash.
+    ("C:/other/checkout/data/processed/tables/structured_tables_registry.json", True),
+    ("C:/other/checkout/data/processed/tables/other_registry.json", False),
+])
+def test_candidate_from_another_checkout_must_name_the_same_registry(tmp_path, registry, accepted):
+    build_candidate(ROOT, tmp_path, ROOT / "configs/table_search_descriptions.yaml")
+    path = tmp_path / "retrieval.yaml"
+    config = yaml.safe_load(path.read_text(encoding="utf-8"))
+    config["retrieval"]["table_search"]["registry_path"] = registry
+    path.write_text(yaml.safe_dump(config, allow_unicode=True), encoding="utf-8")
+    if accepted:
+        assert len(prepare_candidate(ROOT, tmp_path)["chunks"]) == 3835
+    else:
+        with pytest.raises(ValueError, match="retrieval contract"):
+            prepare_candidate(ROOT, tmp_path)
+
+
 @pytest.mark.parametrize("store", ["qdrant", "mongo", "local_vectors"])
 def test_collision_refuses_embedding_and_preserves_baseline(tmp_path, store):
     prepared, qdrant, db = tiny_candidate(tmp_path), FakeQdrant(), FakeDatabase()

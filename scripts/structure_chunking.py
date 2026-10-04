@@ -332,6 +332,7 @@ def build_structure_chunks(
         short = short_document_name(str(metadata.get("document_title") or ""), config)
         heading = _make_heading_chunk(parent, base)
         heading["metadata"].update(context_header=header, document_short=short)
+        heading["embedding_text"] = heading["content"]  # already names the section and document
         chunks.append(heading)
         seen: set[str] = set()
         for unit_index, unit in enumerate(units):

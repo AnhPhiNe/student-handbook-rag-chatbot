@@ -29,14 +29,14 @@ reports are listed at the end.
 
 | Component | Chosen | Alternatives measured | Deciding evidence |
 |---|---|---|---|
-| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; candidate prompt v57 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | Latest recorded full v1 belongs to v56: 133/135, p95 7.68 s (2026-10-01). It is not a full v57 measurement; see the 2026-10-02 candidate section |
-| Composer | DeepSeek flash, reasoning low for the release candidate; prompt v3.34 | Gemini 3.1 Flash-Lite; DeepSeek thinking off | Targeted 2026-10-03 probe: 8/8 required facts, ambiguous grade 3/3 versus historical none 1/3 on identical prompts; broader regression pending. Historical v4 Run C measures v3.33/none, not this candidate |
+| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; prompt v61 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | v61 on official_v1: 133/135 (2026-10-04), equal to v56; routing boundaries stated as concepts, not case wordings (see `ROUTING_EVIDENCE_RELEASE.md` stages 24–25) |
+| Composer | DeepSeek-V4.1-Flash, reasoning low, prompt v3.34; DeepSeek API first, the same weights on DeepInfra when it fails | Gemini 3.1 Flash-Lite; DeepSeek thinking off | Ambiguous grade 3/3 with low against 1/3 with none on identical prompts; official_v4 with v61 and low: 0.960, paired with Run C 0.000 (2026-10-04, below) |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
 | Reranker | Voyage `rerank-3`, on all 24 fused children (2026-09-30) | Qwen3-Reranker-8B, 4B, 0.6B on DeepInfra; Cohere rerank-v4.0-fast; none | first 0.942 / top-5 155/155 at p90 0.85 s, against 8B 0.923 / 155 at p90 4.7 s, 4B 0.903 / 153, Cohere 0.897, none 0.832 / 148. Chosen for availability: the DeepInfra 8B endpoint stalled for over four hours on 2026-09-30 |
 | Lexical search | BM25 fused with RRF (k = 60), scored by BM25 only | Dense only; BM25 with a title-match rule | RRF + rerank beats dense + rerank; the title rule cost hit@1 and 3× BM25 time |
 | Candidate depth | 24 children for dense, BM25, fusion and rerank | 16, 40 | 24 holds the first gold child for 155/155 questions, 16 for 154/155 |
-| Tables | Reviewed JSON for lookup; tables kept in full parents; candidate adds 35 source-reviewed search descriptions, not numeric rows | The composer reading tables from retrieved text | Range-reading failures justify deterministic fact locks. Search descriptions only locate the original table; candidate coverage and limits are recorded below |
+| Tables | Reviewed JSON for lookup; tables kept in full parents; 35 source-reviewed search descriptions that locate a table and bring its raw rows | The composer reading tables from retrieved text; no descriptions | Range-reading failures justify deterministic fact locks. Descriptions passed a pre-registered non-inferiority rule on official_v4: 0.966 against 0.960, paired +0.005, CI [−0.008, +0.020] (2026-10-04, below) |
 | Planner input | The student's own words | 156 slang rules rewriting the question first | 133/135 without the rewrite against 132/135 with it; the 12 rewritten questions pass either way |
 | Retrieval query | Slang rewritten to handbook wording | The student's own words | On 61 slang-reworded questions hit@5 61/61 with the rewrite against 58/61 without |
 
@@ -951,6 +951,59 @@ students get a correct answer, which is probably higher than the score.
 - Ten disagreements are left for the owner to re-score: V4-117, V4-148,
   V4-070, V4-225, V4-143, V4-186, V4-197, V4-145, V4-138 and V4-111.
 
+## Planner v61 and table search on official_v4 (2026-10-04)
+
+Both runs are post-fix measurements on a spent hold-out, not hold-out figures.
+Judge `openai/gpt-oss-120b` on DeepInfra with packet
+`judge-packet-v3-source-clauses` in every run; composer DeepSeek-V4.1-Flash with
+reasoning low on DeepInfra (the DeepSeek API balance had run out); evaluation
+waits from `configs/retrieval_eval_patient.yaml` and
+`configs/answer_generation_eval_patient.yaml` (composer 120 s).
+
+**Planner v61 against Run C.** Run C (`1a9ccd3d`, rejudged with packet v3)
+scores 0.961; the v61 run (`9111b71f`) 0.960. Paired difference 0.000, CI
+[−0.023, +0.025]. v61 fixed 8 cases Run C failed (049, 070, 092, 100, 107, 147,
+175, 209; four of them scored 0) and scored lower on 10. On reading those ten:
+five are judge strictness (111, 169, 195, 197, 198; 169's D+/D statement is
+true and is the run's only 0), four omit a minor item (142 phone and email, 229
+and 236 a contact suggestion, 120 an article from the evidence), and 225 asks
+back less completely. None states a serious falsehood.
+
+**Table search against v35.** Rule fixed before the run (`data/eval/official_v4/SPEC.md`):
+deploy if the lower bound of the paired 95% CI is at least −0.03 and every new
+0 is shown to be a judge error. The run changed only the collections
+(`student_handbook_table_search_f3c77e0908bc`, `parent_docs_table_search_f3c77e0908bc`);
+the v61 QueryPlans were replayed from a shared cache (246/246 identical), so the
+planner was not a second source of change.
+
+| | v61, v35 | v61, table search |
+|---|---:|---:|
+| Commit | `9111b71f` | `5a7797de` |
+| **answer_correctness** | **0.960** | **0.966** |
+| 95% CI over clusters | 0.942 – 0.977 | 0.949 – 0.981 |
+| Faithfulness | 0.963 | 0.970 |
+| Citation correctness | 0.968 | 0.963 |
+| Context precision / recall | 0.612 / 0.912 | 0.619 / 0.913 |
+| Hallucination rate | 0.065 | 0.069 |
+| Critical false passes | 0 | 0 |
+| Answers scoring 0.0 | 1 | 0 |
+| Composer timeouts rerun | 2 (V4-111, V4-210) | 1 (V4-164) |
+
+Paired difference +0.005, CI [−0.008, +0.020], and no new 0: the rule is met,
+and the deployment uses table search. Six cases scored higher (142, 169, 195,
+198, 225, 234), three lower (147, 223, 231); on identical plans the three lower
+ones differ by a minor omission in the composer's wording, not by a missed
+source. v4 rarely asks a table question the planner fails to route, which is
+what the descriptions are for, so this run shows they do no harm rather than
+how much they help.
+
+**Throughput.** Answers ran 8 at a time and the judge 24 at a time (21 and 3
+minutes). Voyage `rerank-3` allows about 100,000 tokens a minute, roughly 36
+reranks; past that it refuses with 429 and retrieval silently keeps the RRF
+order, so answer workers stay near 8. No rerank was skipped in either run.
+Low reasoning on DeepInfra took 58–120 s on long questions, which is why the
+production composer now waits 120 s per read.
+
 ## What these measurements do not show
 
 - A comparison with plain RAG (no planner) or with a long-context model given the
@@ -1025,4 +1078,5 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Slang probe | `measurements_20260928/results/slang_probe/` (`slang_probe.py`) |
 | "Where" questions and table-adjacent rules | `table_adjacent_questions_20260929_run1-3` and `regwhere_v53_20260929_run1-3` (v53); `where_v54_20260929_run1-3`, `official_v1_deterministic_20260929T124205Z` and `official_v2_deterministic_20260929T125553Z` (v54); `where_all_v55_20260929_run1-3` (v55); `official_v2_deterministic_20260929T111444Z` (v53, before the fact-lock grounding fix) |
 | Directory selector, second look | `directory_matching_20260929T100059Z` / `…T100140Z` (before), `…T100338Z` / `…T100416Z` (looser wording), `…T102008Z` / `…T101754Z` (thinking on every call), `…T103359Z` / `…T103530Z` (second look); existing cases first, everyday set second |
+| official_v4 with planner v61, and with table search | `official_v4_answers_20261004T104406Z` (v61, v35) and `official_v4_answers_20261004T124930Z` (table search), each with `reruns/attempt_1` and `v4_report.json`; Run C rejudged: `official_v4_answers_20261001T082203Z_runC_answers/judge_deepinfra`; shared plans `official_v4_v61_shared_plans.json` |
 | End-to-end check before the deploy | `official_v1_answers_20260930T023654Z` (against `…20260928T062050Z`); the five replans in its `replans_029_045_092_110_x5.json`; judge fix: `official_v2_answers_smoke10_20260930T011049Z` and `…_rejudge` |

@@ -1160,3 +1160,56 @@ user's dirty eval/official-v4 checkout, gold, source corpus, database collection
 README and production are unchanged. No inference API, push or deployment runs.
 Live targeted planner and final-answer evaluation needs separate approval; the
 old 132/135 measurement is still a v57 result, not a score for these instructions.
+
+## Stage 24 — planner v59: three ambiguous wordings (2026-10-04, Claude)
+
+Review of the whole branch found the runtime changes sound and the remaining
+failures in the planner's instructions. Starting point is v58 as left
+uncommitted in the Codex worktree (recorded as `616d6237`). Changes:
+
+1. **Service versus complaint procedure.** v58 told the planner not to treat a
+   directory lookup as "thẩm quyền pháp quy", and the tool text said regulatory
+   responsibility goes to RAG. "Phòng nào quản lý thiết bị trình chiếu" read as
+   responsibility and went to RAG (official_det_098). v59 states the boundary by
+   answer kind: asking which unit handles a task, or its contact, is a directory
+   lookup however it is phrased; a complaint, appeal or error report about a
+   specific result or decision, whose receiver, handler and deadline the rules
+   set, goes to RAG. The tool text no longer names the runtime selector, which
+   keeps its own guard against generic duties.
+2. **Scoring operations.** The operation values did not say what each returns.
+   v59 says grade_10_to_letter gives the letter grade with Đạt/Không đạt (one
+   task for both), pass_threshold is only "qua môn"/minimum score, and
+   pass_fail_ungraded is only for ungraded courses. The grouping rule also
+   covers several fields of one result row.
+3. **Policy plus reference table.** v58 allowed "one RAG task that reads a
+   policy with its reference table" when no personal input is given. With the
+   default retrieval (no table-search index), RAG often misses the foreign-
+   language appendix, so "TOEIC bao nhiêu điểm thì đạt chuẩn đầu ra bậc 3" was
+   answered "không liệt kê". v59 requires the table lookup plus RAG for a policy
+   question that needs a reference-table value, even without a score.
+
+**Planner probes** (17 questions, development data, three plans each; v58 →
+v59; fallbacks caused by a concurrent run were re-planned):
+
+| Group | v58 | v59 |
+|---|---:|---:|
+| Specialised complaints → RAG (3 questions) | 9/9 | 9/9 |
+| Directory services incl. "quản lý" wording (6 questions) | 14/18 | 18/18 |
+| Foreign language (4 questions, F2 six plans) | 12/12, F2 4/6 | 12/12, F2 6/6 |
+| Two courses, letter + Đạt/Không đạt | 2/3 (1 clarify) | 3/3 |
+
+Live pipeline on seven of them (composer low): the six that reached the
+intended route answered correctly, including the two-course and range
+questions; the TOEIC question answered "không liệt kê" when it was planned as
+RAG only, which change 3 then addressed.
+
+**official_v1 deterministic, contract v10:** 134/135 (`official_v1_
+deterministic_20261004T065055Z`; four cases that hit planner rate limits while a
+probe ran concurrently were rerun alone in `…T071932Z` and pass). v57 measured
+132/135 (054, 098, 122 failing); v59 fails only 054, which plans RAG and still
+retrieves the needed row (Stage 13 notes its final answer is correct).
+
+Prompt 35,750 characters, budget raised from 35,500 to 35,800. The full request
+is frozen as `luna_planner_request_v59_boundaries.json`; v56–v58 snapshots are
+kept. 1,789 backend tests pass. No final-answer benchmark of v59 has been run;
+the composer prompt is unchanged.

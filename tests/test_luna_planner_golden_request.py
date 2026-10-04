@@ -1,6 +1,6 @@
-"""Pin the planner request v60 sends to OpenAI, not the live model's routing quality.
+"""Pin the planner request v61 sends to OpenAI, not the live model's routing quality.
 
-v59/v60 change the system prompt, the student_service tool text and the scoring
+v59–v61 change the system prompt, the student_service tool text and the scoring
 operation description, which also reaches the strict schema, so the whole
 request is frozen again. The v56/v57/v58 snapshots stay as historical records.
 """
@@ -10,7 +10,7 @@ from pathlib import Path
 from src.retrieval.core.ai_router import AIRouter
 from tests.luna_request_capture import capture_requests, compact
 
-FIXTURE = Path(__file__).parent / "fixtures" / "luna_planner_request_v60_concepts.json"
+FIXTURE = Path(__file__).parent / "fixtures" / "luna_planner_request_v61.json"
 
 
 def test_candidate_config_sends_the_frozen_luna_requests(monkeypatch):

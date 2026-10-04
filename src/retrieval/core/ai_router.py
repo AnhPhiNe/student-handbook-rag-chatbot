@@ -36,7 +36,7 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 # Comma-separated OpenAI keys for the planner's key pool.
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
-ROUTER_PROMPT_VERSION = "structured-regulation-v60-answer-kind-concepts"
+ROUTER_PROMPT_VERSION = "structured-regulation-v61-table-conclusions"
 
 
 # Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
@@ -126,9 +126,10 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
   • Hỏi liên hệ khoa/đơn vị thông qua nhiều ngành hoặc nhiều dịch vụ → mỗi
     ngành/dịch vụ một task, vì runtime chỉ nối sang liên hệ từ đúng một mục.
     Khoa/đơn vị đã nêu tên trực tiếp thì vẫn tra chung một task.
-- Hỏi chính sách mà đáp án cần giá trị trong một bảng tham chiếu của TOOLS →
-  task structured tra bảng, kể cả khi chưa nêu giá trị cá nhân, và task RAG đọc
-  quy định; giữ tên đối tượng được tra trong cả hai task.question.
+- Cần cả giá trị trong một bảng tham chiếu của TOOLS và kết luận mà bảng không
+  chứa (mức bắt buộc, quyền hưởng) → task structured tra bảng, kể cả khi chưa nêu
+  giá trị cá nhân, và task RAG đọc quy định. Hỏi giá trị/hàng bảng có sẵn chỉ là
+  một task structured.
 - Từ nối "và" hoặc "so sánh" không tự quyết định số task.
 - Cohort không làm tăng số task: M target trên N cohort vẫn là M task, không tạo
   M×N tasks; mỗi task giữ đủ `cohorts`.

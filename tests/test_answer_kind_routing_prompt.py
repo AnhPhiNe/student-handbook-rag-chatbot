@@ -43,7 +43,7 @@ def test_current_instructions_reach_the_serialized_request_and_cache_identity(mo
     assert "Tra đơn vị thực hiện một việc trong danh bạ dịch vụ" in request
     key = router._cache_key("query", cohort="K50", chat_history=[])
     monkeypatch.setattr("src.retrieval.core.ai_router.ROUTER_PROMPT_VERSION",
-                        "structured-regulation-v59-service-and-score-boundaries")
+                        "structured-regulation-v60-answer-kind-concepts")
     assert router._cache_key("query", cohort="K50", chat_history=[]) != key
 
 
@@ -118,7 +118,8 @@ def test_scoring_operations_say_what_each_lookup_returns():
 def test_policy_questions_that_need_a_reference_table_also_look_it_up():
     # RAG alone often misses an appendix table, so the lookup is not optional.
     prompt = " ".join(PLANNER_SYSTEM_PROMPT.split())
-    assert "→ task structured tra bảng, kể cả khi chưa nêu giá trị cá nhân, và task RAG đọc quy định" in prompt
+    assert "kết luận mà bảng không chứa (mức bắt buộc, quyền hưởng) → task structured tra bảng" in prompt
+    assert "Hỏi giá trị/hàng bảng có sẵn chỉ là một task structured" in prompt
     assert "có thể là một RAG task tự đủ nghĩa" not in prompt
     use = compact_registry_for_prompt().split("foreign_language|", 1)[1].split("\n", 1)[0]
     assert "cần bảng này cùng quy định qua RAG" in use

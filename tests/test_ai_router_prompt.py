@@ -192,7 +192,7 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
     # Character-based estimates, not provider tokenizer or billing counts.
     assert stats["total_chars"] <= 35800
     assert stats["estimated_input_tokens"] <= 8950
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v60-answer-kind-concepts"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v61-table-conclusions"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 

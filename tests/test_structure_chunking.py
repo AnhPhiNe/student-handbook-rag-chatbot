@@ -109,3 +109,19 @@ def test_every_document_title_has_a_short_name():
     titles = {(p.get("metadata") or {}).get("document_title") for p in PARENTS}
     rules = [r["prefix"] for r in config["document_short_names"]]
     assert all(any(t.startswith(r) for r in rules) for t in titles)
+
+
+def test_an_unnumbered_lead_in_keeps_the_list_that_follows_it(chunks):
+    # "… gồm các nguồn sau:" then "1. …", "2. …" is one list, not separate clauses.
+    funding = texts_of(chunks, "K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5")
+    assert len(funding) == 1 and funding[0].startswith("Tài chính cho hoạt động NCKH")
+    assert "1." in funding[0] and "4." in funding[0]
+    hours = texts_of(chunks, "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu5")
+    assert len(hours) == 1 and "thời gian làm việc" in hours[0] and "Khối hành chính" in hours[0]
+    # The first group keeps the notice's whole opening; later groups repeat only
+    # the clause that introduces the list, not the notice's legal bases.
+    long_list = texts_of(chunks, "K51_ThongBaoHocBongNguoiKhuyetTat_Phan1")
+    assert len(long_list) >= 3 and long_list[0].startswith("Về việc thực hiện chế độ")
+    carried = {t.split("\n", 1)[0] for t in long_list[1:]}
+    assert len(carried) == 1 and next(iter(carried)).endswith("cụ thể như sau:")
+    assert all(len(t.split("\n", 1)[0]) <= 300 for t in long_list[1:])

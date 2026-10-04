@@ -105,7 +105,7 @@ def test_reviewed_candidate_has_separate_namespace_and_text_hash_identity(tmp_pa
     reviewed = build_candidate(ROOT, tmp_path / "reviewed_v2", REVIEW)
     assert baseline["storage_targets"] != reviewed["storage_targets"]
     assert reviewed["artifacts"]["table_descriptions"]["count"] == 32
-    assert reviewed["artifacts"]["child_chunks"]["count"] == 2909  # 2877 clause chunks + 32 in-scope table handles
+    assert reviewed["artifacts"]["child_chunks"]["count"] == 2843  # 2811 clause chunks + 32 in-scope table handles
     assert reviewed["parent_source"] == baseline["parent_source"]
     assert not reviewed["embedding_created"] and reviewed["model_calls"] == 0
     changed = yaml.safe_load(REVIEW.read_text(encoding="utf-8"))

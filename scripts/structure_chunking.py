@@ -160,7 +160,22 @@ def article_units(parent: dict[str, Any]) -> list[Unit]:
     first = next((i for i, line in enumerate(lines) if line.strip()), None)
     if first is not None and _looks_like_section_heading(_clean_block_text(lines[first]), metadata):
         lines = lines[first + 1:]  # the "Điều N. Title" line; the context header carries it
-    return build_units(split_segments("\n".join(lines)))
+    return _attach_list_to_lead_in(build_units(split_segments("\n".join(lines))))
+
+
+def _attach_list_to_lead_in(units: list[Unit]) -> list[Unit]:
+    """An article opening with an unnumbered sentence ending in ":" lists what follows.
+
+    "Tài chính cho hoạt động NCKH của SV gồm các nguồn sau:" followed by "1. …",
+    "2. …" is one list, not a lead-in and separate clauses: without this the
+    sources lose what they are sources of (20 articles, 79 items, 2026-10-05).
+    """
+    if len(units) < 2 or units[0].marker is not None or units[0].items:
+        return units
+    if not units[0].lead_text.rstrip().endswith(":"):
+        return units
+    items = [Item(u.marker, [*u.lead, *(part for item in u.items for part in item.parts)]) for u in units[1:]]
+    return [Unit(None, units[0].lead, items)]
 
 
 # --- configuration -----------------------------------------------------------
@@ -290,9 +305,37 @@ def unit_texts(unit: Unit, config: dict[str, Any], mode: str) -> list[tuple[str,
     if len(whole) <= int(config["max_unit_chars"]):
         return [("clause" if unit.marker else "article", whole, markers)]
     if unit.items:
-        return [("clause_part", unit.text(group), [str(i.marker) for i in group if i.marker])
-                for group in _group_items(unit, int(config["group_target_chars"]))]
+        carried = _carried_lead(unit.lead_text, int(config["max_lead_chars"]))
+        groups = _group_items(Unit(unit.marker, [Segment("text", None, [carried])], unit.items),
+                              int(config["group_target_chars"]))
+        out = []
+        for index, group in enumerate(groups):
+            # The first group keeps the whole opening; later ones repeat only the
+            # sentence that introduces the list.
+            lead = unit.lead_text if index == 0 else carried
+            text = "\n".join(x for x in [lead, *(i.text for i in group)] if x)
+            out.append(("clause_part", text, [str(i.marker) for i in group if i.marker]))
+        return out
     return [("clause_part", part, []) for part in _split_long_text(whole, int(config["paragraph_chars"]))]
+
+
+def _carried_lead(lead: str, limit: int) -> str:
+    """The lead-in repeated in each group of a long list: whole if short, else its last sentence.
+
+    A notice opens with its title and legal bases before "…, cụ thể như sau:";
+    only that last sentence says what the list is.
+    """
+    if len(lead) <= limit:
+        return lead
+    flat = " ".join(lead.split())
+    sentences = [s for s in re.split(r"(?<=[.;])\s+", flat) if s]
+    if sentences and len(sentences[-1]) <= limit:
+        return sentences[-1]
+    # A last sentence chaining legal bases with commas: keep the clauses after the
+    # last commas that fit, so the carried text starts at a clause, not mid-word.
+    tail = flat[-limit:]
+    cut = min((tail.find(sep) for sep in (", ", "; ") if sep in tail), default=-1)
+    return tail[cut + 2:] if cut >= 0 else tail
 
 
 def build_structure_chunks(

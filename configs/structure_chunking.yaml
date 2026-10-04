@@ -5,6 +5,8 @@
 version: 1
 max_unit_chars: 1200      # longer khoản (43 of 1,750) split into groups of points
 group_target_chars: 800   # each group repeats the khoản lead-in
+max_lead_chars: 300       # a longer lead-in (a notice's title and legal bases) is repeated only
+                          # as its last sentence, the one that introduces the list
 paragraph_chars: 900      # long paragraphs without points split at sentence ends
 # Context line "<short document name> › <chapter> › Điều N. Title" goes into the
 # embedding and rerank text only; a chunk's content (BM25, citations) stays the

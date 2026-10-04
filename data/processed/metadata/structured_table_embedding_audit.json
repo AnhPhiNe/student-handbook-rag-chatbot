@@ -1,11 +1,11 @@
 {
   "schema_version": "structured-table-embedding-audit-v1",
   "docstore_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\chunks\\all_docstore_items.json",
-  "docstore_sha256": "86a6f62d77e643604a0972545d636ffc406fb9bfdbf51a60c6eebb4dcb6ee16f",
+  "docstore_sha256": "d50a34e7635d95248b60645080c86ac6b1ecb33285270f3c3868a9d3198849d0",
   "structured_registry_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\tables\\structured_tables_registry.json",
   "structured_registry_sha256": "39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568",
   "child_output_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\sh_rag_prompt\\data\\processed\\chunks\\child_parent_chunks.json",
-  "child_count": 2877,
+  "child_count": 2811,
   "total_table_like_rows": 0,
   "excluded_as_structured": 0,
   "retained_unmatched": 0,
@@ -163,13 +163,13 @@
     "source_page_corrections": [],
     "artifact_content_sha256": {
       "parent_docstore": "ac72238a1af82be9f7981c1388755088069963cfab37d295ec1d826286e6ae75",
-      "child_chunks": "0f659751d438133472d6b90d79d67bcce999c3f988839e9af582158c4c687514"
+      "child_chunks": "683b8013d164bb765543632716f647119a06a04b1ad350bfd66797e1455fae52"
     },
     "physical_tables": 23,
     "parent_table_rows": 150,
     "generated_appendices_removed": 12,
     "parent_count": 541,
-    "child_count": 2877,
+    "child_count": 2811,
     "table_embedding_chunks_added": 0,
     "input_sha256": {
       "parents": "1f15184b05bbe6895acff71c2e4bf6bdda6f39e05df6bc75854398eff8b9f284",
@@ -178,6 +178,6 @@
     },
     "child_builder": "structure_chunking"
   },
-  "build_id": "build-e4a43631790e8977946d",
-  "child_output_sha256": "37b80c5f08251f3b954affa16ca31f9a01d51eb78d14b825f6fe2b871118fa65"
+  "build_id": "build-99d162d545cd26cae458",
+  "child_output_sha256": "8f36af30220592a0d1580a7d1778c128abc07f199825e53e8c281b5d87c6b3e7"
 }

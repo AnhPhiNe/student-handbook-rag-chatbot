@@ -45,8 +45,10 @@ def main():
                "attempt": args.attempt, "rerun_ids": wanted}
     (output / "run_snapshot.json").write_text(json.dumps(context, ensure_ascii=False, indent=2), encoding="utf-8")
     cache = output / "answer_cache.json"
+    # A run that replayed shared plans reruns its cases on the same plans.
     generate_answers(cases, cache_path=cache, resume=False, checkpoint_context=context,
-                     answer_config=snapshot["composer"]["config"])
+                     answer_config=snapshot["composer"]["config"],
+                     shared_plans=snapshot.get("shared_plans"))
     judged = judge_answers(cases, load_answer_checkpoint(cases, cache, checkpoint_context=context),
                            checkpoint_path=output / "judge_checkpoint.json", resume=False,
                            checkpoint_context=context)

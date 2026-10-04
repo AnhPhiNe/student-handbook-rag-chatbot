@@ -1,0 +1,57 @@
+# Corpus scope (owner decision, 2026-10-04): the search index covers what applies
+# to regular (chính quy) university students of the main campus. Anything listed
+# here gets no search chunk (no embedding, no BM25 entry); the handbook text and
+# the parent documents are not edited, so citations stay verbatim. Rules name
+# articles, clauses and points explicitly; there are no keyword rules at runtime.
+# Kept on purpose: scope statements naming several groups (Điều 1-2), clauses that
+# give a chính quy student a right concerning another form of study (Quy chế đào
+# tạo Điều 15 khoản 5, Điều 17 khoản 3), clauses written jointly for đại học and
+# cao đẳng (Quy chế công tác sinh viên Điều 30 khoản 3b, Điều 31 khoản 4), and
+# Quy tắc ứng xử Điều 5 (office hours) and Điều 8 (conduct toward students).
+version: 1
+exclude_parents:
+  - {id: "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6", reason: "Liên kết đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {id: "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu13", reason: "Xử lý kết quả học tập, chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {id: "K50_QuyCheDaoTao_Chuong1_Dieu6", reason: "Liên kết đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {id: "K50_QuyCheDaoTao_Chuong3_Dieu13", reason: "Xử lý kết quả học tập, chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {id: "K51_QuyCheDaoTao_Chuong1_Dieu6", reason: "Liên kết đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {id: "K51_QuyCheDaoTao_Chuong3_Dieu13", reason: "Xử lý kết quả học tập, chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {id: "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu3", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu4", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu6", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu7", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu9", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu10", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu3", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu4", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu6", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu7", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu9", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu10", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+exclude_units:
+  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3", unit: "6", items: ["b"], reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu5", lead_prefix: "Đào tạo vừa làm vừa học", reason: "Hình thức đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu7", unit: "5", items: ["b"], reason: "Phân bổ học kỳ chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9", unit: "2", reason: "Đăng ký học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15", unit: "7", reason: "Đợt xét tốt nghiệp chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K50_QuyCheDaoTao_Chuong1_Dieu3", unit: "6", items: ["b"], reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K50_QuyCheDaoTao_Chuong1_Dieu5", unit: "2", reason: "Hình thức đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K50_QuyCheDaoTao_Chuong2_Dieu7", unit: "5", items: ["b"], reason: "Phân bổ học kỳ chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K50_QuyCheDaoTao_Chuong2_Dieu9", unit: "2", reason: "Đăng ký học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K50_QuyCheDaoTao_Chuong3_Dieu15", unit: "7", reason: "Đợt xét tốt nghiệp chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K51_QuyCheDaoTao_Chuong1_Dieu3", unit: "6", items: ["b"], reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K51_QuyCheDaoTao_Chuong1_Dieu5", unit: "2", reason: "Hình thức đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K51_QuyCheDaoTao_Chuong2_Dieu7", unit: "5", items: ["b"], reason: "Phân bổ học kỳ chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K51_QuyCheDaoTao_Chuong2_Dieu9", unit: "2", reason: "Đăng ký học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K51_QuyCheDaoTao_Chuong3_Dieu15", unit: "7", reason: "Đợt xét tốt nghiệp chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K50_QuyCheCongTacSinhVien_Chuong5_Dieu30", unit: "1", items: ["b"], reason: "Nghỉ học tạm thời, chỉ áp dụng cho sinh viên cao đẳng ngành Giáo dục Mầm non"}
+  - {parent: "K50_QuyCheCongTacSinhVien_Chuong5_Dieu31", unit: "2", items: ["c", "d"], reason: "Chuyển trường, chỉ áp dụng cho sinh viên cao đẳng sư phạm ngành Giáo dục Mầm non"}
+  - {parent: "K51_QuyCheCongTacSinhVien_Chuong5_Dieu30", unit: "1", items: ["b"], reason: "Nghỉ học tạm thời, chỉ áp dụng cho sinh viên cao đẳng ngành Giáo dục Mầm non"}
+  - {parent: "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31", unit: "2", items: ["c", "d"], reason: "Chuyển trường, chỉ áp dụng cho sinh viên cao đẳng sư phạm ngành Giáo dục Mầm non"}
+  - {parent: "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14", unit: "6", reason: "Sử dụng kết quả rèn luyện, chỉ áp dụng cho sinh viên cao đẳng sư phạm"}
+  - {parent: "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu14", unit: "6", reason: "Sử dụng kết quả rèn luyện, chỉ áp dụng cho sinh viên cao đẳng sư phạm"}
+# Applied to the structured registry and table search when they are rebuilt.
+exclude_tables:
+  - {table_id: "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc", reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {table_id: "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc", reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {table_id: "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc", reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}

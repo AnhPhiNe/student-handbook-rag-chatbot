@@ -63,6 +63,18 @@ class RerankerConfig:
         )
 
 
+def _rerank_text(chunk: dict[str, Any]) -> str:
+    """The chunk text, after its "document › article" line when it has one.
+
+    Structure chunks keep that line out of their content (so BM25 and citations
+    use the handbook's words) but the reranker needs it to tell apart articles
+    whose clauses read alike, such as Điều 12 and Điều 13 of the training rules.
+    """
+    content = str(chunk.get("content") or "")
+    header = str((chunk.get("metadata") or {}).get("context_header") or "").strip()
+    return f"{header}\n{content}" if header else content
+
+
 def _deepinfra_call(config: RerankerConfig, query: str, documents: list[str]) -> tuple[str, dict[str, Any]]:
     return f"{config.api_url}/{config.model}", {
         "queries": [query],
@@ -160,7 +172,7 @@ class Reranker:
             return fall_back("insufficient_candidates")
 
         build_call, parse_scores, ranking_method = _PROVIDERS[self.config.provider]
-        documents = [str(chunk.get("content") or "") for _, chunk in scored_chunks]
+        documents = [_rerank_text(chunk) for _, chunk in scored_chunks]
         url, payload = build_call(self.config, query, documents)
         started = time.perf_counter()
         try:

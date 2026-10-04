@@ -39,6 +39,27 @@ def _chunk_key(chunk: dict[str, Any]) -> str:
     return str(chunk.get("_id") or chunk.get("chunk_id") or "")
 
 
+def cap_children_per_parent(
+    scored: list[tuple[float, dict[str, Any]]], cap: int
+) -> list[tuple[float, dict[str, Any]]]:
+    """Keep at most ``cap`` children of one article, in rank order (0 = no cap).
+
+    Without it one article whose title matches the question can take most of the
+    24 candidates (Điều 31 took 13 for "Thi rớt 3 môn có bị đuổi học?"), and the
+    article that answers it never reaches the reranker.
+    """
+    if cap <= 0:
+        return list(scored)
+    counts: dict[str, int] = {}
+    kept = []
+    for score, chunk in scored:
+        parent = str((chunk.get("metadata") or {}).get("parent_section_id") or _chunk_key(chunk))
+        counts[parent] = counts.get(parent, 0) + 1
+        if counts[parent] <= cap:
+            kept.append((score, chunk))
+    return kept
+
+
 def reciprocal_rank_fusion(
     dense: list[tuple[float, dict[str, Any]]],
     lexical: list[tuple[float, dict[str, Any]]],
@@ -286,6 +307,8 @@ class ChildParentHybridRetriever:
         runtime = self.runtime_config.get("runtime") or {}
         retrieval = self.runtime_config.get("retrieval") or {}
         self.candidate_children = max(1, int(retrieval.get("candidate_children", 24)))
+        # 0 keeps every fused child; see cap_children_per_parent.
+        self.max_children_per_parent = int(retrieval.get("max_children_per_parent", 0) or 0)
         embedding = self.runtime_config.get("embedding") or {}
         self.table_search_tables = load_table_search(retrieval.get("table_search") or {}, collection_name)
         self.qdrant_client = QdrantClient(
@@ -486,7 +509,9 @@ class ChildParentHybridRetriever:
         if not dense and not lexical:
             trace.record({"dense_failed": dense_error}, [], dense, lexical, [])
             return []
-        primary_scored = reciprocal_rank_fusion(dense, lexical)[:search_limit]
+        primary_scored = cap_children_per_parent(
+            reciprocal_rank_fusion(dense, lexical), getattr(self, "max_children_per_parent", 0)
+        )[:search_limit]
         fused_order = list(primary_scored)
 
         seed_parent_ids = {

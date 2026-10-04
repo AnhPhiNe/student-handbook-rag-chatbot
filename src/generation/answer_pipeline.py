@@ -201,6 +201,7 @@ def create_composer_client(llm_config: dict[str, Any]) -> Any:
             request_timeout_seconds=llm_config.get("request_timeout_seconds", 30),
             api_keys_env_var=llm_config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
             key_pool_config=llm_config.get("key_pool"),
+            base_url=llm_config.get("base_url"),
         )
     raise ValueError(f"Unsupported composer provider: {provider}")
 
@@ -225,6 +226,7 @@ def create_directory_selector(selector_config: dict[str, Any]) -> DirectorySelec
             api_keys_env_var=config.get("api_keys_env_var", "DEEPSEEK_API_KEY"),
             key_pool_config=config.get("key_pool"),
             response_format={"type": "json_object"},
+            base_url=config.get("base_url"),
         )
 
     retry = selector_config.get("thinking_retry")

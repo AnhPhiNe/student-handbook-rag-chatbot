@@ -219,7 +219,7 @@ tools:
   student_service:
     data_category: directory_table
     presentation_type: contact_card
-    description: Tra đơn vị đảm nhận một việc trong danh bạ dịch vụ và liên hệ của đơn vị đó, không cần biết tên đơn vị. Khiếu nại/phúc khảo về một kết quả hay quyết định cụ thể, các bước, điều kiện, thời hạn hoặc người giải quyết theo quy chế dùng RAG.
+    description: Tra đơn vị thực hiện một việc trong danh bạ dịch vụ và liên hệ của đơn vị đó, không cần biết tên đơn vị. Yêu cầu xem xét lại một kết quả hay quyết định đã có (khiếu nại, phúc khảo), các bước, điều kiện, thời hạn hoặc người giải quyết theo quy chế dùng RAG.
     intents: [direct_value, contact]
     default_intent: contact
     required_slots:

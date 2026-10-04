@@ -187,12 +187,12 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
         router._plan_response_format_payload(),
     )
     # v58 separates answer kinds without changing schema or runtime behavior.
-    # v59 adds the service/complaint boundary and the scoring operation meanings
+    # v59/v60 add the service/complaint boundary and the scoring operation meanings
     # (35,750 characters; the operation text is counted in TOOLS and the schema).
     # Character-based estimates, not provider tokenizer or billing counts.
     assert stats["total_chars"] <= 35800
     assert stats["estimated_input_tokens"] <= 8950
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v59-service-and-score-boundaries"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v60-answer-kind-concepts"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 
@@ -226,7 +226,7 @@ def test_planner_prompt_keeps_exactly_three_answer_targets() -> None:
 def test_planner_prompt_routes_named_unit_contacts_to_directory() -> None:
     assert "Đơn vị nêu đích danh" in PLANNER_PROMPT_TEXT
     assert "directory office/faculty" in PLANNER_PROMPT_TEXT
-    assert "→ student_service, dù diễn đạt là phụ trách, quản lý hay cấp" in PLANNER_PROMPT_TEXT
+    assert "chọn theo loại đáp án, không theo động từ của câu hỏi" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_treats_compare_as_presentation_and_slots_as_grounded() -> None:
@@ -256,7 +256,7 @@ def test_prompt_clarifies_selectors_without_weakening_grounding() -> None:
     # One wording for an omitted slot; its encoding belongs to the output rules.
     assert "Để trống" not in PLANNER_PROMPT_TEXT
     assert "Để trống" not in compact_registry_for_prompt()
-    assert "hỏi đơn vị nào đảm nhận một việc hoặc liên hệ của đơn" in PLANNER_PROMPT_TEXT
+    assert "cần biết đơn vị thực hiện một việc hoặc liên hệ của đơn vị đó" in PLANNER_PROMPT_TEXT
     registry = compact_registry_for_prompt()
     assert "Chọn theo kết quả cần tra, không theo riêng tên loại học bổng" in registry
     assert "unit=tên đơn vị phụ trách; phone=điện thoại kèm số máy nội bộ" in registry

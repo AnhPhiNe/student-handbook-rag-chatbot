@@ -81,7 +81,7 @@ def test_tool_use_has_the_same_scope_boundary_as_selector():
     # The planner sends complaints about a specific result or decision to RAG;
     # the selector keeps the guard against generic duties (tested separately).
     assert "trong danh bạ dịch vụ" in service_contract
-    assert "Khiếu nại/phúc khảo về một kết quả hay quyết định cụ thể" in service_contract
+    assert "Yêu cầu xem xét lại một kết quả hay quyết định đã có" in service_contract
     assert "theo quy chế dùng RAG" in service_contract
     assert "Hỏi ai xử lý một thủ tục vẫn tra dịch vụ" not in service_contract
 

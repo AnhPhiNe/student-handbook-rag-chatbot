@@ -36,7 +36,7 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 # Comma-separated OpenAI keys for the planner's key pool.
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
-ROUTER_PROMPT_VERSION = "structured-regulation-v59-service-and-score-boundaries"
+ROUTER_PROMPT_VERSION = "structured-regulation-v60-answer-kind-concepts"
 
 
 # Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
@@ -126,9 +126,9 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
   • Hỏi liên hệ khoa/đơn vị thông qua nhiều ngành hoặc nhiều dịch vụ → mỗi
     ngành/dịch vụ một task, vì runtime chỉ nối sang liên hệ từ đúng một mục.
     Khoa/đơn vị đã nêu tên trực tiếp thì vẫn tra chung một task.
-- Hỏi chính sách cần giá trị của một bảng tham chiếu trong TOOLS (vd. chuẩn đầu
-  ra theo một chứng chỉ) → task structured tra bảng, kể cả khi chưa nêu điểm, và
-  task RAG đọc quy định; giữ tên chứng chỉ/đối tượng trong cả hai task.question.
+- Hỏi chính sách mà đáp án cần giá trị trong một bảng tham chiếu của TOOLS →
+  task structured tra bảng, kể cả khi chưa nêu giá trị cá nhân, và task RAG đọc
+  quy định; giữ tên đối tượng được tra trong cả hai task.question.
 - Từ nối "và" hoặc "so sánh" không tự quyết định số task.
 - Cohort không làm tăng số task: M target trên N cohort vẫn là M task, không tạo
   M×N tasks; mỗi task giữ đủ `cohorts`.
@@ -176,10 +176,10 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
     dùng faculty; phòng ban, trung tâm và đơn vị khác dùng office.
     Đơn vị học thuật dạng Tổ có hồ sơ trong danh bạ khoa cũng dùng faculty.
     Không clarify/OOD chỉ vì tên thiếu tiền tố Phòng/Khoa.
-  • Chưa biết tên đơn vị, hỏi đơn vị nào đảm nhận một việc hoặc liên hệ của đơn
-    vị đó → student_service, dù diễn đạt là phụ trách, quản lý hay cấp. Khiếu
-    nại, phúc khảo hoặc báo sai về một kết quả/quyết định cụ thể mà quy chế định
-    nơi nhận, người giải quyết và thời hạn → RAG. Giữ loại việc trong task.question.
+  • Chưa biết tên đơn vị và cần biết đơn vị thực hiện một việc hoặc liên hệ của
+    đơn vị đó → student_service; chọn theo loại đáp án, không theo động từ của
+    câu hỏi. Yêu cầu xem xét lại một kết quả hoặc quyết định đã có (khiếu nại,
+    phúc khảo) theo thủ tục quy chế → RAG. Giữ loại việc trong task.question.
   • Yêu cầu về cách tính hoặc quan hệ toán học giữa các thành phần dùng formula
     nếu TOOLS có công thức tương ứng, kể cả khi QUERY không viết từ "công thức".
 - So sánh là yêu cầu trình bày, không phải intent. Không dùng intent=compare;

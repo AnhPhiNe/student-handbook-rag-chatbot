@@ -92,6 +92,11 @@ export interface Message {
   suggestions?: string[];
   queuePosition?: number | null;
   userQuery?: string;
+  // While waiting for the first word: when the question was sent, the step the
+  // backend last reported, and the handbook sources found so far.
+  startedAt?: number;
+  progress?: string;
+  pendingSources?: Citation[];
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
@@ -158,6 +163,7 @@ export function useChat(cohort: string = 'K48-K49') {
       content: "", 
       isStreaming: true,
       userQuery: text,
+      startedAt: startTime,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }]);
 
@@ -205,7 +211,9 @@ export function useChat(cohort: string = 'K48-K49') {
               citations: donePayload!.citations,
               structuredResults: donePayload!.structuredResults,
               relatedReferences: donePayload!.relatedReferences,
-              runId: donePayload!.runId
+              runId: donePayload!.runId,
+              progress: undefined,
+              pendingSources: undefined
             } : m
           ));
         }
@@ -270,6 +278,10 @@ export function useChat(cohort: string = 'K48-K49') {
               if (eventType === 'metadata') {
                 if (data.citations_used) {
                   capturedCitations = data.citations_used;
+                  const found: Citation[] = data.citations_used;
+                  setMessages(prev => prev.map(m =>
+                    m.id === botMsgId ? { ...m, pendingSources: found } : m
+                  ));
                 }
                 if (data.structured_results) {
                   capturedStructuredResults = data.structured_results;
@@ -287,7 +299,7 @@ export function useChat(cohort: string = 'K48-K49') {
               } else if (eventType === 'progress') {
                 setProgressMessage(data.message);
                 setMessages(prev => prev.map(m => 
-                  m.id === botMsgId ? { ...m, queuePosition: null } : m
+                  m.id === botMsgId ? { ...m, queuePosition: null, progress: data.message } : m
                 ));
               } else if (eventType === 'token') {
                 if (ttftMs === null) {
@@ -348,7 +360,9 @@ export function useChat(cohort: string = 'K48-K49') {
           content: completion.content,
           isStreaming: false,
           responseTimeMs,
-          confidence: 'low'
+          confidence: 'low',
+          progress: undefined,
+          pendingSources: undefined
         } : m
       ));
       setIsTyping(false);

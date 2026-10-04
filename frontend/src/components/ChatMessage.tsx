@@ -10,6 +10,7 @@ import { RelatedReferenceLink } from './RelatedReference';
 import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import { StructuredResults } from './StructuredResults';
 import { OwlMascot, type OwlState } from './OwlMascot';
+import { WaitingIndicator } from './WaitingIndicator';
 const userAvatarImg = '/user_avatar.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
@@ -683,18 +684,12 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
       <div className="message-content">
         <div className={`message-bubble ${message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? 'typing-indicator' : ''}`}>
           {message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div className="typing-dots-wrapper" aria-busy="true">
-                <div className="typing-dot"></div>
-                <div className="typing-dot"></div>
-                <div className="typing-dot"></div>
-              </div>
-              {message.queuePosition != null && (
-                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontStyle: 'italic', whiteSpace: 'nowrap' }}>
-                  (Úi đông quá! Còn {message.queuePosition} lượt chờ nữa là tới bạn, nhâm nhi ngụm nước đợi AI xíu nha ☕)
-                </span>
-              )}
-            </div>
+            <WaitingIndicator
+              startedAt={message.startedAt}
+              progress={message.progress}
+              sources={message.pendingSources}
+              queuePosition={message.queuePosition}
+            />
           ) : (
             <>
               {thinkContent && (

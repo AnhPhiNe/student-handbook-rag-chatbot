@@ -199,6 +199,31 @@ author nor its models wrote.
   purpose is to find a table when the planner does not call a tool, which v4
   rarely tests. Cases whose reranker was skipped (429 or timeout, read from
   the run log) are rerun before scoring.
+- **Clause chunks, corpus scope and composer v3.35** (owner, 2026-10-05, before
+  any score of this run was read): run C2 repeats table-search run B
+  (`official_v4_answers_20261004T124930Z`) on the published clause-chunk candidate
+  (Qdrant `student_handbook_table_search_b72f8b7e6f40`, Mongo
+  `parent_docs_table_search_b72f8b7e6f40`, build `build-e4a43631790e8977946d`)
+  with composer v3.35; the v61 QueryPlans are replayed from the shared cache,
+  the composer is DeepInfra DeepSeek-V4.1-Flash low in both runs, and the judge
+  and packet are unchanged. Composer timeouts and reranker skips are rerun before
+  scoring. The owner removed vừa làm vừa học, cao đẳng and staff-only content
+  from the assistant's scope, so cases are split before scoring:
+  - out of scope (10: V4-014, 015, 017, 081, 157, 177, 179, 197, 198, 211): each
+    answer must say the question is outside what the assistant serves and must
+    not answer with the chính quy or student rule; read one by one;
+  - partly out of scope (8: V4-095, 098, 110, 125, 146, 150, 153, 180): read one
+    by one; the in-scope parts must be answered from their sources and the
+    out-of-scope parts declined; judge scores are reported, not used, because
+    the gold expects the out-of-scope rules;
+  - in scope (the other 228): deploy if the lower bound of the 95% cluster
+    interval of the paired `answer_correctness` difference (C2 minus B) is at
+    least -0.03 and every case scored 0 in C2 but not in B is shown, on review
+    against its sources, to be a judge error.
+  Any out-of-scope or partly out-of-scope answer that applies the wrong rule
+  blocks the deploy until fixed. Clause chunks and the composer change are
+  measured together; their retrieval effect alone is the offline comparison in
+  `docs/DESIGN_DECISIONS.md`.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

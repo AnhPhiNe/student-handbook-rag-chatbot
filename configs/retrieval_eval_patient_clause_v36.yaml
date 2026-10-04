@@ -1,8 +1,8 @@
 # Evaluation only (official_v4 run C2, 2026-10-05): retrieval_eval_patient.yaml with
 # the clause-chunk candidate (scripts/structure_chunking.py, configs/corpus_scope.yaml).
 # Set QDRANT_COLLECTION_NAME and STUDENT_RAG_HYBRID_COLLECTION to
-# student_handbook_table_search_b72f8b7e6f40 and MONGODB_PARENT_COLLECTION to
-# parent_docs_table_search_b72f8b7e6f40; the loader refuses any other collection.
+# student_handbook_table_search_79c456af1075 and MONGODB_PARENT_COLLECTION to
+# parent_docs_table_search_79c456af1075; the loader refuses any other collection.
 # Evaluation only (official_v4, 2026-09-30): configs/retrieval.yaml with longer waits,
 # so a slow network does not remove dense retrieval or the reranker from a case.
 # It changes how long a call may take, never what a completed call returns.
@@ -29,7 +29,7 @@ retrieval:
   # child for 155/155 queries, 16 for 154/155; 40 adds nothing.
   candidate_children: 24
   table_search:
-    collection_name: student_handbook_table_search_b72f8b7e6f40
+    collection_name: student_handbook_table_search_79c456af1075
     baseline_collection: student_handbook_clause_v36
     registry_path: data/processed/tables/structured_tables_registry.json
     registry_sha256: 39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568

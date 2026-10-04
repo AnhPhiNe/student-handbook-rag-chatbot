@@ -202,8 +202,8 @@ author nor its models wrote.
 - **Clause chunks, corpus scope and composer v3.35** (owner, 2026-10-05, before
   any score of this run was read): run C2 repeats table-search run B
   (`official_v4_answers_20261004T124930Z`) on the published clause-chunk candidate
-  (Qdrant `student_handbook_table_search_b72f8b7e6f40`, Mongo
-  `parent_docs_table_search_b72f8b7e6f40`, build `build-e4a43631790e8977946d`)
+  (Qdrant `student_handbook_table_search_79c456af1075`, Mongo
+  `parent_docs_table_search_79c456af1075`, build `build-99d162d545cd26cae458`)
   with composer v3.35; the v61 QueryPlans are replayed from the shared cache,
   the composer is DeepInfra DeepSeek-V4.1-Flash low in both runs, and the judge
   and packet are unchanged. Composer timeouts and reranker skips are rerun before
@@ -223,7 +223,10 @@ author nor its models wrote.
   Any out-of-scope or partly out-of-scope answer that applies the wrong rule
   blocks the deploy until fixed. Clause chunks and the composer change are
   measured together; their retrieval effect alone is the offline comparison in
-  `docs/DESIGN_DECISIONS.md`.
+  `docs/DESIGN_DECISIONS.md`. A first start on build `build-e4a43631790e8977946d`
+  was stopped at a quarter of the answers, before any score was read, when 20
+  articles were found whose list had been split from its lead-in; its directory
+  is marked `_ABORTED_before_scoring` and is not used.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

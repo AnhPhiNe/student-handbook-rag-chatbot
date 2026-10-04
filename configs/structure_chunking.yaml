@@ -6,8 +6,11 @@ version: 1
 max_unit_chars: 1200      # longer khoản (43 of 1,750) split into groups of points
 group_target_chars: 800   # each group repeats the khoản lead-in
 paragraph_chars: 900      # long paragraphs without points split at sentence ends
-# Context line in embedding and rerank text only, never BM25:
-# "<short document name> › Điều N. Title". Chapter left out (shared by many articles).
+# Context line "<short document name> › Điều N. Title" goes into the embedding and
+# rerank text only; a chunk's content (BM25, citations) stays the handbook's words,
+# and BM25 keeps its usual title fields. Offline on official_v1 (2026-10-04) the
+# chapter in the line changed 2 of 146 first ranks, within noise; the article alone
+# lost one source.
 header: document_article
 document_short_names:     # prefix of the full title, first match wins
   - {prefix: "Quy chế đào tạo trình độ đại học", short: "Quy chế đào tạo"}

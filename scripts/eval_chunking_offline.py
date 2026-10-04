@@ -14,7 +14,10 @@ Variants:
   clause_article     same, "Điều" line only
   clause_chapter     same, "document › chapter › Điều" line
   point_docart       one point per chunk carrying its lead-in, "document › Điều" line
-Suffixes: "+titles" keeps the BM25 title fields, "+nocap" removes the per-article cap.
+BM25 and the candidate list are as in production. A per-article cap on the 24
+candidates and BM25 without the repeated title fields were measured on
+2026-10-04 and made no difference with clause chunks (docs/DESIGN_DECISIONS.md),
+so neither exists any more.
 """
 from __future__ import annotations
 
@@ -31,7 +34,6 @@ from typing import Any
 import numpy as np
 
 CACHE = Path("data/eval/reports/chunking_offline_embeddings")
-CAP = 3
 
 
 class LocalParents:
@@ -45,7 +47,7 @@ class LocalParents:
 def variant_chunks(name: str, parents: list[dict[str, Any]], tables: list[dict[str, Any]]) -> list[dict[str, Any]]:
     from scripts.structure_chunking import build_structure_chunks, load_config, load_scope
 
-    base = name.split("+")[0]
+    base = name
     if base == "current":
         chunks = json.loads(Path("data/processed/chunks/child_parent_chunks.json").read_text(encoding="utf-8"))
         return [{**c, "embedding_text": c["content"]} for c in chunks]
@@ -72,7 +74,7 @@ def embed(texts: list[str], embedder) -> np.ndarray:
     return np.stack([np.load(CACHE / f"{k}.npy") for k in keys])
 
 
-def build_retriever(chunks: list[dict[str, Any]], vectors: np.ndarray, parents, *, title_fields: bool, cap: int):
+def build_retriever(chunks: list[dict[str, Any]], vectors: np.ndarray, parents):
     from qdrant_client import QdrantClient
     from qdrant_client.models import Distance, PointStruct, VectorParams
 
@@ -96,7 +98,6 @@ def build_retriever(chunks: list[dict[str, Any]], vectors: np.ndarray, parents, 
     r = object.__new__(hp.ChildParentHybridRetriever)
     r.runtime_config = config
     r.candidate_children = int((config.get("retrieval") or {}).get("candidate_children", 24))
-    r.max_children_per_parent = cap
     r.table_search_tables = {}
     r.qdrant_client = client
     r.collection_name = "variant"
@@ -107,7 +108,6 @@ def build_retriever(chunks: list[dict[str, Any]], vectors: np.ndarray, parents, 
     r.parent_cache_max_entries = 4096
     r.parent_cache = OrderedDict()
     r.bm25 = BM25Retriever()
-    r.bm25.title_fields = title_fields
     r.bm25.build_bm25_index([{**c, "metadata": {**(c.get("metadata") or {}), "chunk_id": c["chunk_id"]}} for c in chunks])
     hp.set_bm25_runtime_status("ready", attempts=1)
     hp._GLOBAL_RETRIEVER = r
@@ -157,15 +157,11 @@ def main() -> None:
     for name in args.variants.split(","):
         chunks = variant_chunks(name, parents, tables)
         vectors = embed([c["embedding_text"] for c in chunks], embedder)
-        current = name.startswith("current")
-        title_fields = current or "+titles" in name
-        cap = 0 if (current or "+nocap" in name) else CAP
-        retriever = build_retriever(chunks, vectors, parents, title_fields=title_fields, cap=cap)
+        retriever = build_retriever(chunks, vectors, parents)
         throttled = ThrottledReranker(retriever.reranker, args.rerank_interval)
         retriever.reranker = throttled
         report = evaluate_retrieval(cases, backend="qdrant", scope="pure")
-        report["variant"] = {"name": name, "chunks": len(chunks), "bm25_title_fields": title_fields,
-                             "max_children_per_parent": cap, "reranker_fallbacks": throttled.fallbacks}
+        report["variant"] = {"name": name, "chunks": len(chunks), "reranker_fallbacks": throttled.fallbacks}
         (out / f"{name.replace('+', '_')}.json").write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
         rows = report["cases"]  # per-case metrics from the official_v1 scorer, every split
         summary[name] = {k: round(sum(float(r.get(k) or 0) for r in rows) / len(rows), 4)

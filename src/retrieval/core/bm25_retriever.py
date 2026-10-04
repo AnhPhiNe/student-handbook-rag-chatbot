@@ -34,11 +34,6 @@ class BM25Retriever:
     ):
         self.bm25_index = None
         self.chunks = []
-        # Repeat the article title and document name in every chunk's lexical
-        # text (the original design). Structure chunks (scripts/structure_chunking.py)
-        # are measured with this off: the repeated title let one article's
-        # children fill 13 of 24 BM25 slots (2026-10-04).
-        self.title_fields = True
         self.acronym_registry = build_acronym_registry(
             vocabulary_path=vocabulary_path or DEFAULT_VOCABULARY_PATH,
             program_directory_path=(
@@ -157,11 +152,10 @@ class BM25Retriever:
         self.bm25_index = BM25Okapi(corpus_tokens)
         logger.info(f"BM25 index built with {len(self.chunks)} chunks.")
 
-    def _index_text(self, chunk: dict[str, Any]) -> str:
+    @staticmethod
+    def _index_text(chunk: dict[str, Any]) -> str:
         """Build a field-aware lexical document without changing result payloads."""
 
-        if not getattr(self, "title_fields", True):
-            return str(chunk.get("content") or "")
         metadata = chunk.get("metadata") or {}
         title = str(
             metadata.get("title") or metadata.get("source_section") or ""

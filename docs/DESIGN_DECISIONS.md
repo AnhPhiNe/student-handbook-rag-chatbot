@@ -1004,6 +1004,50 @@ order, so answer workers stay near 8. No rerank was skipped in either run.
 Low reasoning on DeepInfra took 58–120 s on long questions, which is why the
 production composer now waits 120 s per read.
 
+## Clause chunks and the corpus scope (2026-10-04)
+
+"Thi rớt 3 môn có bị đuổi học?" (K48-K49, K50) was answered from Điều 13, the
+rule for vừa làm vừa học, because the chính quy Điều 12 ranked seventh and never
+reached the composer. Tracing each stage showed why: the builder made one chunk
+per line marker, so "2. Sinh viên bị buộc thôi học trong các trường hợp sau:" and
+"a) Bị cảnh báo học tập 03 lần liên tiếp" were separate chunks and neither stated
+the rule; 1,011 of 3,259 children (31%) were lettered points without their
+lead-in. Search chunks are now one khoản with all its points
+(`scripts/structure_chunking.py`): median 208 characters, a khoản over 1,200 split
+into groups of points that repeat its lead-in. The embedding and rerank text start
+with "document › Điều N. title"; the content, BM25 text and citations are the
+handbook's words. Parents and small-to-big retrieval are unchanged.
+
+The owner set the scope in the same change (`configs/corpus_scope.yaml`): only
+what applies to main-campus chính quy university students is indexed. Six
+articles for vừa làm vừa học, twelve staff-only articles of the K50/K51 code of
+conduct, and named clauses for vừa làm vừa học or cao đẳng inside shared articles
+get no chunk; three VLVH study-duration tables leave the structured lookup.
+
+Offline comparison with the production retriever (in-memory Qdrant, BM25, RRF,
+Voyage rerank-3, local parents; `scripts/eval_chunking_offline.py`), on the
+146 official_v1 retrieval cases in scope and 17 development cases written after
+the failure:
+
+| Variant | v1 primary@5 | v1 hit@1 | v1 MRR | dev primary@5 / hit@1 |
+|---|---:|---:|---:|---:|
+| Current chunks | 0.993 | 0.938 | 0.962 | 0.824 / 0.824 |
+| **Clause, "document › Điều"** | **1.000** | 0.952 | 0.974 | **1.000 / 1.000** |
+| Clause, "Điều" only | 0.993 | 0.959 | 0.975 | 1.000 / 1.000 |
+| Clause, "document › chapter › Điều" | 1.000 | 0.966 | 0.981 | 1.000 / 1.000 |
+| Point with lead-in, "document › Điều" | 1.000 | 0.966 | 0.981 | 1.000 / 1.000 |
+| Clause + cap of 3 children per article | 1.000 | 0.952 | 0.973 | 1.000 / 1.000 |
+| Clause + BM25 without repeated titles | 1.000 | 0.952 | 0.973 | 1.000 / 1.000 |
+
+In scope, the clause chunks lose no case and gain official_ret_080 (second
+degree) and the three "rớt 3 môn" cases. The nine official_v1 cases asking about
+vừa làm vừa học now miss by design. A cap on children per article and BM25 without
+the repeated title fields changed nothing once chunks are clauses, so neither was
+kept. The chapter and point variants differ from the chosen one by two first
+ranks of 146, within the noise of a set the system was tuned on. Two reranker
+calls failed on a connection error and none on the rate limit at about 150 calls
+a minute, consistent with the raised Voyage limit.
+
 ## What these measurements do not show
 
 - A comparison with plain RAG (no planner) or with a long-context model given the

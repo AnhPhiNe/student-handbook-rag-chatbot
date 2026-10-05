@@ -22,7 +22,7 @@ from .structured_routing import (
 )
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v32-task-binding-safety"
+QUERY_PLAN_NORMALIZER_VERSION = "v33-trusted-directory-names"
 QUERY_PLAN_STRICT_SCHEMA_VERSION = "v2-field-descriptions"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
@@ -923,7 +923,10 @@ def _normalize_structured_task(
     required_slots = set(
         (spec.get("required_slots") or {}).get(decision.get("intent"), [])
     )
-    normalization_warnings = _drop_invalid_optional_slots(
+    contact_warnings = _show_all_contact_fields(decision, spec, required_slots)
+    if contact_warnings:
+        validation_errors = validate(decision)
+    normalization_warnings = contact_warnings + _drop_invalid_optional_slots(
         decision, validation_errors, spec=spec, required_slots=required_slots,
     )
     if normalization_warnings:
@@ -975,6 +978,42 @@ def _normalize_structured_task(
             else {}
         ),
     }, errors
+
+
+def _show_all_contact_fields(
+    decision: dict[str, Any], spec: dict[str, Any], required_slots: set[str],
+) -> list[str]:
+    """Show every contact field when the planner's choice of field is unusable.
+
+    A contact card already holds the address, phone, email and website, so a
+    missing or unknown field choice costs the student nothing when all of them
+    are shown; asking the student which field they meant would be the planner's
+    mistake handed to them. Applies only to contact-card lookups whose field
+    slot offers "all".
+    """
+    if spec.get("presentation_type") != "contact_card":
+        return []
+    slots = dict(decision.get("slots") or {})
+    warnings = []
+    for name, schema in (spec.get("slot_schema") or {}).items():
+        enum = schema.get("enum") or []
+        if (
+            name not in required_slots
+            or str(schema.get("verification_role") or "") != "reading_intent"
+            or "all" not in enum
+        ):
+            continue
+        value = slots.get(name)
+        chosen = [item for item in (value if isinstance(value, list) else [value]) if item not in (None, "")]
+        if chosen and all(item in enum for item in chosen):
+            continue
+        slots[name] = "all"
+        warnings.append(f"contact_field_shown_all:{name}")
+    if warnings:
+        decision["slots"] = slots
+        decision["slot_spans"] = {k: v for k, v in (decision.get("slot_spans") or {}).items()
+                                  if f"contact_field_shown_all:{k}" not in warnings}
+    return warnings
 
 
 def _drop_invalid_optional_slots(

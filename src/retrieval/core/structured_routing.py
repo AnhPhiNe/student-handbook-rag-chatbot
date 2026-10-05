@@ -27,6 +27,20 @@ SLOT_VERIFICATION_ROLES = frozenset(
 DEFAULT_SLOT_VERIFICATION_ROLE = "result_input"
 
 
+def _value_may_differ_from_span(slot_spec: dict[str, Any] | None) -> bool:
+    """Whether the planner's value may differ from the span it quotes.
+
+    For a unit or program name marked `planner_reading_trusted` the span must
+    still be the student's own words, in the question or the visible history,
+    but the value may be the planner's reading of them: requiring the two to
+    match refused names a student had misspelt ("khoa tinesg PHap" read as
+    "Khoa Tiếng Pháp"). The directory selector still has to find the value in
+    the cohort's closed list. A value whose span is not in the question, such
+    as another unit's name, is still refused.
+    """
+    return bool((slot_spec or {}).get("planner_reading_trusted"))
+
+
 def _slot_verification_role(slot_spec: dict[str, Any] | None) -> str:
     """Return a registry-declared slot role, defaulting to strict grounding."""
 
@@ -351,6 +365,8 @@ def _slot_span_error(
         return "ungrounded_slot"
     if _span_is_only_cohort(span):
         return "misgrounded_slot"
+    if _value_may_differ_from_span(schema):
+        return None
     if not _span_satisfies_source_contract(value, span, schema):
         return "slot_span_mismatch"
     return None
@@ -497,6 +513,8 @@ def validate_structured_task(
 
     Values must be grounded in ``query`` (the complete user question) or in
     ``grounding_context`` (recent history), never only in a task paraphrase.
+    A unit or program name may be the planner's reading of its span, see
+    `_value_may_differ_from_span`.
     """
 
     registry = registry or load_lookup_registry()

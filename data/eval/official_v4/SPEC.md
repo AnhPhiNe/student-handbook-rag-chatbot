@@ -227,6 +227,36 @@ author nor its models wrote.
   was stopped at a quarter of the answers, before any score was read, when 20
   articles were found whose list had been split from its lead-in; its directory
   is marked `_ABORTED_before_scoring` and is not used.
+  Outcome (2026-10-05): C2 (`official_v4_answers_20261004T181608Z`) passed the
+  in-scope rule (paired difference −0.004, interval [−0.022, +0.014], no new
+  zero) but not the out-of-scope one: V4-157, 197 and part of 146 answered the
+  vừa làm vừa học rule from the kept articles, and staff-only questions were
+  called "not found". Chunking review then found six chunks cut mid-word and 54
+  heading-only chunks; C2's build is not deployed.
+- **Run C3: one chunk per khoản, composer v3.36** (owner, 2026-10-05, AFTER C2's
+  scores were read, so its out-of-scope criterion is a changed criterion, not
+  the one C2 was held to): C3 repeats run B on build
+  `build-7754cc9c07ae9951cfa5` (Qdrant `student_handbook_table_search_e55308ddae85`,
+  Mongo `parent_docs_table_search_e55308ddae85`; one chunk per khoản, never split;
+  24 reviewed layout fixes; the same corpus scope, which an offline measurement
+  kept: without it 46 of 256 regular-student questions had a vừa làm vừa học or
+  staff-only article in the top five, with it none). The composer is v3.36: a
+  question that names no group is answered for regular university students, and
+  where the sources hold separate rules for forms or levels of study the answer
+  says whom a rule covers and never presents one group's rule as another's; it
+  does not decline. Everything else is as in C2 (v61 plans replayed, DeepInfra
+  DeepSeek-V4.1-Flash low, same judge and packet; composer timeouts, reranker
+  skips and judge connection errors rerun before scoring).
+  - in scope (the 228 of C2): deploy if the lower bound of the 95% cluster
+    interval of the paired `answer_correctness` difference (C3 minus B) is at
+    least −0.03 and every case scored 0 in C3 but not in B is shown, on review
+    against its sources, to be a judge error;
+  - the 18 out-of-scope and partly out-of-scope cases of C2: read one by one; an
+    answer passes if it answers from a rule for the group asked about, or gives
+    another group's rule while saying whom that rule covers, or says the sources
+    hold no rule for that group; it fails if it presents another group's rule as
+    applying to the asker, and any such answer blocks the deploy. Judge scores
+    are reported, not used.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

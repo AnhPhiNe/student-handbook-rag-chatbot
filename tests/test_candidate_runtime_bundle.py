@@ -23,7 +23,7 @@ def candidate(tmp_path):
     publication = {"completed": True, "stage": "complete", "storage_targets": record["storage_targets"],
                    "model": record["embedding"]["model"], "baseline_before": production,
                    "baseline_after": production,
-                   "verification": {"verified_vectors": 2843, "verified_parents": 541, "dimension": 1024,
+                   "verification": {"verified_vectors": 2678, "verified_parents": 541, "dimension": 1024,
                                     "distance": "Cosine", "payload_mismatches": 0, "vector_mismatches": 0,
                                     "parent_mismatches": 0}}
     (directory / "publication_report.json").write_text(json.dumps(publication), encoding="utf-8")
@@ -36,7 +36,7 @@ def test_portable_overlay_keeps_sources_and_runtime_manifest_consistent(tmp_path
                                         ROOT / "configs/retrieval.yaml", ROOT / ".env.example")}
     output = tmp_path / "runtime"
     report = build_runtime_bundle(ROOT, directory, output)
-    assert report["indexed_record_count"] == 2843 and report["narrative_child_count"] == 2811
+    assert report["indexed_record_count"] == 2678 and report["narrative_child_count"] == 2646
     assert report["description_count"] == 32 and report["parent_count"] == 541
     assert report["model_calls"] == report["remote_writes"] == 0 and not report["remote_reverified"]
     manifest = json.loads((output / "data/processed/metadata/build_manifest.json").read_text(encoding="utf-8"))
@@ -45,7 +45,7 @@ def test_portable_overlay_keeps_sources_and_runtime_manifest_consistent(tmp_path
     assert registry == "data/processed/tables/structured_tables_registry.json"
     assert manifest["build_id"] == frozen["source_build_id"]
     assert manifest["storage_targets"] == frozen["storage_targets"]
-    assert indexed_record_count(manifest) == 2843
+    assert indexed_record_count(manifest) == 2678
     assert (output / DESCRIPTIONS_PATH).read_bytes() == Path(frozen["artifacts"]["table_descriptions"]["path"]).read_bytes()
     for name, artifact in manifest["artifacts"].items():
         if name != "table_search_descriptions":

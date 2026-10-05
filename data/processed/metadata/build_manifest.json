@@ -1,7 +1,7 @@
 {
   "schema_version": "student-handbook-build-v1",
-  "build_id": "build-99d162d545cd26cae458",
-  "created_at": "2026-10-04T18:07:02.283449+00:00",
+  "build_id": "build-7754cc9c07ae9951cfa5",
+  "created_at": "2026-10-05T05:14:34.923671+00:00",
   "source_pdfs": {
     "so-tay-sinh-vien-khoa-48-49.pdf": "4bf7b510b66e6ed8ce60008d48efd05723f06899171cbf89e4494f4b277739db",
     "so-tay-sinh-vien-khoa-50.pdf": "bbae270b9821c71eeede660e3168c868bde07f458f07b648645c14584bdeb8b0",
@@ -10,7 +10,7 @@
   "artifacts": {
     "parent_docstore": {
       "path": "data/processed/chunks/all_docstore_items.json",
-      "sha256": "d50a34e7635d95248b60645080c86ac6b1ecb33285270f3c3868a9d3198849d0",
+      "sha256": "9d1c9d3fc0e89b156b82c946ee86901a04e5f35fba69b3e0da70fa9d93379b11",
       "count": 541,
       "cohort_counts": {
         "K48-K49": 149,
@@ -20,12 +20,12 @@
     },
     "child_chunks": {
       "path": "data/processed/chunks/child_parent_chunks.json",
-      "sha256": "8f36af30220592a0d1580a7d1778c128abc07f199825e53e8c281b5d87c6b3e7",
-      "count": 2811,
+      "sha256": "2534b87852d98560901b427f0b84de55868afd7570970b7206446bf3e3c30e4e",
+      "count": 2646,
       "cohort_counts": {
-        "K48-K49": 825,
-        "K50": 962,
-        "K51": 1024
+        "K48-K49": 778,
+        "K50": 911,
+        "K51": 957
       }
     },
     "structured_tables": {
@@ -50,7 +50,7 @@
     },
     "table_embedding_audit": {
       "path": "data/processed/metadata/structured_table_embedding_audit.json",
-      "sha256": "015b6422e94db3e72599481b21f438767f80d65bc01d16c704fc620bdb892dde",
+      "sha256": "bb23e224a7e4f3e6074326c1a96756b8d38e7b0de33bf551d5b86d12708ee469",
       "total_table_like_rows": 0,
       "excluded_as_structured": 0,
       "retained_unmatched": 0,

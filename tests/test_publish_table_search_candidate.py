@@ -92,7 +92,7 @@ def tiny_candidate(tmp_path):
 def test_real_candidate_is_verified_locally_before_model_calls(tmp_path):
     build_candidate(ROOT, tmp_path, ROOT / "configs/table_search_descriptions.yaml")
     prepared = prepare_candidate(ROOT, tmp_path)
-    assert len(prepared["chunks"]) == 2843 and len(prepared["parents"]) == 541
+    assert len(prepared["chunks"]) == 2678 and len(prepared["parents"]) == 541
     path = tmp_path / "candidate_manifest.json"
     manifest = json.loads(path.read_text(encoding="utf-8"))
     manifest["storage_targets"]["qdrant_collection"] = "student_handbook_semantic_v35"
@@ -125,7 +125,7 @@ def test_candidate_from_another_checkout_must_name_the_same_registry(tmp_path, r
     config["retrieval"]["table_search"]["registry_path"] = registry
     path.write_text(yaml.safe_dump(config, allow_unicode=True), encoding="utf-8")
     if accepted:
-        assert len(prepare_candidate(ROOT, tmp_path)["chunks"]) == 2843
+        assert len(prepare_candidate(ROOT, tmp_path)["chunks"]) == 2678
     else:
         with pytest.raises(ValueError, match="retrieval contract"):
             prepare_candidate(ROOT, tmp_path)

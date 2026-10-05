@@ -1,6 +1,6 @@
 {
   "purpose": "Frozen development retrieval probes, not held-out answer-quality gold",
-  "source_build_id": "build-99d162d545cd26cae458",
+  "source_build_id": "build-7754cc9c07ae9951cfa5",
   "cases": [
     {"id":"foreign_48","cohort":"K48-K49","query":"TOEIC cần mấy kỹ năng và điểm từng kỹ năng để tương đương bậc 3?","table_subtype":"foreign_language_equivalency","source_cohort":"K50"},
     {"id":"foreign_50","cohort":"K50","query":"TOEIC để tốt nghiệp cần thi những kỹ năng nào và điểm bao nhiêu?","table_subtype":"foreign_language_equivalency","source_cohort":"K50"},

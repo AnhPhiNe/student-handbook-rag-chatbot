@@ -565,7 +565,9 @@ def validate_child_parent_chunks(
 
         parent_text = str(parent.get("content") or "")
         content = str(chunk.get("content") or "")
-        if metadata.get("chunk_granularity") != "section_heading" and len(content) > 2200:
+        # A khoản is one chunk however long (the longest is 4,732 characters, about
+        # 1,400 tokens; BGE-M3 reads 8,192); the cap only catches runaway text.
+        if metadata.get("chunk_granularity") != "section_heading" and len(content) > 6000:
             errors.append(f"{chunk_id}: child/table content too long ({len(content)} chars)")
         if (
             metadata.get("chunk_granularity") != "section_heading"

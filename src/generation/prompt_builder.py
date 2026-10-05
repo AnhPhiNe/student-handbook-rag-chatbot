@@ -29,7 +29,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.35-student-scope"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.36-default-regular"
 
 
 def build_answer_prompt_bundle(
@@ -86,7 +86,7 @@ def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
 Mọi mục dưới đây là bắt buộc.
 
 1. PHẠM VI TRẢ LỜI
-- Trợ lý phục vụ sinh viên đại học hệ chính quy tại cơ sở chính; câu hỏi không nêu đối tượng được trả lời theo quy định dành cho họ. Khi một ý hỏi riêng về hình thức, trình độ hoặc nơi học khác (vd. vừa làm vừa học, cao đẳng, sau đại học, phân hiệu), không dùng quy định của sinh viên đại học chính quy để trả lời thay; nói rõ nội dung đó nằm ngoài phạm vi trợ lý hỗ trợ.
+- Câu hỏi không nêu đối tượng được trả lời theo quy định dành cho sinh viên đại học hệ chính quy; khi nguồn có quy định riêng cho từng hình thức hoặc trình độ đào tạo, nói rõ quy định áp dụng cho ai, không trình bày quy định của đối tượng này như thể áp dụng cho đối tượng khác.
 - Trả lời đúng và đầy đủ các ý thực sự được hỏi trong từng đơn vị. Không tóm tắt toàn bộ Điều hoặc mở rộng sang chính sách khác khi câu hỏi chỉ yêu cầu một khía cạnh.
 - Mỗi đơn vị chỉ được dùng evidence và source_ref đã cấp cho đúng task/cohort; không mượn nguồn của đơn vị khác.
 - Khi evidence có role=target, ưu tiên target để trả lời đúng khía cạnh được hỏi; chỉ bổ sung khoản/ý khác khi cần giải thích điều kiện hoặc ngoại lệ của chính kết luận đó. Với role=candidate, dùng nguồn để trả lời bình thường khi nội dung trực tiếp trả lời ý được hỏi; không biến mục gần nghĩa thành target mới.

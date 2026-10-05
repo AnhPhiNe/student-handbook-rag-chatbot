@@ -14,6 +14,8 @@ Variants:
             descriptions left out, as the clause variant has none)
   clause    the structure chunks exactly as scripts.structure_chunking publishes
             them: one khoản per chunk, scope applied, reviewed tables separated
+  clause_all  the same with nothing excluded (vừa làm vừa học, cao đẳng and
+            staff-only content kept)
 
 Earlier variants (a "document › Điều" or "Điều" line, one point per chunk, a cap
 per article, BM25 without titles, splitting long khoản at 1,200 or 2,500
@@ -56,9 +58,10 @@ def variant_chunks(name: str, parents: list[dict[str, Any]], baseline: str | Non
         chunks = json.loads(Path(baseline).read_text(encoding="utf-8"))
         return [{**c, "embedding_text": c["content"]} for c in chunks
                 if (c.get("metadata") or {}).get("chunk_granularity") != "table_description"]
-    if name == "clause":
+    if name in ("clause", "clause_all"):  # clause_all: nothing excluded by configs/corpus_scope.yaml
         reviewed = {e["parent_id"] for e in json.loads(REGIONS.read_text(encoding="utf-8"))["parents"]}
-        return build_structure_chunks(parents, config=load_config(), scope=load_scope(), drop_table_parents=reviewed)
+        scope = load_scope() if name == "clause" else {}
+        return build_structure_chunks(parents, config=load_config(), scope=scope, drop_table_parents=reviewed)
     raise ValueError(f"Unknown variant: {name}")
 
 

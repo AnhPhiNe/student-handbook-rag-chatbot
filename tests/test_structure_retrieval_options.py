@@ -18,15 +18,17 @@ def test_reranker_reads_the_context_line_only_when_the_chunk_has_one():
     assert _rerank_text(structured) == "Quy chế đào tạo › Điều 12. Xử lý kết quả học tập\n2. Sinh viên bị buộc thôi học"
 
 
-def test_composer_answers_for_main_campus_regular_students_only():
+def test_composer_defaults_to_regular_students_and_names_whom_a_rule_covers():
     import re
 
     from src.generation.prompt_builder import render_answer_prompt
 
     prompt, _ = render_answer_prompt("Hỏi thử", {"units": []})
     prompt = " ".join(prompt.split())
-    assert "Trợ lý phục vụ sinh viên đại học hệ chính quy tại cơ sở chính" in prompt
-    assert "không dùng quy định của sinh viên đại học chính quy để trả lời thay" in prompt
-    # The rule names kinds of study, never a question or an article.
-    rule = prompt.split("Trợ lý phục vụ", 1)[1].split("- Trả lời đúng", 1)[0]
+    rule = ("Câu hỏi không nêu đối tượng được trả lời theo quy định dành cho sinh viên đại học hệ chính quy; "
+            "khi nguồn có quy định riêng cho từng hình thức hoặc trình độ đào tạo, nói rõ quy định áp dụng cho ai, "
+            "không trình bày quy định của đối tượng này như thể áp dụng cho đối tượng khác.")
+    assert rule in prompt
+    # No refusal and no list of "other groups": a question is answered from what the sources say.
+    assert "ngoài phạm vi" not in prompt.split("1. PHẠM VI TRẢ LỜI", 1)[1].split("2.", 1)[0]
     assert not re.search(r"Điều \d|rớt|đuổi học", rule)

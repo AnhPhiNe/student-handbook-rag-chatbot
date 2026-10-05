@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 def in_scope_tables(tables: list[dict], root: Path = ROOT) -> list[dict]:
     """Drop the tables configs/corpus_scope.yaml leaves out of the search index.
 
-    They stay in the structured registry; the composer declines questions about
-    the forms of study they cover.
+    They stay in the structured registry, so the study-duration tool still
+    answers for every form of study.
     """
     scope = yaml.safe_load((root / "configs/corpus_scope.yaml").read_text(encoding="utf-8")) or {}
     excluded = {r["table_id"] for r in scope.get("exclude_tables") or []}

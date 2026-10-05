@@ -1,16 +1,13 @@
 import { useRef, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { GraduationCap, Gift, ArrowDown, Lock, Medal, ArrowLeft, BookOpen, Phone, Shield, Lightbulb } from 'lucide-react';
+import { GraduationCap, Gift, ArrowDown, Lock, Medal, ArrowLeft, BookOpen, Phone, Shield } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
 import type { Cohort } from '../utils/gradeScale';
-import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import { OwlMascot } from './OwlMascot';
 import { IS_CHAT_MAINTENANCE } from '../config/features';
 
 const IS_MAINTENANCE_MODE = IS_CHAT_MAINTENANCE;
-const CHAT_TIPS_STORAGE_KEY = 'hcmue-chat-question-tips-seen';
 
 
 interface ChatAreaProps {
@@ -82,7 +79,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
       'Dùng mục này khi bạn có thắc mắc về quyền lợi tài chính của sinh viên:\n\n- **Học bổng:** điều kiện xét học bổng, mức học bổng, trường hợp bị loại khỏi danh sách xét.\n- **Học phí:** quy định nộp học phí, xử lý khi trễ hạn nộp, các kênh thanh toán học phí hợp lệ.\n- **Miễn giảm/hỗ trợ:** ai được miễn giảm học phí, hỗ trợ chi phí học tập hoặc hỗ trợ sinh hoạt.'
     ),
     suggestions: [
-      'Điều kiện để được xét học bổng KKHT là gì?',
+      'Điều kiện để được xét học bổng khuyến khích học tập là gì?',
       'Đóng học phí trễ bị cấm thi không?',
       'Mức học bổng Xuất sắc là bao nhiêu?',
       'Ai thuộc diện miễn giảm học phí?'
@@ -130,17 +127,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
-  const [showQuestionTips, setShowQuestionTips] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.localStorage.getItem(CHAT_TIPS_STORAGE_KEY) !== 'true';
-  });
-  const questionTipsDialogRef = useAccessibleDialog<HTMLDivElement>({
-    isOpen: showQuestionTips && !hasMessages,
-    onClose: () => {
-      window.localStorage.setItem(CHAT_TIPS_STORAGE_KEY, 'true');
-      setShowQuestionTips(false);
-    },
-  });
 
   const hour = new Date().getHours();
   let greeting: string;
@@ -211,69 +197,12 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
     }
   };
 
-  const dismissQuestionTips = () => {
-    window.localStorage.setItem(CHAT_TIPS_STORAGE_KEY, 'true');
-    setShowQuestionTips(false);
-  };
-
-  const questionTipsModal = showQuestionTips && !hasMessages && typeof document !== 'undefined'
-    ? createPortal(
-      <div className="chat-tips-modal-overlay">
-        <div
-          ref={questionTipsDialogRef}
-          className="chat-tips-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="chat-tips-title"
-          tabIndex={-1}
-        >
-          <div className="chat-tips-icon" aria-hidden="true">
-            <Lightbulb size={24} />
-          </div>
-          <div className="chat-tips-copy">
-            <p className="chat-tips-kicker">Trước khi hỏi</p>
-            <h2 id="chat-tips-title">Hỏi cụ thể để tìm đúng nguồn</h2>
-            <p>
-              Bạn vẫn có thể hỏi tự nhiên. Chỉ cần nhớ 3 điểm này:
-            </p>
-          </div>
-
-          <div className="chat-tips-list">
-            <div>
-              <strong>Ghi dấu đầy đủ</strong>
-              <span>Tránh nhập không dấu khi hỏi quy định.</span>
-            </div>
-            <div>
-              <strong>Ít viết tắt</strong>
-              <span>Ưu tiên tên đầy đủ nếu không chắc.</span>
-            </div>
-            <div>
-              <strong>Một câu, một ý</strong>
-              <span>Đừng gộp học bổng, học phí, tốt nghiệp.</span>
-            </div>
-            <div className="chat-tips-example">
-              <strong>Ví dụ tốt</strong>
-              <span>K50 xét học bổng KKHT cần điều kiện gì?</span>
-            </div>
-          </div>
-
-          <button className="chat-tips-primary-btn" type="button" onClick={dismissQuestionTips}>
-            Đã hiểu
-          </button>
-        </div>
-      </div>,
-      document.body,
-    )
-    : null;
-
   // Không sử dụng cold start delay giả nữa, mọi thứ để tự nhiên
 
   // ============ EMPTY STATE ============
   if (!hasMessages) {
     return (
       <main className="chat-area">
-        {questionTipsModal}
-
         {IS_MAINTENANCE_MODE && (
           <div className="maintenance-overlay">
             <div className="maintenance-card">
@@ -299,6 +228,8 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               <h2 className="hero-title" style={{ fontSize: '1.5rem', marginTop: '1rem', color: 'var(--primary)' }}>{greeting}</h2>
               <p className="hero-subtitle" style={{ marginTop: '0.5rem', fontSize: '1.125rem' }}>Mình là trợ lý AI của Đại học Sư phạm TP.HCM</p>
               <p className="hero-desc">Bạn cần tìm gì trong sổ tay sinh viên hôm nay?</p>
+              {/* The three tips used to be a second dialog after the cohort one; one line here asks nothing of the student. */}
+              <p className="chat-question-tip">Mẹo: gõ có dấu, viết đầy đủ thay vì viết tắt, mỗi câu hỏi một ý.</p>
             </div>
 
             {/* Action Cards Grid */}

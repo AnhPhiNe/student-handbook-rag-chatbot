@@ -35,7 +35,8 @@ export function MobileScrollAffordance({
       }
 
       const remaining = target.scrollHeight - target.scrollTop - target.clientHeight;
-      setIsVisible(target.scrollHeight > target.clientHeight + 24 && remaining > 32);
+      // Once the student has scrolled they know there is more, and the button would only cover content.
+      setIsVisible(target.scrollTop <= 24 && target.scrollHeight > target.clientHeight + 24 && remaining > 32);
     };
 
     const connectTarget = () => {

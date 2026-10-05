@@ -673,6 +673,7 @@
 
 .download-btn {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
@@ -1572,17 +1573,20 @@
 }
 
 .gpa-m-group-select {
-  padding: 0.32rem 0.45rem;
+  min-height: 40px; /* a finger-sized target on phones */
+  padding: 0.45rem 0.6rem;
   border-radius: 7px;
   border: 1px solid var(--border-color);
   background: var(--bg-secondary);
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   font-weight: 600;
   cursor: pointer;
 }
 
 .gpa-m-del-btn {
+  min-width: 40px;
+  min-height: 40px;
   border: none;
   background: transparent;
   color: var(--text-muted);

@@ -328,3 +328,20 @@ def test_task_summaries_show_fact_locks_and_directory_decisions() -> None:
     summary = build_trace_metadata(result, query="q")["task_summaries"][0]
     assert summary["fact_locked"] is True
     assert summary["directory_selection"] == [{"status": "match", "method": "llm_selector_thinking"}]
+
+
+def test_trace_says_why_a_task_is_not_what_the_planner_proposed() -> None:
+    """Without these a trace shows a clarification with no reason, which is how
+    the 2026-10-05 "khoa tinesg PHap" failure resisted diagnosis."""
+    result = _query_plan_result()
+    task = result["query_plan"]["tasks"][0]
+    task["validation_errors"] = ["t1:slot_span_mismatch:faculty"]
+    task["normalization_warnings"] = ["reading_default_applied:requested_field"]
+
+    meta = build_trace_metadata(result, query="văn phòng khoa tinesg PHap o dau")
+
+    assert meta["plan_validation_errors"] == ["t1:slot_span_mismatch:faculty"]
+    assert meta["plan_normalization_warnings"] == ["reading_default_applied:requested_field"]
+    traced = meta["query_plan"]["tasks"][0]
+    assert traced["validation_errors"] == ["t1:slot_span_mismatch:faculty"]
+    assert traced["normalization_warnings"] == ["reading_default_applied:requested_field"]

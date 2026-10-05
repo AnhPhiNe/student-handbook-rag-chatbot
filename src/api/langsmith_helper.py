@@ -272,9 +272,15 @@ def _visible_history(chat_history: list[dict[str, str]] | None) -> list[dict[str
     ]
 
 
+# validation_errors and normalization_warnings say why a task is not what the
+# planner proposed; without them a trace shows a clarification with no reason,
+# which is what made the 2026-10-05 "khoa tinesg PHap" failure undiagnosable.
+# Both are short lists of codes such as "slot_span_mismatch:faculty": they name
+# the slot, never its value, so no student input is copied into them.
 _PLAN_TASK_FIELDS = (
     "id", "question", "mode", "intent", "lookup_type", "slots", "slot_spans",
-    "cohorts", "clarification_question",
+    "cohorts", "clarification_question", "validation_errors",
+    "normalization_warnings",
 )
 
 
@@ -386,6 +392,14 @@ def build_trace_metadata(
         "uncovered_task_count": sum(value == "uncovered" for value in coverage_values),
         "clarification_task_count": sum(
             bool(task.get("needs_clarification")) for task in task_summaries
+        ),
+        "plan_validation_errors": _ordered_unique(
+            [error for task in plan.get("tasks") or []
+             if isinstance(task, dict) for error in task.get("validation_errors") or []]
+        ),
+        "plan_normalization_warnings": _ordered_unique(
+            [warning for task in plan.get("tasks") or []
+             if isinstance(task, dict) for warning in task.get("normalization_warnings") or []]
         ),
         "planner_fallback": planner_fallback,
         "planner_fallback_used": bool(planner_fallback),

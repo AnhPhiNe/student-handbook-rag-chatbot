@@ -118,6 +118,11 @@ const FRIENDLY_NAMES: Record<string, string> = {
   "Mau gioi thieu thuc tap": "Giấy giới thiệu thực tập (CNTT)"
 };
 
+// Students often type without accents ("don xin nghi hoc"), so both sides drop them before matching.
+function foldForSearch(text: string) {
+  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+}
+
 export function FormPage() {
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id);
   const [searchQuery, setSearchQuery] = useState('');
@@ -135,7 +140,7 @@ export function FormPage() {
         const forms = FORMS_DATA[cat.id] || [];
         const matches = forms.filter(f => {
           const friendlyName = FRIENDLY_NAMES[f.name] || f.name;
-          return friendlyName.toLowerCase().includes(searchQuery.toLowerCase());
+          return foldForSearch(friendlyName).includes(foldForSearch(searchQuery.trim()));
         });
         matches.forEach(f => allResults.push({ ...f, categoryName: cat.name }));
       }
@@ -145,7 +150,7 @@ export function FormPage() {
     // Default search within active category
     const forms = (FORMS_DATA[activeCategory] || []).filter(f => {
       const friendlyName = FRIENDLY_NAMES[f.name] || f.name;
-      return friendlyName.toLowerCase().includes(searchQuery.toLowerCase());
+      return foldForSearch(friendlyName).includes(foldForSearch(searchQuery.trim()));
     });
     return { forms, isCrossSearch: false };
   };
@@ -200,18 +205,15 @@ export function FormPage() {
         <table className="data-table">
           <thead>
             <tr>
-              <th>Mã BM</th>
               <th>Tên biểu mẫu</th>
               {isCrossSearch && <th>Danh mục</th>}
               <th>Định dạng</th>
-              <th>Ngày cập nhật</th>
               <th className="text-right">Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {filteredForms.map((form: FormItem & { categoryName?: string }) => (
               <tr key={form.id}>
-                <td className="font-medium text-secondary">{form.id}</td>
                 <td>
                   <div className="form-name">
                     <FileText size={16} className="text-accent" />
@@ -222,7 +224,6 @@ export function FormPage() {
                 <td>
                   <span className={`badge ${form.type.toLowerCase()}`}>{form.type}</span>
                 </td>
-                <td className="text-secondary">{form.date}</td>
                 <td className="text-right">
                   <a href={`/forms/${form.categoryName ? CATEGORIES.find(c => c.name === form.categoryName)?.id : activeCategory}/${form.file}`} download className="download-btn">
                     <Download size={16} />
@@ -233,7 +234,7 @@ export function FormPage() {
             ))}
             {filteredForms.length === 0 && (
               <tr>
-                <td colSpan={isCrossSearch ? 6 : 5} style={{textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)'}}>
+                <td colSpan={isCrossSearch ? 4 : 3} style={{textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)'}}>
                   <div className="empty-search-state">
                     <FileText size={48} style={{ opacity: 0.2, margin: '0 auto 1rem' }} />
                     <p>Không tìm thấy biểu mẫu nào khớp với "{searchQuery}"</p>
@@ -257,9 +258,9 @@ export function FormPage() {
             </div>
             
             <div className="form-card-meta">
-              <span>{form.id}</span>
               {isCrossSearch && <span style={{ color: 'var(--primary)', fontWeight: 500 }}>{form.categoryName}</span>}
               <span className={`badge ${form.type.toLowerCase()}`}>{form.type}</span>
+              <span>{form.size}</span>
             </div>
             
             <a href={`/forms/${form.categoryName ? CATEGORIES.find(c => c.name === form.categoryName)?.id : activeCategory}/${form.file}`} download className="download-btn" style={{ justifyContent: 'center', marginTop: '0.5rem' }}>

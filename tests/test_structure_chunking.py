@@ -207,5 +207,33 @@ def test_capital_letter_sections_head_their_own_lists():
     units = build_units(split_segments(
         "A. Hội đồng gồm:\n1. Phó Hiệu trưởng;\n2. Giám đốc KTX.\n"
         "B. Đối tượng sinh viên được xét theo thứ tự ưu tiên\n1. Anh hùng lực lượng vũ trang;\n2. Sinh viên nữ."))
-    assert [u.marker for u in units] == ["a", "b"]
+    assert [u.marker for u in units] == ["A", "B"]  # cited as "khoản B"
     assert units[1].text().startswith("B. Đối tượng") and "Sinh viên nữ" in units[1].text()
+
+
+def test_a_date_label_goes_with_the_step_it_dates_and_is_never_taken_for_the_heading(published_chunks):
+    steps = [c["content"] for c in published_chunks
+             if c["metadata"]["parent_section_id"] == "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7"]
+    assert any(t.startswith("Tháng 9 – 10 hằng năm – Phòng Khoa học") for t in steps)
+    assert any(t.startswith("Tháng 6 hằng năm – Sau Hội nghị") for t in steps)
+    assert not any(t.rstrip().endswith("Tháng 6 hằng năm") for t in steps)
+
+
+def test_a_line_dropped_as_heading_must_be_in_the_stored_title_or_reviewed():
+    from scripts.check_chunk_invariants import check
+
+    parent = {"_id": "X_Dieu7", "content": "Nội dung:\nĐiều 7. Quy trình tổ chức hoạt động nghiên\ncứu khoa học\n"
+              "Tháng 9 hằng năm\n– Phòng thông báo kế hoạch.",
+              "metadata": {"article": "Điều 7.", "title": "Quy trình tổ chức hoạt động nghiên cứu khoa học",
+                           "content_type": "regulation_text", "cohort": "K50"}}
+    chunk = {"_id": "c", "content": "Tháng 9 hằng năm\n– Phòng thông báo kế hoạch.",
+             "metadata": {"parent_section_id": "X_Dieu7", "chunk_granularity": "article"}}
+    assert {k: v for k, v in check([chunk], [parent], {}).items() if v} == {}
+    lost = {**chunk, "content": "– Phòng thông báo kế hoạch."}
+    assert check([lost], [parent], {})["coverage"]
+
+
+def test_the_heading_chunk_names_the_article_without_a_cut_excerpt(published_chunks):
+    heading = next(c for c in published_chunks if c["_id"] == "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading")
+    assert heading["content"].startswith("Section heading: Điều 12. Xử lý kết quả học tập")
+    assert "Summary anchor" not in heading["content"]

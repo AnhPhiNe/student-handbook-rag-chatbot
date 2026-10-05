@@ -14,6 +14,8 @@ mistake in how the chunker reads the structure of a page shows up here:
                  (a column header such as "TT")
   lead_in        a marked line introduced by a line ending in ":" is in a chunk
                  only after that line
+  heading_drop   a line dropped as the article heading is part of the stored
+                 title, or is on the reviewed list in configs/structure_chunking.yaml
 
 Exempt: lines of out-of-scope articles, clauses and points
 (configs/corpus_scope.yaml), table rows (the structured registry holds them) and
@@ -77,6 +79,10 @@ class ParentText:
         raw = [_clean_block_text(line) for line in _strip_docstore_preamble(str(parent.get("content") or "")).splitlines()]
         raw = [line for line in raw if line]
         skip = heading_line_count(raw, metadata)
+        # A dropped heading line must be part of the stored heading; any other is listed
+        # for review, so this check does not share the chunker's heading rule.
+        stored = _norm(f"{metadata.get('article') or ''} {metadata.get('title') or ''}").casefold()
+        self.unconfirmed_heading = [line for line in raw[:skip] if _norm(line).casefold() not in stored]
         units = article_units(parent)
         kept, _ = apply_scope(str(parent["_id"]), units, scope)
         excluded = _lines_of(units) - _lines_of(kept)
@@ -131,14 +137,19 @@ class ParentText:
         return f"{where} inside a sentence", i
 
 
-def check(chunks: list[dict[str, Any]], parents: list[dict[str, Any]], scope: dict[str, Any]) -> dict[str, list]:
+def check(chunks: list[dict[str, Any]], parents: list[dict[str, Any]], scope: dict[str, Any],
+          config: dict[str, Any] | None = None) -> dict[str, list]:
     excluded_parents = {r["id"] for r in scope.get("exclude_parents") or []}
     by_parent: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for chunk in chunks:
         if (chunk.get("metadata") or {}).get("chunk_granularity") in {"section_heading", "table_description"}:
             continue
         by_parent[str(chunk["metadata"]["parent_section_id"])].append(chunk)
-    problems: dict[str, list] = {k: [] for k in ("coverage", "boundary", "own_heading", "table_residue", "lead_in")}
+    from scripts.structure_chunking import load_config
+
+    reviewed = {(r["parent"], r["line"]) for r in (config or load_config()).get("reviewed_heading_tails") or []}
+    problems: dict[str, list] = {k: [] for k in ("coverage", "boundary", "own_heading", "table_residue", "lead_in",
+                                                 "heading_drop")}
     for parent in parents:
         metadata = parent.get("metadata") or {}
         parent_id = str(parent.get("_id"))
@@ -147,6 +158,8 @@ def check(chunks: list[dict[str, Any]], parents: list[dict[str, Any]], scope: di
         if parent_id in excluded_parents:
             continue
         text = ParentText(parent, scope)
+        problems["heading_drop"] += [{"parent": parent_id, "line": line} for line in text.unconfirmed_heading
+                                     if (parent_id, line) not in reviewed]
         own = by_parent.get(parent_id, [])
         bodies = [_norm(c["content"]) for c in own]
         for line in text.lines:

@@ -108,7 +108,7 @@ def _segment_kind(line: str) -> tuple[str, str | None]:
         match = pattern.match(line)
         if match:
             marker = match.group(1)
-            return (f"bullet:{marker}" if kind == "bullet" else kind), marker.lower()
+            return (f"bullet:{marker}" if kind == "bullet" else kind), (marker if kind == "section" else marker.lower())
     return "text", None
 
 
@@ -120,6 +120,13 @@ def _is_column_header(line: str, next_line: str | None) -> bool:
     """A short line printed just above a table ("TT") heads one of its columns."""
     return (next_line is not None and next_line.startswith("|") and len(line) <= 12
             and not line.endswith(_SENTENCE_END) and _segment_kind(line)[0] == "text")
+
+
+def _is_label(line: str, previous: str | None, next_line: str | None) -> bool:
+    """A short unpunctuated line after a finished sentence, just above a marked line, names that line."""
+    return (next_line is not None and _segment_kind(next_line)[0] not in {"text", "table"}
+            and _segment_kind(line)[0] == "text" and len(line) <= 40 and not line.endswith(_SENTENCE_END)
+            and (line[:1].isupper() or line[:1].isdigit()) and (previous is None or previous.endswith(_SENTENCE_END)))
 
 
 def _opens_list(line: str, previous: str) -> bool:
@@ -134,7 +141,18 @@ def split_segments(body: str) -> list[Segment]:
         # A list the PDF ran into one line: "…; – Mồ côi cha…; – Cả cha và mẹ…".
         lines += [part for part in _INLINE_ITEM.split(line) if part] if line else []
     segments: list[Segment] = []
+    label: list[str] = []
     for index, line in enumerate(lines):
+        next_line = lines[index + 1] if index + 1 < len(lines) else None
+        if _is_label(line, lines[index - 1] if index else None, next_line):
+            label.append(line)
+            continue
+        if label:
+            # "Tháng 6 hằng năm" / "– Sau Hội nghị …": the date belongs to the next step.
+            kind, marker = _segment_kind(line)
+            segments.append(Segment(kind, marker, [*label, line]))
+            label = []
+            continue
         if _is_column_header(line, lines[index + 1] if index + 1 < len(lines) else None):
             segments.append(Segment("table", None, [line]))
             continue
@@ -221,7 +239,10 @@ def heading_line_count(lines: list[str], metadata: dict[str, Any]) -> int:
     if len(lines) > count + 1:
         tail, following = lines[count], lines[count + 1]
         if (len(tail) <= 40 and not tail.endswith(_SENTENCE_END) and _segment_kind(tail)[0] == "text"
-                and _segment_kind(following)[0] not in {"text", "table"} and (count or tail.isupper())):
+                and _segment_kind(following)[0] not in {"text", "table"}
+                and (len(lines[count - 1]) >= 50 if count else tail.isupper())):
+            # After a short last heading line the heading had ended: "…của sinh viên"
+            # then "Tháng 9 – 10 hằng năm" is the first step's date, not the title.
             count += 1
     return count
 
@@ -472,6 +493,13 @@ def build_structure_chunks(
         header = context_header(metadata, config, header_mode)
         short = short_document_name(str(metadata.get("document_title") or ""), config)
         heading = _make_heading_chunk(parent, base)
+        # The old anchor was the first two PDF lines, cut mid-sentence ("…cảnh báo học tập nếu vi");
+        # the clause chunks hold the text, so the heading chunk names the article only.
+        heading_lines = [x for x in heading["content"].split("\n") if not x.startswith("Summary anchor:")]
+        article_label = str(metadata.get("article") or "").strip()
+        if article_label.startswith("Điều"):
+            heading_lines[0] = f"Section heading: {article_label.rstrip('.')}. {metadata.get('title') or ''}".rstrip()
+        heading["content"] = "\n".join(heading_lines)
         heading["metadata"].update(context_header=header, document_short=short)
         heading["embedding_text"] = heading["content"]  # already names the section and document
         chunks.append(heading)
@@ -489,10 +517,11 @@ def build_structure_chunks(
                     continue
                 seen.add(key)
                 chunk_id = f"cp_{parent_id}_u{unit_index:02d}_{part_index:02d}"
+                named = [m for m in points if m[0].isalnum()]  # "–" and "•" items have no name to cite
                 path = " › ".join(x for x in [
                     str(metadata.get("article") or "").rstrip("."),
-                    f"khoản {unit.marker}" if unit.marker else "",
-                    f"điểm {', '.join(points)}" if points and granularity != "clause" else "",
+                    f"khoản {unit.marker}" if unit.marker and unit.marker[0].isalnum() else "",
+                    f"điểm {', '.join(named)}" if named and granularity != "clause" else "",
                 ] if x)
                 chunks.append({
                     "_id": chunk_id,

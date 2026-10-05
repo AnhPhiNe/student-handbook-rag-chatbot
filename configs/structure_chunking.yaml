@@ -41,3 +41,10 @@ document_short_names:     # prefix of the full title, first match wins
   - {prefix: "Các mẫu đơn và biểu mẫu", short: "Mẫu đơn và biểu mẫu"}
   - {prefix: "Các hướng dẫn liên quan đến công tác đào tạo", short: "Hướng dẫn công tác đào tạo"}
   - {prefix: "Một số công việc của các khoa", short: "Công việc của các khoa"}
+# Printed heading lines that the stored title lacks; scripts/check_chunk_invariants.py
+# fails on any other line dropped as a heading (reviewed 2026-10-05).
+reviewed_heading_tails:
+  - {parent: K50_QuyCheCongTacSinhVien_Chuong4_Dieu17, line: "Việt Nam Trường"}
+  - {parent: K51_QuyCheCongTacSinhVien_Chuong4_Dieu17, line: "Việt Nam Trường"}
+  - {parent: K50_ThongBaoHoTroChiPhiHocTap_Phan3, line: "HỌC TẬP"}
+  - {parent: K51_ThongBaoHoTroChiPhiHocTap_Phan3, line: "HỌC TẬP"}

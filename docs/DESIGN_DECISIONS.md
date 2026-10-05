@@ -1216,15 +1216,28 @@ unit name is printed on the contact card they read.
 **The change** (`c62d9516`, normalizer `v33-trusted-directory-names`). Slots
 marked `planner_reading_trusted` in the lookup registry (`office`, `faculty`,
 `program_or_faculty`) keep every grounding check and drop only the value-to-span
-match, so the span must still be the student's own words. Separately, a
-contact-card lookup whose `requested_field` is missing or outside its enum now
-shows every field instead of asking, since the card holds the address, phone,
-email and website anyway. Five barriers against an invented name remain: the
+match, so the span must still be the student's own words. Five barriers against an invented name remain: the
 span must be in the student's words, the directory selector has to find the
 value in that cohort's closed list, the cohort filter is unchanged, numbers and
 labels stay fully grounded, and the answer names the unit it used.
 
-**Checks.** 1,844 tests pass. Re-normalizing all 655 saved plans of v1, v2 and
+**The same defect elsewhere, and the wording** (`da5d13c6`, normalizer
+`v34-ask-for-what-is-missing`). The directory fix left the program catalog
+reachable the same way: a `requested_field` outside its enum turned "Ngành CNTT
+thuộc khoa nào?" into the same sentence about a table. A reading intent only
+names which field of a found record to show, so the student has already said it
+and cannot help, and the executor usually has a default anyway. The registry
+declares that default as `default_reading` — contact cards show every field, the
+program catalog resolves the faculty, a program list covers the whole school —
+and the normalizer applies it instead of asking. Which formula to read has no
+safe default and still asks; so does a unit or program the student never named.
+The fallback question named nothing, so each slot that can still be missing
+declares a `clarification_label` and the question is built from what is actually
+missing: "Bạn cho mình biết tên khoa nhé." Re-normalizing the 655 saved plans
+changes exactly one, from the generic sentence to that wording, with the same
+mode and errors.
+
+**Checks.** 1,844 tests pass (1,846 after `da5d13c6`). Re-normalizing all 655 saved plans of v1, v2 and
 v4 gives output identical to the previous normalizer, so no measured case
 changes and no answers run was bought to confirm it. The planner prompt and
 strict response schema hash the same before and after. With the live planner the

@@ -62,7 +62,7 @@ The web app also includes a GPA calculator, credit and tuition tools, scholarshi
 
 ## Highlights
 
-- **The LLM plans and the code verifies.** OpenAI `gpt-6-luna` returns a `QueryPlan` under a strict JSON schema: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer drops any slot value that does not appear in the question, checks lookup types and cohorts against the registry, and turns a task it cannot trust into a clarifying question or a RAG task. The plan is never trusted blindly.
+- **The LLM plans and the code verifies.** OpenAI `gpt-6-luna` returns a `QueryPlan` under a strict JSON schema: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer checks every slot against the student's own words, checks lookup types and cohorts against the registry, and turns a task it cannot trust into a clarifying question or a RAG task. Values that select a table row or a fact must appear in the question; a unit or program name may be the planner's reading of the words the student typed, because the directory selector still has to find it in that cohort's closed list. The plan is never trusted blindly.
 - **Exact facts come from tables, not from generation.** Nine lookup capabilities run over reviewed JSON catalogs: grading scales, foreign-language equivalency, scholarship classification, study duration, formulas, and office, faculty, program and student-service directories. A unique match becomes a `resolved_result` that the writer is instructed to keep verbatim.
 - **Hybrid retrieval.** `BAAI/bge-m3` dense search in Qdrant (embeddings from the DeepInfra API) and in-process BM25 each return 24 children, fused with reciprocal rank fusion (k = 60). Voyage `rerank-3` reorders those 24, and the children are grouped into their full parent articles from MongoDB (top 5). An offline cross-reference graph adds related-article links for the UI.
 - **Cohort isolation end to end.** Every task runs per cohort, and retrieved sources and citations are filtered to the cohort that was asked for.
@@ -179,11 +179,16 @@ What the normalizer does to each task:
 
 | Check | Effect |
 |---|---|
-| A slot value does not appear in the question | The value is dropped |
-| A required slot is still missing | The task becomes a clarifying question for that value |
+| A value that selects a row or a fact has no span in the question | The value is dropped; the lookup runs without it |
+| A unit or program name differs from the span it quotes | Kept, as the planner's reading of the student's words; the span itself must still be in the question |
+| A field choice is missing or outside its allowed values | The registry's `default_reading` is used where one is declared (a contact card shows every field, the program catalog resolves the faculty) |
+| A required value the student never gave is missing | The task becomes a clarifying question that names what is missing ("Bạn cho mình biết tên khoa nhé.") |
 | The lookup type is not in the registry | The task becomes a clarifying question |
 | Any other structured-contract error | Only that task falls back to RAG; sibling tasks are kept |
 | `out_of_domain` is set but the question uses handbook vocabulary | The flag is overridden and the question is answered from the handbook |
+
+Every check writes its outcome to the trace as `plan_validation_errors` and
+`plan_normalization_warnings`, so a changed plan carries its own reason.
 
 </details>
 
@@ -331,7 +336,7 @@ sequenceDiagram
 
 | Decision | Alternative | Why |
 |---|---|---|
-| The planner emits a typed plan; code validates and executes it | A free-form tool-calling agent | Every step can be inspected and unit-tested, and invented values never reach a lookup |
+| The planner emits a typed plan; code validates and executes it | A free-form tool-calling agent | Every step can be inspected and unit-tested, and an invented value never becomes a stated fact: numbers must come from the question, and a unit name must exist in that cohort's catalog |
 | Exact values come from reviewed tables and are locked into the prompt | Letting the writer read tables from retrieved text | PDF tables flatten badly, and grades or equivalencies must be exact |
 | Small children are embedded; answers use full parent articles | Embedding whole articles | Precise matching plus complete context for the writer |
 | Dense and BM25 are fused with RRF | Dense search only | Exact terms such as certificate names, cohort codes and article numbers need lexical matching |

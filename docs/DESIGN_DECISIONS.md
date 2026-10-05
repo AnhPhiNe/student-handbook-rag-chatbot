@@ -1160,9 +1160,37 @@ dormitory application office) was wrong in B as well; V4-172 fell from 1.0 to 0.
 because its smoking answer came from the staff article. Median answer latency was
 19.8 s (B 25.2 s), on another day's network.
 
+## The other layers, checked against their sources (2026-10-05)
+
+The chunk defects above were invisible to every retrieval and answer score: a
+khoản cut mid-sentence still belongs to the right article, so the article still
+reaches the top five. They showed only when each chunk was compared with the text
+it came from. After the deploy the other layers were checked the same way, each
+against its own source rather than through an end score. Nothing was changed.
+
+| Layer | Check | Result |
+|---|---|---|
+| PDF to parent articles | Every six-word run on every page of the three PDFs, looked up in the parents of its cohort and then in the tables and directories (`scripts/audit_pdf_coverage.py`) | Words in no store: K48-K49 11.2%, K50 7.5%, K51 6.7%. Every page with 60 or more such words was read: the college regulation for early-childhood education (Quy chế đào tạo trình độ cao đẳng, about 25 pages in K50 and K51, never extracted, in line with the scope), the introduction pages, legal preambles, "nơi nhận" lists and signatures, research-report templates (K48-K49), the list of museums and historic sites (K48-K49, K50), tables of contents and back covers. Tables the build rewrote as sentences (the conduct-score frame, the grade conversion) were read and are complete |
+| Amendments in footnotes | Every "Điểm/Khoản này được sửa đổi, bổ sung" in the PDFs | K51 has 7 (Quyết định 4743/QĐ-ĐHSP, from the 2025 intake), all 7 in `data/processed/amendments/amendments.json` and applied by the prompt builder; K48-K49 and K50 have none |
+| Program directory | Each of the 129 program records against its PDF section | Complete, career text included |
+| Cohort filter | The chunks the Qdrant filter admits against those `is_cohort_applicable` admits for BM25, per cohort | Identical: 805, 911 and 984 chunks. The 27 chunks shared across cohorts are the K50 foreign-language standard, whose Điều 1 names the cohorts |
+| Embedding and rerank input | Length of every embedded and reranked text | At most 4,795 characters; none is truncated |
+| Context budget | Usable characters against parent lengths | 120,000 usable; the five longest parents together are 54,427, so no source is cut in practice, and a cut would be marked "[Evidence đã được rút gọn.]" |
+| Fusion and grouping | Code read | RRF uses ranks from 1 with k = 60; a parent ranks by its best child; reranking falls back to the RRF order |
+
+What this check cannot see: text the PDF itself renders wrongly, and words that
+occur in another article of the same cohort, which count as covered.
+
 ## What these measurements do not show
 
 - Known limits of the 2026-10-05 build, each left as it is after measuring:
+  - The introduction pages (campus history, the Cơ sở 2 and branch-campus
+    addresses) are in no store, so a question about where a campus is gets no
+    handbook answer. Dormitory and Phòng Quản trị – Thiết bị addresses are in
+    the office directory.
+  - In six K51 parents the footnote number is glued to the point marker
+    ("d)2", "đ)3"); it shows in source previews. The amendment each number
+    points to is applied.
   - Smoking (K50, K51): the only rule is in the staff-only Quy tắc ứng xử Điều 4,
     which the scope leaves out, so the answer is "not found". Keeping khoản 3
     alone would be the narrow change to try, with its own pre-registered rule.
@@ -1210,7 +1238,10 @@ because its smoking answer came from the staff article. Median answer latency wa
 - Whether answers should leave out the branch campus (Phân hiệu Long An). The
   chatbot serves the main campus. Branch contacts cannot reach an answer: none
   of the 494 records in the service, office, faculty and program catalogs
-  names the branch, and every contact in an answer comes from those catalogs.
+  gives a branch contact, and every contact in an answer comes from those
+  catalogs. (One record, the K51 Tổ Giáo dục Nữ công profile, ends with the
+  heading of the branch section that follows it in the PDF; it carries no
+  branch contact.)
   Branch text can still arrive through retrieved handbook text. Across the 768
   saved answers, 10 questions (none asking about the branch) had answers
   mentioning it:
@@ -1250,4 +1281,5 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Directory selector, second look | `directory_matching_20260929T100059Z` / `…T100140Z` (before), `…T100338Z` / `…T100416Z` (looser wording), `…T102008Z` / `…T101754Z` (thinking on every call), `…T103359Z` / `…T103530Z` (second look); existing cases first, everyday set second |
 | official_v4 with planner v61, and with table search | `official_v4_answers_20261004T104406Z` (v61, v35) and `official_v4_answers_20261004T124930Z` (table search), each with `reruns/attempt_1` and `v4_report.json`; Run C rejudged: `official_v4_answers_20261001T082203Z_runC_answers/judge_deepinfra`; shared plans `official_v4_v61_shared_plans.json` |
 | End-to-end check before the deploy | `official_v1_answers_20260930T023654Z` (against `…20260928T062050Z`); the five replans in its `replans_029_045_092_110_x5.json`; judge fix: `official_v2_answers_smoke10_20260930T011049Z` and `…_rejudge` |
+| PDF coverage of parents and catalogs | `pdf_coverage_20261005.json` (`python -m scripts.audit_pdf_coverage --out …`) |
 | Clause chunks, scope, composer v3.36 | offline: `chunking_offline_20261005/` (RULE*.md, runs per variant and shard, `score_*.py`; `scope_live_check_v336.json`); answers: `official_v4_answers_20261004T181608Z` (C2, judge errors in `reruns/attempt_judge_1`) and `official_v4_answers_20261005T052049Z` (C3) |

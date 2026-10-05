@@ -342,15 +342,16 @@ sequenceDiagram
 
 ## Knowledge base
 
-| Artifact | v35 build | Used for |
+| Artifact | Build `7754cc9c` (2026-10-05) | Used for |
 |---|---:|---|
 | Full parent articles | 541 | Composer context and citations (MongoDB) |
-| Narrative child chunks | 3,800 | Dense and BM25 search (Qdrant) |
+| Narrative child chunks, one per khoản | 2,646 | Dense and BM25 search (Qdrant) |
+| Table descriptions | 32 | Dense and BM25 search; a match brings in its reviewed table |
 | Reviewed structured tables | 35 | Deterministic lookup (not embedded) |
 | Cross-reference edges | 78 | Related-article navigation in the UI |
 | Embedding | `BAAI/bge-m3`, 1,024 dimensions | Dense child retrieval |
 
-Per cohort: K48–K49 has 149 parents and 1,118 children, K50 has 192 and 1,293, and K51 has 200 and 1,389. The chatbot covers the main campus (District 5); branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
+Per cohort: K48–K49 has 149 parents and 778 children, K50 has 192 and 911, and K51 has 200 and 957. A khoản with its lead-in and points is one chunk, never split; [`check_chunk_invariants.py`](scripts/check_chunk_invariants.py) fails the build if a line is lost, a chunk starts or ends mid-sentence, or a list leaves its lead-in. The search index covers what applies to regular (chính quy) university students of the main campus (District 5): articles for part-time study, the college programme and staff only get no search chunk ([`corpus_scope.yaml`](configs/corpus_scope.yaml)), and branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
 
 ### Offline build
 
@@ -373,7 +374,7 @@ Rebuild locally without touching the remote stores:
 
 ```bash
 PUSH_REMOTE=0 python -m scripts.build_multi_cohort \
-  --qdrant-collection student_handbook_semantic_v35 --mongo-collection parent_docs_v35
+  --qdrant-collection student_handbook_clause_v36 --mongo-collection parent_docs_clause_v36
 ```
 
 The command overwrites `data/processed/`, so run it in a clean worktree. With `PUSH_REMOTE=1` it also preflights the target collections, embeds and uploads, then verifies the remote contents against the manifest. See the [parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md).
@@ -399,8 +400,9 @@ labelled as such ([dataset notes](data/eval/official_v2/README.md)).
 > These results measure the stack of 2026-09-12: Qwen3 planner on Groq, Gemini 3.1
 > Flash-Lite composer, a local `bge-m3` model, Cohere reranking and the v33 data. The
 > current stack (Luna planner, DeepSeek composer, `bge-m3` over an API, Voyage rerank-3,
-> v35 data) has separate results in [official_v4/RESULTS.md](data/eval/official_v4/RESULTS.md).
-> Run A is the historical hold-out; runs B/C are post-fix measurements. `official_v3`
+> build `7754cc9c`) has separate results in [official_v4/RESULTS.md](data/eval/official_v4/RESULTS.md):
+> the deployed system (run C3) scores answer correctness 0.970 on the 228 in-scope cases.
+> Run A is the historical hold-out; runs B and C onward are post-fix measurements. `official_v3`
 > was used after its first run and is no longer a clean hold-out. These scores do
 > not certify the later offline hardening changes or the public deployment.
 
@@ -532,7 +534,7 @@ Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`.
 ### Prerequisites
 
 - Python 3.11 and Node.js 20
-- A Qdrant collection and a MongoDB database loaded from the v35 build (see [Offline build](#offline-build))
+- A Qdrant collection and a MongoDB database loaded from the current build (see [Offline build](#offline-build))
 - API keys for OpenAI (planner), DeepSeek (composer and directory selector) and DeepInfra (BGE-M3 embeddings) and Voyage (the rerank-3 reranker). LangSmith (tracing) is optional.
 
 ### Backend
@@ -680,8 +682,8 @@ A suggested reading order for the backend: [`schemas.py`](src/api/schemas.py), t
 |---|---|---|
 | Frontend | Vercel ([hcmuebot.id.vn](https://hcmuebot.id.vn)) | Static React build; `/api/visits` is proxied to the backend |
 | Backend | Hugging Face Spaces (Docker) | One worker; runtime files come from an explicit allowlist |
-| Vector store | Qdrant | Collection `student_handbook_semantic_v35` |
-| Documents | MongoDB | Collection `parent_docs_v35` |
+| Vector store | Qdrant | Collection `student_handbook_table_search_e55308ddae85` (build `7754cc9c`) |
+| Documents | MongoDB | Collection `parent_docs_table_search_e55308ddae85` |
 
 [`deploy_hf_backend.ps1`](scripts/deploy_hf_backend.ps1) packages only the allowlisted runtime files and checks that the build manifest targets the intended collections. `-DryRun` validates the package without touching the Space. After a deploy, check `/health/readiness`, then run the production suite against the Space.
 

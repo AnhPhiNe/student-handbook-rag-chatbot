@@ -7,7 +7,6 @@ the first run's files are left untouched, and each attempt is written to
 import argparse
 import json
 import os
-from pathlib import Path
 
 from scripts.prepare_official_eval import ROOT
 

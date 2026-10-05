@@ -456,7 +456,7 @@ class ChildParentHybridRetriever:
         """Retrieve parent-bound regulation sources using child/table chunks.
 
         Dense and BM25 child candidates are fused with RRF, optionally reranked
-        (Qwen3-Reranker, failing open to RRF), grouped into parent sources, and in the default mode
+        (Voyage rerank-3, failing open to RRF), grouped into parent sources, and in the default mode
         outbound graph neighbors are attached as context-only related sources.
         """
         eval_mode = resolve_retrieval_mode()

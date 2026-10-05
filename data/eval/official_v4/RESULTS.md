@@ -247,6 +247,38 @@ Post-fix measurements, judged like Run C (gpt-oss-120b on DeepInfra, packet
 - Reports: `official_v4_answers_20261004T104406Z`,
   `official_v4_answers_20261004T124930Z`.
 
+## One chunk per khoản and the corpus scope: runs C2 and C3 (2026-10-05)
+
+Post-fix measurements on the same replayed v61 plans. C2 is the clause-chunk build
+with the corpus scope and composer v3.35; C3 is the rebuilt chunker (one chunk per
+khoản, build `build-7754cc9c07ae9951cfa5`) with composer v3.36. The rule for C3
+was written in `SPEC.md` before the run. B below is the system then served (the
+table-search run above). Why the chunker was rebuilt and how the scope was
+measured is in `docs/DESIGN_DECISIONS.md`, "One chunk per khoản, the scope
+measured, composer v3.36".
+
+| 228 cases in scope | B (served) | C2 | **C3** |
+|---|---:|---:|---:|
+| Commit | `5a7797de` | `a70660ab` | `cda3915b` |
+| answer_correctness | 0.965 | 0.961 | **0.970** |
+| faithfulness | 0.969 | 0.972 | 0.966 |
+| citation_correctness | 0.960 | 0.965 | 0.968 |
+| abstention_correct | 0.947 | 0.947 | 0.961 |
+| critical false passes | 0 | 0 | 2 |
+
+- C3 minus B, paired: **+0.005**, 95% CI over clusters **[−0.008, +0.018]**, with
+  no new zero. The pre-registered rule is met, and C3 is deployed.
+- The 18 out-of-scope cases (vừa làm vừa học, college, staff-only) are still
+  graded against answers written before the scope; read one by one, none presents
+  another group's rule as the asker's. Over all 246 cases C3 scores 0.951 (CI
+  0.929–0.972), with 4 critical false passes, two of them among those 18.
+- The two critical false passes in scope: V4-070 (dormitory application office)
+  was wrong in B as well; V4-172 (smoking) fell from 1.0 to 0.4, because in K50
+  and K51 the only smoking rule is in a staff-only article the scope leaves out.
+- C3 ran with no exception, no judge failure, no rerun and no reranker skip.
+- Reports: `official_v4_answers_20261004T181608Z` (C2),
+  `official_v4_answers_20261005T052049Z` (C3).
+
 ## What these results do not establish
 
 - **Run B is not a hold-out.** Its figure describes the deployed system; the

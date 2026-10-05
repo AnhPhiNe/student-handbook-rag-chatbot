@@ -124,6 +124,7 @@ function App() {
                   <option value="K48-K49">Khóa 48 - 49</option>
                   <option value="K50">Khóa 50</option>
                   <option value="K51">Khóa 51</option>
+                  <option value="K52" disabled>Khóa 52 (chưa hỗ trợ)</option>
                 </select>
                 )}
                 <button

@@ -299,11 +299,6 @@ def test_schema_rejects_invalid_task_values(validator, field, value):
             "invalid_slot_type:office",
         ),
         (
-            {"office": "Phòng Đào tạo", "requested_field": "fax"},
-            {"office": "Phòng Đào tạo"},
-            "invalid_slot_value:requested_field",
-        ),
-        (
             {"office": "Phòng Tài chính", "requested_field": "email"},
             {"office": "Phòng Tài chính"},
             "ungrounded_slot:office",
@@ -324,6 +319,25 @@ def test_shape_valid_but_unsafe_structured_task_does_not_execute(
     normalized, errors = normalize_query_plan(payload, query=query)
     assert f"t1:{error}" in errors
     assert normalized["tasks"][0]["mode"] in {"rag", "clarify"}
+
+
+@pytest.mark.parametrize("field", ["fax", None])
+def test_unusable_contact_field_shows_every_field_instead_of_asking(validator, field):
+    """A contact card holds every field, so the planner's choice of one is not
+    worth a question to the student; the entity it names still has to match."""
+    query = "Email Phòng Đào tạo là gì?"
+    slots = {"office": "Phòng Đào tạo"}
+    if field is not None:
+        slots["requested_field"] = field
+    payload = _plan("structured", query=query, tool="office", slots=slots,
+                    spans={"office": "Phòng Đào tạo"})
+    validator.validate(payload)
+    normalized, errors = normalize_query_plan(payload, query=query)
+    task = normalized["tasks"][0]
+    assert task["mode"] == "structured"
+    assert task["slots"] == {"office": "Phòng Đào tạo", "requested_field": "all"}
+    assert task["normalization_warnings"] == ["contact_field_shown_all:requested_field"]
+    assert errors == []
 
 
 def test_rag_with_lookup_is_shape_valid_but_normalizer_removes_lookup(validator):

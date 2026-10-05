@@ -438,6 +438,27 @@ def test_unsupported_directory_entity_still_requires_grounded_source() -> None:
     assert plan["tasks"][0]["mode"] == "clarify"
 
 
+def test_misspelt_directory_name_keeps_the_planner_reading() -> None:
+    """The student typed the name wrong and the planner read it correctly; the
+    span is still their own words, so the lookup runs on the planner's reading.
+    Production asked "bổ sung thông tin còn thiếu" for this question instead."""
+    query = "văn phòng khoa tinesg PHap o dau"
+    task = _structured(
+        "t1",
+        "Văn phòng Khoa Tiếng Pháp ở đâu?",
+        lookup_type="faculty",
+        intent="contact",
+        slots={"faculty": "Khoa Tiếng Pháp", "requested_field": "office"},
+        slot_spans={"faculty": "khoa tinesg PHap", "requested_field": "o dau"},
+    )
+
+    plan, errors = normalize_query_plan(_plan([task]), query=query)
+
+    assert errors == []
+    assert plan["tasks"][0]["mode"] == "structured"
+    assert plan["tasks"][0]["slots"]["faculty"] == "Khoa Tiếng Pháp"
+
+
 def test_compound_scoring_tasks_keep_distinct_operations() -> None:
     query = "Điểm chữ C đổi ra hệ 4 là bao nhiêu, còn GPA 2,83 thì xếp loại học lực gì?"
     plan = _normalize(

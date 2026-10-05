@@ -269,6 +269,7 @@ tools:
         type: string
         verification_role: directory_entity
         description: Tên đơn vị/phòng ban đầu vào, không phải địa chỉ, tầng hoặc số phòng.
+        planner_reading_trusted: true
       requested_field:
         type: string
         verification_role: reading_intent
@@ -298,6 +299,7 @@ tools:
         type: string
         verification_role: directory_entity
         description: Tên khoa đã nêu; nếu chỉ biết ngành và hỏi liên hệ khoa phụ trách thì dùng program.
+        planner_reading_trusted: true
       requested_field:
         type: string
         verification_role: reading_intent
@@ -327,6 +329,7 @@ tools:
         type: string
         verification_role: directory_entity
         description: Tên ngành cần tìm khoa/liên hệ, hoặc tên khoa cần liệt kê ngành; không tự đoán khoa từ ngành.
+        planner_reading_trusted: true
       requested_field:
         type: string
         verification_role: reading_intent

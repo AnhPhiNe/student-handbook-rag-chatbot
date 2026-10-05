@@ -1014,7 +1014,8 @@ per line marker, so "2. Sinh viên bị buộc thôi học trong các trường 
 the rule; 1,011 of 3,259 children (31%) were lettered points without their
 lead-in. Search chunks are now one khoản with all its points
 (`scripts/structure_chunking.py`): median 208 characters, a khoản over 1,200 split
-into groups of points that repeat its lead-in. The embedding and rerank text start
+into groups of points that repeat its lead-in (superseded on 2026-10-05: a khoản is
+never split; see the next section). The embedding and rerank text start
 with "document › chapter › Điều N. title"; the content, BM25 text and citations are
 the handbook's words. Parents and small-to-big retrieval are unchanged.
 
@@ -1060,8 +1061,121 @@ memory, three such questions (vừa làm vừa học twice, cao đẳng sư ph�
 declined and "Thi rớt 3 môn có bị đuổi học không?" (K50) cited Điều 12 with the
 50% rule.
 
+## One chunk per khoản, the scope measured, composer v3.36 (2026-10-05)
+
+Run C2 (the 2026-10-04 build with composer v3.35) passed the in-scope rule but
+not the out-of-scope one, and a chunk-by-chunk review of that build found six
+chunks cut mid-word (a long paragraph split at its last space), 54 chunks holding
+only an article heading, three "TT" table-header residues, and lists given the
+wrong lead-in where the PDF reused a marker or numbered "1.1.". Each review found
+smaller defects than the last, and two of them were introduced by earlier fixes,
+so the chunker was rebuilt around a check rather than more rules.
+
+**The chunker** (`scripts/structure_chunking.py`, build
+`build-7754cc9c07ae9951cfa5`) has five general rules: join the lines the PDF
+wrapped; read line markers (`1.`, `1.1.`, `I.`, `A.`, `a)`, dashes and bullets),
+taking levels from the order they appear in each article; a khoản with its lead-in
+and all its points is one chunk, never split (the longest is 4,732 characters,
+about 1,400 tokens; BGE-M3 reads 8,192); an article without khoản is one chunk;
+an unnumbered lead-in ending in ":" keeps the list that follows (19 articles). The
+24 places where the PDF hides the structure (a date line naming a timeline step, a
+list reusing the clause marker, a column header above a table, a list run into one
+line, heading tails the stored title lacks) are reviewed lines in
+`configs/layout_fixes.yaml`; a fix only groups lines, never changes the
+handbook's words, and one that matches no line fails the build. The owner chose
+this over splitting long khoản by length or by topic: a variant that split only
+the ten long multi-topic khoản was built but not measured to a conclusion.
+
+**The check** (`scripts/check_chunk_invariants.py`, run on every publish) reads
+each article's raw lines, not the chunker's segments, and fails the build when a
+line in scope is in no chunk, a chunk line starts or ends inside a sentence, a
+chunk holds only a heading, a table's column header stays in a chunk, a list item
+is separated from its lead-in, or a line dropped as a heading is not in the stored
+title. On the 9,793 lines in scope of the three handbooks it reports nothing; on
+the C2 build it reports more than 140 problems, and on the v35 chunks HF serves,
+340 of 3,259 chunks. Every v35 chunk's text is in the new chunks except the
+content the scope removes and four heading fragments, which end the context line
+instead. It cannot see a list grouped under the wrong lead-in while every line is
+whole; the chunks that split a khoản were read by hand for that, before splitting
+was dropped.
+
+**Retrieval against the chunks HF serves** (offline, production retriever and
+Voyage rerank-3, a reranker 429 retried; table descriptions left out of both;
+rule written before the run; reports in `chunking_offline_20261005/`):
+
+| Cases | v35 primary@5 | new primary@5 | v35 hit@1 | new hit@1 |
+|---|---:|---:|---:|---:|
+| official_v1 in scope (146) | 0.993 | **1.000** | 0.945 | **0.959** |
+| official_v2 (93) | 1.000 | 1.000 | 0.871 | **0.903** |
+| development (17) | 0.824 | **1.000** | 0.824 | **1.000** |
+
+No case lost a required source from the top five; first rank was better in 4 and
+worse in 2 v1 cases, better in 6 and worse in 3 v2 cases, each worse case moving
+from first to second. Each cohort improved (top five 1.000 in all three; first
+rank K48-K49 0.916 to 0.964, K50 0.881 to 0.917, K51 0.952 to 0.964).
+
+**The scope, measured twice.** With one chunk per khoản, was excluding content
+still needed? Keeping everything put a vừa làm vừa học or staff-only article in
+the top five of 46 of 256 questions about regular students (44 of them Điều 13,
+the vừa làm vừa học twin of Điều 12, first in 4), against none with the scope; it
+also pushed official_ret_080's source out of the top five. The scope stays.
+Keeping only the twelve staff-only articles failed its pre-registered rule: they
+reached the top five of 4 of 239 regular-student questions and ranked first for
+"Hút thuốc trong khuôn viên trường có bị cấm không?". In K50 and K51 the only
+smoking rule is Quy tắc ứng xử Điều 4, addressed to staff, so the rule as written
+also refused the case it meant to help; it was not changed after the run, and the
+staff articles stay out. The principle the owner set for any later change:
+exclude what conflicts with a rule for regular students (same subject, a
+different rule for another group of learners), not what is merely addressed to
+someone else.
+
+**Composer v3.36** replaces v3.35's refusal with one sentence: a question that
+names no group is answered for regular university students, and where the sources
+hold separate rules for forms or levels of study the answer says whom a rule
+covers and never presents one group's rule as another's.
+
+**Run C3** (`official_v4_answers_20261005T052049Z`, rule in
+`data/eval/official_v4/SPEC.md` before the run; v61 plans replayed, DeepInfra
+composer, same judge; no API error, judge failure or reranker skip):
+
+| 228 cases in scope | B (served) | C2 | **C3** |
+|---|---:|---:|---:|
+| answer_correctness | 0.965 | 0.961 | **0.970** |
+| faithfulness | 0.969 | 0.972 | 0.966 |
+| citation_correctness | 0.960 | 0.965 | 0.968 |
+| context_recall | 0.911 | 0.912 | 0.907 |
+| context_precision | 0.621 | 0.631 | 0.603 |
+| abstention_correct | 0.947 | 0.947 | 0.961 |
+| critical false pass | 0 | 0 | 2 |
+
+The paired difference C3 minus B is +0.005 (95% cluster interval −0.008 to
++0.018), with no new zero. Of the 18 out-of-scope cases, read one by one, none
+presents another group's rule as the asker's: twelve vừa làm vừa học duration
+questions are answered from Điều 3 and say so; V4-110 says Điều 12 is "đối với
+hình thức đào tạo chính quy" and that no vừa làm vừa học rule was found;
+staff-only questions are "not found". Over all 246 cases answer_correctness is
+0.951 against B's 0.966, because those 18 are still graded against the
+pre-scope answers. Of the two critical false passes in scope, V4-070 (the
+dormitory application office) was wrong in B as well; V4-172 fell from 1.0 to 0.4
+because its smoking answer came from the staff article. Median answer latency was
+19.8 s (B 25.2 s), on another day's network.
+
 ## What these measurements do not show
 
+- Known limits of the 2026-10-05 build, each left as it is after measuring:
+  - Smoking (K50, K51): the only rule is in the staff-only Quy tắc ứng xử Điều 4,
+    which the scope leaves out, so the answer is "not found". Keeping khoản 3
+    alone would be the narrow change to try, with its own pre-registered rule.
+  - For questions about content the scope leaves out, the composer says the
+    sources "chưa trực tiếp nêu…"; a reader may take that to mean the handbook
+    has no such rule. Saying "trong phần trợ lý tra cứu" would be clearer and
+    needs an answers run.
+  - Quy định công tác cố vấn học tập Điều 4 (K50, K51) is cut short in the
+    extracted parent ("…Phụ lục 1. (xem trong"); the fix belongs in the PDF
+    extraction.
+  - Asked where a branch-campus student files a fee exemption, the planner sent
+    the question to the unit catalog, which missed the notice's branch-campus
+    paragraph (one live check).
 - A comparison with plain RAG (no planner) or with a long-context model given the
   whole handbook; these baselines are planned for the paper.
 - The graph and BM25 ablations on the current stack. The runner has the modes
@@ -1136,3 +1250,4 @@ Evaluation reports are git-ignored and stay on the development machine under
 | Directory selector, second look | `directory_matching_20260929T100059Z` / `…T100140Z` (before), `…T100338Z` / `…T100416Z` (looser wording), `…T102008Z` / `…T101754Z` (thinking on every call), `…T103359Z` / `…T103530Z` (second look); existing cases first, everyday set second |
 | official_v4 with planner v61, and with table search | `official_v4_answers_20261004T104406Z` (v61, v35) and `official_v4_answers_20261004T124930Z` (table search), each with `reruns/attempt_1` and `v4_report.json`; Run C rejudged: `official_v4_answers_20261001T082203Z_runC_answers/judge_deepinfra`; shared plans `official_v4_v61_shared_plans.json` |
 | End-to-end check before the deploy | `official_v1_answers_20260930T023654Z` (against `…20260928T062050Z`); the five replans in its `replans_029_045_092_110_x5.json`; judge fix: `official_v2_answers_smoke10_20260930T011049Z` and `…_rejudge` |
+| Clause chunks, scope, composer v3.36 | offline: `chunking_offline_20261005/` (RULE*.md, runs per variant and shard, `score_*.py`; `scope_live_check_v336.json`); answers: `official_v4_answers_20261004T181608Z` (C2, judge errors in `reruns/attempt_judge_1`) and `official_v4_answers_20261005T052049Z` (C3) |

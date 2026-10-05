@@ -257,6 +257,12 @@ author nor its models wrote.
     hold no rule for that group; it fails if it presents another group's rule as
     applying to the asker, and any such answer blocks the deploy. Judge scores
     are reported, not used.
+  Outcome (2026-10-05, `official_v4_answers_20261005T052049Z`, no API error,
+  judge failure or reranker skip): in scope C3 0.970 against B 0.965, paired
+  difference +0.005, 95% cluster interval [−0.008, +0.018], no new zero; all 18
+  out-of-scope cases pass (vừa làm vừa học durations answered from Điều 3 and
+  labelled; V4-110 says Điều 12 is for chính quy and no vừa làm vừa học rule was
+  found; staff-only questions not found). C3 passes and is the build to deploy.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

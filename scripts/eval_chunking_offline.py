@@ -58,9 +58,14 @@ def variant_chunks(name: str, parents: list[dict[str, Any]], baseline: str | Non
         chunks = json.loads(Path(baseline).read_text(encoding="utf-8"))
         return [{**c, "embedding_text": c["content"]} for c in chunks
                 if (c.get("metadata") or {}).get("chunk_granularity") != "table_description"]
-    if name in ("clause", "clause_all"):  # clause_all: nothing excluded by configs/corpus_scope.yaml
+    if name in ("clause", "clause_all", "clause_nostaff"):
+        # clause_all: nothing excluded by configs/corpus_scope.yaml; clause_nostaff:
+        # the staff-only code-of-conduct articles kept, vừa làm vừa học and cao đẳng still excluded.
         reviewed = {e["parent_id"] for e in json.loads(REGIONS.read_text(encoding="utf-8"))["parents"]}
-        scope = load_scope() if name == "clause" else {}
+        scope = load_scope() if name != "clause_all" else {}
+        if name == "clause_nostaff":
+            scope = {**scope, "exclude_parents": [r for r in scope.get("exclude_parents") or []
+                                                  if "QuyDinhQuyTacUngXu" not in r["id"]]}
         return build_structure_chunks(parents, config=load_config(), scope=scope, drop_table_parents=reviewed)
     raise ValueError(f"Unknown variant: {name}")
 

@@ -1,0 +1,319 @@
+[
+ {
+  "id": "chunk_dev_rot3mon_K48-K49",
+  "suite": "retrieval",
+  "query": "Thi rớt 3 môn có bị đuổi học không?",
+  "cohort": "K48-K49",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
+    "grade": 2,
+    "cohort": "K48-K49"
+   },
+   {
+    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+    "grade": 1,
+    "cohort": "K48-K49"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_rot3mon_K50",
+  "suite": "retrieval",
+  "query": "Thi rớt 3 môn có bị đuổi học không?",
+  "cohort": "K50",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+    "grade": 2,
+    "cohort": "K50"
+   },
+   {
+    "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+    "grade": 1,
+    "cohort": "K50"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_rot3mon_K51",
+  "suite": "retrieval",
+  "query": "Thi rớt 3 môn có bị đuổi học không?",
+  "cohort": "K51",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+    "grade": 2,
+    "cohort": "K51"
+   },
+   {
+    "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+    "grade": 1,
+    "cohort": "K51"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_canhbao_lan_K48-K49",
+  "suite": "retrieval",
+  "query": "Bị cảnh báo học tập mấy lần thì bị buộc thôi học?",
+  "cohort": "K48-K49",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
+    "grade": 2,
+    "cohort": "K48-K49"
+   },
+   {
+    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+    "grade": 1,
+    "cohort": "K48-K49"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_canhbao_lan_K50",
+  "suite": "retrieval",
+  "query": "Bị cảnh báo học tập mấy lần thì bị buộc thôi học?",
+  "cohort": "K50",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+    "grade": 2,
+    "cohort": "K50"
+   },
+   {
+    "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+    "grade": 1,
+    "cohort": "K50"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_canhbao_lan_K51",
+  "suite": "retrieval",
+  "query": "Bị cảnh báo học tập mấy lần thì bị buộc thôi học?",
+  "cohort": "K51",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+    "grade": 2,
+    "cohort": "K51"
+   },
+   {
+    "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+    "grade": 1,
+    "cohort": "K51"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_rot_nua_K48-K49",
+  "suite": "retrieval",
+  "query": "Học kỳ này em rớt hơn một nửa số tín chỉ đã đăng ký thì có sao không?",
+  "cohort": "K48-K49",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
+    "grade": 2,
+    "cohort": "K48-K49"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_rot_nua_K50",
+  "suite": "retrieval",
+  "query": "Học kỳ này em rớt hơn một nửa số tín chỉ đã đăng ký thì có sao không?",
+  "cohort": "K50",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
+    "grade": 2,
+    "cohort": "K50"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_rot_nua_K51",
+  "suite": "retrieval",
+  "query": "Học kỳ này em rớt hơn một nửa số tín chỉ đã đăng ký thì có sao không?",
+  "cohort": "K51",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K51_QuyCheDaoTao_Chuong3_Dieu12",
+    "grade": 2,
+    "cohort": "K51"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_renluyen_kem_K48-K49",
+  "suite": "retrieval",
+  "query": "Rèn luyện yếu kém hai học kỳ liên tiếp thì bị xử lý thế nào?",
+  "cohort": "K48-K49",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
+    "grade": 2,
+    "cohort": "K48-K49"
+   },
+   {
+    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+    "grade": 1,
+    "cohort": "K48-K49"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_renluyen_kem_K50",
+  "suite": "retrieval",
+  "query": "Rèn luyện yếu kém hai học kỳ liên tiếp thì bị xử lý thế nào?",
+  "cohort": "K50",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
+    "grade": 2,
+    "cohort": "K50"
+   },
+   {
+    "parent_section_id": "K50_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+    "grade": 1,
+    "cohort": "K50"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_renluyen_kem_K51",
+  "suite": "retrieval",
+  "query": "Rèn luyện yếu kém hai học kỳ liên tiếp thì bị xử lý thế nào?",
+  "cohort": "K51",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K51_QuyCheDanhGiaRenLuyen_Chuong4_Dieu14",
+    "grade": 2,
+    "cohort": "K51"
+   },
+   {
+    "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+    "grade": 1,
+    "cohort": "K51"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_thuongbinh_K48-K49",
+  "suite": "retrieval",
+  "query": "Con thương binh có được miễn học phí không?",
+  "cohort": "K48-K49",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan2",
+    "grade": 2,
+    "cohort": "K48-K49"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_thuongbinh_K50",
+  "suite": "retrieval",
+  "query": "Con thương binh có được miễn học phí không?",
+  "cohort": "K50",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K50_ThongBaoMienGiamHocPhi_Phan4",
+    "grade": 2,
+    "cohort": "K50"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_thuongbinh_K51",
+  "suite": "retrieval",
+  "query": "Con thương binh có được miễn học phí không?",
+  "cohort": "K51",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K51_ThongBaoMienGiamHocPhi_Phan4",
+    "grade": 2,
+    "cohort": "K51"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_ktx_hoso_K50",
+  "suite": "retrieval",
+  "query": "Hồ sơ đăng ký ở ký túc xá gồm những gì?",
+  "cohort": "K50",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K50_QuyTrinhXetVaoKyTucXa_Phan1",
+    "grade": 2,
+    "cohort": "K50"
+   }
+  ]
+ },
+ {
+  "id": "chunk_dev_ktx_hoso_K51",
+  "suite": "retrieval",
+  "query": "Hồ sơ đăng ký ở ký túc xá gồm những gì?",
+  "cohort": "K51",
+  "history": [],
+  "eval_split": "development",
+  "case_type": "chunking_targeted",
+  "relevance_judgments": [
+   {
+    "parent_section_id": "K51_QuyTrinhXetVaoKyTucXa_Phan1",
+    "grade": 2,
+    "cohort": "K51"
+   }
+  ]
+ }
+]

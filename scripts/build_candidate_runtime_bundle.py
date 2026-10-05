@@ -35,8 +35,6 @@ def build_runtime_bundle(root: Path, candidate: Path, output: Path) -> dict:
     publication_path = candidate / "publication_report.json"
     publication = json.loads(publication_path.read_text(encoding="utf-8"))
     verification = publication.get("verification") or {}
-    baseline_counts = {"qdrant": manifest["artifacts"]["child_chunks"]["count"],
-                       "mongo": manifest["artifacts"]["parent_docstore"]["count"]}
     if (publication.get("completed") is not True or publication.get("stage") != "complete"
             or publication.get("storage_targets") != frozen["storage_targets"]
             or publication.get("model") != frozen["embedding"]["model"]
@@ -45,8 +43,10 @@ def build_runtime_bundle(root: Path, candidate: Path, output: Path) -> dict:
             or verification.get("dimension") != frozen["embedding"]["dimension"]
             or verification.get("distance") != "Cosine"
             or any(verification.get(k) != 0 for k in ("payload_mismatches", "vector_mismatches", "parent_mismatches"))
-            or publication.get("baseline_before") != baseline_counts
-            or publication.get("baseline_after") != baseline_counts):
+            # The stores the publish had to leave alone (the source build's and the
+            # deployed ones, scripts/publish_table_search_candidate.py) kept their counts.
+            or not publication.get("baseline_before")
+            or publication.get("baseline_after") != publication.get("baseline_before")):
         raise ValueError("Candidate lacks a complete matching publication verification")
     # Permit the deploy script's copied baseline, never clobber another bundle.
     for relative in (MANIFEST_PATH, CONFIG_PATH):

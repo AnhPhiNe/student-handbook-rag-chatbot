@@ -1,0 +1,63 @@
+# Evaluation only (official_v4 run C2, 2026-10-05): retrieval_eval_patient.yaml with
+# the clause-chunk candidate (scripts/structure_chunking.py, configs/corpus_scope.yaml).
+# Set QDRANT_COLLECTION_NAME and STUDENT_RAG_HYBRID_COLLECTION to
+# student_handbook_table_search_79c456af1075 and MONGODB_PARENT_COLLECTION to
+# parent_docs_table_search_79c456af1075; the loader refuses any other collection.
+# Evaluation only (official_v4, 2026-09-30): configs/retrieval.yaml with longer waits,
+# so a slow network does not remove dense retrieval or the reranker from a case.
+# It changes how long a call may take, never what a completed call returns.
+# BGE-M3 served by DeepInfra (OpenAI-compatible embeddings API). Its vectors
+# equal the local sentence-transformers model's, so collections built locally
+# stay valid. A query waits query_timeout_seconds per try (query_retries more
+# tries), then retrieval falls back to BM25.
+embedding:
+  model_name: BAAI/bge-m3
+  dimension: 1024
+  normalize_embeddings: true
+  api_url: https://api.deepinfra.com/v1/openai/embeddings
+  api_key_env_var: DEEPINFRA_API_KEY
+  query_timeout_seconds: 30
+  query_retries: 1
+  document_batch_size: 64
+  document_concurrency: 8
+
+retrieval:
+  # Parents handed to the composer.
+  default_top_k: 5
+  # Child chunks taken from dense search and from BM25, kept after RRF fusion
+  # and all sent to the reranker. On official_v1 (RRF only) 24 holds a gold
+  # child for 155/155 queries, 16 for 154/155; 40 adds nothing.
+  candidate_children: 24
+  table_search:
+    collection_name: student_handbook_table_search_79c456af1075
+    baseline_collection: student_handbook_clause_v36
+    registry_path: data/processed/tables/structured_tables_registry.json
+    registry_sha256: 39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568
+
+runtime:
+  qdrant_timeout_seconds: 60
+  parent_cache_max_entries: 2048
+
+# Voyage rerank-3 reranks every RRF child; on failure retrieval keeps the RRF
+# order. It replaced Qwen3-Reranker-8B on DeepInfra on 2026-09-30 (see
+# src/retrieval/core/reranker.py for the measurements): same ranking quality on
+# official_v1 at half the latency, and without DeepInfra's endpoint stalls,
+# which cost 105 of 246 cases their reranker in the official_v4 8B run. One call
+# with 24 candidates took p50 0.76 s, p90 0.85 s, max 1.35 s, so the 10 s
+# timeout is unchanged, without retry.
+# One call with 24 handbook children costs about 2,700 tokens, and the project
+# rate limit is per minute (100,000 TPM when this was written), so about 36 calls
+# a minute. A question makes one or a few calls and an evaluation run paces itself
+# at a few cases a minute, but a reranker-only burst (for example
+# scripts/compare_rerankers.py) must pace itself or it will be refused with 429
+# and fall back to the RRF order.
+# api_url matches the key: MongoDB Atlas keys use ai.mongodb.com, Voyage-native
+# keys https://api.voyageai.com/v1/rerank.
+reranker:
+  enabled: true
+  provider: voyage
+  model: rerank-3
+  api_url: https://ai.mongodb.com/v1/rerank
+  api_key_env_var: VOYAGE_API_KEY
+  instruction: Given a student question, retrieve handbook passages that answer it
+  timeout_seconds: 30

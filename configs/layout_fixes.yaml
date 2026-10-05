@@ -1,0 +1,48 @@
+# Places where the PDF text does not show the handbook's structure, reviewed by hand
+# (2026-10-05). A fix only says how lines group; it never changes the handbook's words.
+# `line` is the exact line after whitespace cleanup; `line_prefix` matches the start
+# of a line. A fix that matches no line fails the build.
+#
+# fix:
+#   heading_tail   the line is the end of the article heading the stored title lacks
+#   table_header   the line heads a column of the table under it; it goes with the table
+#   label_of_next  the line names the marked line under it (a date in a timeline)
+#   split_items    the PDF ran a list into one line: split it before each `before`
+#                  that follows ";" or ":"
+#   nested_list    the next `lines` marked lines belong to this point, although they
+#                  use the clause marker
+#   starts_group   the line introduces the points under it as a new group
+version: 1
+fixes:
+  # Headings the stored title cuts short.
+  - {parent: K50_QuyCheCongTacSinhVien_Chuong4_Dieu17, line: "Việt Nam Trường", fix: heading_tail}
+  - {parent: K51_QuyCheCongTacSinhVien_Chuong4_Dieu17, line: "Việt Nam Trường", fix: heading_tail}
+  - {parent: K50_ThongBaoHoTroChiPhiHocTap_Phan3, line: "HỌC TẬP", fix: heading_tail}
+  - {parent: K51_ThongBaoHoTroChiPhiHocTap_Phan3, line: "HỌC TẬP", fix: heading_tail}
+
+  # Quy chế đánh giá kết quả rèn luyện Điều 9: "TT" heads the classification table.
+  - {parent: K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9, line: "TT", fix: table_header}
+  - {parent: K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9, line: "TT", fix: table_header}
+  - {parent: K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9, line: "TT", fix: table_header}
+
+  # Thông báo miễn, giảm học phí: the list of students exempt in full is one PDF line.
+  - {parent: K50_ThongBaoMienGiamHocPhi_Phan4, line_prefix: "- Đối tượng miễn, giảm học phí – Đối tượng được miễn 100% học phí", fix: split_items, before: "– "}
+  - {parent: K51_ThongBaoMienGiamHocPhi_Phan4, line_prefix: "- Đối tượng miễn, giảm học phí – Đối tượng được miễn 100% học phí", fix: split_items, before: "– "}
+
+  # Quy định NCKH Điều 7 is a timeline: each date names the step under it; e) lists
+  # publications with the "–" the steps use; "Xếp loại…" opens a second list a)–c).
+  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 9 – 10 hằng năm", fix: label_of_next}
+  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Từ tháng 12 đến tháng 4 hằng năm", fix: label_of_next}
+  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 6 hằng năm", fix: label_of_next}
+  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line_prefix: "e) Có công bố khoa học", fix: nested_list, lines: 3}
+  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Xếp loại đánh giá đề tài:", fix: starts_group}
+  - {parent: K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 9 – 10 hằng năm", fix: label_of_next}
+  - {parent: K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Từ tháng 12 đến tháng 4 hằng năm", fix: label_of_next}
+  - {parent: K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 6 hằng năm", fix: label_of_next}
+  - {parent: K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line_prefix: "e) Có công bố khoa học", fix: nested_list, lines: 3}
+  - {parent: K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Xếp loại đánh giá đề tài:", fix: starts_group}
+  - {parent: K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 9 – 10 hằng năm", fix: label_of_next}
+  - {parent: K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Từ tháng 12 đến tháng 4 hằng năm", fix: label_of_next}
+  - {parent: K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 6 hằng năm", fix: label_of_next}
+  - {parent: K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line_prefix: "e) Có công bố khoa học", fix: nested_list, lines: 3}
+  - {parent: K51_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Xếp loại đánh giá đề tài:", fix: starts_group}

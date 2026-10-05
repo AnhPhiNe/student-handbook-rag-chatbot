@@ -38,7 +38,7 @@ def test_build_candidate_keeps_baseline_and_separate_namespace(tmp_path):
               ["data/processed/chunks/child_parent_chunks.json", "configs/retrieval.yaml",
                "data/processed/metadata/build_manifest.json"]}
     report = build_candidate(ROOT, tmp_path)
-    assert report["artifacts"]["child_chunks"]["count"] == 3835
+    assert report["artifacts"]["child_chunks"]["count"] == 2678  # 2646 clause chunks + 32 in-scope table handles
     assert report["model_calls"] == 0 and not report["embedding_created"]
     assert report["storage_targets"]["qdrant_collection"] != "student_handbook_semantic_v35"
     assert report["storage_targets"]["mongo_parent_collection"] != "parent_docs_v35"

@@ -1,7 +1,7 @@
 {
   "schema_version": "student-handbook-build-v1",
-  "build_id": "build-0e6fa69b1de57a12dc1a",
-  "created_at": "2026-09-28T14:56:43.402896+00:00",
+  "build_id": "build-7754cc9c07ae9951cfa5",
+  "created_at": "2026-10-05T05:14:34.923671+00:00",
   "source_pdfs": {
     "so-tay-sinh-vien-khoa-48-49.pdf": "4bf7b510b66e6ed8ce60008d48efd05723f06899171cbf89e4494f4b277739db",
     "so-tay-sinh-vien-khoa-50.pdf": "bbae270b9821c71eeede660e3168c868bde07f458f07b648645c14584bdeb8b0",
@@ -10,7 +10,7 @@
   "artifacts": {
     "parent_docstore": {
       "path": "data/processed/chunks/all_docstore_items.json",
-      "sha256": "0ca99bea19f2c574c328aa05680d75370f1da27a9137ff767efad4f09ab2e306",
+      "sha256": "9d1c9d3fc0e89b156b82c946ee86901a04e5f35fba69b3e0da70fa9d93379b11",
       "count": 541,
       "cohort_counts": {
         "K48-K49": 149,
@@ -20,12 +20,12 @@
     },
     "child_chunks": {
       "path": "data/processed/chunks/child_parent_chunks.json",
-      "sha256": "94c3903c009175e41bc2320d3dd2f951700f7282bac2bb0c075f81434df3eb5a",
-      "count": 3800,
+      "sha256": "2534b87852d98560901b427f0b84de55868afd7570970b7206446bf3e3c30e4e",
+      "count": 2646,
       "cohort_counts": {
-        "K48-K49": 1118,
-        "K50": 1293,
-        "K51": 1389
+        "K48-K49": 778,
+        "K50": 911,
+        "K51": 957
       }
     },
     "structured_tables": {
@@ -50,7 +50,7 @@
     },
     "table_embedding_audit": {
       "path": "data/processed/metadata/structured_table_embedding_audit.json",
-      "sha256": "66d4b3e8e73ff4a86aa256e72b7581a9335bf1cd6a6939686f24b21601cae874",
+      "sha256": "bb23e224a7e4f3e6074326c1a96756b8d38e7b0de33bf551d5b86d12708ee469",
       "total_table_like_rows": 0,
       "excluded_as_structured": 0,
       "retained_unmatched": 0,
@@ -63,8 +63,8 @@
     "normalize_embeddings": true
   },
   "storage_targets": {
-    "qdrant_collection": "student_handbook_semantic_v35",
-    "mongo_parent_collection": "parent_docs_v35"
+    "qdrant_collection": "student_handbook_clause_v36",
+    "mongo_parent_collection": "parent_docs_clause_v36"
   },
   "index_contract": {
     "embedding_input": "data/processed/chunks/child_parent_chunks.json",

@@ -19,7 +19,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 from tqdm import tqdm
 
-from scripts.build_table_search_candidate import ROOT, apply_reviewed_descriptions, assert_separate_output
+from scripts.build_table_search_candidate import ROOT, apply_reviewed_descriptions, assert_separate_output, in_scope_tables
 from scripts.push_to_qdrant import create_payload_indexes, string_to_uuid
 from src.retrieval.core.embedding_model import EmbeddingClient
 from src.retrieval.core.table_search import build_table_descriptions
@@ -44,7 +44,7 @@ def prepare_candidate(root: Path, directory: Path) -> dict:
         if hashlib.sha256(raw).hexdigest() != record["sha256"]:
             raise ValueError("Source artifact mismatch")
         loaded[name] = json.loads(raw)
-    handles = build_table_descriptions(loaded["structured_tables"], loaded["parent_docstore"])
+    handles = build_table_descriptions(in_scope_tables(loaded["structured_tables"], root), loaded["parent_docstore"])
     review = candidate["description_source"]
     handles, frozen = apply_reviewed_descriptions(handles, Path(review["path"]),
         {name: source["artifacts"][name]["sha256"] for name in ("structured_tables", "parent_docstore")})
@@ -107,10 +107,22 @@ def validate_vectors(vectors, count: int, dimension: int) -> np.ndarray:
     return array
 
 
+# Stores that serve the deployed Space (2026-10-04); a publish must leave them untouched.
+PROTECTED_TARGETS = ({"qdrant_collection": "student_handbook_table_search_f3c77e0908bc",
+                      "mongo_parent_collection": "parent_docs_table_search_f3c77e0908bc"},)
+
+
 def baseline_counts(prepared: dict, qdrant, database) -> dict:
-    targets = prepared["source"]["storage_targets"]
-    return {"qdrant": qdrant.count(targets["qdrant_collection"], exact=True).count,
-            "mongo": database[targets["mongo_parent_collection"]].count_documents({})}
+    """Counts of the source build's stores and the production stores that exist."""
+    counts = {}
+    for targets in (prepared["source"]["storage_targets"], *PROTECTED_TARGETS):
+        name = targets["qdrant_collection"]
+        if qdrant.collection_exists(name):
+            counts[name] = qdrant.count(name, exact=True).count
+        mongo = targets["mongo_parent_collection"]
+        if mongo in database.list_collection_names():
+            counts[mongo] = database[mongo].count_documents({})
+    return counts
 
 
 def verify_stores(prepared: dict, qdrant, database, vectors: np.ndarray) -> dict:
@@ -164,7 +176,9 @@ def publish_candidate(prepared: dict, qdrant, database, embedder, report: dict) 
     report["baseline_before"] = before
     report["stage"] = "embedding"
     started = time.perf_counter()
-    vectors = validate_vectors(embedder.embed_documents([c["content"] for c in prepared["chunks"]]),
+    # Structure chunks embed their "document › chapter › Điều" line with the text;
+    # the payload content (BM25, citations) stays the handbook's words.
+    vectors = validate_vectors(embedder.embed_documents([c.get("embedding_text") or c["content"] for c in prepared["chunks"]]),
         len(prepared["chunks"]), prepared["manifest"]["embedding"]["dimension"])
     report["embedding_seconds"] = time.perf_counter() - started
     with vector_path.open("xb") as stream:

@@ -1,0 +1,38 @@
+# Structure-aware hierarchical contextual chunking (search chunks only; parents unchanged).
+# One khoản with all its points per chunk, never split (median 196 chars over the three handbooks,
+# 2026-10-04); the earlier builder made one chunk per line marker, so 31% of child
+# chunks were lettered points without their lead-in. Small-to-big is unchanged.
+version: 1
+# Context line "<short document name> › <chapter> › Điều N. Title" goes into the
+# embedding and rerank text only; a chunk's content (BM25, citations) stays the
+# handbook's words, and BM25 keeps its usual title fields. Chosen on two retrieval
+# sets (2026-10-05): first rank 0.966 against 0.952 without the chapter on 146
+# in-scope official_v1 cases and 0.935 against 0.903 on 93 official_v2 cases, with
+# no required source lost; the chapter's topic words help articles with short
+# titles (scholarship, academic standing). The article alone lost one source.
+header: document_chapter_article
+document_short_names:     # prefix of the full title, first match wins
+  - {prefix: "Quy chế đào tạo trình độ đại học", short: "Quy chế đào tạo"}
+  - {prefix: "Quy chế công tác sinh viên", short: "Quy chế công tác sinh viên"}
+  - {prefix: "Quy chế đánh giá kết quả rèn luyện", short: "Quy chế đánh giá kết quả rèn luyện"}
+  - {prefix: "Khung điểm đánh giá kết quả rèn luyện", short: "Khung điểm rèn luyện"}
+  - {prefix: "Phiếu đánh giá kết quả rèn luyện", short: "Khung điểm rèn luyện"}
+  - {prefix: "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện", short: "Hướng dẫn lập hồ sơ rèn luyện"}
+  - {prefix: "Hướng dẫn quy trình đánh giá kết quả rèn luyện", short: "Hướng dẫn đánh giá rèn luyện trực tuyến"}
+  - {prefix: "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí", short: "Nghị định hỗ trợ sinh viên sư phạm"}
+  - {prefix: "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí", short: "Hỗ trợ học phí, sinh hoạt phí sinh viên sư phạm"}
+  - {prefix: "Quy định chính sách phát triển người học tài năng", short: "Quy định người học tài năng"}
+  - {prefix: "Quy định công tác cố vấn học tập", short: "Quy định cố vấn học tập"}
+  - {prefix: "Quy định ngoại trú", short: "Quy định ngoại trú"}
+  - {prefix: "Quy định quy tắc ứng xử", short: "Quy tắc ứng xử"}
+  - {prefix: "10 quy tắc ứng xử", short: "Quy tắc ứng xử của sinh viên"}
+  - {prefix: "Quy định tổ chức dạy học và công nhận đạt chuẩn đầu ra ngoại ngữ", short: "Quy định chuẩn đầu ra ngoại ngữ"}
+  - {prefix: "Quy định về việc tổ chức hoạt động nghiên cứu khoa học", short: "Quy định nghiên cứu khoa học"}
+  - {prefix: "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập", short: "Thông báo hỗ trợ chi phí học tập"}
+  - {prefix: "Thông báo về việc thực hiện chính sách miễn, giảm học phí", short: "Thông báo miễn, giảm học phí"}
+  - {prefix: "Thông báo về việc thực hiện chế độ chính sách về học bổng", short: "Thông báo học bổng sinh viên khuyết tật"}
+  - {prefix: "Quy trình xét sinh viên vào ở ký túc xá", short: "Quy trình xét vào ký túc xá"}
+  - {prefix: "Quy trình và biểu mẫu", short: "Quy trình và biểu mẫu công tác sinh viên"}
+  - {prefix: "Các mẫu đơn và biểu mẫu", short: "Mẫu đơn và biểu mẫu"}
+  - {prefix: "Các hướng dẫn liên quan đến công tác đào tạo", short: "Hướng dẫn công tác đào tạo"}
+  - {prefix: "Một số công việc của các khoa", short: "Công việc của các khoa"}

@@ -4,9 +4,9 @@ param(
     [string]$PythonExecutable = "python",
     [string]$CommitMessage = "",
     [ValidateNotNullOrEmpty()]
-    [string]$QdrantCollection = "student_handbook_semantic_v35",
+    [string]$QdrantCollection = "student_handbook_clause_v36",
     [ValidateNotNullOrEmpty()]
-    [string]$MongoCollection = "parent_docs_v35"
+    [string]$MongoCollection = "parent_docs_clause_v36"
 )
 
 $ErrorActionPreference = "Stop"

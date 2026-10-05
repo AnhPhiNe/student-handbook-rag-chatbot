@@ -1,11 +1,14 @@
 # Offline search text authored and source-reviewed directly by Codex.
 # Not an independent human review, policy authority, or runtime routing rule.
 # Keys are copied from the canonical registry; metadata is never authored here.
+# v3 (2026-10-05): the three vừa làm vừa học study-duration tables are out of the
+# corpus scope (configs/corpus_scope.yaml) and have no search text; the other 32
+# texts are unchanged and re-pinned to the clause-chunk build's parents.
 schema_version: table-search-reviewed-text-v1
-description_version: table-description-reviewed-v2
+description_version: table-description-reviewed-v3
 source_hashes:
   structured_tables: 39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568
-  parent_docstore: 0ca99bea19f2c574c328aa05680d75370f1da27a9137ff767efad4f09ab2e306
+  parent_docstore: 9d1c9d3fc0e89b156b82c946ee86901a04e5f35fba69b3e0da70fa9d93379b11
 descriptions:
   - key: '["K48-K49","K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9","K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"]'
     content: >-
@@ -67,12 +70,6 @@ descriptions:
     content: >-
       Tra thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa
       của hình thức đào tạo chính quy trong sổ tay K48-K49.
-      Bảng phân biệt đại học cấp bằng thứ nhất, liên thông từ cao đẳng,
-      liên thông từ trung cấp và liên thông khi đã có một bằng đại học.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3","K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc"]'
-    content: >-
-      Tra thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa
-      của hình thức đào tạo vừa làm vừa học (VLVH) trong sổ tay K48-K49.
       Bảng phân biệt đại học cấp bằng thứ nhất, liên thông từ cao đẳng,
       liên thông từ trung cấp và liên thông khi đã có một bằng đại học.
   - key: '["K50","K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9","K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"]'
@@ -149,12 +146,6 @@ descriptions:
       của hình thức đào tạo chính quy trong sổ tay K50.
       Bảng phân biệt đại học cấp bằng thứ nhất, liên thông từ cao đẳng,
       liên thông từ trung cấp và liên thông khi đã có một bằng đại học.
-  - key: '["K50","K50_QuyCheDaoTao_Chuong1_Dieu3","K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc"]'
-    content: >-
-      Tra thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa
-      của hình thức đào tạo vừa làm vừa học (VLVH) trong sổ tay K50.
-      Bảng phân biệt đại học cấp bằng thứ nhất, liên thông từ cao đẳng,
-      liên thông từ trung cấp và liên thông khi đã có một bằng đại học.
   - key: '["K51","K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9","K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9_conduct_classification"]'
     content: >-
       Tra phân loại tổng điểm rèn luyện thang 100 trong sổ tay K51,
@@ -224,14 +215,6 @@ descriptions:
     content: >-
       Tra thời gian học tập chuẩn toàn khóa và tối đa của hình thức đào tạo
       chính quy theo nội dung sửa đổi trong sổ tay K51,
-      áp dụng từ khóa tuyển sinh năm 2025 trở về sau.
-      Bảng có quy tắc xác định thời gian tối đa đối với sinh viên liên thông
-      đã được miễn trừ tín chỉ, nhưng không cung cấp phép tính tự động từ
-      số tín chỉ miễn trừ.
-  - key: '["K51","K51_QuyCheDaoTao_Chuong1_Dieu3","K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc"]'
-    content: >-
-      Tra thời gian học tập chuẩn toàn khóa và tối đa của hình thức đào tạo
-      vừa làm vừa học (VLVH) theo nội dung sửa đổi trong sổ tay K51,
       áp dụng từ khóa tuyển sinh năm 2025 trở về sau.
       Bảng có quy tắc xác định thời gian tối đa đối với sinh viên liên thông
       đã được miễn trừ tín chỉ, nhưng không cung cấp phép tính tự động từ

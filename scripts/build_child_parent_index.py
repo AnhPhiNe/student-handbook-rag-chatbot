@@ -17,7 +17,9 @@ from src.common.io import sha256_file
 
 
 ALLOWED_COHORTS = {"K48-K49", "K50", "K51"}
-GRANULARITIES = {"section_heading", "child"}
+# "child" is the per-line chunk of this builder; the others come from
+# scripts/structure_chunking.py (one khoản per chunk).
+GRANULARITIES = {"section_heading", "child", "clause", "clause_part", "article", "point"}
 REGULATION_CONTENT_TYPES = {"regulation_text", "regulation_sections", "regulation"}
 INDEXABLE_CONTENT_TYPES = REGULATION_CONTENT_TYPES
 CHUNK_TYPE_BY_CONTENT_TYPE = {}
@@ -563,7 +565,9 @@ def validate_child_parent_chunks(
 
         parent_text = str(parent.get("content") or "")
         content = str(chunk.get("content") or "")
-        if metadata.get("chunk_granularity") != "section_heading" and len(content) > 2200:
+        # A khoản is one chunk however long (the longest is 4,732 characters, about
+        # 1,400 tokens; BGE-M3 reads 8,192); the cap only catches runaway text.
+        if metadata.get("chunk_granularity") != "section_heading" and len(content) > 6000:
             errors.append(f"{chunk_id}: child/table content too long ({len(content)} chars)")
         if (
             metadata.get("chunk_granularity") != "section_heading"

@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from scripts.build_table_search_candidate import ROOT, apply_reviewed_descriptions, build_candidate
+from scripts.build_table_search_candidate import ROOT, apply_reviewed_descriptions, build_candidate, in_scope_tables
 from src.retrieval.core.bm25_retriever import BM25Retriever
 from src.retrieval.core.table_search import VERSION, build_table_descriptions, raw_table_for_handle, table_key
 
@@ -19,16 +19,16 @@ def reviewed_sources():
     tables, parents = [json.loads((ROOT / manifest["artifacts"][name]["path"]).read_text(encoding="utf-8"))
                        for name in ("structured_tables", "parent_docstore")]
     hashes = {name: manifest["artifacts"][name]["sha256"] for name in ("structured_tables", "parent_docstore")}
-    baseline = build_table_descriptions(tables, parents)
+    baseline = build_table_descriptions(in_scope_tables(tables), parents)
     reviewed, provenance = apply_reviewed_descriptions(baseline, REVIEW, hashes)
     return tables, baseline, reviewed, provenance, hashes
 
 
-def test_all_35_descriptions_preserve_identity_metadata_and_raw_tables():
+def test_all_32_in_scope_descriptions_preserve_identity_metadata_and_raw_tables():
     tables, baseline, reviewed, provenance, _ = reviewed_sources()
-    assert len(reviewed) == 35
-    assert len({h["content"] for h in reviewed}) == 35
-    assert provenance["version"] == "table-description-reviewed-v2"
+    assert len(tables) == 35 and len(reviewed) == 32  # three VLVH tables are out of scope
+    assert len({h["content"] for h in reviewed}) == 32
+    assert provenance["version"] == "table-description-reviewed-v3"
     assert provenance["sha256"] == hashlib.sha256(REVIEW.read_bytes()).hexdigest()
     catalog = {table_key(t): t for t in tables}
     for old, new in zip(baseline, reviewed):
@@ -63,19 +63,15 @@ def test_source_specific_scopes_scales_and_scholarship_shapes():
 
 
 @pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
-@pytest.mark.parametrize("mode,query", [("chinh_quy", "hình thức đào tạo chính quy"),
-                                      ("vua_lam_vua_hoc", "hình thức đào tạo vừa làm vừa học VLVH")])
-def test_duration_descriptions_distinguish_training_mode_in_same_parent(cohort, mode, query):
+def test_only_the_chinh_quy_duration_table_is_searchable(cohort):
+    # configs/corpus_scope.yaml: vừa làm vừa học is outside the assistant's scope,
+    # so its duration table has no search text (it stays in the structured registry).
     _, _, handles, _, _ = reviewed_sources()
     retriever = BM25Retriever()
-    # Six duration-only documents give mode tokens zero IDF (three of six).
-    # Keep the entire description corpus when comparing the two same-parent tables.
     retriever.build_bm25_index(handles)
-    hits = [h for h in retriever.sparse_search(query, top_k=35, cohort=cohort)
+    hits = [h for h in retriever.sparse_search("thời gian học tập tối đa hình thức đào tạo", top_k=32, cohort=cohort)
             if "study_duration" in h["metadata"]["table_search_key"]]
-    assert len(hits) == 2
-    assert json.loads(hits[0]["metadata"]["table_search_key"])[2].endswith(f"study_duration_{mode}")
-    assert hits[0]["metadata"]["parent_section_id"] == hits[1]["metadata"]["parent_section_id"]
+    assert [json.loads(h["metadata"]["table_search_key"])[2].rsplit("study_duration_", 1)[1] for h in hits] == ["chinh_quy"]
 
 
 @pytest.mark.parametrize("mutation", ["missing", "duplicate", "unknown", "metadata", "empty", "stale_tables", "stale_parents"])
@@ -108,8 +104,8 @@ def test_reviewed_candidate_has_separate_namespace_and_text_hash_identity(tmp_pa
     assert {p: p.read_bytes() for p in preserved} == preserved
     reviewed = build_candidate(ROOT, tmp_path / "reviewed_v2", REVIEW)
     assert baseline["storage_targets"] != reviewed["storage_targets"]
-    assert reviewed["artifacts"]["table_descriptions"]["count"] == 35
-    assert reviewed["artifacts"]["child_chunks"]["count"] == 3835
+    assert reviewed["artifacts"]["table_descriptions"]["count"] == 32
+    assert reviewed["artifacts"]["child_chunks"]["count"] == 2678  # 2646 clause chunks + 32 in-scope table handles
     assert reviewed["parent_source"] == baseline["parent_source"]
     assert not reviewed["embedding_created"] and reviewed["model_calls"] == 0
     changed = yaml.safe_load(REVIEW.read_text(encoding="utf-8"))

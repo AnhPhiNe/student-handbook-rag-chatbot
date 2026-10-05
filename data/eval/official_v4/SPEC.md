@@ -199,6 +199,70 @@ author nor its models wrote.
   purpose is to find a table when the planner does not call a tool, which v4
   rarely tests. Cases whose reranker was skipped (429 or timeout, read from
   the run log) are rerun before scoring.
+- **Clause chunks, corpus scope and composer v3.35** (owner, 2026-10-05, before
+  any score of this run was read): run C2 repeats table-search run B
+  (`official_v4_answers_20261004T124930Z`) on the published clause-chunk candidate
+  (Qdrant `student_handbook_table_search_79c456af1075`, Mongo
+  `parent_docs_table_search_79c456af1075`, build `build-99d162d545cd26cae458`)
+  with composer v3.35; the v61 QueryPlans are replayed from the shared cache,
+  the composer is DeepInfra DeepSeek-V4.1-Flash low in both runs, and the judge
+  and packet are unchanged. Composer timeouts and reranker skips are rerun before
+  scoring. The owner removed vừa làm vừa học, cao đẳng and staff-only content
+  from the assistant's scope, so cases are split before scoring:
+  - out of scope (10: V4-014, 015, 017, 081, 157, 177, 179, 197, 198, 211): each
+    answer must say the question is outside what the assistant serves and must
+    not answer with the chính quy or student rule; read one by one;
+  - partly out of scope (8: V4-095, 098, 110, 125, 146, 150, 153, 180): read one
+    by one; the in-scope parts must be answered from their sources and the
+    out-of-scope parts declined; judge scores are reported, not used, because
+    the gold expects the out-of-scope rules;
+  - in scope (the other 228): deploy if the lower bound of the 95% cluster
+    interval of the paired `answer_correctness` difference (C2 minus B) is at
+    least -0.03 and every case scored 0 in C2 but not in B is shown, on review
+    against its sources, to be a judge error.
+  Any out-of-scope or partly out-of-scope answer that applies the wrong rule
+  blocks the deploy until fixed. Clause chunks and the composer change are
+  measured together; their retrieval effect alone is the offline comparison in
+  `docs/DESIGN_DECISIONS.md`. A first start on build `build-e4a43631790e8977946d`
+  was stopped at a quarter of the answers, before any score was read, when 20
+  articles were found whose list had been split from its lead-in; its directory
+  is marked `_ABORTED_before_scoring` and is not used.
+  Outcome (2026-10-05): C2 (`official_v4_answers_20261004T181608Z`) passed the
+  in-scope rule (paired difference −0.004, interval [−0.022, +0.014], no new
+  zero) but not the out-of-scope one: V4-157, 197 and part of 146 answered the
+  vừa làm vừa học rule from the kept articles, and staff-only questions were
+  called "not found". Chunking review then found six chunks cut mid-word and 54
+  heading-only chunks; C2's build is not deployed.
+- **Run C3: one chunk per khoản, composer v3.36** (owner, 2026-10-05, AFTER C2's
+  scores were read, so its out-of-scope criterion is a changed criterion, not
+  the one C2 was held to): C3 repeats run B on build
+  `build-7754cc9c07ae9951cfa5` (Qdrant `student_handbook_table_search_e55308ddae85`,
+  Mongo `parent_docs_table_search_e55308ddae85`; one chunk per khoản, never split;
+  24 reviewed layout fixes; the same corpus scope, which an offline measurement
+  kept: without it 46 of 256 regular-student questions had a vừa làm vừa học or
+  staff-only article in the top five, with it none). The composer is v3.36: a
+  question that names no group is answered for regular university students, and
+  where the sources hold separate rules for forms or levels of study the answer
+  says whom a rule covers and never presents one group's rule as another's; it
+  does not decline. Everything else is as in C2 (v61 plans replayed, DeepInfra
+  DeepSeek-V4.1-Flash low, same judge and packet; composer timeouts, reranker
+  skips and judge connection errors rerun before scoring).
+  - in scope (the 228 of C2): deploy if the lower bound of the 95% cluster
+    interval of the paired `answer_correctness` difference (C3 minus B) is at
+    least −0.03 and every case scored 0 in C3 but not in B is shown, on review
+    against its sources, to be a judge error;
+  - the 18 out-of-scope and partly out-of-scope cases of C2: read one by one; an
+    answer passes if it answers from a rule for the group asked about, or gives
+    another group's rule while saying whom that rule covers, or says the sources
+    hold no rule for that group; it fails if it presents another group's rule as
+    applying to the asker, and any such answer blocks the deploy. Judge scores
+    are reported, not used.
+  Outcome (2026-10-05, `official_v4_answers_20261005T052049Z`, no API error,
+  judge failure or reranker skip): in scope C3 0.970 against B 0.965, paired
+  difference +0.005, 95% cluster interval [−0.008, +0.018], no new zero; all 18
+  out-of-scope cases pass (vừa làm vừa học durations answered from Điều 3 and
+  labelled; V4-110 says Điều 12 is for chính quy and no vừa làm vừa học rule was
+  found; staff-only questions not found). C3 passes and is the build to deploy.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

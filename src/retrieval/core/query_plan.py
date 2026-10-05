@@ -22,7 +22,7 @@ from .structured_routing import (
 )
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v33-trusted-directory-names"
+QUERY_PLAN_NORMALIZER_VERSION = "v34-ask-for-what-is-missing"
 QUERY_PLAN_STRICT_SCHEMA_VERSION = "v2-field-descriptions"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
@@ -923,10 +923,10 @@ def _normalize_structured_task(
     required_slots = set(
         (spec.get("required_slots") or {}).get(decision.get("intent"), [])
     )
-    contact_warnings = _show_all_contact_fields(decision, spec, required_slots)
-    if contact_warnings:
+    reading_warnings = _apply_declared_reading_defaults(decision, spec, required_slots)
+    if reading_warnings:
         validation_errors = validate(decision)
-    normalization_warnings = contact_warnings + _drop_invalid_optional_slots(
+    normalization_warnings = reading_warnings + _drop_invalid_optional_slots(
         decision, validation_errors, spec=spec, required_slots=required_slots,
     )
     if normalization_warnings:
@@ -951,7 +951,8 @@ def _normalize_structured_task(
                 question,
                 cohorts=cohorts,
                 clarification=clarification
-                or "Bạn có thể bổ sung thông tin còn thiếu để mình tra đúng bảng không?",
+                or _ask_for_missing_inputs(missing_student_input, spec)
+                or "Bạn có thể nói rõ hơn phần thông tin cần tra cứu không?",
                 validation_errors=errors,
                 normalization_warnings=normalization_warnings,
             ), errors
@@ -980,40 +981,68 @@ def _normalize_structured_task(
     }, errors
 
 
-def _show_all_contact_fields(
+def _apply_declared_reading_defaults(
     decision: dict[str, Any], spec: dict[str, Any], required_slots: set[str],
 ) -> list[str]:
-    """Show every contact field when the planner's choice of field is unusable.
+    """Fall back to the registry's default when a field choice is unusable.
 
-    A contact card already holds the address, phone, email and website, so a
-    missing or unknown field choice costs the student nothing when all of them
-    are shown; asking the student which field they meant would be the planner's
-    mistake handed to them. Applies only to contact-card lookups whose field
-    slot offers "all".
+    A reading intent only names which field of a found record to show, so the
+    student has already said it and cannot help; asking them would hand the
+    planner's slip to them. Where the executor has a safe default anyway (a
+    contact card holds every field; the program catalog resolves the faculty)
+    the registry declares it as `default_reading` and it is used here. A slot
+    with no declared default, such as which formula to read, still asks.
     """
-    if spec.get("presentation_type") != "contact_card":
-        return []
     slots = dict(decision.get("slots") or {})
     warnings = []
     for name, schema in (spec.get("slot_schema") or {}).items():
-        enum = schema.get("enum") or []
+        default = schema.get("default_reading")
         if (
             name not in required_slots
+            or default is None
             or str(schema.get("verification_role") or "") != "reading_intent"
-            or "all" not in enum
         ):
             continue
+        enum = schema.get("enum") or []
         value = slots.get(name)
         chosen = [item for item in (value if isinstance(value, list) else [value]) if item not in (None, "")]
         if chosen and all(item in enum for item in chosen):
             continue
-        slots[name] = "all"
-        warnings.append(f"contact_field_shown_all:{name}")
+        slots[name] = default
+        warnings.append(f"reading_default_applied:{name}")
     if warnings:
         decision["slots"] = slots
         decision["slot_spans"] = {k: v for k, v in (decision.get("slot_spans") or {}).items()
-                                  if f"contact_field_shown_all:{k}" not in warnings}
+                                  if f"reading_default_applied:{k}" not in warnings}
     return warnings
+
+
+COHORT_CLARIFICATION_LABEL = "khóa bạn đang học"
+
+
+def _ask_for_missing_inputs(
+    errors: set[str], spec: dict[str, Any],
+) -> str | None:
+    """Name what is missing, from the labels the registry declares.
+
+    The fallback this replaces asked the student to "bổ sung thông tin còn
+    thiếu để mình tra đúng bảng", which says nothing about what to add and
+    mentions a table even for a directory question. Without a declared label
+    the caller keeps its own wording.
+    """
+    slot_schema = spec.get("slot_schema") or {}
+    labels: list[str] = []
+    for error in sorted(errors):
+        if error == "missing_cohort":
+            labels.append(COHORT_CLARIFICATION_LABEL)
+            continue
+        label = (slot_schema.get(error.partition(":")[2]) or {}).get("clarification_label")
+        if label:
+            labels.append(str(label))
+    labels = list(dict.fromkeys(labels))
+    if not labels:
+        return None
+    return f"Bạn cho mình biết {' và '.join(labels)} nhé."
 
 
 def _drop_invalid_optional_slots(

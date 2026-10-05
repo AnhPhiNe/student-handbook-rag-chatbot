@@ -321,23 +321,45 @@ def test_shape_valid_but_unsafe_structured_task_does_not_execute(
     assert normalized["tasks"][0]["mode"] in {"rag", "clarify"}
 
 
-@pytest.mark.parametrize("field", ["fax", None])
-def test_unusable_contact_field_shows_every_field_instead_of_asking(validator, field):
-    """A contact card holds every field, so the planner's choice of one is not
-    worth a question to the student; the entity it names still has to match."""
-    query = "Email Phòng Đào tạo là gì?"
-    slots = {"office": "Phòng Đào tạo"}
+@pytest.mark.parametrize(
+    ("tool", "intent", "query", "entity", "field", "default"),
+    [
+        ("office", "contact", "Email Phòng Đào tạo là gì?", {"office": "Phòng Đào tạo"}, "fax", "all"),
+        ("office", "contact", "Email Phòng Đào tạo là gì?", {"office": "Phòng Đào tạo"}, None, "all"),
+        ("program", "direct_value", "Ngành Toán thuộc khoa nào?", {"program_or_faculty": "Toán"}, "khoa", "faculty"),
+    ],
+)
+def test_unusable_field_choice_uses_the_declared_default(
+    validator, tool, intent, query, entity, field, default
+):
+    """A reading intent names which field to show, so the student has already
+    said it; where the registry declares a default it is used instead of asking.
+    The entity the task names still has to be grounded."""
+    slots = dict(entity)
     if field is not None:
         slots["requested_field"] = field
-    payload = _plan("structured", query=query, tool="office", slots=slots,
-                    spans={"office": "Phòng Đào tạo"})
+    payload = _plan("structured", query=query, tool=tool, intent=intent, slots=slots, spans=dict(entity))
     validator.validate(payload)
     normalized, errors = normalize_query_plan(payload, query=query)
     task = normalized["tasks"][0]
     assert task["mode"] == "structured"
-    assert task["slots"] == {"office": "Phòng Đào tạo", "requested_field": "all"}
-    assert task["normalization_warnings"] == ["contact_field_shown_all:requested_field"]
+    assert task["slots"] == {**entity, "requested_field": default}
+    assert task["normalization_warnings"] == ["reading_default_applied:requested_field"]
     assert errors == []
+
+
+def test_clarification_names_the_missing_input(validator):
+    """The fallback used to ask for "thông tin còn thiếu để mình tra đúng bảng",
+    which names nothing and mentions a table for a directory question."""
+    query = "email của khoa đó"
+    payload = _plan("structured", query=query, tool="faculty",
+                    slots={"requested_field": "email"}, spans={"requested_field": "email"})
+    validator.validate(payload)
+    normalized, errors = normalize_query_plan(payload, query=query)
+    task = normalized["tasks"][0]
+    assert errors == ["t1:missing_slot:faculty"]
+    assert task["mode"] == "clarify"
+    assert task["clarification_question"] == "Bạn cho mình biết tên khoa nhé."
 
 
 def test_rag_with_lookup_is_shape_valid_but_normalizer_removes_lookup(validator):

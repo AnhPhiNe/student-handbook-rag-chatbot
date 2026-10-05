@@ -230,6 +230,7 @@ tools:
         type: string
         verification_role: directory_entity
         description: Dịch vụ cần hỗ trợ, không phải tên đơn vị.
+        clarification_label: việc bạn cần hỗ trợ
       requested_field:
         type: string
         verification_role: reading_intent
@@ -245,6 +246,7 @@ tools:
           không chỉ theo từ 'phòng'.
           Chọn theo loại đáp án cần trả: tên đơn vị hay vị trí vật lý;
           nếu mục đích vẫn mơ hồ sau history hợp lệ thì clarify, không dùng all để né chọn field.
+        clarification_label: loại thông tin bạn cần
         span_aliases:
           unit: [đơn vị, bộ phận]
           phone: [số điện thoại, điện thoại, sđt, phone]
@@ -269,12 +271,14 @@ tools:
         type: string
         verification_role: directory_entity
         description: Tên đơn vị/phòng ban đầu vào, không phải địa chỉ, tầng hoặc số phòng.
+        clarification_label: tên đơn vị hoặc phòng ban
         planner_reading_trusted: true
       requested_field:
         type: string
         verification_role: reading_intent
         enum: [phone, email, office, website, services, all]
         description: Trường đầu ra; phone=điện thoại kèm số máy nội bộ, office=địa chỉ/vị trí, services=danh sách dịch vụ của đơn vị, all=thông tin liên hệ tổng hợp.
+        default_reading: all
         span_aliases:
           phone: [số điện thoại, điện thoại, sđt, phone]
           email: [email, thư điện tử]
@@ -299,12 +303,14 @@ tools:
         type: string
         verification_role: directory_entity
         description: Tên khoa đã nêu; nếu chỉ biết ngành và hỏi liên hệ khoa phụ trách thì dùng program.
+        clarification_label: tên khoa
         planner_reading_trusted: true
       requested_field:
         type: string
         verification_role: reading_intent
         enum: [phone, email, office, website, all]
         description: Trường liên hệ của khoa; phone=điện thoại kèm số máy nội bộ, office=địa chỉ/vị trí, all=thông tin liên hệ tổng hợp.
+        default_reading: all
         span_aliases:
           phone: [số điện thoại, điện thoại, sđt, phone]
           email: [email, thư điện tử]
@@ -329,17 +335,20 @@ tools:
         type: string
         verification_role: directory_entity
         description: Tên ngành cần tìm khoa/liên hệ, hoặc tên khoa cần liệt kê ngành; không tự đoán khoa từ ngành.
+        clarification_label: tên ngành hoặc khoa
         planner_reading_trusted: true
       requested_field:
         type: string
         verification_role: reading_intent
         enum: [faculty, programs, exists, career, email, phone, website, office, all]
         description: faculty=khoa phụ trách ngành; programs=danh sách ngành; career=cơ hội nghề nghiệp, ra trường làm gì; exists=kiểm tra tồn tại; email/phone/website/office/all=liên hệ khoa phụ trách ngành qua relationship, office là địa chỉ. Không tạo task phụ thuộc để tra khoa chưa biết tên.
+        default_reading: faculty
       scope:
         type: string
         verification_role: reading_intent
         enum: [school, faculty]
         description: "Phạm vi danh sách ngành: school=toàn trường; faculty=theo khoa đã nêu, không phải field khoa phụ trách ngành."
+        default_reading: school
         grounding_intents: [list_items]
         span_aliases:
           school: [các ngành của trường, những ngành của trường, toàn trường, trường có những ngành]
@@ -359,6 +368,7 @@ tools:
         type: string
         verification_role: reading_intent
         enum: [scholarship_score, gpa_weighted_average]
+        clarification_label: công thức bạn muốn tra
     strategy: formula_lookup
     response_intent: formula_query
     target_chunk_types: [structured_lookup]

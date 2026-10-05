@@ -125,3 +125,79 @@ def test_an_unnumbered_lead_in_keeps_the_list_that_follows_it(chunks):
     carried = {t.split("\n", 1)[0] for t in long_list[1:]}
     assert len(carried) == 1 and next(iter(carried)).endswith("cụ thể như sau:")
     assert all(len(t.split("\n", 1)[0]) <= 300 for t in long_list[1:])
+
+
+@pytest.fixture(scope="module")
+def published_chunks():
+    from scripts.build_parent_child_artifacts import REGIONS
+
+    reviewed = {e["parent_id"] for e in json.loads(REGIONS.read_text(encoding="utf-8"))["parents"]}
+    return build_structure_chunks(PARENTS, config=load_config(), scope=load_scope(), drop_table_parents=reviewed)
+
+
+def test_the_published_build_holds_every_chunk_invariant(published_chunks):
+    from scripts.check_chunk_invariants import check
+
+    assert {k: v for k, v in check(published_chunks, PARENTS, load_scope()).items() if v} == {}
+
+
+def test_the_invariant_check_catches_a_cut_inside_a_sentence(published_chunks):
+    from scripts.check_chunk_invariants import check
+
+    broken = [dict(c) for c in published_chunks]
+    victim = next(i for i, c in enumerate(broken) if c["metadata"]["parent_section_id"] == "K50_QuyCheDaoTao_Chuong3_Dieu12"
+                  and c["metadata"]["chunk_granularity"] == "clause")
+    words = broken[victim]["content"].split(" ")
+    broken[victim]["content"] = " ".join(words[: len(words) // 2])
+    problems = check(broken, PARENTS, load_scope())
+    assert problems["boundary"] and problems["coverage"]
+
+
+def test_a_long_line_is_cut_only_where_a_sentence_or_list_item_ends(published_chunks):
+    # The PDF ran the "miễn 100% học phí" list into one 1,900-character line.
+    parts = [c["content"] for c in published_chunks
+             if c["metadata"]["parent_section_id"] == "K50_ThongBaoMienGiamHocPhi_Phan4"
+             and "Cả cha và mẹ đang trong thời gian" in c["content"]]
+    # It was cut as "… đang trong thời gian chấp" | "hành án phạt tù …".
+    assert parts and all("Cả cha và mẹ đang trong thời gian chấp hành án phạt tù" in " ".join(p.split()) for p in parts)
+    assert all(p.startswith("- Đối tượng miễn, giảm học phí") for p in parts)  # each group keeps its lead-in
+
+
+def test_a_heading_wrapped_over_two_lines_is_not_a_chunk(chunks):
+    texts = texts_of(chunks, "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17")
+    assert not any(t.startswith("Điều 17") for t in texts)
+
+
+def test_a_table_column_header_line_goes_with_the_table(published_chunks):
+    clause = [c["content"] for c in published_chunks
+              if c["metadata"]["parent_section_id"] == "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9"]
+    assert not any(t.rstrip().endswith("TT") for t in clause)
+
+
+def test_a_list_reusing_the_clause_marker_stays_with_its_point():
+    units = build_units(split_segments(
+        "– Các khoa tổ chức hội nghị.\nThang điểm theo các tiêu chí sau:\na) Nội dung (20);\n"
+        "e) Có công bố (chọn 01 trong các sản phẩm):\n– Bài báo trong nước;\n– Sáng chế (10).\n"
+        "Xếp loại đánh giá đề tài:\na) Hội đồng cho điểm;\nb) Ghi biên bản.\n– Sau hội nghị cấp Trường."))
+    assert [u.marker for u in units] == ["–", None, "–"]
+    assert [p.text for p in units[0].items[-1].parts][1:] == ["– Bài báo trong nước;", "– Sáng chế (10)."]
+    assert units[1].lead_text == "Xếp loại đánh giá đề tài:" and [i.marker for i in units[1].items] == ["a", "b"]
+
+
+def test_sub_numbered_items_are_their_own_level_and_a_score_is_not_one():
+    units = build_units(split_segments(
+        "1. Đối tượng miễn học phí\n1.1. Người có công.\n− Thân nhân;\n1.2. Sinh viên khuyết tật.\nHồ sơ:\n• Đơn;"
+        "\n2. Đối tượng giảm học phí\na) Điểm trung bình từ\n2.00 trở lên;"))
+    assert [i.marker for i in units[0].items] == ["1.1", "1.2"]
+    assert units[0].items[1].text == "1.2. Sinh viên khuyết tật.\nHồ sơ:\n• Đơn;"
+    assert units[1].items[0].text == "a) Điểm trung bình từ 2.00 trở lên;"
+
+
+def test_a_carried_lead_in_starts_at_the_main_clause():
+    lead = ("Thực hiện Nghị định số 28/2012/NĐ-CP; Thông tư liên tịch số 42/2013 của Bộ Giáo dục và Đào tạo, "
+            "Bộ Lao động – Thương binh và Xã hội, Bộ Tài chính về việc quy định chính sách về giáo dục đối với "
+            "người khuyết tật, Trường thông báo thực hiện chế độ chính sách về học bổng đối với sinh viên chính "
+            "quy là người khuyết tật thuộc hộ nghèo, cận nghèo, cụ thể như sau:")
+    from scripts.structure_chunking import _carried_lead
+
+    assert _carried_lead(lead, 300).startswith("Trường thông báo")

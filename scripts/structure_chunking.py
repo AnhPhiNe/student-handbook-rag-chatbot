@@ -40,7 +40,6 @@ from scripts.build_child_parent_index import (  # noqa: E402
     _clean_block_text,
     _looks_like_section_heading,
     _make_heading_chunk,
-    _split_long_text,
     _strip_docstore_preamble,
     match_structured_table_block,
 )
@@ -52,6 +51,7 @@ UNIT_MODES = ("clause", "point")
 
 _MARKERS = (
     ("number", re.compile(r"^(\d{1,2})\.\s+(?=\S)")),
+    ("subnumber", re.compile(r"^(\d{1,2}\.\d{1,2})\.\s+(?=\S)")),  # "1.2. Sinh viên …", not "2.00 trở lên"
     ("roman", re.compile(r"^([IVX]{1,4})\.\s+(?=\S)")),
     ("letter", re.compile(r"^([a-zđ])\)\s*", re.IGNORECASE)),
     ("bullet", re.compile(r"^([-−–•+*])\s*")),
@@ -111,14 +111,34 @@ def _segment_kind(line: str) -> tuple[str, str | None]:
     return "text", None
 
 
+_INLINE_ITEM = re.compile(r"(?<=[;:])\s+(?=[–−]\s)")
+_SENTENCE_END = (".", ";", ":", "!", "?")
+
+
+def _is_column_header(line: str, next_line: str | None) -> bool:
+    """A short line printed just above a table ("TT") heads one of its columns."""
+    return (next_line is not None and next_line.startswith("|") and len(line) <= 12
+            and not line.endswith(_SENTENCE_END) and _segment_kind(line)[0] == "text")
+
+
+def _opens_list(line: str, previous: str) -> bool:
+    """A new sentence ending in ":" after a finished one introduces what follows ("Xếp loại đánh giá đề tài:")."""
+    return line.endswith(":") and line[:1].isupper() and previous.endswith(_SENTENCE_END)
+
+
 def split_segments(body: str) -> list[Segment]:
-    segments: list[Segment] = []
+    lines: list[str] = []
     for raw in body.splitlines():
         line = _clean_block_text(raw)
-        if not line:
+        # A list the PDF ran into one line: "…; – Mồ côi cha…; – Cả cha và mẹ…".
+        lines += [part for part in _INLINE_ITEM.split(line) if part] if line else []
+    segments: list[Segment] = []
+    for index, line in enumerate(lines):
+        if _is_column_header(line, lines[index + 1] if index + 1 < len(lines) else None):
+            segments.append(Segment("table", None, [line]))
             continue
         kind, marker = _segment_kind(line)
-        if kind == "text" and segments and segments[-1].kind != "table":
+        if kind == "text" and segments and segments[-1].kind != "table" and not _opens_list(line, lines[index - 1]):
             segments[-1].lines.append(line)  # a line wrapped by the PDF layout
         elif kind == "table" and segments and segments[-1].kind == "table":
             segments[-1].lines.append(line)
@@ -133,7 +153,30 @@ def build_units(segments: list[Segment]) -> list[Unit]:
     units: list[Unit] = []
     current: Unit | None = None
     item_kind: str | None = None
-    for segment in segments:
+    last: Segment | None = None
+    in_sublist = False
+    for index, segment in enumerate(segments):
+        following = segments[index + 1] if index + 1 < len(segments) else None
+        # A lead-in between two runs of points heads the second run: "… (điểm tối
+        # đa là 10)." / "Xếp loại đánh giá đề tài:" / "a) Hội đồng …".
+        if (segment.kind == "text" and segment.text.endswith(":") and current is not None and current.items
+                and following is not None and following.kind == item_kind and following.kind != top):
+            current = Unit(None, [segment])
+            units.append(current)
+            item_kind, last, in_sublist = None, segment, False
+            continue
+        # A point ending in ":" opens a list that may reuse the clause marker
+        # ("e) …, cụ thể (chọn 01 trong các sản phẩm):" then "– Bài báo …;").
+        # Those lines belong to the point while the list goes on with ";".
+        if (top is not None and segment.kind == top and current is not None and current.items and last is not None
+                and last.kind != "table"
+                and (last.text.endswith(":") and last in current.items[-1].parts
+                     or in_sublist and last.text.endswith(";"))):
+            current.items[-1].parts.append(segment)
+            last, in_sublist = segment, True
+            continue
+        in_sublist = False
+        last = segment
         if top is not None and segment.kind == top:
             current = Unit(segment.marker, [segment])
             units.append(current)
@@ -153,13 +196,34 @@ def build_units(segments: list[Segment]) -> list[Unit]:
     return units
 
 
+def heading_line_count(lines: list[str], metadata: dict[str, Any]) -> int:
+    """How many of the first non-empty lines print the "Điều N. Title" heading.
+
+    A long title wraps: "Điều 17. Chuyển ngành, …, chuyển cơ sở đào tạo," then
+    "chuyển hình thức học" (54 articles on 2026-10-05).
+    """
+    article = " ".join(str(metadata.get("article") or "").split())
+    title = " ".join(str(metadata.get("title") or "").split())
+    # The raw title too: _looks_like_section_heading cleans "Hiệu trưởng" away as a signature line.
+    variants = {f"{article.rstrip('.')}. {title}", title} if article else {title}
+    count = next((n for n in (1, 2, 3) if len(lines) >= n and (
+        " ".join(lines[:n]) in variants or _looks_like_section_heading(" ".join(lines[:n]), metadata))), 0)
+    # The stored title can stop where the page wrapped it ("…, Hội Sinh viên" then
+    # "Việt Nam Trường"; "…hỗ trợ chi phí" then "HỌC TẬP"): a short unpunctuated
+    # line before the first marked line is the rest of the heading.
+    if len(lines) > count + 1:
+        tail, following = lines[count], lines[count + 1]
+        if (len(tail) <= 40 and not tail.endswith(_SENTENCE_END) and _segment_kind(tail)[0] == "text"
+                and _segment_kind(following)[0] not in {"text", "table"} and (count or tail.isupper())):
+            count += 1
+    return count
+
+
 def article_units(parent: dict[str, Any]) -> list[Unit]:
     metadata = parent.get("metadata") or {}
     body = _strip_docstore_preamble(str(parent.get("content") or ""))
-    lines = body.splitlines()
-    first = next((i for i, line in enumerate(lines) if line.strip()), None)
-    if first is not None and _looks_like_section_heading(_clean_block_text(lines[first]), metadata):
-        lines = lines[first + 1:]  # the "Điều N. Title" line; the context header carries it
+    lines = [line for line in (_clean_block_text(raw) for raw in body.splitlines()) if line]
+    lines = lines[heading_line_count(lines, metadata):]  # the context header carries the heading
     return _attach_list_to_lead_in(build_units(split_segments("\n".join(lines))))
 
 
@@ -316,7 +380,23 @@ def unit_texts(unit: Unit, config: dict[str, Any], mode: str) -> list[tuple[str,
             text = "\n".join(x for x in [lead, *(i.text for i in group)] if x)
             out.append(("clause_part", text, [str(i.marker) for i in group if i.marker]))
         return out
-    return [("clause_part", part, []) for part in _split_long_text(whole, int(config["paragraph_chars"]))]
+    return [("clause_part", part, []) for part in _split_at_sentences(whole, int(config["paragraph_chars"]))]
+
+
+def _split_at_sentences(text: str, target: int) -> list[str]:
+    """Pack whole lines, then whole sentences, into parts near the target size.
+
+    A part ends only where a line or a sentence does; a sentence longer than the
+    target stays whole rather than being cut.
+    """
+    pieces = [s for line in text.split("\n") for s in re.split(r"(?<=[.;!?])\s+(?=\S)", line) if s]
+    parts: list[str] = []
+    for piece in pieces:
+        if parts and len(parts[-1]) + 1 + len(piece) <= target:
+            parts[-1] = f"{parts[-1]} {piece}"
+        else:
+            parts.append(piece)
+    return parts
 
 
 def _carried_lead(lead: str, limit: int) -> str:
@@ -331,11 +411,14 @@ def _carried_lead(lead: str, limit: int) -> str:
     sentences = [s for s in re.split(r"(?<=[.;])\s+", flat) if s]
     if sentences and len(sentences[-1]) <= limit:
         return sentences[-1]
-    # A last sentence chaining legal bases with commas: keep the clauses after the
-    # last commas that fit, so the carried text starts at a clause, not mid-word.
-    tail = flat[-limit:]
-    cut = min((tail.find(sep) for sep in (", ", "; ") if sep in tail), default=-1)
-    return tail[cut + 2:] if cut >= 0 else tail
+    # "Thực hiện Nghị định …, Thông tư … của Bộ …, Bộ Tài chính về việc …, Trường
+    # thông báo …, cụ thể như sau:": the main clause starts at the last comma
+    # followed by a capital letter; the clauses before it name the legal bases.
+    starts = [m.end() for m in re.finditer(r",\s+", flat) if flat[m.end()].isupper() and len(flat) - m.end() <= limit]
+    if starts:
+        return flat[starts[-1]:]
+    clauses = [m.end() for m in re.finditer(r"[,;]\s+", flat) if len(flat) - m.end() <= limit]
+    return flat[clauses[0]:] if clauses else flat[-limit:]
 
 
 def build_structure_chunks(
@@ -458,6 +541,11 @@ def publish_artifacts(root: Path = PROJECT_ROOT) -> dict[str, Any]:
     leftover = [c["_id"] for c in chunks if re.search(r"^\|", c["content"], re.MULTILINE)]
     if leftover:
         raise ValueError(f"Table rows left in narrative chunks: {leftover[:5]}")
+    from scripts.check_chunk_invariants import check
+
+    problems = {k: v for k, v in check(chunks, parents, load_scope(root / SCOPE_PATH)).items() if v}
+    if problems:
+        raise ValueError(f"Chunk invariants fail: { {k: v[:3] for k, v in problems.items()} }")
     audit = json.loads(audit_path.read_text(encoding="utf-8"))
     separation = audit["separation"]
     if separation["artifact_content_sha256"]["parent_docstore"] != artifact_digest(parents):

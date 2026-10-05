@@ -37,7 +37,7 @@
 8. [API](#api)
 9. [Frontend](#frontend)
 10. [Operations and security](#operations-and-security)
-11. [Project structure](#project-structure)
+11. [Project structure](#project-structure): [code map](#code-map)
 12. [Deployment](#deployment)
 13. [What the evidence supports, and what comes next](#what-the-evidence-supports-and-what-comes-next)
 14. [Documentation](#documentation)
@@ -51,18 +51,18 @@ HCMUE AI answers those questions from the three handbooks, K48–K49, K50 and K5
 
 | Question type | Example (Vietnamese) | How it is answered |
 |---|---|---|
-| Table fact | *K51: IELTS 6.0 tương đương bậc mấy?* | Structured lookup in the foreign-language equivalency table; the exact value is passed to the writer as a fact lock |
-| Directory | *Phòng Đào tạo ở đâu, email là gì?* | Office directory lookup by name or alias |
-| Regulation or procedure | *Muốn bảo lưu kết quả học tập cần điều kiện gì?* | Hybrid retrieval over handbook articles, answered with citations |
-| Several requests | *Học phí K51 thế nào và học bổng loại giỏi cần bao nhiêu điểm?* | One task per request, merged into a single answer |
-| Missing information | *Điểm của em được xếp loại gì?* (no score given) | A clarifying question for the missing value |
-| Out of scope | *Hôm nay trời mưa không?* | A statement that the handbook does not cover it |
+| Table fact | *K51: IELTS 6.0 tương đương bậc mấy?*<br/><sub>which CEFR level does IELTS 6.0 map to</sub> | Structured lookup in the foreign-language equivalency table; the exact value is passed to the writer as a fact lock |
+| Directory | *Phòng Đào tạo ở đâu, email là gì?*<br/><sub>where is the Academic Affairs office, what is its email</sub> | Office directory lookup by name or alias |
+| Regulation or procedure | *Muốn bảo lưu kết quả học tập cần điều kiện gì?*<br/><sub>what is required to defer one's studies</sub> | Hybrid retrieval over handbook articles, answered with citations |
+| Several requests | *Học phí K51 thế nào và học bổng loại giỏi cần bao nhiêu điểm?*<br/><sub>what is K51 tuition, and what score does a merit scholarship need</sub> | One task per request, merged into a single answer |
+| Missing information | *Điểm của em được xếp loại gì?* (no score given)<br/><sub>what classification does my grade fall into</sub> | A clarifying question for the missing value |
+| Out of scope | *Hôm nay trời mưa không?*<br/><sub>is it raining today</sub> | A statement that the handbook does not cover it |
 
 The web app also includes a GPA calculator, credit and tuition tools, scholarship rules, downloadable forms and a student survival guide.
 
 ## Highlights
 
-- **The LLM plans and the code verifies.** OpenAI `gpt-6-luna` returns a `QueryPlan` under a strict JSON schema: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer drops any slot value that does not appear in the question, checks lookup types and cohorts against the registry, and turns a task it cannot trust into a clarifying question or a RAG task. The plan is never trusted blindly.
+- **The LLM plans and the code verifies.** OpenAI `gpt-6-luna` returns a `QueryPlan` under a strict JSON schema: tasks, lookup type, slots, cohorts and clarification needs. A deterministic normalizer checks every slot against the student's own words, checks lookup types and cohorts against the registry, and turns a task it cannot trust into a clarifying question or a RAG task. Values that select a table row or a fact must appear in the question; a unit or program name may be the planner's reading of the words the student typed, because the directory selector still has to find it in that cohort's closed list. The plan is never trusted blindly.
 - **Exact facts come from tables, not from generation.** Nine lookup capabilities run over reviewed JSON catalogs: grading scales, foreign-language equivalency, scholarship classification, study duration, formulas, and office, faculty, program and student-service directories. A unique match becomes a `resolved_result` that the writer is instructed to keep verbatim.
 - **Hybrid retrieval.** `BAAI/bge-m3` dense search in Qdrant (embeddings from the DeepInfra API) and in-process BM25 each return 24 children, fused with reciprocal rank fusion (k = 60). Voyage `rerank-3` reorders those 24, and the children are grouped into their full parent articles from MongoDB (top 5). An offline cross-reference graph adds related-article links for the UI.
 - **Cohort isolation end to end.** Every task runs per cohort, and retrieved sources and citations are filtered to the cohort that was asked for.
@@ -179,11 +179,16 @@ What the normalizer does to each task:
 
 | Check | Effect |
 |---|---|
-| A slot value does not appear in the question | The value is dropped |
-| A required slot is still missing | The task becomes a clarifying question for that value |
+| A value that selects a row or a fact has no span in the question | The value is dropped; the lookup runs without it |
+| A unit or program name differs from the span it quotes | Kept, as the planner's reading of the student's words; the span itself must still be in the question |
+| A field choice is missing or outside its allowed values | The registry's `default_reading` is used where one is declared (a contact card shows every field, the program catalog resolves the faculty) |
+| A required value the student never gave is missing | The task becomes a clarifying question that names what is missing (for a faculty, "Bạn cho mình biết tên khoa nhé." — tell me which faculty) |
 | The lookup type is not in the registry | The task becomes a clarifying question |
 | Any other structured-contract error | Only that task falls back to RAG; sibling tasks are kept |
 | `out_of_domain` is set but the question uses handbook vocabulary | The flag is overridden and the question is answered from the handbook |
+
+Every check writes its outcome to the trace as `plan_validation_errors` and
+`plan_normalization_warnings`, so a changed plan carries its own reason.
 
 </details>
 
@@ -214,8 +219,8 @@ The layer distinguishes three outcomes, and the distinction is the point:
   copy it verbatim, never re-read the table. The full table travels alongside it so the
   answer can explain the value in context.
 - **Several tables apply → `resolved_rows` per table, fact lock deliberately off.** K51
-  grades foundation and remaining courses on different scales, so 5.2 is *Đạt* in one
-  table and *Không đạt* in the other. Without a grounded `course_scope`, the system
+  grades foundation and remaining courses on different scales, so 5.2 is a pass
+  (*Đạt*) in one table and a fail (*Không đạt*) in the other. Without a grounded `course_scope`, the system
   cannot know which the student means, so it locks nothing and returns every applicable
   table - but it still resolves the matching row *inside each one*, rather than leaving
   the arithmetic to the composer. This exists because the composer once read the
@@ -331,7 +336,7 @@ sequenceDiagram
 
 | Decision | Alternative | Why |
 |---|---|---|
-| The planner emits a typed plan; code validates and executes it | A free-form tool-calling agent | Every step can be inspected and unit-tested, and invented values never reach a lookup |
+| The planner emits a typed plan; code validates and executes it | A free-form tool-calling agent | Every step can be inspected and unit-tested, and an invented value never becomes a stated fact: numbers must come from the question, and a unit name must exist in that cohort's catalog |
 | Exact values come from reviewed tables and are locked into the prompt | Letting the writer read tables from retrieved text | PDF tables flatten badly, and grades or equivalencies must be exact |
 | Small children are embedded; answers use full parent articles | Embedding whole articles | Precise matching plus complete context for the writer |
 | Dense and BM25 are fused with RRF | Dense search only | Exact terms such as certificate names, cohort codes and article numbers need lexical matching |
@@ -345,13 +350,13 @@ sequenceDiagram
 | Artifact | Build `7754cc9c` (2026-10-05) | Used for |
 |---|---:|---|
 | Full parent articles | 541 | Composer context and citations (MongoDB) |
-| Narrative child chunks, one per khoản | 2,646 | Dense and BM25 search (Qdrant) |
+| Narrative child chunks, one per clause (*khoản*) | 2,646 | Dense and BM25 search (Qdrant) |
 | Table descriptions | 32 | Dense and BM25 search; a match brings in its reviewed table |
 | Reviewed structured tables | 35 | Deterministic lookup (not embedded) |
 | Cross-reference edges | 78 | Related-article navigation in the UI |
 | Embedding | `BAAI/bge-m3`, 1,024 dimensions | Dense child retrieval |
 
-Per cohort: K48–K49 has 149 parents and 778 children, K50 has 192 and 911, and K51 has 200 and 957. A khoản with its lead-in and points is one chunk, never split; [`check_chunk_invariants.py`](scripts/check_chunk_invariants.py) fails the build if a line is lost, a chunk starts or ends mid-sentence, or a list leaves its lead-in. The search index covers what applies to regular (chính quy) university students of the main campus (District 5): articles for part-time study, the college programme and staff only get no search chunk ([`corpus_scope.yaml`](configs/corpus_scope.yaml)), and branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
+Per cohort: K48–K49 has 149 parents and 778 children, K50 has 192 and 911, and K51 has 200 and 957. A clause with its lead-in and points is one chunk, never split; [`check_chunk_invariants.py`](scripts/check_chunk_invariants.py) fails the build if a line is lost, a chunk starts or ends mid-sentence, or a list leaves its lead-in. The search index covers what applies to full-time (*chính quy*) university students of the main campus (District 5): articles for part-time study, the college programme and staff only get no search chunk ([`corpus_scope.yaml`](configs/corpus_scope.yaml)), and branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
 
 ### Offline build
 
@@ -512,7 +517,7 @@ explained away. Thresholds, per-gate verdicts and the 31.2 s outlier:
 - Directory lookup was probed separately over all 239 service records: every one
   resolves correctly when the query stays close to the catalog wording, and 220 of 239
   survive a mechanical shortening. The 9 that don't all land on one unit whose name
-  matches the common word `đào tạo`; the only real pattern among them is postgraduate
+  matches the common word `đào tạo` ("training"); the only real pattern among them is postgraduate
   services this undergraduate handbook doesn't cover.
 - One author wrote both datasets; no second reviewer checked them.
 - The judge is an LLM whose agreement with a human rater hasn't been measured.
@@ -675,6 +680,76 @@ A suggested reading order for the backend: [`schemas.py`](src/api/schemas.py), t
 | [`retrieval.yaml`](configs/retrieval.yaml) | Embedding model, top-k and reranker settings |
 | [`structured_lookup_registry.yaml`](configs/structured_lookup_registry.yaml) | Lookup capabilities, slots and aliases shown to the planner |
 | [`hcmue_slang_dictionary.yaml`](configs/hcmue_slang_dictionary.yaml) | Student slang and abbreviation normalization |
+
+### Code map
+
+The functions a reader following a request would meet, in the order a request meets
+them. Each one is the entry point of its layer; the modules hold the rest.
+
+**Serving one question** — `src/services`, `src/generation`
+
+| Function | What it does |
+|---|---|
+| `AnswerService.answer` · `.answer_stream` | One lazily built pipeline shared by the API and the UI. `warm()` builds up front what the first question would otherwise build itself. |
+| `AnswerPipeline.prepare_answer` | The work both paths share: routing, retrieval, guardrails, prompt. The two paths then differ only in how they emit. |
+| `PlanExecutor.run` · `.execute_task` · `.aggregate_results` | Runs at most three independent tasks, each across its cohorts, then merges them into one retrieval contract. |
+| `is_context_empty` · `is_low_confidence` · `build_fallback_answer` | The last gate before generation: with no evidence, or evidence too weak, the composer is never called. |
+| `StreamAnswerCleaner.feed` · `.finish` | Cleans the answer as it streams and holds back the tail, so a half-written marker never reaches the screen. |
+
+**Planning and validating** — `src/retrieval/core`
+
+| Function | What it does |
+|---|---|
+| `AIRouter.plan` | Asks the planner for a `QueryPlan` under a strict JSON schema, rotating keys and retrying within a bounded budget; a failure returns the safe RAG plan rather than an error. |
+| `normalize_query_plan` | The deterministic gate. Current identity: `v34-ask-for-what-is-missing`. |
+| `grounding_text` · `visible_history_turns` | The student's own words, from the question and the history actually shown. A plan cannot cite what the model never saw. |
+| `validate_structured_task` | Checks one task against its lookup contract: required slots, types, allowed values, and where each value came from. |
+| `validate_fact_lock_inputs` | Lists the reasons a task must *not* pin a value. An empty list means it may, if its values select exactly one row. |
+| `safe_rag_fallback_plan` | One bounded RAG task for when no plan can be trusted. |
+
+**Retrieval** — `src/retrieval/core`
+
+| Function | What it does |
+|---|---|
+| `ChildParentHybridRetriever.retrieve` | The whole hybrid path in one call: candidates, fusion, reranking, grouping into parents, graph neighbours. |
+| `EmbeddingClient.embed_query` | BGE-M3 over the DeepInfra API, short timeout and one retry; on failure BM25 serves alone. |
+| `BM25Retriever._tokenize` | Vietnamese segmentation with underthesea, identifiers and certificate names kept whole, and an unaccented twin for every token so unaccented questions still match. |
+| `reciprocal_rank_fusion` | Fuses the two lists by rank alone, so two incomparable score scales can be combined. |
+| `Reranker.rerank` | Voyage `rerank-3` over all 24 children. A missing key, timeout, HTTP error or malformed reply keeps the RRF order and records the reason. |
+| `raw_table_for_handle` | A search hit opens its reviewed table only when table id, content hash, parent, cohort and document all match. |
+| `build_related_references` | Builds the related-article cards for the UI. They never enter the prompt or the citations. |
+
+**Structured lookup** — `src/retrieval/core`
+
+| Function | What it does |
+|---|---|
+| `resolve_structured_task` | Dispatches to one of four families: reference tables, directories, the program catalog, formulas. |
+| `exact_matches` | Records whose name or alias equals the text after folding; an exact hit needs no model call. |
+| `DirectorySelector.select` | Otherwise asks the selector model to choose from that cohort's closed list, and asks again with reasoning on if the first pass finds nothing. |
+| `parse_reply` | Validates the model's answer against the ids it was shown, so it cannot name a record that was not offered. |
+| `is_validated_source_applicable` | Another cohort's source is evidence only where cross-cohort applicability was declared and verified at ingestion. |
+| `collect_applicable_amendments` | Pulls the amendments that apply to the asked cohort, so a superseded clause is not answered as current. |
+
+**Prompt and citations** — `src/generation`
+
+| Function | What it does |
+|---|---|
+| `build_answer_prompt_bundle` | Builds the composer prompt and returns the exact evidence JSON it was given, so a trace shows what the model actually saw. |
+| `build_authorized_evidence_packet` | Groups already-authorized evidence by task and cohort; nothing unauthorized can reach the packet. |
+| `limit_context` | Trims to the character budget. On this corpus it never fires (the five longest parents total 54,427 characters against 120,000 usable). |
+| `build_citations_from_vector_results` · `build_citation_from_lookup` | Citations for the retrieval branch and for the structured branch, both bound to their source. |
+
+**Building the corpus** — `scripts`
+
+| Function | What it does |
+|---|---|
+| `split_segments` | Rejoins the lines the PDF wrapped, then opens a segment at each marked line or table. |
+| `unit_chunk` | The core rule: a clause, or an article without clauses, is one chunk. Never split. |
+| `load_layout_fixes` | The 24 reviewed entries in `configs/layout_fixes.yaml`. Each one only groups lines; one that matches nothing fails the build. |
+| `apply_scope` | Removes out-of-scope clauses from the search index. The parent text is untouched, so citations stay verbatim. |
+| `context_header` | Builds the "document › chapter › article" line. It reaches the embedding and the reranker only, never the chunk text. |
+| `check_chunk_invariants.check` | Reads each article's raw lines, not the chunker's output, and fails the build on a lost line, a cut sentence, a heading-only chunk, a stray column header or a list separated from its lead-in. |
+| `build_table_descriptions` | One search handle per approved table, carrying field names and labels but no numbers. The numbers stay in the table. |
 
 ## Deployment
 

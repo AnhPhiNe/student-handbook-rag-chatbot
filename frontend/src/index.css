@@ -707,7 +707,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .mobile-cohort-selector {
-  width: 112px; /* fixed: an auto width follows the longest option ("Khóa 52 (chưa hỗ trợ)") and pushes the logo onto two lines */
+  width: auto; /* sized by the browser from the longest option in the font it renders, so no label is cut */
+  min-width: 112px;
   min-height: 40px; /* the whole visible box opens the list, not a 23px strip */
   padding: 8px 12px;
   border-radius: 8px;
@@ -995,7 +996,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .cohort-selector {
-  width: 124px; /* fixed, like the phone selector: the disabled K52 option would otherwise widen it */
   background: var(--primary);
   color: white;
   border-color: transparent;

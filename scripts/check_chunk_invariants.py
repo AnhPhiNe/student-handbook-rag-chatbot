@@ -8,8 +8,8 @@ mistake in how the chunker reads the structure of a page shows up here:
   coverage       every in-scope line of an article is in a chunk
   boundary       every chunk line starts and ends where a sentence or a marked
                  line does; never inside a sentence or a word
-  own_heading    no chunk repeats its own "Điều N." heading (the context header
-                 carries it)
+  own_heading    no chunk repeats its own "Điều N." heading or is only a title
+                 printed in capitals (the context header carries them)
   table_residue  no chunk keeps a short line the page prints just above a table
                  (a column header such as "TT")
   lead_in        a marked line introduced by a line ending in ":" is in a chunk
@@ -47,8 +47,13 @@ from scripts.structure_chunking import (  # noqa: E402
 )
 
 _MARKED = re.compile(r"^(?:\d{1,2}\.\s+\S|\d{1,2}\.\d{1,2}\.\s+\S|[IVX]{1,4}\.\s+\S|[a-zđ]\)|[-−–•+*])", re.IGNORECASE)
+_SECTION = re.compile(r"^[A-ZĐ]\.\s+\S")  # case matters: "B. Đối tượng …"
 _SENTENCE_END = tuple(".;:!?")
 _COLUMN_HEADER_MAX = 12
+
+
+def _marked(line: str) -> bool:
+    return bool(_MARKED.match(line) or _SECTION.match(line))
 
 
 def _norm(text: str) -> str:
@@ -57,7 +62,7 @@ def _norm(text: str) -> str:
 
 def _is_column_header(line: str, next_line: str | None) -> bool:
     return (next_line is not None and next_line.startswith("|") and len(line) <= _COLUMN_HEADER_MAX
-            and not line.endswith(_SENTENCE_END) and not _MARKED.match(line))
+            and not line.endswith(_SENTENCE_END) and not _marked(line))
 
 
 def _lines_of(units) -> set[str]:
@@ -91,9 +96,9 @@ class ParentText:
                 gap = True
                 continue
             position = len(self.text) + (1 if self.text else 0)
-            if gap or _MARKED.match(line):
+            if gap or _marked(line):
                 self.starts.add(position)
-                if not gap and _MARKED.match(line) and previous.endswith(":"):
+                if not gap and _marked(line) and previous.endswith(":"):
                     self.lead_in_starts[position] = _norm(previous)
             self.text = f"{self.text} {line}" if self.text else line
             self.lines.append(_norm(line))
@@ -155,6 +160,8 @@ def check(chunks: list[dict[str, Any]], parents: list[dict[str, Any]], scope: di
             chunk_lines = [_norm(x) for x in chunk["content"].split("\n") if x.strip() and not x.startswith("|")]
             if article.startswith("Điều") and chunk_lines and chunk_lines[0].startswith(article):
                 problems["own_heading"].append({"chunk": chunk["_id"], "text": chunk_lines[0][:120]})
+            elif len(chunk_lines) == 1 and chunk_lines[0].isupper():
+                problems["own_heading"].append({"chunk": chunk["_id"], "text": chunk_lines[0][:120]})  # a title in capitals
             for header in text.column_headers:
                 if any(x == header or x.endswith(f" {header}") for x in chunk_lines):
                     problems["table_residue"].append({"chunk": chunk["_id"], "residue": header})

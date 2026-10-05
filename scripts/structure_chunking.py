@@ -53,6 +53,7 @@ _MARKERS = (
     ("number", re.compile(r"^(\d{1,2})\.\s+(?=\S)")),
     ("subnumber", re.compile(r"^(\d{1,2}\.\d{1,2})\.\s+(?=\S)")),  # "1.2. Sinh viên …", not "2.00 trở lên"
     ("roman", re.compile(r"^([IVX]{1,4})\.\s+(?=\S)")),
+    ("section", re.compile(r"^([A-ZĐ])\.\s+(?=\S)")),  # "B. Đối tượng sinh viên được xét theo thứ tự ưu tiên"
     ("letter", re.compile(r"^([a-zđ])\)\s*", re.IGNORECASE)),
     ("bullet", re.compile(r"^([-−–•+*])\s*")),
 )
@@ -208,6 +209,12 @@ def heading_line_count(lines: list[str], metadata: dict[str, Any]) -> int:
     variants = {f"{article.rstrip('.')}. {title}", title} if article else {title}
     count = next((n for n in (1, 2, 3) if len(lines) >= n and (
         " ".join(lines[:n]) in variants or _looks_like_section_heading(" ".join(lines[:n]), metadata))), 0)
+    if not count and title:
+        # A part printed in capitals, "CÁC MẪU ĐƠN VÀ BIỂU MẪU", stored as "Các mẫu đơn và biểu mẫu";
+        # the page may print only the start of the stored title.
+        printed = [n for n in (1, 2, 3) if len(lines) >= n and len(" ".join(lines[:n])) >= 10
+                   and title.casefold().startswith(" ".join(lines[:n]).casefold())]
+        count = max(printed, default=0)
     # The stored title can stop where the page wrapped it ("…, Hội Sinh viên" then
     # "Việt Nam Trường"; "…hỗ trợ chi phí" then "HỌC TẬP"): a short unpunctuated
     # line before the first marked line is the rest of the heading.

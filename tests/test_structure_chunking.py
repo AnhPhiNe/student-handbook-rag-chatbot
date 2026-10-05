@@ -201,3 +201,11 @@ def test_a_carried_lead_in_starts_at_the_main_clause():
     from scripts.structure_chunking import _carried_lead
 
     assert _carried_lead(lead, 300).startswith("Trường thông báo")
+
+
+def test_capital_letter_sections_head_their_own_lists():
+    units = build_units(split_segments(
+        "A. Hội đồng gồm:\n1. Phó Hiệu trưởng;\n2. Giám đốc KTX.\n"
+        "B. Đối tượng sinh viên được xét theo thứ tự ưu tiên\n1. Anh hùng lực lượng vũ trang;\n2. Sinh viên nữ."))
+    assert [u.marker for u in units] == ["a", "b"]
+    assert units[1].text().startswith("B. Đối tượng") and "Sinh viên nữ" in units[1].text()

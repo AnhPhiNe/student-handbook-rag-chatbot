@@ -80,15 +80,11 @@ def test_a_scope_rule_that_matches_nothing_fails_the_build():
         build_structure_chunks(PARENTS[:1], config=load_config(), scope={"exclude_parents": [{"id": "nope"}]})
 
 
-def test_long_clauses_are_split_with_their_lead_in(chunks):
-    config = load_config()
-    sizes = [len(c["content"]) for c in chunks if c["metadata"]["chunk_granularity"] != "section_heading"]
-    assert max(sizes) < 1.1 * config["max_unit_chars"]
-    parts = [c for c in chunks if c["metadata"]["chunk_granularity"] == "clause_part"
-             and c["metadata"]["parent_section_id"] == "K48-K49_ThongBaoMienGiamHocPhi_Phan2"]
-    assert len(parts) >= 2
-    leads = {p["content"].split("\n", 1)[0] for p in parts}
-    assert len(leads) == 1  # every part repeats the clause's lead-in
+def test_a_long_khoan_is_one_chunk(chunks):
+    # The longest khoản, 1.1 to 1.5 of the K48-K49 fee exemptions (about 4,700 characters).
+    exempt = [t for t in texts_of(chunks, "K48-K49_ThongBaoMienGiamHocPhi_Phan2") if t.startswith("1. Đối tượng miễn")]
+    assert len(exempt) == 1 and all(f"1.{n}." in exempt[0] for n in range(1, 6))
+    assert {c["metadata"]["chunk_granularity"] for c in chunks} == {"section_heading", "clause", "article"}
 
 
 def test_levels_follow_the_order_markers_appear():
@@ -118,13 +114,8 @@ def test_an_unnumbered_lead_in_keeps_the_list_that_follows_it(chunks):
     assert "1." in funding[0] and "4." in funding[0]
     hours = texts_of(chunks, "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu5")
     assert len(hours) == 1 and "thời gian làm việc" in hours[0] and "Khối hành chính" in hours[0]
-    # The first group keeps the notice's whole opening; later groups repeat only
-    # the clause that introduces the list, not the notice's legal bases.
-    long_list = texts_of(chunks, "K51_ThongBaoHocBongNguoiKhuyetTat_Phan1")
-    assert len(long_list) >= 3 and long_list[0].startswith("Về việc thực hiện chế độ")
-    carried = {t.split("\n", 1)[0] for t in long_list[1:]}
-    assert len(carried) == 1 and next(iter(carried)).endswith("cụ thể như sau:")
-    assert all(len(t.split("\n", 1)[0]) <= 300 for t in long_list[1:])
+    notice = texts_of(chunks, "K51_ThongBaoHocBongNguoiKhuyetTat_Phan1")
+    assert len(notice) == 1 and notice[0].startswith("Về việc thực hiện chế độ") and "5. Thời gian" in notice[0]
 
 
 @pytest.fixture(scope="module")
@@ -160,7 +151,7 @@ def test_a_long_line_is_cut_only_where_a_sentence_or_list_item_ends(published_ch
              and "Cả cha và mẹ đang trong thời gian" in c["content"]]
     # It was cut as "… đang trong thời gian chấp" | "hành án phạt tù …".
     assert parts and all("Cả cha và mẹ đang trong thời gian chấp hành án phạt tù" in " ".join(p.split()) for p in parts)
-    assert all(p.startswith("- Đối tượng miễn, giảm học phí") for p in parts)  # each group keeps its lead-in
+    assert len(parts) == 1 and parts[0].startswith("- Đối tượng miễn, giảm học phí")  # with its lead-in
 
 
 def test_a_heading_wrapped_over_two_lines_is_not_a_chunk(chunks):
@@ -174,12 +165,21 @@ def test_a_table_column_header_line_goes_with_the_table(published_chunks):
     assert not any(t.rstrip().endswith("TT") for t in clause)
 
 
-def test_a_list_reusing_the_clause_marker_stays_with_its_point():
-    units = build_units(split_segments(
-        "– Các khoa tổ chức hội nghị.\nThang điểm theo các tiêu chí sau:\na) Nội dung (20);\n"
-        "e) Có công bố (chọn 01 trong các sản phẩm):\n– Bài báo trong nước;\n– Sáng chế (10).\n"
-        "Xếp loại đánh giá đề tài:\na) Hội đồng cho điểm;\nb) Ghi biên bản.\n– Sau hội nghị cấp Trường."))
+def test_layout_fixes_say_how_lines_group_without_changing_them():
+    # NCKH Điều 7 in configs/layout_fixes.yaml, shortened: a date names the step under it,
+    # e) lists publications with the steps' "–", "Xếp loại…" opens a second list.
+    text = ("– Các khoa tổ chức hội nghị.\nThang điểm theo các tiêu chí sau:\na) Nội dung (20);\n"
+            "e) Có công bố (chọn 01 trong các sản phẩm):\n– Bài báo trong nước;\n– Sáng chế (10).\n"
+            "Xếp loại đánh giá đề tài:\na) Hội đồng cho điểm;\nb) Ghi biên bản.\nTháng 6 hằng năm\n"
+            "– Sau hội nghị cấp Trường.")
+    fixes = [{"line_prefix": "e) Có công bố", "fix": "nested_list", "lines": 2},
+             {"line": "Xếp loại đánh giá đề tài:", "fix": "starts_group"},
+             {"line": "Tháng 6 hằng năm", "fix": "label_of_next"}]
+    plain = build_units(split_segments(text))
+    assert [u.marker for u in plain] == ["–", "–", "–", "–"]  # without the fixes the list loses e)
+    units = build_units(split_segments(text, fixes))
     assert [u.marker for u in units] == ["–", None, "–"]
+    assert units[2].lead_text == "Tháng 6 hằng năm – Sau hội nghị cấp Trường."
     assert [p.text for p in units[0].items[-1].parts][1:] == ["– Bài báo trong nước;", "– Sáng chế (10)."]
     assert units[1].lead_text == "Xếp loại đánh giá đề tài:" and [i.marker for i in units[1].items] == ["a", "b"]
 
@@ -189,18 +189,8 @@ def test_sub_numbered_items_are_their_own_level_and_a_score_is_not_one():
         "1. Đối tượng miễn học phí\n1.1. Người có công.\n− Thân nhân;\n1.2. Sinh viên khuyết tật.\nHồ sơ:\n• Đơn;"
         "\n2. Đối tượng giảm học phí\na) Điểm trung bình từ\n2.00 trở lên;"))
     assert [i.marker for i in units[0].items] == ["1.1", "1.2"]
-    assert units[0].items[1].text == "1.2. Sinh viên khuyết tật.\nHồ sơ:\n• Đơn;"
+    assert units[0].items[1].text == "1.2. Sinh viên khuyết tật. Hồ sơ:\n• Đơn;"
     assert units[1].items[0].text == "a) Điểm trung bình từ 2.00 trở lên;"
-
-
-def test_a_carried_lead_in_starts_at_the_main_clause():
-    lead = ("Thực hiện Nghị định số 28/2012/NĐ-CP; Thông tư liên tịch số 42/2013 của Bộ Giáo dục và Đào tạo, "
-            "Bộ Lao động – Thương binh và Xã hội, Bộ Tài chính về việc quy định chính sách về giáo dục đối với "
-            "người khuyết tật, Trường thông báo thực hiện chế độ chính sách về học bổng đối với sinh viên chính "
-            "quy là người khuyết tật thuộc hộ nghèo, cận nghèo, cụ thể như sau:")
-    from scripts.structure_chunking import _carried_lead
-
-    assert _carried_lead(lead, 300).startswith("Trường thông báo")
 
 
 def test_capital_letter_sections_head_their_own_lists():
@@ -237,3 +227,22 @@ def test_the_heading_chunk_names_the_article_without_a_cut_excerpt(published_chu
     heading = next(c for c in published_chunks if c["_id"] == "cp_K50_QuyCheDaoTao_Chuong3_Dieu12_section_heading")
     assert heading["content"].startswith("Section heading: Điều 12. Xử lý kết quả học tập")
     assert "Summary anchor" not in heading["content"]
+
+
+def test_every_layout_fix_is_used_and_a_stale_one_fails_the_build():
+    from scripts.structure_chunking import load_layout_fixes
+
+    fixes = load_layout_fixes()
+    assert sum(map(len, fixes.values())) == 24
+    assert {f["fix"] for fs in fixes.values() for f in fs} == {
+        "heading_tail", "table_header", "label_of_next", "split_items", "nested_list", "starts_group"}
+    parent = BY_ID["K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9"]
+    import scripts.structure_chunking as sc
+
+    saved = sc._LAYOUT_FIXES
+    sc._LAYOUT_FIXES = {parent["_id"]: [{"parent": parent["_id"], "line": "no such line", "fix": "table_header"}]}
+    try:
+        with pytest.raises(ValueError, match="layout fixes match no line"):
+            article_units(parent)
+    finally:
+        sc._LAYOUT_FIXES = saved

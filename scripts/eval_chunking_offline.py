@@ -6,18 +6,19 @@ and the parent grouping are the production classes, and parents come from the
 local docstore (the same documents MongoDB holds). Scores use the official_v1
 retrieval metrics (hit@k, MRR, nDCG, primary hit@5).
 
-    python -m scripts.eval_chunking_offline --variants current,clause_docart --cases data/eval/official_v1/retrieval_cases.json --out <dir>
+    python -m scripts.eval_chunking_offline --variants baseline,clause \
+        --baseline-chunks <published child_chunks.json> --cases data/eval/official_v1/retrieval_cases.json --out <dir>
 
 Variants:
-  current            the published v35 children (child_parent_chunks.json), as served today
-  clause_docart      one khoản per chunk, "document › Điều" line, scope applied
-  clause_article     same, "Điều" line only
-  clause_chapter     same, "document › chapter › Điều" line
-  point_docart       one point per chunk carrying its lead-in, "document › Điều" line
-BM25 and the candidate list are as in production. A per-article cap on the 24
-candidates and BM25 without the repeated title fields were measured on
-2026-10-04 and made no difference with clause chunks (docs/DESIGN_DECISIONS.md),
-so neither exists any more.
+  baseline  a published chunk file, embedded as published (table-search
+            descriptions left out, as the clause variant has none)
+  clause    the structure chunks exactly as scripts.structure_chunking publishes
+            them: one khoản per chunk, scope applied, reviewed tables separated
+
+Earlier variants (a "document › Điều" or "Điều" line, one point per chunk, a cap
+per article, BM25 without titles, splitting long khoản at 1,200 or 2,500
+characters or by topic) were measured on 2026-10-04 and 2026-10-05 and removed;
+the results are in docs/DESIGN_DECISIONS.md.
 """
 from __future__ import annotations
 
@@ -25,6 +26,7 @@ import argparse
 import hashlib
 import json
 import os
+import random
 import time
 import uuid
 from collections import OrderedDict
@@ -44,21 +46,20 @@ class LocalParents:
         return self.by_id.get(parent_id)
 
 
-def variant_chunks(name: str, parents: list[dict[str, Any]], tables: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def variant_chunks(name: str, parents: list[dict[str, Any]], baseline: str | None = None) -> list[dict[str, Any]]:
+    from scripts.build_parent_child_artifacts import REGIONS
     from scripts.structure_chunking import build_structure_chunks, load_config, load_scope
 
-    base = name
-    if base == "current":
-        chunks = json.loads(Path("data/processed/chunks/child_parent_chunks.json").read_text(encoding="utf-8"))
-        return [{**c, "embedding_text": c["content"]} for c in chunks]
-    header, unit = {
-        "clause_docart": ("document_article", "clause"),
-        "clause_article": ("article", "clause"),
-        "clause_chapter": ("document_chapter_article", "clause"),
-        "point_docart": ("document_article", "point"),
-    }[base]
-    return build_structure_chunks(parents, config=load_config(), scope=load_scope(), header_mode=header,
-                                  unit_mode=unit, structured_tables=tables)
+    if name == "baseline":
+        if not baseline:
+            raise ValueError("--baseline-chunks is required for the baseline variant")
+        chunks = json.loads(Path(baseline).read_text(encoding="utf-8"))
+        return [{**c, "embedding_text": c["content"]} for c in chunks
+                if (c.get("metadata") or {}).get("chunk_granularity") != "table_description"]
+    if name == "clause":
+        reviewed = {e["parent_id"] for e in json.loads(REGIONS.read_text(encoding="utf-8"))["parents"]}
+        return build_structure_chunks(parents, config=load_config(), scope=load_scope(), drop_table_parents=reviewed)
+    raise ValueError(f"Unknown variant: {name}")
 
 
 def embed(texts: list[str], embedder) -> np.ndarray:
@@ -115,11 +116,19 @@ def build_retriever(chunks: list[dict[str, Any]], vectors: np.ndarray, parents):
 
 
 class ThrottledReranker:
-    """Space reranker calls to stay under Voyage's per-minute token limit."""
+    """Space reranker calls, and retry a call Voyage refused for its rate limit.
+
+    Production skips the reranker on a 429 so a student does not wait; an
+    evaluation must not, or a busy minute lowers a variant's score. A 429 is
+    retried after 5, 10, 20, 30 and 30 s; only a call that still fails counts.
+    """
+
+    BACKOFF = (5, 10, 20, 30, 30)
 
     def __init__(self, inner, min_interval: float):
         self.inner, self.min_interval, self.last = inner, min_interval, 0.0
         self.fallbacks: list[str] = []
+        self.retries = 0
 
     def rerank(self, query, scored):
         wait = self.min_interval - (time.monotonic() - self.last)
@@ -127,6 +136,12 @@ class ThrottledReranker:
             time.sleep(wait)
         self.last = time.monotonic()
         ranked, telemetry = self.inner.rerank(query, scored)
+        for pause in self.BACKOFF:
+            if "429" not in str(telemetry.get("reranker_fallback_reason") or ""):
+                break
+            self.retries += 1
+            time.sleep(pause + random.random())
+            ranked, telemetry = self.inner.rerank(query, scored)
         if telemetry.get("reranker_fallback_reason"):
             self.fallbacks.append(str(telemetry["reranker_fallback_reason"]))
         return ranked, telemetry
@@ -141,6 +156,7 @@ def main() -> None:
     parser.add_argument("--cases", action="append", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--rerank-interval", type=float, default=2.0)
+    parser.add_argument("--baseline-chunks", help="Published child_chunks.json for the baseline variant.")
     args = parser.parse_args()
 
     from src.evaluation.retrieval import evaluate_retrieval
@@ -148,20 +164,20 @@ def main() -> None:
     from src.retrieval.runtime_config import load_retrieval_runtime_config
 
     parents = json.loads(Path("data/processed/chunks/all_docstore_items.json").read_text(encoding="utf-8"))
-    tables = json.loads(Path("data/processed/tables/structured_tables_registry.json").read_text(encoding="utf-8"))
     cases = [case for path in args.cases for case in json.loads(Path(path).read_text(encoding="utf-8"))]
     embedder = load_embedding_client(load_retrieval_runtime_config().get("embedding") or {})
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     summary = {}
     for name in args.variants.split(","):
-        chunks = variant_chunks(name, parents, tables)
+        chunks = variant_chunks(name, parents, args.baseline_chunks)
         vectors = embed([c["embedding_text"] for c in chunks], embedder)
         retriever = build_retriever(chunks, vectors, parents)
         throttled = ThrottledReranker(retriever.reranker, args.rerank_interval)
         retriever.reranker = throttled
         report = evaluate_retrieval(cases, backend="qdrant", scope="pure")
-        report["variant"] = {"name": name, "chunks": len(chunks), "reranker_fallbacks": throttled.fallbacks}
+        report["variant"] = {"name": name, "chunks": len(chunks), "reranker_fallbacks": throttled.fallbacks,
+                             "reranker_429_retries": throttled.retries}
         (out / f"{name.replace('+', '_')}.json").write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
         rows = report["cases"]  # per-case metrics from the official_v1 scorer, every split
         summary[name] = {k: round(sum(float(r.get(k) or 0) for r in rows) / len(rows), 4)

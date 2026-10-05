@@ -1,13 +1,8 @@
 # Structure-aware hierarchical contextual chunking (search chunks only; parents unchanged).
-# One khoản with all its points per chunk (median 196 chars over the three handbooks,
+# One khoản with all its points per chunk, never split (median 196 chars over the three handbooks,
 # 2026-10-04); the earlier builder made one chunk per line marker, so 31% of child
 # chunks were lettered points without their lead-in. Small-to-big is unchanged.
 version: 1
-max_unit_chars: 1200      # longer khoản (43 of 1,750) split into groups of points
-group_target_chars: 800   # each group repeats the khoản lead-in
-max_lead_chars: 300       # a longer lead-in (a notice's title and legal bases) is repeated only
-                          # as its last sentence, the one that introduces the list
-paragraph_chars: 900      # long paragraphs without points split at sentence ends
 # Context line "<short document name> › <chapter> › Điều N. Title" goes into the
 # embedding and rerank text only; a chunk's content (BM25, citations) stays the
 # handbook's words, and BM25 keeps its usual title fields. Chosen on two retrieval
@@ -41,10 +36,3 @@ document_short_names:     # prefix of the full title, first match wins
   - {prefix: "Các mẫu đơn và biểu mẫu", short: "Mẫu đơn và biểu mẫu"}
   - {prefix: "Các hướng dẫn liên quan đến công tác đào tạo", short: "Hướng dẫn công tác đào tạo"}
   - {prefix: "Một số công việc của các khoa", short: "Công việc của các khoa"}
-# Printed heading lines that the stored title lacks; scripts/check_chunk_invariants.py
-# fails on any other line dropped as a heading (reviewed 2026-10-05).
-reviewed_heading_tails:
-  - {parent: K50_QuyCheCongTacSinhVien_Chuong4_Dieu17, line: "Việt Nam Trường"}
-  - {parent: K51_QuyCheCongTacSinhVien_Chuong4_Dieu17, line: "Việt Nam Trường"}
-  - {parent: K50_ThongBaoHoTroChiPhiHocTap_Phan3, line: "HỌC TẬP"}
-  - {parent: K51_ThongBaoHoTroChiPhiHocTap_Phan3, line: "HỌC TẬP"}

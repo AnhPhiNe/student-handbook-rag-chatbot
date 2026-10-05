@@ -5,7 +5,10 @@ handbook rule is written in. The earlier builder (build_child_parent_index.py)
 made one chunk per line marker, so a lettered point lost the sentence saying what
 it is a condition of ("2. Sinh viên bị buộc thôi học trong các trường hợp sau:" in
 one chunk, "a) Bị cảnh báo học tập 03 lần liên tiếp" in another). Parents are not
-changed; retrieval still returns the whole article (small-to-big).
+changed; retrieval still returns the whole article (small-to-big). A khoản is
+never split, however long: the longest is about 1,300 tokens, well inside the
+embedding model's 8,192, and splitting long khoản helped no measured question
+(2026-10-05, docs/DESIGN_DECISIONS.md).
 
 Markers differ between handbooks (K48-K49 Điều 5 uses "−" where K50 numbers its
 clauses), so levels are read from the order markers appear in each article, not
@@ -47,7 +50,6 @@ from scripts.build_child_parent_index import (  # noqa: E402
 CONFIG_PATH = Path("configs/structure_chunking.yaml")
 SCOPE_PATH = Path("configs/corpus_scope.yaml")
 HEADER_MODES = ("article", "document_article", "document_chapter_article")
-UNIT_MODES = ("clause", "point")
 
 _MARKERS = (
     ("number", re.compile(r"^(\d{1,2})\.\s+(?=\S)")),
@@ -63,9 +65,11 @@ _MARKERS = (
 class Segment:
     """One marked line and the wrapped lines that continue it."""
 
-    kind: str  # number | roman | letter | bullet:<char> | table | text
+    kind: str  # number | subnumber | roman | section | letter | bullet:<char> | table | text
     marker: str | None
     lines: list[str]
+    nested: bool = False  # a marked line a layout fix puts under the point above it
+    opens_group: bool = False  # a lead-in a layout fix says starts a new group of points
 
     @property
     def text(self) -> str:
@@ -112,57 +116,74 @@ def _segment_kind(line: str) -> tuple[str, str | None]:
     return "text", None
 
 
-_INLINE_ITEM = re.compile(r"(?<=[;:])\s+(?=[–−]\s)")
-_SENTENCE_END = (".", ";", ":", "!", "?")
+LAYOUT_FIXES_PATH = Path("configs/layout_fixes.yaml")
+FIX_KINDS = {"heading_tail", "table_header", "label_of_next", "split_items", "nested_list", "starts_group"}
+_LAYOUT_FIXES: dict[str, list[dict[str, Any]]] | None = None
 
 
-def _is_column_header(line: str, next_line: str | None) -> bool:
-    """A short line printed just above a table ("TT") heads one of its columns."""
-    return (next_line is not None and next_line.startswith("|") and len(line) <= 12
-            and not line.endswith(_SENTENCE_END) and _segment_kind(line)[0] == "text")
+def load_layout_fixes(path: Path = PROJECT_ROOT / LAYOUT_FIXES_PATH) -> dict[str, list[dict[str, Any]]]:
+    """The reviewed layout fixes (configs/layout_fixes.yaml) by parent id."""
+    by_parent: dict[str, list[dict[str, Any]]] = {}
+    for fix in (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("fixes") or []:
+        if fix["fix"] not in FIX_KINDS or not (fix.get("line") or fix.get("line_prefix")):
+            raise ValueError(f"Malformed layout fix: {fix}")
+        by_parent.setdefault(fix["parent"], []).append(fix)
+    return by_parent
 
 
-def _is_label(line: str, previous: str | None, next_line: str | None) -> bool:
-    """A short unpunctuated line after a finished sentence, just above a marked line, names that line."""
-    return (next_line is not None and _segment_kind(next_line)[0] not in {"text", "table"}
-            and _segment_kind(line)[0] == "text" and len(line) <= 40 and not line.endswith(_SENTENCE_END)
-            and (line[:1].isupper() or line[:1].isdigit()) and (previous is None or previous.endswith(_SENTENCE_END)))
+def _fixes_for(parent_id: str) -> list[dict[str, Any]]:
+    global _LAYOUT_FIXES
+    if _LAYOUT_FIXES is None:
+        _LAYOUT_FIXES = load_layout_fixes()
+    return _LAYOUT_FIXES.get(parent_id, [])
 
 
-def _opens_list(line: str, previous: str) -> bool:
-    """A new sentence ending in ":" after a finished one introduces what follows ("Xếp loại đánh giá đề tài:")."""
-    return line.endswith(":") and line[:1].isupper() and previous.endswith(_SENTENCE_END)
+def _matches_fix(line: str, fix: dict[str, Any]) -> bool:
+    return line == fix.get("line") or bool(fix.get("line_prefix")) and line.startswith(fix["line_prefix"])
 
 
-def split_segments(body: str) -> list[Segment]:
+def _fix_for(line: str, fixes: list[dict[str, Any]]) -> dict[str, Any] | None:
+    return next((fix for fix in fixes if _matches_fix(line, fix)), None)
+
+
+def split_segments(body: str, fixes: list[dict[str, Any]] | None = None) -> list[Segment]:
+    """Join the lines the PDF wrapped; start a segment at each marked line or table."""
+    fixes = fixes or []
     lines: list[str] = []
     for raw in body.splitlines():
         line = _clean_block_text(raw)
-        # A list the PDF ran into one line: "…; – Mồ côi cha…; – Cả cha và mẹ…".
-        lines += [part for part in _INLINE_ITEM.split(line) if part] if line else []
+        fix = _fix_for(line, fixes) if line else None
+        if fix and fix["fix"] == "split_items":
+            lines += [x for x in re.split(rf"(?<=[;:])\s+(?={re.escape(fix['before'])})", line) if x]
+        elif line:
+            lines.append(line)
     segments: list[Segment] = []
     label: list[str] = []
-    for index, line in enumerate(lines):
-        next_line = lines[index + 1] if index + 1 < len(lines) else None
-        if _is_label(line, lines[index - 1] if index else None, next_line):
+    nested = 0
+    for line in lines:
+        fix = _fix_for(line, fixes)
+        action = fix["fix"] if fix else None
+        if action == "label_of_next":
             label.append(line)
             continue
-        if label:
-            # "Tháng 6 hằng năm" / "– Sau Hội nghị …": the date belongs to the next step.
-            kind, marker = _segment_kind(line)
-            segments.append(Segment(kind, marker, [*label, line]))
-            label = []
-            continue
-        if _is_column_header(line, lines[index + 1] if index + 1 < len(lines) else None):
+        if action == "table_header":
             segments.append(Segment("table", None, [line]))
             continue
         kind, marker = _segment_kind(line)
-        if kind == "text" and segments and segments[-1].kind != "table" and not _opens_list(line, lines[index - 1]):
+        if label:
+            segments.append(Segment(kind, marker, [*label, line]))
+            label = []
+        elif action == "starts_group":
+            segments.append(Segment("text", None, [line], opens_group=True))
+        elif kind == "text" and segments and segments[-1].kind != "table":
             segments[-1].lines.append(line)  # a line wrapped by the PDF layout
         elif kind == "table" and segments and segments[-1].kind == "table":
             segments[-1].lines.append(line)
         else:
-            segments.append(Segment(kind, marker, [line]))
+            segments.append(Segment(kind, marker, [line], nested=nested > 0 and kind != "table"))
+            nested -= 1 if segments[-1].nested else 0
+        if action == "nested_list":
+            nested = int(fix["lines"])
     return segments
 
 
@@ -172,30 +193,15 @@ def build_units(segments: list[Segment]) -> list[Unit]:
     units: list[Unit] = []
     current: Unit | None = None
     item_kind: str | None = None
-    last: Segment | None = None
-    in_sublist = False
-    for index, segment in enumerate(segments):
-        following = segments[index + 1] if index + 1 < len(segments) else None
-        # A lead-in between two runs of points heads the second run: "… (điểm tối
-        # đa là 10)." / "Xếp loại đánh giá đề tài:" / "a) Hội đồng …".
-        if (segment.kind == "text" and segment.text.endswith(":") and current is not None and current.items
-                and following is not None and following.kind == item_kind and following.kind != top):
+    for segment in segments:
+        if segment.nested and current is not None and current.items:
+            current.items[-1].parts.append(segment)
+            continue
+        if segment.opens_group and current is not None:
             current = Unit(None, [segment])
             units.append(current)
-            item_kind, last, in_sublist = None, segment, False
+            item_kind = None
             continue
-        # A point ending in ":" opens a list that may reuse the clause marker
-        # ("e) …, cụ thể (chọn 01 trong các sản phẩm):" then "– Bài báo …;").
-        # Those lines belong to the point while the list goes on with ";".
-        if (top is not None and segment.kind == top and current is not None and current.items and last is not None
-                and last.kind != "table"
-                and (last.text.endswith(":") and last in current.items[-1].parts
-                     or in_sublist and last.text.endswith(";"))):
-            current.items[-1].parts.append(segment)
-            last, in_sublist = segment, True
-            continue
-        in_sublist = False
-        last = segment
         if top is not None and segment.kind == top:
             current = Unit(segment.marker, [segment])
             units.append(current)
@@ -215,7 +221,7 @@ def build_units(segments: list[Segment]) -> list[Unit]:
     return units
 
 
-def heading_line_count(lines: list[str], metadata: dict[str, Any]) -> int:
+def heading_line_count(lines: list[str], metadata: dict[str, Any], tails: tuple[str, ...] = ()) -> int:
     """How many of the first non-empty lines print the "Điều N. Title" heading.
 
     A long title wraps: "Điều 17. Chuyển ngành, …, chuyển cơ sở đào tạo," then
@@ -233,17 +239,8 @@ def heading_line_count(lines: list[str], metadata: dict[str, Any]) -> int:
         printed = [n for n in (1, 2, 3) if len(lines) >= n and len(" ".join(lines[:n])) >= 10
                    and title.casefold().startswith(" ".join(lines[:n]).casefold())]
         count = max(printed, default=0)
-    # The stored title can stop where the page wrapped it ("…, Hội Sinh viên" then
-    # "Việt Nam Trường"; "…hỗ trợ chi phí" then "HỌC TẬP"): a short unpunctuated
-    # line before the first marked line is the rest of the heading.
-    if len(lines) > count + 1:
-        tail, following = lines[count], lines[count + 1]
-        if (len(tail) <= 40 and not tail.endswith(_SENTENCE_END) and _segment_kind(tail)[0] == "text"
-                and _segment_kind(following)[0] not in {"text", "table"}
-                and (len(lines[count - 1]) >= 50 if count else tail.isupper())):
-            # After a short last heading line the heading had ended: "…của sinh viên"
-            # then "Tháng 9 – 10 hằng năm" is the first step's date, not the title.
-            count += 1
+    while count < len(lines) and lines[count] in tails:  # reviewed heading_tail fixes
+        count += 1
     return count
 
 
@@ -251,8 +248,13 @@ def article_units(parent: dict[str, Any]) -> list[Unit]:
     metadata = parent.get("metadata") or {}
     body = _strip_docstore_preamble(str(parent.get("content") or ""))
     lines = [line for line in (_clean_block_text(raw) for raw in body.splitlines()) if line]
-    lines = lines[heading_line_count(lines, metadata):]  # the context header carries the heading
-    return _attach_list_to_lead_in(build_units(split_segments("\n".join(lines))))
+    fixes = _fixes_for(str(parent.get("_id")))
+    unused = [fix for fix in fixes if not any(_matches_fix(line, fix) for line in lines)]
+    if unused:
+        raise ValueError(f"{parent.get('_id')}: layout fixes match no line: {unused}")
+    tails = tuple(f["line"] for f in fixes if f["fix"] == "heading_tail")
+    lines = lines[heading_line_count(lines, metadata, tails):]  # the context header carries the heading
+    return _attach_list_to_lead_in(build_units(split_segments("\n".join(lines), fixes)))
 
 
 def _attach_list_to_lead_in(units: list[Unit]) -> list[Unit]:
@@ -359,94 +361,9 @@ def _drop_structured_rows(unit: Unit, parent: dict[str, Any], tables: list[dict[
         item.parts = [s for s in (keep(s) for s in item.parts) if s]
 
 
-def _split_oversized(items: list[Item], target: int) -> list[Item]:
-    """Break a point longer than the target into pieces that each repeat its first line."""
-    out: list[Item] = []
-    for item in items:
-        if len(item.text) <= target or len(item.parts) < 2:
-            out.append(item)
-            continue
-        head, rest = item.parts[0], item.parts[1:]
-        piece: list[Segment] = []
-        for part in rest:
-            if piece and len(head.text) + sum(len(x.text) for x in piece) + len(part.text) > target:
-                out.append(Item(item.marker, [head, *piece]))
-                piece = []
-            piece.append(part)
-        out.append(Item(item.marker, [head, *piece]))
-    return out
-
-
-def _group_items(unit: Unit, target: int) -> list[list[Item]]:
-    groups: list[list[Item]] = [[]]
-    lead = len(unit.lead_text)
-    for item in _split_oversized(unit.items, target):
-        size = lead + sum(len(i.text) for i in groups[-1]) + len(item.text)
-        if groups[-1] and size > target:
-            groups.append([])
-        groups[-1].append(item)
-    return groups
-
-
-def unit_texts(unit: Unit, config: dict[str, Any], mode: str) -> list[tuple[str, str, list[str]]]:
-    """(granularity, text, point markers) for every chunk one clause becomes."""
-    markers = [str(i.marker) for i in unit.items if i.marker]
-    if mode == "point" and unit.items:
-        return [("point", unit.text([i]), [str(i.marker)] if i.marker else []) for i in unit.items]
-    whole = unit.text()
-    if len(whole) <= int(config["max_unit_chars"]):
-        return [("clause" if unit.marker else "article", whole, markers)]
-    if unit.items:
-        carried = _carried_lead(unit.lead_text, int(config["max_lead_chars"]))
-        groups = _group_items(Unit(unit.marker, [Segment("text", None, [carried])], unit.items),
-                              int(config["group_target_chars"]))
-        out = []
-        for index, group in enumerate(groups):
-            # The first group keeps the whole opening; later ones repeat only the
-            # sentence that introduces the list.
-            lead = unit.lead_text if index == 0 else carried
-            text = "\n".join(x for x in [lead, *(i.text for i in group)] if x)
-            out.append(("clause_part", text, [str(i.marker) for i in group if i.marker]))
-        return out
-    return [("clause_part", part, []) for part in _split_at_sentences(whole, int(config["paragraph_chars"]))]
-
-
-def _split_at_sentences(text: str, target: int) -> list[str]:
-    """Pack whole lines, then whole sentences, into parts near the target size.
-
-    A part ends only where a line or a sentence does; a sentence longer than the
-    target stays whole rather than being cut.
-    """
-    pieces = [s for line in text.split("\n") for s in re.split(r"(?<=[.;!?])\s+(?=\S)", line) if s]
-    parts: list[str] = []
-    for piece in pieces:
-        if parts and len(parts[-1]) + 1 + len(piece) <= target:
-            parts[-1] = f"{parts[-1]} {piece}"
-        else:
-            parts.append(piece)
-    return parts
-
-
-def _carried_lead(lead: str, limit: int) -> str:
-    """The lead-in repeated in each group of a long list: whole if short, else its last sentence.
-
-    A notice opens with its title and legal bases before "…, cụ thể như sau:";
-    only that last sentence says what the list is.
-    """
-    if len(lead) <= limit:
-        return lead
-    flat = " ".join(lead.split())
-    sentences = [s for s in re.split(r"(?<=[.;])\s+", flat) if s]
-    if sentences and len(sentences[-1]) <= limit:
-        return sentences[-1]
-    # "Thực hiện Nghị định …, Thông tư … của Bộ …, Bộ Tài chính về việc …, Trường
-    # thông báo …, cụ thể như sau:": the main clause starts at the last comma
-    # followed by a capital letter; the clauses before it name the legal bases.
-    starts = [m.end() for m in re.finditer(r",\s+", flat) if flat[m.end()].isupper() and len(flat) - m.end() <= limit]
-    if starts:
-        return flat[starts[-1]:]
-    clauses = [m.end() for m in re.finditer(r"[,;]\s+", flat) if len(flat) - m.end() <= limit]
-    return flat[clauses[0]:] if clauses else flat[-limit:]
+def unit_chunk(unit: Unit) -> tuple[str, str, list[str]]:
+    """(granularity, text, point markers): a khoản, or an article without khoản, is one chunk."""
+    return "clause" if unit.marker else "article", unit.text(), [str(i.marker) for i in unit.items if i.marker]
 
 
 def build_structure_chunks(
@@ -455,7 +372,6 @@ def build_structure_chunks(
     config: dict[str, Any],
     scope: dict[str, Any] | None = None,
     header_mode: str | None = None,
-    unit_mode: str = "clause",
     structured_tables: list[dict[str, Any]] | None = None,
     drop_table_parents: set[str] | None = None,
     report: dict[str, Any] | None = None,
@@ -468,8 +384,8 @@ def build_structure_chunks(
     """
     scope = scope or {}
     header_mode = header_mode or config.get("header", "document_article")
-    if header_mode not in HEADER_MODES or unit_mode not in UNIT_MODES:
-        raise ValueError(f"Unknown header or unit mode: {header_mode}, {unit_mode}")
+    if header_mode not in HEADER_MODES:
+        raise ValueError(f"Unknown header mode: {header_mode}")
     excluded_parents = {r["id"] for r in scope.get("exclude_parents") or []}
     known = {str(p.get("_id")) for p in parents}
     unknown = sorted((excluded_parents | {r["parent"] for r in scope.get("exclude_units") or []}) - known)
@@ -510,38 +426,38 @@ def build_structure_chunks(
                 for item in unit.items:
                     item.parts = [s for s in item.parts if s.kind != "table"]
             _drop_structured_rows(unit, parent, structured_tables)
-            for part_index, (granularity, text, points) in enumerate(unit_texts(unit, config, unit_mode)):
-                text = text.strip()
-                key = re.sub(r"\s+", " ", text).lower()
-                if len(text) < 24 or key in seen:
-                    continue
-                seen.add(key)
-                chunk_id = f"cp_{parent_id}_u{unit_index:02d}_{part_index:02d}"
-                named = [m for m in points if m[0].isalnum()]  # "–" and "•" items have no name to cite
-                path = " › ".join(x for x in [
-                    str(metadata.get("article") or "").rstrip("."),
-                    f"khoản {unit.marker}" if unit.marker and unit.marker[0].isalnum() else "",
-                    f"điểm {', '.join(named)}" if named and granularity != "clause" else "",
-                ] if x)
-                chunks.append({
-                    "_id": chunk_id,
+            granularity, text, points = unit_chunk(unit)
+            text = text.strip()
+            key = re.sub(r"\s+", " ", text).lower()
+            if len(text) < 24 or key in seen:
+                continue
+            seen.add(key)
+            chunk_id = f"cp_{parent_id}_u{unit_index:02d}_00"
+            named = [m for m in points if m[0].isalnum()]  # "–" and "•" items have no name to cite
+            path = " › ".join(x for x in [
+                str(metadata.get("article") or "").rstrip("."),
+                f"khoản {unit.marker}" if unit.marker and unit.marker[0].isalnum() else "",
+                f"điểm {', '.join(named)}" if named and granularity != "clause" else "",
+            ] if x)
+            chunks.append({
+                "_id": chunk_id,
+                "chunk_id": chunk_id,
+                "content": text,
+                "embedding_text": f"{header}\n{text}",
+                "metadata": {
+                    **base,
                     "chunk_id": chunk_id,
-                    "content": text,
-                    "embedding_text": f"{header}\n{text}",
-                    "metadata": {
-                        **base,
-                        "chunk_id": chunk_id,
-                        "chunk_type": _chunk_type_for_content_type(str(base.get("content_type") or content_type)),
-                        "content_type": base.get("content_type") or content_type,
-                        "chunk_granularity": granularity,
-                        "clause_marker": unit.marker,
-                        "clause": unit.marker,
-                        "points": points,
-                        "path": path,
-                        "context_header": header,
-                        "document_short": short,
-                    },
-                })
+                    "chunk_type": _chunk_type_for_content_type(str(base.get("content_type") or content_type)),
+                    "content_type": base.get("content_type") or content_type,
+                    "chunk_granularity": granularity,
+                    "clause_marker": unit.marker,
+                    "clause": unit.marker,
+                    "points": points,
+                    "path": path,
+                    "context_header": header,
+                    "document_short": short,
+                },
+            })
     return chunks
 
 
@@ -602,7 +518,6 @@ def main() -> None:
     parser.add_argument("--docstore", default="data/processed/chunks/all_docstore_items.json")
     parser.add_argument("--registry", default="data/processed/tables/structured_tables_registry.json")
     parser.add_argument("--header", choices=HEADER_MODES)
-    parser.add_argument("--unit", choices=UNIT_MODES, default="clause")
     parser.add_argument("--no-scope", action="store_true", help="Ignore configs/corpus_scope.yaml.")
     parser.add_argument("--output", help="Write a chunk file for comparison only.")
     parser.add_argument("--publish-artifacts", action="store_true",
@@ -617,7 +532,7 @@ def main() -> None:
     tables = json.loads(Path(args.registry).read_text(encoding="utf-8"))
     report: dict[str, Any] = {}
     chunks = build_structure_chunks(parents, config=load_config(), scope={} if args.no_scope else load_scope(),
-                                    header_mode=args.header, unit_mode=args.unit,
+                                    header_mode=args.header,
                                     structured_tables=tables, report=report)
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)

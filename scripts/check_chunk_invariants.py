@@ -15,13 +15,11 @@ mistake in how the chunker reads the structure of a page shows up here:
   lead_in        a marked line introduced by a line ending in ":" is in a chunk
                  only after that line
   heading_drop   a line dropped as the article heading is part of the stored
-                 title, or is on the reviewed list in configs/structure_chunking.yaml
+                 title, or is a heading_tail fix in configs/layout_fixes.yaml
 
 Exempt: lines of out-of-scope articles, clauses and points
 (configs/corpus_scope.yaml), table rows (the structured registry holds them) and
-the article's heading lines. The one deliberate partial line is the lead-in a
-long clause repeats in its later groups: a suffix of the lead-in that starts at a
-sentence or clause boundary, first line of a ``clause_part`` chunk only.
+the article's heading lines.
 """
 from __future__ import annotations
 
@@ -46,6 +44,7 @@ from scripts.structure_chunking import (  # noqa: E402
     apply_scope,
     article_units,
     heading_line_count,
+    load_layout_fixes,
 )
 
 _MARKED = re.compile(r"^(?:\d{1,2}\.\s+\S|\d{1,2}\.\d{1,2}\.\s+\S|[IVX]{1,4}\.\s+\S|[a-zđ]\)|[-−–•+*])", re.IGNORECASE)
@@ -78,7 +77,9 @@ class ParentText:
         metadata = parent.get("metadata") or {}
         raw = [_clean_block_text(line) for line in _strip_docstore_preamble(str(parent.get("content") or "")).splitlines()]
         raw = [line for line in raw if line]
-        skip = heading_line_count(raw, metadata)
+        fixes = load_layout_fixes().get(str(parent.get("_id")), [])
+        tails = tuple(f["line"] for f in fixes if f["fix"] == "heading_tail")
+        skip = heading_line_count(raw, metadata, tails)
         # A dropped heading line must be part of the stored heading; any other is listed
         # for review, so this check does not share the chunker's heading rule.
         stored = _norm(f"{metadata.get('article') or ''} {metadata.get('title') or ''}").casefold()
@@ -116,7 +117,7 @@ class ParentText:
     def _end_ok(self, j: int, line: str) -> bool:
         return j == len(self.text) or (j + 1) in self.starts or line.endswith(_SENTENCE_END)
 
-    def locate(self, line: str, *, after: int = 0, carried: bool = False) -> tuple[str | None, int | None]:
+    def locate(self, line: str, *, after: int = 0) -> tuple[str | None, int | None]:
         """(problem or None, start offset) for one chunk line.
 
         A chunk's lines follow the article's order, so the occurrence after the
@@ -129,25 +130,22 @@ class ParentText:
             return "not verbatim in the article", None
         for i in found:
             j = i + len(line)
-            start = self._start_ok(i) or (carried and self.text[:i].rstrip().endswith(",") and line[:1].isupper())
-            if start and self._end_ok(j, line):
+            if self._start_ok(i) and self._end_ok(j, line):
                 return None, i
         i = found[0]
         where = "starts" if not self._start_ok(i) else "ends"
         return f"{where} inside a sentence", i
 
 
-def check(chunks: list[dict[str, Any]], parents: list[dict[str, Any]], scope: dict[str, Any],
-          config: dict[str, Any] | None = None) -> dict[str, list]:
+def check(chunks: list[dict[str, Any]], parents: list[dict[str, Any]], scope: dict[str, Any]) -> dict[str, list]:
     excluded_parents = {r["id"] for r in scope.get("exclude_parents") or []}
     by_parent: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for chunk in chunks:
         if (chunk.get("metadata") or {}).get("chunk_granularity") in {"section_heading", "table_description"}:
             continue
         by_parent[str(chunk["metadata"]["parent_section_id"])].append(chunk)
-    from scripts.structure_chunking import load_config
-
-    reviewed = {(r["parent"], r["line"]) for r in (config or load_config()).get("reviewed_heading_tails") or []}
+    reviewed = {(parent_id, fix["line"]) for parent_id, fixes in load_layout_fixes().items()
+                for fix in fixes if fix["fix"] == "heading_tail"}
     problems: dict[str, list] = {k: [] for k in ("coverage", "boundary", "own_heading", "table_residue", "lead_in",
                                                  "heading_drop")}
     for parent in parents:
@@ -178,10 +176,9 @@ def check(chunks: list[dict[str, Any]], parents: list[dict[str, Any]], scope: di
             for header in text.column_headers:
                 if any(x == header or x.endswith(f" {header}") for x in chunk_lines):
                     problems["table_residue"].append({"chunk": chunk["_id"], "residue": header})
-            carried_ok = chunk["metadata"].get("chunk_granularity") == "clause_part"
             cursor = 0
             for index, line in enumerate(chunk_lines):
-                problem, start = text.locate(line, after=cursor, carried=carried_ok and index == 0)
+                problem, start = text.locate(line, after=cursor)
                 cursor = start + len(line) if start is not None else cursor
                 if problem:
                     problems["boundary"].append({"chunk": chunk["_id"], "problem": problem,

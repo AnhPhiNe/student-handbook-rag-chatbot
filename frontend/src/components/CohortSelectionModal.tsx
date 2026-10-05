@@ -69,6 +69,12 @@ export function CohortSelectionModal({ onSelect, onDismiss }: CohortSelectionMod
           </button>
         </div>
         
+        {/* The K52 handbook replaces the training and student-affairs regulations, so K51 answers would mislead its students. */}
+        <p className="cohort-modal-note">
+          <strong>Khóa 52</strong> (nhập học năm 2026) chưa được hỗ trợ: sổ tay K52 có quy chế đào tạo và
+          quy định công tác sinh viên mới, khác Khóa 51. Bạn vui lòng xem sổ tay K52 hoặc hỏi Phòng Đào tạo.
+        </p>
+
         <div className="cohort-modal-footer">
           <p>💡 Bạn có thể thay đổi Khóa bất kỳ lúc nào ở góc trên bên phải màn hình.</p>
         </div>

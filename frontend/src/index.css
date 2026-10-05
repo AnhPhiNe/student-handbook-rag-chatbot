@@ -707,8 +707,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .mobile-cohort-selector {
-  width: auto;
-  min-width: 112px;
+  width: 112px; /* fixed: an auto width follows the longest option ("Khóa 52 (chưa hỗ trợ)") and pushes the logo onto two lines */
   min-height: 40px; /* the whole visible box opens the list, not a 23px strip */
   padding: 8px 12px;
   border-radius: 8px;
@@ -996,6 +995,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .cohort-selector {
+  width: 124px; /* fixed, like the phone selector: the disabled K52 option would otherwise widen it */
   background: var(--primary);
   color: white;
   border-color: transparent;
@@ -3164,6 +3164,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   border: 1px solid var(--border-color);
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  /* On a short phone the dialog scrolls instead of losing its top and bottom. */
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
 }
 
 .cohort-modal-header {
@@ -3241,12 +3244,29 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: var(--text-secondary);
 }
 
+.cohort-modal-note {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
 .cohort-modal-footer {
   text-align: center;
   border-top: 1px solid var(--border-color);
   padding-top: 16px;
   color: var(--text-secondary);
   font-size: 0.85rem;
+}
+
+/* After the rules above so the phone spacing wins. */
+@media (max-width: 600px) {
+  .cohort-modal-content { padding: 20px; }
+  .cohort-modal-header { margin-bottom: 20px; }
+  .cohort-modal-options { margin-bottom: 16px; }
 }
 
 /* Maintenance Modal */

@@ -246,3 +246,14 @@ def test_every_layout_fix_is_used_and_a_stale_one_fails_the_build():
             article_units(parent)
     finally:
         sc._LAYOUT_FIXES = saved
+
+
+def test_a_title_the_stored_metadata_cuts_short_is_whole_again_in_both_heading_texts(chunks):
+    rows = [c for c in chunks if c["metadata"]["parent_section_id"] == "K50_QuyCheCongTacSinhVien_Chuong4_Dieu17"]
+    heading = next(c for c in rows if c["metadata"]["chunk_granularity"] == "section_heading")
+    clause = next(c for c in rows if c["metadata"]["chunk_granularity"] != "section_heading")
+    assert heading["content"].split("\n", 1)[0].endswith("Hội Sinh viên Việt Nam Trường")
+    assert clause["metadata"]["context_header"].endswith("Hội Sinh viên Việt Nam Trường")
+    notice = next(c for c in chunks if c["metadata"]["parent_section_id"] == "K50_ThongBaoHoTroChiPhiHocTap_Phan3"
+                  and c["metadata"]["chunk_granularity"] != "section_heading")
+    assert notice["metadata"]["context_header"].endswith("hỗ trợ chi phí học tập")

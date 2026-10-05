@@ -406,7 +406,11 @@ def build_structure_chunks(
         if dropped and report is not None:
             report.setdefault("excluded_units", {})[parent_id] = dropped
         base = _base_metadata(parent, parent_id)
-        header = context_header(metadata, config, header_mode)
+        # A heading_tail fix holds the end of a title the stored title cuts short
+        # ("…, Hội Sinh viên" + "Việt Nam Trường"); both heading texts get it back.
+        tail = " ".join(f["line"].lower() if f["line"].isupper() else f["line"]
+                        for f in _fixes_for(parent_id) if f["fix"] == "heading_tail")
+        header = " ".join(x for x in [context_header(metadata, config, header_mode), tail] if x)
         short = short_document_name(str(metadata.get("document_title") or ""), config)
         heading = _make_heading_chunk(parent, base)
         # The old anchor was the first two PDF lines, cut mid-sentence ("…cảnh báo học tập nếu vi");
@@ -415,6 +419,8 @@ def build_structure_chunks(
         article_label = str(metadata.get("article") or "").strip()
         if article_label.startswith("Điều"):
             heading_lines[0] = f"Section heading: {article_label.rstrip('.')}. {metadata.get('title') or ''}".rstrip()
+        if tail:
+            heading_lines[0] = f"{heading_lines[0]} {tail}"
         heading["content"] = "\n".join(heading_lines)
         heading["metadata"].update(context_header=header, document_short=short)
         heading["embedding_text"] = heading["content"]  # already names the section and document

@@ -1251,6 +1251,71 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .typing-dot:nth-child(1) { animation-delay: -0.32s; }
 .typing-dot:nth-child(2) { animation-delay: -0.16s; }
 
+/* What the bubble says while the answer is prepared (WaitingIndicator.tsx) */
+.waiting-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: min(560px, 100%);
+}
+.waiting-indicator-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.65rem;
+}
+.waiting-indicator-step {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+.waiting-indicator-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+.waiting-indicator-sources {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  color: var(--text-secondary);
+  animation: waitingSourcesIn 0.3s ease-out both;
+}
+.waiting-indicator-sources-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+.waiting-indicator-source,
+.waiting-indicator-more {
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.waiting-indicator-hint {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+@keyframes waitingSourcesIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .waiting-indicator-sources { animation: none; }
+}
+
 /* Halo Breathing Effect */
 .avatar-container {
   position: relative;

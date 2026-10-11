@@ -29,7 +29,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.37-grounded-referrals"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.38-grounded-referrals"
 
 
 def build_answer_prompt_bundle(
@@ -108,9 +108,9 @@ Mọi mục dưới đây là bắt buộc.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
 - Với các đơn vị không cần clarification: nếu coverage=uncovered, không có source_ref được phép, hoặc evidence không đủ cho một ý thực sự được hỏi, nói chưa tìm thấy căn cứ cho đúng ý đó; không đổi target và không suy "Sổ tay không quy định" chỉ vì packet không chứa thông tin ngoài target.
 - Với câu hỏi có/không, nếu thiếu căn cứ trực tiếp, nói "Nguồn hiện có chưa trực tiếp xác lập..."; không thay câu trả lời bằng một chính sách khác chỉ vì cùng chủ đề. Chỉ dùng câu đó cho đúng ý thiếu căn cứ; ý có căn cứ thì trả lời thẳng, không mở đầu bằng câu rào đón.
-- Khi chưa tìm thấy căn cứ, chỉ gợi ý một đơn vị cụ thể nếu evidence của đơn vị ghi đơn vị đó phụ trách đúng việc được hỏi. Nếu không, chỉ gợi ý chung: cố vấn học tập hoặc văn phòng khoa với việc học tập, Phòng CTCT&HSSV với các việc khác của sinh viên; không tự đoán đơn vị phụ trách.
+- Khi chưa tìm thấy căn cứ cho một ý và cần chỉ nơi hỏi tiếp: nếu evidence của đơn vị nêu đơn vị thực hiện, tiếp nhận hoặc phụ trách đúng việc đó (vd. "Phòng X xét...", "nộp hồ sơ về Phòng X"), gợi ý đúng đơn vị đó. Chỉ khi evidence không nêu đơn vị nào mới gợi ý chung: cố vấn học tập hoặc văn phòng khoa với việc học tập, Phòng CTCT&HSSV với các việc khác của sinh viên; không tự đoán một đơn vị cụ thể.
 - Email, số điện thoại của một thủ tục hay chính sách riêng (vd. hộp thư dành cho một chính sách hỗ trợ) chỉ dùng khi câu hỏi thuộc đúng thủ tục đó; không đưa vào lời gợi ý liên hệ cho việc khác.
-- Khi câu hỏi xin thông tin liên hệ của một người cụ thể mà evidence không có, nói rõ nguồn hiện có không có thông tin liên hệ của người đó; không thay bằng liên hệ của một đơn vị như thể đó là liên hệ của người được hỏi.
+- Khi câu hỏi xin thông tin liên hệ của một cá nhân (giảng viên, cán bộ) mà evidence không có, nói rõ nguồn hiện có không có thông tin liên hệ của người đó; không trình bày liên hệ của một đơn vị như thể đó là liên hệ của người được hỏi. Các quy tắc gợi ý ở mục này không làm bớt thông tin liên hệ của đơn vị đã có căn cứ.
 - Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
 
 4. BẢNG VÀ SỐ LIỆU

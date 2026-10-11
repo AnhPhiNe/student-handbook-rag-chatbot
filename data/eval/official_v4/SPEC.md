@@ -288,6 +288,21 @@ author nor its models wrote.
   scored 0 in R but not in N is shown not to be a serious false statement, and
   no answer in R gives a contact detail that is not in its unit's evidence or a
   procedure mailbox for another matter.
+  Outcome (2026-10-11, `official_v4_answers_20261011T104311Z`, commit `4c5faf97`;
+  V4-111 judge timed out three times and is left out): in scope R 0.975 against N
+  0.974, paired +0.000, 95% cluster interval [−0.013, +0.014], no zero; every
+  email is a directory email except `nghidinh116@`, used only in V4-124 and
+  V4-167, which ask about that procedure. The rule is met, but reading the
+  answers showed v3.37 too cautious: V4-229 sent a scholarship-list question to
+  the adviser although Điều 28 says Phòng CTCT&HSSV runs the award, and V4-142
+  dropped the email and phone of the institute it named. v3.37 is not shipped.
+- **Run R2: composer v3.38** (owner, 2026-10-11, after R was read): v3.38 names
+  the unit the evidence says carries out, receives or handles the matter, falls
+  back to the adviser, faculty office or Phòng CTCT&HSSV only when the evidence
+  names none, limits the personal-contact rule to individuals, and says these
+  rules never remove a grounded unit's contact fields. Same rule as R, against
+  N, plus: V4-229 names Phòng CTCT&HSSV, and no answer that gives a unit from a
+  directory lookup drops a contact field the question asks for.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

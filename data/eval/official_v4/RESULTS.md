@@ -279,6 +279,30 @@ measured, composer v3.36".
 - Reports: `official_v4_answers_20261004T181608Z` (C2),
   `official_v4_answers_20261005T052049Z` (C3).
 
+## Composer reasoning none, and a referral rule not kept (2026-10-11)
+
+Same replayed v61 plans and build as C3; rules in `SPEC.md` (runs N, R, R2, A).
+
+| 228 cases in scope | C3 (low, v3.36) | **N (none, v3.36)** | A (none, v3.42) |
+|---|---:|---:|---:|
+| Commit | `cda3915b` | `cda3915b` | `072e4152` |
+| answer_correctness | 0.970 | **0.972** | 0.968 |
+| Paired against | — | C3: +0.003 [−0.008, +0.012] | N: −0.004 [−0.019, +0.011] |
+| Answers scoring 0 | 0 | 0 | 0 |
+
+- **N:** reasoning none passes; the 8 answers that compute a score or a term
+  average were checked by hand and are right. Production already served none.
+- **A:** v3.42 added "when no evidence is found for a part, say so and suggest no
+  unit or contact for it". It passes on scores but fails the email criterion:
+  V4-232 still offered `nghidinh116@` for an unrelated question, which N did not.
+  The wrong-referral it targets is rare in both versions (one live report, 1 of
+  21 targeted replays, 1 of 246 in A, 0 in N), so it is recorded as a known
+  limit, not fixed in the prompt.
+- R and R2 (v3.37, v3.38) tuned the referral wording on v4 answers and are not
+  reported as results; v4 is not a hold-out for referral behaviour.
+- Reports: `official_v4_answers_20261011T094233Z` (N, in the session's C3
+  worktree), `official_v4_answers_20261011T120228Z` (A).
+
 ## What these results do not establish
 
 - **Run B is not a hold-out.** Its figure describes the deployed system; the

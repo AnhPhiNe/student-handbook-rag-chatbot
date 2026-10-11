@@ -351,6 +351,13 @@ author nor its models wrote.
   grounded units with full contacts; one leak (the rector's phone answered with
   Phòng CTCT&HSSV's mailboxes, `nghidinh116@` among them); two over-cautious
   answers. The leak is recorded as a known limit, not tuned.
+  Outcome (2026-10-11, `official_v4_answers_20261011T120228Z`, commit `072e4152`,
+  no provider error): in scope A 0.968 against N 0.972, paired −0.004, 95%
+  cluster interval [−0.019, +0.011], no zero. The email criterion fails: V4-232
+  (a department head's phone) gives Phòng CTCT&HSSV with `nghidinh116@`, while N
+  had no such leak on v4. The rule did not show a measurable effect on the leak
+  it targets, and it removed a grounded referral (V4-229). v3.42 is not kept;
+  the composer stays v3.36 with reasoning none.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

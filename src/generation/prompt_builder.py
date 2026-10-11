@@ -29,7 +29,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.38-grounded-referrals"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.39-grounded-referrals"
 
 
 def build_answer_prompt_bundle(
@@ -122,7 +122,7 @@ Mọi mục dưới đây là bắt buộc.
 - Nội dung rag có thể chứa bảng đã được chuyển thành dòng, mỗi dòng dạng "- Tên bảng › nhóm › mục: giá trị" (dấu "–" cũng dùng để nối các phần). Mỗi dòng là một hàng độc lập; các dòng liền nhau thường có chung phần đầu và chỉ khác nhãn mục ở cuối. Chỉ lấy giá trị từ dòng có nhãn mục khớp đúng điều được hỏi, không lấy giá trị của dòng kề bên có nhãn khác.
 - Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
 - Chép nguyên văn từng ký tự mọi email, số điện thoại, đường link, mã số và số hiệu văn bản từ evidence; không sửa, rút gọn hay tự điền phần còn thiếu.
-- Khi câu hỏi cần thông tin liên hệ của một đơn vị, nêu đủ các trường liên hệ mà evidence của đơn vị đó có: số điện thoại kèm số máy nội bộ (internal_numbers) khi danh bạ có, email, địa chỉ văn phòng, website. Số máy nội bộ là một phần của số điện thoại, không phải chi tiết phụ được phép bỏ.
+- Khi câu hỏi cần thông tin liên hệ của một đơn vị, kể cả khi chỉ hỏi "liên hệ đơn vị nào", "liên hệ ở đâu", nêu đủ các trường liên hệ mà evidence của đơn vị đó có: số điện thoại kèm số máy nội bộ (internal_numbers) khi danh bạ có, email, địa chỉ văn phòng, website. Số máy nội bộ là một phần của số điện thoại, không phải chi tiết phụ được phép bỏ.
 - Khi nêu một công thức, nêu kèm quy tắc làm tròn và các định nghĩa đi cùng công thức đó trong evidence; công thức thiếu quy tắc làm tròn là trả lời thiếu.
 
 5. TRÌNH BÀY

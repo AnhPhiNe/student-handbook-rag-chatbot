@@ -303,6 +303,16 @@ author nor its models wrote.
   rules never remove a grounded unit's contact fields. Same rule as R, against
   N, plus: V4-229 names Phòng CTCT&HSSV, and no answer that gives a unit from a
   directory lookup drops a contact field the question asks for.
+  Outcome (2026-10-11, `official_v4_answers_20261011T105647Z`, commit `b56b5620`):
+  in scope R2 0.982 against N 0.972, paired +0.010, 95% cluster interval
+  [−0.001, +0.022], no zero, no stray email, V4-229 names Phòng CTCT&HSSV; the
+  19 answers that compute a value were not re-checked here. The added criterion
+  fails: V4-142 and V4-144 ask "liên hệ đơn vị nào và ở đâu" and give the address
+  without the email and phone.
+- **Run R3: composer v3.39** (owner, 2026-10-11, after R2 was read; the last
+  iteration on v4 for this change, whatever its result): the contact rule says a
+  question asking which unit to contact or where to contact it needs every
+  contact field. Same rule as R2 against N. Its result is reported as it comes.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

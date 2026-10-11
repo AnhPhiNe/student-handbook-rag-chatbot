@@ -333,6 +333,24 @@ author nor its models wrote.
   is 12 contact and referral questions written for it and not drawn from v4
   (`ask_fresh.json` in the session notes), each read against the two rules.
   Whatever the outcome, the prompt is not tuned further on these cases.
+  Run F was superseded before it ran (the owner chose a simpler rule, below).
+- **Run A: composer v3.42, no referral without evidence** (owner, 2026-10-11,
+  before the run; the final run for this change). v3.42 is v3.36 plus one rule,
+  in the owner's words: "Khi chưa tìm thấy căn cứ cho một ý, nói rõ điều đó và
+  không gợi ý đơn vị hay thông tin liên hệ nào cho ý đó." Composer reasoning
+  none, served first by the DeepSeek API (run N used DeepInfra; same weights);
+  judge gpt-oss-120b on DeepInfra as in N; normalizer v34 (N ran v32), so the
+  paired difference also carries the normalizer change. v4 is not a hold-out
+  for referral behaviour (R and R2 were read). Keep v3.42 if, in scope, the
+  lower bound of the 95% cluster interval of the paired `answer_correctness`
+  difference (A minus N) is at least −0.03, every case scored 0 in A but not in
+  N is shown not to be a serious false statement, and no answer gives an email
+  outside the directories except a procedure mailbox on its own procedure.
+  Before the run, 21 targeted replays (12 new contact questions, the owner's
+  live case, 8 v4 cases) gave: personal contacts declined without a referral;
+  grounded units with full contacts; one leak (the rector's phone answered with
+  Phòng CTCT&HSSV's mailboxes, `nghidinh116@` among them); two over-cautious
+  answers. The leak is recorded as a known limit, not tuned.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

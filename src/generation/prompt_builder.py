@@ -29,7 +29,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.40-contact-principles"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.42-no-unsupported-referrals"
 
 
 def build_answer_prompt_bundle(
@@ -108,7 +108,7 @@ Mọi mục dưới đây là bắt buộc.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
 - Với các đơn vị không cần clarification: nếu coverage=uncovered, không có source_ref được phép, hoặc evidence không đủ cho một ý thực sự được hỏi, nói chưa tìm thấy căn cứ cho đúng ý đó; không đổi target và không suy "Sổ tay không quy định" chỉ vì packet không chứa thông tin ngoài target.
 - Với câu hỏi có/không, nếu thiếu căn cứ trực tiếp, nói "Nguồn hiện có chưa trực tiếp xác lập..."; không thay câu trả lời bằng một chính sách khác chỉ vì cùng chủ đề. Chỉ dùng câu đó cho đúng ý thiếu căn cứ; ý có căn cứ thì trả lời thẳng, không mở đầu bằng câu rào đón.
-- Khi chỉ nơi hỏi tiếp cho phần chưa có căn cứ, chỉ nêu đơn vị mà evidence cho biết làm đúng việc đó. Nếu evidence không nêu, chỉ kênh chung: cố vấn học tập hoặc văn phòng khoa với việc học tập, Phòng CTCT&HSSV với các việc khác của sinh viên.
+- Khi chưa tìm thấy căn cứ cho một ý, nói rõ điều đó và không gợi ý đơn vị hay thông tin liên hệ nào cho ý đó.
 - Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
 
 4. BẢNG VÀ SỐ LIỆU
@@ -120,7 +120,7 @@ Mọi mục dưới đây là bắt buộc.
 - Nội dung rag có thể chứa bảng đã được chuyển thành dòng, mỗi dòng dạng "- Tên bảng › nhóm › mục: giá trị" (dấu "–" cũng dùng để nối các phần). Mỗi dòng là một hàng độc lập; các dòng liền nhau thường có chung phần đầu và chỉ khác nhãn mục ở cuối. Chỉ lấy giá trị từ dòng có nhãn mục khớp đúng điều được hỏi, không lấy giá trị của dòng kề bên có nhãn khác.
 - Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
 - Chép nguyên văn từng ký tự mọi email, số điện thoại, đường link, mã số và số hiệu văn bản từ evidence; không sửa, rút gọn hay tự điền phần còn thiếu.
-- Thông tin liên hệ (email, điện thoại, địa chỉ, website) chỉ được nêu khi evidence gắn nó với đúng đơn vị và đúng việc đang trả lời. Khi đã nêu một đơn vị để sinh viên liên hệ, nêu đủ các trường liên hệ mà evidence có cho đơn vị đó; số máy nội bộ (internal_numbers) là một phần của số điện thoại, không phải chi tiết phụ được phép bỏ.
+- Khi câu hỏi cần thông tin liên hệ của một đơn vị, nêu đủ các trường liên hệ mà evidence của đơn vị đó có: số điện thoại kèm số máy nội bộ (internal_numbers) khi danh bạ có, email, địa chỉ văn phòng, website. Số máy nội bộ là một phần của số điện thoại, không phải chi tiết phụ được phép bỏ.
 - Khi nêu một công thức, nêu kèm quy tắc làm tròn và các định nghĩa đi cùng công thức đó trong evidence; công thức thiếu quy tắc làm tròn là trả lời thiếu.
 
 5. TRÌNH BÀY

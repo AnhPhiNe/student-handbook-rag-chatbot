@@ -263,6 +263,101 @@ author nor its models wrote.
   out-of-scope cases pass (vừa làm vừa học durations answered from Điều 3 and
   labelled; V4-110 says Điều 12 is for chính quy and no vừa làm vừa học rule was
   found; staff-only questions not found). C3 passes and is the build to deploy.
+- **Run N: composer reasoning none** (owner, 2026-10-11, before the run; written in
+  the session notes and copied here before the next run): N repeats C3 at commit
+  `cda3915b` with the composer's `reasoning_effort` set to none instead of low,
+  everything else as in C3 (v61 plans replayed, DeepInfra DeepSeek-V4.1-Flash,
+  same judge and packet). Keep none if, in scope, the lower bound of the 95%
+  cluster interval of the paired `answer_correctness` difference (N minus C3) is
+  at least −0.03, every case scored 0 in N but not in C3 is shown not to be a
+  serious false statement, and every answer in N that computes a value is checked
+  by hand, a wrong result failing the rule.
+  Outcome (2026-10-11, `official_v4_answers_20261011T094233Z`, no API error or
+  judge failure): in scope N 0.972 against C3 0.970, paired +0.003, 95% cluster
+  interval [−0.008, +0.012], no zero in either run; 8 answers compute a value
+  (scholarship score, term average) and all 8 are right. None is kept.
+- **Run R: composer v3.37, grounded referrals** (owner, 2026-10-11, before the
+  run): R repeats N on the current main plus prompt v3.37, which allows a unit
+  to be named as the place to ask only when its evidence says the unit handles
+  that matter, keeps a procedure's own mailbox for that procedure, and says so
+  when a person's contact is asked for and absent. The normalizer is
+  `v34-ask-for-what-is-missing` (N ran v32); the 655 saved plans re-normalized
+  offline differ only on the misspelt-name cases those fixes target. Keep v3.37
+  if, in scope, the lower bound of the 95% cluster interval of the paired
+  `answer_correctness` difference (R minus N) is at least −0.03, every case
+  scored 0 in R but not in N is shown not to be a serious false statement, and
+  no answer in R gives a contact detail that is not in its unit's evidence or a
+  procedure mailbox for another matter.
+  Outcome (2026-10-11, `official_v4_answers_20261011T104311Z`, commit `4c5faf97`;
+  V4-111 judge timed out three times and is left out): in scope R 0.975 against N
+  0.974, paired +0.000, 95% cluster interval [−0.013, +0.014], no zero; every
+  email is a directory email except `nghidinh116@`, used only in V4-124 and
+  V4-167, which ask about that procedure. The rule is met, but reading the
+  answers showed v3.37 too cautious: V4-229 sent a scholarship-list question to
+  the adviser although Điều 28 says Phòng CTCT&HSSV runs the award, and V4-142
+  dropped the email and phone of the institute it named. v3.37 is not shipped.
+- **Run R2: composer v3.38** (owner, 2026-10-11, after R was read): v3.38 names
+  the unit the evidence says carries out, receives or handles the matter, falls
+  back to the adviser, faculty office or Phòng CTCT&HSSV only when the evidence
+  names none, limits the personal-contact rule to individuals, and says these
+  rules never remove a grounded unit's contact fields. Same rule as R, against
+  N, plus: V4-229 names Phòng CTCT&HSSV, and no answer that gives a unit from a
+  directory lookup drops a contact field the question asks for.
+  Outcome (2026-10-11, `official_v4_answers_20261011T105647Z`, commit `b56b5620`):
+  in scope R2 0.982 against N 0.972, paired +0.010, 95% cluster interval
+  [−0.001, +0.022], no zero, no stray email, V4-229 names Phòng CTCT&HSSV; the
+  19 answers that compute a value were not re-checked here. The added criterion
+  fails: V4-142 and V4-144 ask "liên hệ đơn vị nào và ở đâu" and give the address
+  without the email and phone.
+- **Run R3: composer v3.39** (owner, 2026-10-11, after R2 was read; the last
+  iteration on v4 for this change, whatever its result): the contact rule says a
+  question asking which unit to contact or where to contact it needs every
+  contact field. Same rule as R2 against N. Its result is reported as it comes.
+  R3 was stopped part-way (166 of 246 answers, none judged) at the owner's
+  request: v3.37–v3.39 each added a line for cases read on v4, which tunes the
+  prompt to this set. Its partial output is not reported.
+- **Run F: composer v3.40, contact principles** (owner, 2026-10-11, before the
+  run; the final run for this change). The case-specific lines of v3.37–v3.39
+  are removed. v3.40 differs from v3.36 by two general rules: when pointing to
+  where to ask about a part without evidence, name only a unit the evidence says
+  does that work, else the adviser or faculty office (study matters) or Phòng
+  CTCT&HSSV (other student matters); and contact details are given only when
+  the evidence ties them to that unit and that matter, with every contact field
+  the evidence has for a unit named as the place to contact. **v4 is not a
+  hold-out for this change**: R and R2 were read before v3.40 was written.
+  Keep v3.40 if, in scope, the lower bound of the 95% cluster interval of the
+  paired `answer_correctness` difference (F minus N) is at least −0.03, every
+  case scored 0 in F but not in N is shown not to be a serious false statement,
+  and no answer gives an email outside the directories except a procedure
+  mailbox on its own procedure. Because v4 informed the change, the main check
+  is 12 contact and referral questions written for it and not drawn from v4
+  (`ask_fresh.json` in the session notes), each read against the two rules.
+  Whatever the outcome, the prompt is not tuned further on these cases.
+  Run F was superseded before it ran (the owner chose a simpler rule, below).
+- **Run A: composer v3.42, no referral without evidence** (owner, 2026-10-11,
+  before the run; the final run for this change). v3.42 is v3.36 plus one rule,
+  in the owner's words: "Khi chưa tìm thấy căn cứ cho một ý, nói rõ điều đó và
+  không gợi ý đơn vị hay thông tin liên hệ nào cho ý đó." Composer reasoning
+  none, served first by the DeepSeek API (run N used DeepInfra; same weights);
+  judge gpt-oss-120b on DeepInfra as in N; normalizer v34 (N ran v32), so the
+  paired difference also carries the normalizer change. v4 is not a hold-out
+  for referral behaviour (R and R2 were read). Keep v3.42 if, in scope, the
+  lower bound of the 95% cluster interval of the paired `answer_correctness`
+  difference (A minus N) is at least −0.03, every case scored 0 in A but not in
+  N is shown not to be a serious false statement, and no answer gives an email
+  outside the directories except a procedure mailbox on its own procedure.
+  Before the run, 21 targeted replays (12 new contact questions, the owner's
+  live case, 8 v4 cases) gave: personal contacts declined without a referral;
+  grounded units with full contacts; one leak (the rector's phone answered with
+  Phòng CTCT&HSSV's mailboxes, `nghidinh116@` among them); two over-cautious
+  answers. The leak is recorded as a known limit, not tuned.
+  Outcome (2026-10-11, `official_v4_answers_20261011T120228Z`, commit `072e4152`,
+  no provider error): in scope A 0.968 against N 0.972, paired −0.004, 95%
+  cluster interval [−0.019, +0.011], no zero. The email criterion fails: V4-232
+  (a department head's phone) gives Phòng CTCT&HSSV with `nghidinh116@`, while N
+  had no such leak on v4. The rule did not show a measurable effect on the leak
+  it targets, and it removed a grounded referral (V4-229). v3.42 is not kept;
+  the composer stays v3.36 with reasoning none.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

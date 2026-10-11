@@ -19,7 +19,7 @@ llm:
   # The DeepSeek API first (base_url absent): measured faster with low
   # thinking than DeepInfra, which took 58-120 s on long questions (2026-10-04).
   model_name: deepseek-flash
-  reasoning_effort: low
+  reasoning_effort: none
   api_keys_env_var: DEEPSEEK_API_KEY
   # The same DeepSeek-V4.1-Flash weights served by DeepInfra, used when the
   # DeepSeek API cannot answer (no balance, key, rate limit, timeout, server or

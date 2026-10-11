@@ -1280,6 +1280,12 @@ questions above.
   - Asked where a branch-campus student files a fee exemption, the planner sent
     the question to the unit catalog, which missed the notice's branch-campus
     paragraph (one live check).
+  - When nothing is found for part of a question, the composer occasionally
+    still suggests where to ask and may borrow a contact from a retrieved
+    passage about another matter (e.g. `nghidinh116@`, the mailbox for the
+    sư phạm fee-support procedure). Rare (1 of 246 on `official_v4`); a prompt
+    rule against it did not measurably help (RESULTS.md, 2026-10-11), so a code
+    check is deferred until pilot traces show how often it happens.
 - A comparison with plain RAG (no planner) or with a long-context model given the
   whole handbook; these baselines are planned for the paper.
 - The graph and BM25 ablations on the current stack. The runner has the modes

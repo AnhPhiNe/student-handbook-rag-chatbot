@@ -213,7 +213,7 @@ def test_rejects_missing_key_and_unknown_effort(monkeypatch):
 
 
 @pytest.mark.parametrize(("config_path", "effort", "model", "base_url", "timeout"), [
-    ("configs/answer_generation.yaml", "low", "deepseek-flash", "https://api.deepseek.com", 120),
+    ("configs/answer_generation.yaml", "none", "deepseek-flash", "https://api.deepseek.com", 120),
     ("configs/experiments/answer_deepseek_low.yaml", "low", "deepseek-flash", "https://api.deepseek.com", 60),
 ])
 def test_pipeline_builds_the_configured_deepseek_composer(monkeypatch, config_path, effort, model, base_url, timeout):

@@ -313,6 +313,26 @@ author nor its models wrote.
   iteration on v4 for this change, whatever its result): the contact rule says a
   question asking which unit to contact or where to contact it needs every
   contact field. Same rule as R2 against N. Its result is reported as it comes.
+  R3 was stopped part-way (166 of 246 answers, none judged) at the owner's
+  request: v3.37–v3.39 each added a line for cases read on v4, which tunes the
+  prompt to this set. Its partial output is not reported.
+- **Run F: composer v3.40, contact principles** (owner, 2026-10-11, before the
+  run; the final run for this change). The case-specific lines of v3.37–v3.39
+  are removed. v3.40 differs from v3.36 by two general rules: when pointing to
+  where to ask about a part without evidence, name only a unit the evidence says
+  does that work, else the adviser or faculty office (study matters) or Phòng
+  CTCT&HSSV (other student matters); and contact details are given only when
+  the evidence ties them to that unit and that matter, with every contact field
+  the evidence has for a unit named as the place to contact. **v4 is not a
+  hold-out for this change**: R and R2 were read before v3.40 was written.
+  Keep v3.40 if, in scope, the lower bound of the 95% cluster interval of the
+  paired `answer_correctness` difference (F minus N) is at least −0.03, every
+  case scored 0 in F but not in N is shown not to be a serious false statement,
+  and no answer gives an email outside the directories except a procedure
+  mailbox on its own procedure. Because v4 informed the change, the main check
+  is 12 contact and referral questions written for it and not drawn from v4
+  (`ask_fresh.json` in the session notes), each read against the two rules.
+  Whatever the outcome, the prompt is not tuned further on these cases.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

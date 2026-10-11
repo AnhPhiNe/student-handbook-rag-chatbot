@@ -29,7 +29,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.39-grounded-referrals"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.40-contact-principles"
 
 
 def build_answer_prompt_bundle(
@@ -108,9 +108,7 @@ Mọi mục dưới đây là bắt buộc.
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
 - Với các đơn vị không cần clarification: nếu coverage=uncovered, không có source_ref được phép, hoặc evidence không đủ cho một ý thực sự được hỏi, nói chưa tìm thấy căn cứ cho đúng ý đó; không đổi target và không suy "Sổ tay không quy định" chỉ vì packet không chứa thông tin ngoài target.
 - Với câu hỏi có/không, nếu thiếu căn cứ trực tiếp, nói "Nguồn hiện có chưa trực tiếp xác lập..."; không thay câu trả lời bằng một chính sách khác chỉ vì cùng chủ đề. Chỉ dùng câu đó cho đúng ý thiếu căn cứ; ý có căn cứ thì trả lời thẳng, không mở đầu bằng câu rào đón.
-- Khi chưa tìm thấy căn cứ cho một ý và cần chỉ nơi hỏi tiếp: nếu evidence của đơn vị nêu đơn vị thực hiện, tiếp nhận hoặc phụ trách đúng việc đó (vd. "Phòng X xét...", "nộp hồ sơ về Phòng X"), gợi ý đúng đơn vị đó. Chỉ khi evidence không nêu đơn vị nào mới gợi ý chung: cố vấn học tập hoặc văn phòng khoa với việc học tập, Phòng CTCT&HSSV với các việc khác của sinh viên; không tự đoán một đơn vị cụ thể.
-- Email, số điện thoại của một thủ tục hay chính sách riêng (vd. hộp thư dành cho một chính sách hỗ trợ) chỉ dùng khi câu hỏi thuộc đúng thủ tục đó; không đưa vào lời gợi ý liên hệ cho việc khác.
-- Khi câu hỏi xin thông tin liên hệ của một cá nhân (giảng viên, cán bộ) mà evidence không có, nói rõ nguồn hiện có không có thông tin liên hệ của người đó; không trình bày liên hệ của một đơn vị như thể đó là liên hệ của người được hỏi. Các quy tắc gợi ý ở mục này không làm bớt thông tin liên hệ của đơn vị đã có căn cứ.
+- Khi chỉ nơi hỏi tiếp cho phần chưa có căn cứ, chỉ nêu đơn vị mà evidence cho biết làm đúng việc đó. Nếu evidence không nêu, chỉ kênh chung: cố vấn học tập hoặc văn phòng khoa với việc học tập, Phòng CTCT&HSSV với các việc khác của sinh viên.
 - Nếu nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi, phải nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
 
 4. BẢNG VÀ SỐ LIỆU
@@ -122,7 +120,7 @@ Mọi mục dưới đây là bắt buộc.
 - Nội dung rag có thể chứa bảng đã được chuyển thành dòng, mỗi dòng dạng "- Tên bảng › nhóm › mục: giá trị" (dấu "–" cũng dùng để nối các phần). Mỗi dòng là một hàng độc lập; các dòng liền nhau thường có chung phần đầu và chỉ khác nhãn mục ở cuối. Chỉ lấy giá trị từ dòng có nhãn mục khớp đúng điều được hỏi, không lấy giá trị của dòng kề bên có nhãn khác.
 - Mọi số liệu phải lấy nguyên từ evidence đã được cấp cho đơn vị; không tính lại, nội suy hoặc mượn số liệu từ đơn vị khác.
 - Chép nguyên văn từng ký tự mọi email, số điện thoại, đường link, mã số và số hiệu văn bản từ evidence; không sửa, rút gọn hay tự điền phần còn thiếu.
-- Khi câu hỏi cần thông tin liên hệ của một đơn vị, kể cả khi chỉ hỏi "liên hệ đơn vị nào", "liên hệ ở đâu", nêu đủ các trường liên hệ mà evidence của đơn vị đó có: số điện thoại kèm số máy nội bộ (internal_numbers) khi danh bạ có, email, địa chỉ văn phòng, website. Số máy nội bộ là một phần của số điện thoại, không phải chi tiết phụ được phép bỏ.
+- Thông tin liên hệ (email, điện thoại, địa chỉ, website) chỉ được nêu khi evidence gắn nó với đúng đơn vị và đúng việc đang trả lời. Khi đã nêu một đơn vị để sinh viên liên hệ, nêu đủ các trường liên hệ mà evidence có cho đơn vị đó; số máy nội bộ (internal_numbers) là một phần của số điện thoại, không phải chi tiết phụ được phép bỏ.
 - Khi nêu một công thức, nêu kèm quy tắc làm tròn và các định nghĩa đi cùng công thức đó trong evidence; công thức thiếu quy tắc làm tròn là trả lời thiếu.
 
 5. TRÌNH BÀY

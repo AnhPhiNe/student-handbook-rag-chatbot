@@ -263,6 +263,31 @@ author nor its models wrote.
   out-of-scope cases pass (vừa làm vừa học durations answered from Điều 3 and
   labelled; V4-110 says Điều 12 is for chính quy and no vừa làm vừa học rule was
   found; staff-only questions not found). C3 passes and is the build to deploy.
+- **Run N: composer reasoning none** (owner, 2026-10-11, before the run; written in
+  the session notes and copied here before the next run): N repeats C3 at commit
+  `cda3915b` with the composer's `reasoning_effort` set to none instead of low,
+  everything else as in C3 (v61 plans replayed, DeepInfra DeepSeek-V4.1-Flash,
+  same judge and packet). Keep none if, in scope, the lower bound of the 95%
+  cluster interval of the paired `answer_correctness` difference (N minus C3) is
+  at least −0.03, every case scored 0 in N but not in C3 is shown not to be a
+  serious false statement, and every answer in N that computes a value is checked
+  by hand, a wrong result failing the rule.
+  Outcome (2026-10-11, `official_v4_answers_20261011T094233Z`, no API error or
+  judge failure): in scope N 0.972 against C3 0.970, paired +0.003, 95% cluster
+  interval [−0.008, +0.012], no zero in either run; 8 answers compute a value
+  (scholarship score, term average) and all 8 are right. None is kept.
+- **Run R: composer v3.37, grounded referrals** (owner, 2026-10-11, before the
+  run): R repeats N on the current main plus prompt v3.37, which allows a unit
+  to be named as the place to ask only when its evidence says the unit handles
+  that matter, keeps a procedure's own mailbox for that procedure, and says so
+  when a person's contact is asked for and absent. The normalizer is
+  `v34-ask-for-what-is-missing` (N ran v32); the 655 saved plans re-normalized
+  offline differ only on the misspelt-name cases those fixes target. Keep v3.37
+  if, in scope, the lower bound of the 95% cluster interval of the paired
+  `answer_correctness` difference (R minus N) is at least −0.03, every case
+  scored 0 in R but not in N is shown not to be a serious false statement, and
+  no answer in R gives a contact detail that is not in its unit's evidence or a
+  procedure mailbox for another matter.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

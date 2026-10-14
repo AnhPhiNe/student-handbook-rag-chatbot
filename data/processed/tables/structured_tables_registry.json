@@ -1,14 +1,14 @@
 [
   {
-    "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+    "table_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
     "data_category": "regulation_table",
     "table_type": "conduct",
     "table_subtype": "conduct_classification",
     "table_name": "Bảng phân loại kết quả rèn luyện",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-    "source_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+    "source_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
     "title": "Phân loại kết quả rèn luyện",
     "columns": [
       "Khung điểm",
@@ -41,7 +41,7 @@
       }
     ],
     "source_pages": [
-      74
+      69
     ],
     "quality_status": "approved",
     "derived_from": null,
@@ -53,10 +53,10 @@
     "table_type": "scholarship",
     "table_subtype": "scholarship_amount",
     "table_name": "Mức học bổng khuyến khích học tập",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
     "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
     "columns": [],
     "rows": [
@@ -80,8 +80,8 @@
       }
     ],
     "source_pages": [
-      52,
-      53
+      48,
+      49
     ],
     "quality_status": "approved",
     "derived_from": null,
@@ -93,10 +93,10 @@
     "table_type": "scholarship",
     "table_subtype": "scholarship_classification",
     "table_name": "Xếp loại học bổng khuyến khích học tập",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
     "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
     "columns": [],
     "rows": [
@@ -120,8 +120,8 @@
       }
     ],
     "source_pages": [
-      52,
-      53
+      48,
+      49
     ],
     "quality_status": "approved",
     "derived_from": null,
@@ -133,10 +133,10 @@
     "table_type": "scholarship",
     "table_subtype": "scholarship_eligibility",
     "table_name": "Điều kiện xét học bổng khuyến khích học tập",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
     "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
     "columns": [],
     "rows": [
@@ -158,8 +158,8 @@
       }
     ],
     "source_pages": [
-      52,
-      53
+      48,
+      49
     ],
     "quality_status": "approved",
     "derived_from": null,
@@ -171,10 +171,10 @@
     "table_type": "scholarship",
     "table_subtype": "scholarship_score_formula",
     "table_name": "Công thức tính điểm xếp hạng học bổng",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "source_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
     "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
     "columns": [],
     "rows": [
@@ -186,23 +186,23 @@
       }
     ],
     "source_pages": [
-      52,
-      53
+      48,
+      49
     ],
     "quality_status": "approved",
     "derived_from": null,
     "used_by_runtime": true
   },
   {
-    "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+    "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
     "data_category": "regulation_table",
     "table_type": "scoring",
     "table_subtype": "grade_scale",
     "table_name": "Bảng quy đổi thang điểm 10 sang điểm chữ",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+    "source_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
     "title": "Đánh giá và tính điểm học phần",
     "columns": [
       "Loại",
@@ -257,25 +257,25 @@
       }
     ],
     "source_pages": [
+      16,
+      17,
       18,
-      19,
-      20,
-      21
+      19
     ],
     "quality_status": "approved",
     "derived_from": null,
     "used_by_runtime": true
   },
   {
-    "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
+    "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded",
     "data_category": "regulation_table",
     "table_type": "scoring",
     "table_subtype": "pass_fail_ungraded",
     "table_name": "Bảng đánh giá học phần đạt/không đạt không phân mức",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+    "source_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
     "title": "Đánh giá và tính điểm học phần",
     "columns": [
       "Kết quả",
@@ -298,10 +298,10 @@
       }
     ],
     "source_pages": [
+      16,
+      17,
       18,
-      19,
-      20,
-      21
+      19
     ],
     "quality_status": "approved",
     "derived_from": null,
@@ -309,15 +309,15 @@
     "applicability": "Áp dụng cho học phần chỉ yêu cầu đạt, không phân mức và không tính vào điểm trung bình học tập."
   },
   {
-    "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+    "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
     "data_category": "regulation_table",
     "table_type": "scoring",
     "table_subtype": "academic_classification",
     "table_name": "Bảng xếp loại học lực theo thang điểm 4",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
     "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
     "columns": [
       "Xếp loại",
@@ -350,24 +350,24 @@
       }
     ],
     "source_pages": [
-      21,
-      22,
-      23
+      19,
+      20,
+      21
     ],
     "quality_status": "approved",
     "derived_from": null,
     "used_by_runtime": true
   },
   {
-    "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
+    "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4",
     "data_category": "regulation_table",
     "table_type": "scoring",
     "table_subtype": "letter_to_grade4",
     "table_name": "Bảng quy đổi điểm chữ sang thang điểm 4",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "source_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
     "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
     "columns": [
       "Thang điểm chữ",
@@ -412,24 +412,24 @@
       }
     ],
     "source_pages": [
-      21,
-      22,
-      23
+      19,
+      20,
+      21
     ],
     "quality_status": "approved",
     "derived_from": null,
     "used_by_runtime": true
   },
   {
-    "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+    "table_id": "K49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
     "data_category": "regulation_table",
     "table_type": "study_duration",
     "table_subtype": "study_duration",
     "table_name": "Thời gian học tập chuẩn và tối đa",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "source_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
     "title": "Chương trình đào tạo và thời gian học tập",
     "columns": [
       "Chương trình đào tạo",
@@ -459,9 +459,9 @@
       }
     ],
     "source_pages": [
-      11,
-      12,
-      13
+      9,
+      10,
+      11
     ],
     "quality_status": "approved",
     "derived_from": null,
@@ -469,15 +469,15 @@
     "applicability": "Áp dụng cho hình thức đào tạo chính quy."
   },
   {
-    "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
+    "table_id": "K49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc",
     "data_category": "regulation_table",
     "table_type": "study_duration",
     "table_subtype": "study_duration",
     "table_name": "Thời gian học tập chuẩn và tối đa",
-    "cohort": "K48-K49",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "source_parent_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "source_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
     "title": "Chương trình đào tạo và thời gian học tập",
     "columns": [
       "Chương trình đào tạo",
@@ -507,9 +507,9 @@
       }
     ],
     "source_pages": [
-      11,
-      12,
-      13
+      9,
+      10,
+      11
     ],
     "quality_status": "approved",
     "derived_from": null,
@@ -696,7 +696,7 @@
     "used_by_runtime": true,
     "source_cohort": "K50",
     "applicable_cohorts": [
-      "K48-K49",
+      "K49",
       "K50",
       "K51"
     ],

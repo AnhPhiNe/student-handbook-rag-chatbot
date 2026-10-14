@@ -15,7 +15,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "data/eval/official_v1"
-COHORTS = ("K48-K49", "K50", "K51")
+COHORTS = ("K49", "K50", "K51")
 CONTRACT = "query-plan-grounded-outcome-v9"
 CONTRACT_V10 = "query-plan-grounded-outcome-v10"
 # Size and balance checks used when an authoring file declares no `settings.expected`.

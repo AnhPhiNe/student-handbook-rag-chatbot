@@ -6,6 +6,7 @@ from collections import Counter
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.retrieval.vectorstore.mongo_store import get_mongo_store
+from src.common.cohort import valid_cohorts
 from src.common.io import load_json, sha256_file
 from pathlib import Path
 from scripts.build_parent_child_artifacts import validate_publish_separation
@@ -94,7 +95,7 @@ def main():
         for item in docstore_items
     )
 
-    expected_cohorts = {"K48-K49", "K50", "K51"}
+    expected_cohorts = set(valid_cohorts())
     actual_cohorts = {
         cohort
         for cohort, count in cohort_counts.items()

@@ -12,8 +12,8 @@
 version: 1
 entries:
   - id: diem_trung_binh_chung
-    # Quy chế đào tạo, Điều 11 khoản 5 (K48-K49 p.22, K50 p.20, K51 p.20);
+    # Quy chế đào tạo, Điều 11 khoản 5 (K49 p.20, K50 p.20, K51 p.20);
     # the same formula as rule gpa_weighted_average in formula_rules.json.
-    cohorts: [K48-K49, K50, K51]
+    cohorts: [K49, K50, K51]
     before: "Trong đó:\nA là điểm trung bình chung"
     text: "A = Σ(ai × ni) / Σ(ni)"

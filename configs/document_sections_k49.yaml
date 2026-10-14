@@ -1,8 +1,8 @@
-document_id: so_tay_sinh_vien_khoa_48_49
-file_name: so-tay-sinh-vien-khoa-48-49.pdf
+document_id: so_tay_sinh_vien_khoa_49
+file_name: so-tay-sinh-vien-khoa-49.pdf
 language: vi
 document_type: student_handbook
-academic_year: "2022-2023"
+academic_year: "2023-2024"
 
 sections:
   - content_type: cover_page
@@ -31,22 +31,22 @@ sections:
     description: "Tổng quan Trường Đại học Sư phạm TP.HCM"
 
   - content_type: scoring_form_table
-    page_start: 82
-    page_end: 86
-    description: "Phiếu đánh giá kết quả rèn luyện sinh viên"
+    page_start: 77
+    page_end: 81
+    description: "Khung điểm đánh giá kết quả rèn luyện sinh viên"
 
   - content_type: regulation_text
     page_start: 8
-    page_end: 128
+    page_end: 126
     description: "Các quy chế, quy định, chính sách sinh viên"
 
   - content_type: office_directory
-    page_start: 129
-    page_end: 140
+    page_start: 127
+    page_end: 138
     description: "Danh sách phòng ban, đơn vị phục vụ công tác đào tạo"
 
   - content_type: faculty_program_directory
-    page_start: 141
+    page_start: 139
     page_end: 159
     description: "Danh sách khoa, tổ, ngành đào tạo"
 
@@ -57,15 +57,20 @@ sections:
 
   - content_type: ktx_procedure_archive
     page_start: 161
-    page_end: 162
+    page_end: 163
     description: "Quy trình xét sinh viên vào ở ký túc xá"
 
   - content_type: reference_directory
-    page_start: 163
-    page_end: 166
+    page_start: 164
+    page_end: 167
     description: "Danh sách bảo tàng và di tích lịch sử tại TP.HCM"
 
+  - content_type: regulation_text
+    page_start: 168
+    page_end: 168
+    description: "Quy trình và biểu mẫu các công tác liên quan đến sinh viên"
+
   - content_type: toc_or_index
-    page_start: 186
-    page_end: 188
+    page_start: 169
+    page_end: 176
     description: "Mục lục hoặc thông tin xuất bản cuối tài liệu"

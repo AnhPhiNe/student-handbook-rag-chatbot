@@ -132,54 +132,50 @@ cohorts:
       title: "Một số công việc của các khoa và phân hiệu liên quan đến sinh viên"
       kind: guide
       pages: [208, 208]
-  K48-K49:
-    - id: ThongTinNghiDinh116
-      title: "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm"
-      kind: links
-      pages: [117, 117]
-      start_at: "Sinh viên có thể quét mã QR"
-    - id: PhieuDanhGiaRenLuyen
-      title: "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)"
+  K49:
+    - id: KhungDiemDanhGiaRenLuyen
+      title: "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)"
       kind: score_framework
-      pages: [82, 86]
-      prose: false
+      pages: [77, 81]
       tables:
-        - pages: [82, 86]
+        - pages: [77, 81]
           render: score_framework
           title: "Khung điểm rèn luyện"
     - id: HuongDanLapHoSoRenLuyen
-      title: "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)"
+      title: "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên"
       kind: guide
-      pages: [87, 87]
-    - id: QuyTacUngXuSinhVien
-      title: "10 quy tắc ứng xử của sinh viên Trường Đại học Sư phạm Thành phố Hồ Chí Minh"
+      pages: [82, 82]
+    - id: HuongDanDanhGiaRenLuyenTrucTuyen
+      title: "Hướng dẫn quy trình đánh giá kết quả rèn luyện sinh viên trên chuyên trang đánh giá kết quả rèn luyện sinh viên trực tuyến"
       kind: guide
-      pages: [105, 105]
+      pages: [83, 83]
+    - id: ThongTinNghiDinh116
+      title: "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm"
+      kind: links
+      pages: [115, 115]
+      start_at: "Sinh viên có thể quét mã QR"
     - id: ThongBaoMienGiamHocPhi
-      title: "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023"
+      title: "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2023 – 2024"
       kind: notice
-      pages: [118, 123]
+      pages: [116, 121]
     - id: ThongBaoHocBongNguoiKhuyetTat
       title: "Thông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ phương tiện, đồ dùng học tập đối với sinh viên khuyết tật thuộc hộ nghèo, hộ cận nghèo học hệ chính quy"
       kind: notice
-      pages: [124, 125]
+      pages: [122, 123]
     - id: ThongBaoHoTroChiPhiHocTap
-      title: "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường"
+      title: "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo hệ chính quy học tại Trường"
       kind: notice
-      pages: [126, 128]
-    - id: QuyTrinhXetVaoKyTucXa
-      title: "Quy trình xét sinh viên vào ở ký túc xá"
-      kind: procedure
-      pages: [161, 162]
-    - id: CacMauDonBieuMau
-      title: "Các mẫu đơn và biểu mẫu"
-      kind: links
-      pages: [168, 168]
-    - id: MauDonBieuMau
-      title: "Các mẫu đơn và biểu mẫu (tên mẫu, trang và nơi gửi)"
-      kind: forms
-      pages: [169, 185]
+      pages: [124, 126]
     - id: CongViecCuaCacKhoa
       title: "Một số công việc của các khoa liên quan đến sinh viên"
       kind: guide
       pages: [160, 160]
+    - id: QuyTrinhXetVaoKyTucXa
+      title: "Quy trình xét sinh viên vào ở ký túc xá"
+      kind: procedure
+      pages: [161, 163]
+      skip_pages: [161]
+    - id: QuyTrinhBieuMau
+      title: "Quy trình và biểu mẫu các công tác liên quan đến sinh viên"
+      kind: links
+      pages: [168, 168]

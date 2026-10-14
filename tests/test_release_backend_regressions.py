@@ -120,7 +120,7 @@ def test_missing_task_cohorts_preserve_explicit_multi_cohort_scope() -> None:
     plan, errors = normalize_query_plan(
         _plan([_rag_task()]),
         query="So sánh K50 và K51 về quy định học vụ.",
-        selected_cohort="K48-K49",
+        selected_cohort="K49",
     )
 
     assert errors == []
@@ -134,7 +134,7 @@ def test_valid_multi_task_plan_keeps_each_task_cohort_assignment() -> None:
     plan, errors = normalize_query_plan(
         _plan([first, second]),
         query="So sánh K50 và K51 về đăng ký học phần và hoãn thi.",
-        selected_cohort="K48-K49",
+        selected_cohort="K49",
     )
 
     assert errors == []
@@ -148,7 +148,7 @@ def test_missing_task_cohorts_use_task_question_before_global_scope() -> None:
     plan, errors = normalize_query_plan(
         _plan([first, second]),
         query="So sánh K50 và K51 về đăng ký học phần và hoãn thi.",
-        selected_cohort="K48-K49",
+        selected_cohort="K49",
     )
 
     assert errors == []

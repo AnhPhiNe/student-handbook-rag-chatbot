@@ -47,10 +47,10 @@ replacements:
       - [QuyCheDaoTao_Chuong4_Dieu19, "tốt nghiệp chương trình thứ hai"]
       - [QuyCheDaoTao_Chuong3_Dieu15, "5%"]
   75:
-    query: "Sinh viên K48–K49 và K51 học cải thiện thì điểm chính thức được lấy thế nào?"
+    query: "Sinh viên K49 và K51 học cải thiện thì điểm chính thức được lấy thế nào?"
     features: [multi_cohort, multi_source]
     sources:
-      - [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm", K48-K49]
+      - [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm", K49]
       - [QuyCheDaoTao_Chuong3_Dieu10, "cải thiện điểm", K51]
   90:
     query: "Em học liên thông chính quy, điểm khá và đủ tín chỉ thì có được xét học bổng khuyến khích không?"
@@ -216,7 +216,7 @@ groups:
       - ["Gian lận kiểm tra được xử lý theo từng môn hay không?", "từng học phần"]
       - ["Bằng đã cấp rồi mới phát hiện hồ sơ tốt nghiệp giả thì có bị thu hồi bằng không?", "thu hồi"]
   - source: QuyCheCongTacSinhVien_Chuong5_Dieu26
-    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu27}
+    source_by_cohort: {K49: QuyCheCongTacSinhVien_Chuong5_Dieu27}
     topic: hoc_bong
     cases:
       - ["Học liên thông có được học bổng khuyến khích học tập không?", "liên thông"]
@@ -225,7 +225,7 @@ groups:
       - ["Học bổng tài trợ có điều kiện riêng của nhà tài trợ không?", "điều kiện và quy trình riêng"]
       - ["Em học liên thông chính quy, có phải cứ chính quy là được xét học bổng khuyến khích không?", "không được xét"]
   - source: QuyCheCongTacSinhVien_Chuong5_Dieu27
-    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu28}
+    source_by_cohort: {K49: QuyCheCongTacSinhVien_Chuong5_Dieu28}
     topic: hoc_bong
     cases:
       - ["Tín chỉ học cải thiện có được tính vào số tín chỉ xét học bổng không?", "cải thiện"]
@@ -234,7 +234,7 @@ groups:
       - ["Học bổng xét chung cả trường hay chia theo ngành và khóa?", "ngành học"]
       - ["Điểm học tập với rèn luyện đều khá rồi thì chắc chắn nhận học bổng hay còn phụ thuộc quỹ?", "quỹ"]
   - source: QuyCheCongTacSinhVien_Chuong5_Dieu28
-    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu29}
+    source_by_cohort: {K49: QuyCheCongTacSinhVien_Chuong5_Dieu29}
     topic: hoc_bong
     cases:
       - ["Bằng điểm học bổng nhau thì ưu tiên ai?", "bằng nhau"]
@@ -243,7 +243,7 @@ groups:
       - ["Quỹ học bổng ngành còn dư thì xử lý thế nào?", "còn dư"]
       - ["Hai bạn bằng cả điểm học tập và rèn luyện mà quỹ không đủ thì chia học bổng dựa vào đâu?", "số tín chỉ"]
   - source: QuyCheCongTacSinhVien_Chuong5_Dieu29
-    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu30}
+    source_by_cohort: {K49: QuyCheCongTacSinhVien_Chuong5_Dieu30}
     topic: hoc_phi
     cases:
       - ["Hồ sơ xin miễn giảm học phí nộp ở đâu?", "nộp hồ sơ"]
@@ -252,7 +252,7 @@ groups:
       - ["Sinh viên dân tộc thiểu số được hỗ trợ chi phí học tập theo văn bản nào?", "dân tộc thiểu số"]
       - ["Em thuộc diện miễn giảm học phí thì có tự được áp dụng hay vẫn phải nộp hồ sơ đúng hạn?", "từng học kỳ"]
   - source: QuyCheCongTacSinhVien_Chuong5_Dieu30
-    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong5_Dieu31}
+    source_by_cohort: {K49: QuyCheCongTacSinhVien_Chuong5_Dieu31}
     topic: nghi_hoc
     cases:
       - ["Đang nợ học phí có làm hồ sơ nghỉ học tạm thời được không?", "không nợ học phí"]
@@ -261,7 +261,7 @@ groups:
       - ["Hồ sơ bảo lưu gửi muộn nhất trước kỳ thi bao lâu?", "04 tuần"]
       - ["Em định học lại ngay kỳ tới sau bảo lưu, cần làm thủ tục trước lúc đăng ký môn bao lâu?", "2 tuần"]
   - source: QuyCheCongTacSinhVien_Chuong6_Dieu35
-    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong6_Dieu36}
+    source_by_cohort: {K49: QuyCheCongTacSinhVien_Chuong6_Dieu36}
     topic: khac
     cases:
       - ["Sinh viên vi phạm có phải viết bản kiểm điểm không?", "bản tự kiểm điểm"]
@@ -270,7 +270,7 @@ groups:
       - ["Họp xét kỷ luật có sinh viên vi phạm tham dự không?", "sinh viên có hành vi vi phạm"]
       - ["Không đến họp xét kỷ luật dù đã được mời thì hội đồng có phải hoãn lại không?", "không đến dự"]
   - source: QuyCheCongTacSinhVien_Chuong6_Dieu36
-    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong6_Dieu37}
+    source_by_cohort: {K49: QuyCheCongTacSinhVien_Chuong6_Dieu37}
     topic: khac
     cases:
       - ["Khiển trách bao lâu thì hết hiệu lực?", "3 tháng"]
@@ -279,7 +279,7 @@ groups:
       - ["Hết hiệu lực kỷ luật có được hưởng lại quyền lợi sinh viên không?", "quyền lợi"]
       - ["Em bị khiển trách nhưng lại tái phạm trong thời gian đó, có đương nhiên hết kỷ luật sau ba tháng không?", "không tái phạm"]
   - source: QuyCheCongTacSinhVien_Chuong6_Dieu37
-    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong6_Dieu38}
+    source_by_cohort: {K49: QuyCheCongTacSinhVien_Chuong6_Dieu38}
     topic: khac
     cases:
       - ["Hội đồng khen thưởng kỷ luật có vai trò gì?", "tư vấn"]
@@ -288,7 +288,7 @@ groups:
       - ["Xử lý sinh viên nội trú thì hội đồng có đại diện ký túc xá không?", "KTX"]
       - ["Lớp trưởng được mời họp kỷ luật thì có được đề xuất mức xử lý và bỏ phiếu luôn không?", "phát biểu ý kiến"]
   - source: QuyCheCongTacSinhVien_Chuong6_Dieu38
-    source_by_cohort: {K48-K49: QuyCheCongTacSinhVien_Chuong6_Dieu39}
+    source_by_cohort: {K49: QuyCheCongTacSinhVien_Chuong6_Dieu39}
     topic: khac
     cases:
       - ["Không đồng ý quyết định kỷ luật thì khiếu nại ai?", "Hiệu trưởng"]

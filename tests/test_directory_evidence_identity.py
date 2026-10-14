@@ -100,7 +100,7 @@ def test_every_catalog_record_keeps_its_existing_identity(catalogs, family):
 
 
 @pytest.mark.parametrize("family", FAMILIES)
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 @pytest.mark.parametrize("reverse", [False, True])
 def test_real_two_record_tasks_keep_separate_evidence_and_provenance(catalogs, family, cohort, reverse):
     query, result, expected, id_field = execute_pair(catalogs, family, cohort, reverse)

@@ -41,9 +41,9 @@ cases:
   # ---- planner only: the answer needs the table and the rule next to it
   - {id: p01, cohort: K51, expect_rag: true, query: "Điều kiện để được học bổng khuyến khích loại giỏi là gì?"}
   - {id: p02, cohort: K50, expect_rag: true, query: "Muốn nhận học bổng loại xuất sắc thì cần những điều kiện gì?"}
-  - {id: p03, cohort: K48-K49, expect_rag: true, query: "Học bổng khuyến khích loại khá yêu cầu những gì?"}
+  - {id: p03, cohort: K49, expect_rag: true, query: "Học bổng khuyến khích loại khá yêu cầu những gì?"}
   - {id: p04, cohort: K51, expect_rag: true, query: "IELTS 5.0 có đủ chuẩn đầu ra ngoại ngữ để tốt nghiệp không?"}
   - {id: p05, cohort: K50, expect_rag: true, query: "Em có TOEFL iBT 40 điểm thì đạt chuẩn đầu ra ngoại ngữ chưa?"}
   - {id: p06, cohort: K51, expect_rag: true, query: "Có chứng chỉ HSK 3 thì được công nhận đạt chuẩn ngoại ngữ đầu ra không?"}
-  - {id: p07, cohort: K48-K49, expect_rag: true, query: "Chứng chỉ JLPT N4 đã đủ điều kiện ngoại ngữ để xét tốt nghiệp chưa?"}
+  - {id: p07, cohort: K49, expect_rag: true, query: "Chứng chỉ JLPT N4 đã đủ điều kiện ngoại ngữ để xét tốt nghiệp chưa?"}
   - {id: p08, cohort: K51, expect_rag: true, query: "TOEIC nghe 300, đọc 300, nói 130, viết 130 thì có đạt chuẩn đầu ra không?"}

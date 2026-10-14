@@ -58,7 +58,7 @@ def test_correct_comparison_keeps_both_cohorts_over_ui_default(mode):
     question = "So sánh K50 và K51 với điểm 5.2?"
     first = task(question, mode=mode, value="5.2")
     first["cohorts"] = ["K50", "K51"]
-    plan, errors = normalize([first], selected_cohort="K48-K49")
+    plan, errors = normalize([first], selected_cohort="K49")
     assert not errors
     assert plan["tasks"][0]["cohorts"] == ["K50", "K51"]
     assert plan["tasks"][0]["mode"] == mode

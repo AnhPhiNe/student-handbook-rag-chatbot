@@ -6,12 +6,12 @@
   "source_section_count": 8,
   "applicability_min_admission_year": 2022,
   "applicable_cohorts": [
-    "K48-K49",
+    "K49",
     "K50",
     "K51"
   ],
   "annotated_section_count": 8,
   "derived_section_count": 0,
   "removed_existing_derived_ids": [],
-  "total_docstore_items": 541
+  "total_docstore_items": 561
 }

@@ -48,7 +48,7 @@ class DeriveForeignLanguagePolicyTest(unittest.TestCase):
             self.assertEqual(source["metadata"]["source_cohort"], "K50")
             self.assertEqual(
                 source["metadata"]["applicable_cohorts"],
-                ["K48-K49", "K50", "K51"],
+                ["K49", "K50", "K51"],
             )
             self.assertTrue(source["metadata"]["applicability_validated"])
             self.assertIn("SỔ TAY SINH VIÊN KHÓA 50", source["content"])
@@ -58,7 +58,7 @@ class DeriveForeignLanguagePolicyTest(unittest.TestCase):
             self.assertTrue(
                 all(
                     chunk["metadata"]["applicable_cohorts"]
-                    == ["K48-K49", "K50", "K51"]
+                    == ["K49", "K50", "K51"]
                     for chunk in chunks
                 )
             )

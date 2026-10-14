@@ -8,23 +8,10 @@ from typing import Any
 # The only source of truth for supported cohorts. Add a cohort here and the
 # normalizer, router schemas, planner schemas, and task-merging regex all see it.
 COHORT_REGISTRY: dict[str, dict[str, Any]] = {
-    "K48-K49": {
-        "aliases": (
-            "K48-K49",
-            "K48/K49",
-            "K48_K49",
-            "K48-49",
-            "K48/49",
-            "K48_49",
-            "K48K49",
-            "K48",
-            "K49",
-            "48-49",
-            "48/49",
-            "48_49",
-        ),
-        "admission_years": (2022, 2023),
-        "document_id": "so_tay_sinh_vien_khoa_48_49",
+    "K49": {
+        "aliases": ("K49",),
+        "admission_years": (2023,),
+        "document_id": "so_tay_sinh_vien_khoa_49",
     },
     "K50": {
         "aliases": ("K50",),

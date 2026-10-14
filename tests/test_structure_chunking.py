@@ -46,7 +46,7 @@ def test_every_chunk_names_its_document_and_article_for_embedding_only(chunks):
 
 def test_out_of_scope_articles_get_no_chunk(chunks):
     parents = {c["metadata"]["parent_section_id"] for c in chunks}
-    for cohort in ("K48-K49_K48_49_", "K50_", "K51_"):
+    for cohort in ("K49_", "K50_", "K51_"):
         assert f"{cohort}QuyCheDaoTao_Chuong3_Dieu13" not in parents
         assert f"{cohort}QuyCheDaoTao_Chuong1_Dieu6" not in parents
     assert "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu5" in parents  # office hours are kept
@@ -55,11 +55,11 @@ def test_out_of_scope_articles_get_no_chunk(chunks):
 
 
 def test_out_of_scope_points_leave_their_clause_otherwise_intact(chunks):
-    for parent in ("K50_QuyCheDaoTao_Chuong1_Dieu3", "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3"):
+    for parent in ("K50_QuyCheDaoTao_Chuong1_Dieu3", "K49_QuyCheDaoTao_Chuong1_Dieu3"):
         joined = "\n".join(texts_of(chunks, parent))
         assert "hình thức đào tạo chính quy được quy định" in joined
         assert "vừa làm vừa học" not in joined.split("6.", 1)[1]
-    k48_forms = "\n".join(texts_of(chunks, "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu5"))
+    k48_forms = "\n".join(texts_of(chunks, "K49_QuyCheDaoTao_Chuong1_Dieu5"))
     assert "Đào tạo chính quy" in k48_forms and "Đào tạo vừa làm vừa học" not in k48_forms
     transfer = "\n".join(texts_of(chunks, "K51_QuyCheCongTacSinhVien_Chuong5_Dieu31"))
     assert "cao đẳng sư phạm ngành Giáo dục Mầm non trúng tuyển từ năm 2024" not in transfer
@@ -81,8 +81,8 @@ def test_a_scope_rule_that_matches_nothing_fails_the_build():
 
 
 def test_a_long_khoan_is_one_chunk(chunks):
-    # The longest khoản, 1.1 to 1.5 of the K48-K49 fee exemptions (about 4,700 characters).
-    exempt = [t for t in texts_of(chunks, "K48-K49_ThongBaoMienGiamHocPhi_Phan2") if t.startswith("1. Đối tượng miễn")]
+    # The longest khoản, 1.1 to 1.5 of the K49 fee exemptions (about 4,700 characters).
+    exempt = [t for t in texts_of(chunks, "K49_ThongBaoMienGiamHocPhi_Phan2") if t.startswith("1. Đối tượng miễn")]
     assert len(exempt) == 1 and all(f"1.{n}." in exempt[0] for n in range(1, 6))
     assert {c["metadata"]["chunk_granularity"] for c in chunks} == {"section_heading", "clause", "article"}
 
@@ -96,7 +96,7 @@ def test_levels_follow_the_order_markers_appear():
 
 
 def test_article_heading_line_is_not_repeated_in_the_text():
-    units = article_units(BY_ID["K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu21"])
+    units = article_units(BY_ID["K49_QuyCheCongTacSinhVien_Chuong4_Dieu21"])
     assert not units[0].text().startswith("Điều 21")
 
 
@@ -155,7 +155,7 @@ def test_a_long_line_is_cut_only_where_a_sentence_or_list_item_ends(published_ch
 
 
 def test_a_heading_wrapped_over_two_lines_is_not_a_chunk(chunks):
-    texts = texts_of(chunks, "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17")
+    texts = texts_of(chunks, "K49_QuyCheDaoTao_Chuong4_Dieu17")
     assert not any(t.startswith("Điều 17") for t in texts)
 
 

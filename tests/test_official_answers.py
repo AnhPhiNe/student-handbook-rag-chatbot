@@ -8,7 +8,7 @@ from scripts.build_official_answers import BUNDLE, build
 def test_answer_policy_drafts_are_source_backed_and_unfrozen():
     cases = build()
     assert len(cases) == 150
-    assert Counter(c.get("allocation_cohort", c["cohort"]) for c in cases) == {"K48-K49": 50, "K50": 50, "K51": 50}
+    assert Counter(c.get("allocation_cohort", c["cohort"]) for c in cases) == {"K49": 50, "K50": 50, "K51": 50}
     assert Counter(c["question_style"] for c in cases) == {"realistic": 120, "stress": 30}
     assert cases == json.loads((BUNDLE / "generated_answer_cases.json").read_text(encoding="utf-8"))
     for case in cases:

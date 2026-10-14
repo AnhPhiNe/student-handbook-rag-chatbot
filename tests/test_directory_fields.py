@@ -7,7 +7,7 @@ def test_the_three_address_labels_and_their_wrapped_lines() -> None:
         "Email\n: a@hcmue.edu.vn\nVăn phòng làm việc : Nhà B, tầng 5,\nP.501, số 280 An Dương Vương.\n"
         "Những công việc của đơn vị liên quan đến sinh viên:"
     ) == "Nhà B, tầng 5, P.501, số 280 An Dương Vương."
-    # K48-K49 and K50 label some units "Phòng làm việc", with the value on the next lines.
+    # K49 and K50 label some units "Phòng làm việc", with the value on the next lines.
     assert extract_office(
         "Website\n: x.hcmue.edu.vn\nPhòng làm việc\n:\nDãy nhà B, tầng 6, P.601\nsố 280 An Dương Vương.\n"
         "Những công việc của đơn vị liên quan đến sinh viên:"

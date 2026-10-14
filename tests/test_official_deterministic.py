@@ -37,7 +37,7 @@ def fixture_result(case):
 def test_135_schema_and_source_backing():
     cases = build()
     assert cases == read(BUNDLE / "deterministic_tool_cases.json")
-    assert Counter(c["cohort"] for c in cases) == {"K48-K49": 45, "K50": 45, "K51": 45}
+    assert Counter(c["cohort"] for c in cases) == {"K49": 45, "K50": 45, "K51": 45}
     errors = []
     for case in cases:
         validate_deterministic_case(case, errors)

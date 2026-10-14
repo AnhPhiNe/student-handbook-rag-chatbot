@@ -84,10 +84,10 @@ additional_cases:
     tasks:
       - {cohort: K50, policy: [QuyCheDaoTao_Chuong3_Dieu10, "điểm lần học cuối"], fact: "K50 lấy điểm lần học cuối khi học cải thiện."}
       - {cohort: K51, policy: [QuyCheDaoTao_Chuong3_Dieu10, "Điểm đánh giá cao nhất"], fact: "K51 theo nội dung sửa đổi áp dụng từ tuyển sinh 2025 lấy điểm cao nhất đã đạt của học phần khi cải thiện."}
-  - query: "Hệ số học bổng xuất sắc của K48–K49 và K51 là bao nhiêu?"
+  - query: "Hệ số học bổng xuất sắc của K49 và K51 là bao nhiêu?"
     stress: true
     tasks:
-      - {cohort: K48-K49, scholarship: [scholarship_amount, 2], resolved_output_fields: [scholarship_level, multiplier]}
+      - {cohort: K49, scholarship: [scholarship_amount, 2], resolved_output_fields: [scholarship_level, multiplier]}
       - {cohort: K51, scholarship: [scholarship_amount, 2], resolved_output_fields: [scholarship_level, multiplier]}
   - query: "Em được rèn luyện 78, nhưng đang khiển trách thì bị giới hạn loại nào?"
     stress: true
@@ -117,10 +117,10 @@ additional_cases:
     tasks:
       - {policy: [QuyCheDaoTao_Chuong4_Dieu17, "đủ các điều kiện"], fact: "Nêu điều kiện năm học, không thuộc diện thôi học, thời gian, đầu vào, năng lực đào tạo và chấp thuận."}
       - {policy: [QuyCheDaoTao_Chuong4_Dieu16, "cơ sở khám bệnh"], fact: "Nghỉ vì bệnh dài ngày cần chứng nhận cơ sở khám chữa bệnh có thẩm quyền và giấy tờ minh chứng theo quy định."}
-  - query: "K48–K49 với K51, lần đầu thi hộ và lần đầu nhờ thi hộ có khác mức xử lý không?"
+  - query: "K49 với K51, lần đầu thi hộ và lần đầu nhờ thi hộ có khác mức xử lý không?"
     stress: true
     tasks:
-      - {cohort: K48-K49, policy: [QuyCheDaoTao_Chuong4_Dieu21, "một năm"], fact: "K48–K49: cả thi hộ và nhờ thi hộ lần đầu đều đình chỉ một năm."}
+      - {cohort: K49, policy: [QuyCheDaoTao_Chuong4_Dieu21, "một năm"], fact: "K49: cả thi hộ và nhờ thi hộ lần đầu đều đình chỉ một năm."}
       - {cohort: K51, policy: [QuyCheDaoTao_Chuong4_Dieu21, "một năm"], fact: "K51: cả thi hộ và nhờ thi hộ lần đầu đều đình chỉ một năm."}
   # 133-144: conditions and procedural limits.
   - {query: "Tín chỉ học cải thiện có được dùng xét học bổng không?", tasks: [{policy: [QuyCheCongTacSinhVien_Chuong5_Dieu28, "cải thiện"], fact: "Tín chỉ trả nợ, cải thiện, tương đương không tính vào số tín chỉ dùng xét học bổng."}]}

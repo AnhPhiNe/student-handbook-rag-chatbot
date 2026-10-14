@@ -57,7 +57,7 @@ def test_structured_citation_preserves_resolved_result_for_composer():
             "source_parent_id": "K50_Dieu8",
             "cohort": "K51",
             "source_cohort": "K50",
-            "applicable_cohorts": ["K48-K49", "K50", "K51"],
+            "applicable_cohorts": ["K49", "K50", "K51"],
             "applicability_validated": True,
             "applicability_basis_parent_id": "K50_Dieu1",
             "result": {"rows": [{"certificate": "IELTS"}]},
@@ -68,7 +68,7 @@ def test_structured_citation_preserves_resolved_result_for_composer():
     assert citations[0]["resolved_result"] == resolved_result
     assert citations[0]["cohort"] == "K51"
     assert citations[0]["source_cohort"] == "K50"
-    assert citations[0]["applicable_cohorts"] == ["K48-K49", "K50", "K51"]
+    assert citations[0]["applicable_cohorts"] == ["K49", "K50", "K51"]
     assert citations[0]["applicability_validated"] is True
     assert citations[0]["applicability_basis_parent_id"] == "K50_Dieu1"
 
@@ -109,24 +109,24 @@ def test_enriches_structured_table_citation_with_parent_article_details():
     citation = {
         "chunk_type": "structured_lookup",
         "title": "Thời gian học tập chuẩn và tối đa",
-        "source_parent_id": "K48-K49_Dieu3",
+        "source_parent_id": "K49_Dieu3",
         "content": "Đào tạo đại học cấp bằng thứ nhất",
     }
     parent = {
-        "_id": "K48-K49_Dieu3",
+        "_id": "K49_Dieu3",
         "content": "Nội dung Điều 3 đầy đủ, bao gồm bảng thời gian học tập.",
         "metadata": {
             "article": "Điều 3.",
             "title": "Chương trình đào tạo và thời gian học tập",
             "document_title": "Quy chế đào tạo",
             "document_id": "handbook-k48-k49",
-            "cohort": "K48-K49",
+            "cohort": "K49",
         },
     }
 
     result = enrich_citations_with_parent_details(
         [citation],
-        {"K48-K49_Dieu3": parent},
+        {"K49_Dieu3": parent},
     )
 
     assert result[0]["parent_article"] == "Điều 3"
@@ -137,7 +137,7 @@ def test_enriches_structured_table_citation_with_parent_article_details():
     assert result[0]["detail_kind"] == "table"
     assert result[0]["canonical_source_id"] == canonical_article_source_id(
         document_identity="Quy chế đào tạo",
-        cohort="K48-K49",
+        cohort="K49",
         article_label="Điều 3",
     )
 
@@ -225,7 +225,7 @@ def test_vector_citation_preserves_validated_cross_cohort_applicability():
                 "metadata": {
                     "cohort": "K50",
                     "source_cohort": "K50",
-                    "applicable_cohorts": ["K48-K49", "K50", "K51"],
+                    "applicable_cohorts": ["K49", "K50", "K51"],
                     "applicability_validated": True,
                     "applicability_basis_parent_id": "K50_Dieu1",
                     "chunk_type": "regulation",
@@ -236,7 +236,7 @@ def test_vector_citation_preserves_validated_cross_cohort_applicability():
     )
 
     assert citations[0]["source_cohort"] == "K50"
-    assert citations[0]["applicable_cohorts"] == ["K48-K49", "K50", "K51"]
+    assert citations[0]["applicable_cohorts"] == ["K49", "K50", "K51"]
     assert citations[0]["applicability_validated"] is True
     assert citations[0]["applicability_basis_parent_id"] == "K50_Dieu1"
 

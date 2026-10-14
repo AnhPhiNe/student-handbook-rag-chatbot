@@ -1,11 +1,11 @@
 {
   "schema_version": "structured-table-embedding-audit-v1",
-  "docstore_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\chunks\\all_docstore_items.json",
-  "docstore_sha256": "9d1c9d3fc0e89b156b82c946ee86901a04e5f35fba69b3e0da70fa9d93379b11",
-  "structured_registry_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\data\\processed\\tables\\structured_tables_registry.json",
-  "structured_registry_sha256": "39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568",
-  "child_output_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\sh_rag_prompt\\data\\processed\\chunks\\child_parent_chunks.json",
-  "child_count": 2646,
+  "docstore_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\.claude\\worktrees\\k49-handbook-634d85\\data\\processed\\chunks\\all_docstore_items.json",
+  "docstore_sha256": "425d874e0743fcdd96b64d540adc0e099e6fb98d03adcf59cf9cde01afc5fd09",
+  "structured_registry_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\.claude\\worktrees\\k49-handbook-634d85\\data\\processed\\tables\\structured_tables_registry.json",
+  "structured_registry_sha256": "b369dd5af574b1240ae4673c93f9e5ecc0f9a78dc6793bc3962a5045aa75dae2",
+  "child_output_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\.claude\\worktrees\\k49-handbook-634d85\\data\\processed\\chunks\\child_parent_chunks.json",
+  "child_count": 2688,
   "total_table_like_rows": 0,
   "excluded_as_structured": 0,
   "retained_unmatched": 0,
@@ -15,43 +15,43 @@
     "policy": "reviewed-table-separation-v1",
     "parents": [
       {
-        "parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+        "parent_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
         "physical_tables": 1,
         "generated_appendices_removed": 1,
         "parent_table_rows": 6,
-        "original_sha256": "ad1eddaf755926b9a4a5000f9a38d0087d621d45f5d02341fb06355a078c73f6",
-        "parent_sha256": "5964285d2bbcd4bf4e9b4ab3bdaf383cae551e364c7d2b66a5d1d617f1b35e65",
-        "narrative_sha256": "3923b323543789148a01b79c5ff236f510a73ebfcb84efb9422e6bea5f8dc83d"
+        "original_sha256": "6ad0b149359a7efce5c2eb52732d31fdfc76c535850b926e01c28389de5d2bc9",
+        "parent_sha256": "0d0c67773ccd5c3745ea666a98310919f88d5d8ecf150f840cd98ca9fa5aeca2",
+        "narrative_sha256": "076d30444eda28b911913f4d56f04e8a71fedd35f92f8644c51ec9513ef4b1d1"
       },
       {
-        "parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+        "parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
         "physical_tables": 0,
         "generated_appendices_removed": 0,
         "parent_table_rows": 0,
-        "original_sha256": "747200c531e8f62db12468b38605c785c214b617ab48b49c7a2dd0d97da5c7a2",
-        "parent_sha256": "747200c531e8f62db12468b38605c785c214b617ab48b49c7a2dd0d97da5c7a2",
-        "narrative_sha256": "747200c531e8f62db12468b38605c785c214b617ab48b49c7a2dd0d97da5c7a2"
+        "original_sha256": "fc8394db14caf7b4c97c71766c4e0288365daf0b6720c7f425fd0d9cd8b76f43",
+        "parent_sha256": "fc8394db14caf7b4c97c71766c4e0288365daf0b6720c7f425fd0d9cd8b76f43",
+        "narrative_sha256": "fc8394db14caf7b4c97c71766c4e0288365daf0b6720c7f425fd0d9cd8b76f43"
       },
       {
-        "parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+        "parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
         "physical_tables": 1,
         "generated_appendices_removed": 1,
         "parent_table_rows": 9,
-        "original_sha256": "e30b9f029fe7c3888bdb047c7d144fcde1ada90131493efa45ef2dcb3c96dbca",
-        "parent_sha256": "d58734cd67efe338c45588a0f5156d8e88100bbd2a75b40910b4f5a9c879c1bf",
-        "narrative_sha256": "4c3bd1e1574d15bbdb13565e7947ae48726bcefbf7f15720cdb1dbb0003f9960"
+        "original_sha256": "987be679a9ab4cafb70bdc5bc31bed16b54b0803b183212223a573de926b0bde",
+        "parent_sha256": "f7bcac5133c750e1a71562552a0c78d0fa6a8f2a8409cb299ef9bfd77e4dc428",
+        "narrative_sha256": "aaff5b983f995af38cd923f4da84ddf8a9a6d6c6491d37efcac817c676b31e4a"
       },
       {
-        "parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+        "parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
         "physical_tables": 2,
         "generated_appendices_removed": 1,
         "parent_table_rows": 15,
-        "original_sha256": "76c56e29aa3940dc0de286c4a14815c1ad727bb374cd28b7783f555c2aec8e53",
-        "parent_sha256": "ecf46e1c3e00e7691fa602f3e5e03c70a65c557ce90becca59257c953e084c01",
-        "narrative_sha256": "103ac1dbd827d864646038f9186575d0b1397d726b970e5dfe06a68e31683a03"
+        "original_sha256": "888528b325825a4718984614e6158fcec2fcf2cd1e4cf157f5d1e8127082315c",
+        "parent_sha256": "0cc551db601c2be7ed5d9a350de84f96fdb6825b44266d5ff1ed0880527c9389",
+        "narrative_sha256": "969021b8a5600155a8f828a3297a72b7da5def6306bfb9a82671a753e8e3b941"
       },
       {
-        "parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+        "parent_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
         "physical_tables": 2,
         "generated_appendices_removed": 1,
         "parent_table_rows": 8,
@@ -159,25 +159,25 @@
         "narrative_sha256": "b8a4a465b055e8502c976068f7bdec0ff3d0cab5da589f8bb58f7a5cc307af58"
       }
     ],
-    "review_sha256": "1372bd283c29212adc8b31b60ed345d3a21a234a04d0d1dab1c02b63c32a14e8",
+    "review_sha256": "30bf61c4f130a2b6858b4908ef46271c4f9227ff906ff717ae32ac0b4c8aaa15",
     "source_page_corrections": [],
     "artifact_content_sha256": {
-      "parent_docstore": "ac72238a1af82be9f7981c1388755088069963cfab37d295ec1d826286e6ae75",
-      "child_chunks": "be7534e002d5c3bb6738e1eb2f1b07f001159df1a5355ff8ae1efb171a111b26"
+      "parent_docstore": "cd99e3295a9b5178277043e714008a6bec7c4de71030480887d53e4670167273",
+      "child_chunks": "ccce1fd2ad0cb2ad8615908c559cf364da727f2c7a242c1ae401d1c1fde49b4b"
     },
     "physical_tables": 23,
     "parent_table_rows": 150,
     "generated_appendices_removed": 12,
-    "parent_count": 541,
-    "child_count": 2646,
+    "parent_count": 561,
+    "child_count": 2688,
     "table_embedding_chunks_added": 0,
     "input_sha256": {
-      "parents": "1f15184b05bbe6895acff71c2e4bf6bdda6f39e05df6bc75854398eff8b9f284",
-      "registry": "39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568",
-      "review": "e3ea8c82ebc90646e59a1bca51bd8c1a85fdf160ef18cd267508ef459471edd1"
+      "parents": "8767ce319f3bf34900ed9068b05eabd5c20096f3aa013e9622f873e1a8b655a7",
+      "registry": "b369dd5af574b1240ae4673c93f9e5ecc0f9a78dc6793bc3962a5045aa75dae2",
+      "review": "ab6d91b1983b79182ae832a2fc08e5ce4493c205b7aedcfeeb895f2c8dd4e7fb"
     },
     "child_builder": "structure_chunking"
   },
-  "build_id": "build-7754cc9c07ae9951cfa5",
-  "child_output_sha256": "2534b87852d98560901b427f0b84de55868afd7570970b7206446bf3e3c30e4e"
+  "build_id": "build-d2ba06d7bd613c030e20",
+  "child_output_sha256": "c142d6c78f9afdcfb3b51ff7e15ba72824121109a106fce1c76f2e3576c0d418"
 }

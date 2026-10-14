@@ -340,7 +340,7 @@ def test_compact_packet_uses_full_readable_context_seen_by_composer() -> None:
     answer = {
         "answer": "K51 học chính quy tối đa 06 năm.",
         "context_used": (
-            "PRIMARY SOURCES\n\n[1]\nCohort: K48-K49\nContent: tối đa 8 năm.\n\n"
+            "PRIMARY SOURCES\n\n[1]\nCohort: K49\nContent: tối đa 8 năm.\n\n"
             "---\n\n"
             "[11]\nCohort: K51\nContent: K51 học chính quy tối đa 06 năm."
         ),

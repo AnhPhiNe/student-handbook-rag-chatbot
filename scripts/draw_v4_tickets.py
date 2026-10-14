@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data/processed"
 OUT = ROOT / "data/eval/official_v4"
 SEED = 20260930
-COHORTS = ("K48-K49", "K50", "K51")
+COHORTS = ("K49", "K50", "K51")
 
 # Cell -> number of tickets. The design and its reasons are in official_v4/SPEC.md.
 ALLOCATION = {

@@ -194,13 +194,13 @@ def test_cross_cohort_source_requires_validated_applicability() -> None:
         {
             "cohort": "K50",
             "source_cohort": "K50",
-            "applicable_cohorts": ["K48-K49", "K50", "K51"],
+            "applicable_cohorts": ["K49", "K50", "K51"],
             "applicability_validated": True,
         },
         "K51",
     )
     assert is_validated_source_applicable({"cohort": "K51"}, "K51")
-    assert not is_validated_source_applicable({"cohort": "K48-K49"}, "K51")
+    assert not is_validated_source_applicable({"cohort": "K49"}, "K51")
 
 
 @pytest.mark.parametrize(
@@ -534,7 +534,7 @@ def test_invalid_lookup_is_clarified_but_reference_table_slots_are_optional() ->
 
 def test_explicit_multi_cohort_is_preserved_over_ui_cohort() -> None:
     task = {**_rag_task(1), "cohorts": ["K50", "K51"]}
-    plan, _ = normalize_query_plan(_plan([task]), query="so sánh K50 K51", selected_cohort="K48-K49")
+    plan, _ = normalize_query_plan(_plan([task]), query="so sánh K50 K51", selected_cohort="K49")
     assert plan["tasks"][0]["cohorts"] == ["K50", "K51"]
 
 
@@ -1238,7 +1238,7 @@ def test_planned_rag_task_rejects_unvalidated_cross_cohort_sources(
             "validated-k50",
             "K50",
             source_cohort="K50",
-            applicable_cohorts=["K48-K49", "K50", "K51"],
+            applicable_cohorts=["K49", "K50", "K51"],
             applicability_validated=True,
         ),
         source("native-k51", "K51"),

@@ -1,4 +1,4 @@
-export type Cohort = 'K48-K49' | 'K50' | 'K51';
+export type Cohort = 'K49' | 'K50' | 'K51';
 export type CourseGroup = 'foundation' | 'remaining';
 export type LetterGrade = 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D+' | 'D' | 'F+' | 'F';
 export type GradeStatus = 'Đạt' | 'Không đạt';
@@ -63,7 +63,8 @@ function makeRows(passThreshold: number): GradeScaleRow[] {
 }
 
 export const GRADE_SCALE_BY_COHORT: Record<Cohort, GradeScaleDefinition[]> = {
-  'K48-K49': [
+  // K49 prints the same grade scale as K50 (Quy chế đào tạo 1410/2021, Điều 10, p.18).
+  K49: [
     {
       id: 'foundation',
       label: 'Môn chung / học phần đại cương',
@@ -119,12 +120,14 @@ export const GRADE_SCALE_BY_COHORT: Record<Cohort, GradeScaleDefinition[]> = {
   ],
 };
 
-export const GRADE_SCALE = GRADE_SCALE_BY_COHORT['K48-K49'][0].rows;
+export const GRADE_SCALE = GRADE_SCALE_BY_COHORT.K49[0].rows;
 
 export function normalizeFrontendCohort(cohort: string | null | undefined): Cohort {
   if (cohort === 'K50-K51') return 'K51';
-  if (cohort === 'K50' || cohort === 'K51' || cohort === 'K48-K49') return cohort;
-  return 'K48-K49';
+  if (cohort === 'K49' || cohort === 'K50' || cohort === 'K51') return cohort;
+  // The retired K48-K49 choice (built from the K48 handbook) and unknown values
+  // fall back to the oldest supported cohort.
+  return 'K49';
 }
 
 export function isNewCohort(cohort: Cohort): boolean {
@@ -173,7 +176,7 @@ export function isScore10Invalid(rawScore: string): boolean {
 
 export function convertScore10ToGrade(
   score: number,
-  cohort: Cohort = 'K48-K49',
+  cohort: Cohort = 'K49',
   courseGroup?: CourseGroup,
 ): GradeScaleRow | null {
   if (!Number.isFinite(score) || score < 0 || score > 10) return null;
@@ -183,14 +186,14 @@ export function convertScore10ToGrade(
 
 export function convertLetterToScore4(
   letter: LetterGrade,
-  cohort: Cohort = 'K48-K49',
+  cohort: Cohort = 'K49',
   courseGroup?: CourseGroup,
 ): GradeScaleRow {
   const scale = getGradeScale(cohort, courseGroup);
   return scale.rows.find((row) => row.letter === letter) ?? scale.rows[scale.rows.length - 1];
 }
 
-export function getCourseGrade(course: CourseInput, cohort: Cohort = 'K48-K49'): GradeScaleRow | null {
+export function getCourseGrade(course: CourseInput, cohort: Cohort = 'K49'): GradeScaleRow | null {
   if (course.inputType === 'letter') {
     if (!course.letter || course.letter.trim() === '') {
       return null;
@@ -208,7 +211,7 @@ export function getCourseGrade(course: CourseInput, cohort: Cohort = 'K48-K49'):
   return convertScore10ToGrade(rounded, cohort, course.courseGroup);
 }
 
-export function calculateGpa(courses: CourseInput[], cohort: Cohort = 'K48-K49'): {
+export function calculateGpa(courses: CourseInput[], cohort: Cohort = 'K49'): {
   gpa: number;
   totalCredits: number;
   countedCourses: number;

@@ -186,8 +186,6 @@ def _legacy_structured_record_ids(
         ids.add(table_id)
     if source_parent_id and table_subtype:
         ids.add(f"{source_parent_id}_{table_subtype}")
-        if source_parent_id.startswith("K48-K49_"):
-            ids.add(f"{source_parent_id.removeprefix('K48-K49_')}_{table_subtype}")
 
     if (
         catalog in {"structured_tables_registry", "scoring_tables"}
@@ -345,11 +343,7 @@ def _structured_source_index(
 
 def _normalize_eval_cohort(value: Any) -> str | None:
     normalized = str(value or "").strip().upper().replace("_", "-")
-    if normalized in {"K48", "K49", "K48-K49", "K49-K48"}:
-        return "K48-K49"
-    if normalized in {"K50", "K51"}:
-        return normalized
-    return None
+    return normalized if normalized in valid_cohorts() else None
 
 
 def _structured_record_matches_cohort(

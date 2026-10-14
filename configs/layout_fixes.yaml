@@ -21,7 +21,7 @@ fixes:
   - {parent: K51_ThongBaoHoTroChiPhiHocTap_Phan3, line: "HỌC TẬP", fix: heading_tail}
 
   # Quy chế đánh giá kết quả rèn luyện Điều 9: "TT" heads the classification table.
-  - {parent: K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9, line: "TT", fix: table_header}
+  - {parent: K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9, line: "TT", fix: table_header}
   - {parent: K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9, line: "TT", fix: table_header}
   - {parent: K51_QuyCheDanhGiaRenLuyen_Chuong3_Dieu9, line: "TT", fix: table_header}
 
@@ -31,11 +31,11 @@ fixes:
 
   # Quy định NCKH Điều 7 is a timeline: each date names the step under it; e) lists
   # publications with the "–" the steps use; "Xếp loại…" opens a second list a)–c).
-  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 9 – 10 hằng năm", fix: label_of_next}
-  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Từ tháng 12 đến tháng 4 hằng năm", fix: label_of_next}
-  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 6 hằng năm", fix: label_of_next}
-  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line_prefix: "e) Có công bố khoa học", fix: nested_list, lines: 3}
-  - {parent: K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Xếp loại đánh giá đề tài:", fix: starts_group}
+  - {parent: K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 9 – 10 hằng năm", fix: label_of_next}
+  - {parent: K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Từ tháng 12 đến tháng 4 hằng năm", fix: label_of_next}
+  - {parent: K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 6 hằng năm", fix: label_of_next}
+  - {parent: K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line_prefix: "e) Có công bố khoa học", fix: nested_list, lines: 3}
+  - {parent: K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Xếp loại đánh giá đề tài:", fix: starts_group}
   - {parent: K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 9 – 10 hằng năm", fix: label_of_next}
   - {parent: K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Từ tháng 12 đến tháng 4 hằng năm", fix: label_of_next}
   - {parent: K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7, line: "Tháng 6 hằng năm", fix: label_of_next}

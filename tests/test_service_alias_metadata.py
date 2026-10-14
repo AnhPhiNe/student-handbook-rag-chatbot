@@ -105,7 +105,7 @@ def test_compound_service_tasks_keep_local_aliases_across_cohorts(
     production_directory: list[dict[str, Any]],
 ) -> None:
     query = (
-        "Muốn in giáo trình cho K48-K49 thì liên hệ đơn vị nào, "
+        "Muốn in giáo trình cho K49 thì liên hệ đơn vị nào, "
         "còn xin giấy chứng nhận điểm K51 ở phòng nào?"
     )
     plan, errors = normalize_query_plan(
@@ -113,7 +113,7 @@ def test_compound_service_tasks_keep_local_aliases_across_cohorts(
             [
                 {
                     "id": "t1",
-                    "question": "Muốn in giáo trình cho K48-K49 thì liên hệ đơn vị nào?",
+                    "question": "Muốn in giáo trình cho K49 thì liên hệ đơn vị nào?",
                     "mode": "structured",
                     "intent": "contact",
                     "lookup_type": "student_service",
@@ -122,7 +122,7 @@ def test_compound_service_tasks_keep_local_aliases_across_cohorts(
                         "service": "in giáo trình",
                         "requested_field": "đơn vị",
                     },
-                    "cohorts": ["K48-K49"],
+                    "cohorts": ["K49"],
                 },
                 {
                     "id": "t2",
@@ -143,7 +143,7 @@ def test_compound_service_tasks_keep_local_aliases_across_cohorts(
             ]
         ),
         query=query,
-        selected_cohort="K48-K49",
+        selected_cohort="K49",
     )
 
     assert errors == []
@@ -152,7 +152,7 @@ def test_compound_service_tasks_keep_local_aliases_across_cohorts(
         "giấy chứng nhận điểm",
     ]
     assert [task["cohorts"] for task in plan["tasks"]] == [
-        ["K48-K49"],
+        ["K49"],
         ["K51"],
     ]
 

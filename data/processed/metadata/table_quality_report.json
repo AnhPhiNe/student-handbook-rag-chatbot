@@ -3,19 +3,19 @@
   "docstore_path": "data\\processed\\chunks\\all_docstore_items.json",
   "chunk_index_path": "data\\processed\\chunks\\child_parent_chunks.json",
   "summary": {
-    "docstore_item_count": 541,
+    "docstore_item_count": 561,
     "classified_item_count": 31,
     "category_counts": {
       "regulation_table": 31
     },
     "cohort_category_counts": {
-      "K48-K49::regulation_table": 9,
+      "K49::regulation_table": 9,
       "K50::regulation_table": 11,
       "K51::regulation_table": 11
     },
     "table_like_chunk_count": 0,
     "regulation_table_registry_count": 35,
-    "directory_table_record_count": 494,
+    "directory_table_record_count": 495,
     "boundary_error_count": 0,
     "missing_source_id_count": 0,
     "invalid_regulation_table_count": 0,
@@ -23,62 +23,15 @@
   },
   "items": [
     {
-      "_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "article": "Điều 3.",
       "title": "Chương trình đào tạo và thời gian học tập",
       "source_pages": [
-        11,
-        12,
-        13
-      ],
-      "category": "regulation_table",
-      "extraction_status": "structured",
-      "confidence": 1.0,
-      "signals": [
-        "structured_tables:4"
-      ],
-      "recommended_action": "keep_regulation_table",
-      "content_chars": 2853,
-      "boundary_error": false,
-      "boundary_signals": [],
-      "snippet": "Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương I - NHỮNG QUY ĐỊNH CHUNG Điều: Điều 3. Tiêu đề: Chương trình đào tạo và thời gian học tập Nội dung: Điều 3. Chương trình đào tạo và thời gian học tập 1. CTĐT là một hệ thống các hoạt động giáo dục, đào tạo được thiết kế và tổ chức thực hiện nhằm đạt được mục tiêu đào tạo. CTĐT bao gồm mục tiêu, chuẩn đầu ra, khối lượng kiến thức, cấu trúc, nội dung, phương pháp và hình thức đánh giá đối với môn học, ngành học, trình độ đào tạo phù hợp với chuẩn nghề nghiệp và Khung trình độ quốc gia Việt Nam. 2. CTĐT được xây dựng theo đơn vị tín chỉ, cấu trúc từ các học phần, trong đó phải có đủ "
-    },
-    {
-      "_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "article": "Điều 10.",
-      "title": "Đánh giá và tính điểm học phần",
-      "source_pages": [
-        18,
-        19,
-        20,
-        21
-      ],
-      "category": "regulation_table",
-      "extraction_status": "structured",
-      "confidence": 1.0,
-      "signals": [
-        "structured_tables:3"
-      ],
-      "recommended_action": "keep_regulation_table",
-      "content_chars": 4629,
-      "boundary_error": false,
-      "boundary_signals": [],
-      "snippet": "Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP Điều: Điều 10. Tiêu đề: Đánh giá và tính điểm học phần Nội dung: Điều 10. Đánh giá và tính điểm học phần 1. Đánh giá học phần a) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm thành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối với các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết thúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10. Phương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm thành phần được quy định trong đề cương chi tiết của mỗi học phần v"
-    },
-    {
-      "_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "article": "Điều 11.",
-      "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
-      "source_pages": [
-        21,
-        22,
-        23
+        9,
+        10,
+        11
       ],
       "category": "regulation_table",
       "extraction_status": "structured",
@@ -87,20 +40,67 @@
         "structured_tables:2"
       ],
       "recommended_action": "keep_regulation_table",
-      "content_chars": 3110,
+      "content_chars": 2853,
+      "boundary_error": false,
+      "boundary_signals": [],
+      "snippet": "Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương I - NHỮNG QUY ĐỊNH CHUNG Điều: Điều 3. Tiêu đề: Chương trình đào tạo và thời gian học tập Nội dung: Điều 3. Chương trình đào tạo và thời gian học tập 1. CTĐT là một hệ thống các hoạt động giáo dục, đào tạo được thiết kế và tổ chức thực hiện nhằm đạt được mục tiêu đào tạo. CTĐT bao gồm mục tiêu, chuẩn đầu ra, khối lượng kiến thức, cấu trúc, nội dung, phương pháp và hình thức đánh giá đối với môn học, ngành học, trình độ đào tạo phù hợp với chuẩn nghề nghiệp và Khung trình độ quốc gia Việt Nam. 2. CTĐT được xây dựng theo đơn vị tín chỉ, cấu trúc từ các học phần, trong đó phải có đủ "
+    },
+    {
+      "_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "article": "Điều 10.",
+      "title": "Đánh giá và tính điểm học phần",
+      "source_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "category": "regulation_table",
+      "extraction_status": "structured",
+      "confidence": 1.0,
+      "signals": [
+        "structured_tables:2"
+      ],
+      "recommended_action": "keep_regulation_table",
+      "content_chars": 4629,
+      "boundary_error": false,
+      "boundary_signals": [],
+      "snippet": "Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP Điều: Điều 10. Tiêu đề: Đánh giá và tính điểm học phần Nội dung: Điều 10. Đánh giá và tính điểm học phần 1. Đánh giá học phần a) Đối với mỗi học phần, sinh viên được đánh giá qua hai điểm thành phần (điểm đánh giá quá trình và điểm thi kết thúc học phần), đối với các học phần ít hơn 02 tín chỉ có thể chỉ có một điểm đánh giá kết thúc học phần. Các điểm thành phần được đánh giá theo thang điểm 10. Phương pháp đánh giá, hình thức đánh giá và trọng số của mỗi điểm thành phần được quy định trong đề cương chi tiết của mỗi học phần v"
+    },
+    {
+      "_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "article": "Điều 11.",
+      "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
+      "source_pages": [
+        19,
+        20,
+        21
+      ],
+      "category": "regulation_table",
+      "extraction_status": "structured",
+      "confidence": 1.0,
+      "signals": [
+        "structured_tables:2"
+      ],
+      "recommended_action": "keep_regulation_table",
+      "content_chars": 3111,
       "boundary_error": false,
       "boundary_signals": [],
       "snippet": "Tài liệu: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - ĐÁNH GIÁ KẾT QUẢ HỌC TẬP VÀ CẤP BẰNG TỐT NGHIỆP Điều: Điều 11. Tiêu đề: Đánh giá kết quả học tập theo học kỳ, năm học Nội dung: Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học 1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ chính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong yêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí sau đây: a) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong một học kỳ, trong một năm học, hoặc nợ đọng từ đầu khoá học; b) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khó"
     },
     {
-      "_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "_id": "K49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "article": "Điều 5.",
       "title": "Công tác quản lý sinh viên",
       "source_pages": [
-        38,
-        39
+        34,
+        35
       ],
       "category": "regulation_table",
       "extraction_status": "flattened",
@@ -109,20 +109,20 @@
         "\\bPhân\\s*loại\\b.*\\brèn\\s*luyện\\b"
       ],
       "recommended_action": "extract_structured_table",
-      "content_chars": 2501,
+      "content_chars": 2507,
       "boundary_error": false,
       "boundary_signals": [],
-      "snippet": "Tài liệu: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương II - NỘI DUNG CÔNG TÁC SINH VIÊN Điều: Điều 5. Tiêu đề: Công tác quản lý sinh viên Nội dung: Điều 5. Công tác quản lý sinh viên 1. Công tác hành chính a) Tổ chức tiếp nhận thí sinh trúng tuyển, sắp xếp, bố trí sinh viên vào các lớp; chỉ định Ban cán sự lớp (lớp trưởng, lớp phó) lâm thời, làm thẻ sinh viên; b) Thống kê, tổng hợp dữ liệu và quản lý, lưu trữ hồ sơ liên quan đến sinh viên; giải quyết các công việc hành chính có liên quan đến sinh viên. 2. Công tác khen thưởng và kỷ luật a) Theo dõi, đánh giá ý thức học tập; tổ chức đánh giá kết "
+      "snippet": "Tài liệu: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương II - NỘI DUNG CÔNG TÁC SINH VIÊN Điều: Điều 5. Tiêu đề: Công tác quản lý sinh viên Nội dung: Điều 5. Công tác quản lý sinh viên 1. Công tác hành chính a) Tổ chức tiếp nhận thí sinh trúng tuyển, sắp xếp, bố trí sinh viên vào các lớp; chỉ định Ban Cán sự (BCS) lớp (lớp trưởng, lớp phó) lâm thời, làm thẻ sinh viên; b) Thống kê, tổng hợp dữ liệu và quản lý, lưu trữ hồ sơ liên quan đến sinh viên; giải quyết các công việc hành chính có liên quan đến sinh viên. 2. Công tác khen thưởng và kỷ luật a) Theo dõi, đánh giá ý thức học tập; tổ chức đánh gi"
     },
     {
-      "_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "article": "Điều 28.",
       "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
       "source_pages": [
-        52,
-        53
+        48,
+        49
       ],
       "category": "regulation_table",
       "extraction_status": "flattened",
@@ -131,19 +131,19 @@
         "\\bXếp\\s*loại\\b.*\\bhọc\\s*bổng\\b"
       ],
       "recommended_action": "extract_structured_table",
-      "content_chars": 3304,
+      "content_chars": 3301,
       "boundary_error": false,
       "boundary_signals": [],
       "snippet": "Tài liệu: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương V - HỌC BỔNG, MIỄN, GIẢM HỌC PHÍ VÀ BẢO LƯU KẾT QUẢ Điều: Điều 28. Tiêu đề: Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập Nội dung: Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập 1. Tiêu chuẩn a) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của khóa học; không xét HBKKHT đối với sinh viên học quá thời gian học tập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ đại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh được ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/20"
     },
     {
-      "_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "article": "Điều 9.",
       "title": "Phân loại kết quả rèn luyện",
       "source_pages": [
-        74
+        69
       ],
       "category": "regulation_table",
       "extraction_status": "structured",
@@ -152,20 +152,20 @@
         "structured_tables:1"
       ],
       "recommended_action": "keep_regulation_table",
-      "content_chars": 1018,
+      "content_chars": 1028,
       "boundary_error": false,
       "boundary_signals": [],
       "snippet": "Tài liệu: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - PHÂN LOẠI ĐÁNH GIÁ VÀ QUY TRÌNH ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN Điều: Điều 9. Tiêu đề: Phân loại kết quả rèn luyện Nội dung: Điều 9. Phân loại kết quả rèn luyện 1. Kết quả rèn luyện được phân thành các loại: xuất sắc, tốt, khá, trung bình, yếu và kém. 2. Phân loại kết quả rèn luyện: TT | Khung điểm | Xếp loại | | --- | --- | | Từ 90 đến 100 điểm | Xuất sắc | | Từ 80 đến dưới 90 điểm | Tốt | | Từ 65 đến dưới 80 điểm | Khá | | Từ 50 đến dưới 65 điểm | Trung bình | | Từ 35 đến dưới 50 điểm | Yếu | | Dưới 35 điểm | Kém | 3. Sinh viên vi phạm kỷ luật ở mức"
     },
     {
-      "_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "article": "Điều 10.",
       "title": "Các trường hợp đánh giá",
       "source_pages": [
-        74,
-        75
+        69,
+        70
       ],
       "category": "regulation_table",
       "extraction_status": "flattened",
@@ -174,20 +174,20 @@
         "\\bPhân\\s*loại\\b.*\\brèn\\s*luyện\\b"
       ],
       "recommended_action": "extract_structured_table",
-      "content_chars": 2493,
+      "content_chars": 2469,
       "boundary_error": false,
       "boundary_signals": [],
-      "snippet": "Tài liệu: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - PHÂN LOẠI ĐÁNH GIÁ VÀ QUY TRÌNH ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN Điều: Điều 10. Tiêu đề: Các trường hợp đánh giá Nội dung: Điều 10. Các trường hợp đánh giá 1. Trong thời gian sinh viên bị kỷ luật mức khiển trách, khi đánh giá kết quả rèn luyện không được vượt quá loại khá. 2. Trong thời gian sinh viên bị kỷ luật mức cảnh cáo, khi đánh giá kết quả rèn luyện không được vượt quá loại trung bình. 3. Sinh viên bị kỷ luật mức đình chỉ học tập không được đánh giá rèn luyện trong thời gian bị đình chỉ. 4. Sinh viên bị kỷ luật mức buộc thôi học không được đánh "
+      "snippet": "Tài liệu: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - PHÂN LOẠI ĐÁNH GIÁ VÀ QUY TRÌNH ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN Điều: Điều 10. Tiêu đề: Các trường hợp đánh giá Nội dung: Điều 10. Các trường hợp đánh giá 1. Trong thời gian sinh viên bị kỷ luật mức khiển trách, khi đánh giá kết quả rèn luyện không được vượt quá loại khá. 2. Trong thời gian sinh viên bị kỷ luật mức cảnh cáo, khi đánh giá kết quả rèn luyện không được vượt quá loại trung bình. 3. Sinh viên bị kỷ luật mức đình chỉ học tập không được đánh giá kết quả rèn luyện trong thời gian bị đình chỉ. 4. Sinh viên bị kỷ luật mức buộc thôi học không đư"
     },
     {
-      "_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "article": "Điều 11.",
       "title": "Quy trình đánh giá kết quả rèn luyện sinh viên",
       "source_pages": [
-        75,
-        76
+        70,
+        71
       ],
       "category": "regulation_table",
       "extraction_status": "flattened",
@@ -196,15 +196,15 @@
         "\\bPhân\\s*loại\\b.*\\brèn\\s*luyện\\b"
       ],
       "recommended_action": "extract_structured_table",
-      "content_chars": 2259,
+      "content_chars": 2230,
       "boundary_error": false,
       "boundary_signals": [],
-      "snippet": "Tài liệu: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - PHÂN LOẠI ĐÁNH GIÁ VÀ QUY TRÌNH ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN Điều: Điều 11. Tiêu đề: Quy trình đánh giá kết quả rèn luyện sinh viên Nội dung: Điều 11. Quy trình đánh giá kết quả rèn luyện sinh viên 1. CVHT thông báo đến lớp trưởng lớp sinh viên về quy trình và thời gian thực hiện việc chấm điểm rèn luyện. 2. Sinh viên căn cứ vào kết quả rèn luyện của bản thân, tự đánh giá theo mức điểm chi tiết do Nhà trường quy định kèm theo các minh chứng hoạt động và gửi về Ban cán sự (BCS) lớp. 3. BCS lớp, Ban chấp hành (BCH) chi đoàn, BCH chi hội, CVHT chấm lạ"
+      "snippet": "Tài liệu: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh Phần: Chương: Chương III - PHÂN LOẠI ĐÁNH GIÁ VÀ QUY TRÌNH ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN Điều: Điều 11. Tiêu đề: Quy trình đánh giá kết quả rèn luyện sinh viên Nội dung: Điều 11. Quy trình đánh giá kết quả rèn luyện sinh viên 1. CVHT thông báo đến lớp trưởng lớp sinh viên về quy trình và thời gian thực hiện việc chấm điểm rèn luyện. 2. Sinh viên căn cứ vào kết quả rèn luyện của bản thân, tự đánh giá theo mức điểm chi tiết do Nhà trường quy định kèm theo các minh chứng hoạt động và gửi về BCS lớp. 3. BCS lớp, BCH chi đoàn, BCH chi hội, CVHT chấm lại điểm rèn luyện cho sinh viê"
     },
     {
-      "_id": "K48-K49_CongViecCuaCacKhoa_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "_id": "K49_CongViecCuaCacKhoa_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "article": "",
       "title": "Một số công việc của các khoa liên quan đến sinh viên",
       "source_pages": [
@@ -217,10 +217,10 @@
         "\\bPhân\\s*loại\\b.*\\brèn\\s*luyện\\b"
       ],
       "recommended_action": "extract_structured_table",
-      "content_chars": 1277,
+      "content_chars": 1270,
       "boundary_error": false,
       "boundary_signals": [],
-      "snippet": "Tài liệu: Một số công việc của các khoa liên quan đến sinh viên Phần: Chương: Tiêu đề: Một số công việc của các khoa liên quan đến sinh viên Nội dung: MỘT SỐ CÔNG VIỆC CỦA CÁC KHOA LIÊN QUAN ĐẾN SINH VIÊN – Chỉ định tạm thời hoặc bầu ban cán sự (lớp trưởng và các lớp phó) lớp sinh viên và lớp học phần; – Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký môn học; – Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa biểu học tập và thi; – Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp định của Nhà nước, Nhà trường (nếu có) theo quy định; – Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn, văn hóa – văn nghệ, thể dục – thể thao...; – Đán"
+      "snippet": "Tài liệu: Một số công việc của các khoa liên quan đến sinh viên Phần: Chương: Tiêu đề: Một số công việc của các khoa liên quan đến sinh viên Nội dung: MỘT SỐ CÔNG VIỆC CỦA CÁC KHOA LIÊN QUAN ĐẾN SINH VIÊN – Chỉ định tạm thời hoặc bầu BCS (lớp trưởng và các lớp phó) lớp sinh viên và lớp học phần; – Giới thiệu giảng viên phụ trách CVHT để giúp sinh viên đăng ký môn học; – Hướng dẫn sinh viên học tập theo hệ thống tín chỉ; xếp thời khóa biểu học tập và thi; – Tổ chức lựa chọn sinh viên đi học chuyển tiếp, du học theo hiệp định của Nhà nước, Nhà trường (nếu có) theo quy định; – Tổ chức các hoạt động chính trị – xã hội, nghiệp vụ chuyên môn, văn hóa – văn nghệ, thể dục – thể thao...; – Đánh giá, "
     },
     {
       "_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
@@ -719,15 +719,15 @@
     "student_service_directory": {
       "count": 232,
       "cohort_counts": {
-        "K48-K49": 77,
+        "K49": 77,
         "K50": 77,
         "K51": 78
       }
     },
     "student_office_profiles": {
-      "count": 64,
+      "count": 63,
       "cohort_counts": {
-        "K48-K49": 22,
+        "K49": 21,
         "K50": 21,
         "K51": 21
       }
@@ -735,15 +735,15 @@
     "student_faculty_profiles": {
       "count": 69,
       "cohort_counts": {
-        "K48-K49": 23,
+        "K49": 23,
         "K50": 23,
         "K51": 23
       }
     },
     "program_directory": {
-      "count": 129,
+      "count": 131,
       "cohort_counts": {
-        "K48-K49": 41,
+        "K49": 43,
         "K50": 43,
         "K51": 45
       }

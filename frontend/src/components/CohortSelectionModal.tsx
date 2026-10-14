@@ -37,12 +37,12 @@ export function CohortSelectionModal({ onSelect, onDismiss }: CohortSelectionMod
         <div className="cohort-modal-options">
           <button 
             className="cohort-option-card"
-            onClick={() => onSelect('K48-K49')}
+            onClick={() => onSelect('K49')}
           >
             <div className="cohort-icon">🏛️</div>
             <div className="cohort-info">
-              <h3>Khóa 48 - 49</h3>
-              <p>Sinh viên nhập học năm 2022 và 2023</p>
+              <h3>Khóa 49</h3>
+              <p>Sinh viên nhập học năm 2023</p>
             </div>
           </button>
           

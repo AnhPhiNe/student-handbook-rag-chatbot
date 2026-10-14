@@ -43,7 +43,7 @@ def resolve(tables, tool, slots, cohort="K51"):
     return resolution
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 @pytest.mark.parametrize("operation,value", [
     ("academic_classification", "-3.6/4"), ("academic_classification", "4.1/4"),
     ("conduct_classification", "-80/100"), ("conduct_classification", "101/100"),
@@ -69,7 +69,7 @@ def test_valid_boundaries_and_positive_sign_keep_classification(tables, operatio
     assert locked["result"]["label"] == label
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50"])
+@pytest.mark.parametrize("cohort", ["K49", "K50"])
 @pytest.mark.parametrize("value", ["-3.0", "-3,6", "-0.1", "9.0"])
 def test_scholarship_invalid_score_does_not_become_a_positive_lock(tables, cohort, value):
     resolution = resolve(tables, "scholarship_classification",

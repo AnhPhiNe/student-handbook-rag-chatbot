@@ -32,3 +32,15 @@ unit_aliases:
   Khoa Công nghệ Thông tin: [CNTT, IT]
   Khoa Khoa học Tự nhiên: [KHTN, Tự nhiên]
   Khoa Khoa học Xã hội: [KHXH, Xã hội]
+
+# Misprints in a handbook's directory, corrected by the owner (2026-10-14). The
+# catalog record gets the corrected value and a review note; the raw handbook
+# text stays as printed. A correction that matches no record fails the build.
+contact_corrections:
+  - cohort: K49
+    unit: Phòng Hợp tác Quốc tế
+    printed: "(028) 3891080"
+    corrected: "(028) 38391080"
+    note: >-
+      Sổ tay K49 tr. 129 in "(028) 3891080", thiếu một chữ số, được coi là lỗi in;
+      số đầy đủ (028) 38391080 lấy theo Sổ tay K48 tr. 131 (cùng số nội bộ 172, 173).

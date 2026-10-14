@@ -72,7 +72,7 @@ def test_all_three_handbooks_have_exactly_the_curated_legal_amendments() -> None
         counts[path.name] = count
 
     assert counts == {
-        "so-tay-sinh-vien-khoa-48-49.pdf": 0,
+        "so-tay-sinh-vien-khoa-49.pdf": 0,
         "so-tay-sinh-vien-khoa-50.pdf": 0,
         "so-tay-sinh-vien-khoa-51.pdf": 7,
     }

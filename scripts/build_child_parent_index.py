@@ -13,10 +13,11 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from src.common.cohort import valid_cohorts
 from src.common.io import sha256_file
 
 
-ALLOWED_COHORTS = {"K48-K49", "K50", "K51"}
+ALLOWED_COHORTS = set(valid_cohorts())
 # "child" is the per-line chunk of this builder; the others come from
 # scripts/structure_chunking.py (one khoản per chunk).
 GRANULARITIES = {"section_heading", "child", "clause", "clause_part", "article", "point"}

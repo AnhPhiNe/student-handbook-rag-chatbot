@@ -50,7 +50,7 @@ cases:
     rationale: "Điểm học bổng khác tiền học bổng."
   - id: service_unit
     query: "Đơn vị nào phụ trách cho sinh viên mượn micro?"
-    cohort: K48-K49
+    cohort: K49
     expected:
       mode: structured
       lookup_type: student_service
@@ -60,7 +60,7 @@ cases:
     rationale: "Hỏi tên đơn vị, chưa hỏi địa chỉ."
   - id: service_location
     query: "Địa chỉ của đơn vị hỗ trợ mượn micro là gì?"
-    cohort: K48-K49
+    cohort: K49
     expected:
       mode: structured
       lookup_type: student_service
@@ -80,7 +80,7 @@ cases:
     rationale: "Đơn vị đã nêu tên; không suy unit chỉ từ chữ phòng."
   - id: service_policy
     query: "Quy định về trách nhiệm bảo quản thiết bị khi sinh viên mượn là gì?"
-    cohort: K48-K49
+    cohort: K49
     expected: {mode: rag}
     rationale: "Hỏi quy định, không hỏi đơn vị hỗ trợ."
   - id: missing_personal_score

@@ -12,6 +12,7 @@ from src.common.cohort import COHORT_REGISTRY, DOCUMENT_ID_BY_COHORT
 from src.common.env_loader import env_bool
 from src.common.io import load_json, save_json
 from src.common.text import fold_text
+from src.ingestion.pdf_loader import sections_config_path
 from src.extraction.program_faculty_enricher import (
     enrich_program_faculty_names,
     load_program_overrides,
@@ -51,11 +52,8 @@ def get_cohort_from_filename(filename: str) -> str:
     normalized = Path(filename).stem.lower()
     normalized = normalized.replace("_", "-")
 
-    if re.search(r"(?:khoa|k)-?48(?:-?49)?", normalized):
-        return "K48-K49"
-
     if re.search(r"(?:khoa|k)-?49", normalized):
-        return "K48-K49"
+        return "K49"
 
     if re.search(r"(?:khoa|k)-?50", normalized):
         return "K50"
@@ -81,12 +79,7 @@ def run_pipeline_for_pdf(pdf_path: Path, cohort: str):
     env = os.environ.copy()
     env["PDF_PATH"] = str(pdf_path)
     env["COHORT"] = cohort
-    config_by_cohort = {
-        "K48-K49": "configs/document_sections.yaml",
-        "K50": "configs/document_sections_k50.yaml",
-        "K51": "configs/document_sections_k51.yaml",
-    }
-    env["CONFIG_PATH"] = config_by_cohort.get(cohort, "configs/document_sections.yaml")
+    env["CONFIG_PATH"] = str(sections_config_path(cohort))
     
     for label, command in STEPS:
         print(f"\n==> {label} ({cohort})")
@@ -319,7 +312,7 @@ def validate_cohort_tags(paths: list[Path]) -> None:
         preview = json.dumps(issues[:20], ensure_ascii=False, indent=2)
         raise RuntimeError(
             "Cohort validation failed. "
-            "Mọi record từ sổ tay phải có cohort K48-K49, K50 hoặc K51.\n"
+            "Mọi record từ sổ tay phải có cohort K49, K50 hoặc K51.\n"
             f"{preview}"
         )
 
@@ -432,27 +425,21 @@ def validate_program_directory(program_path: Path, overrides: dict) -> None:
                 }
             )
 
-    k48_programs = {
+    # K49 and K50 print the same programs; K51 adds two.
+    k49_programs = {
         fold_text(program.get("program_name"))
-        for program in by_cohort.get("K48-K49", [])
+        for program in by_cohort.get("K49", [])
     }
     k50_programs = {
         fold_text(program.get("program_name"))
         for program in by_cohort.get("K50", [])
     }
-    k50_additions = k50_programs - k48_programs
-    if k48_programs - k50_programs:
+    if k49_programs != k50_programs:
         issues.append(
             {
-                "issue": "unexpected_k48_only_programs",
-                "actual": sorted(k48_programs - k50_programs),
-            }
-        )
-    if k50_additions != {"du lich", "sinh hoc ung dung"}:
-        issues.append(
-            {
-                "issue": "unexpected_k50_program_additions",
-                "actual": sorted(k50_additions),
+                "issue": "k49_k50_programs_differ",
+                "k49_only": sorted(k49_programs - k50_programs),
+                "k50_only": sorted(k50_programs - k49_programs),
             }
         )
 

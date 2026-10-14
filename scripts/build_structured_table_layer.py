@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.common.cohort import valid_cohorts
+from src.ingestion.pdf_loader import sections_config_path
 from src.extraction.directory_parser import extract_office_directory
 from src.chunking.regulation_table_extractor import (
     extract_pass_fail_ungraded_table,
@@ -29,11 +31,7 @@ TABLE_DIR = Path("data/processed/tables")
 DIRECTORY_DIR = Path("data/processed/directories")
 RAW_DIR = Path("data/raw")
 OFFICE_ALIAS_CONFIG_PATH = Path("configs/office_aliases.yaml")
-OFFICE_SOURCE_CONFIGS = (
-    ("K48-K49", Path("configs/document_sections.yaml")),
-    ("K50", Path("configs/document_sections_k50.yaml")),
-    ("K51", Path("configs/document_sections_k51.yaml")),
-)
+OFFICE_SOURCE_CONFIGS = tuple((cohort, sections_config_path(cohort)) for cohort in valid_cohorts())
 
 STRUCTURED_TABLE_REGISTRY_PATH = TABLE_DIR / "structured_tables_registry.json"
 FOREIGN_LANGUAGE_TABLE_PATH = TABLE_DIR / "foreign_language_equivalency_table.json"
@@ -194,6 +192,28 @@ def load_office_alias_config() -> dict[str, Any]:
         return {"unit_aliases": {}}
     value = yaml.safe_load(OFFICE_ALIAS_CONFIG_PATH.read_text(encoding="utf-8")) or {}
     return value if isinstance(value, dict) else {"unit_aliases": {}}
+
+
+def apply_contact_corrections(catalogs: list[list[dict[str, Any]]]) -> None:
+    """Replace a reviewed misprinted phone number (configs/office_aliases.yaml)."""
+    for correction in load_office_alias_config().get("contact_corrections") or []:
+        matched = False
+        for records in catalogs:
+            for record in records:
+                if record.get("cohort") != correction["cohort"] or record.get("unit_name") != correction["unit"]:
+                    continue
+                phones = record.get("phones") or []
+                if correction["printed"] not in phones:
+                    continue
+                record["phones"] = [correction["corrected"] if p == correction["printed"] else p for p in phones]
+                if record.get("phone"):
+                    record["phone"] = record["phone"].replace(correction["printed"], correction["corrected"])
+                notes = record.setdefault("review_notes", [])
+                if correction["note"] not in notes:
+                    notes.append(correction["note"])
+                matched = True
+        if not matched:
+            raise ValueError(f"Contact correction matches no record: {correction}")
 
 
 def normalize_text(value: Any) -> str:
@@ -1375,6 +1395,7 @@ def build_structured_table_layer(
     faculty_profiles = normalize_directory_catalog(
         build_student_faculty_profiles(directory_dir), "student_faculty_profiles"
     )
+    apply_contact_corrections([services, office_profiles, faculty_profiles])
     program_directory = normalize_directory_catalog(
         attach_program_faculty_aliases(
             load_json(directory_dir / PROGRAM_DIRECTORY_PATH.name, []),

@@ -1,11 +1,11 @@
 {
   "status": "ok",
-  "total_docstore_items": 541,
+  "total_docstore_items": 561,
   "total_edges": 78,
-  "total_skipped": 1059,
+  "total_skipped": 1098,
   "skip_counts": {
-    "missing_index_fields": 77,
-    "self_reference": 926,
+    "missing_index_fields": 78,
+    "self_reference": 964,
     "unresolved_external_document": 29,
     "duplicate_edge": 27
   },
@@ -14,10 +14,10 @@
     "explicit_cross_document": 10
   },
   "coverage": {
-    "K48-K49": {
-      "parent_sections": 149,
+    "K49": {
+      "parent_sections": 169,
       "graph_nodes": 31,
-      "coverage_pct": 20.81
+      "coverage_pct": 18.34
     },
     "K50": {
       "parent_sections": 192,
@@ -40,10 +40,10 @@
   },
   "edge_audit": [
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 3,
@@ -54,10 +54,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 5,
@@ -68,38 +68,38 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 8,
       "target_article": 6,
-      "reference_text": "Điểm c khoản 1 Điều 6",
+      "reference_text": "điểm c khoản 1 Điều 6",
       "reference_reason": "khoản 1 Điều 6 của Nghị định này phải bồi hoàn toàn bộ kinh phí đã",
       "target_document_hint": "Nghị định này phải bồi hoàn toàn bộ kinh phí đã được ngân sách Nhà nước hỗ trợ",
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 9,
       "target_article": 6,
-      "reference_text": "Điểm c khoản 1 Điều 6",
-      "reference_reason": "tượng quy định tại Điểm c khoản 1 Điều 6 Nghị định này cho Ủy ban",
+      "reference_text": "điểm c khoản 1 Điều 6",
+      "reference_reason": "tượng quy định tại điểm c khoản 1 Điều 6 Nghị định này cho Ủy ban",
       "target_document_hint": "Nghị định này cho Ủy ban nhân dân cấp tỉnh để thông báo thu hồi kinh phí đã hỗ trợ cho sinh viên sư phạm và gia đình theo quy định tại khoản 2 Điều 8 Nghị định này",
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 9,
@@ -110,10 +110,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 11,
@@ -124,10 +124,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 11,
@@ -138,10 +138,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 12,
@@ -152,10 +152,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 13,
@@ -166,24 +166,24 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 13,
       "target_article": 6,
-      "reference_text": "Điểm a khoản 2 Điều 6",
-      "reference_reason": "khoản 2 Điều 6, báo cáo tình hình việc làm của bản thân (Mẫu số 02 tại",
-      "target_document_hint": "Nghị định này) tới cơ quan thu hồi kinh phí bồi hoàn để thông báo xóa hoặc thu hồi khoản kinh phí hỗ trợ",
+      "reference_text": "điểm a khoản 2 Điều 6",
+      "reference_reason": "khoản 2 Điều 6, báo cáo tình hình việc làm của bản thân (Mẫu số 02 –",
+      "target_document_hint": null,
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "target_document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "source_article": 13,
@@ -194,10 +194,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 28,
@@ -208,10 +208,10 @@
       "resolution_mode": "explicit_cross_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu31",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "target": "K49_QuyCheDaoTao_Chuong4_Dieu16",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 31,
@@ -222,24 +222,24 @@
       "resolution_mode": "explicit_cross_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+      "target": "K49_QuyCheDaoTao_Chuong3_Dieu12",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 32,
       "target_article": 12,
       "reference_text": "khoản 2, Điều 12",
-      "reference_reason": "2, Điều 12 của Quy chế đào tạo trình độ đại học chính quy tại Trường Đại",
+      "reference_reason": "Điều 12 của Quy chế đào tạo trình độ đại học chính quy tại Trường Đại",
       "target_document_hint": "Quy chế đào tạo trình độ đại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh được ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021 của Hiệu trưởng",
       "resolution_mode": "explicit_cross_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+      "target": "K49_QuyCheDaoTao_Chuong4_Dieu17",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 32,
@@ -250,24 +250,24 @@
       "resolution_mode": "explicit_cross_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
-      "target": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu33",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "target": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 34,
       "target_article": 33,
-      "reference_text": "Điểm b, khoản 2, Điều 33",
-      "reference_reason": "đồng Khen thưởng và Kỷ luật căn cứ vào Điểm b, khoản 2, Điều 33 của",
+      "reference_text": "điểm b, khoản 2, Điều 33",
+      "reference_reason": "đồng Khen thưởng và Kỷ luật căn cứ vào điểm b, khoản 2, Điều 33 của",
       "target_document_hint": "Quy chế này",
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu36",
-      "target": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu36",
+      "target": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 36,
@@ -278,10 +278,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu5",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu5",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu6",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 5,
@@ -292,24 +292,24 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu4",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu4",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 10,
       "target_article": 4,
       "reference_text": "điểm học phần không đạt phải đăng ký học lại theo quy định tại Điều 4",
-      "reference_reason": "quy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại Điểm c",
-      "target_document_hint": "Quy chế này, trừ trường hợp quy định tại Điểm c khoản này",
+      "reference_reason": "quy định tại Điều 4 của Quy chế này, trừ trường hợp quy định tại điểm c",
+      "target_document_hint": "Quy chế này, trừ trường hợp quy định tại điểm c khoản này",
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu12",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 12,
@@ -320,10 +320,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu13",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu13",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 13,
@@ -334,10 +334,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu15",
+      "target": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 15,
@@ -348,10 +348,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu16",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 16,
@@ -362,10 +362,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu17",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 17,
@@ -376,10 +376,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu19",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu19",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "target_document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "source_article": 19,
@@ -390,10 +390,10 @@
       "resolution_mode": "same_document"
     },
     {
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
-      "target": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
-      "source_cohort": "K48-K49",
-      "target_cohort": "K48-K49",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
+      "target": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "source_cohort": "K49",
+      "target_cohort": "K49",
       "source_document_title": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
       "target_document_title": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
       "source_article": 12,
@@ -1135,210 +1135,218 @@
   "skipped": [
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongTinNghiDinh116_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan2",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan3",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan4",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan5",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan6",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan7",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Khung điểm đánh giá kết quả rèn luyện sinh viên (Phụ lục 1, Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_HuongDanLapHoSoRenLuyen_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_HuongDanLapHoSoRenLuyen_Phan2",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_HuongDanLapHoSoRenLuyen_Phan3",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_HuongDanLapHoSoRenLuyen_Phan4",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_HuongDanDanhGiaRenLuyenTrucTuyen_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Hướng dẫn quy trình đánh giá kết quả rèn luyện sinh viên trên chuyên trang đánh giá kết quả rèn luyện sinh viên trực tuyến",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_ThongTinNghiDinh116_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "document_key": "Thông tin thực hiện chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "section_id": "K49_ThongBaoMienGiamHocPhi_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2023 – 2024",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan2",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "section_id": "K49_ThongBaoMienGiamHocPhi_Phan2",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2023 – 2024",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan3",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "section_id": "K49_ThongBaoMienGiamHocPhi_Phan3",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2023 – 2024",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan4",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
+      "section_id": "K49_ThongBaoMienGiamHocPhi_Phan4",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2023 – 2024",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan5",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_HuongDanLapHoSoRenLuyen_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_HuongDanLapHoSoRenLuyen_Phan2",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_HuongDanLapHoSoRenLuyen_Phan3",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_HuongDanLapHoSoRenLuyen_Phan4",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Hướng dẫn lập hồ sơ đánh giá kết quả rèn luyện sinh viên (Quyết định số 2650/QĐ-ĐHSP ngày 16/9/2022)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_QuyTacUngXuSinhVien_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "10 quy tắc ứng xử của sinh viên Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan2",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan3",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan4",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoHocBongNguoiKhuyetTat_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "section_id": "K49_ThongBaoHocBongNguoiKhuyetTat_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "document_key": "Thông báo về việc thực hiện chế độ chính sách về học bổng và hỗ trợ phương tiện, đồ dùng học tập đối với sinh viên khuyết tật thuộc hộ nghèo, hộ cận nghèo học hệ chính quy",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "section_id": "K49_ThongBaoHoTroChiPhiHocTap_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo hệ chính quy học tại Trường",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan2",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "section_id": "K49_ThongBaoHoTroChiPhiHocTap_Phan2",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo hệ chính quy học tại Trường",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan3",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "section_id": "K49_ThongBaoHoTroChiPhiHocTap_Phan3",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo hệ chính quy học tại Trường",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan4",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "section_id": "K49_ThongBaoHoTroChiPhiHocTap_Phan4",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo hệ chính quy học tại Trường",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan5",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "section_id": "K49_ThongBaoHoTroChiPhiHocTap_Phan5",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo hệ chính quy học tại Trường",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan6",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo hệ chính quy học tại Trường",
+      "section_id": "K49_ThongBaoHoTroChiPhiHocTap_Phan6",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Thông báo về việc thực hiện chính sách hỗ trợ chi phí học tập đối với sinh viên là người dân tộc thiểu số và thiểu số rất ít người thuộc hộ nghèo, hộ cận nghèo hệ chính quy học tại Trường",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_QuyTrinhXetVaoKyTucXa_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "section_id": "K49_CongViecCuaCacKhoa_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Một số công việc của các khoa liên quan đến sinh viên",
+      "article_number": null
+    },
+    {
+      "issue": "missing_index_fields",
+      "section_id": "K49_QuyTrinhXetVaoKyTucXa_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "document_key": "Quy trình xét sinh viên vào ở ký túc xá",
       "article_number": null
     },
     {
       "issue": "missing_index_fields",
-      "section_id": "K48-K49_CacMauDonBieuMau_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Các mẫu đơn và biểu mẫu",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_MauDonBieuMau_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Các mẫu đơn và biểu mẫu (tên mẫu, trang và nơi gửi)",
-      "article_number": null
-    },
-    {
-      "issue": "missing_index_fields",
-      "section_id": "K48-K49_CongViecCuaCacKhoa_Phan1",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "document_key": "Một số công việc của các khoa liên quan đến sinh viên",
+      "section_id": "K49_QuyTrinhBieuMau_Phan1",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "document_key": "Quy trình và biểu mẫu các công tác liên quan đến sinh viên",
       "article_number": null
     },
     {
@@ -1751,81 +1759,81 @@
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu1",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu1",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu2",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu2",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu4",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu4",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu5",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu5",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "unresolved_external_document",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "source": "K49_QuyCheDaoTao_Chuong1_Dieu6",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "document_title": "Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "reference_article": 1,
       "reference_text": "khoản 22 Điều 1",
@@ -1834,627 +1842,627 @@
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu7",
+      "source": "K49_QuyCheDaoTao_Chuong2_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu7",
+      "source": "K49_QuyCheDaoTao_Chuong2_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu8",
+      "source": "K49_QuyCheDaoTao_Chuong2_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu8",
+      "source": "K49_QuyCheDaoTao_Chuong2_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9",
+      "source": "K49_QuyCheDaoTao_Chuong2_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9",
+      "source": "K49_QuyCheDaoTao_Chuong2_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu10",
       "reference_article": 10,
       "reference_text": "Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu10",
       "reference_article": 10,
       "reference_text": "điểm học phần Nội dung: Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu13",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu13",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu14",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu14",
       "reference_article": 14,
       "reference_text": "Điều 14"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu14",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu14",
       "reference_article": 14,
       "reference_text": "Điều 14"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
+      "source": "K49_QuyCheDaoTao_Chuong3_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu16",
       "reference_article": 16,
       "reference_text": "Điều 16"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu16",
       "reference_article": 16,
       "reference_text": "Điều 16"
     },
     {
       "issue": "duplicate_edge",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu16",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu3",
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu17",
       "reference_article": 17,
       "reference_text": "Điều 17"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu17",
       "reference_article": 17,
       "reference_text": "Điều 17"
     },
     {
       "issue": "duplicate_edge",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu17",
+      "target": "K49_QuyCheDaoTao_Chuong1_Dieu3",
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu18",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu18",
       "reference_article": 18,
       "reference_text": "Điều 18"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu18",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu18",
       "reference_article": 18,
       "reference_text": "Điều 18"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu19",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu19",
       "reference_article": 19,
       "reference_text": "Điều 19"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu19",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu19",
       "reference_article": 19,
       "reference_text": "Điều 19"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu20",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu20",
       "reference_article": 20,
       "reference_text": "Điều 20"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu20",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu20",
       "reference_article": 20,
       "reference_text": "Điều 20"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu21",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu21",
       "reference_article": 21,
       "reference_text": "Điều 21"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu21",
+      "source": "K49_QuyCheDaoTao_Chuong4_Dieu21",
       "reference_article": 21,
       "reference_text": "Điều 21"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu22",
+      "source": "K49_QuyCheDaoTao_Chuong5_Dieu22",
       "reference_article": 22,
       "reference_text": "Điều 22"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu22",
+      "source": "K49_QuyCheDaoTao_Chuong5_Dieu22",
       "reference_article": 22,
       "reference_text": "Điều 22"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu23",
+      "source": "K49_QuyCheDaoTao_Chuong5_Dieu23",
       "reference_article": 23,
       "reference_text": "Điều 23"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu23",
+      "source": "K49_QuyCheDaoTao_Chuong5_Dieu23",
       "reference_article": 23,
       "reference_text": "Điều 23"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu24",
+      "source": "K49_QuyCheDaoTao_Chuong5_Dieu24",
       "reference_article": 24,
       "reference_text": "Điều 24"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDaoTao_Chuong5_Dieu24",
+      "source": "K49_QuyCheDaoTao_Chuong5_Dieu24",
       "reference_article": 24,
       "reference_text": "Điều 24"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu1",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu1",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu2",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu2",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong1_Dieu3",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu4",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong2_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu4",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong2_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu6",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu6",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu7",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu7",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu8",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu8",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu9",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu9",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
       "reference_article": 10,
       "reference_text": "Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
       "reference_article": 10,
       "reference_text": "Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu11",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu11",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu12",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu13",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu13",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu14",
       "reference_article": 14,
       "reference_text": "Điều 14"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu14",
       "reference_article": 14,
       "reference_text": "Điều 14"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu15",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu15",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu16",
       "reference_article": 16,
       "reference_text": "Điều 16"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu16",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu16",
       "reference_article": 16,
       "reference_text": "Điều 16"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu17",
       "reference_article": 17,
       "reference_text": "Điều 17"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu17",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu17",
       "reference_article": 17,
       "reference_text": "Điều 17"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu18",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu18",
       "reference_article": 18,
       "reference_text": "Điều 18"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu18",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu18",
       "reference_article": 18,
       "reference_text": "Điều 18"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu19",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu19",
       "reference_article": 19,
       "reference_text": "Điều 19"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu19",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu19",
       "reference_article": 19,
       "reference_text": "Điều 19"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu20",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu20",
       "reference_article": 20,
       "reference_text": "Điều 20"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu20",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu20",
       "reference_article": 20,
       "reference_text": "Điều 20"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu21",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu21",
       "reference_article": 21,
       "reference_text": "Điều 21"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu21",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu21",
       "reference_article": 21,
       "reference_text": "Điều 21"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu22",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu22",
       "reference_article": 22,
       "reference_text": "Điều 22"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu22",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu22",
       "reference_article": 22,
       "reference_text": "Điều 22"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu23",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu23",
       "reference_article": 23,
       "reference_text": "Điều 23"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu23",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu23",
       "reference_article": 23,
       "reference_text": "Điều 23"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu24",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu24",
       "reference_article": 24,
       "reference_text": "Điều 24"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu24",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu24",
       "reference_article": 24,
       "reference_text": "Điều 24"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu25",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu25",
       "reference_article": 25,
       "reference_text": "Điều 25"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu25",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu25",
       "reference_article": 25,
       "reference_text": "Điều 25"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu26",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu26",
       "reference_article": 26,
       "reference_text": "Điều 26"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu26",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu26",
       "reference_article": 26,
       "reference_text": "Điều 26"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu27",
       "reference_article": 27,
       "reference_text": "Điều 27"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu27",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu27",
       "reference_article": 27,
       "reference_text": "Điều 27"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
       "reference_article": 28,
       "reference_text": "Điều 28"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
       "reference_article": 28,
       "reference_text": "Điều 28"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
       "reference_article": 29,
       "reference_text": "Điều 29"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
       "reference_article": 29,
       "reference_text": "Điều 29"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu30",
       "reference_article": 30,
       "reference_text": "Điều 30"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu30",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu30",
       "reference_article": 30,
       "reference_text": "Điều 30"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu31",
       "reference_article": 31,
       "reference_text": "Điều 31"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu31",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu31",
       "reference_article": 31,
       "reference_text": "Điều 31"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
       "reference_article": 32,
       "reference_text": "Điều 32"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
       "reference_article": 32,
       "reference_text": "Điều 32"
     },
     {
       "issue": "duplicate_edge",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
-      "target": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu17",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+      "target": "K49_QuyCheDaoTao_Chuong4_Dieu17",
       "reference_text": "khoản 1, Điều 17"
     },
     {
       "issue": "unresolved_external_document",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu32",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "document_title": "Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "reference_article": 16,
       "reference_text": "khoản 2, Điều 16",
@@ -2463,633 +2471,645 @@
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu33",
       "reference_article": 33,
       "reference_text": "Điều 33"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu33",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu33",
       "reference_article": 33,
       "reference_text": "Điều 33"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
       "reference_article": 34,
       "reference_text": "Điều 34"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
       "reference_article": 34,
       "reference_text": "Điều 34"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
       "reference_article": 35,
       "reference_text": "Điều 35"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
       "reference_article": 35,
       "reference_text": "Điều 35"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu36",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu36",
       "reference_article": 36,
       "reference_text": "Điều 36"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu36",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu36",
       "reference_article": 36,
       "reference_text": "Điều 36"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu37",
       "reference_article": 37,
       "reference_text": "Điều 37"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu37",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu37",
       "reference_article": 37,
       "reference_text": "Điều 37"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
       "reference_article": 38,
       "reference_text": "Điều 38"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
       "reference_article": 38,
       "reference_text": "Điều 38"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu39",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu39",
       "reference_article": 39,
       "reference_text": "Điều 39"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu39",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu39",
       "reference_article": 39,
       "reference_text": "Điều 39"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong7_Dieu40",
       "reference_article": 40,
       "reference_text": "Điều 40"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu40",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong7_Dieu40",
       "reference_article": 40,
       "reference_text": "Điều 40"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu41",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong7_Dieu41",
       "reference_article": 41,
       "reference_text": "Điều 41"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong7_Dieu41",
+      "source": "K49_QuyCheCongTacSinhVien_Chuong7_Dieu41",
       "reference_article": 41,
       "reference_text": "Điều 41"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu3",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu3",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu5",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu5",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu6",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu6",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong4_Dieu9",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong4_Dieu9",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu1",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu1",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu2",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu2",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "điểm Nội dung: Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
       "reference_article": 4,
       "reference_text": "ĐIỂM Điều: Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
       "reference_article": 4,
       "reference_text": "ĐIỂM Điều: Điều 4. Tiêu đề: Đánh giá về ý thức học tập Nội dung: Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
       "reference_article": 5,
       "reference_text": "ĐIỂM Điều: Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "ĐIỂM Điều: Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
       "reference_article": 7,
       "reference_text": "ĐIỂM Điều: Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
       "reference_article": 8,
       "reference_text": "ĐIỂM Điều: Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
       "reference_article": 10,
       "reference_text": "Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
       "reference_article": 10,
       "reference_text": "Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
       "reference_article": 14,
       "reference_text": "Điều 14"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
       "reference_article": 14,
       "reference_text": "Điều 14"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu16",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu16",
       "reference_article": 16,
       "reference_text": "Điều 16"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu16",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu16",
       "reference_article": 16,
       "reference_text": "Điều 16"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu17",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu17",
       "reference_article": 17,
       "reference_text": "Điều 17"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu17",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu17",
       "reference_article": 17,
       "reference_text": "Điều 17"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18",
       "reference_article": 18,
       "reference_text": "Điều 18"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18",
+      "source": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong5_Dieu18",
       "reference_article": 18,
       "reference_text": "Điều 18"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
       "reference_article": 10,
       "reference_text": "Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
       "reference_article": 10,
       "reference_text": "Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
       "reference_article": 14,
       "reference_text": "Điều 14"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
       "reference_article": 14,
-      "reference_text": "điểm NCKH của sinh viên Nội dung: Điều 14"
+      "reference_text": "điểm nghiên cứu khoa học của sinh viên Nội dung: Điều 14"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
       "reference_article": 16,
       "reference_text": "Điều 16"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
       "reference_article": 16,
       "reference_text": "Điều 16"
     },
     {
       "issue": "unresolved_external_document",
-      "source": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "source": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu16",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "document_title": "Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên",
       "reference_article": 1,
       "reference_text": "Điều 1",
@@ -3098,207 +3118,423 @@
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong1_Dieu1",
       "reference_article": 1,
       "reference_text": "Điều 1"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong1_Dieu2",
       "reference_article": 2,
       "reference_text": "Điều 2"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu3",
       "reference_article": 3,
       "reference_text": "Điều 3"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu4",
       "reference_article": 4,
       "reference_text": "Điều 4"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu5",
       "reference_article": 5,
       "reference_text": "Điều 5"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu6",
       "reference_article": 6,
       "reference_text": "Điều 6"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu7",
       "reference_article": 7,
       "reference_text": "Điều 7"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu8",
       "reference_article": 8,
       "reference_text": "Điều 8"
     },
     {
-      "issue": "duplicate_edge",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-      "reference_text": "Điểm b khoản 1 Điều 6"
-    },
-    {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu9",
       "reference_article": 9,
       "reference_text": "Điều 9"
     },
     {
-      "issue": "duplicate_edge",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-      "reference_text": "Điểm b khoản 1 Điều 6"
-    },
-    {
-      "issue": "duplicate_edge",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
-      "reference_text": "Điều 8"
-    },
-    {
-      "issue": "duplicate_edge",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-      "reference_text": "khoản 1 Điều 6"
-    },
-    {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu10",
       "reference_article": 10,
       "reference_text": "Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu10",
       "reference_article": 10,
       "reference_text": "Điều 10"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu11",
       "reference_article": 11,
       "reference_text": "Điều 11"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu12",
       "reference_article": 12,
       "reference_text": "Điều 12"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu13",
       "reference_article": 13,
       "reference_text": "Điều 13"
     },
     {
-      "issue": "duplicate_edge",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
-      "target": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-      "reference_text": "khoản 1 Điều 6"
-    },
-    {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu14",
       "reference_article": 14,
       "reference_text": "Điều 14"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong3_Dieu15",
+      "reference_article": 15,
+      "reference_text": "Điều 15"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong4_Dieu16",
+      "reference_article": 16,
+      "reference_text": "Điều 16"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong5_Dieu17",
+      "reference_article": 17,
+      "reference_text": "Điều 17"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_QuyDinhQuyTacUngXu_Chuong5_Dieu18",
+      "reference_article": 18,
+      "reference_text": "Điều 18"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu1",
+      "reference_article": 1,
+      "reference_text": "Điều 1"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu2",
+      "reference_article": 2,
+      "reference_text": "Điều 2"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong1_Dieu3",
+      "reference_article": 3,
+      "reference_text": "Điều 3"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+      "reference_article": 4,
+      "reference_text": "Điều 4"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu5",
+      "reference_article": 5,
+      "reference_text": "Điều 5"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_article": 6,
+      "reference_text": "Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+      "reference_article": 7,
+      "reference_text": "Điều 7"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_article": 8,
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "điểm b khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "reference_article": 9,
+      "reference_text": "Điều 9"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "điểm b khoản 1 Điều 6"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu8",
+      "reference_text": "Điều 8"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu10",
+      "reference_article": 10,
+      "reference_text": "Điều 10"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu11",
+      "reference_article": 11,
+      "reference_text": "Điều 11"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu12",
+      "reference_article": 12,
+      "reference_text": "Điều 12"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "reference_article": 13,
+      "reference_text": "Điều 13"
+    },
+    {
+      "issue": "duplicate_edge",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+      "target": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+      "reference_text": "khoản 1 Điều 6"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "reference_article": 14,
+      "reference_text": "Điều 14"
+    },
+    {
+      "issue": "self_reference",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
       "reference_article": 14,
       "reference_text": "Điều 14"
     },
     {
       "issue": "unresolved_external_document",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu14",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "document_title": "Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm",
       "reference_article": 6,
       "reference_text": "Điều 6",
@@ -3307,13 +3543,13 @@
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },
     {
       "issue": "self_reference",
-      "source": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
+      "source": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong4_Dieu15",
       "reference_article": 15,
       "reference_text": "Điều 15"
     },

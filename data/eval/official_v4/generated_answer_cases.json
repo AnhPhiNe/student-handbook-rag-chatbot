@@ -3,7 +3,7 @@
   "id": "V4-001",
   "suite": "answers",
   "query": "Kỳ này điểm trung bình tích lũy của em được 1.6 theo thang điểm 4 thì xếp loại học lực gì vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.table.scoring",
@@ -27,15 +27,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -245,7 +245,7 @@
   "id": "V4-006",
   "suite": "answers",
   "query": "Cho em hỏi nếu điểm học phần của em tổng kết được 6,0 theo thang điểm 10 thì quy đổi sang thang điểm chữ là điểm gì và được xếp loại Đạt hay Không đạt vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.table.scoring",
@@ -269,15 +269,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -633,7 +633,7 @@
   "id": "V4-014",
   "suite": "answers",
   "query": "Chương trình đào tạo liên thông đại học cho người đã có một bằng đại học hệ vừa làm vừa học có thời gian chuẩn là 2,5 năm thì thời gian học tập tối đa là bao nhiêu năm vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.table.study_duration",
@@ -658,15 +658,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ6: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -827,7 +827,7 @@
   "id": "V4-018",
   "suite": "answers",
   "query": "Dạ em chào phòng đào tạo, em tốt nghiệp cao đẳng xong thì trúng tuyển liên thông lên đại học hệ chính quy của trường mình. Do hoàn cảnh gia đình kỳ này em phải đi làm thêm nhiều nên tính giãn tiến độ ra một chút để đỡ áp lực. Em có biết thời gian đào tạo chuẩn của chương trình liên thông từ cao đẳng lên đại học là 1,5 năm, nhưng không rõ trường cho phép sinh viên học tối đa bao nhiêu năm để em liệu sắp xếp kế hoạch học tập ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.table.study_duration",
@@ -852,15 +852,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ6: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -876,7 +876,7 @@
   "id": "V4-019",
   "suite": "answers",
   "query": "Học bổng khuyến khích học tập loại Giỏi được tính theo công thức và hệ số như thế nào vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.table.scholarship",
@@ -901,15 +901,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ8: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -1072,7 +1072,7 @@
   "id": "V4-023",
   "suite": "answers",
   "query": "Để được xét học bổng khuyến khích học tập loại Giỏi thì cần đáp ứng điểm học tập, điểm rèn luyện và điểm học bổng trong khoảng nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.table.scholarship",
@@ -1097,15 +1097,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ8: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -1222,7 +1222,7 @@
   "id": "V4-026",
   "suite": "answers",
   "query": "Dạ em chào thầy cô, kỳ vừa rồi em hoàn thành xong các môn thi và điểm rèn luyện cũng đã có trên hệ thống rồi. Em có điểm học tập hệ 4 là 3.30 và điểm rèn luyện là 85. Em muốn biết chính xác cách tính điểm xét học bổng khuyến khích học tập của trường để xem mình đạt bao nhiêu điểm, thầy cô hướng dẫn công thức và tính giúp em với ạ.",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.table.formula",
@@ -1247,15 +1247,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ8: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -1421,7 +1421,7 @@
   "id": "V4-030",
   "suite": "answers",
   "query": "Cho em hỏi công thức tính điểm trung bình chung tích lũy của trường mình được quy định như thế nào vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.table.formula",
@@ -1449,15 +1449,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ1: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -1516,7 +1516,7 @@
   "id": "V4-032",
   "suite": "answers",
   "query": "Cho em hỏi văn phòng làm việc của Phòng Khảo thí và Đảm bảo chất lượng ở đâu ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.directory.office",
@@ -1543,7 +1543,7 @@
    "Đ2: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -1689,7 +1689,7 @@
   "id": "V4-036",
   "suite": "answers",
   "query": "Cho mình hỏi văn phòng của Phòng Thanh tra Đào tạo ở phòng mấy, tầng mấy vậy?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.directory.office",
@@ -1716,7 +1716,7 @@
    "Đ6: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -1774,7 +1774,7 @@
   "id": "V4-038",
   "suite": "answers",
   "query": "Email liên hệ của Khoa Lịch sử là gì vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.directory.faculty",
@@ -1800,7 +1800,7 @@
    "Đ8: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -1943,7 +1943,7 @@
   "id": "V4-042",
   "suite": "answers",
   "query": "Cho em hỏi số điện thoại liên lạc của Khoa Tiếng Nhật là số nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.directory.faculty",
@@ -1970,7 +1970,7 @@
    "Đ11: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -2070,7 +2070,7 @@
   "id": "V4-045",
   "suite": "answers",
   "query": "nganh viet nam hoc thuoc khoa nao the b",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.directory.program",
@@ -2096,7 +2096,7 @@
    "Đ14: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -2196,7 +2196,7 @@
   "id": "V4-048",
   "suite": "answers",
   "query": "cho m hoi nganh dia ly hoc thuoc khoa nao zay",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.directory.program",
@@ -2222,7 +2222,7 @@
    "Đ17: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -2373,7 +2373,7 @@
   "id": "V4-052",
   "suite": "answers",
   "query": "Mình cần làm thẻ và nhận thẻ BHYT thì liên hệ ở đâu và gặp ai vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.directory.student_service",
@@ -2402,7 +2402,7 @@
    "Đ21: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -2463,7 +2463,7 @@
   "id": "V4-054",
   "suite": "answers",
   "query": "Em muốn liên hệ hỏi về việc xây dựng và triển khai kế hoạch thực tập, thực tế năm học thì liên hệ đơn vị nào và ở đâu ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.directory.student_service",
@@ -2492,7 +2492,7 @@
    "Đ23: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -2558,7 +2558,7 @@
   "id": "V4-056",
   "suite": "answers",
   "query": "Cho em hỏi các khoa có những công việc gì liên quan đến ban cán sự lớp và cố vấn học tập của sinh viên vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.policy",
@@ -2582,15 +2582,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_CongViecCuaCacKhoa_Phan1",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_CongViecCuaCacKhoa_Phan1",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ2: Một số công việc của các khoa liên quan đến sinh viên"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -2704,7 +2704,7 @@
   "id": "V4-059",
   "suite": "answers",
   "query": "Hội đồng đánh giá kết quả rèn luyện sinh viên cấp Khoa do ai thành lập và gồm những thành phần nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.policy",
@@ -2729,15 +2729,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu12",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ5: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 12"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -2801,7 +2801,7 @@
   "id": "V4-061",
   "suite": "answers",
   "query": "tham gia hoat dong tinh nguyen vi cong dong cap truong thi duoc cong bao nhieu diem ren luyen vay a",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.policy",
@@ -2825,15 +2825,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan4",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan5",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ7: Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1), Phần IV"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -2947,7 +2947,7 @@
   "id": "V4-064",
   "suite": "answers",
   "query": "Dạ cho em hỏi điều kiện để sinh viên được xét và công nhận tốt nghiệp hệ đại học chính quy là gì ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.policy",
@@ -2972,15 +2972,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu15",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ4: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 15"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -3045,7 +3045,7 @@
   "id": "V4-066",
   "suite": "answers",
   "query": "Hồ sơ đánh giá rèn luyện của lớp sinh viên gửi lên Hội đồng cấp Khoa bao gồm những giấy tờ gì ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.procedure",
@@ -3071,15 +3071,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu11",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ11: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -3242,7 +3242,7 @@
   "id": "V4-070",
   "suite": "answers",
   "query": "Nếu em muốn nộp hồ sơ xin ở KTX hoặc làm thủ tục xin cấp lại thẻ sinh viên thì liên hệ đơn vị nào trong trường ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.procedure",
@@ -3267,15 +3267,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu14",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ14: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 14"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -3291,7 +3291,7 @@
   "id": "V4-071",
   "suite": "answers",
   "query": "Cho em hỏi theo quy định thì sinh viên có quyền được nghỉ học tạm thời hoặc học cùng lúc hai chương trình không ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.procedure",
@@ -3316,15 +3316,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu8",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu8",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ15: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 8"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -3388,7 +3388,7 @@
   "id": "V4-073",
   "suite": "answers",
   "query": "Nếu em đăng ký tham gia hoạt động của trường hoặc của khoa mà không tham gia thì bị trừ bao nhiêu điểm rèn luyện ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.procedure",
@@ -3412,15 +3412,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan2",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan3",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ16: Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1), Phần II"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -3533,7 +3533,7 @@
   "id": "V4-076",
   "suite": "answers",
   "query": "Trong công tác quản lý sinh viên thì công tác hành chính gồm những nội dung cụ thể nào vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.consequence",
@@ -3559,15 +3559,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong2_Dieu5",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ25: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 5"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -3583,7 +3583,7 @@
   "id": "V4-077",
   "suite": "answers",
   "query": "Cho em hỏi xíu, ai chỉ định đại diện lớp học phần và bạn này có trách nhiệm gì v ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.consequence",
@@ -3607,15 +3607,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong4_Dieu26",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu26",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ26: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 26"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -3727,7 +3727,7 @@
   "id": "V4-080",
   "suite": "answers",
   "query": "Sinh viên sư phạm phải bồi hoàn kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt trong những trường hợp nào vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.consequence",
@@ -3752,15 +3752,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu6",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ28: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 6"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -3874,7 +3874,7 @@
   "id": "V4-083",
   "suite": "answers",
   "query": "Nếu vi phạm quy định các kỳ thi và bị lập biên bản kỷ luật thì sinh viên bị trừ điểm rèn luyện ở Phần I như thế nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.consequence",
@@ -3900,15 +3900,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan1",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan2",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ29: Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1), Phần I. Đánh giá về ý thức tham gia học tập (Tối đa 20 điểm)"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -3972,7 +3972,7 @@
   "id": "V4-085",
   "suite": "answers",
   "query": "Quy định về việc tổ chức hoạt động thông tin khoa học và công nghệ của sinh viên như thế nào vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.open",
@@ -3997,15 +3997,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu9",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ20: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 9"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -4116,8 +4116,8 @@
  {
   "id": "V4-088",
   "suite": "answers",
-  "query": "cho em hỏi xíu, thông báo thực hiện chính sách miễn, giảm học phí cho sv năm học 2022 - 2023 của trường căn cứ vào văn bản nào vậy ạ?",
-  "cohort": "K48-K49",
+  "query": "cho em hỏi xíu, thông báo thực hiện chính sách miễn, giảm học phí cho sv năm học 2023 - 2024 của trường căn cứ vào văn bản nào vậy ạ?",
+  "cohort": "K49",
   "history": [],
   "topic": "A",
   "case_type": "A.regulation.open",
@@ -4133,28 +4133,28 @@
    "A.regulation.open",
    "informal"
   ],
-  "ground_truth": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023 của Trường căn cứ vào Nghị định số 81/2021/NĐ-CP ngày 27 tháng 8 năm 2021 của Chính phủ quy định về cơ chế thu, quản lý học phí đối với cơ sở giáo dục thuộc hệ thống giáo dục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập; giá dịch vụ trong lĩnh vực giáo dục, đào tạo.",
+  "ground_truth": "Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2023 – 2024 của Trường căn cứ vào Nghị định số 81/2021/NĐ-CP ngày 27 tháng 8 năm 2021 của Chính phủ quy định về cơ chế thu, quản lý học phí đối với cơ sở giáo dục thuộc hệ thống giáo dục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập; giá dịch vụ trong lĩnh vực giáo dục, đào tạo.",
   "required_facts": [
    "Nghị định số 81/2021/NĐ-CP ngày 27 tháng 8 năm 2021 của Chính phủ"
   ],
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_ThongBaoMienGiamHocPhi_Phan1",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_ThongBaoMienGiamHocPhi_Phan1",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ23: Thông báo về việc thực hiện chính sách miễn, giảm học phí cho sinh viên hệ chính quy năm học 2022 – 2023"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: K49 prints the tuition-exemption notice for school year 2023 – 2024 (K49 p.116), not 2022 – 2023; the legal basis (Nghị định 81/2021/NĐ-CP) is the same.",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -4263,7 +4263,7 @@
   "id": "V4-091",
   "suite": "answers",
   "query": "Em chào thầy cô ạ. Kỳ này em đang chuẩn bị cho đợt thực tập tốt nghiệp sắp tới nhưng bản thân cảm thấy kỹ năng đứng lớp cũng như việc ứng dụng công nghệ giảng dạy còn yếu quá. Em có nghe nói trường mình có hỗ trợ tập giảng trong các phòng học ảo với phòng học thông minh, nên em muốn hỏi là nếu em có nhu cầu tham gia tập giảng, kiến tập và thực tập giảng tại các phòng học trực tuyến, phòng học ảo hoặc thông minh thì em liên hệ ai và ở đâu ạ? Nhân tiện cho em hỏi thêm, quy định về việc công nhận tốt nghiệp và cấp bằng tốt nghiệp của trường mình hiện nay được thực hiện như thế nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_regulation",
@@ -4295,8 +4295,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu15",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -4304,7 +4304,7 @@
    "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 15"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -4375,7 +4375,7 @@
   "id": "V4-093",
   "suite": "answers",
   "query": "Dạ thầy cô cho em hỏi điểm xét học bổng khuyến khích học tập được tính theo công thức nào ạ, nếu điểm học tập của em là 3.4 và điểm rèn luyện là 85 thì điểm học bổng ra bao nhiêu? Với lại theo quy định thì người học liên thông có bằng đại học khác có được xét miễn trừ học phần không ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_regulation",
@@ -4401,12 +4401,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu20",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong4_Dieu20",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -4414,7 +4414,7 @@
    "Đ6: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 20"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -4486,7 +4486,7 @@
   "id": "V4-095",
   "suite": "answers",
   "query": "Chào thầy cô, em được biết chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học hình thức vừa làm vừa học có thời gian học tập chuẩn là 2,5 năm học, vậy thời gian học tập tối đa là bao nhiêu năm ạ? Sẵn cho em hỏi thêm, quy định về thời gian và nội dung làm việc của cố vấn học tập với lớp sinh viên thế nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_regulation",
@@ -4502,23 +4502,22 @@
    "B.table_regulation",
    "natural"
   ],
-  "ground_truth": "1. Đối với chương trình đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học (hình thức vừa làm vừa học), thời gian học tập chuẩn là 2,5 năm học và thời gian học tập tối đa là 5 năm học.\n\n2. Quy định về thời gian và nội dung làm việc của Cố vấn học tập (CVHT) với lớp sinh viên (Điều 6):\n- Thời gian làm việc: Định kỳ làm việc với ban cán sự lớp 1 lần/tháng; họp với lớp phụ trách 2 lần/học kỳ (các buổi họp phải ghi biên bản và báo cáo Trưởng khoa). Ngoài ra có thể làm việc đột xuất hoặc họp lớp khi có yêu cầu; thường xuyên liên hệ với lớp phụ trách để nắm tình hình.\n- Nội dung họp đầu học kỳ: Công bố thành phần ban cán sự lớp do khoa chỉ định (năm thứ nhất) hoặc tổ chức họp lớp chọn ban cán sự, phân công nhiệm vụ và mối quan hệ công tác; xây dựng và phổ biến công tác học kỳ; hướng dẫn cách thức tìm hiểu, truy cập quy chế, quy định và nội dung mới; phổ biến các hoạt động Đoàn - Hội; lưu ý về phương pháp học tập, nghiên cứu khoa học; công việc khác theo yêu cầu quản lý.\n- Nội dung họp cuối học kỳ: Sơ kết nội dung đã thực hiện trong kỳ; tổ chức đánh giá kết quả rèn luyện sinh viên đúng thời gian và quy định; phổ biến quy định mới; theo dõi các học phần và số tín chỉ để tư vấn; xem xét, đề xuất thi đua, khen thưởng và kỷ luật; công việc khác theo yêu cầu.\n- CVHT có trách nhiệm tạo điều kiện, quan tâm giúp đỡ sinh viên khuyết tật có hoàn cảnh khó khăn nếu có yêu cầu.",
+  "ground_truth": "Đáp án đã điều chỉnh trước khi chạy: Thời gian học tập tối đa: 5 năm học | CVHT tiếp nhận báo cáo của BCS lớp định kỳ hằng tháng và tình hình đột xuất của lớp | CVHT tổ chức họp lớp định kỳ 2 lần/học kỳ để tư vấn kế hoạch học tập, theo dõi tình hình học tập, rèn luyện của lớp và đánh giá kết quả rèn luyện | Khung thời gian làm việc của CVHT được quy định tại Phụ lục 1 của Quy định, không in trong sổ tay (chấp nhận nêu Phụ lục 1 hoặc nói sổ tay không có chi tiết)",
   "required_facts": [
    "Thời gian học tập tối đa: 5 năm học",
-   "CVHT định kỳ làm việc với ban cán sự lớp 1 lần/tháng; họp với lớp phụ trách 2 lần/học kỳ (ghi biên bản, báo cáo Trưởng khoa)",
-   "Nội dung họp đầu kỳ: công bố/chọn ban cán sự và phân công nhiệm vụ, phổ biến công tác kỳ, hướng dẫn tìm hiểu quy chế/quy định, phổ biến hoạt động Đoàn - Hội, lưu ý phương pháp học và NCKH",
-   "Nội dung họp cuối kỳ: sơ kết học kỳ, tổ chức đánh giá điểm rèn luyện, theo dõi học phần/tín chỉ để tư vấn, đề xuất khen thưởng/kỷ luật",
-   "Quan tâm giúp đỡ sinh viên khuyết tật khó khăn nếu có yêu cầu; thường xuyên liên hệ nắm tình hình lớp"
+   "CVHT tiếp nhận báo cáo của BCS lớp định kỳ hằng tháng và tình hình đột xuất của lớp",
+   "CVHT tổ chức họp lớp định kỳ 2 lần/học kỳ để tư vấn kế hoạch học tập, theo dõi tình hình học tập, rèn luyện của lớp và đánh giá kết quả rèn luyện",
+   "Khung thời gian làm việc của CVHT được quy định tại Phụ lục 1 của Quy định, không in trong sổ tay (chấp nhận nêu Phụ lục 1 hoặc nói sổ tay không có chi tiết)"
   ],
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong3_Dieu6",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -4526,13 +4525,13 @@
    "Đ8: Quy định công tác cố vấn học tập tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 6"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: K48 printed the 2014 adviser rules (Điều 6: monthly meeting with class officers, two class meetings a term with set agendas). K49 prints Quyết định 3738/2022: Điều 4 khoản 2 b, c (monthly report from the class officers, class meetings twice a term) and khoản 4, which leaves the working-time frame to Phụ lục 1, not printed in the handbook (K49 p.61-62).",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -4542,7 +4541,7 @@
   "id": "V4-096",
   "suite": "answers",
   "query": "Em chào thầy cô, em được biết là chương trình đào tạo đại học cấp bằng thứ nhất hệ chính quy có thời gian học chuẩn là 4 năm học, vậy thời gian học tập tối đa là bao nhiêu năm ạ? Tiện cho em hỏi thủ tục xin vào ở ký túc xá của trường mình gồm những hồ sơ gì, nộp ở đâu và thời hạn làm thủ tục như thế nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_regulation",
@@ -4558,24 +4557,22 @@
    "B.table_regulation",
    "natural"
   ],
-  "ground_truth": "1. Đối với chương trình đào tạo đại học cấp bằng thứ nhất theo hình thức đào tạo chính quy, thời gian học tập chuẩn là 4 năm học và thời gian học tập tối đa là 8 năm học.\n\n2. Thủ tục, hồ sơ và thời hạn xét vào ở ký túc xá (KTX):\n- Hồ sơ gồm:\n  + Đơn xin vào ở KTX (theo mẫu), nêu rõ hoàn cảnh gia đình, đối tượng ưu tiên và phải có xác nhận của chính quyền địa phương (phường, xã) nơi cư trú.\n  + Bản sao có công chứng các giấy tờ ưu tiên (nếu có).\n- Nơi nộp hồ sơ: Phòng CTCT và HSSV (tiếp nhận hồ sơ vào đầu năm học).\n- Thời hạn và quy trình xét duyệt:\n  + Danh sách dự kiến được niêm yết công khai trong vòng 07 ngày.\n  + Sau khi có kết quả xét chọn, sinh viên đến Phòng CTCT và HSSV nhận giấy giới thiệu đến KTX tại số 351B Lạc Long Quân, Quận 11 làm hợp đồng và thủ tục vào ở nội trú theo hướng dẫn.\n  + Trong thời hạn 07 ngày kể từ ngày niêm yết thông báo kết quả, nếu sinh viên không đến làm thủ tục sẽ bị xóa tên khỏi danh sách để xét nhận sinh viên khác.",
+  "ground_truth": "Đáp án đã điều chỉnh trước khi chạy: Thời gian học tập tối đa: 8 năm học | Hồ sơ đăng ký nội trú tối thiểu: đơn xin ở nội trú; thông báo nhập học (bản photo chứng thực, sinh viên vừa trúng tuyển) hoặc thẻ sinh viên (sinh viên các khóa sau); biên nhận hồ sơ nhập học; giấy tờ xác nhận diện ưu tiên (bản sao); hợp đồng ở nội trú; bản khai nhân khẩu; bản sao căn cước công dân; 03 ảnh 2x3 | Nộp hồ sơ tại Văn phòng KTX (viên chức Ban Quản lý KTX tiếp nhận); KTX ở 351A Lạc Long Quân, Phường 5, Quận 11 | Thời hạn: trong thời hạn được thông báo chính thức (sổ tay không nêu số ngày cụ thể)",
   "required_facts": [
    "Thời gian học tập tối đa: 8 năm học",
-   "Hồ sơ gồm: Đơn xin vào ở KTX theo mẫu (nêu hoàn cảnh, đối tượng ưu tiên, có xác nhận của chính quyền địa phương phường/xã nơi cư trú) và Bản sao có công chứng các giấy tờ ưu tiên (nếu có)",
-   "Nộp đơn tại: Phòng CTCT và HSSV (vào đầu năm học)",
-   "Niêm yết công khai danh sách dự kiến trong vòng 07 ngày",
-   "Địa chỉ KTX làm thủ tục: số 351B Lạc Long Quân, Quận 11",
-   "Thời hạn làm thủ tục vào ở: trong vòng 07 ngày kể từ ngày niêm yết kết quả, quá hạn sẽ bị xóa tên"
+   "Hồ sơ đăng ký nội trú tối thiểu: đơn xin ở nội trú; thông báo nhập học (bản photo chứng thực, sinh viên vừa trúng tuyển) hoặc thẻ sinh viên (sinh viên các khóa sau); biên nhận hồ sơ nhập học; giấy tờ xác nhận diện ưu tiên (bản sao); hợp đồng ở nội trú; bản khai nhân khẩu; bản sao căn cước công dân; 03 ảnh 2x3",
+   "Nộp hồ sơ tại Văn phòng KTX (viên chức Ban Quản lý KTX tiếp nhận); KTX ở 351A Lạc Long Quân, Phường 5, Quận 11",
+   "Thời hạn: trong thời hạn được thông báo chính thức (sổ tay không nêu số ngày cụ thể)"
   ],
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_QuyTrinhXetVaoKyTucXa_Phan1",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyTrinhXetVaoKyTucXa_Phan1",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -4583,13 +4580,13 @@
    "Đ9: Quy trình xét sinh viên vào ở ký túc xá"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: K48 printed an older dormitory procedure (application to Phòng CTCT và HSSV, list posted for 07 days, 07 days to move in, 351B Lạc Long Quân). K49 prints the K50-style procedure (K49 p.161-163): the dormitory office receives a listed set of papers within the announced period, and the directory gives 351A Lạc Long Quân (K49 p.133).",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -4599,7 +4596,7 @@
   "id": "V4-097",
   "suite": "answers",
   "query": "Cho em hỏi xíu, bên hệ vlvvh ngành liên thông đh cho ng có bằng đh thì tgian học tối đa là 5 năm, thế còn tgian học chuẩn là bao lâu v ạ? Sẵn ad cho em hỏi nếu sv đi thi hộ hoặc nhờ ng khác đi thi hộ thì bị trường xử lý kỷ luật như thế nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_regulation",
@@ -4624,12 +4621,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu21",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong4_Dieu21",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -4637,7 +4634,7 @@
    "Đ10: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 21"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -5195,7 +5192,7 @@
   "id": "V4-108",
   "suite": "answers",
   "query": "Thầy cô cho em hỏi, đối với học phần chỉ yêu cầu đánh giá đạt/không đạt không phân mức, nếu em được 6,0 điểm hệ 10 thì điểm chữ quy đổi là gì và điểm đó có tính vào điểm trung bình học tập không ạ? Ngoài ra, theo quy chế của trường thì trường hợp nào sinh viên sẽ bị xử lý kỷ luật ở mức cảnh cáo ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_regulation",
@@ -5222,12 +5219,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -5235,7 +5232,7 @@
    "Đ19: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 35"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -5363,7 +5360,7 @@
   "id": "V4-111",
   "suite": "answers",
   "query": "Cho mình hỏi nếu vi phạm nội quy học đường, không mua BHYT hay bị kỷ luật thì bị trừ điểm rèn luyện thế nào, trường hợp nào ở phần chấp hành nội quy bị xếp loại Kém luôn? Với lại khung điểm rèn luyện phần III về hoạt động chính trị, xã hội, văn nghệ thể thao quy định cụ thể ra sao?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.regulation_regulation",
@@ -5388,7 +5385,7 @@
    "Kỷ luật khiển trách: - 5 điểm; cảnh cáo: - 10 điểm; đình chỉ học tập 1 năm học: Rèn luyện Kém",
    "Không đạt Tuần Sinh hoạt công dân – Sinh viên: 0 điểm",
    "Đánh giá ĐRL chậm/sai/không trung thực: - 3 điểm; không đánh giá kết quả rèn luyện: Rèn luyện Kém",
-   "Phần III tối đa 20 điểm; thành viên CLB: 3 điểm/CLB; cổ vũ: 2 điểm/hoạt động",
+   "Phần III tối đa 20 điểm; thành viên CLB: 3 điểm/CLB; cổ vũ: 1 điểm/hoạt động",
    "Hoạt động/hội nghị triệu tập: tham gia 4 điểm/hoạt động; vắng không lý do chính đáng: - 4 điểm/hoạt động",
    "Hoạt động văn nghệ thể thao: Cấp lớp 1 điểm; Cấp khoa 2 điểm; Cấp Trường 3 điểm; Cấp Tỉnh/Thành trở lên 4 điểm",
    "Hiến máu/công ích/an sinh xã hội: 3 điểm/hoạt động; tuyên truyền phòng chống tội phạm tệ nạn: 3 điểm/hoạt động",
@@ -5398,12 +5395,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan2",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan3",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan4",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -5411,13 +5408,13 @@
    "Đ6: Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1), Phần III. Đánh giá về ý thức tham gia các hoạt động chính trị, xã hội, văn hóa, văn nghệ, thể thao, phòng chống tội phạm và các tệ nạn xã hội"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: K49's score frame gives 1 point per cheering activity (K49 p.79, Phần III a); K48's form gave 2. Every other value in this gold is the same in K49 (p.78-79).",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -5480,7 +5477,7 @@
   "id": "V4-113",
   "suite": "answers",
   "query": "neu bi xep loai ren luyen yeu kem lien tiep thi bi lam sao vay a? voi cho e hoi truong quy dinh nhung hanh vi nao sv khong duoc lam the",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.regulation_regulation",
@@ -5511,12 +5508,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu14",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -5524,7 +5521,7 @@
    "Đ8: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -5763,7 +5760,7 @@
   "id": "V4-118",
   "suite": "answers",
   "query": "Chào bạn, cho mình hỏi sinh viên hệ chính quy bị cảnh báo học tập và buộc thôi học trong những trường hợp nào? Với lại cố vấn học tập có những nhiệm vụ gì để hỗ trợ sinh viên vậy?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.regulation_regulation",
@@ -5779,23 +5776,23 @@
    "B.regulation_regulation",
    "natural"
   ],
-  "ground_truth": "1. Về điều kiện bị cảnh báo học tập và buộc thôi học đối với sinh viên chính quy (Điều 12):\n- Cảnh báo học tập (cuối mỗi học kỳ chính nếu vi phạm một trong các điều kiện):\n  + Tổng số tín chỉ không đạt trong học kỳ vượt quá 50% khối lượng đã đăng ký học trong học kỳ, hoặc tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24.\n  + Điểm trung bình học kỳ đạt dưới 0,8 đối với học kỳ đầu của khóa học, dưới 1,0 đối với các học kỳ tiếp theo.\n  + Điểm trung bình tích lũy đạt dưới 1,2 đối với sinh viên năm thứ nhất, dưới 1,4 đối với sinh viên năm thứ hai, dưới 1,6 đối với sinh viên năm thứ ba, dưới 1,8 đối với sinh viên các năm tiếp theo.\n- Buộc thôi học trong các trường hợp:\n  + Bị cảnh báo học tập 03 lần liên tiếp trong một khóa học.\n  + Bị cảnh báo học tập đến lần thứ tư tính từ đầu khóa.\n  + Thời gian học tập vượt quá giới hạn tối đa theo quy định.\n  (Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu và sinh viên được cấp giấy chứng nhận điểm nếu yêu cầu).\n\n2. Về nhiệm vụ của Cố vấn học tập (CVHT) (Điều 3):\n- Học tập, nắm vững mục tiêu, quy chế, nội quy của Bộ GD&ĐT và của Trường để tư vấn, hỗ trợ sinh viên; cập nhật các thay đổi, bổ sung.\n- Nắm rõ chức năng, nhiệm vụ các đơn vị liên quan để hướng dẫn sinh viên tìm hiểu thông tin và liên hệ công tác học tập, rèn luyện.\n- Hướng dẫn sinh viên đăng ký học phần từng học kỳ và xây dựng kế hoạch học tập toàn khóa.\n- Quản lý lớp sinh viên, thông tin cá nhân; giới thiệu nhân sự bầu ban cán sự lớp và đề nghị Trưởng khoa phê duyệt kết quả bầu cử.\n- Tư vấn, hướng dẫn sinh viên điều chỉnh kế hoạch học tập phù hợp năng lực, hoàn cảnh dựa trên kết quả học tập.\n- Hướng dẫn, khuyến khích sinh viên tham gia hoạt động học thuật, NCKH, văn - thể - mỹ.\n- Nắm tình hình chung của lớp về học tập, đời sống; tư vấn cho sinh viên trong quá trình học tập, rèn luyện.\n- Hướng dẫn sinh viên điều chỉnh, khiếu nại kết quả học tập, rèn luyện, khen thưởng, kỷ luật; chủ trì họp lớp xét khen thưởng, kỷ luật và gửi kết quả lên khoa.\n- Tham dự họp Hội đồng Khen thưởng – Kỷ luật sinh viên cấp Khoa, đề xuất hình thức khen thưởng, kỷ luật.\n- Thực hiện chế độ báo cáo theo yêu cầu của Trưởng khoa.",
+  "ground_truth": "Đáp án đã điều chỉnh trước khi chạy: Cảnh báo học tập: Tín chỉ không đạt > 50% khối lượng đăng ký học kỳ, hoặc tổng tín chỉ nợ đọng vượt quá 24 | Cảnh báo học tập: Điểm trung bình học kỳ < 0,8 (kỳ đầu), < 1,0 (các kỳ tiếp theo) | Cảnh báo học tập: Điểm trung bình tích lũy < 1,2 (năm 1), < 1,4 (năm 2), < 1,6 (năm 3), < 1,8 (các năm tiếp theo) | Buộc thôi học: Cảnh báo học tập 03 lần liên tiếp; cảnh báo đến lần thứ 4 từ đầu khóa; hoặc vượt quá thời gian học tập tối đa | Nhiệm vụ CVHT: hướng dẫn sinh viên xây dựng kế hoạch học tập, rèn luyện và đăng ký học phần; quản lý lớp sinh viên; tư vấn về học tập, NCKH và hướng nghiệp; chủ trì họp lớp xét khen thưởng, kỷ luật",
   "required_facts": [
    "Cảnh báo học tập: Tín chỉ không đạt > 50% khối lượng đăng ký học kỳ, hoặc tổng tín chỉ nợ đọng vượt quá 24",
    "Cảnh báo học tập: Điểm trung bình học kỳ < 0,8 (kỳ đầu), < 1,0 (các kỳ tiếp theo)",
    "Cảnh báo học tập: Điểm trung bình tích lũy < 1,2 (năm 1), < 1,4 (năm 2), < 1,6 (năm 3), < 1,8 (các năm tiếp theo)",
    "Buộc thôi học: Cảnh báo học tập 03 lần liên tiếp; cảnh báo đến lần thứ 4 từ đầu khóa; hoặc vượt quá thời gian học tập tối đa",
-   "Nhiệm vụ CVHT: Hướng dẫn đăng ký học phần, xây dựng kế hoạch học tập; quản lý lớp sinh viên và thông tin cá nhân; tư vấn điều chỉnh học tập, NCKH; hướng dẫn khiếu nại, chủ trì họp xét khen thưởng kỷ luật"
+   "Nhiệm vụ CVHT: hướng dẫn sinh viên xây dựng kế hoạch học tập, rèn luyện và đăng ký học phần; quản lý lớp sinh viên; tư vấn về học tập, NCKH và hướng nghiệp; chủ trì họp lớp xét khen thưởng, kỷ luật"
   ],
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu12",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyDinhCongTacCoVanHocTap_Chuong2_Dieu4",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -5803,13 +5800,13 @@
    "Đ16: Quy định công tác cố vấn học tập tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: The adviser's tasks came from the 2014 rules K48 printed (Điều 3, which included guiding complaints). K49's Quyết định 3738/2022 lists them in Điều 3 khoản 2 and Điều 4 (K49 p.60-62) and does not mention complaints.",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -5933,7 +5930,7 @@
   "id": "V4-121",
   "suite": "answers",
   "query": "Dạ em chào phòng đào tạo và quý thầy cô ạ. Học kỳ này em có tham gia ban cán sự lớp và phụ trách hỗ trợ Bí thư chi đoàn tổng hợp các hồ sơ đánh giá điểm rèn luyện cũng như giấy tờ hoạt động sinh viên của lớp để gửi lên khoa, nên em cũng muốn tìm hiểu thêm về quy trình ở các cấp cao hơn. Thầy cô cho em hỏi là ở cấp Trường thì bộ hồ sơ đánh giá kết quả rèn luyện sinh viên sẽ bao gồm những thành phần và biểu mẫu cụ thể nào ạ? Ngoài ra, kỳ này tụi em trong lớp cũng đang rủ nhau lập nhóm đăng ký đề tài nghiên cứu khoa học sinh viên, em có nghe nói trường mình có nguồn kinh phí hỗ trợ riêng cho hoạt động này, thầy cô cho em hỏi kinh phí hỗ trợ NCKH của sinh viên được trích từ những nguồn nào theo quy định ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.regulation_regulation",
@@ -5949,11 +5946,11 @@
    "B.regulation_regulation",
    "long_context"
   ],
-  "ground_truth": "1. Về hồ sơ đánh giá rèn luyện sinh viên cấp Trường:\nGồm các văn bản, giấy tờ sau:\n- Biên bản họp Hội đồng đánh giá rèn luyện cấp Trường (Thư ký và Chủ tịch Hội đồng ký biên bản) – Mẫu 3.\n- Hồ sơ đánh giá kết quả rèn luyện của các đơn vị quản lý sinh viên (Biên bản và bảng kết quả đánh giá rèn luyện sinh viên đã được Hội đồng cấp Khoa thông qua).\n- Quyết định công nhận kết quả rèn luyện sinh viên; Quyết định tạm nghỉ học, buộc thôi học đối với sinh viên đạt kết quả rèn luyện yếu, kém; các quyết định khác liên quan đến đánh giá kết quả rèn luyện (nếu có) và bảng kết quả đánh giá rèn luyện sinh viên hệ chính quy toàn Trường – Mẫu 3a.\n\n2. Về nguồn kinh phí hỗ trợ cho hoạt động NCKH của sinh viên:\nHằng năm, Hiệu trưởng ra quyết định dành một khoản kinh phí thích hợp để hỗ trợ cho hoạt động NCKH của sinh viên. Kinh phí này được trích từ các nguồn sau:\n- Kinh phí KH&CN: Chi cho khen thưởng (Quỹ hỗ trợ hoạt động Khoa học và Công nghệ Trường Đại học Sư phạm Thành phố Hồ Chí Minh); tổ chức Hội nghị cấp Trường, cấp Khoa; hỗ trợ cho SV.\n- Kinh phí đào tạo thường xuyên: Chi cho công tác hướng dẫn, tổ chức bảo vệ, đánh giá đề tài tại Khoa đào tạo.\n- Tài trợ từ các trung tâm, đoàn thể, cá nhân trong và ngoài nước.",
+  "ground_truth": "1. Về hồ sơ đánh giá rèn luyện sinh viên cấp Trường:\nGồm các văn bản, giấy tờ sau:\n- Biên bản họp Hội đồng đánh giá rèn luyện cấp Trường (Thư ký và Chủ tịch Hội đồng ký biên bản).\n- Hồ sơ đánh giá kết quả rèn luyện của các đơn vị quản lý sinh viên (Biên bản và bảng kết quả đánh giá rèn luyện sinh viên đã được Hội đồng cấp Khoa thông qua).\n- Quyết định công nhận kết quả rèn luyện sinh viên; Quyết định tạm nghỉ học, buộc thôi học đối với sinh viên đạt kết quả rèn luyện yếu, kém; các quyết định khác liên quan đến đánh giá kết quả rèn luyện (nếu có) và bảng kết quả đánh giá rèn luyện sinh viên hệ chính quy toàn Trường.\n\n2. Về nguồn kinh phí hỗ trợ cho hoạt động NCKH của sinh viên:\nHằng năm, Hiệu trưởng ra quyết định dành một khoản kinh phí thích hợp để hỗ trợ cho hoạt động NCKH của sinh viên. Kinh phí này được trích từ các nguồn sau:\n- Kinh phí KH&CN: Chi cho khen thưởng (Quỹ hỗ trợ hoạt động Khoa học và Công nghệ Trường Đại học Sư phạm Thành phố Hồ Chí Minh); tổ chức Hội nghị cấp Trường, cấp Khoa; hỗ trợ cho SV.\n- Kinh phí đào tạo thường xuyên: Chi cho công tác hướng dẫn, tổ chức bảo vệ, đánh giá đề tài tại Khoa đào tạo.\n- Tài trợ từ các trung tâm, đoàn thể, cá nhân trong và ngoài nước.",
   "required_facts": [
-   "Biên bản họp Hội đồng đánh giá rèn luyện cấp Trường (Thư ký và Chủ tịch Hội đồng ký biên bản) – Mẫu 3",
+   "Biên bản họp Hội đồng đánh giá rèn luyện cấp Trường (Thư ký và Chủ tịch Hội đồng ký biên bản)",
    "Hồ sơ đánh giá của các đơn vị quản lý sinh viên (Biên bản và bảng kết quả đã được Hội đồng cấp Khoa thông qua)",
-   "Quyết định công nhận kết quả rèn luyện; Quyết định tạm nghỉ học, buộc thôi học với SV yếu, kém; quyết định khác liên quan và bảng kết quả đánh giá rèn luyện toàn Trường – Mẫu 3a",
+   "Quyết định công nhận kết quả rèn luyện; Quyết định tạm nghỉ học, buộc thôi học với SV yếu, kém; quyết định khác liên quan và bảng kết quả đánh giá rèn luyện toàn Trường",
    "Kinh phí KH&CN (khen thưởng từ Quỹ hỗ trợ hoạt động KH&CN, tổ chức Hội nghị cấp Trường, cấp Khoa, hỗ trợ SV)",
    "Kinh phí đào tạo thường xuyên (hướng dẫn, tổ chức bảo vệ, đánh giá đề tài tại Khoa đào tạo)",
    "Tài trợ từ các trung tâm, đoàn thể, cá nhân trong và ngoài nước"
@@ -5961,12 +5958,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_HuongDanLapHoSoRenLuyen_Phan4",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_HuongDanLapHoSoRenLuyen_Phan4",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong3_Dieu10",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -5974,13 +5971,13 @@
    "Đ22: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 10"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: K49's guide to the conduct files (K49 p.82, mục III) does not number the forms; \"Mẫu 3\" and \"Mẫu 3a\" were K48's labels.",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -6043,7 +6040,7 @@
   "id": "V4-123",
   "suite": "answers",
   "query": "Cho em hỏi xíu, theo quy chế ctsv thì sv không được làm những hành vi gian lận nào trong học tập, thi cử ạ? Với lại khi làm nckh thì quy định mỗi đề tài tối đa bao nhiêu sv tham gia và cần đạt bao nhiêu điểm để được xếp loại Xuất sắc thế ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.regulation_regulation",
@@ -6071,12 +6068,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu10",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -6084,7 +6081,7 @@
    "Đ23: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 7"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -6214,7 +6211,7 @@
   "id": "V4-126",
   "suite": "answers",
   "query": "Bạn ơi cho mình hỏi tiêu chí và khung điểm đánh giá về ý thức học tập trong điểm rèn luyện được quy định thế nào? Với lại sinh viên sư phạm được hỗ trợ học phí và sinh hoạt phí ở mức bao nhiêu, thời gian hỗ trợ tối đa là mấy tháng một năm và nếu đào tạo theo tín chỉ thì tính ra sao?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.regulation_regulation",
@@ -6242,12 +6239,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong2_Dieu4",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -6255,7 +6252,7 @@
    "Đ27: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 4"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -6271,7 +6268,7 @@
   "id": "V4-127",
   "suite": "answers",
   "query": "Em được biết khi xét học bổng khuyến khích học tập thì các tín chỉ trả nợ, cải thiện hoặc tương đương sẽ không được tính. Vậy ở một học kỳ thông thường em cần tích lũy tối thiểu bao nhiêu tín chỉ theo kế hoạch và yêu cầu kết quả các tín chỉ đó ra sao? Tiện thể cho em hỏi văn phòng Khoa Sinh học nằm ở đâu ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_table",
@@ -6297,8 +6294,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -6306,7 +6303,7 @@
    "Đ16: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -6322,7 +6319,7 @@
   "id": "V4-128",
   "suite": "answers",
   "query": "Cho em hỏi ngành Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài) thuộc khoa nào quản lý ạ? Với lại Phòng Tổ chức – Hành chính có những công việc nào liên quan trực tiếp đến sinh viên vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_table",
@@ -6338,11 +6335,10 @@
    "B.table_table",
    "natural"
   ],
-  "ground_truth": "1. Ngành Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài) thuộc Khoa Ngữ văn quản lý.\n2. Những công việc của Phòng Tổ chức – Hành chính liên quan đến sinh viên gồm:\n- Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền;\n- Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên.",
+  "ground_truth": "Đáp án đã điều chỉnh trước khi chạy: Khoa Ngữ văn | Sổ tay K49 không có mục Phòng Tổ chức – Hành chính trong danh sách các phòng, ban, nên không có thông tin về công việc của phòng liên quan đến sinh viên; nói không tìm thấy là đúng, không được bịa",
   "required_facts": [
    "Khoa Ngữ văn",
-   "Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền",
-   "Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên"
+   "Sổ tay K49 không có mục Phòng Tổ chức – Hành chính trong danh sách các phòng, ban, nên không có thông tin về công việc của phòng liên quan đến sinh viên; nói không tìm thấy là đúng, không được bịa"
   ],
   "forbidden_claims": [],
   "expected_citations": [],
@@ -6351,13 +6347,13 @@
    "Đ8: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: K49's list of offices (K49 p.127-138) has no entry for Phòng Tổ chức – Hành chính, so the handbook does not say which of its tasks concern students; K48 listed two. The programme part is unchanged.",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -6367,7 +6363,7 @@
   "id": "V4-129",
   "suite": "answers",
   "query": "ad oi cho minh hoi nganh Giao duc Cong dan thuoc khoa nao the a? voi lai minh muon duoc ho tro ve phuong phap hoc tap hieu qua cho sinh vien bac dai hoc thi lien he don vi nao, o dau vay a",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_table",
@@ -6398,7 +6394,7 @@
    "Đ18: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -6770,7 +6766,7 @@
   "id": "V4-137",
   "suite": "answers",
   "query": "Em chào thầy cô ạ, đợt vừa rồi em bị ốm phải nghỉ mất mấy buổi nên kết quả một môn đại cương không được như ý. Em có xem bảng quy đổi điểm chữ sang thang 4 thì thấy điểm F+ được quy đổi thành 0,5 điểm. Thầy cô cho em hỏi nếu chẳng may bị điểm chữ F thì quy đổi sang thang điểm 4 sẽ là bao nhiêu điểm ạ? Ngoài ra em đang muốn hỏi giúp người quen định thi vào ngành Quản lý giáo dục, không biết ngành này trực thuộc khoa nào quản lý vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_table",
@@ -6794,8 +6790,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -6803,7 +6799,7 @@
    "Đ29: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -6972,7 +6968,7 @@
   "id": "V4-141",
   "suite": "answers",
   "query": "cho em hoi xiu a, nganh Su pham Lich su – Dia ly thuoc khoa nao vay a? voi ca em biet drl tu 90 den 100 la Xuat sac roi, the khung diem tu 80 den duoi 90 diem (vi du em duoc 85 diem drl) thi xep loai gi the a?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_table",
@@ -6996,8 +6992,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -7005,7 +7001,7 @@
    "Đ35: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -7115,7 +7111,7 @@
   "id": "V4-144",
   "suite": "answers",
   "query": "Em muốn tham gia các hoạt động giao lưu văn hóa và học thuật với sinh viên nước ngoài thì liên hệ đơn vị nào và ở đâu ạ? Ngoài ra, em biết điểm tích lũy dưới 1,0 là Kém còn từ 2,0 đến dưới 2,5 là Trung bình, vậy nếu điểm là 1,8 thì xếp loại học lực gì, khung thang điểm 4 của loại Yếu được quy định thế nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.table_table",
@@ -7142,8 +7138,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -7151,13 +7147,13 @@
    "Đ28: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: K49 prints the International Cooperation office's number as \"(028) 3891080\" (K49 p.129), one digit short; the owner treats it as a misprint (2026-10-14). The catalog keeps the full number (028) 38391080 from K48 p.131 (same internal numbers 172, 173) with a review note, so the gold keeps (028) 38391080.",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -7167,7 +7163,7 @@
   "id": "V4-145",
   "suite": "answers",
   "query": "Cho em hỏi xíu ạ, em muốn tìm kênh thông tin để phản ánh và được giải quyết mấy nhu cầu hỗ trợ sv thì liên hệ ai và sđt bao nhiêu ạ? Với lại theo quy định thì Sổ tay sinh viên do phòng nào chủ trì xây dựng vậy ạ? Sẵn cho em hỏi luôn là thủ tục đăng ký đề tài nckh ban đầu cần hồ sơ gì, nộp cho ai và vào tháng mấy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.three_requests",
@@ -7190,18 +7186,18 @@
    "Phòng CTCT và HSSV",
    "trình Hiệu trưởng phê duyệt ban hành (hoặc Hiệu trưởng phê duyệt)",
    "Tháng 9 – 10 hằng năm (hoặc Tháng 9 – 10)",
-   "mẫu 2 - SV NCKH (hoặc thuyết minh đề tài nghiên cứu)",
+   "thuyết minh đề tài nghiên cứu",
    "Khoa (hoặc nộp về Khoa)"
   ],
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong3_Dieu11",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong2_Dieu7",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -7210,13 +7206,13 @@
    "Đ5: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 7"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: K49's research rules (Điều 7, K49 p.87) name the \"thuyết minh đề tài nghiên cứu\" without K48's form number \"mẫu 2 - SV NCKH\".",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -7344,7 +7340,7 @@
   "id": "V4-148",
   "suite": "answers",
   "query": "nganh giao duc tieu hoc thuoc khoa nao quan ly vay ad, voi sv khuyet tat thuoc ho ngheo can lam ho so gi nop o dau va han nop bao lau de huong tro cap hoc bong do dung hoc tap a, con hbkkht loai gioi thi diem hoc tap 3.20 den 3.59 voi ren luyen tu 80 tro len thi diem hoc bong can dat trong khoang nao",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.three_requests",
@@ -7374,12 +7370,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_ThongBaoHocBongNguoiKhuyetTat_Phan1",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_ThongBaoHocBongNguoiKhuyetTat_Phan1",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -7388,7 +7384,7 @@
    "Đ12: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 28"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -7802,7 +7798,7 @@
   "id": "V4-155",
   "suite": "answers",
   "query": "Dạ em chào thầy cô, em có mấy câu hỏi sau nhờ thầy cô giải đáp giúp em ạ:\n1. Nhà trường quy định về các trường hợp dừng cấp kinh phí hỗ trợ chi phí học tập đối với sinh viên dân tộc thiểu số thuộc hộ nghèo và hộ cận nghèo như thế nào?\n2. Quy định về việc liên kết đào tạo của trường mình như thế nào ạ?\n3. Trình tự và thủ tục xét khen thưởng đối với cá nhân và tập thể lớp có thành tích xuất sắc diễn ra như thế nào?\n4. Nếu điểm rèn luyện học kỳ của em đạt 85 điểm thì được xếp loại rèn luyện gì ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.over_limit",
@@ -7835,20 +7831,20 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_ThongBaoHoTroChiPhiHocTap_Phan5",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_ThongBaoHoTroChiPhiHocTap_Phan5",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu6",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -7858,7 +7854,7 @@
    "Đ17: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "ambiguous",
@@ -7874,7 +7870,7 @@
   "id": "V4-156",
   "suite": "answers",
   "query": "Dạ em chào thầy cô, em có mấy vấn đề thắc mắc nhờ thầy cô hỗ trợ giúp em với ạ:\n1. Sinh viên sư phạm cần nộp đơn đề nghị hưởng hỗ trợ tiền đóng học phí, chi phí sinh hoạt trong thời hạn bao lâu kể từ ngày nhận thông báo trúng tuyển và phải nộp mấy bộ hồ sơ cho cả khóa học?\n2. Em đang muốn tìm chỗ trọ an toàn và tìm việc làm thêm phù hợp thì ở trường mình em nên liên hệ đơn vị nào để được hỗ trợ ạ?\n3. Kỳ này em học 2 môn: môn thứ nhất 3 tín chỉ đạt điểm B (3,0) và môn thứ hai 2 tín chỉ đạt điểm A (4,0), nhờ thầy cô hướng dẫn công thức tính và tính giúp em điểm trung bình chung học kỳ là bao nhiêu ạ?\n4. Khi Hội đồng Khen thưởng và Kỷ luật sinh viên họp xem xét kỷ luật, nếu cố vấn học tập và đại diện lớp được mời tham dự thì có quyền biểu quyết mức kỷ luật không ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "B",
   "case_type": "B.over_limit",
@@ -7905,16 +7901,16 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu7",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu38",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -7924,7 +7920,7 @@
    "Đ21: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 38"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "ambiguous",
@@ -7993,7 +7989,7 @@
  {
   "id": "V4-158",
   "suite": "answers",
-  "query": "Dạ em chào thầy cô. Em là sinh viên K51 mới vào trường, kỳ vừa rồi em ráng cày cuốc dữ lắm, kết quả học tập của em vừa công bố được loại Xuất sắc, còn điểm rèn luyện thì đạt loại Tốt. Em đang thắc mắc không biết với kết quả như vậy thì bên K51 tụi em sẽ được xếp học bổng loại gì ạ? Sẵn tiện em có nhỏ bạn thân học khóa K48 cũng đang ngóng học bổng, hai đứa ngồi so sánh với nhau xem quy chế hai khóa có gì khác không, nên thầy cô cho em hỏi thêm là đối với các anh chị khóa K48-K49 thì đối tượng nào mới được xét học bổng khuyến khích học tập, có yêu cầu gì về thời gian học tập chuẩn không ạ?",
+  "query": "Dạ em chào thầy cô. Em là sinh viên K51 mới vào trường, kỳ vừa rồi em ráng cày cuốc dữ lắm, kết quả học tập của em vừa công bố được loại Xuất sắc, còn điểm rèn luyện thì đạt loại Tốt. Em đang thắc mắc không biết với kết quả như vậy thì bên K51 tụi em sẽ được xếp học bổng loại gì ạ? Sẵn tiện em có nhỏ bạn thân học khóa K49 cũng đang ngóng học bổng, hai đứa ngồi so sánh với nhau xem quy chế hai khóa có gì khác không, nên thầy cô cho em hỏi thêm là đối với các anh chị khóa K49 thì đối tượng nào mới được xét học bổng khuyến khích học tập, có yêu cầu gì về thời gian học tập chuẩn không ạ?",
   "cohort": "K51",
   "history": [],
   "topic": "C",
@@ -8010,10 +8006,10 @@
    "C.cohorts_table",
    "long_context"
   ],
-  "ground_truth": "- Đối với khóa K51: Sinh viên có kết quả học tập loại Xuất sắc và kết quả rèn luyện loại Tốt sẽ được xét cấp học bổng khuyến khích học tập loại Giỏi.\n- Đối với khóa K48-K49: Đối tượng xét HBKKHT là tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của khóa học; không xét HBKKHT đối với sinh viên học quá thời gian học tập chuẩn.",
+  "ground_truth": "- Đối với khóa K51: Sinh viên có kết quả học tập loại Xuất sắc và kết quả rèn luyện loại Tốt sẽ được xét cấp học bổng khuyến khích học tập loại Giỏi.\n- Đối với khóa K49: Đối tượng xét HBKKHT là tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của khóa học; không xét HBKKHT đối với sinh viên học quá thời gian học tập chuẩn.",
   "required_facts": [
    "Khóa K51: học tập Xuất sắc và rèn luyện Tốt được xét học bổng loại Giỏi",
-   "Khóa K48-K49: đối tượng là sinh viên đại học chính quy theo kế hoạch của khóa học, không xét đối với sinh viên học quá thời gian học tập chuẩn"
+   "Khóa K49: đối tượng là sinh viên đại học chính quy theo kế hoạch của khóa học, không xét đối với sinh viên học quá thời gian học tập chuẩn"
   ],
   "forbidden_claims": [],
   "expected_citations": [
@@ -8022,8 +8018,8 @@
     "cohort": "K51"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -8032,7 +8028,7 @@
   ],
   "requested_cohorts": [
    "K51",
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
   "question_specificity": "specific",
@@ -8047,7 +8043,7 @@
  {
   "id": "V4-159",
   "suite": "answers",
-  "query": "Thầy cô cho em hỏi về quy định học bổng khuyến khích học tập giữa khóa K50 và K48-K49 với ạ. Ở khóa K50, vào học kỳ II năm cuối thì sinh viên cần đăng ký từ bao nhiêu tín chỉ trở lên để được xét học bổng? Còn ở khóa K48-K49, mức học bổng loại Khá với hệ số 1.0 được tính theo công thức và căn cứ học phí như thế nào ạ?",
+  "query": "Thầy cô cho em hỏi về quy định học bổng khuyến khích học tập giữa khóa K50 và K49 với ạ. Ở khóa K50, vào học kỳ II năm cuối thì sinh viên cần đăng ký từ bao nhiêu tín chỉ trở lên để được xét học bổng? Còn ở khóa K49, mức học bổng loại Khá với hệ số 1.0 được tính theo công thức và căn cứ học phí như thế nào ạ?",
   "cohort": "K50",
   "history": [],
   "topic": "C",
@@ -8064,10 +8060,10 @@
    "C.cohorts_table",
    "natural"
   ],
-  "ground_truth": "- Khóa K50: Đối với học kỳ II năm cuối, sinh viên phải đăng ký từ 06 tín chỉ trở lên (hoặc từ 6 tín chỉ trở lên) để được xét học bổng khuyến khích học tập.\n- Khóa K48-K49: Học bổng loại Khá (hệ số 1.0) được tính theo công thức: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0. Trong đó, định mức học phí 1 tín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học của sinh viên được phân loại là tự nhiên hay xã hội.",
+  "ground_truth": "- Khóa K50: Đối với học kỳ II năm cuối, sinh viên phải đăng ký từ 06 tín chỉ trở lên (hoặc từ 6 tín chỉ trở lên) để được xét học bổng khuyến khích học tập.\n- Khóa K49: Học bổng loại Khá (hệ số 1.0) được tính theo công thức: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0. Trong đó, định mức học phí 1 tín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học của sinh viên được phân loại là tự nhiên hay xã hội.",
   "required_facts": [
    "Khóa K50: học kỳ II năm cuối đăng ký từ 06 tín chỉ trở lên (hoặc từ 6 tín chỉ trở lên)",
-   "Khóa K48-K49: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0 (hoặc 1,0)"
+   "Khóa K49: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.0 (hoặc 1,0)"
   ],
   "forbidden_claims": [],
   "expected_citations": [
@@ -8076,8 +8072,8 @@
     "cohort": "K50"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -8086,7 +8082,7 @@
   ],
   "requested_cohorts": [
    "K50",
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
   "question_specificity": "specific",
@@ -8101,7 +8097,7 @@
  {
   "id": "V4-160",
   "suite": "answers",
-  "query": "Cho em hỏi xíu ạ, bảng quy đổi điểm chữ sang thang 4 của K50 với K48-K49 có giống nhau ko ta? Bên K50 thì điểm chữ B đổi ra thang 4 được mấy chấm, còn bên K48-K49 thì điểm C+ quy đổi sang thang 4 là bao nhiêu vậy ạ?",
+  "query": "Cho em hỏi xíu ạ, bảng quy đổi điểm chữ sang thang 4 của K50 với K49 có giống nhau ko ta? Bên K50 thì điểm chữ B đổi ra thang 4 được mấy chấm, còn bên K49 thì điểm C+ quy đổi sang thang 4 là bao nhiêu vậy ạ?",
   "cohort": "K50",
   "history": [],
   "topic": "C",
@@ -8118,10 +8114,10 @@
    "C.cohorts_table",
    "informal"
   ],
-  "ground_truth": "Theo bảng quy đổi điểm chữ sang thang điểm 4 của cả hai khóa:\n- Khóa K50: Điểm chữ B quy đổi sang thang điểm 4 là 3,0.\n- Khóa K48-K49: Điểm chữ C+ quy đổi sang thang điểm 4 là 2,5.",
+  "ground_truth": "Theo bảng quy đổi điểm chữ sang thang điểm 4 của cả hai khóa:\n- Khóa K50: Điểm chữ B quy đổi sang thang điểm 4 là 3,0.\n- Khóa K49: Điểm chữ C+ quy đổi sang thang điểm 4 là 2,5.",
   "required_facts": [
    "Khóa K50: điểm B quy đổi thành 3,0",
-   "Khóa K48-K49: điểm C+ quy đổi thành 2,5"
+   "Khóa K49: điểm C+ quy đổi thành 2,5"
   ],
   "forbidden_claims": [],
   "expected_citations": [
@@ -8130,8 +8126,8 @@
     "cohort": "K50"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -8140,7 +8136,7 @@
   ],
   "requested_cohorts": [
    "K50",
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
   "question_specificity": "specific",
@@ -8211,8 +8207,8 @@
  {
   "id": "V4-162",
   "suite": "answers",
-  "query": "Em chào thầy cô ạ. Em là sinh viên khóa K49, đợt này vừa thi xong mấy môn điều kiện thì em lo quá vì có một môn chỉ yêu cầu đạt/không đạt mà em làm bài không tốt, nhắm chừng chỉ được khoảng 4.5 điểm hệ 10 thôi. Thầy cô cho em hỏi đối với khóa K48-K49 thì học phần đạt/không đạt không phân mức mà bị dưới 5,0 điểm như vậy thì kết quả ra sao, có được quy đổi thành điểm P hay tính vào điểm trung bình học tập không ạ? Ngoài ra em cũng đang làm ban cán sự lớp kèm thêm mấy bạn khóa K50 sinh hoạt chung, có bạn K50 bị trừ điểm rèn luyện dữ quá kỳ này chắc chỉ được tầm 30 điểm, em muốn hỏi để so sánh quy định xem ở khóa K50 nếu điểm rèn luyện dưới 35 điểm thì bị xếp loại rèn luyện gì ạ?",
-  "cohort": "K48-K49",
+  "query": "Em chào thầy cô ạ. Em là sinh viên khóa K49, đợt này vừa thi xong mấy môn điều kiện thì em lo quá vì có một môn chỉ yêu cầu đạt/không đạt mà em làm bài không tốt, nhắm chừng chỉ được khoảng 4.5 điểm hệ 10 thôi. Thầy cô cho em hỏi đối với khóa K49 thì học phần đạt/không đạt không phân mức mà bị dưới 5,0 điểm như vậy thì kết quả ra sao, có được quy đổi thành điểm P hay tính vào điểm trung bình học tập không ạ? Ngoài ra em cũng đang làm ban cán sự lớp kèm thêm mấy bạn khóa K50 sinh hoạt chung, có bạn K50 bị trừ điểm rèn luyện dữ quá kỳ này chắc chỉ được tầm 30 điểm, em muốn hỏi để so sánh quy định xem ở khóa K50 nếu điểm rèn luyện dưới 35 điểm thì bị xếp loại rèn luyện gì ạ?",
+  "cohort": "K49",
   "history": [],
   "topic": "C",
   "case_type": "C.cohorts_table",
@@ -8228,16 +8224,16 @@
    "C.cohorts_table",
    "long_context"
   ],
-  "ground_truth": "- Khóa K48-K49: Đối với học phần chỉ yêu cầu đạt/không đạt không phân mức, nếu điểm thang 10 dưới 5,0 thì kết quả là Chưa đạt, không quy đổi thành điểm P và không tính vào điểm trung bình học tập.\n- Khóa K50: Điểm rèn luyện dưới 35 điểm (như 30 điểm) thì xếp loại rèn luyện Kém.",
+  "ground_truth": "- Khóa K49: Đối với học phần chỉ yêu cầu đạt/không đạt không phân mức, nếu điểm thang 10 dưới 5,0 thì kết quả là Chưa đạt, không quy đổi thành điểm P và không tính vào điểm trung bình học tập.\n- Khóa K50: Điểm rèn luyện dưới 35 điểm (như 30 điểm) thì xếp loại rèn luyện Kém.",
   "required_facts": [
-   "Khóa K48-K49: điểm dưới 5,0 thì kết quả Chưa đạt, không quy đổi thành P, không tính vào điểm trung bình học tập",
+   "Khóa K49: điểm dưới 5,0 thì kết quả Chưa đạt, không quy đổi thành P, không tính vào điểm trung bình học tập",
    "Khóa K50: điểm rèn luyện dưới 35 điểm xếp loại Kém"
   ],
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+    "cohort": "K49"
    },
    {
     "parent_section_id": "K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
@@ -8249,7 +8245,7 @@
    "Đ9: Quy chế đánh giá kết quả rèn luyện của sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 9"
   ],
   "requested_cohorts": [
-   "K48-K49",
+   "K49",
    "K50"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
@@ -8319,8 +8315,8 @@
  {
   "id": "V4-164",
   "suite": "answers",
-  "query": "Cho em hỏi xíu ạ, thời gian học tập tối đa của K48-K49 với K51 khác nhau như thế nào vậy ạ? Bên K48-K49 đào tạo liên thông từ trung cấp lên đh chính quy chuẩn 2,5 năm thì thời gian tối đa là mấy năm? Còn bên K51 hệ chính quy chuẩn 4 năm thì được học tối đa mấy năm, với sv liên thông thì tính tgian tối đa thế nào ạ?",
-  "cohort": "K48-K49",
+  "query": "Cho em hỏi xíu ạ, thời gian học tập tối đa của K49 với K51 khác nhau như thế nào vậy ạ? Bên K49 đào tạo liên thông từ trung cấp lên đh chính quy chuẩn 2,5 năm thì thời gian tối đa là mấy năm? Còn bên K51 hệ chính quy chuẩn 4 năm thì được học tối đa mấy năm, với sv liên thông thì tính tgian tối đa thế nào ạ?",
+  "cohort": "K49",
   "history": [],
   "topic": "C",
   "case_type": "C.cohorts_table",
@@ -8336,17 +8332,17 @@
    "C.cohorts_table",
    "informal"
   ],
-  "ground_truth": "- Khóa K48-K49: Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học hình thức chính quy có thời gian học tập chuẩn là 2,5 năm học và thời gian học tập tối đa là 5 năm học.\n- Khóa K51: Đào tạo chính quy có thời gian học tập chuẩn là 04 năm học và thời gian học tập tối đa là 06 năm học. Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ.",
+  "ground_truth": "- Khóa K49: Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học hình thức chính quy có thời gian học tập chuẩn là 2,5 năm học và thời gian học tập tối đa là 5 năm học.\n- Khóa K51: Đào tạo chính quy có thời gian học tập chuẩn là 04 năm học và thời gian học tập tối đa là 06 năm học. Đối với sinh viên học liên thông đã được miễn trừ khối lượng tín chỉ tích lũy, thời gian tối đa để hoàn thành khóa học được xác định trên cơ sở thời gian theo kế hoạch học tập chuẩn toàn khoá giảm tương ứng với khối lượng được miễn trừ.",
   "required_facts": [
-   "Khóa K48-K49: đào tạo liên thông từ trung cấp lên đại học chính quy có thời gian học tập tối đa là 5 năm học",
+   "Khóa K49: đào tạo liên thông từ trung cấp lên đại học chính quy có thời gian học tập tối đa là 5 năm học",
    "Khóa K51: chính quy có thời gian học tập tối đa là 06 năm học (hoặc 6 năm học)",
    "Khóa K51: đối với sinh viên liên thông đã được miễn trừ tín chỉ tích lũy, thời gian tối đa xác định trên cơ sở thời gian chuẩn toàn khóa giảm tương ứng với khối lượng được miễn trừ"
   ],
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    },
    {
     "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu3",
@@ -8358,7 +8354,7 @@
    "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
   ],
   "requested_cohorts": [
-   "K48-K49",
+   "K49",
    "K51"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
@@ -8374,8 +8370,8 @@
  {
   "id": "V4-165",
   "suite": "answers",
-  "query": "Dạ cho em hỏi về quy định học bổng khuyến khích học tập giữa khóa K48-K49 và K51 ạ. Ở khóa K48-K49, mức học bổng loại Giỏi với hệ số 1.25 được tính theo công thức và căn cứ học phí như thế nào? Còn ở khóa K51, ngoài điều kiện kết quả học tập và rèn luyện từ loại Khá trở lên thì có yêu cầu gì về mức độ kỷ luật không ạ?",
-  "cohort": "K48-K49",
+  "query": "Dạ cho em hỏi về quy định học bổng khuyến khích học tập giữa khóa K49 và K51 ạ. Ở khóa K49, mức học bổng loại Giỏi với hệ số 1.25 được tính theo công thức và căn cứ học phí như thế nào? Còn ở khóa K51, ngoài điều kiện kết quả học tập và rèn luyện từ loại Khá trở lên thì có yêu cầu gì về mức độ kỷ luật không ạ?",
+  "cohort": "K49",
   "history": [],
   "topic": "C",
   "case_type": "C.cohorts_table",
@@ -8391,16 +8387,16 @@
    "C.cohorts_table",
    "natural"
   ],
-  "ground_truth": "- Khóa K48-K49: Mức học bổng loại Giỏi được tính theo công thức: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25. Tín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học của sinh viên được phân loại là tự nhiên hay xã hội.\n- Khóa K51: Điều kiện về kỷ luật để được xét, cấp học bổng khuyến khích học tập là sinh viên không bị kỷ luật từ mức khiển trách trở lên trong học kỳ.",
+  "ground_truth": "- Khóa K49: Mức học bổng loại Giỏi được tính theo công thức: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25. Tín chỉ tự nhiên hoặc xã hội được xác định phụ thuộc vào ngành học của sinh viên được phân loại là tự nhiên hay xã hội.\n- Khóa K51: Điều kiện về kỷ luật để được xét, cấp học bổng khuyến khích học tập là sinh viên không bị kỷ luật từ mức khiển trách trở lên trong học kỳ.",
   "required_facts": [
-   "Khóa K48-K49: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25 (hoặc 1,25)",
+   "Khóa K49: Số tín chỉ x định mức học phí 1 tín chỉ tự nhiên hoặc xã hội x 1.25 (hoặc 1,25)",
    "Khóa K51: không bị kỷ luật từ mức khiển trách trở lên"
   ],
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+    "cohort": "K49"
    },
    {
     "parent_section_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27",
@@ -8412,7 +8408,7 @@
    "Đ3: Quy chế công tác sinh viên đối với sinh viên hệ chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 27"
   ],
   "requested_cohorts": [
-   "K48-K49",
+   "K49",
    "K51"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
@@ -8599,8 +8595,8 @@
  {
   "id": "V4-169",
   "suite": "answers",
-  "query": "Em chào thầy cô ạ. Em hiện là sinh viên khóa K49 của trường mình, đợt này em có đứa em họ vừa mới trúng tuyển vào khóa K51. Hai anh em ngồi nói chuyện về việc học tập ở đại học thì em nhớ lại hồi trước em từng thi không đạt một môn học phần bắt buộc và phải đăng ký học lại. Em không biết là lên khóa K51 thì nhà trường đã có sự điều chỉnh nào về quy chế chưa, hay vẫn giữ nguyên như khóa K48-K49 của tụi em. Thầy cô cho em hỏi là theo quy chế đào tạo tín chỉ, quy định về việc xử lý khi sinh viên không đạt một học phần bắt buộc, học phần tự chọn bắt buộc và tự chọn tự do giữa khóa K48-K49 và K51 có điểm gì khác nhau không ạ?",
-  "cohort": "K48-K49",
+  "query": "Em chào thầy cô ạ. Em hiện là sinh viên khóa K49 của trường mình, đợt này em có đứa em họ vừa mới trúng tuyển vào khóa K51. Hai anh em ngồi nói chuyện về việc học tập ở đại học thì em nhớ lại hồi trước em từng thi không đạt một môn học phần bắt buộc và phải đăng ký học lại. Em không biết là lên khóa K51 thì nhà trường đã có sự điều chỉnh nào về quy chế chưa, hay vẫn giữ nguyên như khóa K49 của tụi em. Thầy cô cho em hỏi là theo quy chế đào tạo tín chỉ, quy định về việc xử lý khi sinh viên không đạt một học phần bắt buộc, học phần tự chọn bắt buộc và tự chọn tự do giữa khóa K49 và K51 có điểm gì khác nhau không ạ?",
+  "cohort": "K49",
   "history": [],
   "topic": "C",
   "case_type": "C.cohorts_regulation",
@@ -8616,7 +8612,7 @@
    "C.cohorts_regulation",
    "long_context"
   ],
-  "ground_truth": "Quy định về việc xử lý khi sinh viên không đạt học phần theo phương thức đào tạo theo tín chỉ (Điều 4) giữa khóa K48-K49 và khóa K51 là hoàn toàn giống nhau:\n- Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy.\n- Sinh viên không đạt một học phần tự chọn bắt buộc sẽ phải đăng ký học lại chính học phần đó hoặc một học phần khác thuộc cùng nhóm học phần tự chọn bắt buộc theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy.\n- Sinh viên không đạt một học phần tự chọn tự do sẽ phải đăng ký học lại học phần đó hoặc có thể chọn đăng ký học một học phần khác theo quy định trong CTĐT.",
+  "ground_truth": "Quy định về việc xử lý khi sinh viên không đạt học phần theo phương thức đào tạo theo tín chỉ (Điều 4) giữa khóa K49 và khóa K51 là hoàn toàn giống nhau:\n- Sinh viên không đạt một học phần bắt buộc sẽ phải đăng ký học lại học phần đó hoặc một học phần tương đương theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy.\n- Sinh viên không đạt một học phần tự chọn bắt buộc sẽ phải đăng ký học lại chính học phần đó hoặc một học phần khác thuộc cùng nhóm học phần tự chọn bắt buộc theo quy định trong CTĐT, hoặc một học phần thay thế nếu học phần đó không còn được giảng dạy.\n- Sinh viên không đạt một học phần tự chọn tự do sẽ phải đăng ký học lại học phần đó hoặc có thể chọn đăng ký học một học phần khác theo quy định trong CTĐT.",
   "required_facts": [
    "hoàn toàn giống nhau (hoặc không có điểm khác nhau)",
    "học phần bắt buộc: đăng ký học lại học phần đó hoặc một học phần tương đương (hoặc học phần thay thế nếu không còn được giảng dạy)",
@@ -8626,8 +8622,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu4",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu4",
+    "cohort": "K49"
    },
    {
     "parent_section_id": "K51_QuyCheDaoTao_Chuong1_Dieu4",
@@ -8639,7 +8635,7 @@
    "Đ21: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 4"
   ],
   "requested_cohorts": [
-   "K48-K49",
+   "K49",
    "K51"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
@@ -8655,8 +8651,8 @@
  {
   "id": "V4-170",
   "suite": "answers",
-  "query": "Cho em hỏi xíu, quy định về điều kiện bị cảnh báo học tập với buộc thôi học của sv chính quy giữa khóa K48-K49 và K50 có gì khác nhau không ạ, hay cả 2 khóa đều áp dụng điều kiện giống nhau vậy ạ?",
-  "cohort": "K48-K49",
+  "query": "Cho em hỏi xíu, quy định về điều kiện bị cảnh báo học tập với buộc thôi học của sv chính quy giữa khóa K49 và K50 có gì khác nhau không ạ, hay cả 2 khóa đều áp dụng điều kiện giống nhau vậy ạ?",
+  "cohort": "K49",
   "history": [],
   "topic": "C",
   "case_type": "C.cohorts_regulation",
@@ -8672,7 +8668,7 @@
    "C.cohorts_regulation",
    "informal"
   ],
-  "ground_truth": "Quy định về xử lý kết quả học tập đối với hình thức đào tạo chính quy (Điều 12) giữa khóa K48-K49 và khóa K50 là hoàn toàn giống nhau:\n1. Cuối mỗi học kỳ chính, sinh viên bị cảnh báo học tập nếu vi phạm một trong các điều kiện:\n- Tổng số tín chỉ không đạt trong học kỳ vượt quá 50% khối lượng đã đăng ký học trong học kỳ, hoặc tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24;\n- Điểm trung bình học kỳ đạt dưới 0,8 đối với học kỳ đầu của khóa học, dưới 1,0 đối với các học kỳ tiếp theo;\n- Điểm trung bình tích lũy đạt dưới 1,2 đối với sinh viên trình độ năm thứ nhất, dưới 1,4 đối với sinh viên trình độ năm thứ hai, dưới 1,6 đối với sinh viên trình độ năm thứ ba, dưới 1,8 đối với sinh viên các năm tiếp theo.\n2. Sinh viên bị buộc thôi học trong các trường hợp:\n- Bị cảnh báo học tập 03 lần liên tiếp trong một khóa học;\n- Bị cảnh báo học tập đến lần thứ tư tính từ đầu khóa;\n- Thời gian học tập vượt quá giới hạn tối đa quy định tại Điều 3 của Quy chế.",
+  "ground_truth": "Quy định về xử lý kết quả học tập đối với hình thức đào tạo chính quy (Điều 12) giữa khóa K49 và khóa K50 là hoàn toàn giống nhau:\n1. Cuối mỗi học kỳ chính, sinh viên bị cảnh báo học tập nếu vi phạm một trong các điều kiện:\n- Tổng số tín chỉ không đạt trong học kỳ vượt quá 50% khối lượng đã đăng ký học trong học kỳ, hoặc tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24;\n- Điểm trung bình học kỳ đạt dưới 0,8 đối với học kỳ đầu của khóa học, dưới 1,0 đối với các học kỳ tiếp theo;\n- Điểm trung bình tích lũy đạt dưới 1,2 đối với sinh viên trình độ năm thứ nhất, dưới 1,4 đối với sinh viên trình độ năm thứ hai, dưới 1,6 đối với sinh viên trình độ năm thứ ba, dưới 1,8 đối với sinh viên các năm tiếp theo.\n2. Sinh viên bị buộc thôi học trong các trường hợp:\n- Bị cảnh báo học tập 03 lần liên tiếp trong một khóa học;\n- Bị cảnh báo học tập đến lần thứ tư tính từ đầu khóa;\n- Thời gian học tập vượt quá giới hạn tối đa quy định tại Điều 3 của Quy chế.",
   "required_facts": [
    "hoàn toàn giống nhau (hoặc giống nhau)",
    "vượt quá 50% khối lượng đã đăng ký học trong học kỳ, hoặc tổng số tín chỉ nợ đọng từ đầu khóa học vượt quá 24",
@@ -8685,8 +8681,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu12",
+    "cohort": "K49"
    },
    {
     "parent_section_id": "K50_QuyCheDaoTao_Chuong3_Dieu12",
@@ -8698,7 +8694,7 @@
    "Đ23: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 12"
   ],
   "requested_cohorts": [
-   "K48-K49",
+   "K49",
    "K50"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
@@ -8714,7 +8710,7 @@
  {
   "id": "V4-171",
   "suite": "answers",
-  "query": "Cho em hỏi xíu, các đợt xét tốt nghiệp chính thức cho sv chính quy giữa K50 với K48-K49 có khác gì nhau ko ạ, mỗi năm có mấy đợt và thường tổ chức vào tháng mấy z ad?",
+  "query": "Cho em hỏi xíu, các đợt xét tốt nghiệp chính thức cho sv chính quy giữa K50 với K49 có khác gì nhau ko ạ, mỗi năm có mấy đợt và thường tổ chức vào tháng mấy z ad?",
   "cohort": "K50",
   "history": [],
   "topic": "C",
@@ -8731,9 +8727,9 @@
    "C.cohorts_regulation",
    "informal"
   ],
-  "ground_truth": "Quy định về các đợt xét tốt nghiệp chính thức của sinh viên đào tạo theo hình thức chính quy giữa khóa K50 và khóa K48-K49 là hoàn toàn giống nhau:\nCả hai khóa đều có 03 đợt xét tốt nghiệp chính thức trong năm học, thường được tổ chức vào tháng 5, tháng 8 và tháng 10 (ngoài ra Hiệu trưởng có thể quyết định các đợt xét tốt nghiệp bổ sung căn cứ điều kiện cụ thể từng năm học).",
+  "ground_truth": "Quy định về các đợt xét tốt nghiệp chính thức của sinh viên đào tạo theo hình thức chính quy giữa khóa K50 và khóa K49 là hoàn toàn giống nhau:\nCả hai khóa đều có 03 đợt xét tốt nghiệp chính thức trong năm học, thường được tổ chức vào tháng 5, tháng 8 và tháng 10 (ngoài ra Hiệu trưởng có thể quyết định các đợt xét tốt nghiệp bổ sung căn cứ điều kiện cụ thể từng năm học).",
   "required_facts": [
-   "Cả hai khóa K50 và K48-K49 đều quy định giống nhau",
+   "Cả hai khóa K50 và K49 đều quy định giống nhau",
    "Có 03 đợt xét tốt nghiệp chính thức",
    "Thường được tổ chức vào tháng 5, tháng 8 và tháng 10"
   ],
@@ -8744,8 +8740,8 @@
     "cohort": "K50"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu15",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -8754,7 +8750,7 @@
   ],
   "requested_cohorts": [
    "K50",
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
   "question_specificity": "specific",
@@ -8824,8 +8820,8 @@
  {
   "id": "V4-173",
   "suite": "answers",
-  "query": "Em chào thầy cô, em là sinh viên ngành sư phạm thuộc khóa K49 của trường mình. Đợt này gia đình em gặp một số biến cố lớn về kinh tế và sức khỏe nên em đang rất lo lắng về trách nhiệm bồi hoàn kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt nếu chẳng may sau này không thể công tác trong ngành giáo dục theo đúng thời hạn cam kết. Em cũng có đứa em ruột đang học sư phạm khóa K51 nên muốn tìm hiểu kỹ cho cả hai anh em. Thầy cô cho em hỏi là trường hợp sinh viên sư phạm phải bồi hoàn kinh phí nhưng thuộc diện khó khăn, chính sách hoặc gặp rủi ro sức khỏe thì các trường hợp ngoại lệ được xét miễn, giảm hoặc xóa kinh phí bồi hoàn giữa khóa K48-K49 và K51 được quy định khác nhau như thế nào ạ?",
-  "cohort": "K48-K49",
+  "query": "Em chào thầy cô, em là sinh viên ngành sư phạm thuộc khóa K49 của trường mình. Đợt này gia đình em gặp một số biến cố lớn về kinh tế và sức khỏe nên em đang rất lo lắng về trách nhiệm bồi hoàn kinh phí hỗ trợ tiền đóng học phí và chi phí sinh hoạt nếu chẳng may sau này không thể công tác trong ngành giáo dục theo đúng thời hạn cam kết. Em cũng có đứa em ruột đang học sư phạm khóa K51 nên muốn tìm hiểu kỹ cho cả hai anh em. Thầy cô cho em hỏi là trường hợp sinh viên sư phạm phải bồi hoàn kinh phí nhưng thuộc diện khó khăn, chính sách hoặc gặp rủi ro sức khỏe thì các trường hợp ngoại lệ được xét miễn, giảm hoặc xóa kinh phí bồi hoàn giữa khóa K49 và K51 được quy định khác nhau như thế nào ạ?",
+  "cohort": "K49",
   "history": [],
   "topic": "C",
   "case_type": "C.cohorts_regulation",
@@ -8841,9 +8837,9 @@
    "C.cohorts_regulation",
    "long_context"
   ],
-  "ground_truth": "Quy định về trường hợp ngoại lệ được miễn, giảm hoặc xóa kinh phí bồi hoàn giữa khóa K48-K49 và K51 tại Điều 9 có sự khác biệt như sau:\n- Đối với khóa K48-K49 (Đ24): Nếu sinh viên sư phạm thuộc đối tượng chính sách, khó khăn thì căn cứ vào điều kiện cụ thể, đặc thù của sinh viên sư phạm, Ủy ban nhân dân cấp tỉnh quyết định phương thức thu hồi, chính sách miễn, giảm hoặc xóa kinh phí bồi hoàn.\n- Đối với khóa K51 (Đ25): Quy định chi tiết các trường hợp cụ thể hơn:\n  + Sinh viên sư phạm nếu thuộc đối tượng được cơ quan có thẩm quyền xác nhận bị suy giảm khả năng lao động từ 61% trở lên hoặc từ trần sẽ được xóa kinh phí bồi hoàn;\n  + Nếu thuộc đối tượng hưởng chính sách miễn hoặc giảm học phí theo quy định của Chính phủ sẽ được miễn hoặc giảm mức bồi hoàn kinh phí hỗ trợ tiền đóng học phí tương ứng;\n  + Căn cứ vào điều kiện cụ thể của sinh viên sư phạm, Ủy ban nhân dân cấp tỉnh nơi sinh viên thường trú quyết định miễn, giảm hoặc xóa kinh phí bồi hoàn cho sinh viên sư phạm thuộc đối tượng chính sách.",
+  "ground_truth": "Quy định về trường hợp ngoại lệ được miễn, giảm hoặc xóa kinh phí bồi hoàn giữa khóa K49 và K51 tại Điều 9 có sự khác biệt như sau:\n- Đối với khóa K49 (Đ24): Nếu sinh viên sư phạm thuộc đối tượng chính sách, khó khăn thì căn cứ vào điều kiện cụ thể, đặc thù của sinh viên sư phạm, Ủy ban nhân dân cấp tỉnh quyết định phương thức thu hồi, chính sách miễn, giảm hoặc xóa kinh phí bồi hoàn.\n- Đối với khóa K51 (Đ25): Quy định chi tiết các trường hợp cụ thể hơn:\n  + Sinh viên sư phạm nếu thuộc đối tượng được cơ quan có thẩm quyền xác nhận bị suy giảm khả năng lao động từ 61% trở lên hoặc từ trần sẽ được xóa kinh phí bồi hoàn;\n  + Nếu thuộc đối tượng hưởng chính sách miễn hoặc giảm học phí theo quy định của Chính phủ sẽ được miễn hoặc giảm mức bồi hoàn kinh phí hỗ trợ tiền đóng học phí tương ứng;\n  + Căn cứ vào điều kiện cụ thể của sinh viên sư phạm, Ủy ban nhân dân cấp tỉnh nơi sinh viên thường trú quyết định miễn, giảm hoặc xóa kinh phí bồi hoàn cho sinh viên sư phạm thuộc đối tượng chính sách.",
   "required_facts": [
-   "K48-K49: đối tượng chính sách, khó khăn thì căn cứ vào điều kiện cụ thể, đặc thù của sinh viên sư phạm, Ủy ban nhân dân cấp tỉnh quyết định phương thức thu hồi, chính sách miễn, giảm hoặc xóa kinh phí bồi hoàn",
+   "K49: đối tượng chính sách, khó khăn thì căn cứ vào điều kiện cụ thể, đặc thù của sinh viên sư phạm, Ủy ban nhân dân cấp tỉnh quyết định phương thức thu hồi, chính sách miễn, giảm hoặc xóa kinh phí bồi hoàn",
    "K51: suy giảm khả năng lao động từ 61% trở lên hoặc từ trần sẽ được xóa kinh phí bồi hoàn",
    "K51: thuộc đối tượng hưởng chính sách miễn hoặc giảm học phí theo quy định của Chính phủ sẽ được miễn hoặc giảm mức bồi hoàn kinh phí hỗ trợ tiền đóng học phí tương ứng",
    "K51: Ủy ban nhân dân cấp tỉnh nơi sinh viên thường trú quyết định miễn, giảm hoặc xóa kinh phí bồi hoàn cho sinh viên sư phạm thuộc đối tượng chính sách"
@@ -8851,8 +8847,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
+    "cohort": "K49"
    },
    {
     "parent_section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu9",
@@ -8864,7 +8860,7 @@
    "Đ25: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 9"
   ],
   "requested_cohorts": [
-   "K48-K49",
+   "K49",
    "K51"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
@@ -8880,7 +8876,7 @@
  {
   "id": "V4-174",
   "suite": "answers",
-  "query": "Dạ em chào thầy cô, em là sinh viên K51. Chuyện là đợt này trong lớp em có mấy bạn lơ là việc đánh giá rèn luyện quá, thậm chí có bạn còn bảo quên không tự đánh giá trên hệ thống luôn, làm ban cán sự như tụi em nhắc nhở mệt mỏi ghê. Với lại có bạn trước đó lỡ vi phạm quy chế thi bị nhà trường kỷ luật khiển trách nữa. Em lo không biết điểm rèn luyện của các bạn sẽ bị ảnh hưởng thế nào, và cũng muốn tìm hiểu xem quy định này ở khóa K51 so với các khóa trước như K48-K49 có khác biệt gì không. Thầy cô cho em hỏi giữa K51 và K48-K49 thì sinh viên không thực hiện tự đánh giá rèn luyện hoặc sinh viên bị kỷ luật mức khiển trách thì sẽ phải chịu hệ quả như thế nào khi xếp loại rèn luyện ạ?",
+  "query": "Dạ em chào thầy cô, em là sinh viên K51. Chuyện là đợt này trong lớp em có mấy bạn lơ là việc đánh giá rèn luyện quá, thậm chí có bạn còn bảo quên không tự đánh giá trên hệ thống luôn, làm ban cán sự như tụi em nhắc nhở mệt mỏi ghê. Với lại có bạn trước đó lỡ vi phạm quy chế thi bị nhà trường kỷ luật khiển trách nữa. Em lo không biết điểm rèn luyện của các bạn sẽ bị ảnh hưởng thế nào, và cũng muốn tìm hiểu xem quy định này ở khóa K51 so với các khóa trước như K49 có khác biệt gì không. Thầy cô cho em hỏi giữa K51 và K49 thì sinh viên không thực hiện tự đánh giá rèn luyện hoặc sinh viên bị kỷ luật mức khiển trách thì sẽ phải chịu hệ quả như thế nào khi xếp loại rèn luyện ạ?",
   "cohort": "K51",
   "history": [],
   "topic": "C",
@@ -8897,11 +8893,11 @@
    "C.cohorts_regulation",
    "long_context"
   ],
-  "ground_truth": "Quy định về các trường hợp này giữa khóa K51 và khóa K48-K49 là giống nhau:\n- Sinh viên không thực hiện tự đánh giá kết quả rèn luyện theo quy định sẽ nhận điểm 0 và xếp loại rèn luyện kém (xét theo từng học kỳ).\n- Trong thời gian sinh viên bị kỷ luật mức khiển trách, khi đánh giá kết quả rèn luyện không được vượt quá loại khá.",
+  "ground_truth": "Quy định về các trường hợp này giữa khóa K51 và khóa K49 là giống nhau:\n- Sinh viên không thực hiện tự đánh giá kết quả rèn luyện theo quy định sẽ nhận điểm 0 và xếp loại rèn luyện kém (xét theo từng học kỳ).\n- Trong thời gian sinh viên bị kỷ luật mức khiển trách, khi đánh giá kết quả rèn luyện không được vượt quá loại khá.",
   "required_facts": [
    "không thực hiện tự đánh giá: nhận điểm 0 và xếp loại rèn luyện kém (xét theo từng học kỳ)",
    "bị kỷ luật mức khiển trách: kết quả rèn luyện không được vượt quá loại khá",
-   "quy định giữa K51 và K48-K49 là giống nhau"
+   "quy định giữa K51 và K49 là giống nhau"
   ],
   "forbidden_claims": [],
   "expected_citations": [
@@ -8910,8 +8906,8 @@
     "cohort": "K51"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu10",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -8920,7 +8916,7 @@
   ],
   "requested_cohorts": [
    "K51",
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
   "question_specificity": "specific",
@@ -8984,7 +8980,7 @@
   "id": "V4-176",
   "suite": "answers",
   "query": "cho e hoi diem hoc phan thang 10 tu 8.5 den 10 voi tu 5.5 den 6.2 thi quy doi ra diem chu gi vay a, ca 2 deu la loai dat dung ko",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "C",
   "case_type": "C.same_table",
@@ -9008,15 +9004,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ8: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -9032,7 +9028,7 @@
   "id": "V4-177",
   "suite": "answers",
   "query": "Dạ cho em hỏi, ở hình thức vừa làm vừa học thì thời gian học tập chuẩn và tối đa giữa chương trình liên thông từ trung cấp lên đại học với liên thông đại học cho người đã có một bằng đại học khác nhau như thế nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "C",
   "case_type": "C.same_table",
@@ -9056,15 +9052,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ11: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -9225,7 +9221,7 @@
   "id": "V4-181",
   "suite": "answers",
   "query": "cho m hoi nganh su pham hoa hoc thuoc khoa nao quan ly va cho m xin sdt vs email cua khoa voi",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "D",
   "case_type": "D.program_faculty",
@@ -9255,7 +9251,7 @@
    "Đ4: Danh bạ khoa"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -9271,7 +9267,7 @@
   "id": "V4-182",
   "suite": "answers",
   "query": "Dạ chào thầy cô, em hiện đang theo học ngành Công nghệ Thông tin tại trường mình. Tình hình là em đang cần chuẩn bị một số giấy tờ xin hoãn nghĩa vụ quân sự và xin bảng điểm tiến độ học tập để bổ sung hồ sơ xin thực tập, nhưng em chưa biết văn phòng của khoa quản lý ngành mình ở chỗ nào và liên hệ ra sao để hỏi thủ tục trước. Thầy cô cho em xin thông tin liên hệ cụ thể gồm số điện thoại, số máy nhánh nội bộ, email và địa chỉ văn phòng làm việc của khoa quản lý ngành Công nghệ Thông tin với ạ, em cảm ơn nhiều!",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "D",
   "case_type": "D.program_faculty",
@@ -9287,9 +9283,9 @@
    "D.program_faculty",
    "long_context"
   ],
-  "ground_truth": "Ngành Công nghệ Thông tin thuộc Khoa Công nghệ – Thông tin quản lý. Thông tin liên hệ của khoa như sau:\n- Số điện thoại liên lạc: (028) 38352020 (số nội bộ: 209, 210)\n- Email: khoacntt@hcmue.edu.vn\n- Website: khoacntt.hcmue.edu.vn\n- Văn phòng làm việc: Nhà B, tầng 5, P.506, P.507, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+  "ground_truth": "Ngành Công nghệ Thông tin thuộc Khoa Công nghệ Thông tin quản lý. Thông tin liên hệ của khoa như sau:\n- Số điện thoại liên lạc: (028) 38352020 (số nội bộ: 209, 210)\n- Email: khoacntt@hcmue.edu.vn\n- Website: khoacntt.hcmue.edu.vn\n- Văn phòng làm việc: Nhà B, tầng 5, P.506, P.507, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
   "required_facts": [
-   "Khoa Công nghệ – Thông tin",
+   "Khoa Công nghệ Thông tin",
    "Số điện thoại: (028) 38352020, số nội bộ: 209, 210",
    "Email: khoacntt@hcmue.edu.vn",
    "Văn phòng: Nhà B, tầng 5, P.506, P.507, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM"
@@ -9301,13 +9297,13 @@
    "Đ18: Danh bạ khoa"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5).",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Gold adjusted for the K49 handbook: K49 names the faculty \"Khoa Công nghệ Thông tin\" (K49 p.139); K48 wrote \"Khoa Công nghệ – Thông tin\". Contacts and office are unchanged.",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -9591,7 +9587,7 @@
   "id": "V4-189",
   "suite": "answers",
   "query": "cho em hỏi xíu, em có việc liên quan đến cntt cần hỗ trợ thì liên hệ phòng nào vậy ạ, cho em xin sđt với email luôn nha",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "D",
   "case_type": "D.service_contact",
@@ -9620,7 +9616,7 @@
    "Đ15: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -9636,7 +9632,7 @@
   "id": "V4-190",
   "suite": "answers",
   "query": "cho em hỏi xíu, bên mình muốn liên hệ về việc xuất bản và phát hành sách phục vụ sv thì liên hệ đơn vị nào, cho em xin sđt với đc văn phòng với",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "D",
   "case_type": "D.service_contact",
@@ -9665,7 +9661,7 @@
    "Đ16: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -9771,15 +9767,15 @@
   "id": "V4-193",
   "suite": "answers",
   "query": "Dạ em hiểu rồi, thế còn khóa K51 thì sao ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [
    {
     "role": "user",
-    "content": "Em là sinh viên sư phạm K49, đợt này em đang tìm hiểu các quy định liên quan đến tiền hỗ trợ học phí và chi phí sinh hoạt. Em nghe bảo sau khi tốt nghiệp thì hằng năm mình phải làm báo cáo việc làm gửi về cho cơ quan chức năng thì mới không bị thu hồi tiền hỗ trợ, mà em chưa rõ cụ thể thời hạn là ngày nào trong năm và gửi cho ai. Đối với sinh viên K48-K49 thì quy định báo cáo việc làm sau tốt nghiệp này như thế nào ạ?"
+    "content": "Em là sinh viên sư phạm K49, đợt này em đang tìm hiểu các quy định liên quan đến tiền hỗ trợ học phí và chi phí sinh hoạt. Em nghe bảo sau khi tốt nghiệp thì hằng năm mình phải làm báo cáo việc làm gửi về cho cơ quan chức năng thì mới không bị thu hồi tiền hỗ trợ, mà em chưa rõ cụ thể thời hạn là ngày nào trong năm và gửi cho ai. Đối với sinh viên K49 thì quy định báo cáo việc làm sau tốt nghiệp này như thế nào ạ?"
    },
    {
     "role": "assistant",
-    "content": "Đối với K48-K49, sau khi có quyết định công nhận tốt nghiệp, định kỳ trước ngày 31 tháng 12 hằng năm của năm tiếp theo cho đến năm đủ thời gian không phải thực hiện nghĩa vụ bồi hoàn, sinh viên phải báo cáo tình hình việc làm của bản thân (Mẫu số 02 tại Phụ lục kèm Nghị định) tới cơ quan thu hồi kinh phí bồi hoàn để thông báo xóa hoặc thu hồi khoản kinh phí hỗ trợ."
+    "content": "Đối với K49, sau khi có quyết định công nhận tốt nghiệp, định kỳ trước ngày 31 tháng 12 hằng năm của năm tiếp theo cho đến năm đủ thời gian không phải thực hiện nghĩa vụ bồi hoàn, sinh viên phải báo cáo tình hình việc làm của bản thân (Mẫu số 02 tại Phụ lục kèm Nghị định) tới cơ quan thu hồi kinh phí bồi hoàn để thông báo xóa hoặc thu hồi khoản kinh phí hỗ trợ."
    }
   ],
   "topic": "E",
@@ -9805,8 +9801,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
+    "cohort": "K49"
    },
    {
     "parent_section_id": "K51_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong3_Dieu13",
@@ -9817,7 +9813,7 @@
    "Đ20: Nghị định quy định về chính sách hỗ trợ tiền đóng học phí, chi phí sinh hoạt đối với sinh viên sư phạm, Điều 13"
   ],
   "requested_cohorts": [
-   "K48-K49",
+   "K49",
    "K51"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
@@ -9834,15 +9830,15 @@
   "id": "V4-194",
   "suite": "answers",
   "query": "Còn khóa K50 thì thế nào ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [
    {
     "role": "user",
-    "content": "Sinh viên khóa K48 muốn dùng điểm đề tài nghiên cứu khoa học thay cho điểm thi học phần thì cần đáp ứng điều kiện gì và nộp đơn cho ai ạ?"
+    "content": "Sinh viên khóa K49 muốn dùng điểm đề tài nghiên cứu khoa học thay cho điểm thi học phần thì cần đáp ứng điều kiện gì và nộp đơn cho ai ạ?"
    },
    {
     "role": "assistant",
-    "content": "Đối với sinh viên K48, sinh viên là tác giả chính của đề tài SV NCKH được đánh giá đạt loại Khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử dụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần (không quá 3 tín chỉ) liên quan gần với đề tài."
+    "content": "Đối với sinh viên K49, sinh viên là tác giả chính của đề tài SV NCKH được đánh giá đạt loại Khá trở lên có thể nộp đơn cho Trưởng khoa để đăng ký sử dụng điểm đánh giá đề tài NCKH thay thế cho điểm thi kết thúc học phần (không quá 3 tín chỉ) liên quan gần với đề tài."
    }
   ],
   "topic": "E",
@@ -9868,8 +9864,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
+    "cohort": "K49"
    },
    {
     "parent_section_id": "K50_QuyDinhNghienCuuKhoaHocSinhVien_Chuong4_Dieu14",
@@ -9880,7 +9876,7 @@
    "Đ22: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 14"
   ],
   "requested_cohorts": [
-   "K48-K49",
+   "K49",
    "K50"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
@@ -10088,7 +10084,7 @@
   "id": "V4-198",
   "suite": "answers",
   "query": "the con khoa k50 thi sao b",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [
    {
     "role": "user",
@@ -10096,7 +10092,7 @@
    },
    {
     "role": "assistant",
-    "content": "Đối với khóa K48-K49, đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học hình thức vừa làm vừa học có thời gian học tập tối đa là 5 năm học."
+    "content": "Đối với khóa K49, đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học hình thức vừa làm vừa học có thời gian học tập tối đa là 5 năm học."
    }
   ],
   "topic": "E",
@@ -10121,8 +10117,8 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    },
    {
     "parent_section_id": "K50_QuyCheDaoTao_Chuong1_Dieu3",
@@ -10133,7 +10129,7 @@
    "Đ23: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
   ],
   "requested_cohorts": [
-   "K48-K49",
+   "K49",
    "K50"
   ],
   "cohort_sensitivity": "multi_cohort_risk",
@@ -10252,7 +10248,7 @@
   "id": "V4-201",
   "suite": "answers",
   "query": "Thế còn ngành Giáo dục Thể chất thuộc khoa nào?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [
    {
     "role": "user",
@@ -10287,7 +10283,7 @@
    "Đ29: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -10406,7 +10402,7 @@
   "id": "V4-204",
   "suite": "answers",
   "query": "Thế còn Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp hỗ trợ sinh viên những việc gì vậy bạn?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [
    {
     "role": "user",
@@ -10447,7 +10443,7 @@
    "Đ35: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -10520,7 +10516,7 @@
   "id": "V4-206",
   "suite": "answers",
   "query": "dạ thế các yêu cầu đối với nó được quy định thế nào vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [
    {
     "role": "user",
@@ -10555,15 +10551,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyDinhNghienCuuKhoaHocSinhVien_Chuong1_Dieu3",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ36: Quy định về việc tổ chức hoạt động nghiên cứu khoa học của sinh viên, Điều 3"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -10688,7 +10684,7 @@
   "id": "V4-209",
   "suite": "answers",
   "query": "the email lien he cua ho la gi v b",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [
    {
     "role": "user",
@@ -10724,7 +10720,7 @@
    "Đ38: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -11044,7 +11040,7 @@
   "id": "V4-215",
   "suite": "answers",
   "query": "Dạ em rõ rồi. Tiện cho em hỏi nếu muốn xin nghỉ học tạm thời vì lý do cá nhân thì cần đáp ứng những điều kiện gì ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [
    {
     "role": "user",
@@ -11078,19 +11074,19 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong4_Dieu16",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ12: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 16"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -11106,7 +11102,7 @@
   "id": "V4-216",
   "suite": "answers",
   "query": "Dạ em nhận được thông tin rồi, em cảm ơn thầy cô nhiều ạ. Thầy cô cho em hỏi thêm một việc nữa với ạ. Năm học vừa rồi em cố gắng học tập rất nhiều nên cả hai kỳ điểm GPA đều trên 3.6 và điểm rèn luyện cũng đạt Xuất sắc, lớp em các bạn cũng bảo em thuộc diện được khen thưởng sinh viên xuất sắc của trường. Em muốn hỏi là để được nhà trường xét khen thưởng cuối năm cho cá nhân thì quy trình thủ tục thực hiện như thế nào và do những đơn vị nào phối hợp đề nghị lên Hiệu trưởng vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [
    {
     "role": "user",
@@ -11114,7 +11110,7 @@
    },
    {
     "role": "assistant",
-    "content": "Email liên lạc của Phòng Công tác chính trị và Học sinh, sinh viên là phongctct@hcmue.edu.vn và hopthusinhvien@hcmue.edu.vn."
+    "content": "Email liên lạc của Phòng Công tác chính trị và Học sinh, sinh viên là hopthusinhvien@hcmue.edu.vn."
    }
   ],
   "topic": "E",
@@ -11140,21 +11136,21 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu34",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ14: Quy chế công tác sinh viên đối với chương trình đào tạo đại học hệ chính quy Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 34"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
   "lexical_fact_check_applicable": false,
-  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Chỉ chấm câu trả lời cho lượt hỏi cuối; các lượt trước là ngữ cảnh hội thoại.",
-  "gold_adjusted": false,
+  "evaluation_notes": "Chấm tương đương ngữ nghĩa, không khớp nguyên văn gold. Phải trả lời mọi ý được hỏi; thông tin thêm đúng thì không trừ điểm. Với nhiều khóa hoặc nhiều đơn vị, mỗi kết quả phải gắn đúng đối tượng. Chấp nhận số viết tương đương (06 = 6, 3,5 = 3.5). Chỉ chấm câu trả lời cho lượt hỏi cuối; các lượt trước là ngữ cảnh hội thoại. Gold adjusted for the K49 handbook: The earlier assistant turn quoted K48's two e-mail addresses for Phòng CTCT và HSSV; K49 lists only hopthusinhvien@hcmue.edu.vn (K49 p.127). The scored final question (rewards, CTSV Điều 34) is unchanged.",
+  "gold_adjusted": true,
   "review_status": "author_reviewed",
   "review_method": "Authored by Gemini 3.8 Flash from handbook excerpts; gold reviewed by the system author with Claude; not independent human review",
   "frozen": true,
@@ -11164,7 +11160,7 @@
   "id": "V4-217",
   "suite": "answers",
   "query": "Cho em hỏi với kết quả điểm của em thì có được xếp loại học lực Trung bình không ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.clarify",
@@ -11187,15 +11183,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ15: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 11"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "ambiguous",
@@ -11400,7 +11396,7 @@
   "id": "V4-222",
   "suite": "answers",
   "query": "Cho em hỏi đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học thì thời gian học tập tối đa được quy định là bao nhiêu năm ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.clarify",
@@ -11423,15 +11419,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ11: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 3"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "ambiguous",
@@ -11447,7 +11443,7 @@
   "id": "V4-223",
   "suite": "answers",
   "query": "cho em hỏi xíu, đrl kỳ này của em được 75 điểm thì xếp loại gì dạ? Với lại môn chỉ tính đạt/không đạt thì em có bị tính là chưa đạt không ad?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.partial_clarify",
@@ -11471,12 +11467,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -11484,7 +11480,7 @@
    "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -11702,7 +11698,7 @@
   "id": "V4-228",
   "suite": "answers",
   "query": "cho em hỏi xíu, môn em bị điểm D+ thì quy sang thang 4 được mấy điểm v ad? Tiện thể cho em hỏi môn Triết của em có được điểm C không ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.partial_clarify",
@@ -11726,12 +11722,12 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+    "cohort": "K49"
    },
    {
-    "parent_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+    "cohort": "K49"
    }
   ],
   "sources": [
@@ -11739,7 +11735,7 @@
    "Đ2: Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh, Điều 10"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -11878,7 +11874,7 @@
   "id": "V4-232",
   "suite": "answers",
   "query": "Dạ em chào anh chị, em là sinh viên K49 ngành Sư phạm Toán. Đợt thi kết thúc học phần vừa rồi do em bị ốm phải nằm viện mấy ngày nên lỡ mất buổi thi môn Xác suất thống kê. Em có xin giấy ra viện và giấy khám của bác sĩ đầy đủ rồi. Anh chị cho em hỏi thầy Trưởng khoa Toán hiện tại tên là gì và cho em xin số điện thoại cá nhân của thầy với ạ để em gọi điện trực tiếp xin thầy duyệt đơn thi bổ sung chứ em sợ trễ hạn quá ạ.",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.refuse_in_domain",
@@ -11903,7 +11899,7 @@
   "expected_citations": [],
   "sources": [],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -11960,7 +11956,7 @@
   "id": "V4-234",
   "suite": "answers",
   "query": "cho em hỏi xíu, học phí 1 tín chỉ của ngành Sư phạm Hóa học năm nay cụ thể là bao nhiêu tiền vậy ad? Với lại chừng nào hết hạn đóng học phí z ad?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.refuse_in_domain",
@@ -11985,7 +11981,7 @@
   "expected_citations": [],
   "sources": [],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -12042,7 +12038,7 @@
   "id": "V4-236",
   "suite": "answers",
   "query": "cho em hỏi xíu, thầy dạy môn Tâm lý học giáo dục lớp em tiết 1-3 sáng thứ 2 tên gì với cho em xin sđt cá nhân của thầy để em xin phép nghỉ học buổi sau với ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.refuse_in_domain",
@@ -12067,7 +12063,7 @@
   "expected_citations": [],
   "sources": [],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -12163,7 +12159,7 @@
   "id": "V4-239",
   "suite": "answers",
   "query": "Cho em hỏi xíu, tối nay gần ktx trường mình bên Q5 có quán lẩu bò nào ngon bổ rẻ để dẫn nhóm bạn đi ăn ko mn chỉ em zới?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.out_of_domain",
@@ -12187,7 +12183,7 @@
   "expected_citations": [],
   "sources": [],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -12243,7 +12239,7 @@
   "id": "V4-241",
   "suite": "answers",
   "query": "cho em hỏi xíu, quanh cơ sở 280 ADV có quán cà phê nào yên tĩnh, wifi mạnh để cày deadline không ad?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.out_of_domain",
@@ -12267,7 +12263,7 @@
   "expected_citations": [],
   "sources": [],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -12416,7 +12412,7 @@
   "id": "V4-245",
   "suite": "answers",
   "query": "cho em hỏi xíu, ban cán sự lớp mà hoàn thành xuất sắc nhiệm vụ thì được cộng mấy điểm đrl ở phần V dạ? Với ad biết cách trị mụn trứng cá tuổi dậy thì hiệu quả không chỉ em với.",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.mixed_domain",
@@ -12440,15 +12436,15 @@
   "forbidden_claims": [],
   "expected_citations": [
    {
-    "parent_section_id": "K48-K49_PhieuDanhGiaRenLuyen_Phan5",
-    "cohort": "K48-K49"
+    "parent_section_id": "K49_KhungDiemDanhGiaRenLuyen_Phan6",
+    "cohort": "K49"
    }
   ],
   "sources": [
    "Đ13: Phiếu đánh giá kết quả rèn luyện sinh viên (Phụ lục 1), Phần V. Đánh giá về ý thức và kết quả tham gia công tác phụ trách lớp, các đoàn thể, tổ chức trong nhà trường; đạt thành tích xuất sắc trong học tập, rèn luyện (Tối đa 10 điểm)"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",
@@ -12464,7 +12460,7 @@
   "id": "V4-246",
   "suite": "answers",
   "query": "Cho em hỏi địa chỉ email của Khoa Địa lí là gì ạ? Sẵn tiện cho em hỏi giá vé xem phim ở rạp CGV vào cuối tuần là bao nhiêu vậy ạ?",
-  "cohort": "K48-K49",
+  "cohort": "K49",
   "history": [],
   "topic": "F",
   "case_type": "F.mixed_domain",
@@ -12491,7 +12487,7 @@
    "Đ14: Danh bạ trong Sổ tay sinh viên K48-K49"
   ],
   "requested_cohorts": [
-   "K48-K49"
+   "K49"
   ],
   "cohort_sensitivity": "single_cohort",
   "question_specificity": "specific",

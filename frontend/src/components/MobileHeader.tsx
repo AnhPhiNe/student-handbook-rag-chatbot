@@ -33,7 +33,7 @@ export function MobileHeader({ onMenuToggle, theme, onToggleTheme, cohort, onCoh
             onChange={(e) => onCohortChange(e.target.value as Cohort)}
             aria-label="Chọn khóa áp dụng"
           >
-            <option value="K48-K49">Khóa 48 - 49</option>
+            <option value="K49">Khóa 49</option>
             <option value="K50">Khóa 50</option>
             <option value="K51">Khóa 51</option>
           </select>

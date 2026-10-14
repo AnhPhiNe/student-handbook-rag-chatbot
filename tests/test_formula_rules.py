@@ -30,14 +30,14 @@ def _section(
 
 def test_merge_preserves_parent_namespace_without_double_prefix(tmp_path) -> None:
     inputs = {}
-    for cohort, parent_id in [("K48-K49", "source_11"), ("K51", "K51_source_11")]:
+    for cohort, parent_id in [("K49", "source_11"), ("K51", "K51_source_11")]:
         path = tmp_path / f"{cohort}.json"
         path.write_text(json.dumps([{"source_parent_id": parent_id}]), encoding="utf-8")
         inputs[cohort] = path
     output = tmp_path / "merged.json"
     merge_structured_data(inputs, output)
     assert [r["source_parent_id"] for r in json.loads(output.read_text())] == [
-        "K48-K49_source_11", "K51_source_11"
+        "K49_source_11", "K51_source_11"
     ]
 
 
@@ -76,9 +76,9 @@ def test_combined_formula_request_returns_every_named_formula() -> None:
     )
 
     result = formula_lookup(
-        "K48-K49: cac cong thuc GPA va diem hoc bong duoc trinh bay the nao?",
+        "K49: cac cong thuc GPA va diem hoc bong duoc trinh bay the nao?",
         rules,
-        cohort="K48-K49",
+        cohort="K49",
         slots={
             "formula_type": ["gpa_weighted_average", "scholarship_score"]
         },
@@ -100,7 +100,7 @@ def test_single_formula_request_is_not_expanded_by_incidental_scholarship_phrase
     result = formula_lookup(
         "Công thức GPA dùng để xét học bổng là gì?",
         rules,
-        cohort="K48-K49",
+        cohort="K49",
         slots={"formula_type": "gpa_weighted_average"},
     )
 
@@ -121,8 +121,8 @@ def test_formula_sources_bind_to_each_formula_parent() -> None:
 
     resolution = resolve_structured_task(
         {"lookup_type": "formula", "intent": "direct_value", "slots": {}},
-        query="K48-K49: cac cong thuc GPA va diem hoc bong duoc trinh bay the nao?",
-        cohort="K48-K49",
+        query="K49: cac cong thuc GPA va diem hoc bong duoc trinh bay the nao?",
+        cohort="K49",
         formula_rules=rules,
         office_directory=[],
         student_service_directory=[],
@@ -137,8 +137,8 @@ def test_formula_sources_bind_to_each_formula_parent() -> None:
         for item in resolution.result["sub_lookups"]
     }
     assert parents == {
-        "gpa_weighted_average": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-        "scholarship_score": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+        "gpa_weighted_average": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+        "scholarship_score": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
     }
 
 
@@ -156,9 +156,9 @@ def test_generated_scholarship_formula_provenance_matches_each_cohort() -> None:
         cohort: (rule["source_article"], rule["source_parent_id"])
         for cohort, rule in scholarship_by_cohort.items()
     } == {
-        "K48-K49": (
+        "K49": (
             "Điều 28.",
-            "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+            "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
         ),
         "K50": (
             "Điều 27.",
@@ -179,7 +179,7 @@ def test_gpa_formula_result_carries_its_rounding_rule() -> None:
         (Path(__file__).resolve().parents[1] / "data/processed/tables/formula_rules.json")
         .read_text(encoding="utf-8")
     )
-    for cohort in ("K48-K49", "K50", "K51"):
+    for cohort in ("K49", "K50", "K51"):
         gpa = formula_lookup("", rules, cohort, slots={"formula_type": "gpa_weighted_average"})
         assert gpa["rounding"] == "Làm tròn đến 2 chữ số thập phân"
         # The scholarship formula states no rounding; none is invented for it.

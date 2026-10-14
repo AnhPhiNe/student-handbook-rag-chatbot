@@ -38,7 +38,7 @@ def test_build_candidate_keeps_baseline_and_separate_namespace(tmp_path):
               ["data/processed/chunks/child_parent_chunks.json", "configs/retrieval.yaml",
                "data/processed/metadata/build_manifest.json"]}
     report = build_candidate(ROOT, tmp_path)
-    assert report["artifacts"]["child_chunks"]["count"] == 2678  # 2646 clause chunks + 32 in-scope table handles
+    assert report["artifacts"]["child_chunks"]["count"] == 2720  # 2688 clause chunks + 32 in-scope table handles
     assert report["model_calls"] == 0 and not report["embedding_created"]
     assert report["storage_targets"]["qdrant_collection"] != "student_handbook_semantic_v35"
     assert report["storage_targets"]["mongo_parent_collection"] != "parent_docs_v35"
@@ -138,7 +138,7 @@ def test_existing_dense_rrf_rerank_path_uses_fake_embedder_and_store():
     r.qdrant_client = SimpleNamespace(query_points=query_points)
     r.bm25 = SimpleNamespace(sparse_search=lambda *a, **kw: [])
     r.reranker = SimpleNamespace(rerank=lambda query, ranked: (ranked, {"reranker_applied": True}))
-    result = r.retrieve("TOEIC cần bao nhiêu điểm?", graph_depth=0, cohort="K48-K49")
+    result = r.retrieve("TOEIC cần bao nhiêu điểm?", graph_depth=0, cohort="K49")
     assert len(calls) == 1 and calls[0]["collection_name"] == "candidate"
     assert "275" in result[0]["metadata"]["raw_table_context"]
     assert result[0]["metadata"]["retrieval_telemetry"]["reranker_applied"]

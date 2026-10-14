@@ -55,7 +55,7 @@ def run(programs, names, cohorts=("K51",), selector=None, separate=False):
     return query, result, packet
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 def test_scalar_none_keeps_scoped_negative_evidence_and_catalog_provenance(programs, cohort):
     result = lookup(programs, "Ngành chưa có trong danh mục", cohort)
     assert result["exists"] is False and result["program_count"] == 0
@@ -72,7 +72,7 @@ def test_scalar_none_keeps_scoped_negative_evidence_and_catalog_provenance(progr
 
 
 def test_all_real_program_records_keep_positive_search_outcomes(programs):
-    assert len(programs) == 129
+    assert len(programs) == 131
     for record in programs:
         result = lookup(programs, record["program_name"], record["cohort"])
         assert result["exists"] is True
@@ -83,7 +83,7 @@ def test_all_real_program_records_keep_positive_search_outcomes(programs):
         assert result["result"][0]["record_id"] == outcome["matched_programs"][0]["record_id"]
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 @pytest.mark.parametrize("reverse", [False, True])
 def test_mixed_list_never_uses_any_match_as_whole_request_exists(programs, cohort, reverse):
     present = known(programs, cohort)["program_name"]
@@ -260,7 +260,7 @@ def test_catalog_and_lookup_are_not_mutated_by_citation_or_ui_projection(program
 
 def test_supported_large_batch_keeps_all_outcomes_under_default_context_budget(programs):
     names = [p["program_name"] for p in programs if p["cohort"] == "K51"]
-    query, result, packet = run(programs, names, cohorts=("K48-K49", "K50", "K51"))
+    query, result, packet = run(programs, names, cohorts=("K49", "K50", "K51"))
     assert len(query) <= 2000  # This is a request the current HTTP limit supports.
     assert len(packet["units"]) == 3 and len(result["evidence_citations"]) == 3
     for unit in packet["units"]:

@@ -59,8 +59,8 @@
     "content_type": "scoring_table",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "cohort": "K49",
     "source_section": "scoring_table",
     "content_mode": "structured_only"
   },
@@ -112,8 +112,8 @@
     "content_type": "scoring_table",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "cohort": "K49",
     "source_section": "scoring_table",
     "content_mode": "structured_only"
   },
@@ -153,8 +153,8 @@
     "content_type": "scoring_table",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "cohort": "K49",
     "source_section": "scoring_table",
     "content_mode": "structured_only"
   },
@@ -194,8 +194,8 @@
     "content_type": "scoring_table",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "cohort": "K49",
     "source_section": "scoring_table",
     "content_mode": "structured_only"
   },
@@ -203,7 +203,7 @@
     "table_id": "scholarship_classification",
     "table_name": "Xếp loại học bổng khuyến khích học tập",
     "source_pages": [
-      53
+      49
     ],
     "review_status": "needs_human_verified",
     "schema_variant": "score_ranges",
@@ -230,8 +230,8 @@
     "content_type": "scoring_table",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "cohort": "K49",
     "source_section": "scoring_table",
     "content_mode": "structured_only"
   },
@@ -263,8 +263,8 @@
     "content_type": "scoring_table",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "cohort": "K49",
     "source_section": "scoring_table",
     "content_mode": "structured_only"
   },
@@ -272,8 +272,8 @@
     "table_id": "scholarship_score_formula",
     "table_name": "Công thức tính điểm xếp hạng học bổng",
     "source_pages": [
-      52,
-      53
+      48,
+      49
     ],
     "review_status": "source_verified",
     "schema_variant": "ranking_score_formula",
@@ -288,8 +288,8 @@
     "content_type": "scoring_table",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "cohort": "K49",
     "source_section": "scoring_table",
     "content_mode": "structured_only"
   },
@@ -319,8 +319,8 @@
     "content_type": "scoring_table",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
-    "document_id": "so_tay_sinh_vien_khoa_48_49",
-    "cohort": "K48-K49",
+    "document_id": "so_tay_sinh_vien_khoa_49",
+    "cohort": "K49",
     "source_section": "scoring_table",
     "content_mode": "structured_only"
   }

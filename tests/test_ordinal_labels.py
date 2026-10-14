@@ -30,7 +30,7 @@ def test_k51_scholarship_rows_keep_the_handbook_cells_and_list_admitted_levels()
 
 def test_tables_without_a_minimum_level_are_untouched() -> None:
     for cohort, subtype in (("K51", "academic_classification"), ("K50", "scholarship_classification"),
-                            ("K48-K49", "conduct_classification"), ("K51", "scholarship_amount")):
+                            ("K49", "conduct_classification"), ("K51", "scholarship_amount")):
         rows = _table(cohort, subtype)["rows"]
         assert annotate_minimum_levels(rows) == rows
 

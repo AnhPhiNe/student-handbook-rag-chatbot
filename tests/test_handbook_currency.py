@@ -25,7 +25,7 @@ def test_every_note_matches_sections_that_exist() -> None:
 
     config = yaml.safe_load(HANDBOOK_CURRENCY_PATH.read_text(encoding="utf-8"))
     ids = {str(d["_id"]) for d in json.loads((ROOT / "data/processed/chunks/all_docstore_items.json").read_text(encoding="utf-8"))}
-    assert set(config["handbook_years"]) == {"K48-K49", "K50", "K51"}
+    assert set(config["handbook_years"]) == {"K49", "K50", "K51"}
     for entry in config["notes"]:
         assert entry["note"].strip() and entry["basis"].strip()
         for prefix in entry["sources"]:
@@ -34,14 +34,14 @@ def test_every_note_matches_sections_that_exist() -> None:
 
 def test_a_replaced_regulation_is_labelled_with_its_handbook_and_flagged() -> None:
     old, current = _rendered_sources({"units": [_unit(
-        "K48-K49",
-        {"source_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28", "source_cohort": "K48-K49"},
+        "K49",
+        {"source_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28", "source_cohort": "K49"},
     )]})[0], _rendered_sources({"units": [_unit(
         "K51",
         {"source_id": "K51_QuyCheCongTacSinhVien_Chuong5_Dieu27", "source_cohort": "K51"},
     )]})[0]
 
-    assert old["printed_in"] == "Sổ tay sinh viên khóa K48-K49 (năm học 2022 – 2023)"
+    assert old["printed_in"] == "Sổ tay sinh viên khóa K49 (năm học 2023 – 2024)"
     assert "1999/QĐ-ĐHSP" in old["currency_note"] and "Sổ tay khóa K51" in old["currency_note"]
     assert current["printed_in"] == "Sổ tay sinh viên khóa K51 (năm học 2025 – 2026)"
     assert "currency_note" not in current
@@ -71,10 +71,10 @@ def test_the_judge_sees_the_handbook_and_the_note_the_composer_was_given() -> No
     from src.evaluation.judge import _authorized_packet_evidence_units
 
     _, context = render_answer_prompt("q", {"units": [_unit(
-        "K48-K49",
-        {"source_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28", "source_cohort": "K48-K49"},
+        "K49",
+        {"source_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28", "source_cohort": "K49"},
     )]})
     units = _authorized_packet_evidence_units(context)
 
-    assert any("Printed in: Sổ tay sinh viên khóa K48-K49" in u for u in units)
+    assert any("Printed in: Sổ tay sinh viên khóa K49" in u for u in units)
     assert any("Currency note:" in u and "1999/QĐ-ĐHSP" in u for u in units)

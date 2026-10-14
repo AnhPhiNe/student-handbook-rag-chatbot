@@ -14,13 +14,14 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from src.common.cohort import valid_cohorts
 from src.common.io import sha256_file
 from src.retrieval.runtime_config import load_retrieval_runtime_config
 from scripts.build_parent_child_artifacts import validate_separation_contract
 
 
 SCHEMA_VERSION = "student-handbook-build-v1"
-EXPECTED_COHORTS = {"K48-K49", "K50", "K51"}
+EXPECTED_COHORTS = set(valid_cohorts())
 DEFAULT_PARENT_PATH = Path("data/processed/chunks/all_docstore_items.json")
 DEFAULT_CHILD_PATH = Path("data/processed/chunks/child_parent_chunks.json")
 DEFAULT_TABLE_PATH = Path("data/processed/tables/structured_tables_registry.json")
@@ -197,7 +198,7 @@ def build_artifact_manifest(
     child_cohorts = set(_cohort_counts(children))
     if parent_cohorts != EXPECTED_COHORTS or child_cohorts != EXPECTED_COHORTS:
         raise RuntimeError(
-            "Parent and child artifacts must both contain exactly K48-K49, K50, K51. "
+            f"Parent and child artifacts must both contain exactly {', '.join(sorted(EXPECTED_COHORTS))}. "
             f"Parents={sorted(parent_cohorts)}, children={sorted(child_cohorts)}"
         )
 

@@ -4,7 +4,9 @@ Reads the tickets, Gemini's authored YAML (via check_v4_authored.load_authored)
 and gold_adjustments.yaml, and writes data/eval/official_v4/generated_answer_cases.json
 for `scripts/run_official_answers.py --suite answers --bundle official_v4`.
 Questions are copied as authored; only the scoring fields named in
-gold_adjustments.yaml are replaced. Clusters are computed from the authored gold.
+gold_adjustments.yaml are replaced, and its cohort migration moves the cases of a
+retired cohort (K48-K49) to the cohort that replaced it (K49). Clusters are
+computed from the authored gold.
 """
 import json
 import re
@@ -76,17 +78,47 @@ def clusters(required: dict[str, list[str]]) -> dict[str, str]:
     return {case_id: root(case_id) for case_id in ids}
 
 
-def _citations(ticket: dict) -> list[dict]:
+def _citations(ticket: dict, migration: dict | None = None) -> list[dict]:
     citations = []
     for request in ticket["requests"]:
         source = request.get("source") or {}
         if source.get("kind") != "article":
             continue
-        source_id = source["id"]
-        if not source_id.startswith(source["cohort"]):
-            source_id = f"{source['cohort']}_{source_id}"
-        citations.append({"parent_section_id": source_id, "cohort": source["cohort"]})
+        source_id, cohort = source["id"], source["cohort"]
+        if migration and cohort == migration["from"]:
+            source_id, cohort = _migrated_parent(source_id, migration), migration["to"]
+        if not source_id.startswith(cohort):
+            source_id = f"{cohort}_{source_id}"
+        citations.append({"parent_section_id": source_id, "cohort": cohort})
     return citations
+
+
+def _migrated_parent(source_id: str, migration: dict) -> str:
+    """The parent replacing a retired cohort's parent: named, or the same id under the new prefix."""
+    if source_id in migration.get("parents", {}):
+        return migration["parents"][source_id]
+    for prefix in migration["id_prefixes"]:
+        if source_id.startswith(prefix):
+            return f"{migration['to']}_{source_id.removeprefix(prefix)}"
+    raise ValueError(f"No migrated parent for {source_id}")
+
+
+def _relabel(text: str, pairs: list[list[str]]) -> str:
+    for old, new in pairs:
+        text = re.sub(rf"(?<![\w-]){re.escape(old)}(?![\w-])", new, text)
+    return text
+
+
+def _relabel_all(texts: list[str], pairs: list[list[str]]) -> list[str]:
+    return [_relabel(text, pairs) for text in texts]
+
+
+def _replace(texts: list[str], pairs: list[list[str]], case_id: str) -> list[str]:
+    for old, new in pairs:
+        if not any(old in text for text in texts):
+            raise ValueError(f"{case_id}: replace text not found: {old!r}")
+        texts = [text.replace(old, new) for text in texts]
+    return texts
 
 
 def build() -> list[dict]:
@@ -94,27 +126,40 @@ def build() -> list[dict]:
     authored = {case["phieu"]: case for batch in range(BATCHES) for case in load_authored(batch)}
     adjustments = yaml.safe_load((V4 / "gold_adjustments.yaml").read_text(encoding="utf-8"))
     adjusted = adjustments["cases"]
+    migration = adjustments.get("cohort_migration")
     rule_notes = {case_id: rule["rule"] for rule in adjustments["rules"].values() for case_id in rule["cases"]}
     cluster_of = clusters({case_id: case["y_bat_buoc"] for case_id, case in authored.items()})
 
     cases = []
     for case_id in sorted(tickets):
         ticket, case = tickets[case_id], authored[case_id]
-        turns = case["hoi_thoai"]
+        turns = [t["noi_dung"] for t in case["hoi_thoai"]]
         behaviour = "clarify_or_scope" if ticket["cell"] == "B.over_limit" else BEHAVIOUR[case["hanh_vi"]]
         required, ground_truth = case["y_bat_buoc"], case["dap_an_nhap"]
         notes = [BASE_NOTE, FAMILY_NOTES.get(ticket["family"]), CELL_NOTES.get(ticket["cell"]), rule_notes.get(case_id)]
-        if case_id in adjusted:
-            required = adjusted[case_id]["y_bat_buoc"]
-            ground_truth = "Đáp án đã điều chỉnh trước khi chạy: " + " | ".join(required)
-            notes.append("Gold adjusted before any run: " + " ".join(adjusted[case_id]["reason"].split()))
         cohorts = [ticket["cohort"]] + ([ticket["compare_cohort"]] if ticket.get("compare_cohort") else [])
+        migrated = bool(migration) and migration["from"] in cohorts
+        if migrated:
+            cohorts = [migration["to"] if c == migration["from"] else c for c in cohorts]
+            turns, required = (_relabel_all(x, migration["labels"]) for x in (turns, required))
+            ground_truth = _relabel(ground_truth, migration["labels"])
+        if case_id in adjusted:
+            entry = adjusted[case_id]
+            if entry.get("replace"):
+                n_turns, n_required = len(turns), len(required)
+                texts = _replace([*turns, *required, ground_truth], entry["replace"], case_id)
+                turns, required, ground_truth = texts[:n_turns], texts[n_turns:n_turns + n_required], texts[-1]
+            if "y_bat_buoc" in entry:
+                required = entry["y_bat_buoc"]
+                ground_truth = "Đáp án đã điều chỉnh trước khi chạy: " + " | ".join(required)
+            when = "for the K49 handbook" if migrated else "before any run"
+            notes.append(f"Gold adjusted {when}: " + " ".join(entry["reason"].split()))
         cases.append({
             "id": case_id,
             "suite": "answers",
-            "query": turns[-1]["noi_dung"],
-            "cohort": ticket["cohort"],
-            "history": [{"role": ROLES[t["vai"]], "content": t["noi_dung"]} for t in turns[:-1]],
+            "query": turns[-1],
+            "cohort": cohorts[0],
+            "history": [{"role": ROLES[t["vai"]], "content": text} for t, text in zip(case["hoi_thoai"], turns[:-1])],
             "topic": ticket["family"],
             "case_type": ticket["cell"],
             "cluster": cluster_of[case_id],
@@ -127,7 +172,7 @@ def build() -> list[dict]:
             "ground_truth": ground_truth,
             "required_facts": required,
             "forbidden_claims": [],
-            "expected_citations": _citations(ticket),
+            "expected_citations": _citations(ticket, migration),
             "sources": case.get("nguon") or [],
             "requested_cohorts": cohorts,
             "cohort_sensitivity": "multi_cohort_risk" if len(cohorts) > 1 else "single_cohort",

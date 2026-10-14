@@ -84,7 +84,7 @@ def separated_inputs(tmp_path):
             record["metadata"].update(
                 corpus_role=role,
                 table_separation_policy=POLICY,
-                cohort=("K48-K49", "K50", "K51")[i],
+                cohort=("K49", "K50", "K51")[i],
                 document_id=f"handbook-{i}",
                 source_pages=[i + 1],
             )

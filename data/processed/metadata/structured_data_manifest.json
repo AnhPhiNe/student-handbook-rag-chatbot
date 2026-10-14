@@ -12,7 +12,7 @@
         "study_duration": 6
       },
       "cohort_counts": {
-        "K48-K49": 11,
+        "K49": 11,
         "K50": 12,
         "K51": 12
       },
@@ -24,16 +24,16 @@
           "path": "data\\processed\\directories\\student_service_directory.json",
           "count": 232,
           "cohort_counts": {
-            "K48-K49": 77,
+            "K49": 77,
             "K50": 77,
             "K51": 78
           }
         },
         "student_office_profiles": {
           "path": "data\\processed\\directories\\student_office_profiles.json",
-          "count": 64,
+          "count": 63,
           "cohort_counts": {
-            "K48-K49": 22,
+            "K49": 21,
             "K50": 21,
             "K51": 21
           }
@@ -42,16 +42,16 @@
           "path": "data\\processed\\directories\\student_faculty_profiles.json",
           "count": 69,
           "cohort_counts": {
-            "K48-K49": 23,
+            "K49": 23,
             "K50": 23,
             "K51": 23
           }
         },
         "program_directory": {
           "path": "data\\processed\\directories\\program_directory.json",
-          "count": 129,
+          "count": 131,
           "cohort_counts": {
-            "K48-K49": 41,
+            "K49": 43,
             "K50": 43,
             "K51": 45
           }

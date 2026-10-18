@@ -60,3 +60,14 @@ If v62 fails the rule, the failing cases are read only to find which rewritten
 sentence they trace to; that sentence goes back to its v61 wording and the
 affected cases are rerun, reported as post-fix. No new rule is added for a
 case.
+
+## Addendum before the v62b run (2026-10-18)
+
+v62 met the rule only at its limits (official_v1 132 = 132; official_v2 139 vs
+142, structured false positives 3 vs 1). Four cases (v1 014, 054; v2 008, 068)
+gained an extra RAG task beside the table lookup on "does this value pass"
+questions, a pattern v61 never showed. It traces to one v62 edit: the clause
+"giá trị có đạt điều kiện không" moved from BƯỚC 3 into the BƯỚC 2 split
+bullet. v62b puts that clause back in its v61 place and wording; nothing else
+changes. Both suites are rerun in full under the same rule; v62b results are
+post-fix measurements on v1/v2.

@@ -36,7 +36,7 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 # Comma-separated OpenAI keys for the planner's key pool.
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
-ROUTER_PROMPT_VERSION = "structured-regulation-v62-shorter-wording"
+ROUTER_PROMPT_VERSION = "structured-regulation-v62b-shorter-wording"
 
 
 # Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
@@ -123,9 +123,9 @@ BƯỚC 2. TÁCH YÊU CẦU THÀNH TASK
     ngành/dịch vụ một task, vì runtime chỉ nối sang liên hệ từ đúng một mục.
     Khoa/đơn vị đã nêu tên trực tiếp thì vẫn tra chung một task.
   • Cần cả giá trị trong bảng tham chiếu của TOOLS và kết luận mà bảng không chứa
-    (mức bắt buộc, giá trị có đạt điều kiện không, quyền hưởng) → task structured
-    tra bảng, kể cả khi chưa nêu giá trị cá nhân, và task RAG đọc quy định. Hỏi
-    giá trị/hàng bảng có sẵn chỉ là một task structured.
+    (mức bắt buộc, quyền hưởng) → task structured tra bảng, kể cả khi chưa nêu
+    giá trị cá nhân, và task RAG đọc quy định. Hỏi giá trị/hàng bảng có sẵn chỉ
+    là một task structured.
 - Cohort không làm tăng số task: M target trên N cohort vẫn là M task, không tạo
   M×N tasks; mỗi task giữ đủ `cohorts`.
 - Các task không nhận output của nhau làm slot: không điền biến, tham chiếu tới
@@ -149,7 +149,8 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
   nhưng không trực tiếp trả được kết quả. Phân biệt giá trị trong bảng với chính
   sách sử dụng giá trị đó: bảng tham chiếu không tự xác lập mức nào là bắt buộc,
   ai phải áp dụng hoặc điều kiện nào cần đạt. Các kết luận chính sách này dùng
-  RAG, trừ khi TOOLS.use nói rõ có chứa. Hỏi thông tin riêng mà chỉ hệ thống
+  RAG, trừ khi TOOLS.use nói rõ có chứa. Hỏi giá trị cụ thể có đạt điều kiện
+  không → structured tra giá trị + RAG đọc điều kiện. Hỏi thông tin riêng mà chỉ hệ thống
   nhà trường có, không nằm trong Sổ tay (vd. điểm đã công bố, kết quả xét duyệt,
   tình trạng đơn) → RAG để báo Sổ tay không có thông tin này.
 - clarify: khi task thiếu slot required, có tham chiếu thật sự mơ hồ, hoặc người

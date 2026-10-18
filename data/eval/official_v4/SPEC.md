@@ -484,6 +484,31 @@ author nor its models wrote.
   follow-up "Còn khóa K51 thì sao ạ?" (the liên thông durations, 2 and 4 years,
   instead of chính quy 4 and 6). By the rule a new zero fails P, so v3.41 is
   not kept and not deployed.
+- **Run Q: composer prompt v3.43** (owner, 2026-10-19, after run P was read;
+  written before any v4 answer of v3.43). v3.43 (commit `295c1b8a`) is v3.41
+  without the owner's no-referral sentence: a part without evidence gets
+  v3.36's "nói chưa tìm thấy căn cứ cho đúng ý đó" and no referral rule either
+  way. Against v3.36 it changes only how the rules are written. **Not a
+  hold-out**: P's v4 answers were read before this change (V4-229 and V4-235
+  lost their grounded referral). Everything else as in P: baseline run K49,
+  K49's plans (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`),
+  `deepseek-ai/DeepSeek-V4.1-Flash` on DeepInfra only with reasoning none, the
+  same collections, configs, 16 answer workers, judge and packet.
+  - **Gates, in order**: the 20 targeted replies of P read the same way (a
+    clear error stops); the development required-facts check on the same 100
+    questions with the 2026-10-19 packets, v3.43 not lower than v3.36 (95 of
+    106; a counter miss read and shown to be a wording difference is reported,
+    as in P); then run Q exactly once.
+  - **Validity and keep rule exactly as in P**: no 402, authentication error,
+    BM25-only search or reranker skip (affected cases rerun whole before
+    scoring); keep v3.43 if, in scope, the lower bound of the 95% cluster
+    interval of the paired `answer_correctness` difference (Q minus K49) is at
+    least −0.03, no case scored 0 in Q is above 0 in K49, no email outside the
+    directories except a procedure mailbox on its own procedure, and the 18
+    out-of-scope cases pass reading. V4-195 (the same wrong follow-up answer in
+    K49 and P, scored 0.2 and 0.0) is reported separately but stays under the
+    rule. If all hold, the owner has decided to deploy v3.43 with this
+    composer. The prompt is not tuned on v4 after Q.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

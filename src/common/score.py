@@ -91,22 +91,44 @@ def scores_equal(actual: Any, expected: Any, *, expected_scale: int | None) -> b
     return left.scale == right.scale
 
 
-def score_as_written(value: Any, source_text: str) -> str | None:
-    """Return the one way ``source_text`` writes the number ``value``, or None.
+# Words beside a whole number that make it a score: "81 điểm", "điểm 85".
+_SCORE_WORD_AFTER = re.compile(r"\s*(?:điểm|diem)(?!\w)", re.IGNORECASE)
+_SCORE_WORD_BEFORE = re.compile(r"(?:điểm|diem)\s*$", re.IGNORECASE)
 
-    "2.83" matches "2,83" and "81" matches "81": the number counts, not its
-    surrounding words. A source denominator is kept ("3,6" finds "3,6/4"); a
-    value whose denominator differs from the source's is not that number, and
-    a value the planner gave "/4" matches a source that writes no fraction,
-    whose scale is then read from the lookup. None when the source holds no
-    such number, or writes it in more than one way.
+
+def _written_as_score(source: str, token: re.Match[str]) -> bool:
+    """A decimal, a fraction, or a whole number beside "điểm" is a score.
+
+    "rớt 3 môn", "năm 2" and "học kỳ 2" hold numbers that are not scores.
+    """
+
+    text = token.group()
+    if "/" in text or "," in text or "." in text:
+        return True
+    return bool(_SCORE_WORD_AFTER.match(source, token.end())
+                or _SCORE_WORD_BEFORE.search(source, 0, token.start()))
+
+
+def score_as_written(value: Any, source_text: str) -> str | None:
+    """Return the one way ``source_text`` writes the score ``value``, or None.
+
+    "2.83" matches "2,83" and "81" matches "bạn em 81 điểm": the number counts,
+    not the words around it, but only where the source writes it as a score
+    (see `_written_as_score`). A source denominator is kept ("3,6" finds
+    "3,6/4"); a value whose denominator differs from the source's is not that
+    number, and a value the planner gave "/4" matches a source that writes no
+    fraction, whose scale is then read from the lookup. None when the source
+    holds no such score, or writes it in more than one way.
     """
 
     supplied = parse_score(value)
     if supplied is None:
         return None
+    source = unicodedata.normalize("NFC", str(source_text))
     found: dict[Score, str] = {}
-    for token in _SCORE_TOKEN.finditer(unicodedata.normalize("NFC", str(source_text))):
+    for token in _SCORE_TOKEN.finditer(source):
+        if not _written_as_score(source, token):
+            continue
         score = parse_score(token.group())
         if score is None or score.value != supplied.value:
             continue

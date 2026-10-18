@@ -69,6 +69,21 @@ def test_decimal_mark_and_scale_follow_the_question(query, score, span, expected
     assert task["slot_spans"]["score_or_grade"] == expected
 
 
+@pytest.mark.parametrize(
+    ("query", "score"),
+    [
+        ("Em rớt 3 môn thì có bị cảnh báo học vụ không?", 3),
+        ("Sinh viên năm 2 thì xếp loại học lực thế nào?", 2),
+        ("Em được 91 điểm rèn luyện học kỳ 2 thì xếp loại gì?", 2),
+    ],
+)
+def test_a_bare_number_that_is_not_written_as_a_score_grounds_nothing(query, score):
+    assert score_as_written(score, query) is None
+    task = _scoring_task(query, question=query, operation="conduct_classification",
+                         score=score, span=f"{score} điểm")
+    assert "score_or_grade" not in task["slots"]
+
+
 def test_a_conflicting_scale_or_two_readings_is_not_repaired():
     assert score_as_written("3,6/10", "Điểm 3,6/4 xếp loại gì?") is None
     assert score_as_written("3,6", "Điểm 3,6/4 hay 3,6/10?") is None

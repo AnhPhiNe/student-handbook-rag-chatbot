@@ -14239,7 +14239,7 @@
             "K51_K51_phong_hop_tac_quoc_te_service_3"
           ],
           "phones": [
-            "(028) 3891080"
+            "(028) 38391080"
           ],
           "emails": [
             "phonghtqt@hcmue.edu.vn"
@@ -14267,7 +14267,7 @@
           ],
           "content_type": "student_office_profile",
           "source_section": "student_office_profiles",
-          "phone": "(028) 3891080",
+          "phone": "(028) 38391080",
           "email": "phonghtqt@hcmue.edu.vn",
           "website": "phonghtqt.hcmue.edu.vn",
           "office": "Nhà A, tầng 1, P.111, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
@@ -14286,7 +14286,10 @@
               197
             ],
             "source_record_id": null
-          }
+          },
+          "review_notes": [
+            "Sổ tay K51 tr. 197 in \"(028) 3891080\", thiếu một chữ số, được coi là lỗi in; số đầy đủ (028) 38391080 lấy theo Sổ tay K48 tr. 131 (cùng số nội bộ 172, 173)."
+          ]
         },
         "requested_cohort": "K51"
       }

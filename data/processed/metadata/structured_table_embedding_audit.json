@@ -1,7 +1,7 @@
 {
   "schema_version": "structured-table-embedding-audit-v1",
   "docstore_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\.claude\\worktrees\\k49-handbook-634d85\\data\\processed\\chunks\\all_docstore_items.json",
-  "docstore_sha256": "425d874e0743fcdd96b64d540adc0e099e6fb98d03adcf59cf9cde01afc5fd09",
+  "docstore_sha256": "a5d09bda79c6fabffe74717a659156d1d4ad7e918c618c8e3d83219d0cb3d246",
   "structured_registry_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\.claude\\worktrees\\k49-handbook-634d85\\data\\processed\\tables\\structured_tables_registry.json",
   "structured_registry_sha256": "b369dd5af574b1240ae4673c93f9e5ecc0f9a78dc6793bc3962a5045aa75dae2",
   "child_output_path": "C:\\Users\\A Fee\\Desktop\\Workspace\\student_handbook_rag\\.claude\\worktrees\\k49-handbook-634d85\\data\\processed\\chunks\\child_parent_chunks.json",
@@ -162,8 +162,8 @@
     "review_sha256": "30bf61c4f130a2b6858b4908ef46271c4f9227ff906ff717ae32ac0b4c8aaa15",
     "source_page_corrections": [],
     "artifact_content_sha256": {
-      "parent_docstore": "cd99e3295a9b5178277043e714008a6bec7c4de71030480887d53e4670167273",
-      "child_chunks": "ccce1fd2ad0cb2ad8615908c559cf364da727f2c7a242c1ae401d1c1fde49b4b"
+      "parent_docstore": "b4f82a3f049fe7eda49882b87fdea9c3dfd25a0da01df088e17aef1587954825",
+      "child_chunks": "e7fe14a1ab0b032754df97ce8a5512f11667abd39e98a83cc281176e76476f60"
     },
     "physical_tables": 23,
     "parent_table_rows": 150,
@@ -172,12 +172,12 @@
     "child_count": 2688,
     "table_embedding_chunks_added": 0,
     "input_sha256": {
-      "parents": "8767ce319f3bf34900ed9068b05eabd5c20096f3aa013e9622f873e1a8b655a7",
+      "parents": "ad75974b6c536539082cd548962ae7c140e5b809317251d66dd05c7c467ddd98",
       "registry": "b369dd5af574b1240ae4673c93f9e5ecc0f9a78dc6793bc3962a5045aa75dae2",
       "review": "ab6d91b1983b79182ae832a2fc08e5ce4493c205b7aedcfeeb895f2c8dd4e7fb"
     },
     "child_builder": "structure_chunking"
   },
-  "build_id": "build-d2ba06d7bd613c030e20",
-  "child_output_sha256": "c142d6c78f9afdcfb3b51ff7e15ba72824121109a106fce1c76f2e3576c0d418"
+  "build_id": "build-973ef632fcbca126b306",
+  "child_output_sha256": "fd5cb94f2901c17099a3fb540892e7b5a9d7f848a2b6d0126a02ea34b6dd0ec9"
 }

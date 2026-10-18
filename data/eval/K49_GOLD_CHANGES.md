@@ -47,6 +47,8 @@ handbook directly:
 | v2 ret_extra_026 | Anchor "xây dựng Sổ tay sinh viên" (capital S in K49) |
 | v2 ret_extra_033 | Adviser and class officers: Quyết định 3738 Điều 4 khoản 2 b (monthly report) instead of the 2014 rules' Điều 6 |
 | v2 det/ans_124 | Question names K49 instead of K48 |
+| v1 det_068 (K50); v2 det/ans_115 (K51) | Phòng HTQT's phone in the evidence record: (028) 38391080, the reviewed correction of the same misprint in K50 p.175 and K51 p.197 |
+| v2 ret_extra_032, 033, 040 | Evidence snapshots only: the adviser rules and Nghị định 116 Điều 7 no longer lose the text around a wrapped QR pointer |
 
 Other recompiled K49 cases differ only in evidence snapshots (parent text,
 hashes, pages) or in the formula's `rounding` field added on 2026-10-01; two

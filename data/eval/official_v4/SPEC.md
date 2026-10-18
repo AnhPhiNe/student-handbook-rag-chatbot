@@ -359,9 +359,9 @@ author nor its models wrote.
   it targets, and it removed a grounded referral (V4-229). v3.42 is not kept;
   the composer stays v3.36 with reasoning none.
 - **Run K49: the K49 handbook replaces K48-K49** (owner, 2026-10-13; written
-  2026-10-18, before the run). The data change only: build
-  `build-d2ba06d7bd613c030e20` (cohorts K49, K50, K51), collections
-  `student_handbook_table_search_76bb52cf59d2` / `parent_docs_table_search_76bb52cf59d2`
+  2026-10-18, before the run). Only data change: build
+  `build-973ef632fcbca126b306` (cohorts K49, K50, K51), collections
+  `student_handbook_table_search_3bbd93e9f05a` / `parent_docs_table_search_3bbd93e9f05a`
   through `configs/retrieval_eval_patient_k49.yaml`; composer v3.36 with
   reasoning none, served first by the DeepSeek API; judge gpt-oss-120b on
   DeepInfra; normalizer v34; 16 answer workers. The 89 cases drawn for
@@ -383,9 +383,12 @@ author nor its models wrote.
     v3.36 plus one referral sentence, otherwise the same configuration), with
     run C3 (`official_v4_answers_20261005T052049Z`, v3.36, composer low on
     DeepInfra) as a second reference, and run N's 0.972 (in scope; its per-case
-    records are lost) cited as context only. The data for these cohorts changed
-    only where the K49 build touched shared files (the structured registry, the
-    graph, the table descriptions). The check passes if, in scope, the lower
+    records are lost) cited as context only. Their data changed in two places,
+    both decided by the owner before the run: Phòng HTQT's misprinted phone is
+    corrected to (028) 38391080 (as in K49), and a QR pointer wrapped over two
+    PDF lines no longer cuts the adviser rules' Điều 4 and 7 and Nghị định 116
+    Điều 7 and 13; otherwise only the cohort label K49 in shared records. The
+    check passes if, in scope, the lower
     bound of the 95% cluster interval of the paired `answer_correctness`
     difference (K49 run minus A) is at least −0.03 and every case scored 0 here
     but not in A is shown not to come from the data change.

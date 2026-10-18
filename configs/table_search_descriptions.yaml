@@ -11,7 +11,7 @@ schema_version: table-search-reviewed-text-v1
 description_version: table-description-reviewed-v4
 source_hashes:
   structured_tables: b369dd5af574b1240ae4673c93f9e5ecc0f9a78dc6793bc3962a5045aa75dae2
-  parent_docstore: 425d874e0743fcdd96b64d540adc0e099e6fb98d03adcf59cf9cde01afc5fd09
+  parent_docstore: a5d09bda79c6fabffe74717a659156d1d4ad7e918c618c8e3d83219d0cb3d246
 descriptions:
   - key: '["K49","K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9","K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"]'
     content: >-

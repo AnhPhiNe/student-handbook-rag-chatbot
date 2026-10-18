@@ -44,3 +44,17 @@ contact_corrections:
     note: >-
       Sổ tay K49 tr. 129 in "(028) 3891080", thiếu một chữ số, được coi là lỗi in;
       số đầy đủ (028) 38391080 lấy theo Sổ tay K48 tr. 131 (cùng số nội bộ 172, 173).
+  - cohort: K50
+    unit: Phòng Hợp tác Quốc tế
+    printed: "(028) 3891080"
+    corrected: "(028) 38391080"
+    note: >-
+      Sổ tay K50 tr. 175 in "(028) 3891080", thiếu một chữ số, được coi là lỗi in;
+      số đầy đủ (028) 38391080 lấy theo Sổ tay K48 tr. 131 (cùng số nội bộ 172, 173).
+  - cohort: K51
+    unit: Phòng Hợp tác Quốc tế
+    printed: "(028) 3891080"
+    corrected: "(028) 38391080"
+    note: >-
+      Sổ tay K51 tr. 197 in "(028) 3891080", thiếu một chữ số, được coi là lỗi in;
+      số đầy đủ (028) 38391080 lấy theo Sổ tay K48 tr. 131 (cùng số nội bộ 172, 173).

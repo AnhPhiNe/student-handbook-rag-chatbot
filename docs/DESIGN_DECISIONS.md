@@ -1287,7 +1287,7 @@ Hợp tác Quốc tế's number as "(028) 3891080", one digit short; K48 p.131 p
 "(028) 38391080" with the same internal numbers. The catalog keeps the full
 number with a review note (`configs/office_aliases.yaml`, a correction that
 matches nothing fails the build); the raw text stays as printed. K50 (p.175)
-and K51 (p.197) print the same short number and were left unchanged.
+and K51 (p.197) print the same short number and get the same correction.
 
 **Evaluation data.** official_v4's 89 cases for K48-K49 move to K49 through a
 declared migration in `gold_adjustments.yaml` (labels, renamed parents, and
@@ -1296,9 +1296,14 @@ catalogs, keeping every case that did not involve K48 as it was; official_v3
 is left on K48-K49. The official_v4 run on this build is a new baseline for
 K49 and a regression check for K50 and K51 (SPEC, run K49).
 
-**Not fixed here.** The parser drops a line that reads "đường dẫn hoặc mã QR ở
-cuối …", which leaves "(xem trong" at the end of the adviser rules' Điều 4 and
-garbles Nghị định 116 Điều 7 in K49, as it already did in K50 and K51.
+**A wrapped QR pointer no longer cuts a sentence.** The handbooks point to forms
+and annexes with "(xem trong đường dẫn hoặc mã QR ở cuối Quy định này)", which
+the answer cannot show, so link text is removed line by line. When the PDF
+wrapped the pointer, the second line was dropped whole: the adviser rules'
+Điều 4 ended in "(xem trong", and Nghị định 116 Điều 7 lost "theo hình thức
+nộp" (all three handbooks, also in the build served before). The pointer is now
+removed from the whole text first, keeping a form number it qualifies
+("(Mẫu số 01)"); the chunk check still reports nothing.
 
 ## What these measurements do not show
 

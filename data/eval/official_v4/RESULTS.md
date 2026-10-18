@@ -312,8 +312,8 @@ their golds were re-checked against it before any run (`K49_GOLD_CHANGES.md`,
 a new baseline, not compared with the K48-K49 figures above, and K50 and K51
 are a regression check paired against run A, with C3 as a second reference.
 It has not been run yet: the new collections
-(`student_handbook_table_search_76bb52cf59d2` / `parent_docs_table_search_76bb52cf59d2`)
-are built locally in `output/k49_candidate` and await the owner's approval to
+(`student_handbook_table_search_3bbd93e9f05a` / `parent_docs_table_search_3bbd93e9f05a`)
+are built locally in `output/k49_candidate_v2` and await the owner's approval to
 publish.
 
 ## What these results do not establish

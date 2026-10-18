@@ -347,7 +347,7 @@ sequenceDiagram
 
 ## Knowledge base
 
-| Artifact | Build `d2ba06d7` (2026-10-13) | Used for |
+| Artifact | Build `973ef632` (2026-10-18) | Used for |
 |---|---:|---|
 | Full parent articles | 561 | Composer context and citations (MongoDB) |
 | Narrative child chunks, one per clause (*khoản*) | 2,688 | Dense and BM25 search (Qdrant) |
@@ -356,7 +356,7 @@ sequenceDiagram
 | Cross-reference edges | 78 | Related-article navigation in the UI |
 | Embedding | `BAAI/bge-m3`, 1,024 dimensions | Dense child retrieval |
 
-Per cohort: K49 has 169 parents and 820 children, K50 has 192 and 911, and K51 has 200 and 957. The K49 cohort replaced K48–K49 on 2026-10-13: that cohort had been built from the K48 handbook (2022 – 2023) alone, and K48 students have graduated. A clause with its lead-in and points is one chunk, never split; [`check_chunk_invariants.py`](scripts/check_chunk_invariants.py) fails the build if a line is lost, a chunk starts or ends mid-sentence, or a list leaves its lead-in. The search index covers what applies to full-time (*chính quy*) university students of the main campus (District 5): articles for part-time study, the college programme and staff only get no search chunk ([`corpus_scope.yaml`](configs/corpus_scope.yaml)), and branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
+Per cohort: K49 has 169 parents and 820 children, K50 has 192 and 911, and K51 has 200 and 957. The K49 cohort replaced K48–K49 on 2026-10-13: that cohort had been built from the K48 handbook (2022 – 2023) alone, and K48 students have graduated. Its collections are `student_handbook_table_search_3bbd93e9f05a` (children and table descriptions) and `parent_docs_table_search_3bbd93e9f05a` (parents); the suffix is a hash of the build and its table descriptions, recorded in the candidate manifest, so a collection name always identifies one build. They are not published yet; the deployed backend still serves build `7754cc9c` (K48-K49, K50, K51) from `…e55308ddae85`. A clause with its lead-in and points is one chunk, never split; [`check_chunk_invariants.py`](scripts/check_chunk_invariants.py) fails the build if a line is lost, a chunk starts or ends mid-sentence, or a list leaves its lead-in. The search index covers what applies to full-time (*chính quy*) university students of the main campus (District 5): articles for part-time study, the college programme and staff only get no search chunk ([`corpus_scope.yaml`](configs/corpus_scope.yaml)), and branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
 
 ### Offline build
 

@@ -358,6 +358,40 @@ author nor its models wrote.
   had no such leak on v4. The rule did not show a measurable effect on the leak
   it targets, and it removed a grounded referral (V4-229). v3.42 is not kept;
   the composer stays v3.36 with reasoning none.
+- **Run K49: the K49 handbook replaces K48-K49** (owner, 2026-10-13; written
+  2026-10-18, before the run). The data change only: build
+  `build-d2ba06d7bd613c030e20` (cohorts K49, K50, K51), collections
+  `student_handbook_table_search_76bb52cf59d2` / `parent_docs_table_search_76bb52cf59d2`
+  through `configs/retrieval_eval_patient_k49.yaml`; composer v3.36 with
+  reasoning none, served first by the DeepSeek API; judge gpt-oss-120b on
+  DeepInfra; normalizer v34; 16 answer workers. The 89 cases drawn for
+  K48-K49 now target K49 (`gold_adjustments.yaml`, `cohort_migration`); every
+  gold was re-checked against the K49 PDF before the run, and 11 entries record
+  why a case changed: 8 change required facts (V4-095, 096, 111, 118, 121, 128,
+  145, 182), 2 change a school year or an earlier assistant turn (V4-088, 216)
+  and 1 keeps a reviewed directory value (V4-144). Plans are replayed from a copy of
+  `official_v4_v61_shared_plans.json`: the K50 and K51 cases hit the cache with
+  their earlier plans; the K49 cases (a new cohort and, for 16, new wording)
+  miss it and are planned live, once, and the copy keeps those plans.
+  Reported, with no deploy decision attached (the owner decides after review):
+  - **K49 (84 cases with K49 as the UI cohort, plus 5 comparisons): a new
+    baseline**, with its 95% cluster interval. It is not compared with any
+    K48-K49 figure: the handbook, the golds and the plans changed.
+  - **K50 and K51 (the cases that name neither K48-K49 nor K49), regression
+    check**, paired case by case against run A
+    (`official_v4_answers_20261011T120228Z`; its composer prompt is v3.42,
+    v3.36 plus one referral sentence, otherwise the same configuration), with
+    run C3 (`official_v4_answers_20261005T052049Z`, v3.36, composer low on
+    DeepInfra) as a second reference, and run N's 0.972 (in scope; its per-case
+    records are lost) cited as context only. The data for these cohorts changed
+    only where the K49 build touched shared files (the structured registry, the
+    graph, the table descriptions). The check passes if, in scope, the lower
+    bound of the 95% cluster interval of the paired `answer_correctness`
+    difference (K49 run minus A) is at least −0.03 and every case scored 0 here
+    but not in A is shown not to come from the data change.
+  - The cases out of scope or partly out of scope keep the C2 lists.
+  - Provider errors are rerun whole under the existing rules; gold found wrong
+    after the run is not edited and is reported with both figures.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

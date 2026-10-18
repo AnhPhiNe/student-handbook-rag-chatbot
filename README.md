@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./frontend/public/bot_avatar.png" width="112" alt="HCMUE AI mascot">
   <h1>HCMUE AI — Student Handbook Assistant</h1>
-  <p><strong>A cohort-aware RAG assistant for the student handbooks of Ho Chi Minh City University of Education (K48–K49, K50, K51).</strong></p>
+  <p><strong>A cohort-aware RAG assistant for the student handbooks of Ho Chi Minh City University of Education (K49, K50, K51).</strong></p>
   <p>LLM query planning · deterministic plan validation · structured table lookup · hybrid retrieval with citations · streaming React UI</p>
   <p>
     <a href="https://hcmuebot.id.vn"><img src="https://img.shields.io/badge/Live_demo-hcmuebot.id.vn-2563EB?style=for-the-badge" alt="Live demo"></a>
@@ -47,7 +47,7 @@
 
 Each cohort at HCMUE receives its own student handbook: a long PDF of regulations, procedures, grading and scholarship tables, tuition rules and office directories. The rules differ between cohorts, the tables are hard to search, and students ask in informal Vietnamese, often without diacritics, and often several things at once.
 
-HCMUE AI answers those questions from the three handbooks, K48–K49, K50 and K51, and cites the article it used. An LLM **plans** each question as typed tasks; deterministic code **checks** that plan and **executes** it. Exact values come from reviewed tables. Explanations come from retrieved handbook articles. A second LLM writes the final answer only from that evidence.
+HCMUE AI answers those questions from the three handbooks, K49, K50 and K51, and cites the article it used. An LLM **plans** each question as typed tasks; deterministic code **checks** that plan and **executes** it. Exact values come from reviewed tables. Explanations come from retrieved handbook articles. A second LLM writes the final answer only from that evidence.
 
 | Question type | Example (Vietnamese) | How it is answered |
 |---|---|---|
@@ -347,16 +347,16 @@ sequenceDiagram
 
 ## Knowledge base
 
-| Artifact | Build `7754cc9c` (2026-10-05) | Used for |
+| Artifact | Build `d2ba06d7` (2026-10-13) | Used for |
 |---|---:|---|
-| Full parent articles | 541 | Composer context and citations (MongoDB) |
-| Narrative child chunks, one per clause (*khoản*) | 2,646 | Dense and BM25 search (Qdrant) |
+| Full parent articles | 561 | Composer context and citations (MongoDB) |
+| Narrative child chunks, one per clause (*khoản*) | 2,688 | Dense and BM25 search (Qdrant) |
 | Table descriptions | 32 | Dense and BM25 search; a match brings in its reviewed table |
 | Reviewed structured tables | 35 | Deterministic lookup (not embedded) |
 | Cross-reference edges | 78 | Related-article navigation in the UI |
 | Embedding | `BAAI/bge-m3`, 1,024 dimensions | Dense child retrieval |
 
-Per cohort: K48–K49 has 149 parents and 778 children, K50 has 192 and 911, and K51 has 200 and 957. A clause with its lead-in and points is one chunk, never split; [`check_chunk_invariants.py`](scripts/check_chunk_invariants.py) fails the build if a line is lost, a chunk starts or ends mid-sentence, or a list leaves its lead-in. The search index covers what applies to full-time (*chính quy*) university students of the main campus (District 5): articles for part-time study, the college programme and staff only get no search chunk ([`corpus_scope.yaml`](configs/corpus_scope.yaml)), and branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
+Per cohort: K49 has 169 parents and 820 children, K50 has 192 and 911, and K51 has 200 and 957. The K49 cohort replaced K48–K49 on 2026-10-13: that cohort had been built from the K48 handbook (2022 – 2023) alone, and K48 students have graduated. A clause with its lead-in and points is one chunk, never split; [`check_chunk_invariants.py`](scripts/check_chunk_invariants.py) fails the build if a line is lost, a chunk starts or ends mid-sentence, or a list leaves its lead-in. The search index covers what applies to full-time (*chính quy*) university students of the main campus (District 5): articles for part-time study, the college programme and staff only get no search chunk ([`corpus_scope.yaml`](configs/corpus_scope.yaml)), and branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
 
 ### Offline build
 
@@ -380,9 +380,12 @@ Rebuild locally without touching the remote stores:
 ```bash
 PUSH_REMOTE=0 python -m scripts.build_multi_cohort \
   --qdrant-collection student_handbook_clause_v36 --mongo-collection parent_docs_clause_v36
+python -m scripts.structure_chunking --publish-artifacts
+python -m scripts.build_artifact_manifest \
+  --qdrant-collection student_handbook_clause_v36 --mongo-collection parent_docs_clause_v36
 ```
 
-The command overwrites `data/processed/`, so run it in a clean worktree. With `PUSH_REMOTE=1` it also preflights the target collections, embeds and uploads, then verifies the remote contents against the manifest. See the [parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md).
+The first command overwrites `data/processed/`, so run it in a clean worktree; the second replaces the children with one chunk per clause and checks the chunk invariants, and the third writes the manifest. The only inputs are the PDFs in `data/raw/`, the reviewed configs and `data/curated/` (the reviewed table regions and, per handbook, the index of its articles in `article_index/<cohort>.csv`); two runs give the same bytes. With `PUSH_REMOTE=1` it also preflights the target collections, embeds and uploads, then verifies the remote contents against the manifest. See the [parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md).
 
 ## Evaluation
 
@@ -431,7 +434,7 @@ Wilson for pass rates, bootstrap for judge scores.
 ¹ From the paired generate+judge run on the same questions.
 ² Weights from [`slice_weights.yaml`](data/eval/official_v2/slice_weights.yaml), an estimate — see notes below.
 
-Cohorts score within 4 points of each other (K48–K49 90.2, K50 94.1, K51 92.3); the 32
+Cohorts score within 4 points of each other (K48–K49, built from the K48 handbook then, 90.2, K50 94.1, K51 92.3); the 32
 stress-tagged cases score 90.6% deterministic / 100 answer correctness. Running the suite twice separates real failures
 from planner noise: 11 of the 12 failing cases fail both times, 3 more flip on only one
 run. `official_v1` (development set, same runtime): 129/135, unchanged since before this

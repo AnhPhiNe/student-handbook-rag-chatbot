@@ -301,7 +301,20 @@ Same replayed v61 plans and build as C3; rules in `SPEC.md` (runs N, R, R2, A).
 - R and R2 (v3.37, v3.38) tuned the referral wording on v4 answers and are not
   reported as results; v4 is not a hold-out for referral behaviour.
 - Reports: `official_v4_answers_20261011T094233Z` (N, in the session's C3
-  worktree), `official_v4_answers_20261011T120228Z` (A).
+  worktree), `official_v4_answers_20261011T120228Z` (A). N's per-case records
+  were lost when that worktree was cleared; only its figures above remain.
+
+## The K49 handbook replaces K48-K49: run K49 (pending)
+
+The 89 cases drawn for K48-K49 now target K49, built from the K49 handbook, and
+their golds were re-checked against it before any run (`K49_GOLD_CHANGES.md`,
+`gold_adjustments.yaml`). The run is pre-registered in SPEC (run K49): K49 is
+a new baseline, not compared with the K48-K49 figures above, and K50 and K51
+are a regression check paired against run A, with C3 as a second reference.
+It has not been run yet: the new collections
+(`student_handbook_table_search_76bb52cf59d2` / `parent_docs_table_search_76bb52cf59d2`)
+are built locally in `output/k49_candidate` and await the owner's approval to
+publish.
 
 ## What these results do not establish
 

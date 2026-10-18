@@ -1253,6 +1253,53 @@ Pháp" scores 0.83, above several genuine typos. Neither dataset contains
 misspelt unit names, so the fixed behaviour rests on the handful of live
 questions above.
 
+## The K49 handbook replaces K48-K49 (2026-10-13)
+
+The cohort labelled K48-K49 had been built from the K48 handbook (2022 – 2023)
+alone; K49 has its own handbook (2023 – 2024), and K48 students have graduated.
+The cohort became K49 (admission year 2023), built from the K49 PDF, and K48 is
+no longer served: a question naming K48 is now an unsupported cohort.
+
+**What the K49 handbook shares.** A 6-word-gram comparison put each K49 section
+against K48 and K50. Quy chế đào tạo (1410), Quy chế công tác sinh viên (989),
+Quy chế đánh giá rèn luyện (2650), Nghị định 116 and the three yearly notices
+match K48 at about 97%; the adviser rules (Quyết định 3738/2022), the score
+frame, the online ĐRL guide, the research rules and Quy tắc ứng xử (969) match
+K50 at 85–97%. The reviewed configs were re-derived from the K49 lines, not
+renamed: the corpus scope keeps K48's vừa làm vừa học items and K50's
+staff-only Quy tắc ứng xử articles; of the 24 layout fixes, the six K48 ones
+apply and no K50-only one is needed (the chunk check reports nothing on the
+K49 lines); the 11 searchable tables have the same rows as K48's; the
+programme list is K50's (43). The currency notes now say that 3738 was
+replaced by 2001/2024 (the K50 handbook's Điều 10 says so) and drop the note on
+K48's ten conduct rules, because K49 prints the 969 rules themselves.
+
+**One build input was outside the repository.** The parser keeps an article only
+if a reviewed index names it (page, number, id, titles); that index sat in three
+gitignored Excel files, so a clean checkout could not rebuild. It is now
+`data/curated/article_index/<cohort>.csv`; the K48 build reproduced build
+`7754cc9c` byte for byte from the CSV before the change. The K49 index takes
+K48's or K50's ids and titles for the same document and checks each title
+against the K49 article line.
+
+**A misprint is corrected, on the owner's decision.** K49 p.129 prints Phòng
+Hợp tác Quốc tế's number as "(028) 3891080", one digit short; K48 p.131 printed
+"(028) 38391080" with the same internal numbers. The catalog keeps the full
+number with a review note (`configs/office_aliases.yaml`, a correction that
+matches nothing fails the build); the raw text stays as printed. K50 (p.175)
+and K51 (p.197) print the same short number and were left unchanged.
+
+**Evaluation data.** official_v4's 89 cases for K48-K49 move to K49 through a
+declared migration in `gold_adjustments.yaml` (labels, renamed parents, and
+one reason per changed gold); official_v1 and v2 recompile against the K49
+catalogs, keeping every case that did not involve K48 as it was; official_v3
+is left on K48-K49. The official_v4 run on this build is a new baseline for
+K49 and a regression check for K50 and K51 (SPEC, run K49).
+
+**Not fixed here.** The parser drops a line that reads "đường dẫn hoặc mã QR ở
+cuối …", which leaves "(xem trong" at the end of the adviser rules' Điều 4 and
+garbles Nghị định 116 Điều 7 in K49, as it already did in K50 and K51.
+
 ## What these measurements do not show
 
 - Known limits of the 2026-10-05 build, each left as it is after measuring:

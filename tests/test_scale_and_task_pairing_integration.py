@@ -173,7 +173,9 @@ def test_multi_task_paraphrase_cannot_hide_scale_in_original_query():
         _score_task(shortened, 3.6, "3,6"), _score_task(other, "7,6/10", "7,6/10"),
     ])
     assert len(result["query_plan"]["tasks"]) == 2
-    assert "score_or_grade" not in result["query_plan"]["tasks"][0]["slots"]
+    # The student's "3,6/4" replaces the abbreviated 3,6; a 4-point score pins
+    # no row of the 10-point pass table.
+    assert result["query_plan"]["tasks"][0]["slots"]["score_or_grade"] == "3,6/4"
     assert not result["task_results"][0]["evidence"][0].get("resolved_result")
     assert result["task_results"][1]["evidence"][0]["resolved_result"]
 

@@ -1255,3 +1255,32 @@ procedures above, and the student_service requested_field text ('ở phòng nào
 'gặp ai', 'ở đâu'), which predates this branch and still separates "which
 unit" from "where". The registry's span aliases label control codes and repair
 spans; an off-list phrasing does not drop a control value (checked offline).
+
+## Stage 26 — v62: the v61 rules in shorter wording, adopted by owner choice (2026-10-18, Claude)
+
+v62 states the ">3 tasks → one clarify task" rule once instead of three
+times, writes BƯỚC 2 as one merge/split rule set, simplifies the optional-filter
+and optional-slot sentences, lets BƯỚC 6 point to BƯỚC 3 instead of repeating
+it, and reduces the student_service requested_field description to a general
+rule. Request 35,794 → 34,707 characters (system 11,234 → 10,305). No rule was
+meant to be added, removed or reversed; nothing is taken from official_v4.
+
+Planner-only, pre-registered in `data/eval/official_v1/PLANNER_V62_PREREG.md`,
+v61 rerun the same day; one run per prompt:
+
+| | v61 | v62 |
+|---|---:|---:|
+| official_v1 deterministic, contract v10 (135) | 132 | 132 |
+| official_v2 deterministic (154) | 142 | 139 |
+| official_v2 structured false positives | 1 | 3 |
+| pass/fail probes (8) | 7/8 | 8/8 |
+| contact probes, rubric v2 (8) | 7/8 | 7/8 |
+
+v62 meets the rule only at its edge (v2 ≥ 142 − 3). A v62b that put one clause
+back in its v61 place scored 136 on v2 and was not kept. The owner adopted v62
+without a further rerun: clearer wording outweighs the measured cost. Known
+regressions against v61 on official_v2: 059 (scholarship table instead of RAG),
+085 ("vắng thi … nộp đơn ở đâu": student_service instead of RAG), 112 (second
+score left out of the second task), 008 and 068 (an extra RAG task beside a
+correct table lookup); 059, 085 and 112 also failed under v62b. The request is
+frozen as `luna_planner_request_v62.json`.

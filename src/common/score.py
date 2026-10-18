@@ -18,6 +18,12 @@ class Score:
 _SCORE_PATTERN = re.compile(
     r"\s*([+-]?\d+(?:[,.]\d+)?)\s*(?:/\s*(\d+(?:[,.]\d+)?))?\s*"
 )
+# A complete numeric expression in running text. Cohort codes (K49) and a
+# fraction's denominator are not read as scores of their own.
+_SCORE_TOKEN = re.compile(
+    r"(?<![\w/])[+-]?\d+(?:[,.]\d+)?(?:\s*/\s*\d+(?:[,.]\d+)?)?"
+    r"(?!\w|\s*/|[,.]\d)"
+)
 
 
 def parse_score(value: Any) -> Score | None:
@@ -53,10 +59,7 @@ def grounded_score(value: Any, span: Any, source_text: str) -> Score | None:
     source = " ".join(unicodedata.normalize("NFC", str(source_text)).casefold().split())
     spans = span if isinstance(span, list) else [span]
     # Do not interpret cohort identifiers or a fraction's denominator as scores.
-    tokens = list(re.finditer(
-        r"(?<![\w/])[+-]?\d+(?:[,.]\d+)?(?:\s*/\s*\d+(?:[,.]\d+)?)?"
-        r"(?!\w|\s*/|[,.]\d)", source,
-    ))
+    tokens = list(_SCORE_TOKEN.finditer(source))
     observed: set[Score] = set()
     for literal in spans:
         if not isinstance(literal, str) or not literal.strip():
@@ -86,3 +89,50 @@ def scores_equal(actual: Any, expected: Any, *, expected_scale: int | None) -> b
     if expected_scale is not None:
         return not declared or declared == {Decimal(expected_scale)}
     return left.scale == right.scale
+
+
+# Words beside a whole number that make it a score: "81 điểm", "điểm 85".
+_SCORE_WORD_AFTER = re.compile(r"\s*(?:điểm|diem)(?!\w)", re.IGNORECASE)
+_SCORE_WORD_BEFORE = re.compile(r"(?:điểm|diem)\s*$", re.IGNORECASE)
+
+
+def _written_as_score(source: str, token: re.Match[str]) -> bool:
+    """A decimal, a fraction, or a whole number beside "điểm" is a score.
+
+    "rớt 3 môn", "năm 2" and "học kỳ 2" hold numbers that are not scores.
+    """
+
+    text = token.group()
+    if "/" in text or "," in text or "." in text:
+        return True
+    return bool(_SCORE_WORD_AFTER.match(source, token.end())
+                or _SCORE_WORD_BEFORE.search(source, 0, token.start()))
+
+
+def score_as_written(value: Any, source_text: str) -> str | None:
+    """Return the one way ``source_text`` writes the score ``value``, or None.
+
+    "2.83" matches "2,83" and "81" matches "bạn em 81 điểm": the number counts,
+    not the words around it, but only where the source writes it as a score
+    (see `_written_as_score`). A source denominator is kept ("3,6" finds
+    "3,6/4"); a value whose denominator differs from the source's is not that
+    number, and a value the planner gave "/4" matches a source that writes no
+    fraction, whose scale is then read from the lookup. None when the source
+    holds no such score, or writes it in more than one way.
+    """
+
+    supplied = parse_score(value)
+    if supplied is None:
+        return None
+    source = unicodedata.normalize("NFC", str(source_text))
+    found: dict[Score, str] = {}
+    for token in _SCORE_TOKEN.finditer(source):
+        if not _written_as_score(source, token):
+            continue
+        score = parse_score(token.group())
+        if score is None or score.value != supplied.value:
+            continue
+        if supplied.scale is not None and score.scale not in (None, supplied.scale):
+            continue
+        found.setdefault(score, token.group())
+    return next(iter(found.values())) if len(found) == 1 else None

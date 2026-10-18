@@ -112,13 +112,13 @@ def test_scoring_operations_say_what_each_lookup_returns():
     assert "hỏi cả hai vẫn một task" in scoring
     assert "pass_fail_ungraded chỉ cho môn chấm đạt/không đạt, không tính GPA" in scoring
     prompt = " ".join(PLANNER_SYSTEM_PROMPT.split())
-    assert "hoặc của cùng một hàng kết quả" in prompt
+    assert "hoặc cùng một hàng kết quả" in prompt
 
 
 def test_policy_questions_that_need_a_reference_table_also_look_it_up():
     # RAG alone often misses an appendix table, so the lookup is not optional.
     prompt = " ".join(PLANNER_SYSTEM_PROMPT.split())
-    assert "kết luận mà bảng không chứa (mức bắt buộc, quyền hưởng) → task structured tra bảng" in prompt
+    assert "kết luận mà bảng không chứa (mức bắt buộc, giá trị có đạt điều kiện không, quyền hưởng) → task structured tra bảng" in prompt
     assert "Hỏi giá trị/hàng bảng có sẵn chỉ là một task structured" in prompt
     assert "có thể là một RAG task tự đủ nghĩa" not in prompt
     use = compact_registry_for_prompt().split("foreign_language|", 1)[1].split("\n", 1)[0]

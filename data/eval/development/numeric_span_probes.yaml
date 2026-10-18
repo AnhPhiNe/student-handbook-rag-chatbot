@@ -1,0 +1,42 @@
+# Planner + normalizer probes for scores the student writes (2026-10-18).
+# Written from the normalizer v35 principle (a score the student wrote is kept
+# as written; a number they did not write is not), before any run. Not answer
+# gold and not a hold-out; no case is taken from official_v2 or official_v4.
+#
+# expected_scores: the score_or_grade values of the plan's scoring tasks, as
+# numbers (decimal comma or dot and an explicit denominator both count). An
+# empty list means no scoring task may carry a score. A case passes when the
+# scoring tasks' scores equal this multiset, every score is written in the
+# question, and no task fell back to RAG or clarify for a normalizer error.
+#
+# Results (planner gpt-6-luna, prompt v62, normalizer v35, one run): 4/6.
+# ns02 passes only through the v35 repair ("trên thang 4" scores would have
+# been dropped). ns05: Luna wrote the value "3.45 hệ 4", which the span check
+# lets through (words in a score value). ns06: Luna put the label "Tốt" in
+# score_or_grade; not a normalizer drop.
+version: 1
+cases:
+  - id: ns01
+    cohort: K51
+    query: "Em được 6,5 còn bạn em được 8,2 điểm học phần thì mỗi người được điểm chữ gì?"
+    expected_scores: ["6,5", "8,2"]
+  - id: ns02
+    cohort: K50
+    query: "GPA của em là 2,4 trên thang 4, của bạn em là 3,25 trên thang 4 thì mỗi người xếp loại học lực gì?"
+    expected_scores: ["2,4", "3,25"]
+  - id: ns03
+    cohort: K51
+    query: "Em có 72 điểm rèn luyện học kỳ 1 và 91 điểm học kỳ 2, mỗi kỳ xếp loại gì?"
+    expected_scores: ["72", "91"]
+  - id: ns04
+    cohort: K49
+    query: "Điểm trung bình 3,1/4 thì xếp loại học lực gì, còn một học phần được 7,9/10 thì ra điểm chữ gì?"
+    expected_scores: ["3,1/4", "7,9/10"]
+  - id: ns05
+    cohort: K51
+    query: "Em đã tích lũy 95 tín chỉ, GPA 3.45 hệ 4 thì xếp loại học lực gì?"
+    expected_scores: ["3.45"]
+  - id: ns06
+    cohort: K50
+    query: "Muốn được xếp loại Tốt về rèn luyện thì cần bao nhiêu điểm?"
+    expected_scores: []

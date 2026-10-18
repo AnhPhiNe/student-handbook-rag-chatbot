@@ -523,7 +523,13 @@ author nor its models wrote.
   out-of-scope cases pass reading. **One new zero, V4-172** (K49 0.6): both runs
   give the same dress-code answer and both omit the smoking ban the gold
   requires; the judge scored them 0.6 and 0.0. By the rule a new zero fails Q,
-  so v3.43 is not kept and not deployed.
+  so v3.43 is not kept by the rule.
+  **Owner decision after the outcome was read (2026-10-19): deploy v3.43 as a
+  recorded exception to the pre-registered rule.** Reason given: the paired
+  difference lies within the interval around zero, and the new zero has the
+  same answer as the baseline's (only the judge's score differs). This is a
+  decision made after the result, not a pass of the rule; v3.43 is deployed
+  with planner v62 and normalizer v35, a combination not measured here.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

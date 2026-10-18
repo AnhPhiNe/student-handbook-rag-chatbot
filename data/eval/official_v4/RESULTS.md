@@ -389,7 +389,8 @@ forbids. On the development set v3.43 kept v3.36's 95 of 106 facts with
 answers 14% shorter. Both new zeros (V4-195 in P, V4-172 in Q) are a case
 where the two runs give the same answer and the judge scores the baseline a
 little above zero: the no-new-zero rule, as written, does not separate a judge
-difference from a new error. v3.43 is not deployed.
+difference from a new error. The rule fails; the owner deployed v3.43 anyway,
+as an exception decided after reading the result (SPEC, run Q).
 
 ## What these results do not establish
 

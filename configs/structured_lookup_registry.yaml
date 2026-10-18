@@ -167,6 +167,11 @@ tools:
       score_or_grade:
         type: [string, number]
         verification_role: result_input
+        # value_kind score: the number keeps any denominator the question
+        # writes, and a number the student wrote once is taken as written even
+        # when the planner quotes it from its own paraphrase
+        # (see repair_numeric_slot_spans).
+        value_kind: score
         description: "Giá trị đầu vào theo operation: điểm học phần hệ 10, điểm chữ, GPA hệ 4 hoặc tổng điểm rèn luyện hệ 100. Giữ cả thang điểm người dùng nêu, không tự quy đổi."
       course_scope:
         # Quy chế đào tạo Điều 2 (every cohort) names the courses not counted in the
@@ -241,15 +246,13 @@ tools:
         enum: [unit, phone, email, office, website, all]
         description: >-
           unit=tên đơn vị phụ trách; phone=điện thoại kèm số máy nội bộ;
-          office=địa chỉ hoặc vị trí làm việc;
-          all=thông tin liên hệ tổng hợp. Hỏi ai/đơn vị nào phụ trách hoặc hỗ trợ
-          một việc → unit; hỏi làm một việc 'ở phòng nào', 'đơn vị nào' hay 'gặp
-          ai' khi chưa biết tên đơn vị cũng là unit. Hỏi nơi làm việc, tòa nhà/tầng/số phòng, hoặc một đơn
-          vị đã nêu tên 'ở đâu' → office, không cần nêu số phòng. Hỏi cả đơn vị
-          và vị trí → [unit, office] hoặc all. Phân biệt theo mục đích câu hỏi,
-          không chỉ theo từ 'phòng'.
-          Chọn theo loại đáp án cần trả: tên đơn vị hay vị trí vật lý;
-          nếu mục đích vẫn mơ hồ sau history hợp lệ thì clarify, không dùng all để né chọn field.
+          office=địa chỉ hoặc vị trí làm việc; all=thông tin liên hệ tổng hợp.
+          Chọn theo loại đáp án cần trả, không chỉ theo từ 'phòng': ai hoặc đơn
+          vị nào phụ trách, hỗ trợ một việc (kể cả 'ở phòng nào' khi chưa biết
+          tên đơn vị) → unit; vị trí vật lý (tòa nhà, tầng, số phòng) hoặc
+          một đơn vị đã nêu tên 'ở đâu' → office. Hỏi cả hai → [unit, office]
+          hoặc all; mục đích vẫn mơ hồ sau history hợp lệ thì clarify, không
+          dùng all để né chọn field.
         clarification_label: loại thông tin bạn cần
         span_aliases:
           unit: [đơn vị, bộ phận]

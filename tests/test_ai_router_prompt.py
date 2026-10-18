@@ -186,13 +186,11 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
         dynamic_prompt,
         router._plan_response_format_payload(),
     )
-    # v58 separates answer kinds without changing schema or runtime behavior.
-    # v59/v60 add the service/complaint boundary and the scoring operation meanings
-    # (35,750 characters; the operation text is counted in TOOLS and the schema).
+    # v62 shortens the v61 wording (35,794 characters) without changing a rule.
     # Character-based estimates, not provider tokenizer or billing counts.
-    assert stats["total_chars"] <= 35800
-    assert stats["estimated_input_tokens"] <= 8950
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v61-table-conclusions"
+    assert stats["total_chars"] <= 34800
+    assert stats["estimated_input_tokens"] <= 8700
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v62-shorter-wording"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K49":[2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 
@@ -219,7 +217,8 @@ def test_planner_prompt_defines_cohort_independent_task_identity() -> None:
 
 
 def test_planner_prompt_keeps_exactly_three_answer_targets() -> None:
-    assert "Với 1–3 yêu cầu" in PLANNER_PROMPT_TEXT
+    assert "Với 1–3 task, giữ đủ answer target" in PLANNER_PROMPT_TEXT
+    assert "Tối đa 3 task, đếm sau các phép gộp hợp lệ" in PLANNER_PROMPT_TEXT
     assert "EXPLICIT_REQUEST_COUNT là số marker để rà soát bỏ sót" in PLANNER_PROMPT_TEXT
 
 
@@ -365,7 +364,7 @@ def test_planner_prompt_keeps_merge_and_rag_as_only_if_conditions() -> None:
 
 
 def test_planner_prompt_splits_independent_answer_targets() -> None:
-    assert "Mỗi task.question chứa một yêu cầu độc lập" in PLANNER_PROMPT_TEXT
+    assert "Mặc định mỗi yêu cầu là một task: task.question chứa một yêu cầu độc lập" in PLANNER_PROMPT_TEXT
     assert "Nhiều trường của cùng một đối tượng" in PLANNER_PROMPT_TEXT
     assert "Tách task khi các phần hỏi về đối tượng/chủ đề độc lập" in PLANNER_PROMPT_TEXT
     assert "Từ nối \"và\" hoặc \"so sánh\" không tự quyết định" in PLANNER_PROMPT_TEXT
@@ -384,7 +383,7 @@ def test_planner_prompt_splits_independent_answer_targets() -> None:
 
 def test_prompt_keeps_unscaled_scores_and_whole_table_comparisons():
     # A missing scale is not missing input; the operation decides the scale.
-    assert "Khi người dùng không nêu thang điểm, điền đúng con số" in PLANNER_PROMPT_TEXT
+    assert "Người hỏi không nêu thang: điền đúng con số họ viết" in PLANNER_PROMPT_TEXT
     # The value is a parseable score; the literal wording stays in the span.
     assert 'không kèm chữ như "điểm"' in PLANNER_PROMPT_TEXT
     assert "khoa đào tạo" in PLANNER_PROMPT_TEXT
@@ -399,7 +398,7 @@ def test_prompt_preserves_explicit_score_scale_and_grounded_history():
     assert '"3,6/4" hoặc "3,6/10"' in PLANNER_PROMPT_TEXT
     assert "không rút thành số 3.6" in PLANNER_PROMPT_TEXT
     assert "không cắt mẫu số khỏi span" in PLANNER_PROMPT_TEXT
-    assert "không tự quy đổi điểm sang thang khác" in PLANNER_PROMPT_TEXT
+    assert "Không tự quy đổi điểm sang thang khác" in PLANNER_PROMPT_TEXT
     assert "không thêm thông tin không có căn cứ trong QUERY hoặc history hợp lệ" in PLANNER_PROMPT_TEXT
 
 
@@ -427,13 +426,15 @@ def test_planner_prompt_defines_context_precedence_once() -> None:
     assert "standalone_query" in PLANNER_PROMPT_TEXT
     assert "referenced_turns" in PLANNER_PROMPT_TEXT
     assert "CATALOG_HINT" not in PLANNER_PROMPT_TEXT
-    assert PLANNER_PROMPT_TEXT.count("hơn 3 yêu cầu") == 2
+    # The over-limit rule is stated once, in BƯỚC 2.
+    assert PLANNER_PROMPT_TEXT.count("hơn 3 task") == 2
+    assert PLANNER_PROMPT_TEXT.count("xuất đúng một clarify task") == 1
     assert "xuất đúng một clarify task" in PLANNER_PROMPT_TEXT
     assert "không thực thi một phần" in PLANNER_PROMPT_TEXT
 
 
 def test_planner_prompt_matches_global_context_and_rag_contract() -> None:
-    assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc có hơn 3" in PLANNER_PROMPT_TEXT
+    assert "context_mode=ambiguous chỉ khi toàn QUERY mơ hồ hoặc cần hơn 3 task (BƯỚC 2)" in PLANNER_PROMPT_TEXT
     assert "clarify cho riêng task đó" in PLANNER_PROMPT_TEXT
     assert "chỉ đặt out_of_domain=true khi toàn bộ QUERY" in PLANNER_PROMPT_TEXT
     assert "khi đó tasks=[]" in PLANNER_PROMPT_TEXT
@@ -747,6 +748,6 @@ def test_rejected_key_is_not_retried() -> None:
 def test_unit_and_office_semantics_reach_the_model_in_the_schema(monkeypatch, tmp_path: Path) -> None:
     router = _router(monkeypatch, tmp_path)
     schema = json.dumps(router._plan_response_format_payload(), ensure_ascii=False)
-    for rule in ("phụ trách hoặc hỗ trợ một việc → unit", "tòa nhà/tầng/số phòng",
+    for rule in ("phụ trách, hỗ trợ một việc", "vị trí vật lý (tòa nhà, tầng, số phòng)",
                  "một đơn vị đã nêu tên 'ở đâu' → office"):
         assert rule in schema

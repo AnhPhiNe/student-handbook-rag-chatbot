@@ -276,11 +276,14 @@ def _visible_history(chat_history: list[dict[str, str]] | None) -> list[dict[str
 # planner proposed; without them a trace shows a clarification with no reason,
 # which is what made the 2026-10-05 "khoa tinesg PHap" failure undiagnosable.
 # Both are short lists of codes such as "slot_span_mismatch:faculty": they name
-# the slot, never its value, so no student input is copied into them.
+# the slot, never its value. normalization_drops adds, for each such slot, the
+# value and span the planner gave (cut to 80 characters), the same kind of
+# student text the slots and slot_spans fields already carry, so a trace shows
+# whether a drop removed a value the student did write.
 _PLAN_TASK_FIELDS = (
     "id", "question", "mode", "intent", "lookup_type", "slots", "slot_spans",
     "cohorts", "clarification_question", "validation_errors",
-    "normalization_warnings",
+    "normalization_warnings", "normalization_drops",
 )
 
 

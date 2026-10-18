@@ -131,8 +131,9 @@ def test_strict_shape_does_not_replace_scale_grounding():
     task["question"] = query
     assert Draft202012Validator(query_plan_strict_response_schema()).is_valid(_payload(task, query))
     plan, errors = normalize_query_plan(_payload(task, query), query=query, selected_cohort="K51")
-    assert plan["tasks"][0]["slots"].get("score_or_grade") is None
-    assert any("score_or_grade" in warning for warning in plan["tasks"][0]["normalization_warnings"])
+    # The abbreviated 3.6 never survives: the student's own "3,6/4" replaces it.
+    assert plan["tasks"][0]["slots"].get("score_or_grade") == "3,6/4"
+    assert plan["tasks"][0]["normalization_warnings"] == ["numeric_span_repaired:score_or_grade"]
 
 
 def test_contact_fixtures_accept_strict_nullable_shape_and_normalize_identically():

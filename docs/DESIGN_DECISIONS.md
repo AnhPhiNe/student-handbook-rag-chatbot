@@ -29,7 +29,7 @@ reports are listed at the end.
 
 | Component | Chosen | Alternatives measured | Deciding evidence |
 |---|---|---|---|
-| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; prompt v61 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | v61 on official_v1: 133/135 (2026-10-04), equal to v56; routing boundaries stated as concepts, not case wordings (see `ROUTING_EVIDENCE_RELEASE.md` stages 24–25) |
+| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; prompt v62 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | v62 (shorter v61 wording, owner choice 2026-10-18): official_v1 132 = v61 132, official_v2 139 vs v61 142, at the edge of the pre-registered rule; known regressions in `ROUTING_EVIDENCE_RELEASE.md` stage 26 |
 | Composer | DeepSeek-V4.1-Flash, reasoning low, prompt v3.34; DeepSeek API first, the same weights on DeepInfra when it fails | Gemini 3.1 Flash-Lite; DeepSeek thinking off | Ambiguous grade 3/3 with low against 1/3 with none on identical prompts; official_v4 with v61 and low: 0.960, paired with Run C 0.000 (2026-10-04, below) |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
@@ -1252,6 +1252,44 @@ threshold was rejected as a guard because "Khoa Tiếng Anh" against "khoa tiế
 Pháp" scores 0.83, above several genuine typos. Neither dataset contains
 misspelt unit names, so the fixed behaviour rests on the handful of live
 questions above.
+
+## The normalizer grounds values; it does not route questions (2026-10-18)
+
+**Design rule.** The normalizer (`query_plan.py`, `structured_routing.py`) does
+three things and nothing else:
+
+1. **Grounding.** Every value the planner supplies must be traceable to the
+   question or the visible history, never to the planner's own task paraphrase.
+2. **Executability.** Types, enum codes and known slots, from the lookup registry.
+3. **Policy for a failed check.** An optional slot is dropped and the table
+   returns whole; a required input the student has not given is asked for; any
+   other error turns the task into RAG.
+
+A change to it is stated as "for value kind X, this is how we tell it appears
+in the question", and the kind is declared in `structured_lookup_registry.yaml`
+(`verification_role`, `planner_reading_trusted`, `value_kind`, `span_aliases`),
+not named in code. "For questions shaped like Y, do Z" is routing and belongs
+to the planner prompt or the registry's tool texts; a change that cannot be
+stated as the first kind does not belong in the normalizer.
+
+**v35 under this rule** (`24b90e4a`, `798880df`, `value_kind` in the registry).
+For a score (`value_kind: score`, today `scoring.score_or_grade`), a value
+appears in the question when the question writes that number as a score (a
+decimal, a fraction, or a whole number beside "điểm") exactly once; the value
+and span then become the student's own text. This fixed scores dropped because
+the planner quoted its paraphrase ("81 điểm rèn luyện") or wrote the scale or
+decimal mark differently ("1.6/4" for "1.6 theo thang điểm 4", "2.83" for
+"2,83"). A number not written as a score, a conflicting denominator or two
+readings are still dropped. Each task now carries `normalization_drops`: per
+dropped, repaired or defaulted slot, the warning and the planner's value and
+span, cut to 80 characters, so traces show whether a drop removed a value the
+student wrote. Re-normalizing the 5,879 saved plans of v1, v2, v4 and the
+development reports gives output identical to `798880df` apart from that field.
+
+**Known limit.** Two scores in one question split into two tasks are each
+grounded even if the planner gives both tasks the same one; no grounding check
+can see that pairing error. In 74 saved plans with two or more scores and
+scored tasks it was not observed.
 
 ## The K49 handbook replaces K48-K49 (2026-10-13)
 

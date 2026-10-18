@@ -403,6 +403,73 @@ author nor its models wrote.
   narrower than the K49 dormitory procedure) and V4-209 (planner asked instead of
   reading the history); K50 and K51 0.975 against A 0.964, paired +0.011
   [−0.011, +0.033], no new zero: the regression check passes.
+- **Run P: composer prompt v3.41 and model DeepSeek-V4.1-Flash-1017, together**
+  (owner, 2026-10-18/19; written 2026-10-19, before any v4 answer of this
+  configuration was produced). Two changes are measured as one:
+  - prompt v3.36 → v3.41 (commit `35469798`): the v3.36 rules stated once
+    each under five principles, and one rule changed by the owner's choice: a
+    part without evidence gets "Khi chưa tìm thấy căn cứ cho một ý, nói rõ điều
+    đó và không gợi ý đơn vị hay thông tin liên hệ nào cho ý đó" (v3.42 added
+    the same sentence to v3.36 and failed run A's email criterion; v3.41 is
+    measured on its own terms). v3.41 was drafted on official_v1 and
+    development questions; it keeps rules that came from earlier v4 cases;
+  - composer model and provider (commit `9d81e0b7`):
+    `deepseek-ai/DeepSeek-V4.1-Flash-1017` on DeepInfra only, reasoning none
+    (the model is listed with "can-disable-reasoning"; that none disables
+    thinking on it is checked on the first targeted replies), no fallback.
+  - **Baseline: run K49** (`official_v4_answers_20261018T073835Z`, commit
+    `ea4fc1bd`), not rerun: prompt v3.36, reasoning none, configured DeepSeek
+    API first with DeepInfra fallback; its records show 232 of 246 answers
+    from `deepseek-ai/DeepSeek-V4.1-Flash` on DeepInfra and 14 from
+    `deepseek-flash` on the DeepSeek API (same weights). Run N is not usable:
+    its per-case records are lost and its data and golds predate K49.
+  - **Same plans as K49**: `data/eval/reports/official_v4_k49_plans.json`,
+    sha256 `d6a0731b6dc535867ef053b96ec3d5a78b537e13ccb9bd47a257d7d028a2f7f2`
+    (planner v61, normalizer v34). Everything else as in K49: dataset sha256
+    `541d78d5…29ed5`, `configs/retrieval_eval_patient_k49.yaml`, collections
+    `student_handbook_table_search_3bbd93e9f05a` /
+    `parent_docs_table_search_3bbd93e9f05a`, Voyage rerank-3,
+    `configs/answer_generation_eval_patient.yaml`, 16 answer workers, judge
+    gpt-oss-120b on DeepInfra with packet `judge-packet-v3-source-clauses`.
+    With the plans fixed, P differs from K49 only in retrieval execution, the
+    composer prompt and the composer model.
+  - **Order, each step a gate for the next**: (1) about 20 targeted composer
+    replies: the 12 contact and referral questions of `ask_fresh.json` through
+    the full pipeline, and V4-229, 142, 144, 231, 236, 081, 031, 035 from K49's
+    recorded packets, read against the referral and contact rules; a clear
+    error stops here and goes to the owner. (2) The development length and
+    required-facts check below. (3) Run P, exactly once.
+  - **Development required-facts check** (before P): the development
+    questions with `must_include` facts (supplementary, table_adjacent,
+    regulated_where, the n group of where_and_mixed) plus the 12 ask_fresh
+    questions are run once through the pipeline; from those identical packets
+    the composer answers twice, as K49 (v3.36, DeepSeek-V4.1-Flash on
+    DeepInfra) and as P (v3.41, V4.1-Flash-1017). Required facts are counted
+    case-insensitively. Shorter answers are accepted only if P's required-fact
+    count is not lower than K49's; a lower count stops before run P. Median
+    answer lengths are reported. (Earlier, on 2026-10-11 packets, v3.41 with
+    V4.1-Flash met 96 of 106 facts, the same as v3.40, with answers about 10%
+    shorter.)
+  - **Validity**, checked in the run log before any score is read: no 402 or
+    authentication error, no dense retrieval falling back to BM25 only, no
+    reranker skip. Affected cases are rerun whole before scoring; if that is
+    not possible the run is reported incomplete and not scored.
+  - **Keep P if all hold**, in scope (the 228 cases; the C2 lists of 10 out of
+    scope and 8 partly out of scope): the lower bound of the 95% cluster
+    interval of the paired `answer_correctness` difference (P minus K49) is at
+    least −0.03; no case scored 0 in P is above 0 in K49 (a new zero fails the
+    rule; its review is shown but does not excuse it); and no answer gives an
+    email outside the directories, except a procedure mailbox on its own
+    procedure. The 18 out-of-scope and partly out-of-scope cases are read one
+    by one as in C3; one that presents another group's rule as the asker's
+    fails and blocks the deploy.
+  - **A failure does not say which change caused it**: separating prompt from
+    model needs a second run (v3.41 with V4.1-Flash, or v3.36 with 1017), which
+    is decided by the owner after P is read.
+  - **v4 is not a hold-out for this change**: runs R, R2 and A were read
+    before the owner's referral sentence was chosen. Whatever the outcome, the
+    prompt is not tuned on v4 after P. The deploy is separate from the planner
+    v62 / normalizer v35 work.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

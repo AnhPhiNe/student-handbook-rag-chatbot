@@ -18,11 +18,12 @@ from src.common.text import fold_text, slot_values
 from .structured_routing import (
     load_lookup_registry,
     prepare_structured_task,
+    repair_numeric_slot_spans,
     validate_structured_task,
 )
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v34-ask-for-what-is-missing"
+QUERY_PLAN_NORMALIZER_VERSION = "v35-score-as-written"
 QUERY_PLAN_STRICT_SCHEMA_VERSION = "v2-field-descriptions"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
@@ -912,6 +913,11 @@ def _normalize_structured_task(
         cohort=task_cohort,
         registry=registry,
     )
+    repair_warnings = repair_numeric_slot_spans(
+        decision,
+        source_text=f"{original_query}\n{grounding_context}".strip(),
+        registry=registry,
+    )
     validate = partial(
         validate_structured_task,
         query=original_query,
@@ -926,7 +932,7 @@ def _normalize_structured_task(
     reading_warnings = _apply_declared_reading_defaults(decision, spec, required_slots)
     if reading_warnings:
         validation_errors = validate(decision)
-    normalization_warnings = reading_warnings + _drop_invalid_optional_slots(
+    normalization_warnings = repair_warnings + reading_warnings + _drop_invalid_optional_slots(
         decision, validation_errors, spec=spec, required_slots=required_slots,
     )
     if normalization_warnings:

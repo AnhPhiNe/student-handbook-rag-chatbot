@@ -9,7 +9,7 @@ from typing import Any
 import yaml
 
 from src.common.cohort import build_cohort_token_regex, normalize_cohort
-from src.common.score import grounded_score, parse_score
+from src.common.score import grounded_score, parse_score, score_as_written
 from src.common.text import fold_text
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -590,6 +590,51 @@ def validate_structured_task(
             errors.append(error)
 
     return errors
+
+
+def repair_numeric_slot_spans(
+    decision: dict[str, Any],
+    *,
+    source_text: str,
+    registry: dict[str, Any] | None = None,
+) -> list[str]:
+    """Take a score the student wrote from their own words; return warnings.
+
+    The planner may quote a score's span from its own task paraphrase ("81 điểm
+    rèn luyện" for "bạn em 81 điểm") or write the number differently ("2.83"
+    for "2,83", "1.6/4" for "1.6 theo thang điểm 4"); the span check then
+    drops a value the student did give. For a slot the registry marks
+    `numeric_span_repair`, a number found exactly once in ``source_text`` (the
+    question and visible history, never a task paraphrase) becomes both value
+    and span, as the student wrote it. A number the source does not hold is
+    left for validation to drop.
+    """
+
+    registry = registry or load_lookup_registry()
+    spec = registry.get("tools", {}).get(decision.get("lookup_type")) or {}
+    slots = dict(decision.get("slots") or {})
+    spans = dict(decision.get("slot_spans") or {})
+    warnings: list[str] = []
+    for slot_name, schema in (spec.get("slot_schema") or {}).items():
+        value = slots.get(slot_name)
+        if not schema.get("numeric_span_repair") or not _is_present(value):
+            continue
+        span = spans.get(slot_name)
+        if _slot_span_error(value, span, schema, source_text) is None and (
+            _score_span_matches_source(value, span, source_text)
+        ):
+            continue
+        written = [score_as_written(item, source_text) for item in _as_values(value)]
+        if None in written:
+            continue
+        repaired = written if isinstance(value, list) else written[0]
+        slots[slot_name] = repaired
+        spans[slot_name] = repaired
+        warnings.append(f"numeric_span_repaired:{slot_name}")
+    if warnings:
+        decision["slots"] = slots
+        decision["slot_spans"] = spans
+    return warnings
 
 
 def registry_digest(registry: dict[str, Any] | None = None) -> str:

@@ -18,6 +18,12 @@ class Score:
 _SCORE_PATTERN = re.compile(
     r"\s*([+-]?\d+(?:[,.]\d+)?)\s*(?:/\s*(\d+(?:[,.]\d+)?))?\s*"
 )
+# A complete numeric expression in running text. Cohort codes (K49) and a
+# fraction's denominator are not read as scores of their own.
+_SCORE_TOKEN = re.compile(
+    r"(?<![\w/])[+-]?\d+(?:[,.]\d+)?(?:\s*/\s*\d+(?:[,.]\d+)?)?"
+    r"(?!\w|\s*/|[,.]\d)"
+)
 
 
 def parse_score(value: Any) -> Score | None:
@@ -53,10 +59,7 @@ def grounded_score(value: Any, span: Any, source_text: str) -> Score | None:
     source = " ".join(unicodedata.normalize("NFC", str(source_text)).casefold().split())
     spans = span if isinstance(span, list) else [span]
     # Do not interpret cohort identifiers or a fraction's denominator as scores.
-    tokens = list(re.finditer(
-        r"(?<![\w/])[+-]?\d+(?:[,.]\d+)?(?:\s*/\s*\d+(?:[,.]\d+)?)?"
-        r"(?!\w|\s*/|[,.]\d)", source,
-    ))
+    tokens = list(_SCORE_TOKEN.finditer(source))
     observed: set[Score] = set()
     for literal in spans:
         if not isinstance(literal, str) or not literal.strip():
@@ -86,3 +89,28 @@ def scores_equal(actual: Any, expected: Any, *, expected_scale: int | None) -> b
     if expected_scale is not None:
         return not declared or declared == {Decimal(expected_scale)}
     return left.scale == right.scale
+
+
+def score_as_written(value: Any, source_text: str) -> str | None:
+    """Return the one way ``source_text`` writes the number ``value``, or None.
+
+    "2.83" matches "2,83" and "81" matches "81": the number counts, not its
+    surrounding words. A source denominator is kept ("3,6" finds "3,6/4"); a
+    value whose denominator differs from the source's is not that number, and
+    a value the planner gave "/4" matches a source that writes no fraction,
+    whose scale is then read from the lookup. None when the source holds no
+    such number, or writes it in more than one way.
+    """
+
+    supplied = parse_score(value)
+    if supplied is None:
+        return None
+    found: dict[Score, str] = {}
+    for token in _SCORE_TOKEN.finditer(unicodedata.normalize("NFC", str(source_text))):
+        score = parse_score(token.group())
+        if score is None or score.value != supplied.value:
+            continue
+        if supplied.scale is not None and score.scale not in (None, supplied.scale):
+            continue
+        found.setdefault(score, token.group())
+    return next(iter(found.values())) if len(found) == 1 else None

@@ -1305,6 +1305,19 @@ nộp" (all three handbooks, also in the build served before). The pointer is no
 removed from the whole text first, keeping a form number it qualifies
 ("(Mẫu số 01)"); the chunk check still reports nothing.
 
+**A course graded pass/fail got the graded scale.** In production, "GDQP"
+(K51) was answered from the foundation grade scale, pass from 4,0. Quy chế đào
+tạo Điều 2 of every cohort names the courses not counted in the GPA (giáo dục
+thể chất, giáo dục quốc phòng – an ninh, tin học cơ bản, ngoại ngữ không
+chuyên), and Điều 10 khoản 2b grades those pass/fail: 5,0 or more, letter P.
+The table was right; the planner, given only the course name, set no course
+scope, so both the graded and the pass/fail tables came back and the composer
+chose. The scoring tool's `course_scope` text and span aliases now name those
+courses. Eight planner probes (`development/pass_fail_course_cases.yaml`): the
+four pass/fail courses went from no scope to `pass_fail_ungraded` on two runs;
+no ordinary course got that scope. The planner prompt stays within its length
+budget.
+
 ## What these measurements do not show
 
 - Known limits of the 2026-10-05 build, each left as it is after measuring:

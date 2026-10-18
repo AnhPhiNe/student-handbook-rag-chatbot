@@ -840,7 +840,7 @@
                               "type": "null"
                             }
                           ],
-                          "description": "graded=môn tính GPA, chưa xác định foundation/remaining; không tự suy phạm vi còn thiếu. pass_fail_ungraded=môn không tính GPA."
+                          "description": "graded=môn tính GPA, chưa xác định foundation/remaining; không tự suy phạm vi còn thiếu. pass_fail_ungraded=môn không tính GPA (thể chất, quốc phòng, tin học cơ bản, ngoại ngữ không chuyên)."
                         }
                       },
                       "required": [

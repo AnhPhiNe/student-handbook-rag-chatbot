@@ -369,10 +369,12 @@ author nor its models wrote.
   gold was re-checked against the K49 PDF before the run, and 11 entries record
   why a case changed: 8 change required facts (V4-095, 096, 111, 118, 121, 128,
   145, 182), 2 change a school year or an earlier assistant turn (V4-088, 216)
-  and 1 keeps a reviewed directory value (V4-144). Plans are replayed from a copy of
-  `official_v4_v61_shared_plans.json`: the K50 and K51 cases hit the cache with
-  their earlier plans; the K49 cases (a new cohort and, for 16, new wording)
-  miss it and are planned live, once, and the copy keeps those plans.
+  and 1 keeps a reviewed directory value (V4-144).
+  Plans are not replayed: the scoring tool's text now names the courses graded
+  pass/fail (Quy chế đào tạo Điều 2: thể chất, quốc phòng – an ninh, tin học cơ
+  bản, ngoại ngữ không chuyên; owner, 2026-10-18), and the tool text is part of the
+  plan cache key, so all 246 cases are planned live, once, into a new cache file
+  that is kept with the run.
   Reported, with no deploy decision attached (the owner decides after review):
   - **K49 (84 cases with K49 as the UI cohort, plus 5 comparisons): a new
     baseline**, with its 95% cluster interval. It is not compared with any
@@ -388,6 +390,7 @@ author nor its models wrote.
     corrected to (028) 38391080 (as in K49), and a QR pointer wrapped over two
     PDF lines no longer cuts the adviser rules' Điều 4 and 7 and Nghị định 116
     Điều 7 and 13; otherwise only the cohort label K49 in shared records. The
+    paired difference also carries the new plans and the scoring tool text. The
     check passes if, in scope, the lower
     bound of the 95% cluster interval of the paired `answer_correctness`
     difference (K49 run minus A) is at least −0.03 and every case scored 0 here

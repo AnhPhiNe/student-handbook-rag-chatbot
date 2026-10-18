@@ -169,15 +169,19 @@ tools:
         verification_role: result_input
         description: "Giá trị đầu vào theo operation: điểm học phần hệ 10, điểm chữ, GPA hệ 4 hoặc tổng điểm rèn luyện hệ 100. Giữ cả thang điểm người dùng nêu, không tự quy đổi."
       course_scope:
+        # Quy chế đào tạo Điều 2 (every cohort) names the courses not counted in the
+        # GPA: giáo dục thể chất, giáo dục quốc phòng – an ninh, tin học cơ bản,
+        # ngoại ngữ không chuyên. Named alone, they must reach the pass/fail table
+        # (≥ 5,0 → P), not the graded scale.
         type: string
         verification_role: result_input
         enum: [foundation, remaining, graded, pass_fail_ungraded]
-        description: graded=môn tính GPA, chưa xác định foundation/remaining; không tự suy phạm vi còn thiếu. pass_fail_ungraded=môn không tính GPA.
+        description: "graded=môn tính GPA, chưa xác định foundation/remaining; không tự suy phạm vi còn thiếu. pass_fail_ungraded=môn không tính GPA (thể chất, quốc phòng, tin học cơ bản, ngoại ngữ không chuyên)."
         span_aliases:
           foundation: [học phần nền tảng, học phần chung, học phần giáo dục đại cương]
           remaining: [học phần còn lại, các học phần còn lại, môn còn lại, các môn còn lại]
           graded: [môn tính GPA, học phần tính GPA, tính vào điểm trung bình học tập]
-          pass_fail_ungraded: [học phần đạt không phân mức, học phần chỉ yêu cầu đạt, không tính vào điểm trung bình]
+          pass_fail_ungraded: [học phần đạt không phân mức, học phần chỉ yêu cầu đạt, không tính vào điểm trung bình, thể chất, quốc phòng, GDQP, tin học cơ bản, ngoại ngữ không chuyên]
     table_selector:
       slot: operation
       values:

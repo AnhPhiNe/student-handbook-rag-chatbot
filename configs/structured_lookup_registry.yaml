@@ -241,15 +241,13 @@ tools:
         enum: [unit, phone, email, office, website, all]
         description: >-
           unit=tên đơn vị phụ trách; phone=điện thoại kèm số máy nội bộ;
-          office=địa chỉ hoặc vị trí làm việc;
-          all=thông tin liên hệ tổng hợp. Hỏi ai/đơn vị nào phụ trách hoặc hỗ trợ
-          một việc → unit; hỏi làm một việc 'ở phòng nào', 'đơn vị nào' hay 'gặp
-          ai' khi chưa biết tên đơn vị cũng là unit. Hỏi nơi làm việc, tòa nhà/tầng/số phòng, hoặc một đơn
-          vị đã nêu tên 'ở đâu' → office, không cần nêu số phòng. Hỏi cả đơn vị
-          và vị trí → [unit, office] hoặc all. Phân biệt theo mục đích câu hỏi,
-          không chỉ theo từ 'phòng'.
-          Chọn theo loại đáp án cần trả: tên đơn vị hay vị trí vật lý;
-          nếu mục đích vẫn mơ hồ sau history hợp lệ thì clarify, không dùng all để né chọn field.
+          office=địa chỉ hoặc vị trí làm việc; all=thông tin liên hệ tổng hợp.
+          Chọn theo loại đáp án cần trả, không chỉ theo từ 'phòng': ai hoặc đơn
+          vị nào phụ trách, hỗ trợ một việc (kể cả 'ở phòng nào' khi chưa biết
+          tên đơn vị) → unit; vị trí vật lý (tòa nhà, tầng, số phòng) hoặc
+          một đơn vị đã nêu tên 'ở đâu' → office. Hỏi cả hai → [unit, office]
+          hoặc all; mục đích vẫn mơ hồ sau history hợp lệ thì clarify, không
+          dùng all để né chọn field.
         clarification_label: loại thông tin bạn cần
         span_aliases:
           unit: [đơn vị, bộ phận]

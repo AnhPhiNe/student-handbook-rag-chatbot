@@ -15,32 +15,25 @@ input:
 # Broader answer regression is still pending. Historical off/low measurements
 # with prompt v3.30 are preserved in docs/DESIGN_DECISIONS.md.
 llm:
+  # DeepSeek-V4.1-Flash on DeepInfra only (owner, 2026-10-19), with no second
+  # provider. "deepseek" names the client (DeepSeekClient), which sends
+  # DeepSeek's thinking parameters to any OpenAI-compatible base_url; DeepInfra
+  # takes them (checked: low thinks, none does not). V4.1-Flash-1017 was tried
+  # and not chosen (data/eval/official_v4/SPEC.md, run P).
   provider: deepseek
-  # The DeepSeek API first (base_url absent): measured faster with low
-  # thinking than DeepInfra, which took 58-120 s on long questions (2026-10-04).
-  model_name: deepseek-flash
+  base_url: https://api.deepinfra.com/v1/openai
+  model_name: deepseek-ai/DeepSeek-V4.1-Flash
   reasoning_effort: none
-  api_keys_env_var: DEEPSEEK_API_KEY
-  # The same DeepSeek-V4.1-Flash weights served by DeepInfra, used when the
-  # DeepSeek API cannot answer (no balance, key, rate limit, timeout, server or
-  # connection error) and when DEEPSEEK_API_KEY is empty. DeepInfra takes the
-  # same thinking parameters (checked: low thinks, none does not). Everything
-  # not overridden here is inherited. See src/generation/fallback_client.py.
-  fallback: &deepinfra
-    base_url: https://api.deepinfra.com/v1/openai
-    model_name: deepseek-ai/DeepSeek-V4.1-Flash
-    api_keys_env_var: DEEPINFRA_API_KEY
+  api_keys_env_var: DEEPINFRA_API_KEY
   temperature: 0.0
   # Omit max_tokens from composer requests; no application output ceiling.
-  # DeepSeek defaults to 64K with low thinking (not unlimited).
-  # https://api-docs.deepseek.com/api/create-chat-completion/
   max_output_tokens: null
   max_retries: 2
   retry_base_delay_seconds: 2
   retry_max_delay_seconds: 20
   request_timeout_seconds: 120
   max_context_chars: 160000
-  # DeepSeek limits concurrency, not a request rate; this is only a local guard.
+  # A local guard only; the provider enforces its own limits.
   key_pool:
     rpm_limit_per_key: 300
     cooldown_on_rate_limit_seconds: 30
@@ -53,7 +46,12 @@ directory_selector:
   model_name: deepseek-flash
   reasoning_effort: none
   api_keys_env_var: DEEPSEEK_API_KEY
-  fallback: *deepinfra
+  # The same weights on DeepInfra when the DeepSeek API cannot answer or
+  # DEEPSEEK_API_KEY is empty. See src/generation/fallback_client.py.
+  fallback:
+    base_url: https://api.deepinfra.com/v1/openai
+    model_name: deepseek-ai/DeepSeek-V4.1-Flash
+    api_keys_env_var: DEEPINFRA_API_KEY
   max_output_tokens: 200
   max_retries: 1
   request_timeout_seconds: 15

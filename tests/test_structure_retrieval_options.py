@@ -30,5 +30,5 @@ def test_composer_defaults_to_regular_students_and_names_whom_a_rule_covers():
             "không trình bày quy định của đối tượng này như thể áp dụng cho đối tượng khác.")
     assert rule in prompt
     # No refusal and no list of "other groups": a question is answered from what the sources say.
-    assert "ngoài phạm vi" not in prompt.split("1. PHẠM VI TRẢ LỜI", 1)[1].split("2.", 1)[0]
+    assert "ngoài phạm vi" not in prompt.split("1. TRẢ LỜI ĐÚNG ĐIỀU ĐƯỢC HỎI", 1)[1].split("2.", 1)[0]
     assert not re.search(r"Điều \d|rớt|đuổi học", rule)

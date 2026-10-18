@@ -403,6 +403,133 @@ author nor its models wrote.
   narrower than the K49 dormitory procedure) and V4-209 (planner asked instead of
   reading the history); K50 and K51 0.975 against A 0.964, paired +0.011
   [−0.011, +0.033], no new zero: the regression check passes.
+- **Run P: composer prompt v3.41 on DeepSeek-V4.1-Flash, DeepInfra only**
+  (owner, 2026-10-19). First registered the same day (commit `d4ab548a`) as
+  v3.41 together with `deepseek-ai/DeepSeek-V4.1-Flash-1017`; its gates stopped
+  that configuration before any v4 answer was produced (outcomes below), and the
+  owner then chose V4.1-Flash. This amendment is written after those gate
+  results and before run P starts.
+  - The change measured is the prompt, v3.36 → v3.41 (commit `35469798`): the
+    v3.36 rules stated once each under five principles, and one rule changed by
+    the owner's choice: a part without evidence gets "Khi chưa tìm thấy căn cứ
+    cho một ý, nói rõ điều đó và không gợi ý đơn vị hay thông tin liên hệ nào
+    cho ý đó" (v3.42 added the same sentence to v3.36 and failed run A's email
+    criterion; v3.41 is measured on its own terms). v3.41 was drafted on
+    official_v1 and development questions; it keeps rules that came from
+    earlier v4 cases.
+  - Composer: `deepseek-ai/DeepSeek-V4.1-Flash` on DeepInfra only, reasoning
+    none, no fallback (the DeepSeek API path is dropped by the owner's choice).
+  - **Baseline: run K49** (`official_v4_answers_20261018T073835Z`, commit
+    `ea4fc1bd`), not rerun: prompt v3.36, reasoning none, configured DeepSeek
+    API first with DeepInfra fallback; its records show 232 of 246 answers
+    from `deepseek-ai/DeepSeek-V4.1-Flash` on DeepInfra and 14 from
+    `deepseek-flash` on the DeepSeek API (same weights). Run N is not usable:
+    its per-case records are lost and its data and golds predate K49.
+  - **Same plans as K49**: `data/eval/reports/official_v4_k49_plans.json`,
+    sha256 `d6a0731b6dc535867ef053b96ec3d5a78b537e13ccb9bd47a257d7d028a2f7f2`
+    (planner v61, normalizer v34). Everything else as in K49: dataset sha256
+    `541d78d5…29ed5`, `configs/retrieval_eval_patient_k49.yaml`, collections
+    `student_handbook_table_search_3bbd93e9f05a` /
+    `parent_docs_table_search_3bbd93e9f05a`, Voyage rerank-3,
+    `configs/answer_generation_eval_patient.yaml`, 16 answer workers, judge
+    gpt-oss-120b on DeepInfra with packet `judge-packet-v3-source-clauses`
+    (judge workers are not fixed). With the plans fixed, P differs from K49
+    in retrieval execution, the composer prompt, and for 14 cases the provider
+    serving the same weights.
+  - **Gate outcomes for the 1017 configuration** (2026-10-19): (1) 20 targeted
+    replies (12 ask_fresh questions through the pipeline, V4-229, 142, 144,
+    231, 236, 081, 031, 035 from K49's packets): none disables thinking on 1017
+    (0 reasoning tokens); the owner's sentence removed ungrounded referrals in
+    6 replies; V4-142 gave the institute's address without phone, email and
+    website (3 draws per arm: full fields 3/3 with V4.1-Flash under either
+    prompt, 1/3 and 2/3 with 1017); the rector's-phone question leaked
+    `nghidinh116@` under both prompts (known limit). (2) Development
+    required-facts check, 100 questions with identical packets, 106 facts:
+    v3.36 + V4.1-Flash 95 (median 704 characters), v3.41 + 1017 93 (538):
+    sup_05 stated 2 points for a first exam warning instead of 3 (an adjacent
+    row; 1 of 5 redraws with 1017 under v3.36, 0 of 10 with V4.1-Flash), and
+    sup_20 says "lâm thời" where the counter looks for "tạm thời". The gate
+    failed and the 1017 configuration was not run.
+  - **Gates for this configuration**: the same development check gave
+    v3.41 + V4.1-Flash 94 of 106 by count (median 573 characters, 19% shorter
+    than v3.36); its one difference from v3.36 is the same sup_20 wording
+    ("lâm thời"), read and found not to be a missing fact. Recorded as passed
+    on that reading. The 20 targeted replies are repeated with V4.1-Flash before
+    P and read the same way; a clear error stops there.
+  - **Validity**, checked in the run log before any score is read: no 402 or
+    authentication error, no dense retrieval falling back to BM25 only, no
+    reranker skip. Affected cases are rerun whole before scoring; if that is
+    not possible the run is reported incomplete and not scored.
+  - **Keep P if all hold**, in scope (the 228 cases; the C2 lists of 10 out of
+    scope and 8 partly out of scope): the lower bound of the 95% cluster
+    interval of the paired `answer_correctness` difference (P minus K49) is at
+    least −0.03; no case scored 0 in P is above 0 in K49 (a new zero fails the
+    rule; its review is shown but does not excuse it); and no answer gives an
+    email outside the directories, except a procedure mailbox on its own
+    procedure. The 18 out-of-scope and partly out-of-scope cases are read one
+    by one as in C3; one that presents another group's rule as the asker's
+    fails and blocks the deploy. If all hold, the owner has decided to deploy
+    v3.41 with this composer.
+  - **v4 is not a hold-out for this change**: runs R, R2 and A were read
+    before the owner's referral sentence was chosen. Whatever the outcome, the
+    prompt is not tuned on v4 after P. The deploy is separate from the planner
+    v62 / normalizer v35 work.
+  Outcome (2026-10-19, `official_v4_answers_20261018T175106Z`, commit
+  `216bbea0`, all 246 composed by V4.1-Flash on DeepInfra; the log shows no
+  402, authentication error, BM25-only search or reranker skip): in scope P
+  0.960 against K49 0.969, paired −0.009, 95% cluster interval [−0.017,
+  −0.003]; no email outside the directories except `nghidinh116@` on its own
+  procedure (V4-124, V4-167); the 18 out-of-scope cases pass reading. **One new
+  zero, V4-195** (K49 0.2): both runs give the same wrong answer to the
+  follow-up "Còn khóa K51 thì sao ạ?" (the liên thông durations, 2 and 4 years,
+  instead of chính quy 4 and 6). By the rule a new zero fails P, so v3.41 is
+  not kept and not deployed.
+- **Run Q: composer prompt v3.43** (owner, 2026-10-19, after run P was read;
+  written before any v4 answer of v3.43). v3.43 (commit `295c1b8a`) is v3.41
+  without the owner's no-referral sentence: a part without evidence gets
+  v3.36's "nói chưa tìm thấy căn cứ cho đúng ý đó" and no referral rule either
+  way. Against v3.36 it changes only how the rules are written. **Not a
+  hold-out**: P's v4 answers were read before this change (V4-229 and V4-235
+  lost their grounded referral). Everything else as in P: baseline run K49,
+  K49's plans (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`),
+  `deepseek-ai/DeepSeek-V4.1-Flash` on DeepInfra only with reasoning none, the
+  same collections, configs, 16 answer workers, judge and packet.
+  - **Gates, in order**: the 20 targeted replies of P read the same way (a
+    clear error stops); the development required-facts check on the same 100
+    questions with the 2026-10-19 packets, v3.43 not lower than v3.36 (95 of
+    106; a counter miss read and shown to be a wording difference is reported,
+    as in P); then run Q exactly once.
+  - **Validity and keep rule exactly as in P**: no 402, authentication error,
+    BM25-only search or reranker skip (affected cases rerun whole before
+    scoring); keep v3.43 if, in scope, the lower bound of the 95% cluster
+    interval of the paired `answer_correctness` difference (Q minus K49) is at
+    least −0.03, no case scored 0 in Q is above 0 in K49, no email outside the
+    directories except a procedure mailbox on its own procedure, and the 18
+    out-of-scope cases pass reading. V4-195 (the same wrong follow-up answer in
+    K49 and P, scored 0.2 and 0.0) is reported separately but stays under the
+    rule. If all hold, the owner has decided to deploy v3.43 with this
+    composer. The prompt is not tuned on v4 after Q.
+  Gates (2026-10-19): development check 95 of 106 facts, the same as v3.36,
+  median 608 characters against 704; targeted replies give grounded units with
+  full contacts, and the known leak returns on two personal-contact questions
+  (`nghidinh116@` offered for a lecturer's email and the rector's phone; v3.36
+  leaks on the second too). The owner chose to run Q.
+  Outcome (2026-10-19, `official_v4_answers_20261018T182906Z`, commit
+  `74054466`; 21 judge calls timed out with 32 judge workers and were judged
+  again in `reruns/attempt_judge_1`; no 402, authentication error, BM25-only
+  search or reranker skip): in scope Q 0.964 against K49 0.969, paired −0.005,
+  95% cluster interval [−0.017, +0.006]; no email outside the directories
+  except `nghidinh116@` on its own procedure (V4-124, V4-167); the 18
+  out-of-scope cases pass reading. **One new zero, V4-172** (K49 0.6): both runs
+  give the same dress-code answer and both omit the smoking ban the gold
+  requires; the judge scored them 0.6 and 0.0. By the rule a new zero fails Q,
+  so v3.43 is not kept by the rule.
+  **Owner decision after the outcome was read (2026-10-19): deploy v3.43 as a
+  recorded exception to the pre-registered rule.** Reason given: the paired
+  difference lies within the interval around zero, and the new zero has the
+  same answer as the baseline's (only the judge's score differs). This is a
+  decision made after the result, not a pass of the rule; v3.43 is deployed
+  with planner v62 and normalizer v35, a combination not measured here.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

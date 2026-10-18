@@ -90,3 +90,16 @@ error each time (059 table instead of RAG, 085 directory instead of RAG for
 the cause, not noise. No further rewrite was measured on v1/v2. Reports:
 `data/eval/reports/official_v{1,2}_deterministic_20261018T{114343,115716}Z` (v61,
 baseline worktree), `…T115155Z / T120552Z` (v62), `…T123154Z / T123005Z` (v62b).
+
+## Owner decision (2026-10-18): v62 adopted
+
+The owner adopted v62 (c656b595) by choice, without another official_v2 rerun,
+trading the measured cost for clearer wording. v62 sits at the edge of the
+pre-registered rule (official_v2 139 vs v61 142; v1 132 = 132); v62b is
+reverted. Known regressions against v61 on official_v2:
+
+- 059: scholarship table instead of RAG;
+- 085: "vắng thi có lý do thì em nộp đơn ở đâu" goes to student_service
+  instead of RAG;
+- 112: the second score (81) is left out of the second task;
+- 008, 068: an extra RAG task beside a correct table lookup.

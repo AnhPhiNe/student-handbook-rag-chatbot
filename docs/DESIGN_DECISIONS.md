@@ -29,7 +29,7 @@ reports are listed at the end.
 
 | Component | Chosen | Alternatives measured | Deciding evidence |
 |---|---|---|---|
-| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; prompt v61 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | v61 on official_v1: 133/135 (2026-10-04), equal to v56; routing boundaries stated as concepts, not case wordings (see `ROUTING_EVIDENCE_RELEASE.md` stages 24–25) |
+| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; prompt v62 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | v62 (shorter v61 wording, owner choice 2026-10-18): official_v1 132 = v61 132, official_v2 139 vs v61 142, at the edge of the pre-registered rule; known regressions in `ROUTING_EVIDENCE_RELEASE.md` stage 26 |
 | Composer | DeepSeek-V4.1-Flash, reasoning low, prompt v3.34; DeepSeek API first, the same weights on DeepInfra when it fails | Gemini 3.1 Flash-Lite; DeepSeek thinking off | Ambiguous grade 3/3 with low against 1/3 with none on identical prompts; official_v4 with v61 and low: 0.960, paired with Run C 0.000 (2026-10-04, below) |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |

@@ -118,7 +118,7 @@ def test_scoring_operations_say_what_each_lookup_returns():
 def test_policy_questions_that_need_a_reference_table_also_look_it_up():
     # RAG alone often misses an appendix table, so the lookup is not optional.
     prompt = " ".join(PLANNER_SYSTEM_PROMPT.split())
-    assert "kết luận mà bảng không chứa (mức bắt buộc, quyền hưởng) → task structured tra bảng" in prompt
+    assert "kết luận mà bảng không chứa (mức bắt buộc, giá trị có đạt điều kiện không, quyền hưởng) → task structured tra bảng" in prompt
     assert "Hỏi giá trị/hàng bảng có sẵn chỉ là một task structured" in prompt
     assert "có thể là một RAG task tự đủ nghĩa" not in prompt
     use = compact_registry_for_prompt().split("foreign_language|", 1)[1].split("\n", 1)[0]

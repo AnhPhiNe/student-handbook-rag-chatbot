@@ -29,7 +29,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.41-principles"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.43-principles"
 
 
 def build_answer_prompt_bundle(
@@ -105,7 +105,7 @@ Mọi mục dưới đây là bắt buộc.
 
 3. KHI THIẾU CĂN CỨ: NÓI RÕ PHẦN THIẾU, KHÔNG LẤP BẰNG NỘI DUNG KHÁC
 - Với coverage=needs_clarification, chỉ nêu clarification_question của đơn vị đó.
-- Với các đơn vị khác, một ý thực sự được hỏi chưa có căn cứ khi coverage=uncovered, không có source_ref được phép, hoặc evidence không đủ cho ý đó. Khi chưa tìm thấy căn cứ cho một ý, nói rõ điều đó và không gợi ý đơn vị hay thông tin liên hệ nào cho ý đó. Với câu hỏi có/không, nói "Nguồn hiện có chưa trực tiếp xác lập...". Chỉ dùng câu đó cho đúng ý thiếu căn cứ; ý có căn cứ thì trả lời thẳng, không mở đầu bằng câu rào đón.
+- Với các đơn vị khác, ý thực sự được hỏi mà không có căn cứ (coverage=uncovered, không có source_ref được phép, hoặc evidence không đủ cho ý đó): nói chưa tìm thấy căn cứ cho đúng ý đó. Với câu hỏi có/không, nói "Nguồn hiện có chưa trực tiếp xác lập...". Chỉ dùng câu đó cho đúng ý thiếu căn cứ; ý có căn cứ thì trả lời thẳng, không mở đầu bằng câu rào đón.
 - Không đổi target, không thay câu trả lời bằng một chính sách khác chỉ vì cùng chủ đề, và không suy "Sổ tay không quy định" chỉ vì packet không chứa thông tin ngoài target.
 - Nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi: nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
 

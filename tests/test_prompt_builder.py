@@ -1205,10 +1205,10 @@ def test_rules_are_grouped_by_principle_in_order() -> None:
     # The stock phrase stays scoped to yes/no questions, as it was inside rule 6.
     assert 'Với câu hỏi có/không, nói "Nguồn hiện có chưa trực tiếp xác lập..."' in prompt
     # "Say what is unsupported" is stated once, in section 3, not again under tables.
-    assert prompt.count("Khi chưa tìm thấy căn cứ cho một ý") == 1
-    # Owner, 2026-10-11: a part without evidence gets no suggested unit or contact;
-    # grounded parts still give the unit the evidence names with all its contacts.
-    assert "không gợi ý đơn vị hay thông tin liên hệ nào cho ý đó" in prompt
+    assert prompt.count("chưa tìm thấy căn cứ cho đúng ý đó") == 1
+    # v3.43 (owner, 2026-10-19): no referral rule either way, as in v3.36. The
+    # no-referral sentence (v3.41, v3.42) lost grounded referrals in runs A and P.
+    assert "không gợi ý đơn vị hay thông tin liên hệ nào cho ý đó" not in prompt
     assert "cố vấn học tập hoặc văn phòng khoa" not in prompt
     assert "nêu đủ các trường liên hệ mà evidence của đơn vị đó có" in prompt
     assert "thiếu căn cứ thì nói rõ phần chưa xác lập" not in prompt

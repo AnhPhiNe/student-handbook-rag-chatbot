@@ -30,7 +30,7 @@ reports are listed at the end.
 | Component | Chosen | Alternatives measured | Deciding evidence |
 |---|---|---|---|
 | Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; prompt v62 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | v62 (shorter v61 wording, owner choice 2026-10-18): official_v1 132 = v61 132, official_v2 139 vs v61 142, at the edge of the pre-registered rule; known regressions in `ROUTING_EVIDENCE_RELEASE.md` stage 26 |
-| Composer | DeepSeek-V4.1-Flash, reasoning low, prompt v3.34; DeepSeek API first, the same weights on DeepInfra when it fails | Gemini 3.1 Flash-Lite; DeepSeek thinking off | Ambiguous grade 3/3 with low against 1/3 with none on identical prompts; official_v4 with v61 and low: 0.960, paired with Run C 0.000 (2026-10-04, below) |
+| Composer | DeepSeek-V4.1-Flash on DeepInfra only, reasoning none, prompt v3.43 (the rules as five principles) | Gemini 3.1 Flash-Lite; reasoning low; the DeepSeek API first; DeepSeek-V4.1-Flash-1017; a rule forbidding referrals without evidence (v3.41, v3.42) | official_v4 runs N (none against low) and Q (v3.43 against v3.36: −0.005, CI [−0.017, +0.006]); v3.43 deployed by the owner although its new-zero criterion failed (2026-10-19, below) |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
 | Reranker | Voyage `rerank-3`, on all 24 fused children (2026-09-30) | Qwen3-Reranker-8B, 4B, 0.6B on DeepInfra; Cohere rerank-v4.0-fast; none | first 0.942 / top-5 155/155 at p90 0.85 s, against 8B 0.923 / 155 at p90 4.7 s, 4B 0.903 / 153, Cohere 0.897, none 0.832 / 148. Chosen for availability: the DeepInfra 8B endpoint stalled for over four hours on 2026-09-30 |
@@ -231,6 +231,44 @@ and is corrected before the student sees it.
 | v3.28 | 2026-09-27 | Student wording; the admission-year definition returns to scope matching | Replays on identical evidence: v3.27 added the admission year to 8 answers against 2; DeepSeek echoed input terms (cohort, evidence) in 2–6 answers per run; 17–29 answers opened with a bare "Có."/"Không." |
 | v3.29 | 2026-09-28 | Yes/no conclusions stated as a full sentence, never a bare "Có." | A bare "Có." had affirmed the opposite of the answer (military leave and the study period) |
 | v3.30 | 2026-09-28 | Table rows read as labelled lines; contacts copied verbatim; sources without an article named by document title; notices state their school year | The thinking comparison above; sup_05 fixed with thinking off |
+| v3.41 | 2026-10-19 | The rules as five principles plus a sentence forbidding a suggested unit or contact for a part without evidence | Run P: −0.009 [−0.017, −0.003]; V4-229 and V4-235 lost the referral their golds expect; not kept |
+| v3.43 | 2026-10-19 | v3.41 without that sentence | Run Q, below; deployed |
+
+### Composer v3.43: the rules as principles (2026-10-19)
+
+From v3.0 to v3.40 the prompt grew by one rule per measured failure, so one idea
+sat in several places ("say what is unsupported" in three groups, "use only this
+unit's evidence" in four). v3.43 states each v3.36 rule once under the principle
+it serves: answer what is asked, for whom; conclude only what the unit's
+evidence directly establishes; when evidence is missing, say so without filling
+the gap; keep tables, numbers and contacts as the source has them; present so a
+student can read the answer and find it in the handbook. The input section says
+in plain words what a unit and a source carry. Rules that protect a measured
+failure keep their wording: labelled table rows (sup_05), "X trở lên"
+(K51 scholarship), verbatim identifiers, extensions (9 directory questions),
+rounding with formulas, and the admission-year definition inside its rule
+(moving it to the input made answers restate the admission year, v3.28).
+
+Measured against v3.36 with the same evidence or plans (official_v4 SPEC, runs P
+and Q): on 100 development questions v3.43 kept 95 of 106 required facts with
+answers 14% shorter (median 608 against 704 characters). On official_v4, with
+run K49's plans replayed, 0.964 against 0.969 in scope, paired −0.005, CI
+[−0.017, +0.006], no stray email. Its pre-registered rule failed on one new zero
+(V4-172), where both runs give the same answer and the judge scored them 0.0
+and 0.6; the owner deployed v3.43 as a recorded exception. The same happened to
+v3.41 (V4-195), so a later rule should count a new zero only when the answer
+differs from the baseline's.
+
+Two other choices were measured on the way. DeepSeek-V4.1-Flash-1017 answered
+24% shorter but read an adjacent table row on sup_05 (1 in 6 draws against 0 in
+10) and dropped a named unit's phone and email on V4-142, so the composer stays
+on V4.1-Flash, now on DeepInfra only. The sentence forbidding referrals without
+evidence (v3.41, as v3.42 before it) also removed grounded referrals; a part
+without evidence again gets "chưa tìm thấy căn cứ" with no referral rule. The
+known leak, a procedure mailbox (`nghidinh116@`) offered for a personal-contact
+question, remains, as in v3.36; a referral from the student-service catalog is
+the proposed next step. Planner v62 and normalizer v35 were deployed after run
+K49; v3.43 was measured with K49's v61 plans, so the combination is not measured.
 
 ## Directory selection: thresholds replaced by an LLM over a closed list
 

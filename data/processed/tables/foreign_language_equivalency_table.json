@@ -131,7 +131,7 @@
     "used_by_runtime": true,
     "source_cohort": "K50",
     "applicable_cohorts": [
-      "K48-K49",
+      "K49",
       "K50",
       "K51"
     ],

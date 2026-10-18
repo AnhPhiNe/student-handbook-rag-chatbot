@@ -111,7 +111,7 @@ def test_wrong_scale_does_not_emit_k51_candidate_arithmetic(span):
     assert packet["units"][0]["resolution_status"] == "evidence_only"
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 def test_reference_level_with_partial_scores_reaches_executor_and_composer(cohort):
     query = "TOEIC 4 kỹ năng: Nói 130, Viết 130; Nghe và Đọc cần khoảng nào cho bậc 3?"
     task = _task(query, "foreign_language", {

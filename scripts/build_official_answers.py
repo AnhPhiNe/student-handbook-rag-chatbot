@@ -12,7 +12,7 @@ from scripts.build_official_deterministic import compile_task, records
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "data/eval/official_v1"
-COHORTS = ("K48-K49", "K50", "K51")
+COHORTS = ("K49", "K50", "K51")
 
 FIELD_LABELS = {
     "certificate": "Chứng chỉ", "equivalent_level_3": "Bậc 3", "equivalent_level_4": "Bậc 4",

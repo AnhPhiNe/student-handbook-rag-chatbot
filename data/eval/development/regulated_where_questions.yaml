@@ -31,7 +31,7 @@ cases:
   - {id: q08, cohort: K51, route: includes_rag, query: "Sinh viên khuyết tật thuộc hộ nghèo nộp hồ sơ xin học bổng chính sách ở đâu, trong thời gian nào?", gold_parent: K51_ThongBaoHocBongNguoiKhuyetTat_Phan1, must_include: [["CTCT", "Công tác chính trị"], "30 ngày"]}
   - {id: q09, cohort: K50, route: includes_rag, query: "Điểm rèn luyện học kỳ của em bị sai thì gửi đơn khiếu nại cho phòng nào?", gold_parent: K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15, must_include: [["CTCT", "Công tác chính trị"], "7 ngày"]}
   - {id: q10, cohort: K50, route: includes_rag, query: "Em bị ốm nên vắng buổi thi, làm đơn nộp ở đâu để được thi bổ sung?", gold_parent: K50_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["Trưởng khoa", "Khảo thí"]}
-  - {id: q11, cohort: K48-K49, route: includes_rag, query: "Hết thời gian bảo lưu muốn đi học lại thì nộp hồ sơ ở đâu?", gold_parent: K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu31, must_include: [["CTCT", "Công tác chính trị"]]}
-  - {id: q12, cohort: K48-K49, route: includes_rag, query: "Vắng thi có giấy xác nhận của bệnh viện thì nộp đơn cho ai?", gold_parent: K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["Trưởng khoa", "Khảo thí"]}
+  - {id: q11, cohort: K49, route: includes_rag, query: "Hết thời gian bảo lưu muốn đi học lại thì nộp hồ sơ ở đâu?", gold_parent: K49_QuyCheCongTacSinhVien_Chuong5_Dieu31, must_include: [["CTCT", "Công tác chính trị"]]}
+  - {id: q12, cohort: K49, route: includes_rag, query: "Vắng thi có giấy xác nhận của bệnh viện thì nộp đơn cho ai?", gold_parent: K49_QuyCheDaoTao_Chuong3_Dieu10, must_include: ["Trưởng khoa", "Khảo thí"]}
   # ---- the regulation and the catalog agree
   - {id: q13, cohort: K51, route: includes_rag, query: "Cần xác nhận điểm rèn luyện để làm hồ sơ thì liên hệ phòng nào?", gold_parent: K51_QuyCheDanhGiaRenLuyen_Chuong5_Dieu16, must_include: [["CTCT", "Công tác chính trị"]]}

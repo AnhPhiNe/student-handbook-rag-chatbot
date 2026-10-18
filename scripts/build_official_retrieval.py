@@ -10,7 +10,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "data/eval/official_v1"
-COHORTS = ("K48-K49", "K50", "K51")
+COHORTS = ("K49", "K50", "K51")
 
 
 def validate_relevance(case):
@@ -117,7 +117,7 @@ def build():
         case["relevance_judgments"].append(judgment(parent, case["cohort"]))
         case["gold_evidence"].append(evidence(parent, anchor))
     assert len(cases) == 155
-    assert Counter(c.get("allocation_cohort", c["cohort"]) for c in cases) == {"K48-K49": 52, "K50": 52, "K51": 51}
+    assert Counter(c.get("allocation_cohort", c["cohort"]) for c in cases) == {"K49": 52, "K50": 52, "K51": 51}
     assert Counter(c["question_style"] for c in cases) == {"realistic": 124, "stress": 31}
     for case in cases:
         validate_relevance(case)

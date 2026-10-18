@@ -1,5 +1,5 @@
 # Hand-authored questions and catalog selectors. No runtime outputs used as gold.
-# Cohorts rotate K48-K49, K50, K51 in file order; each group has 45 cases.
+# Cohorts rotate K49, K50, K51 in file order; each group has 45 cases.
 # table: [subtype, row index or all, operation, optional course scope]
 # Other selectors identify source records, never call the production matcher.
 cases:

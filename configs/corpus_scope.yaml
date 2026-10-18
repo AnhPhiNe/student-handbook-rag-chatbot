@@ -8,14 +8,22 @@
 # tạo Điều 15 khoản 5, Điều 17 khoản 3), clauses written jointly for đại học and
 # cao đẳng (Quy chế công tác sinh viên Điều 30 khoản 3b, Điều 31 khoản 4), and
 # Quy tắc ứng xử Điều 5 (office hours) and Điều 8 (conduct toward students).
+# K49 prints the same Quy chế đào tạo as the K48 handbook (Điều 5 has unnumbered
+# parts, hence lead_prefix) and the same Quy tắc ứng xử as K50 and K51.
 version: 1
 exclude_parents:
-  - {id: "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu6", reason: "Liên kết đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
-  - {id: "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu13", reason: "Xử lý kết quả học tập, chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {id: "K49_QuyCheDaoTao_Chuong1_Dieu6", reason: "Liên kết đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {id: "K49_QuyCheDaoTao_Chuong3_Dieu13", reason: "Xử lý kết quả học tập, chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {id: "K50_QuyCheDaoTao_Chuong1_Dieu6", reason: "Liên kết đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {id: "K50_QuyCheDaoTao_Chuong3_Dieu13", reason: "Xử lý kết quả học tập, chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {id: "K51_QuyCheDaoTao_Chuong1_Dieu6", reason: "Liên kết đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {id: "K51_QuyCheDaoTao_Chuong3_Dieu13", reason: "Xử lý kết quả học tập, chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {id: "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu3", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu4", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu6", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu7", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu9", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
+  - {id: "K49_QuyDinhQuyTacUngXu_Chuong2_Dieu10", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
   - {id: "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu3", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
   - {id: "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu4", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
   - {id: "K50_QuyDinhQuyTacUngXu_Chuong2_Dieu6", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
@@ -29,11 +37,11 @@ exclude_parents:
   - {id: "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu9", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
   - {id: "K51_QuyDinhQuyTacUngXu_Chuong2_Dieu10", reason: "Quy tắc ứng xử, chỉ điều chỉnh công việc nội bộ của viên chức, người lao động"}
 exclude_units:
-  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3", unit: "6", items: ["b"], reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
-  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu5", lead_prefix: "Đào tạo vừa làm vừa học", reason: "Hình thức đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
-  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu7", unit: "5", items: ["b"], reason: "Phân bổ học kỳ chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
-  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9", unit: "2", reason: "Đăng ký học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
-  - {parent: "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15", unit: "7", reason: "Đợt xét tốt nghiệp chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K49_QuyCheDaoTao_Chuong1_Dieu3", unit: "6", items: ["b"], reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K49_QuyCheDaoTao_Chuong1_Dieu5", lead_prefix: "Đào tạo vừa làm vừa học", reason: "Hình thức đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K49_QuyCheDaoTao_Chuong2_Dieu7", unit: "5", items: ["b"], reason: "Phân bổ học kỳ chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K49_QuyCheDaoTao_Chuong2_Dieu9", unit: "2", reason: "Đăng ký học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {parent: "K49_QuyCheDaoTao_Chuong3_Dieu15", unit: "7", reason: "Đợt xét tốt nghiệp chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {parent: "K50_QuyCheDaoTao_Chuong1_Dieu3", unit: "6", items: ["b"], reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {parent: "K50_QuyCheDaoTao_Chuong1_Dieu5", unit: "2", reason: "Hình thức đào tạo chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {parent: "K50_QuyCheDaoTao_Chuong2_Dieu7", unit: "5", items: ["b"], reason: "Phân bổ học kỳ chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
@@ -54,6 +62,6 @@ exclude_units:
 # because the study-duration tool the planner reads names both forms of study; the
 # composer (v3.35) declines a question about a form of study the assistant does not serve.
 exclude_tables:
-  - {table_id: "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc", reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
+  - {table_id: "K49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc", reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {table_id: "K50_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc", reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}
   - {table_id: "K51_QuyCheDaoTao_Chuong1_Dieu3_study_duration_vua_lam_vua_hoc", reason: "Thời gian học tập chỉ áp dụng cho hình thức đào tạo vừa làm vừa học"}

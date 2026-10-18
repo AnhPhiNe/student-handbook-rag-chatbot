@@ -150,7 +150,7 @@ class StructuredLookupTest(unittest.TestCase):
         table = {
             "table_id": "K50_foreign_language_equivalency_dieu8",
             "cohort": "K50",
-            "applicable_cohorts": ["K48-K49", "K50", "K51"],
+            "applicable_cohorts": ["K49", "K50", "K51"],
             "applicability": "Điều 1 áp dụng cho sinh viên từ khóa 2022 trở đi.",
             "rows": [
                 {
@@ -164,13 +164,13 @@ class StructuredLookupTest(unittest.TestCase):
             "document_id": "so_tay_sinh_vien_khoa_50",
         }
 
-        self.assertTrue(is_cohort_applicable(table, "K48-K49"))
+        self.assertTrue(is_cohort_applicable(table, "K49"))
         self.assertTrue(is_cohort_applicable(table, "K50"))
         self.assertTrue(is_cohort_applicable(table, "K51"))
         self.assertFalse(is_cohort_applicable(table, "K47"))
 
-        # Test lookup for K51 and K48-K49 queries
-        for cohort in ["K48-K49", "K50", "K51"]:
+        # Test lookup for K51 and K49 queries
+        for cohort in ["K49", "K50", "K51"]:
             res = foreign_language_lookup(
                 "IELTS 6.0 quy đổi bậc mấy",
                 [table],
@@ -264,7 +264,7 @@ class StructuredLookupTest(unittest.TestCase):
         )
 
         legacy_first_degree_maxima = {}
-        for cohort in ("K48-K49", "K50"):
+        for cohort in ("K49", "K50"):
             cohort_rows = [
                 row
                 for table in registry
@@ -285,7 +285,7 @@ class StructuredLookupTest(unittest.TestCase):
 
         self.assertEqual(
             legacy_first_degree_maxima,
-            {"K48-K49": "8 năm học", "K50": "8 năm học"},
+            {"K49": "8 năm học", "K50": "8 năm học"},
         )
 
     def test_foreign_language_component_requirements_are_data_driven(self) -> None:
@@ -402,7 +402,7 @@ class StructuredLookupTest(unittest.TestCase):
     def test_scholarship_policy_schema_is_versioned_by_cohort(self) -> None:
         legacy_k48_k49 = next(
             table
-            for table in build_scoring_tables("K48-K49")
+            for table in build_scoring_tables("K49")
             if table.get("table_id") == "scholarship_classification"
         )
         legacy_k50 = next(
@@ -447,7 +447,7 @@ class StructuredLookupTest(unittest.TestCase):
         self.assertEqual(
             [
                 row["scholarship_score_range"]
-                for row in registry_tables["K48-K49"]["rows"]
+                for row in registry_tables["K49"]["rows"]
             ],
             ["2.56-3.352", "3.20-3.672", "3.60-4.0"],
         )
@@ -472,7 +472,7 @@ class StructuredLookupTest(unittest.TestCase):
                 if table.get("cohort") == cohort
                 and table.get("table_type") == "scholarship"
             }
-            for cohort in ("K48-K49", "K50", "K51")
+            for cohort in ("K49", "K50", "K51")
         }
         self.assertTrue(
             all(
@@ -488,7 +488,7 @@ class StructuredLookupTest(unittest.TestCase):
         )
 
     def test_scholarship_policy_bundle_contains_amount_and_eligibility(self) -> None:
-        for cohort in ("K48-K49", "K50", "K51"):
+        for cohort in ("K49", "K50", "K51"):
             tables = {
                 table["table_id"]: table
                 for table in build_scoring_tables(cohort)
@@ -991,7 +991,7 @@ class StructuredLookupTest(unittest.TestCase):
                 },
             },
             query="Môn tính GPA em được 3,6/10 thì có qua không?",
-            cohort="K48-K49",
+            cohort="K49",
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
@@ -1056,7 +1056,7 @@ class StructuredLookupTest(unittest.TestCase):
                 "slot_spans": {"training_mode": "vừa làm vừa học"},
             },
             query=query,
-            cohort="K48-K49",
+            cohort="K49",
             formula_rules=[],
             office_directory=[],
             student_service_directory=[],
@@ -1471,14 +1471,14 @@ class StructuredLookupTest(unittest.TestCase):
             {
                 "program_name": "Công nghệ Thông tin",
                 "faculty_name": "Khoa Công nghệ Thông tin",
-                "cohort": "K48-K49",
-                "document_id": "so_tay_sinh_vien_khoa_48_49",
+                "cohort": "K49",
+                "document_id": "so_tay_sinh_vien_khoa_49",
             },
             {
                 "program_name": "Sư phạm Tin học",
                 "faculty_name": "Khoa Công nghệ Thông tin",
-                "cohort": "K48-K49",
-                "document_id": "so_tay_sinh_vien_khoa_48_49",
+                "cohort": "K49",
+                "document_id": "so_tay_sinh_vien_khoa_49",
             },
             {
                 "program_name": "Công nghệ Giáo dục",
@@ -1507,7 +1507,7 @@ class StructuredLookupTest(unittest.TestCase):
         res_k49 = program_lookup(
             programs,
             candidate_text="Khoa Công nghệ Thông tin",
-            cohort="K48-K49",
+            cohort="K49",
             action="list",
             scope="faculty",
             selector=selector,

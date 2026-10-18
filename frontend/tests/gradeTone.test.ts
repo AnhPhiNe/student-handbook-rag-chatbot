@@ -11,12 +11,12 @@ function toneOf(cohort: Cohort, group: CourseGroup, letter: LetterGrade) {
 
 describe('getGradeTone', () => {
   it('bands passing grades by letter', () => {
-    assert.equal(toneOf('K48-K49', 'foundation', 'A'), 'excellent');
-    assert.equal(toneOf('K48-K49', 'foundation', 'B+'), 'excellent');
-    assert.equal(toneOf('K48-K49', 'foundation', 'B'), 'good');
-    assert.equal(toneOf('K48-K49', 'foundation', 'C+'), 'good');
-    assert.equal(toneOf('K48-K49', 'foundation', 'C'), 'fair');
-    assert.equal(toneOf('K48-K49', 'foundation', 'D'), 'weak');
+    assert.equal(toneOf('K49', 'foundation', 'A'), 'excellent');
+    assert.equal(toneOf('K49', 'foundation', 'B+'), 'excellent');
+    assert.equal(toneOf('K49', 'foundation', 'B'), 'good');
+    assert.equal(toneOf('K49', 'foundation', 'C+'), 'good');
+    assert.equal(toneOf('K49', 'foundation', 'C'), 'fair');
+    assert.equal(toneOf('K49', 'foundation', 'D'), 'weak');
   });
 
   it('colours a grade as failing wherever the scale fails it', () => {

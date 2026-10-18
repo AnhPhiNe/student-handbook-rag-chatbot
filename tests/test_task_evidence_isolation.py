@@ -260,7 +260,7 @@ def test_related_footnote_must_amend_an_authorized_primary_parent(target):
     assert all(a.source_parent_id == "allowed" for a in amendments)
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50"])
+@pytest.mark.parametrize("cohort", ["K49", "K50"])
 def test_authorized_parent_does_not_bypass_amendment_cohort_or_year(cohort):
     amendments = collect_applicable_amendments({"retrieved_items": [{"chunk_id": "allowed", "content": "Nguồn",
         "metadata": {"cohort": cohort}}]}, query="Điểm học lại", cohort=cohort,

@@ -4,72 +4,75 @@
 # v3 (2026-10-05): the three vừa làm vừa học study-duration tables are out of the
 # corpus scope (configs/corpus_scope.yaml) and have no search text; the other 32
 # texts are unchanged and re-pinned to the clause-chunk build's parents.
+# v4 (2026-10-13): the K48-K49 cohort is replaced by K49, built from the K49
+# handbook. Its 10 searchable tables have the same rows as the K48 ones (checked
+# against the K49 PDF, pages 9-11, 16-21, 48-49 and 69), so the texts only name K49.
 schema_version: table-search-reviewed-text-v1
-description_version: table-description-reviewed-v3
+description_version: table-description-reviewed-v4
 source_hashes:
-  structured_tables: 39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568
-  parent_docstore: 9d1c9d3fc0e89b156b82c946ee86901a04e5f35fba69b3e0da70fa9d93379b11
+  structured_tables: b369dd5af574b1240ae4673c93f9e5ecc0f9a78dc6793bc3962a5045aa75dae2
+  parent_docstore: a5d09bda79c6fabffe74717a659156d1d4ad7e918c618c8e3d83219d0cb3d246
 descriptions:
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9","K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"]'
+  - key: '["K49","K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9","K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"]'
     content: >-
-      Tra phân loại tổng điểm rèn luyện thang 100 trong sổ tay K48-K49,
+      Tra phân loại tổng điểm rèn luyện thang 100 trong sổ tay K49,
       gồm Xuất sắc, Tốt, Khá, Trung bình, Yếu và Kém theo từng khung điểm.
       Đây là bảng phân loại theo điểm; kết luận khi có kỷ luật hoặc xét toàn khóa
       còn phải đối chiếu các giới hạn trong điều khoản nguồn.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_amount"]'
+  - key: '["K49","K49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_amount"]'
     content: >-
       Tra công thức mức tiền học bổng khuyến khích học tập (HBKKHT) loại Khá,
-      Giỏi và Xuất sắc trong sổ tay K48-K49, gồm số tín chỉ, hệ số và định mức
+      Giỏi và Xuất sắc trong sổ tay K49, gồm số tín chỉ, hệ số và định mức
       học phí một tín chỉ tự nhiên hoặc xã hội tùy ngành học.
       Bảng không cho một số tiền cố định và không phải bảng điều kiện được cấp học bổng.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_classification"]'
+  - key: '["K49","K49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_classification"]'
     content: >-
       Tra xếp loại học bổng khuyến khích học tập (HBKKHT) Khá, Giỏi, Xuất sắc
-      trong sổ tay K48-K49 theo khoảng điểm học bổng, khoảng điểm học tập hệ 4
+      trong sổ tay K49 theo khoảng điểm học bổng, khoảng điểm học tập hệ 4
       và điều kiện điểm rèn luyện hệ 100 tương ứng.
       Bảng không thay thế công thức tính điểm học bổng, công thức tiền
       hoặc toàn bộ điều kiện xét cấp học bổng trong quy định.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_eligibility"]'
+  - key: '["K49","K49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_eligibility"]'
     content: >-
       Tra các điều kiện xét học bổng khuyến khích học tập (HBKKHT) cho sinh viên
-      chính quy trong sổ tay K48-K49: thời gian học tập chuẩn, kết quả học tập,
+      chính quy trong sổ tay K49: thời gian học tập chuẩn, kết quả học tập,
       rèn luyện, kỷ luật và khối lượng tín chỉ được tính để xét.
       Bảng có trường hợp học kỳ II năm cuối; việc cấp học bổng còn phải
       đối chiếu đầy đủ quy định và phạm vi quỹ học bổng trong nguồn.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_score_formula"]'
+  - key: '["K49","K49_QuyCheCongTacSinhVien_Chuong5_Dieu28","scholarship_score_formula"]'
     content: >-
       Tra công thức tính điểm xếp hạng học bổng khuyến khích học tập (HBKKHT)
-      trong sổ tay K48-K49 từ điểm học tập thang 4 và điểm rèn luyện thang 100.
+      trong sổ tay K49 từ điểm học tập thang 4 và điểm rèn luyện thang 100.
       Đây là công thức điểm học bổng, không phải công thức mức tiền,
       bảng xếp loại hay quyết định đủ điều kiện được cấp học bổng.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10","K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"]'
+  - key: '["K49","K49_QuyCheDaoTao_Chuong3_Dieu10","K49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"]'
     content: >-
       Tra quy đổi điểm học phần thang 10 sang điểm chữ A, B+, B, C+, C, D+, D,
-      F+ và F, kèm phân loại Đạt hoặc Không đạt trong sổ tay K48-K49.
+      F+ và F, kèm phân loại Đạt hoặc Không đạt trong sổ tay K49.
       Bảng dành cho học phần được tính vào điểm trung bình học tập (GPA),
       không phải bảng học phần chỉ yêu cầu đạt và không tính GPA.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10","K48_49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded"]'
+  - key: '["K49","K49_QuyCheDaoTao_Chuong3_Dieu10","K49_QuyCheDaoTao_Chuong3_Dieu10_pass_fail_ungraded"]'
     content: >-
       Tra đánh giá học phần chỉ yêu cầu đạt, không phân mức và không tính vào
-      điểm trung bình học tập (GPA) trong sổ tay K48-K49.
+      điểm trung bình học tập (GPA) trong sổ tay K49.
       Bảng nêu ngưỡng điểm thang 10, kết quả Đạt hoặc Chưa đạt và cách quy đổi
       thành điểm chữ P; không dùng thang điểm chữ phân mức của môn tính GPA.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11","K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"]'
+  - key: '["K49","K49_QuyCheDaoTao_Chuong3_Dieu11","K49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"]'
     content: >-
       Tra xếp loại học lực theo điểm trung bình thang 4 (GPA) trong sổ tay
-      K48-K49, gồm Xuất sắc, Giỏi, Khá, Trung bình, Yếu và Kém.
+      K49, gồm Xuất sắc, Giỏi, Khá, Trung bình, Yếu và Kém.
       Bảng áp dụng cho điểm trung bình học kỳ, năm học hoặc tích lũy;
       không phải bảng quy đổi điểm học phần thang 10 hay phân loại rèn luyện.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11","K48_49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4"]'
+  - key: '["K49","K49_QuyCheDaoTao_Chuong3_Dieu11","K49_QuyCheDaoTao_Chuong3_Dieu11_letter_to_grade4"]'
     content: >-
       Tra quy đổi điểm chữ học phần A, B+, B, C+, C, D+, D, F+ và F sang
-      điểm số thang 4 để tính điểm trung bình học tập (GPA) trong sổ tay K48-K49.
+      điểm số thang 4 để tính điểm trung bình học tập (GPA) trong sổ tay K49.
       Bảng không quy đổi trực tiếp từ điểm thang 10, không xếp loại học lực
       và không bao gồm những điểm chữ đặc biệt nằm ngoài các hàng đã liệt kê.
-  - key: '["K48-K49","K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3","K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"]'
+  - key: '["K49","K49_QuyCheDaoTao_Chuong1_Dieu3","K49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"]'
     content: >-
       Tra thời gian học tập chuẩn toàn khóa và thời gian học tập tối đa
-      của hình thức đào tạo chính quy trong sổ tay K48-K49.
+      của hình thức đào tạo chính quy trong sổ tay K49.
       Bảng phân biệt đại học cấp bằng thứ nhất, liên thông từ cao đẳng,
       liên thông từ trung cấp và liên thông khi đã có một bằng đại học.
   - key: '["K50","K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9","K50_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"]'

@@ -73,7 +73,7 @@ def test_prompt_bundle_exposes_the_exact_authorized_evidence_context() -> None:
 @pytest.mark.parametrize(
     ("cohort", "expected_years"),
     [
-        ("K48-K49", [2022, 2023]),
+        ("K49", [2023]),
         ("K50", [2024]),
         ("K51", [2025]),
         ("k50", [2024]),
@@ -420,7 +420,7 @@ def test_packet_binds_sources_to_their_tasks() -> None:
 
 
 def test_packet_binds_runtime_clarification_to_exact_cohort() -> None:
-    first_question = "Sinh viên K48-K49 cần tra cứu chứng chỉ nào?"
+    first_question = "Sinh viên K49 cần tra cứu chứng chỉ nào?"
     second_question = "Sinh viên K50 cần tra cứu chứng chỉ nào?"
     packet = build_authorized_evidence_packet(
         query="So sánh yêu cầu ngoại ngữ giữa các khóa",
@@ -431,7 +431,7 @@ def test_packet_binds_runtime_clarification_to_exact_cohort() -> None:
                         **_task(
                             "t1",
                             "Yêu cầu ngoại ngữ?",
-                            ["K48-K49", "K50", "K51"],
+                            ["K49", "K50", "K51"],
                         ),
                         "mode": "structured",
                         "clarification_question": "Không dùng câu hỏi chung của task.",
@@ -448,12 +448,12 @@ def test_packet_binds_runtime_clarification_to_exact_cohort() -> None:
                     "task_id": "t1",
                     "coverage": "needs_clarification",
                     "coverage_by_cohort": {
-                        "K48-K49": "needs_clarification",
+                        "K49": "needs_clarification",
                         "K50": "needs_clarification",
                         "K51": "covered",
                     },
                     "clarification_by_cohort": {
-                        "K48-K49": first_question,
+                        "K49": first_question,
                         "K50": second_question,
                         "K51": "Không dùng câu hỏi cũ cho khóa đã đủ nguồn.",
                     },
@@ -484,11 +484,11 @@ def test_packet_binds_runtime_clarification_to_exact_cohort() -> None:
     units = {
         (unit["task_id"], unit["cohort"]): unit for unit in packet["units"]
     }
-    assert units[("t1", "K48-K49")]["clarification_question"] == first_question
+    assert units[("t1", "K49")]["clarification_question"] == first_question
     assert units[("t1", "K50")]["clarification_question"] == second_question
     assert units[("t1", "K51")]["clarification_question"] is None
     assert units[("t2", "K51")]["clarification_question"] is None
-    for key in (("t1", "K48-K49"), ("t1", "K50"), ("t2", "K51")):
+    for key in (("t1", "K49"), ("t1", "K50"), ("t2", "K51")):
         assert units[key]["coverage"] == "needs_clarification"
         assert units[key]["allowed_source_refs"] == []
         assert units[key]["primary_evidence"] == []
@@ -977,14 +977,14 @@ def test_long_primary_source_uses_request_budget_not_legacy_1500_cap() -> None:
 
 def test_unit_budget_is_computed_after_task_cohort_and_target_filtering() -> None:
     tasks = [
-        _task(f"t{task_index}", f"Quy định task {task_index}?", ["K48-K49", "K50", "K51"])
+        _task(f"t{task_index}", f"Quy định task {task_index}?", ["K49", "K50", "K51"])
         for task_index in range(1, 4)
     ]
     tasks[0]["question"] = "Điều 27 quy định gì?"
     long_target = ("nội dung Điều khoản đích danh " * 240) + "TARGET_TAIL_PRESERVED"
     citations = []
     for task_index in range(1, 4):
-        for cohort in ("K48-K49", "K50", "K51"):
+        for cohort in ("K49", "K50", "K51"):
             for source_index in range(1, 6):
                 is_target = task_index == 1 and source_index == 1
                 citations.append(
@@ -1011,7 +1011,7 @@ def test_unit_budget_is_computed_after_task_cohort_and_target_filtering() -> Non
                     "task_id": task["id"],
                     "coverage": "covered",
                     "coverage_by_cohort": {
-                        "K48-K49": "covered",
+                        "K49": "covered",
                         "K50": "covered",
                         "K51": "covered",
                     },
@@ -1043,7 +1043,7 @@ def test_unit_budget_is_computed_after_task_cohort_and_target_filtering() -> Non
 
 def test_global_evidence_cap_truncates_only_oversized_candidate_workload() -> None:
     tasks = [
-        _task(f"t{task_index}", f"Câu hỏi rộng task {task_index}?", ["K48-K49", "K50", "K51"])
+        _task(f"t{task_index}", f"Câu hỏi rộng task {task_index}?", ["K49", "K50", "K51"])
         for task_index in range(1, 4)
     ]
     citations = [
@@ -1055,7 +1055,7 @@ def test_global_evidence_cap_truncates_only_oversized_candidate_workload() -> No
             "supports_task_ids": [f"t{task_index}"],
         }
         for task_index in range(1, 4)
-        for cohort in ("K48-K49", "K50", "K51")
+        for cohort in ("K49", "K50", "K51")
         for source_index in range(1, 6)
     ]
     packet = build_authorized_evidence_packet(
@@ -1067,7 +1067,7 @@ def test_global_evidence_cap_truncates_only_oversized_candidate_workload() -> No
                     "task_id": task["id"],
                     "coverage": "covered",
                     "coverage_by_cohort": {
-                        "K48-K49": "covered",
+                        "K49": "covered",
                         "K50": "covered",
                         "K51": "covered",
                     },

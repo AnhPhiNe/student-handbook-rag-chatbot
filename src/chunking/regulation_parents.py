@@ -47,6 +47,17 @@ LOW_VALUE_LINK_PATTERNS = (
     r"\s*xem\s+trong\s+(?:đường\s+dẫn|link)\b.*$",
     r"\s*(?:thông\s+qua|qua|trong)?\s*(?:đường\s+)?dẫn\s+hoặc\s+mã\s*qr\b.*$",
 )
+# "(xem trong đường dẫn hoặc mã QR ở cuối Quy định này)" points to a QR code the
+# answer cannot show. The PDF often wraps it over two lines, so it is removed from
+# the whole text first; the line filter below would drop the second line whole,
+# with the words after the pointer ("… này) theo hình thức nộp").
+QR_POINTER = r"xem\s+trong\s+đường\s+dẫn\s+hoặc\s+mã\s+QR\s+ở\s+cuối\s+(?:Quy|Nghị)\s+định\s+này"
+QR_POINTER_PATTERNS = (
+    # "(Mẫu số 01 – xem trong … này)": keep the form number and its bracket.
+    re.compile(rf"\s*[–-]\s*{QR_POINTER}(?=\s*\))", re.IGNORECASE),
+    # "(xem trong … này)" on its own.
+    re.compile(rf"\s*\(\s*{QR_POINTER}\s*\)", re.IGNORECASE),
+)
 LOW_VALUE_LINK_TERMS = (
     "mã qr",
     " qr",
@@ -93,6 +104,9 @@ def clean_regulation_source_content(content: str) -> str:
     ]
     if stop_positions:
         cleaned = cleaned[: min(stop_positions)].strip()
+
+    for pattern in QR_POINTER_PATTERNS:
+        cleaned = pattern.sub("", cleaned)
 
     lines = []
     for line in cleaned.splitlines():

@@ -35,7 +35,7 @@ def test_live_probe_checks_original_table_parent_and_candidate_store(mutation):
     elif mutation == "provenance":
         result["metadata"].update(cohort="K50", source_cohort="K50", document_id="wrong", applicable_cohorts=["K50"])
     elif mutation == "added_sharing":
-        result["metadata"].update(source_cohort="K50", applicable_cohorts=["K48-K49", "K50", "K51"], applicability_validated=True)
+        result["metadata"].update(source_cohort="K50", applicable_cohorts=["K49", "K50", "K51"], applicability_validated=True)
     result["metadata"]["raw_table_context"] = json.dumps({"tables": [raw]}, ensure_ascii=False)
     row = check_results([result], {"source_cohort": "K51", "cohort": "K51", "table_subtype": "conduct_classification"},
                         {"source": source, "parents": parents, "manifest": {"storage_targets": {"qdrant_collection": "candidate"}}})

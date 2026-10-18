@@ -81,35 +81,38 @@ cases:
     query: "Hồ sơ đánh giá rèn luyện cấp lớp gồm những gì?"
     gold_parent: K50_HuongDanLapHoSoRenLuyen_Phan2
     must_include: ["Biên bản họp", "Minh chứng"]
+  # Not migrated to K49 (2026-10-13): the K49 handbook prints no equivalent text.
   - id: sup_15
     cohort: K48-K49
     query: "Đơn xin tạm nghỉ học gửi cho ai?"
     gold_parent: K48-K49_MauDonBieuMau_Phan1
     must_include: ["Hiệu trưởng"]
+  # Not migrated to K49 (2026-10-13): the K49 handbook prints no equivalent text.
   - id: sup_16
     cohort: K48-K49
     query: "Quy tắc ứng xử của sinh viên trường gồm những gì?"
     gold_parent: K48-K49_QuyTacUngXuSinhVien_Phan1
     must_include: ["Tôn trọng thầy cô"]
   - id: sup_17
-    cohort: K48-K49
+    cohort: K49
     query: "Đạt danh hiệu Sinh viên 5 tốt cấp Trường được cộng mấy điểm rèn luyện?"
-    gold_parent: K48-K49_PhieuDanhGiaRenLuyen_Phan5
+    gold_parent: K49_KhungDiemDanhGiaRenLuyen_Phan6
     must_include: ["điểm"]
   - id: sup_18
-    cohort: K48-K49
+    cohort: K49
     query: "Con liệt sĩ có được miễn học phí không?"
-    gold_parent: K48-K49_ThongBaoMienGiamHocPhi_Phan2
+    gold_parent: K49_ThongBaoMienGiamHocPhi_Phan2
     must_include: ["miễn học phí"]
+  # Not migrated to K49 (2026-10-13): the K49 handbook prints no equivalent text.
   - id: sup_19
     cohort: K48-K49
     query: "Những ai được ưu tiên xét vào ở ký túc xá?"
     gold_parent: K48-K49_QuyTrinhXetVaoKyTucXa_Phan1
     must_include: ["dân tộc thiểu số"]
   - id: sup_20
-    cohort: K48-K49
+    cohort: K49
     query: "Ai chỉ định ban cán sự lớp sinh viên?"
-    gold_parent: K48-K49_CongViecCuaCacKhoa_Phan1
+    gold_parent: K49_CongViecCuaCacKhoa_Phan1
     must_include: ["khoa", "tạm thời"]
   - id: sup_21
     cohort: K50

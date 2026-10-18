@@ -75,18 +75,17 @@ def test_processed_program_catalog_has_source_audited_cohort_differences() -> No
             for record in records
             if record["cohort"] == cohort
         }
-        for cohort in ("K48-K49", "K50", "K51")
+        for cohort in ("K49", "K50", "K51")
     }
 
     assert {cohort: len(items) for cohort, items in by_cohort.items()} == {
-        "K48-K49": 41,
+        "K49": 43,
         "K50": 43,
         "K51": 45,
     }
-    assert set(by_cohort["K50"]) - set(by_cohort["K48-K49"]) == {
-        "Du lịch",
-        "Sinh học ứng dụng",
-    }
+    # The K49 and K50 handbooks print the same programmes (Du lịch and Sinh học
+    # ứng dụng first appear in K49; the K48 handbook had neither).
+    assert set(by_cohort["K50"]) == set(by_cohort["K49"])
     assert set(by_cohort["K51"]) - set(by_cohort["K50"]) == {
         "Công nghệ Giáo dục",
         "Toán ứng dụng",

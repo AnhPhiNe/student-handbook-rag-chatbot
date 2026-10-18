@@ -10,7 +10,7 @@ from scripts.build_official_retrieval import BUNDLE, build, validate_relevance
 def test_retrieval_draft_counts_and_compiled_artifact():
     cases = build()
     assert len(cases) == 155
-    assert Counter(c.get("allocation_cohort", c["cohort"]) for c in cases) == {"K48-K49": 52, "K50": 52, "K51": 51}
+    assert Counter(c.get("allocation_cohort", c["cohort"]) for c in cases) == {"K49": 52, "K50": 52, "K51": 51}
     assert Counter(c["question_style"] for c in cases) == {"realistic": 124, "stress": 31}
     assert cases == json.loads((BUNDLE / "retrieval_cases.json").read_text(encoding="utf-8"))
 

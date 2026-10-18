@@ -1,7 +1,7 @@
 [
   {
-    "office_profile_id": "K48-K49_ky_tuc_xa",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_ky_tuc_xa",
+    "cohort": "K49",
     "unit": "Ký túc xá",
     "unit_name": "Ký túc xá",
     "aliases": [
@@ -13,8 +13,8 @@
       "Tổ chức các hoạt động ngoại khoá trong và ngoài khu nội trú giúp sinh viên rèn luyện kỹ năng"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_ky_tuc_xa_service_1",
-      "K48-K49_K48-K49_ky_tuc_xa_service_2"
+      "K49_K49_ky_tuc_xa_service_1",
+      "K49_K49_ky_tuc_xa_service_2"
     ],
     "phones": [
       "(028) 38650758"
@@ -25,44 +25,44 @@
     "websites": [],
     "internal_numbers": [],
     "offices": [
-      "351B Lạc Long Quân, Phường 5, Quận 11, TP. HCM."
+      "351A Lạc Long Quân, Phường 5, Quận 11, TP. HCM."
     ],
     "source_pages": [
-      136
+      134
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_ky_tuc_xa_service_1",
-      "K48-K49_K48-K49_ky_tuc_xa_service_2"
+      "K49_K49_ky_tuc_xa_service_1",
+      "K49_K49_ky_tuc_xa_service_2"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
     "phone": "(028) 38650758",
     "email": "ktx@hcmue.edu.vn",
     "website": "",
-    "office": "351B Lạc Long Quân, Phường 5, Quận 11, TP. HCM.",
+    "office": "351A Lạc Long Quân, Phường 5, Quận 11, TP. HCM.",
     "summary": "Ký túc xá phu trach: Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú; Tổ chức các hoạt động ngoại khoá trong và ngoài khu nội trú giúp sinh viên rèn luyện kỹ năng",
-    "raw_text": "Don vi: Ký túc xá\nAlias: KTX, nội trú\nDich vu phu trach: Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú; Tổ chức các hoạt động ngoại khoá trong và ngoài khu nội trú giúp sinh viên rèn luyện kỹ năng\nEmail: ktx@hcmue.edu.vn\nDien thoai: (028) 38650758\nDia diem: 351B Lạc Long Quân, Phường 5, Quận 11, TP. HCM.",
+    "raw_text": "Don vi: Ký túc xá\nAlias: KTX, nội trú\nDich vu phu trach: Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú; Tổ chức các hoạt động ngoại khoá trong và ngoài khu nội trú giúp sinh viên rèn luyện kỹ năng\nEmail: ktx@hcmue.edu.vn\nDien thoai: (028) 38650758\nDia diem: 351A Lạc Long Quân, Phường 5, Quận 11, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_ky_tuc_xa",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_ky_tuc_xa",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        136
+        134
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh",
+    "cohort": "K49",
     "unit": "Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh",
     "unit_name": "Nhà xuất bản ĐHSP Thành phố Hồ Chí Minh",
     "aliases": [],
@@ -71,8 +71,8 @@
       "Xuất bản và phát hành sách phục vụ sinh viên trong và ngoài trường"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh_service_1",
-      "K48-K49_K48-K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh_service_2"
+      "K49_K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh_service_1",
+      "K49_K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh_service_2"
     ],
     "phones": [
       "(028) 39381382"
@@ -88,14 +88,14 @@
       "Nhà A, tầng trệt: P.007, tầng 1: P.114, tầng 2: P.212, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      136
+      134
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh_service_1",
-      "K48-K49_K48-K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh_service_2"
+      "K49_K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh_service_1",
+      "K49_K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh_service_2"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -111,18 +111,18 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_nha_xuat_ban_dhsp_thanh_pho_ho_chi_minh",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        136
+        134
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_phong_cong_nghe_thong_tin",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_cong_nghe_thong_tin",
+    "cohort": "K49",
     "unit": "Phòng Công nghệ Thông tin",
     "unit_name": "Phòng Công nghệ Thông tin",
     "aliases": [
@@ -135,15 +135,15 @@
       "Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ",
       "Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh",
       "Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường",
-      "Các công tác khác có liên quan đến Công nghệ Thông tin"
+      "Các công tác khác có liên quan đến công nghệ thông tin"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_1",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_2",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_3",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_4",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_5",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_6"
+      "K49_K49_phong_cong_nghe_thong_tin_service_1",
+      "K49_K49_phong_cong_nghe_thong_tin_service_2",
+      "K49_K49_phong_cong_nghe_thong_tin_service_3",
+      "K49_K49_phong_cong_nghe_thong_tin_service_4",
+      "K49_K49_phong_cong_nghe_thong_tin_service_5",
+      "K49_K49_phong_cong_nghe_thong_tin_service_6"
     ],
     "phones": [
       "(028) 38352020"
@@ -161,18 +161,18 @@
       "Nhà A, tầng 5, P.503, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      129
+      127
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_1",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_2",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_3",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_4",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_5",
-      "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_6"
+      "K49_K49_phong_cong_nghe_thong_tin_service_1",
+      "K49_K49_phong_cong_nghe_thong_tin_service_2",
+      "K49_K49_phong_cong_nghe_thong_tin_service_3",
+      "K49_K49_phong_cong_nghe_thong_tin_service_4",
+      "K49_K49_phong_cong_nghe_thong_tin_service_5",
+      "K49_K49_phong_cong_nghe_thong_tin_service_6"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -180,26 +180,26 @@
     "email": "phongcntt@hcmue.edu.vn",
     "website": "phongcntt.hcmue.edu.vn",
     "office": "Nhà A, tầng 5, P.503, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-    "summary": "Phòng Công nghệ Thông tin phu trach: Quản lý email của sinh viên được cấp theo tên miền của Trường Đại học Sư phạm Thành phố Hồ Chí Minh; Quản lý trang thông tin điện tử của Trường; Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ; Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh; Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường; Các công tác khác có liên quan đến Công nghệ Thông tin",
-    "raw_text": "Don vi: Phòng Công nghệ Thông tin\nAlias: CNTT, phòng IT\nDich vu phu trach: Quản lý email của sinh viên được cấp theo tên miền của Trường Đại học Sư phạm Thành phố Hồ Chí Minh; Quản lý trang thông tin điện tử của Trường; Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ; Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh; Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường; Các công tác khác có liên quan đến Công nghệ Thông tin\nEmail: phongcntt@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 5, P.503, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+    "summary": "Phòng Công nghệ Thông tin phu trach: Quản lý email của sinh viên được cấp theo tên miền của Trường Đại học Sư phạm Thành phố Hồ Chí Minh; Quản lý trang thông tin điện tử của Trường; Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ; Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh; Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường; Các công tác khác có liên quan đến công nghệ thông tin",
+    "raw_text": "Don vi: Phòng Công nghệ Thông tin\nAlias: CNTT, phòng IT\nDich vu phu trach: Quản lý email của sinh viên được cấp theo tên miền của Trường Đại học Sư phạm Thành phố Hồ Chí Minh; Quản lý trang thông tin điện tử của Trường; Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ; Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh; Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường; Các công tác khác có liên quan đến công nghệ thông tin\nEmail: phongcntt@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 5, P.503, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_cong_nghe_thong_tin",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_cong_nghe_thong_tin",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        129
+        127
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien",
+    "cohort": "K49",
     "unit": "Phòng Công tác chính trị và Học sinh, sinh viên",
     "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
     "aliases": [
@@ -210,26 +210,31 @@
       "Phòng Công tác sinh viên"
     ],
     "services": [
-      "Công tác giáo dục chính trị tư tưởng",
+      "Công tác giáo dục chính trị, tư tưởng",
+      "Công tác giáo dục pháp luật",
+      "Công tác giáo dục đạo đức, lối sống, kỹ năng sống",
       "Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường",
-      "Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên",
-      "Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên"
+      "Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên",
+      "Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên",
+      "Tiếp nhận thông tin phản ánh của sinh viên"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_1",
-      "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_2",
-      "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
-      "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_4"
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_1",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_2",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_4",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_5",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_6",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_7"
     ],
     "phones": [
       "(028) 38352020"
     ],
     "emails": [
-      "hopthusinhvien@hcmue.edu.vn",
-      "phongctct@hcmue.edu.vn"
+      "hopthusinhvien@hcmue.edu.vn"
     ],
     "websites": [
-      "phongctct.hcmue.edu.vn"
+      "ctsv.hcmue.edu.vn"
     ],
     "internal_numbers": [
       "127",
@@ -240,61 +245,60 @@
       "Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      129,
-      130
+      127,
+      128
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_1",
-      "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_2",
-      "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
-      "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_4"
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_1",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_2",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_4",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_5",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_6",
+      "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_7"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
     "phone": "(028) 38352020",
-    "email": "hopthusinhvien@hcmue.edu.vn; phongctct@hcmue.edu.vn",
-    "website": "phongctct.hcmue.edu.vn",
+    "email": "hopthusinhvien@hcmue.edu.vn",
+    "website": "ctsv.hcmue.edu.vn",
     "office": "Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-    "summary": "Phòng Công tác chính trị và Học sinh, sinh viên phu trach: Công tác giáo dục chính trị tư tưởng; Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường; Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên; Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên",
-    "raw_text": "Don vi: Phòng Công tác chính trị và Học sinh, sinh viên\nAlias: CTCT&HSSV, CTCT-HSSV, CTSV, HSSV, Phòng Công tác sinh viên\nDich vu phu trach: Công tác giáo dục chính trị tư tưởng; Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường; Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên; Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên\nEmail: hopthusinhvien@hcmue.edu.vn; phongctct@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+    "summary": "Phòng Công tác chính trị và Học sinh, sinh viên phu trach: Công tác giáo dục chính trị, tư tưởng; Công tác giáo dục pháp luật; Công tác giáo dục đạo đức, lối sống, kỹ năng sống; Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường; Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên; Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên; Tiếp nhận thông tin phản ánh của sinh viên",
+    "raw_text": "Don vi: Phòng Công tác chính trị và Học sinh, sinh viên\nAlias: CTCT&HSSV, CTCT-HSSV, CTSV, HSSV, Phòng Công tác sinh viên\nDich vu phu trach: Công tác giáo dục chính trị, tư tưởng; Công tác giáo dục pháp luật; Công tác giáo dục đạo đức, lối sống, kỹ năng sống; Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường; Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên; Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên; Tiếp nhận thông tin phản ánh của sinh viên\nEmail: hopthusinhvien@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        129,
-        130
+        127,
+        128
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_phong_hop_tac_quoc_te",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_hop_tac_quoc_te",
+    "cohort": "K49",
     "unit": "Phòng Hợp tác Quốc tế",
     "unit_name": "Phòng Hợp tác Quốc tế",
     "aliases": [],
     "services": [
-      "Thông báo, tổ chức giới thiệu các loại học bổng quốc tế đến sinh viên",
-      "Học bổng du học các nước nói tiếng Anh; Trung Quốc; Nhật; Hàn; Pháp",
-      "Trao đổi sinh viên ngắn hạn",
-      "Thực tập ngắn hạn ở nước ngoài",
-      "Giao lưu văn hóa – học thuật với sinh viên nước ngoài"
+      "Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước",
+      "Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác nước ngoài",
+      "Tổ chức giao lưu văn hóa – trao đổi học thuật"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_1",
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_2",
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_3",
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_4",
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_5"
+      "K49_K49_phong_hop_tac_quoc_te_service_1",
+      "K49_K49_phong_hop_tac_quoc_te_service_2",
+      "K49_K49_phong_hop_tac_quoc_te_service_3"
     ],
     "phones": [
       "(028) 38391080"
@@ -313,17 +317,15 @@
       "Nhà A, tầng 1, P.111, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      131
+      129
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_1",
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_2",
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_3",
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_4",
-      "K48-K49_K48-K49_phong_hop_tac_quoc_te_service_5"
+      "K49_K49_phong_hop_tac_quoc_te_service_1",
+      "K49_K49_phong_hop_tac_quoc_te_service_2",
+      "K49_K49_phong_hop_tac_quoc_te_service_3"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -331,26 +333,29 @@
     "email": "phonghtqt@hcmue.edu.vn",
     "website": "phonghtqt.hcmue.edu.vn",
     "office": "Nhà A, tầng 1, P.111, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-    "summary": "Phòng Hợp tác Quốc tế phu trach: Thông báo, tổ chức giới thiệu các loại học bổng quốc tế đến sinh viên; Học bổng du học các nước nói tiếng Anh; Trung Quốc; Nhật; Hàn; Pháp; Trao đổi sinh viên ngắn hạn; Thực tập ngắn hạn ở nước ngoài; Giao lưu văn hóa – học thuật với sinh viên nước ngoài",
-    "raw_text": "Don vi: Phòng Hợp tác Quốc tế\nAlias: \nDich vu phu trach: Thông báo, tổ chức giới thiệu các loại học bổng quốc tế đến sinh viên; Học bổng du học các nước nói tiếng Anh; Trung Quốc; Nhật; Hàn; Pháp; Trao đổi sinh viên ngắn hạn; Thực tập ngắn hạn ở nước ngoài; Giao lưu văn hóa – học thuật với sinh viên nước ngoài\nEmail: phonghtqt@hcmue.edu.vn\nDien thoai: (028) 38391080\nDia diem: Nhà A, tầng 1, P.111, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+    "summary": "Phòng Hợp tác Quốc tế phu trach: Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước; Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác nước ngoài; Tổ chức giao lưu văn hóa – trao đổi học thuật",
+    "raw_text": "Don vi: Phòng Hợp tác Quốc tế\nAlias: \nDich vu phu trach: Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước; Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác nước ngoài; Tổ chức giao lưu văn hóa – trao đổi học thuật\nEmail: phonghtqt@hcmue.edu.vn\nDien thoai: (028) 3891080\nDia diem: Nhà A, tầng 1, P.111, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_hop_tac_quoc_te",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_hop_tac_quoc_te",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        131
+        129
       ],
       "source_record_id": null
-    }
+    },
+    "review_notes": [
+      "Sổ tay K49 tr. 129 in \"(028) 3891080\", thiếu một chữ số, được coi là lỗi in; số đầy đủ (028) 38391080 lấy theo Sổ tay K48 tr. 131 (cùng số nội bộ 172, 173)."
+    ]
   },
   {
-    "office_profile_id": "K48-K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc",
+    "cohort": "K49",
     "unit": "Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học",
     "unit_name": "Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học",
     "aliases": [],
@@ -359,8 +364,8 @@
       "Quản lý Tạp chí Khoa học"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc_service_1",
-      "K48-K49_K48-K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc_service_2"
+      "K49_K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc_service_1",
+      "K49_K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc_service_2"
     ],
     "phones": [
       "(028) 38352020"
@@ -377,14 +382,15 @@
       "Nhà A, tầng 1, P.112, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      131
+      129,
+      130
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc_service_1",
-      "K48-K49_K48-K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc_service_2"
+      "K49_K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc_service_1",
+      "K49_K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc_service_2"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -400,18 +406,19 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        131
+        129,
+        130
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_phong_khao_thi_va_dam_bao_chat_luong",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_khao_thi_va_dam_bao_chat_luong",
+    "cohort": "K49",
     "unit": "Phòng Khảo thí và Đảm bảo chất lượng",
     "unit_name": "Phòng Khảo thí và Đảm bảo chất lượng",
     "aliases": [
@@ -425,10 +432,10 @@
       "Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_1",
-      "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_2",
-      "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_3",
-      "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_4"
+      "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_1",
+      "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_2",
+      "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_3",
+      "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_4"
     ],
     "phones": [
       "(028) 38352020"
@@ -449,16 +456,16 @@
       "Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      134
+      132
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_1",
-      "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_2",
-      "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_3",
-      "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_4"
+      "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_1",
+      "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_2",
+      "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_3",
+      "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_4"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -474,18 +481,18 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_khao_thi_va_dam_bao_chat_luong",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_khao_thi_va_dam_bao_chat_luong",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        134
+        132
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_phong_ke_hoach_tai_chinh",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_ke_hoach_tai_chinh",
+    "cohort": "K49",
     "unit": "Phòng Kế hoạch – Tài chính",
     "unit_name": "Phòng Kế hoạch – Tài chính",
     "aliases": [
@@ -497,8 +504,8 @@
       "Cấp phát HBKKHT và trợ cấp các loại chế độ chính sách cho sinh viên các hệ đào tạo"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_ke_hoach_tai_chinh_service_1",
-      "K48-K49_K48-K49_phong_ke_hoach_tai_chinh_service_2"
+      "K49_K49_phong_ke_hoach_tai_chinh_service_1",
+      "K49_K49_phong_ke_hoach_tai_chinh_service_2"
     ],
     "phones": [
       "(028) 38352020"
@@ -520,14 +527,14 @@
       "Nhà A, tầng 2, P.205, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      132
+      130
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_ke_hoach_tai_chinh_service_1",
-      "K48-K49_K48-K49_phong_ke_hoach_tai_chinh_service_2"
+      "K49_K49_phong_ke_hoach_tai_chinh_service_1",
+      "K49_K49_phong_ke_hoach_tai_chinh_service_2"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -543,18 +550,18 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_ke_hoach_tai_chinh",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_ke_hoach_tai_chinh",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        132
+        130
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_phong_quan_tri_thiet_bi",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_quan_tri_thiet_bi",
+    "cohort": "K49",
     "unit": "Phòng Quản trị – Thiết bị",
     "unit_name": "Phòng Quản trị – Thiết bị",
     "aliases": [],
@@ -565,10 +572,10 @@
       "Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương, Quận 5 và 222 Lê Văn Sỹ, Quận 3"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_quan_tri_thiet_bi_service_1",
-      "K48-K49_K48-K49_phong_quan_tri_thiet_bi_service_2",
-      "K48-K49_K48-K49_phong_quan_tri_thiet_bi_service_3",
-      "K48-K49_K48-K49_phong_quan_tri_thiet_bi_service_4"
+      "K49_K49_phong_quan_tri_thiet_bi_service_1",
+      "K49_K49_phong_quan_tri_thiet_bi_service_2",
+      "K49_K49_phong_quan_tri_thiet_bi_service_3",
+      "K49_K49_phong_quan_tri_thiet_bi_service_4"
     ],
     "phones": [
       "(028) 38352020"
@@ -585,16 +592,16 @@
       "Nhà C, tầng trệt, P.004, P.005, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      132
+      130
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_quan_tri_thiet_bi_service_1",
-      "K48-K49_K48-K49_phong_quan_tri_thiet_bi_service_2",
-      "K48-K49_K48-K49_phong_quan_tri_thiet_bi_service_3",
-      "K48-K49_K48-K49_phong_quan_tri_thiet_bi_service_4"
+      "K49_K49_phong_quan_tri_thiet_bi_service_1",
+      "K49_K49_phong_quan_tri_thiet_bi_service_2",
+      "K49_K49_phong_quan_tri_thiet_bi_service_3",
+      "K49_K49_phong_quan_tri_thiet_bi_service_4"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -610,30 +617,32 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_quan_tri_thiet_bi",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_quan_tri_thiet_bi",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        132
+        130
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_phong_sau_dai_hoc",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_sau_dai_hoc",
+    "cohort": "K49",
     "unit": "Phòng Sau Đại học",
     "unit_name": "Phòng Sau Đại học",
     "aliases": [],
     "services": [
-      "Tổ chức ôn tập, tiếp nhận hồ sơ, tổ chức thi tuyển sinh Sau Đại học",
-      "Chuyển tiếp sinh đào tạo trình độ Thạc sĩ và Tiến sĩ",
-      "Lập hồ sơ xét tuyển nghiên cứu sinh"
+      "Tổ chức tư vấn chiêu sinh, tiếp nhận hồ sơ chương trình bổ sung kiến thức trình độ tiến sĩ, thạc sĩ",
+      "Tổ chức tư vấn tuyển sinh, tiếp nhận hồ sơ đăng ký xét tuyển và xét tuyển sinh trình độ tiến sĩ, thạc sĩ",
+      "Tổ chức đào tạo chương trình bổ sung kiến thức, đào tạo trình độ thạc sĩ và tiến sĩ",
+      "Sinh viên truy cập đường dẫn sau để đọc các thông tin về Quy chế tuyển sinh và đào tạo trình độ thạc sĩ: https://bit.ly/Quychedaotaothacsi"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_sau_dai_hoc_service_1",
-      "K48-K49_K48-K49_phong_sau_dai_hoc_service_2",
-      "K48-K49_K48-K49_phong_sau_dai_hoc_service_3"
+      "K49_K49_phong_sau_dai_hoc_service_1",
+      "K49_K49_phong_sau_dai_hoc_service_2",
+      "K49_K49_phong_sau_dai_hoc_service_3",
+      "K49_K49_phong_sau_dai_hoc_service_4"
     ],
     "phones": [
       "(028) 38352020",
@@ -643,6 +652,7 @@
       "phongsdh@hcmue.edu.vn"
     ],
     "websites": [
+      "https://bit.ly/Quychedaotaothacsi",
       "phongsdh.hcmue.edu.vn"
     ],
     "internal_numbers": [
@@ -655,44 +665,43 @@
       "Nhà C, tầng 1, P.102, P.103, P.104, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      132,
-      133
+      131
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_sau_dai_hoc_service_1",
-      "K48-K49_K48-K49_phong_sau_dai_hoc_service_2",
-      "K48-K49_K48-K49_phong_sau_dai_hoc_service_3"
+      "K49_K49_phong_sau_dai_hoc_service_1",
+      "K49_K49_phong_sau_dai_hoc_service_2",
+      "K49_K49_phong_sau_dai_hoc_service_3",
+      "K49_K49_phong_sau_dai_hoc_service_4"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
     "phone": "(028) 38352020; (028) 38391077",
     "email": "phongsdh@hcmue.edu.vn",
-    "website": "phongsdh.hcmue.edu.vn",
+    "website": "https://bit.ly/Quychedaotaothacsi; phongsdh.hcmue.edu.vn",
     "office": "Nhà C, tầng 1, P.102, P.103, P.104, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-    "summary": "Phòng Sau Đại học phu trach: Tổ chức ôn tập, tiếp nhận hồ sơ, tổ chức thi tuyển sinh Sau Đại học; Chuyển tiếp sinh đào tạo trình độ Thạc sĩ và Tiến sĩ; Lập hồ sơ xét tuyển nghiên cứu sinh",
-    "raw_text": "Don vi: Phòng Sau Đại học\nAlias: \nDich vu phu trach: Tổ chức ôn tập, tiếp nhận hồ sơ, tổ chức thi tuyển sinh Sau Đại học; Chuyển tiếp sinh đào tạo trình độ Thạc sĩ và Tiến sĩ; Lập hồ sơ xét tuyển nghiên cứu sinh\nEmail: phongsdh@hcmue.edu.vn\nDien thoai: (028) 38352020; (028) 38391077\nDia diem: Nhà C, tầng 1, P.102, P.103, P.104, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+    "summary": "Phòng Sau Đại học phu trach: Tổ chức tư vấn chiêu sinh, tiếp nhận hồ sơ chương trình bổ sung kiến thức trình độ tiến sĩ, thạc sĩ; Tổ chức tư vấn tuyển sinh, tiếp nhận hồ sơ đăng ký xét tuyển và xét tuyển sinh trình độ tiến sĩ, thạc sĩ; Tổ chức đào tạo chương trình bổ sung kiến thức, đào tạo trình độ thạc sĩ và tiến sĩ; Sinh viên truy cập đường dẫn sau để đọc các thông tin về Quy chế tuyển sinh và đào tạo trình độ thạc sĩ: https://bit.ly/Quychedaotaothacsi",
+    "raw_text": "Don vi: Phòng Sau Đại học\nAlias: \nDich vu phu trach: Tổ chức tư vấn chiêu sinh, tiếp nhận hồ sơ chương trình bổ sung kiến thức trình độ tiến sĩ, thạc sĩ; Tổ chức tư vấn tuyển sinh, tiếp nhận hồ sơ đăng ký xét tuyển và xét tuyển sinh trình độ tiến sĩ, thạc sĩ; Tổ chức đào tạo chương trình bổ sung kiến thức, đào tạo trình độ thạc sĩ và tiến sĩ; Sinh viên truy cập đường dẫn sau để đọc các thông tin về Quy chế tuyển sinh và đào tạo trình độ thạc sĩ: https://bit.ly/Quychedaotaothacsi\nEmail: phongsdh@hcmue.edu.vn\nDien thoai: (028) 38352020; (028) 38391077\nDia diem: Nhà C, tầng 1, P.102, P.103, P.104, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_sau_dai_hoc",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_sau_dai_hoc",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        132,
-        133
+        131
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_phong_thanh_tra_dao_tao",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_thanh_tra_dao_tao",
+    "cohort": "K49",
     "unit": "Phòng Thanh tra Đào tạo",
     "unit_name": "Phòng Thanh tra Đào tạo",
     "aliases": [],
@@ -701,8 +710,8 @@
       "Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_thanh_tra_dao_tao_service_1",
-      "K48-K49_K48-K49_phong_thanh_tra_dao_tao_service_2"
+      "K49_K49_phong_thanh_tra_dao_tao_service_1",
+      "K49_K49_phong_thanh_tra_dao_tao_service_2"
     ],
     "phones": [
       "(028) 38352020"
@@ -720,14 +729,14 @@
       "Nhà A, tầng 2, P.209, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      133
+      131
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_thanh_tra_dao_tao_service_1",
-      "K48-K49_K48-K49_phong_thanh_tra_dao_tao_service_2"
+      "K49_K49_phong_thanh_tra_dao_tao_service_1",
+      "K49_K49_phong_thanh_tra_dao_tao_service_2"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -743,82 +752,18 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_thanh_tra_dao_tao",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_thanh_tra_dao_tao",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        133
+        131
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_phong_to_chuc_hanh_chinh",
-    "cohort": "K48-K49",
-    "unit": "Phòng Tổ chức – Hành chính",
-    "unit_name": "Phòng Tổ chức – Hành chính",
-    "aliases": [],
-    "services": [
-      "Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền",
-      "Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên"
-    ],
-    "service_ids": [
-      "K48-K49_K48-K49_phong_to_chuc_hanh_chinh_service_1",
-      "K48-K49_K48-K49_phong_to_chuc_hanh_chinh_service_2"
-    ],
-    "phones": [
-      "(028) 38352020"
-    ],
-    "emails": [
-      "phongtchc@hcmue.edu.vn"
-    ],
-    "websites": [
-      "phongtchc.hcmue.edu.vn"
-    ],
-    "internal_numbers": [
-      "148",
-      "179",
-      "213"
-    ],
-    "offices": [
-      "Nhà A, tầng 1, P.104, P.105, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
-    ],
-    "source_pages": [
-      133
-    ],
-    "source_service_ids": [
-      "K48-K49_K48-K49_phong_to_chuc_hanh_chinh_service_1",
-      "K48-K49_K48-K49_phong_to_chuc_hanh_chinh_service_2"
-    ],
-    "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
-    ],
-    "content_type": "student_office_profile",
-    "source_section": "student_office_profiles",
-    "phone": "(028) 38352020",
-    "email": "phongtchc@hcmue.edu.vn",
-    "website": "phongtchc.hcmue.edu.vn",
-    "office": "Nhà A, tầng 1, P.104, P.105, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-    "summary": "Phòng Tổ chức – Hành chính phu trach: Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền; Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên",
-    "raw_text": "Don vi: Phòng Tổ chức – Hành chính\nAlias: \nDich vu phu trach: Đóng dấu các loại văn bản khi đã có chữ ký của người có thẩm quyền; Nhận và phân loại thư, bưu phẩm chuyển về các khoa cho sinh viên\nEmail: phongtchc@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.104, P.105, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-    "data_category": "directory_table",
-    "quality_status": "approved",
-    "embedding_enabled": false,
-    "retrieval_mode": "deterministic",
-    "source_provenance": {
-      "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_to_chuc_hanh_chinh",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "source_pages": [
-        133
-      ],
-      "source_record_id": null
-    }
-  },
-  {
-    "office_profile_id": "K48-K49_phong_dao_tao",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_phong_dao_tao",
+    "cohort": "K49",
     "unit": "Phòng Đào tạo",
     "unit_name": "Phòng Đào tạo",
     "aliases": [
@@ -835,13 +780,13 @@
       "Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_phong_dao_tao_service_1",
-      "K48-K49_K48-K49_phong_dao_tao_service_2",
-      "K48-K49_K48-K49_phong_dao_tao_service_3",
-      "K48-K49_K48-K49_phong_dao_tao_service_4",
-      "K48-K49_K48-K49_phong_dao_tao_service_5",
-      "K48-K49_K48-K49_phong_dao_tao_service_6",
-      "K48-K49_K48-K49_phong_dao_tao_service_7"
+      "K49_K49_phong_dao_tao_service_1",
+      "K49_K49_phong_dao_tao_service_2",
+      "K49_K49_phong_dao_tao_service_3",
+      "K49_K49_phong_dao_tao_service_4",
+      "K49_K49_phong_dao_tao_service_5",
+      "K49_K49_phong_dao_tao_service_6",
+      "K49_K49_phong_dao_tao_service_7"
     ],
     "phones": [
       "(028) 38352020"
@@ -860,20 +805,20 @@
       "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      130,
-      131
+      128,
+      129
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_phong_dao_tao_service_1",
-      "K48-K49_K48-K49_phong_dao_tao_service_2",
-      "K48-K49_K48-K49_phong_dao_tao_service_3",
-      "K48-K49_K48-K49_phong_dao_tao_service_4",
-      "K48-K49_K48-K49_phong_dao_tao_service_5",
-      "K48-K49_K48-K49_phong_dao_tao_service_6",
-      "K48-K49_K48-K49_phong_dao_tao_service_7"
+      "K49_K49_phong_dao_tao_service_1",
+      "K49_K49_phong_dao_tao_service_2",
+      "K49_K49_phong_dao_tao_service_3",
+      "K49_K49_phong_dao_tao_service_4",
+      "K49_K49_phong_dao_tao_service_5",
+      "K49_K49_phong_dao_tao_service_6",
+      "K49_K49_phong_dao_tao_service_7"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -889,19 +834,19 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_phong_dao_tao",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_phong_dao_tao",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        130,
-        131
+        128,
+        129
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_thu_vien",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_thu_vien",
+    "cohort": "K49",
     "unit": "Thư viện",
     "unit_name": "Thư viện",
     "aliases": [],
@@ -913,16 +858,16 @@
       "Tư vấn, trao đổi, phổ biến thông tin cho sinh viên"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_thu_vien_service_1",
-      "K48-K49_K48-K49_thu_vien_service_2",
-      "K48-K49_K48-K49_thu_vien_service_3",
-      "K48-K49_K48-K49_thu_vien_service_4",
-      "K48-K49_K48-K49_thu_vien_service_5"
+      "K49_K49_thu_vien_service_1",
+      "K49_K49_thu_vien_service_2",
+      "K49_K49_thu_vien_service_3",
+      "K49_K49_thu_vien_service_4",
+      "K49_K49_thu_vien_service_5"
     ],
     "phones": [
-      "(028) 35260834",
-      "(028) 35261043",
-      "(028) 38308905"
+      "(028) 35261042",
+      "(028) 38308905",
+      "(028) 38352020"
     ],
     "emails": [
       "thuvien@hcmue.edu.vn"
@@ -932,52 +877,53 @@
       "lib.hcmue.edu.vn"
     ],
     "internal_numbers": [
+      "231",
       "234"
     ],
     "offices": [
       "Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM."
     ],
     "source_pages": [
-      134,
-      135
+      132,
+      133
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_thu_vien_service_1",
-      "K48-K49_K48-K49_thu_vien_service_2",
-      "K48-K49_K48-K49_thu_vien_service_3",
-      "K48-K49_K48-K49_thu_vien_service_4",
-      "K48-K49_K48-K49_thu_vien_service_5"
+      "K49_K49_thu_vien_service_1",
+      "K49_K49_thu_vien_service_2",
+      "K49_K49_thu_vien_service_3",
+      "K49_K49_thu_vien_service_4",
+      "K49_K49_thu_vien_service_5"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
-    "phone": "(028) 35260834; (028) 35261043; (028) 38308905",
+    "phone": "(028) 35261042; (028) 38308905; (028) 38352020",
     "email": "thuvien@hcmue.edu.vn",
     "website": "https://www.facebook.com/lib.hcmue.edu.vn; lib.hcmue.edu.vn",
     "office": "Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM.",
     "summary": "Thư viện phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên",
-    "raw_text": "Don vi: Thư viện\nAlias: \nDich vu phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên\nEmail: thuvien@hcmue.edu.vn\nDien thoai: (028) 35260834; (028) 35261043; (028) 38308905\nDia diem: Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM.",
+    "raw_text": "Don vi: Thư viện\nAlias: \nDich vu phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên\nEmail: thuvien@hcmue.edu.vn\nDien thoai: (028) 35261042; (028) 38308905; (028) 38352020\nDia diem: Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_thu_vien",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_thu_vien",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        134,
-        135
+        132,
+        133
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep",
+    "cohort": "K49",
     "unit": "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp",
     "unit_name": "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp",
     "aliases": [],
@@ -991,16 +937,16 @@
       "Tổ chức ngày hội việc làm, và các hoạt động giúp sinh viên tiếp cận với các nguồn lực của xã hội"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_1",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_2",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_3",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_4",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_5",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_6",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_7"
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_1",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_2",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_3",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_4",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_5",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_6",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_7"
     ],
     "phones": [
-      "(028) 3835 2020"
+      "(028) 38352020"
     ],
     "emails": [
       "csaed@hcmue.edu.vn"
@@ -1012,63 +958,63 @@
       "168"
     ],
     "offices": [
-      "Nhà A, tầng 1, P.101 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+      "Nhà A, tầng 1, P.101, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      139,
-      140
+      137,
+      138
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_1",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_2",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_3",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_4",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_5",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_6",
-      "K48-K49_K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_7"
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_1",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_2",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_3",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_4",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_5",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_6",
+      "K49_K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_7"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
-    "phone": "(028) 3835 2020",
+    "phone": "(028) 38352020",
     "email": "csaed@hcmue.edu.vn",
     "website": "csaed.hcmue.edu.vn",
-    "office": "Nhà A, tầng 1, P.101 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+    "office": "Nhà A, tầng 1, P.101, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
     "summary": "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp phu trach: Tổ chức dịch vụ hỗ trợ đời sống của sinh viên: giới thiệu việc làm, thông tin học bổng, khảo sát và giới thiệu chỗ trọ…; Tổ chức các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã hội, các kiến thức, kỹ năng về khởi nghiệp cần thiết cho sinh viên theo từng đối tượng và chuyên ngành; Tập huấn kỹ năng và hướng dẫn sinh viên tham gia các chương trình, dự án khởi nghiệp; tổ chức các hoạt động tạo môi trường để hỗ trợ sinh viên hình thành và hiện thực hóa các ý tưởng, dự án khởi nghiệp, góp phần tạo việc làm cho sinh viên sau khi tốt nghiệp; Phối hợp các đơn vị tuyển chọn và quản lý các nhóm cộng tác viên (là sinh viên) hỗ trợ cho công tác tổ chức các sự kiện trong trường; Tổ chức và phối hợp tổ chức các hoạt động nhằm nâng cao chuyên môn nghiệp vụ cho sinh viên khi tốt nghiệp; Xây dựng và điều hành các kênh thông tin của trung tâm để nắm bắt và giải quyết các nhu cầu hỗ trợ sinh viên; Tổ chức ngày hội việc làm, và các hoạt động giúp sinh viên tiếp cận với các nguồn lực của xã hội",
-    "raw_text": "Don vi: Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp\nAlias: \nDich vu phu trach: Tổ chức dịch vụ hỗ trợ đời sống của sinh viên: giới thiệu việc làm, thông tin học bổng, khảo sát và giới thiệu chỗ trọ…; Tổ chức các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã hội, các kiến thức, kỹ năng về khởi nghiệp cần thiết cho sinh viên theo từng đối tượng và chuyên ngành; Tập huấn kỹ năng và hướng dẫn sinh viên tham gia các chương trình, dự án khởi nghiệp; tổ chức các hoạt động tạo môi trường để hỗ trợ sinh viên hình thành và hiện thực hóa các ý tưởng, dự án khởi nghiệp, góp phần tạo việc làm cho sinh viên sau khi tốt nghiệp; Phối hợp các đơn vị tuyển chọn và quản lý các nhóm cộng tác viên (là sinh viên) hỗ trợ cho công tác tổ chức các sự kiện trong trường; Tổ chức và phối hợp tổ chức các hoạt động nhằm nâng cao chuyên môn nghiệp vụ cho sinh viên khi tốt nghiệp; Xây dựng và điều hành các kênh thông tin của trung tâm để nắm bắt và giải quyết các nhu cầu hỗ trợ sinh viên; Tổ chức ngày hội việc làm, và các hoạt động giúp sinh viên tiếp cận với các nguồn lực của xã hội\nEmail: csaed@hcmue.edu.vn\nDien thoai: (028) 3835 2020\nDia diem: Nhà A, tầng 1, P.101 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+    "raw_text": "Don vi: Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp\nAlias: \nDich vu phu trach: Tổ chức dịch vụ hỗ trợ đời sống của sinh viên: giới thiệu việc làm, thông tin học bổng, khảo sát và giới thiệu chỗ trọ…; Tổ chức các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã hội, các kiến thức, kỹ năng về khởi nghiệp cần thiết cho sinh viên theo từng đối tượng và chuyên ngành; Tập huấn kỹ năng và hướng dẫn sinh viên tham gia các chương trình, dự án khởi nghiệp; tổ chức các hoạt động tạo môi trường để hỗ trợ sinh viên hình thành và hiện thực hóa các ý tưởng, dự án khởi nghiệp, góp phần tạo việc làm cho sinh viên sau khi tốt nghiệp; Phối hợp các đơn vị tuyển chọn và quản lý các nhóm cộng tác viên (là sinh viên) hỗ trợ cho công tác tổ chức các sự kiện trong trường; Tổ chức và phối hợp tổ chức các hoạt động nhằm nâng cao chuyên môn nghiệp vụ cho sinh viên khi tốt nghiệp; Xây dựng và điều hành các kênh thông tin của trung tâm để nắm bắt và giải quyết các nhu cầu hỗ trợ sinh viên; Tổ chức ngày hội việc làm, và các hoạt động giúp sinh viên tiếp cận với các nguồn lực của xã hội\nEmail: csaed@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng 1, P.101, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        139,
-        140
+        137,
+        138
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_trung_tam_ngoai_ngu",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_trung_tam_ngoai_ngu",
+    "cohort": "K49",
     "unit": "Trung tâm Ngoại ngữ",
     "unit_name": "Trung tâm Ngoại ngữ",
     "aliases": [],
     "services": [
-      "Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao",
-      "Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam",
-      "Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên"
+      "Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao",
+      "Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam",
+      "Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1 – N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_trung_tam_ngoai_ngu_service_1",
-      "K48-K49_K48-K49_trung_tam_ngoai_ngu_service_2",
-      "K48-K49_K48-K49_trung_tam_ngoai_ngu_service_3"
+      "K49_K49_trung_tam_ngoai_ngu_service_1",
+      "K49_K49_trung_tam_ngoai_ngu_service_2",
+      "K49_K49_trung_tam_ngoai_ngu_service_3"
     ],
     "phones": [
       "(028) 38355084"
@@ -1084,15 +1030,15 @@
       "Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      138
+      136
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_trung_tam_ngoai_ngu_service_1",
-      "K48-K49_K48-K49_trung_tam_ngoai_ngu_service_2",
-      "K48-K49_K48-K49_trung_tam_ngoai_ngu_service_3"
+      "K49_K49_trung_tam_ngoai_ngu_service_1",
+      "K49_K49_trung_tam_ngoai_ngu_service_2",
+      "K49_K49_trung_tam_ngoai_ngu_service_3"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -1100,40 +1046,40 @@
     "email": "trungtamnn@hcmue.edu.vn",
     "website": "ttnnsp.edu.vn",
     "office": "Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-    "summary": "Trung tâm Ngoại ngữ phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên",
-    "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: \nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ Tổng quát theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực Ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1-N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+    "summary": "Trung tâm Ngoại ngữ phu trach: Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1 – N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên",
+    "raw_text": "Don vi: Trung tâm Ngoại ngữ\nAlias: \nDich vu phu trach: Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao; Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam; Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1 – N5… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên\nEmail: trungtamnn@hcmue.edu.vn\nDien thoai: (028) 38355084\nDia diem: Dãy nhà B, tầng 6, P.601, P.602, P.608 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_trung_tam_ngoai_ngu",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_trung_tam_ngoai_ngu",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        138
+        136
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_trung_tam_phat_trien_ky_nang_su_pham",
-    "cohort": "K48-K49",
-    "unit": "Trung tâm Phát triển kỹ năng Sư phạm",
-    "unit_name": "Trung tâm Phát triển kỹ năng Sư phạm",
+    "office_profile_id": "K49_trung_tam_phat_trien_ky_nang_su_pham",
+    "cohort": "K49",
+    "unit": "Trung tâm Phát triển kỹ năng sư phạm",
+    "unit_name": "Trung tâm Phát triển kỹ năng sư phạm",
     "aliases": [],
     "services": [
       "Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại các phòng học trực tuyến, phòng học ảo và phòng học thông minh",
       "Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây dựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho sinh viên",
-      "Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và kỹ năng, NVSP",
+      "Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và kỹ năng, nghiệp vụ sư phạm",
       "Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy học; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng thiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng kiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân hóa; mô hình và phương pháp dạy – học STEM…"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_trung_tam_phat_trien_ky_nang_su_pham_service_1",
-      "K48-K49_K48-K49_trung_tam_phat_trien_ky_nang_su_pham_service_2",
-      "K48-K49_K48-K49_trung_tam_phat_trien_ky_nang_su_pham_service_3",
-      "K48-K49_K48-K49_trung_tam_phat_trien_ky_nang_su_pham_service_4"
+      "K49_K49_trung_tam_phat_trien_ky_nang_su_pham_service_1",
+      "K49_K49_trung_tam_phat_trien_ky_nang_su_pham_service_2",
+      "K49_K49_trung_tam_phat_trien_ky_nang_su_pham_service_3",
+      "K49_K49_trung_tam_phat_trien_ky_nang_su_pham_service_4"
     ],
     "phones": [
       "(028) 38397868"
@@ -1152,16 +1098,16 @@
       "Nhà A, tầng 2, P.201, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      137
+      135
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_trung_tam_phat_trien_ky_nang_su_pham_service_1",
-      "K48-K49_K48-K49_trung_tam_phat_trien_ky_nang_su_pham_service_2",
-      "K48-K49_K48-K49_trung_tam_phat_trien_ky_nang_su_pham_service_3",
-      "K48-K49_K48-K49_trung_tam_phat_trien_ky_nang_su_pham_service_4"
+      "K49_K49_trung_tam_phat_trien_ky_nang_su_pham_service_1",
+      "K49_K49_trung_tam_phat_trien_ky_nang_su_pham_service_2",
+      "K49_K49_trung_tam_phat_trien_ky_nang_su_pham_service_3",
+      "K49_K49_trung_tam_phat_trien_ky_nang_su_pham_service_4"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -1169,26 +1115,26 @@
     "email": "trungtamptknsp@hcmue.edu.vn",
     "website": "trungtamptknsp.hcmue.edu.vn",
     "office": "Nhà A, tầng 2, P.201, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-    "summary": "Trung tâm Phát triển kỹ năng Sư phạm phu trach: Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại các phòng học trực tuyến, phòng học ảo và phòng học thông minh; Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây dựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho sinh viên; Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và kỹ năng, NVSP; Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy học; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng thiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng kiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân hóa; mô hình và phương pháp dạy – học STEM…",
-    "raw_text": "Don vi: Trung tâm Phát triển kỹ năng Sư phạm\nAlias: \nDich vu phu trach: Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại các phòng học trực tuyến, phòng học ảo và phòng học thông minh; Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây dựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho sinh viên; Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và kỹ năng, NVSP; Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy học; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng thiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng kiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân hóa; mô hình và phương pháp dạy – học STEM…\nEmail: trungtamptknsp@hcmue.edu.vn\nDien thoai: (028) 38397868\nDia diem: Nhà A, tầng 2, P.201, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+    "summary": "Trung tâm Phát triển kỹ năng sư phạm phu trach: Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại các phòng học trực tuyến, phòng học ảo và phòng học thông minh; Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây dựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho sinh viên; Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và kỹ năng, nghiệp vụ sư phạm; Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy học; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng thiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng kiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân hóa; mô hình và phương pháp dạy – học STEM…",
+    "raw_text": "Don vi: Trung tâm Phát triển kỹ năng sư phạm\nAlias: \nDich vu phu trach: Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại các phòng học trực tuyến, phòng học ảo và phòng học thông minh; Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây dựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho sinh viên; Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và kỹ năng, nghiệp vụ sư phạm; Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy học; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng thiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng kiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân hóa; mô hình và phương pháp dạy – học STEM…\nEmail: trungtamptknsp@hcmue.edu.vn\nDien thoai: (028) 38397868\nDia diem: Nhà A, tầng 2, P.201, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_trung_tam_phat_trien_ky_nang_su_pham",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_trung_tam_phat_trien_ky_nang_su_pham",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        137
+        135
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_trung_tam_tin_hoc",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_trung_tam_tin_hoc",
+    "cohort": "K49",
     "unit": "Trung tâm Tin học",
     "unit_name": "Trung tâm Tin học",
     "aliases": [],
@@ -1197,8 +1143,8 @@
       "Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_trung_tam_tin_hoc_service_1",
-      "K48-K49_K48-K49_trung_tam_tin_hoc_service_2"
+      "K49_K49_trung_tam_tin_hoc_service_1",
+      "K49_K49_trung_tam_tin_hoc_service_2"
     ],
     "phones": [
       "(028) 38392549"
@@ -1214,15 +1160,15 @@
       "Văn phòng ghi danh: 221 Nguyễn Văn Cừ, Phường 4, Quận 5, TP. HCM.; Phòng làm việc: Dãy A, tầng trệt, P.004, P.005 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      137,
-      138
+      135,
+      136
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_trung_tam_tin_hoc_service_1",
-      "K48-K49_K48-K49_trung_tam_tin_hoc_service_2"
+      "K49_K49_trung_tam_tin_hoc_service_1",
+      "K49_K49_trung_tam_tin_hoc_service_2"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -1238,19 +1184,19 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_trung_tam_tin_hoc",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_trung_tam_tin_hoc",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        137,
-        138
+        135,
+        136
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_truong_trung_hoc_thuc_hanh_dhsp",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_truong_trung_hoc_thuc_hanh_dhsp",
+    "cohort": "K49",
     "unit": "Trường Trung học Thực hành – ĐHSP",
     "unit_name": "Trường Trung học Thực hành – ĐHSP",
     "aliases": [],
@@ -1260,9 +1206,9 @@
       "Phối hợp hoạt động trong công tác Đoàn"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_truong_trung_hoc_thuc_hanh_dhsp_service_1",
-      "K48-K49_K48-K49_truong_trung_hoc_thuc_hanh_dhsp_service_2",
-      "K48-K49_K48-K49_truong_trung_hoc_thuc_hanh_dhsp_service_3"
+      "K49_K49_truong_trung_hoc_thuc_hanh_dhsp_service_1",
+      "K49_K49_truong_trung_hoc_thuc_hanh_dhsp_service_2",
+      "K49_K49_truong_trung_hoc_thuc_hanh_dhsp_service_3"
     ],
     "phones": [
       "(028) 38352020"
@@ -1283,15 +1229,15 @@
       "Nhà J, tầng trệt, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      135
+      133
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_truong_trung_hoc_thuc_hanh_dhsp_service_1",
-      "K48-K49_K48-K49_truong_trung_hoc_thuc_hanh_dhsp_service_2",
-      "K48-K49_K48-K49_truong_trung_hoc_thuc_hanh_dhsp_service_3"
+      "K49_K49_truong_trung_hoc_thuc_hanh_dhsp_service_1",
+      "K49_K49_truong_trung_hoc_thuc_hanh_dhsp_service_2",
+      "K49_K49_truong_trung_hoc_thuc_hanh_dhsp_service_3"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -1307,18 +1253,18 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_truong_trung_hoc_thuc_hanh_dhsp",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_truong_trung_hoc_thuc_hanh_dhsp",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        135
+        133
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_tram_y_te",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_tram_y_te",
+    "cohort": "K49",
     "unit": "Trạm Y tế",
     "unit_name": "Trạm Y tế",
     "aliases": [
@@ -1327,16 +1273,16 @@
       "y tế trường"
     ],
     "services": [
-      "Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên",
+      "Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên",
       "Khám cấp cứu",
       "Khám bệnh, cấp phát thuốc thông thường",
       "Làm thẻ và phát thẻ BHYT"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_tram_y_te_service_1",
-      "K48-K49_K48-K49_tram_y_te_service_2",
-      "K48-K49_K48-K49_tram_y_te_service_3",
-      "K48-K49_K48-K49_tram_y_te_service_4"
+      "K49_K49_tram_y_te_service_1",
+      "K49_K49_tram_y_te_service_2",
+      "K49_K49_tram_y_te_service_3",
+      "K49_K49_tram_y_te_service_4"
     ],
     "phones": [
       "(028) 38352020"
@@ -1352,16 +1298,16 @@
       "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      135
+      133
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_tram_y_te_service_1",
-      "K48-K49_K48-K49_tram_y_te_service_2",
-      "K48-K49_K48-K49_tram_y_te_service_3",
-      "K48-K49_K48-K49_tram_y_te_service_4"
+      "K49_K49_tram_y_te_service_1",
+      "K49_K49_tram_y_te_service_2",
+      "K49_K49_tram_y_te_service_3",
+      "K49_K49_tram_y_te_service_4"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -1369,26 +1315,26 @@
     "email": "tramyte@hcmue.edu.vn",
     "website": "",
     "office": "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-    "summary": "Trạm Y tế phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
-    "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+    "summary": "Trạm Y tế phu trach: Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
+    "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
     "data_category": "directory_table",
     "quality_status": "approved",
     "embedding_enabled": false,
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_tram_y_te",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_tram_y_te",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        135
+        133
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_vien_nghien_cuu_giao_duc",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_vien_nghien_cuu_giao_duc",
+    "cohort": "K49",
     "unit": "Viện Nghiên cứu Giáo dục",
     "unit_name": "Viện Nghiên cứu Giáo dục",
     "aliases": [],
@@ -1398,9 +1344,9 @@
       "Phương pháp học tập hiệu quả cho sinh viên bậc Đại học"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_vien_nghien_cuu_giao_duc_service_1",
-      "K48-K49_K48-K49_vien_nghien_cuu_giao_duc_service_2",
-      "K48-K49_K48-K49_vien_nghien_cuu_giao_duc_service_3"
+      "K49_K49_vien_nghien_cuu_giao_duc_service_1",
+      "K49_K49_vien_nghien_cuu_giao_duc_service_2",
+      "K49_K49_vien_nghien_cuu_giao_duc_service_3"
     ],
     "phones": [
       "(028) 38224813"
@@ -1416,15 +1362,15 @@
       "115 Hai Bà Trưng, Quận 1, TP. HCM."
     ],
     "source_pages": [
-      136
+      134
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_vien_nghien_cuu_giao_duc_service_1",
-      "K48-K49_K48-K49_vien_nghien_cuu_giao_duc_service_2",
-      "K48-K49_K48-K49_vien_nghien_cuu_giao_duc_service_3"
+      "K49_K49_vien_nghien_cuu_giao_duc_service_1",
+      "K49_K49_vien_nghien_cuu_giao_duc_service_2",
+      "K49_K49_vien_nghien_cuu_giao_duc_service_3"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -1440,18 +1386,18 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_vien_nghien_cuu_giao_duc",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_vien_nghien_cuu_giao_duc",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        136
+        134
       ],
       "source_record_id": null
     }
   },
   {
-    "office_profile_id": "K48-K49_doan_thanh_nien_va_hoi_sinh_vien_truong",
-    "cohort": "K48-K49",
+    "office_profile_id": "K49_doan_thanh_nien_va_hoi_sinh_vien_truong",
+    "cohort": "K49",
     "unit": "Đoàn Thanh niên và Hội Sinh viên Trường",
     "unit_name": "Đoàn Thanh niên và Hội Sinh viên Trường",
     "aliases": [],
@@ -1459,7 +1405,7 @@
       "Liên hệ Đoàn Thanh niên và Hội Sinh viên Trường"
     ],
     "service_ids": [
-      "K48-K49_K48-K49_doan_thanh_nien_va_hoi_sinh_vien_truong_service_1"
+      "K49_K49_doan_thanh_nien_va_hoi_sinh_vien_truong_service_1"
     ],
     "phones": [
       "(028) 38352020"
@@ -1479,14 +1425,14 @@
       "Văn phòng Đoàn Thanh niên – Phòng làm việc: Nhà A, tầng trệt, P.001, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.; Văn phòng Hội Sinh viên – Phòng làm việc: Nhà A, tầng trệt, P.001, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
     ],
     "source_pages": [
-      138,
-      139
+      136,
+      137
     ],
     "source_service_ids": [
-      "K48-K49_K48-K49_doan_thanh_nien_va_hoi_sinh_vien_truong_service_1"
+      "K49_K49_doan_thanh_nien_va_hoi_sinh_vien_truong_service_1"
     ],
     "document_ids": [
-      "so_tay_sinh_vien_khoa_48_49"
+      "so_tay_sinh_vien_khoa_49"
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
@@ -1502,12 +1448,12 @@
     "retrieval_mode": "deterministic",
     "source_provenance": {
       "catalog": "student_office_profiles",
-      "record_id": "K48-K49_doan_thanh_nien_va_hoi_sinh_vien_truong",
-      "cohort": "K48-K49",
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
+      "record_id": "K49_doan_thanh_nien_va_hoi_sinh_vien_truong",
+      "cohort": "K49",
+      "document_id": "so_tay_sinh_vien_khoa_49",
       "source_pages": [
-        138,
-        139
+        136,
+        137
       ],
       "source_record_id": null
     }
@@ -1814,7 +1760,7 @@
       "K50_K50_phong_hop_tac_quoc_te_service_3"
     ],
     "phones": [
-      "(028) 3891080"
+      "(028) 38391080"
     ],
     "emails": [
       "phonghtqt@hcmue.edu.vn"
@@ -1842,7 +1788,7 @@
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
-    "phone": "(028) 3891080",
+    "phone": "(028) 38391080",
     "email": "phonghtqt@hcmue.edu.vn",
     "website": "phonghtqt.hcmue.edu.vn",
     "office": "Nhà A, tầng 1, P.111, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
@@ -1861,7 +1807,10 @@
         175
       ],
       "source_record_id": null
-    }
+    },
+    "review_notes": [
+      "Sổ tay K50 tr. 175 in \"(028) 3891080\", thiếu một chữ số, được coi là lỗi in; số đầy đủ (028) 38391080 lấy theo Sổ tay K48 tr. 131 (cùng số nội bộ 172, 173)."
+    ]
   },
   {
     "office_profile_id": "K50_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc",
@@ -3269,7 +3218,7 @@
       "K51_K51_phong_hop_tac_quoc_te_service_3"
     ],
     "phones": [
-      "(028) 3891080"
+      "(028) 38391080"
     ],
     "emails": [
       "phonghtqt@hcmue.edu.vn"
@@ -3297,7 +3246,7 @@
     ],
     "content_type": "student_office_profile",
     "source_section": "student_office_profiles",
-    "phone": "(028) 3891080",
+    "phone": "(028) 38391080",
     "email": "phonghtqt@hcmue.edu.vn",
     "website": "phonghtqt.hcmue.edu.vn",
     "office": "Nhà A, tầng 1, P.111, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
@@ -3316,7 +3265,10 @@
         197
       ],
       "source_record_id": null
-    }
+    },
+    "review_notes": [
+      "Sổ tay K51 tr. 197 in \"(028) 3891080\", thiếu một chữ số, được coi là lỗi in; số đầy đủ (028) 38391080 lấy theo Sổ tay K48 tr. 131 (cùng số nội bộ 172, 173)."
+    ]
   },
   {
     "office_profile_id": "K51_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc",

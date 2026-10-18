@@ -46,6 +46,8 @@ PLUMBING = {
     "source_service_ids", "extraction_method", "needs_manual_review",
     "program_name_source", "faculty_name_source", "raw_program_name", "aliases",
     "faculty_aliases", "summary", "unit",
+    # Why a reviewed directory value differs from the printed one; never an answer.
+    "review_notes",
     # Matching machinery on a foreign-language row (score_mode, entity_aliases),
     # read by the lookup and never shown as an answer.
     "input_requirements",

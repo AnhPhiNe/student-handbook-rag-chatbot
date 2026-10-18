@@ -20,6 +20,7 @@ if str(ROOT) not in sys.path:
 
 from src.common.storage_config import require_qdrant_collection_name
 from src.retrieval.runtime_config import load_retrieval_runtime_config
+from src.common.cohort import valid_cohorts
 from src.common.io import sha256_file
 from scripts.build_parent_child_artifacts import validate_publish_separation
 
@@ -106,7 +107,7 @@ def main() -> None:
             "or malformed."
         )
 
-    expected_cohorts = {"K48-K49", "K50", "K51"}
+    expected_cohorts = set(valid_cohorts())
 
     actual_cohorts = {
         str((chunk.get("metadata") or {}).get("cohort"))

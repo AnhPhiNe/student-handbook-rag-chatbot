@@ -28,7 +28,7 @@ def test_all_32_in_scope_descriptions_preserve_identity_metadata_and_raw_tables(
     tables, baseline, reviewed, provenance, _ = reviewed_sources()
     assert len(tables) == 35 and len(reviewed) == 32  # three VLVH tables are out of scope
     assert len({h["content"] for h in reviewed}) == 32
-    assert provenance["version"] == "table-description-reviewed-v3"
+    assert provenance["version"] == "table-description-reviewed-v4"
     assert provenance["sha256"] == hashlib.sha256(REVIEW.read_bytes()).hexdigest()
     catalog = {table_key(t): t for t in tables}
     for old, new in zip(baseline, reviewed):
@@ -48,7 +48,7 @@ def test_source_specific_scopes_scales_and_scholarship_shapes():
     def content(cohort, suffix):
         return next(h["content"] for h in handles if h["metadata"]["cohort"] == cohort
                     and json.loads(h["metadata"]["table_search_key"])[2].endswith(suffix))
-    for cohort in ("K48-K49", "K50", "K51"):
+    for cohort in ("K49", "K50", "K51"):
         assert "không tính" in content(cohort, "pass_fail_ungraded")
         assert "thang 10" in content(cohort, "pass_fail_ungraded")
         assert "thang 4" in content(cohort, "scholarship_score_formula")
@@ -62,7 +62,7 @@ def test_source_specific_scopes_scales_and_scholarship_shapes():
     assert "không tự xác lập TOEIC" in foreign and "Điều 1" in foreign
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 def test_only_the_chinh_quy_duration_table_is_searchable(cohort):
     # configs/corpus_scope.yaml: vừa làm vừa học is outside the assistant's scope,
     # so its duration table has no search text (it stays in the structured registry).
@@ -105,7 +105,7 @@ def test_reviewed_candidate_has_separate_namespace_and_text_hash_identity(tmp_pa
     reviewed = build_candidate(ROOT, tmp_path / "reviewed_v2", REVIEW)
     assert baseline["storage_targets"] != reviewed["storage_targets"]
     assert reviewed["artifacts"]["table_descriptions"]["count"] == 32
-    assert reviewed["artifacts"]["child_chunks"]["count"] == 2678  # 2646 clause chunks + 32 in-scope table handles
+    assert reviewed["artifacts"]["child_chunks"]["count"] == 2720  # 2688 clause chunks + 32 in-scope table handles
     assert reviewed["parent_source"] == baseline["parent_source"]
     assert not reviewed["embedding_created"] and reviewed["model_calls"] == 0
     changed = yaml.safe_load(REVIEW.read_text(encoding="utf-8"))

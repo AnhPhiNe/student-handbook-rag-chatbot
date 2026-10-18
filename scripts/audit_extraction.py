@@ -8,7 +8,7 @@ is compared by its numbers when it has any, because the source writes "2,56 –
 
 Recall: every value the source writes under a contact label (an address, a
 website, an extension) must reach its field. This is the check that found the
-four K48-K49 and K50 units whose address sat under "Phòng làm việc", a label
+four K48 and K50 units whose address sat under "Phòng làm việc", a label
 the extractor did not read.
 
 It reads the committed artefacts and calls no model.
@@ -107,8 +107,17 @@ def _values(record: dict[str, Any], field: str) -> list[str]:
     return [str(v) for v in value] if isinstance(value, list) else ([str(value)] if value else [])
 
 
+def _reviewed_corrections() -> set[tuple[str, str, str]]:
+    """(cohort, unit, value) the owner corrected from a misprint (configs/office_aliases.yaml)."""
+    import yaml
+
+    config = yaml.safe_load((ROOT / "configs/office_aliases.yaml").read_text(encoding="utf-8")) or {}
+    return {(c["cohort"], c["unit"], c["corrected"]) for c in config.get("contact_corrections") or []}
+
+
 def directory_findings() -> Iterator[dict[str, Any]]:
     # Faculty and service records keep the handbook entry they were read from.
+    corrected = _reviewed_corrections()
     for catalog in ("student_faculty_profiles", "student_service_directory"):
         for record in json.loads((DIRECTORIES / f"{catalog}.json").read_text(encoding="utf-8")):
             raw = str(record.get("raw_text") or "")
@@ -118,6 +127,8 @@ def directory_findings() -> Iterator[dict[str, Any]]:
             for field in CONTACT_FIELDS:
                 for value in _values(record, field):
                     # A multi-address value names its addresses ("Phòng làm việc: ...").
+                    if (record.get("cohort"), name, value) in corrected:
+                        continue
                     if not _cell_is_in(value, source, source_numbers, source_words):
                         yield {"kind": "field_value_not_in_source", "catalog": catalog,
                                "cohort": record.get("cohort"), "unit": name, "field": field, "value": value}

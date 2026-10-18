@@ -1,15 +1,18 @@
+import csv
 import os
 import re
 from pathlib import Path
 from typing import Any, Optional
-
-import pandas as pd
 
 from src.common.cohort import valid_cohorts
 from src.common.io import load_json, load_yaml, save_json
 
 
 CONFIG_PATH = Path("configs/structure_parser.yaml")
+# Reviewed index of each handbook's articles: page, article number, section ID,
+# document title, chapter and article title. An article line missing from it is
+# dropped, so a new handbook needs its own index.
+ARTICLE_INDEX_DIR = Path("data/curated/article_index")
 
 NO_CHAPTER = "__NO_CHAPTER__"
 MAX_NON_ARTICLE_CHARS = 1200
@@ -716,6 +719,17 @@ def build_structure_report(sections: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def load_article_index(cohort: str) -> dict[tuple[int, int], dict[str, Any]]:
+    """Map (page, article number) to the reviewed index row for one cohort."""
+
+    path = ARTICLE_INDEX_DIR / f"{cohort}.csv"
+    with path.open(encoding="utf-8", newline="") as handle:
+        return {
+            (int(row["Trang"]), int(row["So_dieu"])): row
+            for row in csv.DictReader(handle)
+        }
+
+
 def main() -> None:
     """Run structural parsing and persist sections plus diagnostics."""
 
@@ -732,19 +746,7 @@ def main() -> None:
     )
 
     cohort = os.environ.get("COHORT", "UNKNOWN")
-    lookup_dict = {}
-    if cohort in valid_cohorts():
-        file_prefix = "K48_49" if cohort == "K48-K49" else cohort
-        excel_file = f"data/raw/gpt_extracted/{file_prefix}_extracted.xlsx"
-        if os.path.exists(excel_file):
-            df = pd.read_excel(excel_file)
-            for _, row in df.iterrows():
-                try:
-                    trang = int(row["Trang"])
-                    dieu = int(row["So_dieu"])
-                    lookup_dict[(trang, dieu)] = row.to_dict()
-                except (ValueError, TypeError):
-                    continue
+    lookup_dict = load_article_index(cohort) if cohort in valid_cohorts() else {}
 
     structured_sections = build_structured_sections(line_records, lookup_dict)
     structure_report = build_structure_report(structured_sections)

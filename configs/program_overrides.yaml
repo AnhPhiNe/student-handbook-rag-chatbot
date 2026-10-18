@@ -1,23 +1,18 @@
 expected_counts:
   program_directory:
-    K48-K49: 41
+    K49: 43
     K50: 43
     K51: 45
 
 # Explicit aliases retained for compatibility with frozen evaluation artifacts.
 # They identify the same source record after the catalog moved from the old
 # derived-ID scheme to IDs generated from each handbook's own extraction.
-legacy_record_ids_by_cohort:
-  K48-K49:
-    cong nghe thong tin:
-      - k48_derived_program_1
+legacy_record_ids_by_cohort: {}
 
 implicit_programs_by_cohort:
-  K48-K49:
+  K49:
     Khoa Toán - Tin học:
       - Sư phạm Toán học (Tiếng Việt và Song ngữ Việt – Anh)
-    Khoa Sinh học:
-      - Sư phạm Sinh học
     Khoa Tiếng Hàn Quốc:
       - Ngôn ngữ Hàn Quốc
     Khoa Tiếng Nhật:
@@ -107,6 +102,7 @@ program_name_overrides:
   tieng viet va van hoa viet nam danh cho sinh vien nuoc ngoai: Tiếng Việt và văn hoá Việt Nam (dành cho sinh viên nước ngoài)
   toan ung dung: Toán ứng dụng
   van hoc: Văn học
+  vat li hoc: Vật lý học
   vat ly hoc: Vật lý học
   viet nam hoc: Việt Nam học
 

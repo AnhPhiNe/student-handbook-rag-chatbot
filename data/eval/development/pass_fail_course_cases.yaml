@@ -1,0 +1,25 @@
+# Planner probes for courses graded pass/fail (2026-10-18). Not answer gold and
+# not a hold-out: written after the owner saw production answer "GDQP: đạt từ
+# 4,0" from the graded scale. Quy chế đào tạo Điều 2 (every cohort) names the
+# courses not counted in the GPA (giáo dục thể chất, giáo dục quốc phòng – an
+# ninh, tin học cơ bản, ngoại ngữ không chuyên); Điều 10 khoản 2b grades them
+# pass/fail, 5,0 or more, letter P.
+#
+# expected_course_scope: the scoring task's course_scope; a list accepts any of
+# its values, and null is no scope (an ordinary course gets no pass/fail scope).
+#
+# Results (planner gpt-6-luna, normalizer v34): before the registry text named
+# the courses, the 4 pass/fail probes got no scope (graded and pass/fail tables
+# both returned); after it, 4/4 got pass_fail_ungraded on two runs, and no
+# control got pass_fail_ungraded. "Học phần giáo dục đại cương" gets no scope in 4 of
+# 4 runs on the old text and 2 of 3 on the new one: existing planner variance.
+version: 1
+cases:
+  - {id: pf01, cohort: K51, query: "học phần GDQP em được 4,5 điểm thì có đạt không?", expected_course_scope: pass_fail_ungraded}
+  - {id: pf02, cohort: K51, query: "Môn giáo dục quốc phòng xếp loại điểm chữ thế nào, mấy điểm thì qua?", expected_course_scope: pass_fail_ungraded}
+  - {id: pf03, cohort: K49, query: "Môn giáo dục thể chất em được 4,8 thì có qua không ạ?", expected_course_scope: pass_fail_ungraded}
+  - {id: pf04, cohort: K50, query: "tin học cơ bản bao nhiêu điểm thì đạt", expected_course_scope: pass_fail_ungraded}
+  - {id: pf05, cohort: K51, query: "Môn Triết học em được 4,5 điểm thì có đạt không?", expected_course_scope: [null, graded]}
+  - {id: pf06, cohort: K49, query: "Học phần Xác suất thống kê được 6,0 thì điểm chữ là gì?", expected_course_scope: [null, graded]}
+  - {id: pf07, cohort: K51, query: "Học phần nền tảng em được 4,5 thì có qua không?", expected_course_scope: foundation}
+  - {id: pf08, cohort: K50, query: "Môn giáo dục thể chất chỉ xét đạt hay không đạt, em được đúng 5,0 vậy có đạt không?", expected_course_scope: pass_fail_ungraded}

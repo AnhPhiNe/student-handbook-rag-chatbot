@@ -27,7 +27,7 @@ def _write(path: Path, data: object) -> Path:
 
 
 def test_an_address_under_an_unread_label_is_reported(tmp_path, monkeypatch) -> None:
-    """The defect this audit was written for: K48-K49 and K50 wrote "Phòng làm việc"."""
+    """The defect this audit was written for: K49 and K50 wrote "Phòng làm việc"."""
 
     record = {"cohort": "K50", "unit_name": "Trung tâm Ngoại ngữ", "office": "", "emails": ["tt@hcmue.edu.vn"],
               "raw_text": "Email\n: tt@hcmue.edu.vn\nPhòng làm việc\n: Dãy nhà B, tầng 6, P.601"}

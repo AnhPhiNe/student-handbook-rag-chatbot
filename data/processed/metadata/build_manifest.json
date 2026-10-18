@@ -1,56 +1,56 @@
 {
   "schema_version": "student-handbook-build-v1",
-  "build_id": "build-7754cc9c07ae9951cfa5",
-  "created_at": "2026-10-05T05:14:34.923671+00:00",
+  "build_id": "build-973ef632fcbca126b306",
+  "created_at": "2026-10-18T06:52:13.689413+00:00",
   "source_pdfs": {
-    "so-tay-sinh-vien-khoa-48-49.pdf": "4bf7b510b66e6ed8ce60008d48efd05723f06899171cbf89e4494f4b277739db",
+    "so-tay-sinh-vien-khoa-49.pdf": "288b925fa72f453cc8c2d137723fab4d855c6e416b887d00f71d91350c4694c1",
     "so-tay-sinh-vien-khoa-50.pdf": "bbae270b9821c71eeede660e3168c868bde07f458f07b648645c14584bdeb8b0",
     "so-tay-sinh-vien-khoa-51.pdf": "bab2e55fa964da302144aafa5675d0f5b2d8003254a5159e2d612a03f4beb4bd"
   },
   "artifacts": {
     "parent_docstore": {
       "path": "data/processed/chunks/all_docstore_items.json",
-      "sha256": "9d1c9d3fc0e89b156b82c946ee86901a04e5f35fba69b3e0da70fa9d93379b11",
-      "count": 541,
+      "sha256": "a5d09bda79c6fabffe74717a659156d1d4ad7e918c618c8e3d83219d0cb3d246",
+      "count": 561,
       "cohort_counts": {
-        "K48-K49": 149,
+        "K49": 169,
         "K50": 192,
         "K51": 200
       }
     },
     "child_chunks": {
       "path": "data/processed/chunks/child_parent_chunks.json",
-      "sha256": "2534b87852d98560901b427f0b84de55868afd7570970b7206446bf3e3c30e4e",
-      "count": 2646,
+      "sha256": "fd5cb94f2901c17099a3fb540892e7b5a9d7f848a2b6d0126a02ea34b6dd0ec9",
+      "count": 2688,
       "cohort_counts": {
-        "K48-K49": 778,
+        "K49": 820,
         "K50": 911,
         "K51": 957
       }
     },
     "structured_tables": {
       "path": "data/processed/tables/structured_tables_registry.json",
-      "sha256": "39ce94291a181b9eda75765d2762b7a1a043422ac7337829ce96c324fee4a568",
+      "sha256": "b369dd5af574b1240ae4673c93f9e5ecc0f9a78dc6793bc3962a5045aa75dae2",
       "count": 35,
       "cohort_counts": {
-        "K48-K49": 11,
+        "K49": 11,
         "K50": 12,
         "K51": 12
       }
     },
     "graph_edges": {
       "path": "data/processed/graphs/document_edges.json",
-      "sha256": "ed42590ba9b2b0c749d531b095166460694bf1b81cbfb7bac6e4e3bc014fc77f",
+      "sha256": "fde0625a633d9f61a7c14407c27f56e34b615624e7328884933aa6569421984a",
       "count": 78,
       "cohort_counts": {
-        "K48-K49": 26,
+        "K49": 26,
         "K50": 30,
         "K51": 22
       }
     },
     "table_embedding_audit": {
       "path": "data/processed/metadata/structured_table_embedding_audit.json",
-      "sha256": "bb23e224a7e4f3e6074326c1a96756b8d38e7b0de33bf551d5b86d12708ee469",
+      "sha256": "2558c9001fc0dafc023801bffc0b469d00a1f9b6d65f2749d7aaaae1bc65eaa4",
       "total_table_like_rows": 0,
       "excluded_as_structured": 0,
       "retained_unmatched": 0,
@@ -72,7 +72,7 @@
     "structured_json_indexed_in_qdrant": false,
     "covered_table_rows_indexed_in_qdrant": false,
     "table_separation_policy": "reviewed-table-separation-v1",
-    "source_review_sha256": "1372bd283c29212adc8b31b60ed345d3a21a234a04d0d1dab1c02b63c32a14e8",
+    "source_review_sha256": "30bf61c4f130a2b6858b4908ef46271c4f9227ff906ff717ae32ac0b4c8aaa15",
     "parent_representation": "full_article_with_reviewed_tables",
     "child_representation": "narrative_without_reviewed_table_regions"
   }

@@ -40,7 +40,7 @@ def executor(plan_task, cats=None):
         graph=SimpleNamespace(expand_context=lambda *a, **kw: []))
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 @pytest.mark.parametrize("scope", ["graded", "foundation", "remaining"])
 def test_scope_does_not_remove_letter_conversion(cohort, scope):
     phrase = {"graded": "môn tính GPA", "foundation": "học phần nền tảng", "remaining": "học phần còn lại"}[scope]
@@ -139,10 +139,10 @@ def test_one_rag_task_can_receive_policy_and_table_for_shared_source():
            "K50_QuyDinhChuanDauRaNgoaiNgu_KhongCoChuong_Dieu8"]
     citations = [{**docs[i]["metadata"], "chunk_id": i, "content": docs[i]["content"],
                   "source_cohort": "K50", "supports_task_ids": ["t1"]} for i in ids]
-    t = {**task(), "mode": "rag", "cohorts": ["K48-K49"]}
+    t = {**task(), "mode": "rag", "cohorts": ["K49"]}
     packet = build_authorized_evidence_packet(query="TOEIC để tốt nghiệp", retrieval_result={
         "query_plan": {"tasks": [t]}, "task_results": [{"task_id": "t1", "coverage": "covered"}]},
-        selected_citations=citations, fallback_cohort="K48-K49", max_context_chars=160000)
+        selected_citations=citations, fallback_cohort="K49", max_context_chars=160000)
     sources = packet["units"][0]["primary_evidence"]
     assert len(packet["units"]) == 1 and len(sources) == 2
     assert any("bậc 3/6" in s["content"] for s in sources)
@@ -246,3 +246,14 @@ def test_final_answer_path_keeps_table_value_and_policy(transport, monkeypatch):
         events = list(pipeline.answer_stream(query, cohort="K51"))
         assert "".join(e.get("text", "") for e in events if e["type"] == "token") == expected
         assert events[-1]["status"] == "answered"
+
+
+@pytest.mark.parametrize("cohort", ["K49", "K51"])
+def test_pass_question_on_a_pass_fail_course_reads_only_the_pass_fail_table(cohort):
+    """GDQP, GDTC and the like (Quy chế đào tạo Điều 2) need 5,0 for P, not the graded 4,0."""
+    t = task(f"{cohort} học phần GDQP được 4,5 có đạt không", operation="pass_threshold",
+             score_or_grade=4.5, course_scope="pass_fail_ungraded")
+    result = executor(t)._execute_planned_structured_task(task=t, task_id="t1", cohort=cohort)
+    structured = result["structured_result"]
+    tables = structured.get("sub_lookups") or [structured]
+    assert {item["table_subtype"] for item in tables} == {"pass_fail_ungraded"}

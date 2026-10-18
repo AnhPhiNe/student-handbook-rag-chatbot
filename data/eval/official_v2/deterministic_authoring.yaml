@@ -22,7 +22,7 @@ cases:
   - query: "5,9 điểm hệ 10 đổi sang điểm chữ là gì?"
     category: scoring
     slice: single.scoring
-    selected_cohort: K48-K49
+    selected_cohort: K49
     table: [grade_scale, 4, grade_10_to_letter]
     input_slots: {score_or_grade: 5.9}
   - query: "Học phần chuyên ngành em được 5,2 vậy có bị rớt môn không?"
@@ -48,13 +48,13 @@ cases:
   - query: "GPA tích lũy 3,62 là xuất sắc chưa ạ?"
     category: scoring
     slice: single.scoring
-    selected_cohort: K48-K49
+    selected_cohort: K49
     table: [academic_classification, 0, academic_classification]
     input_slots: {score_or_grade: 3.62}
   - query: "gpa ki nay cua e 2.41 thi xep loai gi a"
     category: scoring
     slice: single.scoring
-    selected_cohort: K48-K49
+    selected_cohort: K49
     stress: true
     stress_type: informal_spelling
     table: [academic_classification, 3, academic_classification]
@@ -70,18 +70,18 @@ cases:
   - query: "Thang điểm chữ từ A đến F ứng với điểm hệ 10 thế nào?"
     category: scoring
     slice: single.scoring
-    selected_cohort: K48-K49
+    selected_cohort: K49
     table: [grade_scale, all, grade_10_to_letter]
   - query: "Điểm rèn luyện học kỳ vừa rồi em được 68 thì xếp loại gì?"
     category: conduct
     slice: single.scoring
-    selected_cohort: K48-K49
+    selected_cohort: K49
     table: [conduct_classification, 2, conduct_classification]
     input_slots: {score_or_grade: 68}
   - query: "Được đúng 90 điểm rèn luyện thì đã tính là xuất sắc chưa?"
     category: conduct
     slice: single.scoring
-    selected_cohort: K48-K49
+    selected_cohort: K49
     stress: true
     stress_type: boundary_value
     table: [conduct_classification, 0, conduct_classification]
@@ -89,19 +89,19 @@ cases:
   - query: "Rèn luyện được 33 điểm thì bị xếp loại gì ạ?"
     category: conduct
     slice: single.scoring
-    selected_cohort: K48-K49
+    selected_cohort: K49
     table: [conduct_classification, 5, conduct_classification]
     input_slots: {score_or_grade: 33}
   # foreign language: row reads
   - query: "Chứng chỉ HSK cần bậc mấy thì được tính tương đương bậc 4?"
     category: foreign_language
     slice: single.foreign_language
-    selected_cohort: K48-K49
+    selected_cohort: K49
     foreign: [Hanyu Shuiping Kaoshi (HSK), equivalent_level_4]
   - query: "DELF mức nào thì tương đương bậc 4 vậy?"
     category: foreign_language
     slice: single.foreign_language
-    selected_cohort: K48-K49
+    selected_cohort: K49
     foreign: [TCF / DELF, equivalent_level_4]
   - query: "TOEIC 4 kỹ năng thì mỗi kỹ năng bao nhiêu điểm mới được bậc 3?"
     category: foreign_language
@@ -129,7 +129,7 @@ cases:
   - query: "Em có bằng đại học rồi, học thêm một bằng nữa hệ chính quy thì tối đa được mấy năm?"
     category: study_duration
     slice: single.study_duration
-    selected_cohort: K48-K49
+    selected_cohort: K49
     duration: [chinh_quy, 3]
     resolved_output_fields: [Thời gian học tập tối đa]
   - query: "Hệ vừa làm vừa học của khóa em học chuẩn mấy năm, tối đa bao lâu?"
@@ -154,13 +154,13 @@ cases:
   - query: "Học bổng xuất sắc được tính tiền theo hệ số mấy?"
     category: scholarship
     slice: single.scholarship_classification
-    selected_cohort: K48-K49
+    selected_cohort: K49
     scholarship: [scholarship_amount, 2]
     resolved_output_fields: [scholarship_level, multiplier]
   - query: "Học bổng loại khá thì số tiền nhận được tính kiểu gì?"
     category: scholarship
     slice: single.scholarship_classification
-    selected_cohort: K48-K49
+    selected_cohort: K49
     scholarship: [scholarship_amount, 0]
     resolved_output_fields: [scholarship_level, formula]
   - query: "Học bổng khuyến khích học tập chia mấy loại, mỗi loại cần học lực và rèn luyện ra sao?"
@@ -172,12 +172,12 @@ cases:
   - query: "Điểm trung bình tích lũy được tính theo công thức gì vậy?"
     category: formula
     slice: single.formula
-    selected_cohort: K48-K49
+    selected_cohort: K49
     formula: gpa_weighted_average
   - query: "Điểm học bổng lấy điểm học tập và rèn luyện nhân hệ số bao nhiêu?"
     category: formula
     slice: single.formula
-    selected_cohort: K48-K49
+    selected_cohort: K49
     formula: scholarship_score
   - query: "Tính điểm trung bình học kỳ thì có nhân với số tín chỉ của môn không?"
     category: formula
@@ -193,14 +193,14 @@ cases:
   - query: "cho e xin sdt tram y te truong voi"
     category: office
     slice: single.office
-    selected_cohort: K48-K49
+    selected_cohort: K49
     stress: true
     stress_type: informal_spelling
     office: [Trạm Y tế, phone]
   - query: "Website Trung tâm Tin học là gì?"
     category: office
     slice: single.office
-    selected_cohort: K48-K49
+    selected_cohort: K49
     office: [Trung tâm Tin học, website]
   - query: "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp nằm ở đâu?"
     category: office
@@ -211,7 +211,7 @@ cases:
   - query: "email khoa toan tin la gi vay"
     category: faculty
     slice: single.faculty
-    selected_cohort: K48-K49
+    selected_cohort: K49
     stress: true
     stress_type: informal_spelling
     faculty: [Khoa Toán – Tin học, email]
@@ -223,7 +223,7 @@ cases:
   - query: "Số điện thoại Khoa Lịch sử là bao nhiêu?"
     category: faculty
     slice: single.faculty
-    selected_cohort: K48-K49
+    selected_cohort: K49
     faculty: [Khoa Lịch sử, phone]
   # programs
   - query: "Ngành Toán ứng dụng thuộc khoa nào?"
@@ -239,13 +239,13 @@ cases:
   - query: "Ngành Giáo dục Công dân nằm ở khoa nào?"
     category: program
     slice: single.program
-    selected_cohort: K48-K49
+    selected_cohort: K49
     program: Giáo dục Công dân
   # student services
   - query: "Wifi truong bi loi ko vao dc thi bao ai?"
     category: student_service
     slice: single.student_service
-    selected_cohort: K48-K49
+    selected_cohort: K49
     stress: true
     stress_type: informal_spelling
     # Corrected 2026-09-28: the handbook lists no wifi service; its nearest
@@ -261,19 +261,19 @@ cases:
   - query: "Em nộp chứng chỉ để xét miễn học phần ngoại ngữ ở đâu?"
     category: student_service
     slice: single.student_service
-    selected_cohort: K48-K49
+    selected_cohort: K49
     service: [Tiếp nhận các chứng chỉ, unit_name]
   - query: "Có khiếu nại về chuyện đào tạo thì gửi đơn cho đơn vị nào?"
     category: student_service
     slice: single.student_service
-    selected_cohort: K48-K49
+    selected_cohort: K49
     service: [Tiếp nhận và giải quyết đơn thư khiếu nại, unit_name]
 
   # ---------------------------------------------------------------- single.regulation
   - query: "Một tín chỉ tương đương bao nhiêu giờ học lý thuyết?"
     category: policy
     slice: single.regulation
-    selected_cohort: K48-K49
+    selected_cohort: K49
     policy: [QuyCheDaoTao_Chuong1_Dieu2, "Một tín chỉ được quy định bằng 15 giờ học lý thuyết"]
     fact: "Một tín chỉ bằng 15 giờ học lý thuyết và 30 giờ tự học, chuẩn bị cá nhân có hướng dẫn."
   - query: "Điểm học kỳ phụ được tính gộp vào học kỳ nào?"
@@ -285,7 +285,7 @@ cases:
   - query: "Mỗi học kỳ em được đăng ký tối đa bao nhiêu tín chỉ?"
     category: policy
     slice: single.regulation
-    selected_cohort: K48-K49
+    selected_cohort: K49
     policy: [QuyCheDaoTao_Chuong2_Dieu9, "Khối lượng tối đa không vượt quá 3/2"]
     fact: "Khối lượng tối đa mỗi học kỳ chính không vượt quá 3/2 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn của CTĐT; quy chế không nêu một số tín chỉ cố định."
   - query: "Một lớp sinh viên có tối đa bao nhiêu người?"
@@ -309,7 +309,7 @@ cases:
   - query: "Sinh viên năm ba mà điểm trung bình tích lũy dưới bao nhiêu thì bị cảnh báo?"
     category: policy
     slice: single.regulation
-    selected_cohort: K48-K49
+    selected_cohort: K49
     policy: [QuyCheDaoTao_Chuong3_Dieu12, "dưới 1,6 đối với sinh viên trình độ năm thứ ba"]
     fact: "Sinh viên trình độ năm thứ ba bị cảnh báo nếu điểm trung bình tích lũy dưới 1,6."
   - query: "Chuyển từ trường khác qua thì được công nhận tối đa bao nhiêu tín chỉ?"
@@ -333,7 +333,7 @@ cases:
   - query: "Hết thời gian học mà còn thiếu chuẩn ngoại ngữ thì còn được xét tốt nghiệp không?"
     category: policy
     slice: single.regulation
-    selected_cohort: K48-K49
+    selected_cohort: K49
     policy: [QuyCheDaoTao_Chuong3_Dieu15, "trong thời hạn 03 năm tính từ khi thôi học"]
     fact: "Được: trong thời hạn 03 năm tính từ khi thôi học, sinh viên được hoàn thiện điều kiện còn thiếu như chuẩn ngoại ngữ và đề nghị xét công nhận tốt nghiệp."
   - query: "Đang học song ngành mà ngành thứ nhất bị cảnh báo học tập thì có ảnh hưởng gì không?"
@@ -359,7 +359,7 @@ cases:
   - query: "Bị nhắc nhở mấy lần trong một học kỳ thì thành khiển trách?"
     category: policy
     slice: single.regulation
-    selected_cohort: K48-K49
+    selected_cohort: K49
     policy: [QuyCheCongTacSinhVien_Chuong6_Dieu35, "nhắc nhở 3 lần trong 1 học kỳ"]
     fact: "Sinh viên bị nhắc nhở 3 lần trong 1 học kỳ thì bị áp dụng hình thức khiển trách."
   - query: "Ngành em đủ học bổng hết rồi mà quỹ còn dư thì tiền đó chuyển đi đâu?"
@@ -371,7 +371,7 @@ cases:
   - query: "Mấy bạn bằng cả điểm học tập lẫn điểm rèn luyện thì học bổng được chia thế nào?"
     category: policy
     slice: single.regulation
-    selected_cohort: K48-K49
+    selected_cohort: K49
     policy: [QuyCheCongTacSinhVien_Chuong5_Dieu29, "theo tỉ lệ số tín chỉ"]
     fact: "Sinh viên bằng nhau cả điểm học tập và điểm rèn luyện thì học bổng được phân bổ theo tỉ lệ số tín chỉ."
   - query: "Kết quả rèn luyện được dùng để xét những việc gì?"
@@ -389,7 +389,7 @@ cases:
   - query: "Thấy điểm rèn luyện bị chấm sai thì em được khiếu nại trong bao lâu?"
     category: policy
     slice: single.regulation
-    selected_cohort: K48-K49
+    selected_cohort: K49
     policy: [RenLuyen_Chuong4_Dieu15, "trong vòng 07 ngày"]
     fact: "Gửi đơn khiếu nại về Phòng CTCT và HSSV trong vòng 07 ngày kể từ ngày công bố kết quả điểm rèn luyện đã được Hội đồng Trường thông qua."
   - query: "Em chuyển trọ thì phải cập nhật địa chỉ cho trường trong bao nhiêu ngày?"
@@ -415,7 +415,7 @@ cases:
   - query: "Sinh viên sư phạm được hỗ trợ sinh hoạt phí bao nhiêu một tháng?"
     category: policy
     slice: single.regulation
-    selected_cohort: K48-K49
+    selected_cohort: K49
     policy: [NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4, "3,63 triệu đồng/tháng"]
     fact: "Sinh viên sư phạm được hỗ trợ 3,63 triệu đồng/tháng chi phí sinh hoạt."
   - query: "Được hỗ trợ học phí sư phạm mà ra trường không đi dạy thì có phải trả lại tiền không?"
@@ -440,7 +440,7 @@ cases:
   - query: "Học kỳ này em xếp loại học lực gì ạ?"
     category: insufficient_input
     slice: boundary.clarify
-    selected_cohort: K48-K49
+    selected_cohort: K49
     clarify: "Thiếu điểm trung bình học kỳ; không tự xác định loại học lực."
   - query: "Em muốn hỏi thầy cô ở khoa thì liên hệ số nào?"
     category: insufficient_input
@@ -460,7 +460,7 @@ cases:
   - query: "Em học hệ này thì tối đa được mấy năm?"
     category: insufficient_input
     slice: boundary.clarify
-    selected_cohort: K48-K49
+    selected_cohort: K49
     clarify: "Thiếu hình thức đào tạo (chính quy hay vừa làm vừa học)."
   - query: "Làm thẻ bảo hiểm y tế ở đâu, và chứng chỉ ngoại ngữ của em tương đương bậc mấy?"
     category: insufficient_input
@@ -486,7 +486,7 @@ cases:
   - query: "Chè đậu xanh nấu sao cho nhanh nhừ vậy?"
     category: out_of_domain
     slice: boundary.out_of_domain
-    selected_cohort: K48-K49
+    selected_cohort: K49
     out_of_domain: true
   - query: "Tỉ số trận bóng đá tối qua là bao nhiêu?"
     category: out_of_domain
@@ -501,7 +501,7 @@ cases:
   - query: "Giải giúp em phương trình x^2 - 5x + 6 = 0."
     category: out_of_domain
     slice: boundary.out_of_domain
-    selected_cohort: K48-K49
+    selected_cohort: K49
     out_of_domain: true
 
   # ---------------------------------------------------------------- multi_intent
@@ -525,7 +525,7 @@ cases:
   - query: "Học bổng giỏi hệ số bao nhiêu, và học bổng được xét cho ai trước?"
     category: compound
     slice: multi_intent.struct_regu
-    selected_cohort: K48-K49
+    selected_cohort: K49
     coverage_features: [structured_regulation]
     tasks:
       - {scholarship: [scholarship_amount, 1], resolved_output_fields: [scholarship_level, multiplier]}
@@ -557,7 +557,7 @@ cases:
   - query: "Điểm học bổng tính bằng công thức gì, ngành đã cấp đủ mà quỹ còn dư thì sao?"
     category: compound
     slice: multi_intent.struct_regu
-    selected_cohort: K48-K49
+    selected_cohort: K49
     coverage_features: [structured_regulation]
     tasks:
       - {formula: scholarship_score}
@@ -590,7 +590,7 @@ cases:
   - query: "Ngành Quốc tế học thuộc khoa nào, và cho em số điện thoại Phòng Đào tạo."
     category: compound
     slice: multi_intent.struct_struct
-    selected_cohort: K48-K49
+    selected_cohort: K49
     coverage_features: [structured_structured]
     tasks:
       - {program: Quốc tế học}
@@ -622,7 +622,7 @@ cases:
   - query: "TOEFL ITP bao nhiêu thì tương đương bậc 3, nộp chứng chỉ để xét miễn ngoại ngữ ở phòng nào?"
     category: compound
     slice: multi_intent.struct_struct
-    selected_cohort: K48-K49
+    selected_cohort: K49
     coverage_features: [structured_structured]
     tasks:
       - {foreign: [TOEFL ITP, equivalent_level_3]}
@@ -657,7 +657,7 @@ cases:
   - query: "Chấm thi kết thúc học phần phải có mấy giảng viên, và muốn nghỉ học tạm thời vì việc riêng thì phải học ít nhất bao lâu?"
     category: compound
     slice: multi_intent.regu_regu
-    selected_cohort: K48-K49
+    selected_cohort: K49
     coverage_features: [regulation_regulation]
     tasks:
       - {policy: [QuyCheDaoTao_Chuong3_Dieu10, "tối thiểu hai giảng viên"], fact: "Chấm thi kết thúc học phần do tối thiểu hai giảng viên đảm nhiệm, trừ chấm thi trắc nghiệm."}
@@ -714,15 +714,16 @@ cases:
   - query: "Cho em hỏi 3 việc: Trạm Y tế ở đâu, muốn vay vốn sinh viên thì liên hệ phòng nào, và nghỉ học tạm thời vì ốm cần giấy tờ gì?"
     category: compound
     slice: multi_intent.three_plus
-    selected_cohort: K48-K49
+    selected_cohort: K49
     stress: true
     stress_type: dense_request
     coverage_features: [three_requests, structured_structured_regulation]
     tasks:
       - {office: [Trạm Y tế, office]}
-      # Corrected 2026-09-28: the K48-K49 handbook lists student loans in Phòng CTCT's
-      # combined duty line; the earlier gold cited a duplicate the catalog build had added.
-      - {service: [vay vốn tín dụng, unit_name]}
+      # K49 migration (2026-10-13): the K48 handbook listed student loans in Phòng
+      # CTCT's duty line; the K49 directory does not, and its Quy chế CTSV Điều 14
+      # khoản 14 gives the task to Phòng CTCT và HSSV.
+      - {policy: [QuyCheCongTacSinhVien_Chuong4_Dieu14, "Thực hiện tín dụng sinh viên"], fact: "Phòng CTCT và HSSV thực hiện tín dụng sinh viên (Quy chế công tác sinh viên, Điều 14)."}
       - {policy: [QuyCheDaoTao_Chuong4_Dieu16, "cơ sở khám bệnh"], fact: "Cần chứng nhận của cơ sở khám bệnh, chữa bệnh có thẩm quyền về việc ốm phải điều trị thời gian dài."}
   - query: "Cho em hỏi email khoa Tiếng Anh, GPA 3,3 loại gì, rèn luyện 70 loại gì, học bổng giỏi hệ số mấy và cách tính điểm học bổng luôn."
     category: compound
@@ -760,11 +761,13 @@ cases:
   - query: "Muốn khám bệnh thông thường và làm thẻ sinh viên thì liên hệ đơn vị nào?"
     category: compound
     slice: multi_entity.same_table
-    selected_cohort: K48-K49
+    selected_cohort: K49
     coverage_features: [multi_entity_same_type]
-    tasks: [{service: [Khám bệnh, unit_name]}, {service: [làm thẻ sinh viên, unit_name]}]
+    # K49 migration (2026-10-13): the K49 handbook names the student card in Phòng
+    # CTCT's combined duty line ("cấp thẻ sinh viên"); the unit is unchanged.
+    tasks: [{service: [Khám bệnh, unit_name]}, {service: [cấp thẻ sinh viên, unit_name]}]
     alternative_tasks:
-      - [{directory_group: [{service: [Khám bệnh, unit_name]}, {service: [làm thẻ sinh viên, unit_name]}]}]
+      - [{directory_group: [{service: [Khám bệnh, unit_name]}, {service: [cấp thẻ sinh viên, unit_name]}]}]
   - query: "Em được 78 điểm rèn luyện, bạn em 81 điểm thì mỗi người xếp loại gì?"
     category: compound
     slice: multi_entity.same_table
@@ -788,7 +791,7 @@ cases:
   - query: "JLPT và TOPIK II cần mức nào để tương đương bậc 3?"
     category: compound
     slice: multi_entity.same_table
-    selected_cohort: K48-K49
+    selected_cohort: K49
     coverage_features: [multi_entity_same_type]
     tasks: [{foreign: [Japanese Language Proficiency Test (JLPT), equivalent_level_3]}, {foreign: [TOPIK II, equivalent_level_3]}]
     alternative_tasks:
@@ -803,7 +806,7 @@ cases:
   - query: "Rèn luyện 66 điểm và GPA 2,6 thì mỗi cái xếp loại gì ạ?"
     category: compound
     slice: multi_entity.cross_table
-    selected_cohort: K48-K49
+    selected_cohort: K49
     coverage_features: [multi_entity_cross_type]
     tasks:
       - {table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 66}}
@@ -829,7 +832,7 @@ cases:
   - query: "Email của Thư viện và Khoa Hóa học là gì ạ?"
     category: compound
     slice: multi_entity.cross_table
-    selected_cohort: K48-K49
+    selected_cohort: K49
     coverage_features: [multi_entity_cross_type]
     tasks: [{office: [Thư viện, email]}, {faculty: [Khoa Hóa học, email]}]
 
@@ -876,19 +879,19 @@ cases:
       - - execution_units:
             - {cohort: K50, table: [grade_scale, 5, pass_threshold], input_slots: {score_or_grade: 5.0}}
             - {cohort: K51, table: [grade_scale, 5, pass_threshold, remaining], input_slots: {score_or_grade: 5.0}}
-  - query: "Rèn luyện 79 điểm thì K48 và K50 xếp loại có giống nhau không?"
+  - query: "Rèn luyện 79 điểm thì K49 và K50 xếp loại có giống nhau không?"
     category: compound
     slice: multi_cohort.structured
-    selected_cohort: K48-K49
+    selected_cohort: K49
     stress: true
     stress_type: cohort_difference
     coverage_features: [multi_cohort]
     tasks:
-      - {cohort: K48-K49, table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 79}}
+      - {cohort: K49, table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 79}}
       - {cohort: K50, table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 79}}
     alternative_tasks:
       - - execution_units:
-            - {cohort: K48-K49, table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 79}}
+            - {cohort: K49, table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 79}}
             - {cohort: K50, table: [conduct_classification, 2, conduct_classification], input_slots: {score_or_grade: 79}}
   - query: "Học bổng khá của K49 và K51 nhân hệ số bao nhiêu?"
     category: compound
@@ -898,11 +901,11 @@ cases:
     stress_type: cohort_difference
     coverage_features: [multi_cohort]
     tasks:
-      - {cohort: K48-K49, scholarship: [scholarship_amount, 0], resolved_output_fields: [scholarship_level, multiplier]}
+      - {cohort: K49, scholarship: [scholarship_amount, 0], resolved_output_fields: [scholarship_level, multiplier]}
       - {cohort: K51, scholarship: [scholarship_amount, 0], resolved_output_fields: [scholarship_level, multiplier]}
     alternative_tasks:
       - - execution_units:
-            - {cohort: K48-K49, scholarship: [scholarship_amount, 0], resolved_output_fields: [scholarship_level, multiplier]}
+            - {cohort: K49, scholarship: [scholarship_amount, 0], resolved_output_fields: [scholarship_level, multiplier]}
             - {cohort: K51, scholarship: [scholarship_amount, 0], resolved_output_fields: [scholarship_level, multiplier]}
   - query: "Năm nhất mà điểm trung bình tích lũy dưới bao nhiêu thì bị cảnh báo, K50 với K51 có giống nhau không?"
     category: compound
@@ -924,14 +927,14 @@ cases:
     stress_type: cohort_difference
     coverage_features: [multi_cohort, regulation_regulation]
     tasks:
-      - {cohort: K48-K49, policy: [QuyCheDaoTao_Chuong4_Dieu19, "sớm nhất khi đã được xếp trình độ năm thứ hai"], fact: "Đăng ký chương trình thứ hai sớm nhất khi đã xếp trình độ năm thứ hai; học lực tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng, hoặc trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai."}
+      - {cohort: K49, policy: [QuyCheDaoTao_Chuong4_Dieu19, "sớm nhất khi đã được xếp trình độ năm thứ hai"], fact: "Đăng ký chương trình thứ hai sớm nhất khi đã xếp trình độ năm thứ hai; học lực tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng, hoặc trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai."}
       - {cohort: K50, policy: [QuyCheDaoTao_Chuong4_Dieu19, "sớm nhất khi đã được xếp trình độ năm thứ hai"], fact: "Đăng ký chương trình thứ hai sớm nhất khi đã xếp trình độ năm thứ hai; học lực tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng, hoặc trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai."}
     alternative_tasks:
-      - [{cohorts: [K48-K49, K50], policy: [QuyCheDaoTao_Chuong4_Dieu19, "sớm nhất khi đã được xếp trình độ năm thứ hai"]}]
+      - [{cohorts: [K49, K50], policy: [QuyCheDaoTao_Chuong4_Dieu19, "sớm nhất khi đã được xếp trình độ năm thứ hai"]}]
   - query: "Một tín chỉ bằng bao nhiêu giờ thực hành, K50 với K51 có giống nhau không?"
     category: compound
     slice: multi_cohort.regulation
-    selected_cohort: K48-K49
+    selected_cohort: K49
     stress: true
     stress_type: cohort_difference
     coverage_features: [multi_cohort, regulation_regulation]
@@ -940,7 +943,7 @@ cases:
       - {cohort: K51, policy: [QuyCheDaoTao_Chuong1_Dieu2, "30 giờ thực hành"], fact: "Một tín chỉ bằng 30 giờ thực hành, thí nghiệm, thảo luận và 15 giờ tự học có hướng dẫn."}
     alternative_tasks:
       - [{cohorts: [K50, K51], policy: [QuyCheDaoTao_Chuong1_Dieu2, "30 giờ thực hành"]}]
-  - query: "Bị buộc thôi học thì kết quả đã tích lũy có được bảo lưu không, K48-K49 với K51 có giống nhau?"
+  - query: "Bị buộc thôi học thì kết quả đã tích lũy có được bảo lưu không, K49 với K51 có giống nhau?"
     category: compound
     slice: multi_cohort.regulation
     selected_cohort: K51
@@ -948,10 +951,10 @@ cases:
     stress_type: cohort_difference
     coverage_features: [multi_cohort, regulation_regulation]
     tasks:
-      - {cohort: K48-K49, policy: [QuyCheDaoTao_Chuong3_Dieu12, "Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu"], fact: "Có: kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu và được cấp giấy chứng nhận điểm khi yêu cầu."}
+      - {cohort: K49, policy: [QuyCheDaoTao_Chuong3_Dieu12, "Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu"], fact: "Có: kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu và được cấp giấy chứng nhận điểm khi yêu cầu."}
       - {cohort: K51, policy: [QuyCheDaoTao_Chuong3_Dieu12, "Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu"], fact: "Có: kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu và được cấp giấy chứng nhận điểm khi yêu cầu."}
     alternative_tasks:
-      - [{cohorts: [K48-K49, K51], policy: [QuyCheDaoTao_Chuong3_Dieu12, "Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu"]}]
+      - [{cohorts: [K49, K51], policy: [QuyCheDaoTao_Chuong3_Dieu12, "Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu"]}]
 
   # ---------------------------------------------------------------- memory
   # cohort switch
@@ -977,10 +980,10 @@ cases:
   - query: "Còn khóa 51 thì sao?"
     category: memory
     slice: memory.cohort_switch
-    selected_cohort: K48-K49
+    selected_cohort: K49
     history:
       - {role: user, content: "Học song ngành cần điều kiện gì?"}
-      - {role: assistant, content: "Với K48-K49, sinh viên được đăng ký chương trình thứ hai sớm nhất khi đã được xếp trình độ năm thứ hai và phải đáp ứng điều kiện học lực theo quy chế."}
+      - {role: assistant, content: "Với K49, sinh viên được đăng ký chương trình thứ hai sớm nhất khi đã được xếp trình độ năm thứ hai và phải đáp ứng điều kiện học lực theo quy chế."}
     policy: [QuyCheDaoTao_Chuong4_Dieu19, "sớm nhất khi đã được xếp trình độ năm thứ hai"]
     fact: "Đăng ký chương trình thứ hai sớm nhất khi đã xếp trình độ năm thứ hai; học lực tích lũy từ khá trở lên và đạt ngưỡng bảo đảm chất lượng, hoặc trung bình và đạt điều kiện trúng tuyển của chương trình thứ hai."
     cohort: K51
@@ -1028,7 +1031,7 @@ cases:
   - query: "Thế HSK thì cần bậc mấy?"
     category: memory
     slice: memory.entity_switch
-    selected_cohort: K48-K49
+    selected_cohort: K49
     history:
       - {role: user, content: "IELTS bao nhiêu thì tương đương bậc 3?"}
       - {role: assistant, content: "IELTS từ 4.0 đến 5.0 được xem là tương đương bậc 3."}
@@ -1075,7 +1078,7 @@ cases:
   - query: "Kỳ sau em được 80 thì lên loại gì?"
     category: memory
     slice: memory.value_switch
-    selected_cohort: K48-K49
+    selected_cohort: K49
     stress: true
     stress_type: boundary_value
     history:
@@ -1123,7 +1126,7 @@ cases:
   - query: "Số điện thoại phòng đó là gì?"
     category: memory
     slice: memory.pronoun
-    selected_cohort: K48-K49
+    selected_cohort: K49
     history:
       - {role: user, content: "Giấy chứng nhận điểm xin ở đâu?"}
       - {role: assistant, content: "Phòng Khảo thí và Đảm bảo chất lượng cấp các loại giấy chứng nhận điểm cho sinh viên."}
@@ -1168,7 +1171,7 @@ cases:
   - query: "Cho em hỏi Trạm Y tế trường nằm ở đâu?"
     category: memory
     slice: memory.topic_switch
-    selected_cohort: K48-K49
+    selected_cohort: K49
     history:
       - {role: user, content: "Ngành Tâm lý học thuộc khoa nào?"}
       - {role: assistant, content: "Ngành Tâm lý học thuộc Khoa Tâm lý học."}

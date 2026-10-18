@@ -42,7 +42,7 @@ function App() {
   const defaultTheme = (new Date().getHours() >= 18 || new Date().getHours() < 6) ? 'dark' : 'light';
   const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('hcmue-theme', defaultTheme);
   const [storedCohort, setStoredCohort] = useLocalStorage<Cohort | null>('hcmue-cohort', null);
-  const cohort = storedCohort ? normalizeFrontendCohort(storedCohort) : 'K48-K49'; // Fallback an toàn cho utils
+  const cohort = storedCohort ? normalizeFrontendCohort(storedCohort) : 'K49'; // Fallback an toàn cho utils
   const setCohort = (nextCohort: Cohort) => setStoredCohort(nextCohort);
   
   const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
@@ -121,7 +121,7 @@ function App() {
                   onChange={(e) => setCohort(e.target.value as Cohort)}
                   style={{ cursor: 'pointer', outline: 'none' }}
                 >
-                  <option value="K48-K49">Khóa 48 - 49</option>
+                  <option value="K49">Khóa 49</option>
                   <option value="K50">Khóa 50</option>
                   <option value="K51">Khóa 51</option>
                   <option value="K52" disabled>Khóa 52 (chưa hỗ trợ)</option>

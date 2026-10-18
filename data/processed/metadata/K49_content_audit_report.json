@@ -1,27 +1,24 @@
 {
-  "document_id": "so_tay_sinh_vien_khoa_48_49",
-  "file_name": "so-tay-sinh-vien-khoa-48-49.pdf",
-  "total_pages": 188,
+  "document_id": "so_tay_sinh_vien_khoa_49",
+  "file_name": "so-tay-sinh-vien-khoa-49.pdf",
+  "total_pages": 176,
   "content_type_count": {
     "cover_page": 1,
     "low_text_or_blank": 2,
     "abbreviation": 1,
     "general_info": 3,
-    "regulation_text": 116,
+    "regulation_text": 115,
     "scoring_form_table": 5,
-    "office_directory": 17,
-    "faculty_program_directory": 25,
+    "office_directory": 12,
+    "faculty_program_directory": 21,
     "faculty_student_services": 1,
-    "ktx_procedure_archive": 2,
+    "ktx_procedure_archive": 3,
     "reference_directory": 4,
-    "unknown": 2,
-    "scoring_table": 6,
-    "toc_or_index": 3
+    "toc_or_index": 8
   },
   "content_mode_count": {
-    "archive_only": 18,
-    "rag_index": 164,
-    "structured_only": 6
+    "archive_only": 22,
+    "rag_index": 154
   },
   "content_types": [
     {
@@ -53,9 +50,11 @@
     {
       "content_type": "faculty_program_directory",
       "content_mode": "rag_index",
-      "page_count": 25,
+      "page_count": 21,
       "section_count": 0,
       "pages": [
+        139,
+        140,
         141,
         142,
         143,
@@ -74,16 +73,10 @@
         156,
         157,
         158,
-        159,
-        175,
-        181,
-        182,
-        183,
-        184,
-        185
+        159
       ],
-      "page_start": 141,
-      "page_end": 185,
+      "page_start": 139,
+      "page_end": 159,
       "needs_embedding": true,
       "needs_structured_lookup": false
     },
@@ -118,14 +111,15 @@
     {
       "content_type": "ktx_procedure_archive",
       "content_mode": "archive_only",
-      "page_count": 2,
+      "page_count": 3,
       "section_count": 0,
       "pages": [
         161,
-        162
+        162,
+        163
       ],
       "page_start": 161,
-      "page_end": 162,
+      "page_end": 163,
       "needs_embedding": false,
       "needs_structured_lookup": false
     },
@@ -146,9 +140,11 @@
     {
       "content_type": "office_directory",
       "content_mode": "rag_index",
-      "page_count": 17,
+      "page_count": 12,
       "section_count": 0,
       "pages": [
+        127,
+        128,
         129,
         130,
         131,
@@ -158,17 +154,10 @@
         135,
         136,
         137,
-        138,
-        139,
-        140,
-        176,
-        177,
-        178,
-        179,
-        180
+        138
       ],
-      "page_start": 129,
-      "page_end": 180,
+      "page_start": 127,
+      "page_end": 138,
       "needs_embedding": true,
       "needs_structured_lookup": false
     },
@@ -178,21 +167,21 @@
       "page_count": 4,
       "section_count": 0,
       "pages": [
-        163,
         164,
         165,
-        166
+        166,
+        167
       ],
-      "page_start": 163,
-      "page_end": 166,
+      "page_start": 164,
+      "page_end": 167,
       "needs_embedding": false,
       "needs_structured_lookup": false
     },
     {
       "content_type": "regulation_text",
       "content_mode": "rag_index",
-      "page_count": 116,
-      "section_count": 123,
+      "page_count": 115,
+      "section_count": 142,
       "pages": [
         8,
         9,
@@ -263,11 +252,11 @@
         74,
         75,
         76,
-        77,
-        78,
-        79,
-        80,
-        81,
+        82,
+        83,
+        84,
+        85,
+        86,
         87,
         88,
         89,
@@ -308,11 +297,10 @@
         124,
         125,
         126,
-        127,
-        128
+        168
       ],
       "page_start": 8,
-      "page_end": 128,
+      "page_end": 168,
       "needs_embedding": true,
       "needs_structured_lookup": false
     },
@@ -322,21 +310,21 @@
       "page_count": 5,
       "section_count": 0,
       "pages": [
-        82,
-        83,
-        84,
-        85,
-        86
+        77,
+        78,
+        79,
+        80,
+        81
       ],
-      "page_start": 82,
-      "page_end": 86,
+      "page_start": 77,
+      "page_end": 81,
       "needs_embedding": true,
       "needs_structured_lookup": false
     },
     {
-      "content_type": "scoring_table",
-      "content_mode": "structured_only",
-      "page_count": 6,
+      "content_type": "toc_or_index",
+      "content_mode": "archive_only",
+      "page_count": 8,
       "section_count": 0,
       "pages": [
         169,
@@ -344,39 +332,12 @@
         171,
         172,
         173,
-        174
+        174,
+        175,
+        176
       ],
       "page_start": 169,
-      "page_end": 174,
-      "needs_embedding": false,
-      "needs_structured_lookup": true
-    },
-    {
-      "content_type": "toc_or_index",
-      "content_mode": "archive_only",
-      "page_count": 3,
-      "section_count": 0,
-      "pages": [
-        186,
-        187,
-        188
-      ],
-      "page_start": 186,
-      "page_end": 188,
-      "needs_embedding": false,
-      "needs_structured_lookup": false
-    },
-    {
-      "content_type": "unknown",
-      "content_mode": "archive_only",
-      "page_count": 2,
-      "section_count": 0,
-      "pages": [
-        167,
-        168
-      ],
-      "page_start": 167,
-      "page_end": 168,
+      "page_end": 176,
       "needs_embedding": false,
       "needs_structured_lookup": false
     }
@@ -400,7 +361,7 @@
       "page_number": 3,
       "content_type": "abbreviation",
       "content_mode": "archive_only",
-      "cleaned_char_count": 419,
+      "cleaned_char_count": 282,
       "section_description": "Quy ước viết tắt"
     },
     {
@@ -414,98 +375,126 @@
       "page_number": 5,
       "content_type": "general_info",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1698,
+      "cleaned_char_count": 1803,
       "section_description": "Tổng quan Trường Đại học Sư phạm TP.HCM"
     },
     {
       "page_number": 6,
       "content_type": "general_info",
       "content_mode": "archive_only",
-      "cleaned_char_count": 2055,
+      "cleaned_char_count": 2002,
       "section_description": "Tổng quan Trường Đại học Sư phạm TP.HCM"
     },
     {
       "page_number": 7,
       "content_type": "general_info",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1115,
+      "cleaned_char_count": 1128,
       "section_description": "Tổng quan Trường Đại học Sư phạm TP.HCM"
     },
     {
       "page_number": 161,
       "content_type": "ktx_procedure_archive",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1184,
+      "cleaned_char_count": 660,
       "section_description": "Quy trình xét sinh viên vào ở ký túc xá"
     },
     {
       "page_number": 162,
       "content_type": "ktx_procedure_archive",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1420,
+      "cleaned_char_count": 1125,
       "section_description": "Quy trình xét sinh viên vào ở ký túc xá"
     },
     {
       "page_number": 163,
-      "content_type": "reference_directory",
+      "content_type": "ktx_procedure_archive",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1067,
-      "section_description": "Danh sách bảo tàng và di tích lịch sử tại TP.HCM"
+      "cleaned_char_count": 737,
+      "section_description": "Quy trình xét sinh viên vào ở ký túc xá"
     },
     {
       "page_number": 164,
       "content_type": "reference_directory",
       "content_mode": "archive_only",
-      "cleaned_char_count": 979,
+      "cleaned_char_count": 1103,
       "section_description": "Danh sách bảo tàng và di tích lịch sử tại TP.HCM"
     },
     {
       "page_number": 165,
       "content_type": "reference_directory",
       "content_mode": "archive_only",
-      "cleaned_char_count": 1257,
+      "cleaned_char_count": 982,
       "section_description": "Danh sách bảo tàng và di tích lịch sử tại TP.HCM"
     },
     {
       "page_number": 166,
       "content_type": "reference_directory",
       "content_mode": "archive_only",
-      "cleaned_char_count": 565,
+      "cleaned_char_count": 1266,
       "section_description": "Danh sách bảo tàng và di tích lịch sử tại TP.HCM"
     },
     {
       "page_number": 167,
-      "content_type": "unknown",
+      "content_type": "reference_directory",
       "content_mode": "archive_only",
-      "cleaned_char_count": 0,
-      "section_description": ""
+      "cleaned_char_count": 565,
+      "section_description": "Danh sách bảo tàng và di tích lịch sử tại TP.HCM"
     },
     {
-      "page_number": 168,
-      "content_type": "unknown",
-      "content_mode": "archive_only",
-      "cleaned_char_count": 145,
-      "section_description": ""
-    },
-    {
-      "page_number": 186,
+      "page_number": 169,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 3164,
+      "cleaned_char_count": 3101,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     },
     {
-      "page_number": 187,
+      "page_number": 170,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 711,
+      "cleaned_char_count": 2591,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     },
     {
-      "page_number": 188,
+      "page_number": 171,
       "content_type": "toc_or_index",
       "content_mode": "archive_only",
-      "cleaned_char_count": 852,
+      "cleaned_char_count": 2591,
+      "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
+    },
+    {
+      "page_number": 172,
+      "content_type": "toc_or_index",
+      "content_mode": "archive_only",
+      "cleaned_char_count": 2591,
+      "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
+    },
+    {
+      "page_number": 173,
+      "content_type": "toc_or_index",
+      "content_mode": "archive_only",
+      "cleaned_char_count": 2591,
+      "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
+    },
+    {
+      "page_number": 174,
+      "content_type": "toc_or_index",
+      "content_mode": "archive_only",
+      "cleaned_char_count": 2591,
+      "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
+    },
+    {
+      "page_number": 175,
+      "content_type": "toc_or_index",
+      "content_mode": "archive_only",
+      "cleaned_char_count": 844,
+      "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
+    },
+    {
+      "page_number": 176,
+      "content_type": "toc_or_index",
+      "content_mode": "archive_only",
+      "cleaned_char_count": 935,
       "section_description": "Mục lục hoặc thông tin xuất bản cuối tài liệu"
     }
   ],

@@ -75,10 +75,10 @@ def test_graded_is_accepted_by_planner_contract():
             "lookup_type": "scoring", "slots": {"operation": "pass_threshold",
             "score_or_grade": "3,6/10", "course_scope": "graded"},
             "slot_spans": {"score_or_grade": "3,6/10",
-                           "course_scope": "Môn tính GPA"}, "cohorts": ["K48-K49"]}
+                           "course_scope": "Môn tính GPA"}, "cohorts": ["K49"]}
     plan, errors = normalize_query_plan(
         {"context_mode": "standalone", "tasks": [task]},
-        query=query, selected_cohort="K48-K49")
+        query=query, selected_cohort="K49")
     assert errors == []
     assert plan["tasks"][0]["slots"]["course_scope"] == "graded"
 
@@ -168,8 +168,8 @@ def test_declared_alias_joins_tam_ly_without_accent_folding():
     task = {"lookup_type": "program", "question": "Công tác xã hội email khoa?",
             "intent": "direct_value", "slots": {"requested_field": "email"},
             "slot_spans": {"program_or_faculty": "Công tác xã hội"},
-            "cohorts": ["K48-K49"]}
-    resolution = resolve(task, "K48-K49")
+            "cohorts": ["K49"]}
+    resolution = resolve(task, "K49")
     assert resolution.result["relationship_status"] == "resolved"
     assert resolution.result["result"]["targets"][0]["unit_name"] == "Khoa Tâm lí học"
 
@@ -277,7 +277,7 @@ def test_source_ambiguity_and_missing_target_are_safe():
 
 def test_catalog_relationship_integrity_all_records():
     data = catalogs()
-    assert len(data["program"]) == 129
+    assert len(data["program"]) == 131
     # 2026-09-28: services the handbook does not list (wifi) and a duplicate
     # of a listed one (student loans) were removed from the catalog build.
     # The K50 branch campus unit (Phân hiệu Long An) followed when the

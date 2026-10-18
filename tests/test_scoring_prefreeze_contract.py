@@ -45,7 +45,7 @@ def test_grade_conversion_resolver_respects_selector_and_scope(scope, expected):
         assert result["result"][0]["row"]["letter_grade"] == "C"
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 @pytest.mark.parametrize("operation", ["grade_10_to_letter", "pass_threshold", "academic_classification", "conduct_classification", "letter_to_grade_4"])
 def test_real_catalog_selector_contract(cohort, operation):
     resolution = resolve({"operation": operation}, cohort)

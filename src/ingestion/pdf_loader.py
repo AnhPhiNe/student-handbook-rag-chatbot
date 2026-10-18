@@ -6,17 +6,24 @@ from typing import Any
 import fitz
 import yaml
 
+from src.common.cohort import normalize_cohort, valid_cohorts
 from src.common.io import save_json
 
 
-PDF_PATH = Path(os.environ.get("PDF_PATH", "data/raw/so-tay-sinh-vien-khoa-48.pdf"))
-CONFIG_PATH = Path(os.environ.get("CONFIG_PATH", "configs/document_sections.yaml"))
+PDF_PATH = Path(os.environ.get("PDF_PATH", "data/raw/so-tay-sinh-vien-khoa-49.pdf"))
+CONFIG_PATH = Path(os.environ.get("CONFIG_PATH", "configs/document_sections_k49.yaml"))
 OUTPUT_DIR = Path("data/processed/metadata")
 HANDBOOK_HEADER_PATTERN = re.compile(
     r"^(?:\d{1,3}\s+)?SỔ TAY SINH VIÊN(?:\s+NĂM HỌC\s+\d{4}\s*[–—-]\s*\d{4}"
     r"|\s+KHÓA\s+\d+(?:\s*[–—-]\s*\d+)?)?(?:\s+\d{1,3})?$",
     re.IGNORECASE,
 )
+
+
+def sections_config_path(cohort: str) -> Path:
+    """Page ranges of one handbook's sections: configs/document_sections_<cohort>.yaml."""
+
+    return Path("configs") / f"document_sections_{cohort.lower()}.yaml"
 
 
 def load_yaml_config(config_path: Path) -> dict[str, Any]:
@@ -273,15 +280,8 @@ def main() -> None:
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    cohort = os.environ.get("COHORT", "UNKNOWN")
-    config_by_cohort = {
-        "K48-K49": CONFIG_PATH,
-        "K50": Path("configs/document_sections_k50.yaml"),
-        "K51": Path("configs/document_sections_k51.yaml"),
-        # Legacy alias: old K50-K51 builds were actually based on the K51 file.
-        "K50-K51": Path("configs/document_sections_k51.yaml"),
-    }
-    config = load_yaml_config(config_by_cohort.get(cohort, CONFIG_PATH))
+    cohort = normalize_cohort(os.environ.get("COHORT")) or ""
+    config = load_yaml_config(sections_config_path(cohort) if cohort in valid_cohorts() else CONFIG_PATH)
 
     pages = extract_pdf_pages(PDF_PATH, config)
     document_profile = build_document_profile(pages, config)

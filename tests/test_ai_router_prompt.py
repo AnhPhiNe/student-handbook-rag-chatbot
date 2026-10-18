@@ -194,7 +194,7 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
     assert stats["estimated_input_tokens"] <= 8950
     assert ROUTER_PROMPT_VERSION == "structured-regulation-v61-table-conclusions"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
-    assert 'COHORT_ADMISSION_YEARS: {"K48-K49":[2022,2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
+    assert 'COHORT_ADMISSION_YEARS: {"K49":[2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 
 
 def test_dynamic_prompt_preserves_explicit_three_request_count(
@@ -582,8 +582,8 @@ def test_router_falls_back_to_regulation_rag_after_provider_error(
     router = _router(monkeypatch, tmp_path)
 
     decision = router.plan(
-        "K48-K49: co duoc xin nang diem ren luyen neu thieu minh chung khong?",
-        cohort="K48-K49",
+        "K49: co duoc xin nang diem ren luyen neu thieu minh chung khong?",
+        cohort="K49",
     )
 
     assert [task["mode"] for task in decision["tasks"]] == ["rag"]
@@ -707,7 +707,7 @@ def test_router_normalization_does_not_rewrite_student_service_from_query() -> N
                     "requested_field": "unit",
                 },
         slot_spans={"service": "hỗ trợ lỗi tài khoản"},
-        cohort="K48-K49",
+        cohort="K49",
     )
 
     assert decision["slots"]["service"] == "hỗ trợ lỗi tài khoản"

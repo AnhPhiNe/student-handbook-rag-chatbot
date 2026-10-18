@@ -177,7 +177,7 @@
     "id": "official_v2_det_002",
     "suite": "deterministic",
     "query": "5,9 điểm hệ 10 đổi sang điểm chữ là gì?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -208,7 +208,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -228,7 +228,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+              "K49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -252,15 +252,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
           "data_category": "regulation_table",
           "table_type": "scoring",
           "table_subtype": "grade_scale",
           "table_name": "Bảng quy đổi thang điểm 10 sang điểm chữ",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-          "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+          "source_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
           "title": "Đánh giá và tính điểm học phần",
           "columns": [
             "Loại",
@@ -315,10 +315,10 @@
             }
           ],
           "source_pages": [
+            16,
+            17,
             18,
-            19,
-            20,
-            21
+            19
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -864,7 +864,7 @@
     "id": "official_v2_det_006",
     "suite": "deterministic",
     "query": "GPA tích lũy 3,62 là xuất sắc chưa ạ?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -895,7 +895,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -913,7 +913,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"
+              "K49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -935,15 +935,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
           "data_category": "regulation_table",
           "table_type": "scoring",
           "table_subtype": "academic_classification",
           "table_name": "Bảng xếp loại học lực theo thang điểm 4",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-          "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+          "source_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
           "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "columns": [
             "Xếp loại",
@@ -976,9 +976,9 @@
             }
           ],
           "source_pages": [
-            21,
-            22,
-            23
+            19,
+            20,
+            21
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -1010,7 +1010,7 @@
     "id": "official_v2_det_007",
     "suite": "deterministic",
     "query": "gpa ki nay cua e 2.41 thi xep loai gi a",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -1041,7 +1041,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -1059,7 +1059,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"
+              "K49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -1081,15 +1081,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
           "data_category": "regulation_table",
           "table_type": "scoring",
           "table_subtype": "academic_classification",
           "table_name": "Bảng xếp loại học lực theo thang điểm 4",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-          "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+          "source_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
           "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "columns": [
             "Xếp loại",
@@ -1122,9 +1122,9 @@
             }
           ],
           "source_pages": [
-            21,
-            22,
-            23
+            19,
+            20,
+            21
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -1304,7 +1304,7 @@
     "id": "official_v2_det_009",
     "suite": "deterministic",
     "query": "Thang điểm chữ từ A đến F ứng với điểm hệ 10 thế nào?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -1335,7 +1335,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "scoring",
@@ -1348,7 +1348,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+              "K49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
             ],
             "fact_lock_reason": "N/A: whole table, multiple rows, or multiple applicable tables requested.",
             "expected_evidence_rows": [
@@ -1399,7 +1399,7 @@
               }
             ],
             "expected_evidence_fields": {
-              "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
+              "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general"
             }
           }
         ],
@@ -1411,15 +1411,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
+          "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu10_grade_scale_general",
           "data_category": "regulation_table",
           "table_type": "scoring",
           "table_subtype": "grade_scale",
           "table_name": "Bảng quy đổi thang điểm 10 sang điểm chữ",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-          "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+          "source_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
           "title": "Đánh giá và tính điểm học phần",
           "columns": [
             "Loại",
@@ -1474,10 +1474,10 @@
             }
           ],
           "source_pages": [
+            16,
+            17,
             18,
-            19,
-            20,
-            21
+            19
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -1550,7 +1550,7 @@
     "id": "official_v2_det_010",
     "suite": "deterministic",
     "query": "Điểm rèn luyện học kỳ vừa rồi em được 68 thì xếp loại gì?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -1581,7 +1581,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -1600,7 +1600,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+              "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -1622,15 +1622,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "table_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
           "data_category": "regulation_table",
           "table_type": "conduct",
           "table_subtype": "conduct_classification",
           "table_name": "Bảng phân loại kết quả rèn luyện",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-          "source_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "source_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
           "title": "Phân loại kết quả rèn luyện",
           "columns": [
             "Khung điểm",
@@ -1663,7 +1663,7 @@
             }
           ],
           "source_pages": [
-            74
+            69
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -1695,7 +1695,7 @@
     "id": "official_v2_det_011",
     "suite": "deterministic",
     "query": "Được đúng 90 điểm rèn luyện thì đã tính là xuất sắc chưa?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -1726,7 +1726,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -1745,7 +1745,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+              "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -1767,15 +1767,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "table_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
           "data_category": "regulation_table",
           "table_type": "conduct",
           "table_subtype": "conduct_classification",
           "table_name": "Bảng phân loại kết quả rèn luyện",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-          "source_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "source_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
           "title": "Phân loại kết quả rèn luyện",
           "columns": [
             "Khung điểm",
@@ -1808,7 +1808,7 @@
             }
           ],
           "source_pages": [
-            74
+            69
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -1841,7 +1841,7 @@
     "id": "official_v2_det_012",
     "suite": "deterministic",
     "query": "Rèn luyện được 33 điểm thì bị xếp loại gì ạ?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -1872,7 +1872,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -1891,7 +1891,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+              "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -1913,15 +1913,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "table_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
           "data_category": "regulation_table",
           "table_type": "conduct",
           "table_subtype": "conduct_classification",
           "table_name": "Bảng phân loại kết quả rèn luyện",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-          "source_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "source_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
           "title": "Phân loại kết quả rèn luyện",
           "columns": [
             "Khung điểm",
@@ -1954,7 +1954,7 @@
             }
           ],
           "source_pages": [
-            74
+            69
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -1986,7 +1986,7 @@
     "id": "official_v2_det_013",
     "suite": "deterministic",
     "query": "Chứng chỉ HSK cần bậc mấy thì được tính tương đương bậc 4?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -2017,7 +2017,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "foreign_language",
@@ -2178,7 +2178,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -2215,7 +2215,7 @@
     "id": "official_v2_det_014",
     "suite": "deterministic",
     "query": "DELF mức nào thì tương đương bậc 4 vậy?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -2246,7 +2246,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "foreign_language",
@@ -2407,7 +2407,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -2636,7 +2636,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -2896,7 +2896,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -3201,7 +3201,7 @@
     "id": "official_v2_det_019",
     "suite": "deterministic",
     "query": "Em có bằng đại học rồi, học thêm một bằng nữa hệ chính quy thì tối đa được mấy năm?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -3232,7 +3232,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "study_duration",
@@ -3245,7 +3245,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"
+              "K49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -3267,15 +3267,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
+          "table_id": "K49_QuyCheDaoTao_Chuong1_Dieu3_study_duration_chinh_quy",
           "data_category": "regulation_table",
           "table_type": "study_duration",
           "table_subtype": "study_duration",
           "table_name": "Thời gian học tập chuẩn và tối đa",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
-          "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu3",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
+          "source_section_id": "K49_QuyCheDaoTao_Chuong1_Dieu3",
           "title": "Chương trình đào tạo và thời gian học tập",
           "columns": [
             "Chương trình đào tạo",
@@ -3305,9 +3305,9 @@
             }
           ],
           "source_pages": [
-            11,
-            12,
-            13
+            9,
+            10,
+            11
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -3797,7 +3797,7 @@
     "id": "official_v2_det_023",
     "suite": "deterministic",
     "query": "Học bổng xuất sắc được tính tiền theo hệ số mấy?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -3828,7 +3828,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scholarship_classification",
@@ -3867,10 +3867,10 @@
           "table_type": "scholarship",
           "table_subtype": "scholarship_amount",
           "table_name": "Mức học bổng khuyến khích học tập",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-          "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "source_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
           "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
           "columns": [],
           "rows": [
@@ -3894,8 +3894,8 @@
             }
           ],
           "source_pages": [
-            52,
-            53
+            48,
+            49
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -3929,7 +3929,7 @@
     "id": "official_v2_det_024",
     "suite": "deterministic",
     "query": "Học bổng loại khá thì số tiền nhận được tính kiểu gì?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -3960,7 +3960,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scholarship_classification",
@@ -3999,10 +3999,10 @@
           "table_type": "scholarship",
           "table_subtype": "scholarship_amount",
           "table_name": "Mức học bổng khuyến khích học tập",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-          "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "source_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
           "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
           "columns": [],
           "rows": [
@@ -4026,8 +4026,8 @@
             }
           ],
           "source_pages": [
-            52,
-            53
+            48,
+            49
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -4254,7 +4254,7 @@
     "id": "official_v2_det_026",
     "suite": "deterministic",
     "query": "Điểm trung bình tích lũy được tính theo công thức gì vậy?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -4285,7 +4285,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "formula",
@@ -4319,24 +4319,25 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [
-            21,
-            22,
-            23
+            19,
+            20,
+            21
           ],
-          "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+          "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
           "review_status": "needs_human_verified",
           "raw_excerpt": "Điều 11. Đánh giá kết quả học tập theo học kỳ, năm học\n1. Kết quả học tập của sinh viên được đánh giá sau từng học kỳ\nchính hoặc sau từng năm học dựa trên kết quả các học phần nằm trong\nyêu cầu của CTĐT mà sinh viên đã học và có điểm theo các tiêu chí\nsau đây:\na) Tổng số tín chỉ của các học phần mà sinh viên không đạt trong\nmột học kỳ, trong một năm học, hoặc nợ đọng từ đầu khoá học;\nb) Tổng số tín chỉ của các học phần mà sinh viên đã đạt từ đầu khóa\nhọc (số tín chỉ tích lũy), tính cả các học phần được miễn học, được công\nnhận tín chỉ;\nc) Điểm trung bình của những học phần mà sinh viên đã học trong\nmột học kỳ (điểm trung bình học kỳ), trong một năm học (điểm trung\nbình năm học) hoặc tính từ đầu khóa học (điểm trung bình tích lũy),\ntính theo điểm chính thức của học phần và trọng số là số tín chỉ của học\nphần đó.\n2. Kết quả học tập trong học kỳ phụ được gộp vào kết quả học tập\ntrong học kỳ chính ngay trước học kỳ phụ để đánh giá.\n3. Để tính điểm trung bình, điểm chữ của học phần được quy đổi về\nđiểm số như dưới đây:\nThang điểm chữ\nThang điểm 4\nA\n4,0\nB+\n3,5\nB\n3,0\nC+\n2,5\nC\n2,0\nD+\n1,5\nD\n1,0\nF+\n0,5\nF\n0,0\n4. Những điểm chữ không được quy định tại khoản 3 Điều này\nkhông được tính vào các điểm trung bình học kỳ, năm học hoặc tích lũy.\nNhững học phần không nằm trong yêu cầu của CTĐT không được tính\nvào các tiêu chí đánh giá kết quả học tập của sinh viên.\n5. Điểm trung bình chung học kỳ, năm học và điểm trung bình chung\ntích lũy được tính theo công thức sau và được làm tròn đến 2 chữ số",
           "content_type": "formula_rule",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "cohort": "K48-K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "cohort": "K49",
           "source_section": "formula_rule",
           "content_mode": "structured_only",
-          "record_id": "K48-K49_K48-K49_formula_rules_1"
+          "record_id": "K49_K49_formula_rules_1"
         }
       }
     ],
@@ -4358,7 +4359,7 @@
     "id": "official_v2_det_027",
     "suite": "deterministic",
     "query": "Điểm học bổng lấy điểm học tập và rèn luyện nhân hệ số bao nhiêu?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -4389,7 +4390,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "formula",
@@ -4425,20 +4426,20 @@
           "source_article": "Điều 28.",
           "source_title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
           "source_pages": [
-            52,
-            53
+            48,
+            49
           ],
-          "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
           "review_status": "needs_human_verified",
-          "raw_excerpt": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKKHT đối với sinh viên học quá thời gian học\ntập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (tất cả các\ntín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương\nđương…). Do đó, các khoa cần xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n− Quy định xét học bổng đối với học kỳ I thực hiện theo Điểm a, b,\nc, khoản 1, Điều này.\n− Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n• Sinh viên còn lại.\n− Điểm học bổng được tính theo Điểm đ, khoản 1, Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n− Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n(Điểm rèn luyện /25 là quy đổi về thang điểm 4)\n− Xếp loại học bổng được ",
+          "raw_excerpt": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKKHT đối với sinh viên học quá thời gian học\ntập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (tất cả các\ntín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương\nđương…). Do đó, các khoa cần xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n– Quy định xét học bổng đối với học kỳ I thực hiện theo điểm a, b, c,\nkhoản 1, Điều này.\n– Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n Sinh viên còn lại.\n– Điểm học bổng được tính theo điểm đ khoản 1 Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n– Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n(Điểm rèn luyện/25 là quy đổi về thang điểm 4)\n– Xếp loại học bổng được xếp",
           "content_type": "formula_rule",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "cohort": "K48-K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "cohort": "K49",
           "source_section": "formula_rule",
           "content_mode": "structured_only",
-          "record_id": "K48-K49_K48-K49_formula_rules_2"
+          "record_id": "K49_K49_formula_rules_2"
         }
       }
     ],
@@ -4525,6 +4526,7 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [
@@ -4710,7 +4712,7 @@
     "id": "official_v2_det_030",
     "suite": "deterministic",
     "query": "cho e xin sdt tram y te truong voi",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -4741,7 +4743,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "office",
@@ -4754,7 +4756,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Trạm Y tế",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "phone": "(028) 38352020"
             }
           }
@@ -4767,8 +4769,8 @@
       {
         "catalog": "office",
         "record": {
-          "office_profile_id": "K48-K49_tram_y_te",
-          "cohort": "K48-K49",
+          "office_profile_id": "K49_tram_y_te",
+          "cohort": "K49",
           "unit": "Trạm Y tế",
           "unit_name": "Trạm Y tế",
           "aliases": [
@@ -4777,16 +4779,16 @@
             "y tế trường"
           ],
           "services": [
-            "Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên",
+            "Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên",
             "Khám cấp cứu",
             "Khám bệnh, cấp phát thuốc thông thường",
             "Làm thẻ và phát thẻ BHYT"
           ],
           "service_ids": [
-            "K48-K49_K48-K49_tram_y_te_service_1",
-            "K48-K49_K48-K49_tram_y_te_service_2",
-            "K48-K49_K48-K49_tram_y_te_service_3",
-            "K48-K49_K48-K49_tram_y_te_service_4"
+            "K49_K49_tram_y_te_service_1",
+            "K49_K49_tram_y_te_service_2",
+            "K49_K49_tram_y_te_service_3",
+            "K49_K49_tram_y_te_service_4"
           ],
           "phones": [
             "(028) 38352020"
@@ -4802,16 +4804,16 @@
             "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
           ],
           "source_pages": [
-            135
+            133
           ],
           "source_service_ids": [
-            "K48-K49_K48-K49_tram_y_te_service_1",
-            "K48-K49_K48-K49_tram_y_te_service_2",
-            "K48-K49_K48-K49_tram_y_te_service_3",
-            "K48-K49_K48-K49_tram_y_te_service_4"
+            "K49_K49_tram_y_te_service_1",
+            "K49_K49_tram_y_te_service_2",
+            "K49_K49_tram_y_te_service_3",
+            "K49_K49_tram_y_te_service_4"
           ],
           "document_ids": [
-            "so_tay_sinh_vien_khoa_48_49"
+            "so_tay_sinh_vien_khoa_49"
           ],
           "content_type": "student_office_profile",
           "source_section": "student_office_profiles",
@@ -4819,19 +4821,19 @@
           "email": "tramyte@hcmue.edu.vn",
           "website": "",
           "office": "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-          "summary": "Trạm Y tế phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
-          "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "summary": "Trạm Y tế phu trach: Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
+          "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_office_profiles",
-            "record_id": "K48-K49_tram_y_te",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_tram_y_te",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              135
+              133
             ],
             "source_record_id": null
           }
@@ -4857,7 +4859,7 @@
     "id": "official_v2_det_031",
     "suite": "deterministic",
     "query": "Website Trung tâm Tin học là gì?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -4888,7 +4890,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "office",
@@ -4901,7 +4903,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Trung tâm Tin học",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "website": "thsp.hcmue.edu.vn"
             }
           }
@@ -4914,8 +4916,8 @@
       {
         "catalog": "office",
         "record": {
-          "office_profile_id": "K48-K49_trung_tam_tin_hoc",
-          "cohort": "K48-K49",
+          "office_profile_id": "K49_trung_tam_tin_hoc",
+          "cohort": "K49",
           "unit": "Trung tâm Tin học",
           "unit_name": "Trung tâm Tin học",
           "aliases": [],
@@ -4924,8 +4926,8 @@
             "Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường"
           ],
           "service_ids": [
-            "K48-K49_K48-K49_trung_tam_tin_hoc_service_1",
-            "K48-K49_K48-K49_trung_tam_tin_hoc_service_2"
+            "K49_K49_trung_tam_tin_hoc_service_1",
+            "K49_K49_trung_tam_tin_hoc_service_2"
           ],
           "phones": [
             "(028) 38392549"
@@ -4937,38 +4939,40 @@
             "thsp.hcmue.edu.vn"
           ],
           "internal_numbers": [],
-          "offices": [],
+          "offices": [
+            "Văn phòng ghi danh: 221 Nguyễn Văn Cừ, Phường 4, Quận 5, TP. HCM.; Phòng làm việc: Dãy A, tầng trệt, P.004, P.005 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
+          ],
           "source_pages": [
-            137,
-            138
+            135,
+            136
           ],
           "source_service_ids": [
-            "K48-K49_K48-K49_trung_tam_tin_hoc_service_1",
-            "K48-K49_K48-K49_trung_tam_tin_hoc_service_2"
+            "K49_K49_trung_tam_tin_hoc_service_1",
+            "K49_K49_trung_tam_tin_hoc_service_2"
           ],
           "document_ids": [
-            "so_tay_sinh_vien_khoa_48_49"
+            "so_tay_sinh_vien_khoa_49"
           ],
           "content_type": "student_office_profile",
           "source_section": "student_office_profiles",
           "phone": "(028) 38392549",
           "email": "trungtamtinhoc@hcmue.edu.vn",
           "website": "thsp.hcmue.edu.vn",
-          "office": "",
+          "office": "Văn phòng ghi danh: 221 Nguyễn Văn Cừ, Phường 4, Quận 5, TP. HCM.; Phòng làm việc: Dãy A, tầng trệt, P.004, P.005 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "summary": "Trung tâm Tin học phu trach: Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của toàn Trường; Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường",
-          "raw_text": "Don vi: Trung tâm Tin học\nAlias: \nDich vu phu trach: Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của toàn Trường; Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường\nEmail: trungtamtinhoc@hcmue.edu.vn\nDien thoai: (028) 38392549\nDia diem: ",
+          "raw_text": "Don vi: Trung tâm Tin học\nAlias: \nDich vu phu trach: Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của toàn Trường; Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường\nEmail: trungtamtinhoc@hcmue.edu.vn\nDien thoai: (028) 38392549\nDia diem: Văn phòng ghi danh: 221 Nguyễn Văn Cừ, Phường 4, Quận 5, TP. HCM.; Phòng làm việc: Dãy A, tầng trệt, P.004, P.005 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_office_profiles",
-            "record_id": "K48-K49_trung_tam_tin_hoc",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_trung_tam_tin_hoc",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              137,
-              138
+              135,
+              136
             ],
             "source_record_id": null
           }
@@ -5148,7 +5152,7 @@
     "id": "official_v2_det_033",
     "suite": "deterministic",
     "query": "email khoa toan tin la gi vay",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -5179,7 +5183,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "faculty",
@@ -5192,7 +5196,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Khoa Toán – Tin học",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "email": "khoatoantin@hcmue.edu.vn"
             }
           }
@@ -5205,12 +5209,11 @@
       {
         "catalog": "faculty",
         "record": {
-          "faculty_profile_id": "K48-K49_K48-K49_faculty_2_khoa_toan_tin_hoc",
-          "cohort": "K48-K49",
+          "faculty_profile_id": "K49_K49_faculty_2_khoa_toan_tin_hoc",
+          "cohort": "K49",
           "unit": "Khoa Toán – Tin học",
           "unit_name": "Khoa Toán – Tin học",
           "faculty_name": "Khoa Toán – Tin học",
-          "campus": null,
           "aliases": [
             "Toán"
           ],
@@ -5228,27 +5231,27 @@
           ],
           "office": "Nhà B, tầng 5, P.503, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "source_pages": [
-            142
+            140
           ],
-          "source_record_id": "K48-K49_faculty_2",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
+          "source_record_id": "K49_faculty_2",
+          "document_id": "so_tay_sinh_vien_khoa_49",
           "content_type": "student_faculty_profile",
           "source_section": "student_faculty_profiles",
           "summary": "Thông tin liên hệ Khoa Toán – Tin học",
-          "raw_text": "2. Khoa Toán – Tin học\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 111\nEmail\n: khoatoantin@hcmue.edu.vn\nWebsite\n: khoatoantin.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n− Giảng dạy Toán ở các Trường phổ thông, Cao đẳng, Đại học.\nNghiên cứu Toán học tại các Trung tâm, Viện nghiên cứu;\n− Làm việc tại các doanh nghiệp có ứng dụng Toán học.",
+          "raw_text": "2. Khoa Toán – Tin học\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 111\nEmail\n: khoatoantin@hcmue.edu.vn\nWebsite\n: khoatoantin.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giảng dạy Toán ở các trường phổ thông, cao đẳng, đại học.\nNghiên cứu Toán học tại các trung tâm, viện nghiên cứu;\n– Làm việc tại các doanh nghiệp có ứng dụng Toán học.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_faculty_profiles",
-            "record_id": "K48-K49_K48-K49_faculty_2_khoa_toan_tin_hoc",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_K49_faculty_2_khoa_toan_tin_hoc",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              142
+              140
             ],
-            "source_record_id": "K48-K49_faculty_2"
+            "source_record_id": "K49_faculty_2"
           }
         }
       }
@@ -5334,7 +5337,6 @@
           "unit": "Khoa Giáo dục Mầm non",
           "unit_name": "Khoa Giáo dục Mầm non",
           "faculty_name": "Khoa Giáo dục Mầm non",
-          "campus": null,
           "aliases": [
             "Mầm non",
             "GDMN"
@@ -5396,7 +5398,7 @@
     "id": "official_v2_det_035",
     "suite": "deterministic",
     "query": "Số điện thoại Khoa Lịch sử là bao nhiêu?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -5427,7 +5429,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "faculty",
@@ -5440,7 +5442,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Khoa Lịch sử",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "phone": "(028) 38352020"
             }
           }
@@ -5453,12 +5455,11 @@
       {
         "catalog": "faculty",
         "record": {
-          "faculty_profile_id": "K48-K49_K48-K49_faculty_7_khoa_lich_su",
-          "cohort": "K48-K49",
+          "faculty_profile_id": "K49_K49_faculty_7_khoa_lich_su",
+          "cohort": "K49",
           "unit": "Khoa Lịch sử",
           "unit_name": "Khoa Lịch sử",
           "faculty_name": "Khoa Lịch sử",
-          "campus": null,
           "aliases": [
             "Sử",
             "Lịch sử"
@@ -5478,29 +5479,27 @@
           ],
           "office": "Nhà B, tầng 4, P.408, P.409, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "source_pages": [
-            146,
-            147
+            145
           ],
-          "source_record_id": "K48-K49_faculty_7",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
+          "source_record_id": "K49_faculty_7",
+          "document_id": "so_tay_sinh_vien_khoa_49",
           "content_type": "student_faculty_profile",
           "source_section": "student_faculty_profiles",
           "summary": "Thông tin liên hệ Khoa Lịch sử",
-          "raw_text": "7. Khoa Lịch sử\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 123, 124\nEmail\n: khoalichsu@hcmue.edu.vn\nWebsite\n: khoalichsu.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.408, P.409,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNGÀNH SƯ PHẠM LỊCH SỬ\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giảng dạy môn Lịch sử ở các trường THPT, chuyên viên\nphụ trách môn Lịch sử tại các Sở Giáo dục và Đào tạo ở địa phương;\n– Nghiên cứu viên ở các Viện nghiên cứu, các cơ quan quản lý giáo\ndục, các cơ sở đào tạo, đặc biệt về lĩnh vực Lịch sử, Lý luận và phương\npháp dạy học bộ môn Lịch sử; khoa học xã hội.\nNGÀNH QUỐC TẾ HỌC\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác đối ngoại trong các cơ quan Nhà nước, các tổ chức\nphi chính phủ, các công ty, tập đoàn đa quốc gia, quốc tế, các tổ chức xã\nhội nghề nghiệp;\n– Làm các công tác khác có yêu cầu sử dụng kiến thức về quốc tế học\n(báo chí – truyền thông, du lịch, quan hệ công chúng, ngoại thương…).",
+          "raw_text": "7. Khoa Lịch sử\nSố điện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 123, 124\nEmail\n: khoalichsu@hcmue.edu.vn\nWebsite\n: khoalichsu.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà B, tầng 4, P.408, P.409,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNGÀNH SƯ PHẠM LỊCH SỬ\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Giáo viên giảng dạy môn Lịch sử ở các trường THPT, chuyên viên\nphụ trách môn Lịch sử tại các Sở Giáo dục và Đào tạo ở địa phương;\n– Nghiên cứu viên ở các viện nghiên cứu, các cơ quan quản lý giáo\ndục, các cơ sở đào tạo, đặc biệt về lĩnh vực Lịch sử, Lý luận và phương\npháp dạy học bộ môn Lịch sử, Khoa học xã hội.\nNGÀNH QUỐC TẾ HỌC\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác đối ngoại trong các cơ quan Nhà nước, các tổ chức\nphi chính phủ, các công ty, tập đoàn đa quốc gia, quốc tế, các tổ chức xã\nhội nghề nghiệp;\n– Làm các công tác khác có yêu cầu sử dụng kiến thức về quốc tế học\n(báo chí – truyền thông, du lịch, quan hệ công chúng, ngoại thương…).",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_faculty_profiles",
-            "record_id": "K48-K49_K48-K49_faculty_7_khoa_lich_su",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_K49_faculty_7_khoa_lich_su",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              146,
-              147
+              145
             ],
-            "source_record_id": "K48-K49_faculty_7"
+            "source_record_id": "K49_faculty_7"
           }
         }
       }
@@ -5749,7 +5748,7 @@
     "id": "official_v2_det_038",
     "suite": "deterministic",
     "query": "Ngành Giáo dục Công dân nằm ở khoa nào?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -5780,7 +5779,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "program",
@@ -5794,7 +5793,7 @@
             "expected_evidence_fields": {
               "program_name": "Giáo dục Công dân",
               "faculty_name": "Khoa Giáo dục Chính trị",
-              "cohort": "K48-K49"
+              "cohort": "K49"
             }
           }
         ],
@@ -5806,7 +5805,7 @@
       {
         "catalog": "program",
         "record": {
-          "record_id": "K48-K49_program_36",
+          "record_id": "K49_program_38",
           "content_type": "program_directory",
           "program_name": "Giáo dục Công dân",
           "faculty_name": "Khoa Giáo dục Chính trị",
@@ -5818,22 +5817,22 @@
           "extraction_method": "implicit_faculty_program_rule",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "cohort": "K48-K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "cohort": "K49",
           "source_section": "program_directory",
           "content_mode": "rag_index",
-          "source_record_id": "program_36",
+          "source_record_id": "program_38",
           "data_category": "directory_table",
           "quality_status": "approved",
           "source_provenance": {
             "catalog": "program_directory",
-            "record_id": "K48-K49_program_36",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_program_38",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
               156
             ],
-            "source_record_id": "program_36"
+            "source_record_id": "program_38"
           }
         }
       }
@@ -5856,7 +5855,7 @@
     "id": "official_v2_det_039",
     "suite": "deterministic",
     "query": "Wifi truong bi loi ko vao dc thi bao ai?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -5887,7 +5886,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "student_service",
@@ -5900,7 +5899,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Phòng Công nghệ Thông tin",
-              "cohort": "K48-K49"
+              "cohort": "K49"
             }
           }
         ],
@@ -5912,8 +5911,8 @@
       {
         "catalog": "service",
         "record": {
-          "service_id": "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_5",
-          "cohort": "K48-K49",
+          "service_id": "K49_K49_phong_cong_nghe_thong_tin_service_5",
+          "cohort": "K49",
           "service": "Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường",
           "aliases": [],
           "unit": "Phòng Công nghệ Thông tin",
@@ -5935,27 +5934,27 @@
           ],
           "office": "Nhà A, tầng 5, P.503, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "source_pages": [
-            129
+            127
           ],
-          "source_record_id": "K48-K49_phong_cong_nghe_thong_tin",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
+          "source_record_id": "K49_phong_cong_nghe_thong_tin",
+          "document_id": "so_tay_sinh_vien_khoa_49",
           "source_section": "office_directory",
           "content_type": "student_service_directory",
           "summary": "Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường - đơn vị phụ trách: Phòng Công nghệ Thông tin",
-          "raw_text": "Dịch vụ: Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường\nĐơn vị: Phòng Công nghệ Thông tin\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nWebsite\n: phongcntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến Công nghệ Thông tin.",
+          "raw_text": "Dịch vụ: Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường\nĐơn vị: Phòng Công nghệ Thông tin\n1. Phòng Công nghệ Thông tin\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 166\nEmail\n: phongcntt@hcmue.edu.vn\nWebsite\n: phongcntt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 5, P.503,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Quản lý email của sinh viên được cấp theo tên miền của Trường\nĐại học Sư phạm Thành phố Hồ Chí Minh;\n– Quản lý trang thông tin điện tử của Trường;\n– Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào\ntạo theo học chế tín chỉ;\n– Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại\nhọc Sư phạm Thành phố Hồ Chí Minh;\n– Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm\ncủa Trường;\n– Các công tác khác có liên quan đến công nghệ thông tin.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_service_directory",
-            "record_id": "K48-K49_K48-K49_phong_cong_nghe_thong_tin_service_5",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_K49_phong_cong_nghe_thong_tin_service_5",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              129
+              127
             ],
-            "source_record_id": "K48-K49_phong_cong_nghe_thong_tin"
+            "source_record_id": "K49_phong_cong_nghe_thong_tin"
           }
         }
       }
@@ -6032,7 +6031,7 @@
     "id": "official_v2_det_041",
     "suite": "deterministic",
     "query": "Em nộp chứng chỉ để xét miễn học phần ngoại ngữ ở đâu?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -6063,7 +6062,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "student_service",
@@ -6076,7 +6075,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Phòng Khảo thí và Đảm bảo chất lượng",
-              "cohort": "K48-K49"
+              "cohort": "K49"
             }
           }
         ],
@@ -6088,8 +6087,8 @@
       {
         "catalog": "service",
         "record": {
-          "service_id": "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_4",
-          "cohort": "K48-K49",
+          "service_id": "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_4",
+          "cohort": "K49",
           "service": "Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học",
           "aliases": [],
           "unit": "Phòng Khảo thí và Đảm bảo chất lượng",
@@ -6114,27 +6113,27 @@
           ],
           "office": "Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "source_pages": [
-            134
+            132
           ],
-          "source_record_id": "K48-K49_phong_khao_thi_va_dam_bao_chat_luong",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
+          "source_record_id": "K49_phong_khao_thi_va_dam_bao_chat_luong",
+          "document_id": "so_tay_sinh_vien_khoa_49",
           "source_section": "office_directory",
           "content_type": "student_service_directory",
           "summary": "Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học - đơn vị phụ trách: Phòng Khảo thí và Đảm bảo chất lượng",
-          "raw_text": "Dịch vụ: Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học\nĐơn vị: Phòng Khảo thí và Đảm bảo chất lượng\n11. Phòng Khảo thí và Đảm bảo chất lượng\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 147, 218, 219, 146\nEmail\n: phongkhaothi@hcmue.edu.vn\nWebsite\n: phongkhaothi.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.202, P.206,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của\nNhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục\ntiêu, chiến lược đề ra;\n− Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập;\n− Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu\ncầu của sinh viên;\n− Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học.",
+          "raw_text": "Dịch vụ: Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học\nĐơn vị: Phòng Khảo thí và Đảm bảo chất lượng\n10. Phòng Khảo thí và Đảm bảo chất lượng\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 146, 147, 218, 219\nEmail\n: phongkhaothi@hcmue.edu.vn\nWebsite\n: phongkhaothi.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.202, P.206,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của\nNhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục\ntiêu, chiến lược đề ra;\n– Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc\nhọc tập;\n– Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu\ncủa sinh viên;\n– Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_service_directory",
-            "record_id": "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_4",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_4",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              134
+              132
             ],
-            "source_record_id": "K48-K49_phong_khao_thi_va_dam_bao_chat_luong"
+            "source_record_id": "K49_phong_khao_thi_va_dam_bao_chat_luong"
           }
         }
       }
@@ -6157,7 +6156,7 @@
     "id": "official_v2_det_042",
     "suite": "deterministic",
     "query": "Có khiếu nại về chuyện đào tạo thì gửi đơn cho đơn vị nào?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -6188,7 +6187,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "student_service",
@@ -6201,7 +6200,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Phòng Thanh tra Đào tạo",
-              "cohort": "K48-K49"
+              "cohort": "K49"
             }
           }
         ],
@@ -6213,8 +6212,8 @@
       {
         "catalog": "service",
         "record": {
-          "service_id": "K48-K49_K48-K49_phong_thanh_tra_dao_tao_service_2",
-          "cohort": "K48-K49",
+          "service_id": "K49_K49_phong_thanh_tra_dao_tao_service_2",
+          "cohort": "K49",
           "service": "Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên",
           "aliases": [],
           "unit": "Phòng Thanh tra Đào tạo",
@@ -6236,27 +6235,27 @@
           ],
           "office": "Nhà A, tầng 2, P.209, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "source_pages": [
-            133
+            131
           ],
-          "source_record_id": "K48-K49_phong_thanh_tra_dao_tao",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
+          "source_record_id": "K49_phong_thanh_tra_dao_tao",
+          "document_id": "so_tay_sinh_vien_khoa_49",
           "source_section": "office_directory",
           "content_type": "student_service_directory",
           "summary": "Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên - đơn vị phụ trách: Phòng Thanh tra Đào tạo",
-          "raw_text": "Dịch vụ: Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên\nĐơn vị: Phòng Thanh tra Đào tạo\n10. Phòng Thanh tra Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 160\nEmail\n: phongthanhtra@hcmue.edu.vn\nWebsite\n: phongttdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.209,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tiếp nhận và giải quyết những phản ánh liên quan đến công tác\nđào tạo;\n− Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên.",
+          "raw_text": "Dịch vụ: Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên\nĐơn vị: Phòng Thanh tra Đào tạo\n9. Phòng Thanh tra Đào tạo\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 160\nEmail\n: phongthanhtra@hcmue.edu.vn\nWebsite\n: phongttdt.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.209,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tiếp nhận và giải quyết những phản ánh liên quan đến công tác\nđào tạo;\n– Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_service_directory",
-            "record_id": "K48-K49_K48-K49_phong_thanh_tra_dao_tao_service_2",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_K49_phong_thanh_tra_dao_tao_service_2",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              133
+              131
             ],
-            "source_record_id": "K48-K49_phong_thanh_tra_dao_tao"
+            "source_record_id": "K49_phong_thanh_tra_dao_tao"
           }
         }
       }
@@ -6279,7 +6278,7 @@
     "id": "official_v2_det_043",
     "suite": "deterministic",
     "query": "Một tín chỉ tương đương bao nhiêu giờ học lý thuyết?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -6310,7 +6309,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ]
@@ -6320,10 +6319,10 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong1_Dieu2",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDaoTao_Chuong1_Dieu2",
+        "cohort": "K49",
         "quote": "Một tín chỉ được quy định bằng 15 giờ học lý thuyết",
-        "content_sha256": "3bd2d070c1271a4b4c58750c91d82d61a934e4131400d30c98b17b43b49430cf"
+        "content_sha256": "d944f80307e8b3f63e0cf2c4c32ecd875ed33a086651c70ea0997da3b9869e6c"
       }
     ],
     "author_review_state": "ai_reviewed_pending_owner_approval",
@@ -6388,7 +6387,7 @@
         "source_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
         "cohort": "K50",
         "quote": "gộp vào kết quả học tập trong học kỳ chính ngay trước học kỳ phụ",
-        "content_sha256": "b450077510225d685d47df0f616b9adf2fddc39b4ee0cb50b8727b9c54dd3748"
+        "content_sha256": "5ab8e60a52f2056b19f2b0daa534d6ceaa03eeecbf0355720f9d588ff1c5c1ad"
       }
     ],
     "author_review_state": "ai_reviewed_pending_owner_approval",
@@ -6409,7 +6408,7 @@
     "id": "official_v2_det_045",
     "suite": "deterministic",
     "query": "Mỗi học kỳ em được đăng ký tối đa bao nhiêu tín chỉ?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -6440,7 +6439,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ]
@@ -6450,10 +6449,10 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong2_Dieu9",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDaoTao_Chuong2_Dieu9",
+        "cohort": "K49",
         "quote": "Khối lượng tối đa không vượt quá 3/2",
-        "content_sha256": "6dd8de0d21227dfa5dbf74802b3a52ec2c92e9dd10a1e38c3de518a474ad7785"
+        "content_sha256": "3e8399d7e2be19cb058da841452dfb577b9c47e617afee1f3d9a03e4859fc6f5"
       }
     ],
     "author_review_state": "ai_reviewed_pending_owner_approval",
@@ -6583,7 +6582,7 @@
         "source_id": "K50_QuyCheDaoTao_Chuong3_Dieu11",
         "cohort": "K50",
         "quote": "Sinh viên năm thứ hai",
-        "content_sha256": "b450077510225d685d47df0f616b9adf2fddc39b4ee0cb50b8727b9c54dd3748"
+        "content_sha256": "5ab8e60a52f2056b19f2b0daa534d6ceaa03eeecbf0355720f9d588ff1c5c1ad"
       }
     ],
     "author_review_state": "ai_reviewed_pending_owner_approval",
@@ -6669,7 +6668,7 @@
     "id": "official_v2_det_049",
     "suite": "deterministic",
     "query": "Sinh viên năm ba mà điểm trung bình tích lũy dưới bao nhiêu thì bị cảnh báo?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -6700,7 +6699,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ]
@@ -6710,8 +6709,8 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDaoTao_Chuong3_Dieu12",
+        "cohort": "K49",
         "quote": "dưới 1,6 đối với sinh viên trình độ năm thứ ba",
         "content_sha256": "29923825bb0ed8a635789db3c50adecee12d7ba35020d9ad6bb40dd48a9237c0"
       }
@@ -6929,7 +6928,7 @@
     "id": "official_v2_det_053",
     "suite": "deterministic",
     "query": "Hết thời gian học mà còn thiếu chuẩn ngoại ngữ thì còn được xét tốt nghiệp không?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -6960,7 +6959,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ]
@@ -6970,10 +6969,10 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu15",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDaoTao_Chuong3_Dieu15",
+        "cohort": "K49",
         "quote": "trong thời hạn 03 năm tính từ khi thôi học",
-        "content_sha256": "65da16578538a28efb5a0f9387ee74e14136c90d24f7b23c831c343aadef0ba9"
+        "content_sha256": "998c4688c72a5fb82d82d6d3442fc8916b35b51d33a171dd7c6e3e1a940dd28f"
       }
     ],
     "author_review_state": "ai_reviewed_pending_owner_approval",
@@ -7190,7 +7189,7 @@
     "id": "official_v2_det_057",
     "suite": "deterministic",
     "query": "Bị nhắc nhở mấy lần trong một học kỳ thì thành khiển trách?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -7221,7 +7220,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ]
@@ -7231,8 +7230,8 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheCongTacSinhVien_Chuong6_Dieu35",
+        "cohort": "K49",
         "quote": "nhắc nhở 3 lần trong 1 học kỳ",
         "content_sha256": "69ab11e8dba98ff8a92aaa63f4f9bed63b825de21d820d79028671fee8454310"
       }
@@ -7320,7 +7319,7 @@
     "id": "official_v2_det_059",
     "suite": "deterministic",
     "query": "Mấy bạn bằng cả điểm học tập lẫn điểm rèn luyện thì học bổng được chia thế nào?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -7351,7 +7350,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ]
@@ -7361,8 +7360,8 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+        "cohort": "K49",
         "quote": "theo tỉ lệ số tín chỉ",
         "content_sha256": "953ac8f3af0b4572c8593f6e67c8e0670cda9d269006a097400b2aed08038ee2"
       }
@@ -7515,7 +7514,7 @@
     "id": "official_v2_det_062",
     "suite": "deterministic",
     "query": "Thấy điểm rèn luyện bị chấm sai thì em được khiếu nại trong bao lâu?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -7546,7 +7545,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ]
@@ -7556,10 +7555,10 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong4_Dieu15",
+        "cohort": "K49",
         "quote": "trong vòng 07 ngày",
-        "content_sha256": "fa85c5e5162ed29336b1aa73b12e8be715cbf2a549b60fc2a74a3a8bfadb2bdf"
+        "content_sha256": "baaa23863a3047e129b34b6cde4083df9ca1b6aa583751ffb0407d77215ee53f"
       }
     ],
     "author_review_state": "ai_reviewed_pending_owner_approval",
@@ -7775,7 +7774,7 @@
     "id": "official_v2_det_066",
     "suite": "deterministic",
     "query": "Sinh viên sư phạm được hỗ trợ sinh hoạt phí bao nhiêu một tháng?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -7806,7 +7805,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ]
@@ -7816,8 +7815,8 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
-        "cohort": "K48-K49",
+        "source_id": "K49_NghiDinhHoTroHocPhiSinhHoatPhiSinhVienSuPham_Chuong2_Dieu4",
+        "cohort": "K49",
         "quote": "3,63 triệu đồng/tháng",
         "content_sha256": "59cbc641f1f109ac4d8c4239430a6e1fbc674858b871eee877566e8965fb2de7"
       }
@@ -8022,7 +8021,7 @@
     "id": "official_v2_det_070",
     "suite": "deterministic",
     "query": "Học kỳ này em xếp loại học lực gì ạ?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -8230,7 +8229,7 @@
     "id": "official_v2_det_074",
     "suite": "deterministic",
     "query": "Em học hệ này thì tối đa được mấy năm?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -8509,7 +8508,7 @@
     "id": "official_v2_det_078",
     "suite": "deterministic",
     "query": "Chè đậu xanh nấu sao cho nhanh nhừ vậy?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -8656,7 +8655,7 @@
     "id": "official_v2_det_081",
     "suite": "deterministic",
     "query": "Giải giúp em phương trình x^2 - 5x + 6 = 0.",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -9030,7 +9029,7 @@
     "id": "official_v2_det_084",
     "suite": "deterministic",
     "query": "Học bổng giỏi hệ số bao nhiêu, và học bổng được xét cho ai trước?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -9064,7 +9063,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scholarship_classification",
@@ -9092,7 +9091,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ],
@@ -9109,10 +9108,10 @@
           "table_type": "scholarship",
           "table_subtype": "scholarship_amount",
           "table_name": "Mức học bổng khuyến khích học tập",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-          "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "source_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
           "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
           "columns": [],
           "rows": [
@@ -9136,8 +9135,8 @@
             }
           ],
           "source_pages": [
-            52,
-            53
+            48,
+            49
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -9154,8 +9153,8 @@
       },
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+        "cohort": "K49",
         "quote": "theo thứ tự điểm học bổng giảm dần",
         "content_sha256": "953ac8f3af0b4572c8593f6e67c8e0670cda9d269006a097400b2aed08038ee2"
       }
@@ -9415,7 +9414,6 @@
           "unit": "Khoa Tiếng Hàn Quốc",
           "unit_name": "Khoa Tiếng Hàn Quốc",
           "faculty_name": "Khoa Tiếng Hàn Quốc",
-          "campus": null,
           "aliases": [],
           "phones": [
             "(028) 38303247"
@@ -9626,7 +9624,7 @@
     "id": "official_v2_det_088",
     "suite": "deterministic",
     "query": "Điểm học bổng tính bằng công thức gì, ngành đã cấp đủ mà quỹ còn dư thì sao?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -9660,7 +9658,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "formula",
@@ -9678,7 +9676,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ],
@@ -9702,26 +9700,26 @@
           "source_article": "Điều 28.",
           "source_title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
           "source_pages": [
-            52,
-            53
+            48,
+            49
           ],
-          "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
           "review_status": "needs_human_verified",
-          "raw_excerpt": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKKHT đối với sinh viên học quá thời gian học\ntập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (tất cả các\ntín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương\nđương…). Do đó, các khoa cần xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n− Quy định xét học bổng đối với học kỳ I thực hiện theo Điểm a, b,\nc, khoản 1, Điều này.\n− Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n• Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n• Sinh viên còn lại.\n− Điểm học bổng được tính theo Điểm đ, khoản 1, Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n− Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n(Điểm rèn luyện /25 là quy đổi về thang điểm 4)\n− Xếp loại học bổng được ",
+          "raw_excerpt": "Điều 28. Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập\n1. Tiêu chuẩn\na) Tất cả sinh viên đại học chính quy tại Trường theo kế hoạch của\nkhóa học; không xét HBKKHT đối với sinh viên học quá thời gian học\ntập chuẩn được quy định tại khoản 6, Điều 3 của Quy chế đào tạo trình độ\nđại học chính quy tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh\nđược ban hành kèm theo Quyết định số 1410/QĐ-ĐHSP ngày 08/9/2021\ncủa Hiệu trưởng;\nb) Trong học kỳ, sinh viên có kết quả học tập, rèn luyện từ loại khá\ntrở lên, không bị kỷ luật từ mức khiển trách trở lên sẽ được xét, cấp\nHBKKHT trong phạm vi quỹ HBKKHT của Trường;\nc) Tổng số tín chỉ sinh viên tích lũy trong một học kỳ phải lớn hơn\nhoặc bằng 15 tín chỉ theo kế hoạch trong CTĐT của khóa học (tất cả các\ntín chỉ đều phải đạt, không bao gồm các tín chỉ trả nợ, cải thiện, tương\nđương…). Do đó, các khoa cần xây dựng chương trình học phù hợp và\nCVHT cần tư vấn, hướng dẫn sinh viên xây dựng lịch học đảm bảo quyền\nlợi cho sinh viên;\nd) Đối với sinh viên năm cuối, học bổng được xét:\n– Quy định xét học bổng đối với học kỳ I thực hiện theo điểm a, b, c,\nkhoản 1, Điều này.\n– Quy định xét học bổng đối với học kỳ II:\n+ Sinh viên đăng ký từ 6 tín chỉ trở lên;\n+ Trình tự xét HBKKHT cho sinh viên năm cuối theo thứ tự các đối\ntượng như sau:\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện xuất sắc.\n Sinh viên thực hiện khóa luận tốt nghiệp, có kết quả học tập xuất\nsắc và rèn luyện tốt.\n Sinh viên còn lại.\n– Điểm học bổng được tính theo điểm đ khoản 1 Điều này.\nđ) Điểm học bổng: là điểm để xét học bổng cho sinh viên được xếp\nloại từ cao xuống thấp, tính theo công thức:\n– Điểm học bổng = (Điểm học tập x 80 + Điểm rèn luyện /25 x 20) /100.\n(Điểm rèn luyện/25 là quy đổi về thang điểm 4)\n– Xếp loại học bổng được xếp",
           "content_type": "formula_rule",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "cohort": "K48-K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "cohort": "K49",
           "source_section": "formula_rule",
           "content_mode": "structured_only",
-          "record_id": "K48-K49_K48-K49_formula_rules_2"
+          "record_id": "K49_K49_formula_rules_2"
         }
       },
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu29",
+        "cohort": "K49",
         "quote": "quỹ còn dư",
         "content_sha256": "953ac8f3af0b4572c8593f6e67c8e0670cda9d269006a097400b2aed08038ee2"
       }
@@ -10340,7 +10338,7 @@
     "id": "official_v2_det_092",
     "suite": "deterministic",
     "query": "Ngành Quốc tế học thuộc khoa nào, và cho em số điện thoại Phòng Đào tạo.",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -10373,7 +10371,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "program",
@@ -10387,13 +10385,13 @@
             "expected_evidence_fields": {
               "program_name": "Quốc tế học",
               "faculty_name": "Khoa Lịch sử",
-              "cohort": "K48-K49"
+              "cohort": "K49"
             }
           },
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "office",
@@ -10406,7 +10404,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Phòng Đào tạo",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "phone": "(028) 38352020"
             }
           }
@@ -10419,12 +10417,12 @@
       {
         "catalog": "program",
         "record": {
-          "record_id": "K48-K49_program_16",
+          "record_id": "K49_program_17",
           "content_type": "program_directory",
           "program_name": "Quốc tế học",
           "faculty_name": "Khoa Lịch sử",
           "source_pages": [
-            147
+            145
           ],
           "raw_text": "NGÀNH QUỐC TẾ HỌC\nCơ hội nghề nghiệp sau khi tốt nghiệp:\n– Làm công tác đối ngoại trong các cơ quan Nhà nước, các tổ chức\nphi chính phủ, các công ty, tập đoàn đa quốc gia, quốc tế, các tổ chức xã\nhội nghề nghiệp;\n– Làm các công tác khác có yêu cầu sử dụng kiến thức về quốc tế học\n(báo chí – truyền thông, du lịch, quan hệ công chúng, ngoại thương…).",
           "summary": "QUỐC TẾ HỌC",
@@ -10433,11 +10431,11 @@
           "program_name_source": "canonical_program_name_rule",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "cohort": "K48-K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "cohort": "K49",
           "source_section": "program_directory",
           "content_mode": "rag_index",
-          "source_record_id": "program_16",
+          "source_record_id": "program_17",
           "faculty_aliases": [
             "Sử",
             "Lịch sử"
@@ -10446,21 +10444,21 @@
           "quality_status": "approved",
           "source_provenance": {
             "catalog": "program_directory",
-            "record_id": "K48-K49_program_16",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_program_17",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              147
+              145
             ],
-            "source_record_id": "program_16"
+            "source_record_id": "program_17"
           }
         }
       },
       {
         "catalog": "office",
         "record": {
-          "office_profile_id": "K48-K49_phong_dao_tao",
-          "cohort": "K48-K49",
+          "office_profile_id": "K49_phong_dao_tao",
+          "cohort": "K49",
           "unit": "Phòng Đào tạo",
           "unit_name": "Phòng Đào tạo",
           "aliases": [
@@ -10477,13 +10475,13 @@
             "Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến"
           ],
           "service_ids": [
-            "K48-K49_K48-K49_phong_dao_tao_service_1",
-            "K48-K49_K48-K49_phong_dao_tao_service_2",
-            "K48-K49_K48-K49_phong_dao_tao_service_3",
-            "K48-K49_K48-K49_phong_dao_tao_service_4",
-            "K48-K49_K48-K49_phong_dao_tao_service_5",
-            "K48-K49_K48-K49_phong_dao_tao_service_6",
-            "K48-K49_K48-K49_phong_dao_tao_service_7"
+            "K49_K49_phong_dao_tao_service_1",
+            "K49_K49_phong_dao_tao_service_2",
+            "K49_K49_phong_dao_tao_service_3",
+            "K49_K49_phong_dao_tao_service_4",
+            "K49_K49_phong_dao_tao_service_5",
+            "K49_K49_phong_dao_tao_service_6",
+            "K49_K49_phong_dao_tao_service_7"
           ],
           "phones": [
             "(028) 38352020"
@@ -10502,20 +10500,20 @@
             "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
           ],
           "source_pages": [
-            130,
-            131
+            128,
+            129
           ],
           "source_service_ids": [
-            "K48-K49_K48-K49_phong_dao_tao_service_1",
-            "K48-K49_K48-K49_phong_dao_tao_service_2",
-            "K48-K49_K48-K49_phong_dao_tao_service_3",
-            "K48-K49_K48-K49_phong_dao_tao_service_4",
-            "K48-K49_K48-K49_phong_dao_tao_service_5",
-            "K48-K49_K48-K49_phong_dao_tao_service_6",
-            "K48-K49_K48-K49_phong_dao_tao_service_7"
+            "K49_K49_phong_dao_tao_service_1",
+            "K49_K49_phong_dao_tao_service_2",
+            "K49_K49_phong_dao_tao_service_3",
+            "K49_K49_phong_dao_tao_service_4",
+            "K49_K49_phong_dao_tao_service_5",
+            "K49_K49_phong_dao_tao_service_6",
+            "K49_K49_phong_dao_tao_service_7"
           ],
           "document_ids": [
-            "so_tay_sinh_vien_khoa_48_49"
+            "so_tay_sinh_vien_khoa_49"
           ],
           "content_type": "student_office_profile",
           "source_section": "student_office_profiles",
@@ -10531,12 +10529,12 @@
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_office_profiles",
-            "record_id": "K48-K49_phong_dao_tao",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_phong_dao_tao",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              130,
-              131
+              128,
+              129
             ],
             "source_record_id": null
           }
@@ -10841,7 +10839,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -10981,6 +10979,7 @@
             "ai": "Điểm của học phần thứ i",
             "ni": "Số tín chỉ của học phần thứ i"
           },
+          "rounding": "Làm tròn đến 2 chữ số thập phân",
           "source_article": "Điều 11.",
           "source_title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "source_pages": [
@@ -11163,7 +11162,6 @@
           "unit": "Khoa Ngữ văn",
           "unit_name": "Khoa Ngữ văn",
           "faculty_name": "Khoa Ngữ văn",
-          "campus": null,
           "aliases": [
             "Văn"
           ],
@@ -11265,7 +11263,7 @@
     "id": "official_v2_det_096",
     "suite": "deterministic",
     "query": "TOEFL ITP bao nhiêu thì tương đương bậc 3, nộp chứng chỉ để xét miễn ngoại ngữ ở phòng nào?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -11298,7 +11296,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "foreign_language",
@@ -11322,7 +11320,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "student_service",
@@ -11335,7 +11333,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Phòng Khảo thí và Đảm bảo chất lượng",
-              "cohort": "K48-K49"
+              "cohort": "K49"
             }
           }
         ],
@@ -11478,7 +11476,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -11499,8 +11497,8 @@
       {
         "catalog": "service",
         "record": {
-          "service_id": "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_4",
-          "cohort": "K48-K49",
+          "service_id": "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_4",
+          "cohort": "K49",
           "service": "Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học",
           "aliases": [],
           "unit": "Phòng Khảo thí và Đảm bảo chất lượng",
@@ -11525,27 +11523,27 @@
           ],
           "office": "Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "source_pages": [
-            134
+            132
           ],
-          "source_record_id": "K48-K49_phong_khao_thi_va_dam_bao_chat_luong",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
+          "source_record_id": "K49_phong_khao_thi_va_dam_bao_chat_luong",
+          "document_id": "so_tay_sinh_vien_khoa_49",
           "source_section": "office_directory",
           "content_type": "student_service_directory",
           "summary": "Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học - đơn vị phụ trách: Phòng Khảo thí và Đảm bảo chất lượng",
-          "raw_text": "Dịch vụ: Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học\nĐơn vị: Phòng Khảo thí và Đảm bảo chất lượng\n11. Phòng Khảo thí và Đảm bảo chất lượng\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 147, 218, 219, 146\nEmail\n: phongkhaothi@hcmue.edu.vn\nWebsite\n: phongkhaothi.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.202, P.206,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của\nNhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục\ntiêu, chiến lược đề ra;\n− Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập;\n− Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu\ncầu của sinh viên;\n− Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học.",
+          "raw_text": "Dịch vụ: Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học\nĐơn vị: Phòng Khảo thí và Đảm bảo chất lượng\n10. Phòng Khảo thí và Đảm bảo chất lượng\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 146, 147, 218, 219\nEmail\n: phongkhaothi@hcmue.edu.vn\nWebsite\n: phongkhaothi.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 2, P.202, P.206,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của\nNhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục\ntiêu, chiến lược đề ra;\n– Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc\nhọc tập;\n– Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu\ncủa sinh viên;\n– Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_service_directory",
-            "record_id": "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_4",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_4",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              134
+              132
             ],
-            "source_record_id": "K48-K49_phong_khao_thi_va_dam_bao_chat_luong"
+            "source_record_id": "K49_phong_khao_thi_va_dam_bao_chat_luong"
           }
         }
       }
@@ -11999,7 +11997,7 @@
     "id": "official_v2_det_100",
     "suite": "deterministic",
     "query": "Chấm thi kết thúc học phần phải có mấy giảng viên, và muốn nghỉ học tạm thời vì việc riêng thì phải học ít nhất bao lâu?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -12032,13 +12030,13 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           },
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           }
         ]
@@ -12048,17 +12046,17 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu10",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDaoTao_Chuong3_Dieu10",
+        "cohort": "K49",
         "quote": "tối thiểu hai giảng viên",
-        "content_sha256": "d58734cd67efe338c45588a0f5156d8e88100bbd2a75b40910b4f5a9c879c1bf"
+        "content_sha256": "f7bcac5133c750e1a71562552a0c78d0fa6a8f2a8409cb299ef9bfd77e4dc428"
       },
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDaoTao_Chuong4_Dieu16",
+        "cohort": "K49",
         "quote": "đã phải học tối thiểu 01 học kỳ",
-        "content_sha256": "31310aabe8b657632a9bb707c8e66b6a5b50ff1bbc55bf6b3e88116177ec7e75"
+        "content_sha256": "c75c93be04bf9109cc7cd0bcd8f3a4c68757b2d45f712cf905b6043831f32ef9"
       }
     ],
     "author_review_state": "ai_reviewed_pending_owner_approval",
@@ -12869,7 +12867,7 @@
     "id": "official_v2_det_106",
     "suite": "deterministic",
     "query": "Cho em hỏi 3 việc: Trạm Y tế ở đâu, muốn vay vốn sinh viên thì liên hệ phòng nào, và nghỉ học tạm thời vì ốm cần giấy tờ gì?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -12904,7 +12902,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "office",
@@ -12917,33 +12915,20 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Trạm Y tế",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "office": "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
-            }
-          },
-          {
-            "mode": "structured",
-            "cohorts": [
-              "K48-K49"
-            ],
-            "fact_lock_applicable": false,
-            "lookup_type": "student_service",
-            "slot_value_alternatives": {
-              "requested_field": [
-                "unit",
-                "all"
-              ]
-            },
-            "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
-            "expected_evidence_fields": {
-              "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
-              "cohort": "K48-K49"
             }
           },
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
+            ]
+          },
+          {
+            "mode": "rag",
+            "cohorts": [
+              "K49"
             ]
           }
         ],
@@ -12955,8 +12940,8 @@
       {
         "catalog": "office",
         "record": {
-          "office_profile_id": "K48-K49_tram_y_te",
-          "cohort": "K48-K49",
+          "office_profile_id": "K49_tram_y_te",
+          "cohort": "K49",
           "unit": "Trạm Y tế",
           "unit_name": "Trạm Y tế",
           "aliases": [
@@ -12965,16 +12950,16 @@
             "y tế trường"
           ],
           "services": [
-            "Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên",
+            "Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên",
             "Khám cấp cứu",
             "Khám bệnh, cấp phát thuốc thông thường",
             "Làm thẻ và phát thẻ BHYT"
           ],
           "service_ids": [
-            "K48-K49_K48-K49_tram_y_te_service_1",
-            "K48-K49_K48-K49_tram_y_te_service_2",
-            "K48-K49_K48-K49_tram_y_te_service_3",
-            "K48-K49_K48-K49_tram_y_te_service_4"
+            "K49_K49_tram_y_te_service_1",
+            "K49_K49_tram_y_te_service_2",
+            "K49_K49_tram_y_te_service_3",
+            "K49_K49_tram_y_te_service_4"
           ],
           "phones": [
             "(028) 38352020"
@@ -12990,16 +12975,16 @@
             "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
           ],
           "source_pages": [
-            135
+            133
           ],
           "source_service_ids": [
-            "K48-K49_K48-K49_tram_y_te_service_1",
-            "K48-K49_K48-K49_tram_y_te_service_2",
-            "K48-K49_K48-K49_tram_y_te_service_3",
-            "K48-K49_K48-K49_tram_y_te_service_4"
+            "K49_K49_tram_y_te_service_1",
+            "K49_K49_tram_y_te_service_2",
+            "K49_K49_tram_y_te_service_3",
+            "K49_K49_tram_y_te_service_4"
           ],
           "document_ids": [
-            "so_tay_sinh_vien_khoa_48_49"
+            "so_tay_sinh_vien_khoa_49"
           ],
           "content_type": "student_office_profile",
           "source_section": "student_office_profiles",
@@ -13007,85 +12992,37 @@
           "email": "tramyte@hcmue.edu.vn",
           "website": "",
           "office": "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-          "summary": "Trạm Y tế phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
-          "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "summary": "Trạm Y tế phu trach: Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
+          "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_office_profiles",
-            "record_id": "K48-K49_tram_y_te",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_tram_y_te",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              135
+              133
             ],
             "source_record_id": null
           }
         }
       },
       {
-        "catalog": "service",
-        "record": {
-          "service_id": "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
-          "cohort": "K48-K49",
-          "service": "Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên",
-          "aliases": [],
-          "unit": "Phòng Công tác chính trị và Học sinh, sinh viên",
-          "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
-          "phone": "(028) 38352020",
-          "phones": [
-            "(028) 38352020"
-          ],
-          "internal_numbers": [
-            "127",
-            "128",
-            "143"
-          ],
-          "email": "hopthusinhvien@hcmue.edu.vn; phongctct@hcmue.edu.vn",
-          "emails": [
-            "hopthusinhvien@hcmue.edu.vn",
-            "phongctct@hcmue.edu.vn"
-          ],
-          "website": "phongctct.hcmue.edu.vn",
-          "websites": [
-            "phongctct.hcmue.edu.vn"
-          ],
-          "office": "Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-          "source_pages": [
-            129,
-            130
-          ],
-          "source_record_id": "K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_section": "office_directory",
-          "content_type": "student_service_directory",
-          "summary": "Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên - đơn vị phụ trách: Phòng Công tác chính trị và Học sinh, sinh viên",
-          "raw_text": "Dịch vụ: Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên\nĐơn vị: Phòng Công tác chính trị và Học sinh, sinh viên\n2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: phongctct@hcmue.edu.vn\nhopthusinhvien@hcmue.edu.vn\nWebsite\n: phongctct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Công tác giáo dục chính trị tư tưởng;\n− Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n− Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh\nviên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên\nquan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng\ntiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến\nsinh viên; theo dõi phát triển Đảng trong sinh viên;\n− Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên.",
-          "data_category": "directory_table",
-          "quality_status": "approved",
-          "embedding_enabled": false,
-          "retrieval_mode": "deterministic",
-          "source_provenance": {
-            "catalog": "student_service_directory",
-            "record_id": "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
-            "source_pages": [
-              129,
-              130
-            ],
-            "source_record_id": "K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien"
-          }
-        }
+        "catalog": "parents",
+        "source_id": "K49_QuyCheCongTacSinhVien_Chuong4_Dieu14",
+        "cohort": "K49",
+        "quote": "Thực hiện tín dụng sinh viên",
+        "content_sha256": "09c53ffba2455a36437d8f6599240d721bfc2c30be2143d2d8562a24d290794a"
       },
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu16",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDaoTao_Chuong4_Dieu16",
+        "cohort": "K49",
         "quote": "cơ sở khám bệnh",
-        "content_sha256": "31310aabe8b657632a9bb707c8e66b6a5b50ff1bbc55bf6b3e88116177ec7e75"
+        "content_sha256": "c75c93be04bf9109cc7cd0bcd8f3a4c68757b2d45f712cf905b6043831f32ef9"
       }
     ],
     "author_review_state": "ai_reviewed_pending_owner_approval",
@@ -13331,7 +13268,6 @@
           "unit": "Khoa Tiếng Nhật",
           "unit_name": "Khoa Tiếng Nhật",
           "faculty_name": "Khoa Tiếng Nhật",
-          "campus": null,
           "aliases": [],
           "phones": [
             "(028) 38352020"
@@ -13379,7 +13315,6 @@
           "unit": "Khoa Tiếng Hàn Quốc",
           "unit_name": "Khoa Tiếng Hàn Quốc",
           "faculty_name": "Khoa Tiếng Hàn Quốc",
-          "campus": null,
           "aliases": [],
           "phones": [
             "(028) 38303247"
@@ -13712,7 +13647,7 @@
     "id": "official_v2_det_111",
     "suite": "deterministic",
     "query": "Muốn khám bệnh thông thường và làm thẻ sinh viên thì liên hệ đơn vị nào?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -13745,7 +13680,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "student_service",
@@ -13758,13 +13693,13 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Trạm Y tế",
-              "cohort": "K48-K49"
+              "cohort": "K49"
             }
           },
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "student_service",
@@ -13777,7 +13712,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
-              "cohort": "K48-K49"
+              "cohort": "K49"
             }
           }
         ],
@@ -13798,17 +13733,17 @@
             "mode": "structured",
             "lookup_type": "student_service",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "expected_evidence_rows": [
               {
                 "unit_name": "Trạm Y tế",
-                "cohort": "K48-K49"
+                "cohort": "K49"
               },
               {
                 "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
-                "cohort": "K48-K49"
+                "cohort": "K49"
               }
             ]
           }
@@ -13821,8 +13756,8 @@
       {
         "catalog": "service",
         "record": {
-          "service_id": "K48-K49_K48-K49_tram_y_te_service_3",
-          "cohort": "K48-K49",
+          "service_id": "K49_K49_tram_y_te_service_3",
+          "cohort": "K49",
           "service": "Khám bệnh, cấp phát thuốc thông thường",
           "aliases": [],
           "unit": "Trạm Y tế",
@@ -13842,36 +13777,36 @@
           "websites": [],
           "office": "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "source_pages": [
-            135
+            133
           ],
-          "source_record_id": "K48-K49_tram_y_te",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
+          "source_record_id": "K49_tram_y_te",
+          "document_id": "so_tay_sinh_vien_khoa_49",
           "source_section": "office_directory",
           "content_type": "student_service_directory",
           "summary": "Khám bệnh, cấp phát thuốc thông thường - đơn vị phụ trách: Trạm Y tế",
-          "raw_text": "Dịch vụ: Khám bệnh, cấp phát thuốc thông thường\nĐơn vị: Trạm Y tế\n13. Trạm Y tế\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 152\nEmail\n: tramyte@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.006,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên;\n− Khám cấp cứu;\n− Khám bệnh, cấp phát thuốc thông thường;\n− Làm thẻ và phát thẻ BHYT.",
+          "raw_text": "Dịch vụ: Khám bệnh, cấp phát thuốc thông thường\nĐơn vị: Trạm Y tế\n12. Trạm Y tế\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 152\nEmail\n: tramyte@hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng trệt, P.006,\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên;\n– Khám cấp cứu;\n– Khám bệnh, cấp phát thuốc thông thường;\n– Làm thẻ và phát thẻ BHYT.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_service_directory",
-            "record_id": "K48-K49_K48-K49_tram_y_te_service_3",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_K49_tram_y_te_service_3",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              135
+              133
             ],
-            "source_record_id": "K48-K49_tram_y_te"
+            "source_record_id": "K49_tram_y_te"
           }
         }
       },
       {
         "catalog": "service",
         "record": {
-          "service_id": "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
-          "cohort": "K48-K49",
-          "service": "Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên",
+          "service_id": "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_5",
+          "cohort": "K49",
+          "service": "Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên",
           "aliases": [],
           "unit": "Phòng Công tác chính trị và Học sinh, sinh viên",
           "unit_name": "Phòng Công tác chính trị và Học sinh, sinh viên",
@@ -13884,40 +13819,39 @@
             "128",
             "143"
           ],
-          "email": "hopthusinhvien@hcmue.edu.vn; phongctct@hcmue.edu.vn",
+          "email": "hopthusinhvien@hcmue.edu.vn",
           "emails": [
-            "hopthusinhvien@hcmue.edu.vn",
-            "phongctct@hcmue.edu.vn"
+            "hopthusinhvien@hcmue.edu.vn"
           ],
-          "website": "phongctct.hcmue.edu.vn",
+          "website": "ctsv.hcmue.edu.vn",
           "websites": [
-            "phongctct.hcmue.edu.vn"
+            "ctsv.hcmue.edu.vn"
           ],
           "office": "Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "source_pages": [
-            129,
-            130
+            127,
+            128
           ],
-          "source_record_id": "K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
+          "source_record_id": "K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien",
+          "document_id": "so_tay_sinh_vien_khoa_49",
           "source_section": "office_directory",
           "content_type": "student_service_directory",
-          "summary": "Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên - đơn vị phụ trách: Phòng Công tác chính trị và Học sinh, sinh viên",
-          "raw_text": "Dịch vụ: Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh viên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng tiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên\nĐơn vị: Phòng Công tác chính trị và Học sinh, sinh viên\n2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: phongctct@hcmue.edu.vn\nhopthusinhvien@hcmue.edu.vn\nWebsite\n: phongctct.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n− Công tác giáo dục chính trị tư tưởng;\n− Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n− Các công tác liên quan đến sinh viên hệ chính quy: làm thẻ sinh\nviên; lưu trữ hồ sơ sinh viên; xác nhận và chứng thực các giấy tờ liên\nquan đến sinh viên; vay vốn tín dụng, học bổng, miễn giảm học phí; dừng\ntiến độ học tập; tiếp nhận và giải quyết những vấn đề khác liên quan đến\nsinh viên; theo dõi phát triển Đảng trong sinh viên;\n− Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên.",
+          "summary": "Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên - đơn vị phụ trách: Phòng Công tác chính trị và Học sinh, sinh viên",
+          "raw_text": "Dịch vụ: Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên\nĐơn vị: Phòng Công tác chính trị và Học sinh, sinh viên\n2. Phòng Công tác chính trị và Học sinh, sinh viên\nĐiện thoại liên lạc\n: (028) 38352020\nsố máy nội bộ: 127, 128, 143\nEmail\n: hopthusinhvien@hcmue.edu.vn\nWebsite\n: ctsv.hcmue.edu.vn\nVăn phòng làm việc\n: Nhà A, tầng 1, P.108, P.109, P.110\nsố 280 An Dương Vương, Phường 4,\nQuận 5, TP. HCM.\nNhững công việc của đơn vị liên quan đến sinh viên:\n– Công tác giáo dục chính trị, tư tưởng;\n– Công tác giáo dục pháp luật;\n– Công tác giáo dục đạo đức, lối sống, kỹ năng sống;\n– Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội\ncấp Trường;\n– Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến\nsinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá\nnhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh\nviên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học\ntập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh\nviên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên;\ntheo dõi phát triển Đảng trong sinh viên;\n– Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm\ncho sinh viên;\n– Tiếp nhận thông tin phản ánh của sinh viên.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_service_directory",
-            "record_id": "K48-K49_K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_3",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_5",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              129,
-              130
+              127,
+              128
             ],
-            "source_record_id": "K48-K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien"
+            "source_record_id": "K49_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien"
           }
         }
       }
@@ -14670,7 +14604,7 @@
     "id": "official_v2_det_114",
     "suite": "deterministic",
     "query": "JLPT và TOPIK II cần mức nào để tương đương bậc 3?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -14703,7 +14637,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "foreign_language",
@@ -14727,7 +14661,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "foreign_language",
@@ -14765,7 +14699,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "foreign_language",
@@ -14989,7 +14923,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -15141,7 +15075,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -15293,7 +15227,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -15508,7 +15442,6 @@
           "unit": "Khoa Tiếng Anh",
           "unit_name": "Khoa Tiếng Anh",
           "faculty_name": "Khoa Tiếng Anh",
-          "campus": null,
           "aliases": [
             "Tiếng Anh",
             "Anh văn"
@@ -15571,7 +15504,7 @@
             "K51_K51_phong_hop_tac_quoc_te_service_3"
           ],
           "phones": [
-            "(028) 3891080"
+            "(028) 38391080"
           ],
           "emails": [
             "phonghtqt@hcmue.edu.vn"
@@ -15599,7 +15532,7 @@
           ],
           "content_type": "student_office_profile",
           "source_section": "student_office_profiles",
-          "phone": "(028) 3891080",
+          "phone": "(028) 38391080",
           "email": "phonghtqt@hcmue.edu.vn",
           "website": "phonghtqt.hcmue.edu.vn",
           "office": "Nhà A, tầng 1, P.111, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
@@ -15618,7 +15551,10 @@
               197
             ],
             "source_record_id": null
-          }
+          },
+          "review_notes": [
+            "Sổ tay K51 tr. 197 in \"(028) 3891080\", thiếu một chữ số, được coi là lỗi in; số đầy đủ (028) 38391080 lấy theo Sổ tay K48 tr. 131 (cùng số nội bộ 172, 173)."
+          ]
         }
       }
     ],
@@ -15640,7 +15576,7 @@
     "id": "official_v2_det_116",
     "suite": "deterministic",
     "query": "Rèn luyện 66 điểm và GPA 2,6 thì mỗi cái xếp loại gì ạ?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -15673,7 +15609,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -15692,7 +15628,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+              "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -15708,7 +15644,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -15728,7 +15664,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"
+              "K49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -15750,15 +15686,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "table_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
           "data_category": "regulation_table",
           "table_type": "conduct",
           "table_subtype": "conduct_classification",
           "table_name": "Bảng phân loại kết quả rèn luyện",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-          "source_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "source_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
           "title": "Phân loại kết quả rèn luyện",
           "columns": [
             "Khung điểm",
@@ -15791,7 +15727,7 @@
             }
           ],
           "source_pages": [
-            74
+            69
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -15807,15 +15743,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
+          "table_id": "K49_QuyCheDaoTao_Chuong3_Dieu11_academic_classification",
           "data_category": "regulation_table",
           "table_type": "scoring",
           "table_subtype": "academic_classification",
           "table_name": "Bảng xếp loại học lực theo thang điểm 4",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
-          "source_section_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu11",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
+          "source_section_id": "K49_QuyCheDaoTao_Chuong3_Dieu11",
           "title": "Đánh giá kết quả học tập theo học kỳ, năm học",
           "columns": [
             "Xếp loại",
@@ -15848,9 +15784,9 @@
             }
           ],
           "source_pages": [
-            21,
-            22,
-            23
+            19,
+            20,
+            21
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -15966,7 +15902,6 @@
           "unit": "Khoa Sinh học",
           "unit_name": "Khoa Sinh học",
           "faculty_name": "Khoa Sinh học",
-          "campus": null,
           "aliases": [
             "Sinh",
             "Sinh học"
@@ -16263,7 +16198,6 @@
           "unit": "Khoa Giáo dục Quốc phòng",
           "unit_name": "Khoa Giáo dục Quốc phòng",
           "faculty_name": "Khoa Giáo dục Quốc phòng",
-          "campus": null,
           "aliases": [
             "Quốc phòng",
             "GDQP"
@@ -16458,7 +16392,6 @@
           "unit": "Khoa Công nghệ Thông tin",
           "unit_name": "Khoa Công nghệ Thông tin",
           "faculty_name": "Khoa Công nghệ Thông tin",
-          "campus": null,
           "aliases": [
             "CNTT",
             "IT"
@@ -16523,7 +16456,7 @@
     "id": "official_v2_det_120",
     "suite": "deterministic",
     "query": "Email của Thư viện và Khoa Hóa học là gì ạ?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -16556,7 +16489,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "office",
@@ -16569,14 +16502,14 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Thư viện",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "email": "thuvien@hcmue.edu.vn"
             }
           },
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "faculty",
@@ -16589,7 +16522,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Khoa Hóa học",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "email": "khoahoahoc@hcmue.edu.vn"
             }
           }
@@ -16602,8 +16535,8 @@
       {
         "catalog": "office",
         "record": {
-          "office_profile_id": "K48-K49_thu_vien",
-          "cohort": "K48-K49",
+          "office_profile_id": "K49_thu_vien",
+          "cohort": "K49",
           "unit": "Thư viện",
           "unit_name": "Thư viện",
           "aliases": [],
@@ -16615,16 +16548,16 @@
             "Tư vấn, trao đổi, phổ biến thông tin cho sinh viên"
           ],
           "service_ids": [
-            "K48-K49_K48-K49_thu_vien_service_1",
-            "K48-K49_K48-K49_thu_vien_service_2",
-            "K48-K49_K48-K49_thu_vien_service_3",
-            "K48-K49_K48-K49_thu_vien_service_4",
-            "K48-K49_K48-K49_thu_vien_service_5"
+            "K49_K49_thu_vien_service_1",
+            "K49_K49_thu_vien_service_2",
+            "K49_K49_thu_vien_service_3",
+            "K49_K49_thu_vien_service_4",
+            "K49_K49_thu_vien_service_5"
           ],
           "phones": [
-            "(028) 35260834",
-            "(028) 35261043",
-            "(028) 38308905"
+            "(028) 35261042",
+            "(028) 38308905",
+            "(028) 38352020"
           ],
           "emails": [
             "thuvien@hcmue.edu.vn"
@@ -16634,45 +16567,46 @@
             "lib.hcmue.edu.vn"
           ],
           "internal_numbers": [
+            "231",
             "234"
           ],
           "offices": [
             "Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM."
           ],
           "source_pages": [
-            134,
-            135
+            132,
+            133
           ],
           "source_service_ids": [
-            "K48-K49_K48-K49_thu_vien_service_1",
-            "K48-K49_K48-K49_thu_vien_service_2",
-            "K48-K49_K48-K49_thu_vien_service_3",
-            "K48-K49_K48-K49_thu_vien_service_4",
-            "K48-K49_K48-K49_thu_vien_service_5"
+            "K49_K49_thu_vien_service_1",
+            "K49_K49_thu_vien_service_2",
+            "K49_K49_thu_vien_service_3",
+            "K49_K49_thu_vien_service_4",
+            "K49_K49_thu_vien_service_5"
           ],
           "document_ids": [
-            "so_tay_sinh_vien_khoa_48_49"
+            "so_tay_sinh_vien_khoa_49"
           ],
           "content_type": "student_office_profile",
           "source_section": "student_office_profiles",
-          "phone": "(028) 35260834; (028) 35261043; (028) 38308905",
+          "phone": "(028) 35261042; (028) 38308905; (028) 38352020",
           "email": "thuvien@hcmue.edu.vn",
           "website": "https://www.facebook.com/lib.hcmue.edu.vn; lib.hcmue.edu.vn",
           "office": "Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM.",
           "summary": "Thư viện phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên",
-          "raw_text": "Don vi: Thư viện\nAlias: \nDich vu phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên\nEmail: thuvien@hcmue.edu.vn\nDien thoai: (028) 35260834; (028) 35261043; (028) 38308905\nDia diem: Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM.",
+          "raw_text": "Don vi: Thư viện\nAlias: \nDich vu phu trach: Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu; Hướng dẫn sinh viên sử dụng thư viện; Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin; Cung cấp các sản phẩm, dịch vụ thông tin; Tư vấn, trao đổi, phổ biến thông tin cho sinh viên\nEmail: thuvien@hcmue.edu.vn\nDien thoai: (028) 35261042; (028) 38308905; (028) 38352020\nDia diem: Cơ sở 1: Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 8, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM. Cơ sở 2: Nhà B, tầng 2, 3, số 222 Lê Văn Sỹ, Phường 14, Quận 3, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_office_profiles",
-            "record_id": "K48-K49_thu_vien",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_thu_vien",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              134,
-              135
+              132,
+              133
             ],
             "source_record_id": null
           }
@@ -16681,12 +16615,11 @@
       {
         "catalog": "faculty",
         "record": {
-          "faculty_profile_id": "K48-K49_K48-K49_faculty_4_khoa_hoa_hoc",
-          "cohort": "K48-K49",
+          "faculty_profile_id": "K49_K49_faculty_4_khoa_hoa_hoc",
+          "cohort": "K49",
           "unit": "Khoa Hóa học",
           "unit_name": "Khoa Hóa học",
           "faculty_name": "Khoa Hóa học",
-          "campus": null,
           "aliases": [
             "Hóa",
             "Hóa học"
@@ -16706,11 +16639,11 @@
           ],
           "office": "Nhà B, tầng 5, P.505, P.508, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "source_pages": [
-            143,
-            144
+            141,
+            142
           ],
-          "source_record_id": "K48-K49_faculty_4",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
+          "source_record_id": "K49_faculty_4",
+          "document_id": "so_tay_sinh_vien_khoa_49",
           "content_type": "student_faculty_profile",
           "source_section": "student_faculty_profiles",
           "summary": "Thông tin liên hệ Khoa Hóa học",
@@ -16721,14 +16654,14 @@
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_faculty_profiles",
-            "record_id": "K48-K49_K48-K49_faculty_4_khoa_hoa_hoc",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_K49_faculty_4_khoa_hoa_hoc",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              143,
-              144
+              141,
+              142
             ],
-            "source_record_id": "K48-K49_faculty_4"
+            "source_record_id": "K49_faculty_4"
           }
         }
       }
@@ -17779,8 +17712,8 @@
   {
     "id": "official_v2_det_124",
     "suite": "deterministic",
-    "query": "Rèn luyện 79 điểm thì K48 và K50 xếp loại có giống nhau không?",
-    "cohort": "K48-K49",
+    "query": "Rèn luyện 79 điểm thì K49 và K50 xếp loại có giống nhau không?",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -17813,7 +17746,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -17832,7 +17765,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+              "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -17898,14 +17831,14 @@
             "mode": "structured",
             "lookup_type": "scoring",
             "cohorts": [
-              "K48-K49",
+              "K49",
               "K50"
             ],
             "execution_units": [
               {
                 "mode": "structured",
                 "cohorts": [
-                  "K48-K49"
+                  "K49"
                 ],
                 "fact_lock_applicable": true,
                 "lookup_type": "scoring",
@@ -17924,7 +17857,7 @@
                   ]
                 },
                 "expected_source_ids": [
-                  "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+                  "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
                 ],
                 "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
                 "expected_evidence_fields": {
@@ -17984,15 +17917,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "table_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
           "data_category": "regulation_table",
           "table_type": "conduct",
           "table_subtype": "conduct_classification",
           "table_name": "Bảng phân loại kết quả rèn luyện",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-          "source_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "source_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
           "title": "Phân loại kết quả rèn luyện",
           "columns": [
             "Khung điểm",
@@ -18025,7 +17958,7 @@
             }
           ],
           "source_pages": [
-            74
+            69
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -18148,7 +18081,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scholarship_classification",
@@ -18219,14 +18152,14 @@
             "mode": "structured",
             "lookup_type": "scholarship_classification",
             "cohorts": [
-              "K48-K49",
+              "K49",
               "K51"
             ],
             "execution_units": [
               {
                 "mode": "structured",
                 "cohorts": [
-                  "K48-K49"
+                  "K49"
                 ],
                 "fact_lock_applicable": true,
                 "lookup_type": "scholarship_classification",
@@ -18296,10 +18229,10 @@
           "table_type": "scholarship",
           "table_subtype": "scholarship_amount",
           "table_name": "Mức học bổng khuyến khích học tập",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
-          "source_section_id": "K48-K49_K48_49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
+          "source_section_id": "K49_QuyCheCongTacSinhVien_Chuong5_Dieu28",
           "title": "Tiêu chuẩn, mức, quỹ học bổng khuyến khích học tập",
           "columns": [],
           "rows": [
@@ -18323,8 +18256,8 @@
             }
           ],
           "source_pages": [
-            52,
-            53
+            48,
+            49
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -18547,7 +18480,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           },
           {
@@ -18572,7 +18505,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49",
+              "K49",
               "K50"
             ]
           }
@@ -18583,8 +18516,8 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong4_Dieu19",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDaoTao_Chuong4_Dieu19",
+        "cohort": "K49",
         "quote": "sớm nhất khi đã được xếp trình độ năm thứ hai",
         "content_sha256": "63a47041f38a5b6587c39e135b8e88d0cc718096e04e5349961dbc6b77c0a887"
       },
@@ -18615,7 +18548,7 @@
     "id": "official_v2_det_128",
     "suite": "deterministic",
     "query": "Một tín chỉ bằng bao nhiêu giờ thực hành, K50 với K51 có giống nhau không?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [],
     "tags": [
       "official_v2",
@@ -18716,7 +18649,7 @@
   {
     "id": "official_v2_det_129",
     "suite": "deterministic",
-    "query": "Bị buộc thôi học thì kết quả đã tích lũy có được bảo lưu không, K48-K49 với K51 có giống nhau?",
+    "query": "Bị buộc thôi học thì kết quả đã tích lũy có được bảo lưu không, K49 với K51 có giống nhau?",
     "cohort": "K51",
     "history": [],
     "tags": [
@@ -18751,7 +18684,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ]
           },
           {
@@ -18776,7 +18709,7 @@
           {
             "mode": "rag",
             "cohorts": [
-              "K48-K49",
+              "K49",
               "K51"
             ]
           }
@@ -18787,8 +18720,8 @@
     "gold_evidence": [
       {
         "catalog": "parents",
-        "source_id": "K48-K49_K48_49_QuyCheDaoTao_Chuong3_Dieu12",
-        "cohort": "K48-K49",
+        "source_id": "K49_QuyCheDaoTao_Chuong3_Dieu12",
+        "cohort": "K49",
         "quote": "Kết quả học tập đã tích lũy của sinh viên bị buộc thôi học được bảo lưu",
         "content_sha256": "29923825bb0ed8a635789db3c50adecee12d7ba35020d9ad6bb40dd48a9237c0"
       },
@@ -19100,7 +19033,7 @@
     "id": "official_v2_det_132",
     "suite": "deterministic",
     "query": "Còn khóa 51 thì sao?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [
       {
         "role": "user",
@@ -19108,7 +19041,7 @@
       },
       {
         "role": "assistant",
-        "content": "Với K48-K49, sinh viên được đăng ký chương trình thứ hai sớm nhất khi đã được xếp trình độ năm thứ hai và phải đáp ứng điều kiện học lực theo quy chế."
+        "content": "Với K49, sinh viên được đăng ký chương trình thứ hai sớm nhất khi đã được xếp trình độ năm thứ hai và phải đáp ứng điều kiện học lực theo quy chế."
       }
     ],
     "tags": [
@@ -19489,7 +19422,6 @@
           "unit": "Khoa Tiếng Pháp",
           "unit_name": "Khoa Tiếng Pháp",
           "faculty_name": "Khoa Tiếng Pháp",
-          "campus": null,
           "aliases": [],
           "phones": [
             "(028) 38352020"
@@ -19670,7 +19602,7 @@
     "id": "official_v2_det_137",
     "suite": "deterministic",
     "query": "Thế HSK thì cần bậc mấy?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [
       {
         "role": "user",
@@ -19710,7 +19642,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "foreign_language",
@@ -19871,7 +19803,7 @@
           "used_by_runtime": true,
           "source_cohort": "K50",
           "applicable_cohorts": [
-            "K48-K49",
+            "K49",
             "K50",
             "K51"
           ],
@@ -20542,7 +20474,7 @@
     "id": "official_v2_det_142",
     "suite": "deterministic",
     "query": "Kỳ sau em được 80 thì lên loại gì?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [
       {
         "role": "user",
@@ -20582,7 +20514,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": true,
             "lookup_type": "scoring",
@@ -20601,7 +20533,7 @@
               ]
             },
             "expected_source_ids": [
-              "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
+              "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification"
             ],
             "fact_lock_reason": "Explicit input or named row; one applicable table and one row; no semantic guessing.",
             "expected_evidence_fields": {
@@ -20623,15 +20555,15 @@
       {
         "catalog": "tables",
         "table": {
-          "table_id": "K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
+          "table_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9_conduct_classification",
           "data_category": "regulation_table",
           "table_type": "conduct",
           "table_subtype": "conduct_classification",
           "table_name": "Bảng phân loại kết quả rèn luyện",
-          "cohort": "K48-K49",
-          "document_id": "so_tay_sinh_vien_khoa_48_49",
-          "source_parent_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
-          "source_section_id": "K48-K49_K48_49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "cohort": "K49",
+          "document_id": "so_tay_sinh_vien_khoa_49",
+          "source_parent_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
+          "source_section_id": "K49_QuyCheDanhGiaKetQuaRenLuyen_Chuong3_Dieu9",
           "title": "Phân loại kết quả rèn luyện",
           "columns": [
             "Khung điểm",
@@ -20664,7 +20596,7 @@
             }
           ],
           "source_pages": [
-            74
+            69
           ],
           "quality_status": "approved",
           "derived_from": null,
@@ -21121,7 +21053,6 @@
           "unit": "Khoa Công nghệ Thông tin",
           "unit_name": "Khoa Công nghệ Thông tin",
           "faculty_name": "Khoa Công nghệ Thông tin",
-          "campus": null,
           "aliases": [
             "CNTT",
             "IT"
@@ -21339,7 +21270,7 @@
     "id": "official_v2_det_147",
     "suite": "deterministic",
     "query": "Số điện thoại phòng đó là gì?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [
       {
         "role": "user",
@@ -21379,7 +21310,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "office",
@@ -21392,7 +21323,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Phòng Khảo thí và Đảm bảo chất lượng",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "phone": "(028) 38352020"
             }
           }
@@ -21405,8 +21336,8 @@
       {
         "catalog": "office",
         "record": {
-          "office_profile_id": "K48-K49_phong_khao_thi_va_dam_bao_chat_luong",
-          "cohort": "K48-K49",
+          "office_profile_id": "K49_phong_khao_thi_va_dam_bao_chat_luong",
+          "cohort": "K49",
           "unit": "Phòng Khảo thí và Đảm bảo chất lượng",
           "unit_name": "Phòng Khảo thí và Đảm bảo chất lượng",
           "aliases": [
@@ -21420,10 +21351,10 @@
             "Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học"
           ],
           "service_ids": [
-            "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_1",
-            "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_2",
-            "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_3",
-            "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_4"
+            "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_1",
+            "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_2",
+            "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_3",
+            "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_4"
           ],
           "phones": [
             "(028) 38352020"
@@ -21444,16 +21375,16 @@
             "Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
           ],
           "source_pages": [
-            134
+            132
           ],
           "source_service_ids": [
-            "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_1",
-            "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_2",
-            "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_3",
-            "K48-K49_K48-K49_phong_khao_thi_va_dam_bao_chat_luong_service_4"
+            "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_1",
+            "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_2",
+            "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_3",
+            "K49_K49_phong_khao_thi_va_dam_bao_chat_luong_service_4"
           ],
           "document_ids": [
-            "so_tay_sinh_vien_khoa_48_49"
+            "so_tay_sinh_vien_khoa_49"
           ],
           "content_type": "student_office_profile",
           "source_section": "student_office_profiles",
@@ -21469,11 +21400,11 @@
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_office_profiles",
-            "record_id": "K48-K49_phong_khao_thi_va_dam_bao_chat_luong",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_phong_khao_thi_va_dam_bao_chat_luong",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              134
+              132
             ],
             "source_record_id": null
           }
@@ -21820,7 +21751,7 @@
     "id": "official_v2_det_152",
     "suite": "deterministic",
     "query": "Cho em hỏi Trạm Y tế trường nằm ở đâu?",
-    "cohort": "K48-K49",
+    "cohort": "K49",
     "history": [
       {
         "role": "user",
@@ -21860,7 +21791,7 @@
           {
             "mode": "structured",
             "cohorts": [
-              "K48-K49"
+              "K49"
             ],
             "fact_lock_applicable": false,
             "lookup_type": "office",
@@ -21873,7 +21804,7 @@
             "fact_lock_reason": "N/A: formula definition or directory record, not a resolved scalar table lookup.",
             "expected_evidence_fields": {
               "unit_name": "Trạm Y tế",
-              "cohort": "K48-K49",
+              "cohort": "K49",
               "office": "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
             }
           }
@@ -21886,8 +21817,8 @@
       {
         "catalog": "office",
         "record": {
-          "office_profile_id": "K48-K49_tram_y_te",
-          "cohort": "K48-K49",
+          "office_profile_id": "K49_tram_y_te",
+          "cohort": "K49",
           "unit": "Trạm Y tế",
           "unit_name": "Trạm Y tế",
           "aliases": [
@@ -21896,16 +21827,16 @@
             "y tế trường"
           ],
           "services": [
-            "Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên",
+            "Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên",
             "Khám cấp cứu",
             "Khám bệnh, cấp phát thuốc thông thường",
             "Làm thẻ và phát thẻ BHYT"
           ],
           "service_ids": [
-            "K48-K49_K48-K49_tram_y_te_service_1",
-            "K48-K49_K48-K49_tram_y_te_service_2",
-            "K48-K49_K48-K49_tram_y_te_service_3",
-            "K48-K49_K48-K49_tram_y_te_service_4"
+            "K49_K49_tram_y_te_service_1",
+            "K49_K49_tram_y_te_service_2",
+            "K49_K49_tram_y_te_service_3",
+            "K49_K49_tram_y_te_service_4"
           ],
           "phones": [
             "(028) 38352020"
@@ -21921,16 +21852,16 @@
             "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM."
           ],
           "source_pages": [
-            135
+            133
           ],
           "source_service_ids": [
-            "K48-K49_K48-K49_tram_y_te_service_1",
-            "K48-K49_K48-K49_tram_y_te_service_2",
-            "K48-K49_K48-K49_tram_y_te_service_3",
-            "K48-K49_K48-K49_tram_y_te_service_4"
+            "K49_K49_tram_y_te_service_1",
+            "K49_K49_tram_y_te_service_2",
+            "K49_K49_tram_y_te_service_3",
+            "K49_K49_tram_y_te_service_4"
           ],
           "document_ids": [
-            "so_tay_sinh_vien_khoa_48_49"
+            "so_tay_sinh_vien_khoa_49"
           ],
           "content_type": "student_office_profile",
           "source_section": "student_office_profiles",
@@ -21938,19 +21869,19 @@
           "email": "tramyte@hcmue.edu.vn",
           "website": "",
           "office": "Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
-          "summary": "Trạm Y tế phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
-          "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
+          "summary": "Trạm Y tế phu trach: Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT",
+          "raw_text": "Don vi: Trạm Y tế\nAlias: TYT, phòng y tế, y tế trường\nDich vu phu trach: Phối hợp tổ chức khám sức khỏe đầu khoá học cho tân sinh viên; Khám cấp cứu; Khám bệnh, cấp phát thuốc thông thường; Làm thẻ và phát thẻ BHYT\nEmail: tramyte@hcmue.edu.vn\nDien thoai: (028) 38352020\nDia diem: Nhà A, tầng trệt, P.006, số 280 An Dương Vương, Phường 4, Quận 5, TP. HCM.",
           "data_category": "directory_table",
           "quality_status": "approved",
           "embedding_enabled": false,
           "retrieval_mode": "deterministic",
           "source_provenance": {
             "catalog": "student_office_profiles",
-            "record_id": "K48-K49_tram_y_te",
-            "cohort": "K48-K49",
-            "document_id": "so_tay_sinh_vien_khoa_48_49",
+            "record_id": "K49_tram_y_te",
+            "cohort": "K49",
+            "document_id": "so_tay_sinh_vien_khoa_49",
             "source_pages": [
-              135
+              133
             ],
             "source_record_id": null
           }

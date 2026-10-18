@@ -8,7 +8,7 @@ import pytest
 from scripts.build_artifact_manifest import build_artifact_manifest
 
 
-COHORTS = ("K48-K49", "K50", "K51")
+COHORTS = ("K49", "K50", "K51")
 
 
 def _write_json(path: Path, value: object) -> None:

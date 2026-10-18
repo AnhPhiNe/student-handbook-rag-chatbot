@@ -68,7 +68,7 @@ def test_another_certificates_level_does_not_bypass_component_inputs(level, cert
     assert result and set(result["missing_slots"]) == {"listening_score", "reading_score"}
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 @pytest.mark.parametrize("slots,clarify", [
     ({"certificate_or_language": "TOEIC", "score_or_level": "bậc 4", "speaking_score": "điểm Nói"}, False),
     ({"certificate_or_language": "TOEIC", "score_or_level": "bậc 3 và bậc 4"}, False),

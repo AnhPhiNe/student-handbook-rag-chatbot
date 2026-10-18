@@ -102,7 +102,7 @@ export interface Message {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 const API_URL = `${API_BASE_URL}/chat/stream`;
 
-export function useChat(cohort: string = 'K48-K49') {
+export function useChat(cohort: string = 'K49') {
   const [messages, setMessages] = useState<Message[]>(() => {
     const saved = sessionStorage.getItem('chat_messages');
     if (saved) {

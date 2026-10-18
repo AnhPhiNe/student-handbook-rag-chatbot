@@ -23,7 +23,7 @@ import fitz
 
 ROOT = Path(__file__).resolve().parents[1]
 PDFS = {
-    "K48-K49": ROOT / "data/raw/so-tay-sinh-vien-khoa-48-49.pdf",
+    "K49": ROOT / "data/raw/so-tay-sinh-vien-khoa-49.pdf",
     "K50": ROOT / "data/raw/so-tay-sinh-vien-khoa-50.pdf",
     "K51": ROOT / "data/raw/so-tay-sinh-vien-khoa-51.pdf",
 }

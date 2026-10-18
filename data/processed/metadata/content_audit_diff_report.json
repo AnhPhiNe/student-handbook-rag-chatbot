@@ -1,18 +1,17 @@
 {
   "cohorts": [
-    "K48-K49",
+    "K49",
     "K50",
     "K51"
   ],
   "documents": {
-    "K48-K49": {
-      "document_id": "so_tay_sinh_vien_khoa_48_49",
-      "file_name": "so-tay-sinh-vien-khoa-48-49.pdf",
-      "total_pages": 188,
+    "K49": {
+      "document_id": "so_tay_sinh_vien_khoa_49",
+      "file_name": "so-tay-sinh-vien-khoa-49.pdf",
+      "total_pages": 176,
       "content_mode_count": {
-        "archive_only": 18,
-        "rag_index": 164,
-        "structured_only": 6
+        "archive_only": 22,
+        "rag_index": 154
       }
     },
     "K50": {
@@ -38,7 +37,7 @@
     {
       "content_type": "abbreviation",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "archive_only",
           "page_count": 1,
@@ -73,7 +72,7 @@
     {
       "content_type": "cover_page",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "archive_only",
           "page_count": 1,
@@ -106,12 +105,12 @@
     {
       "content_type": "faculty_program_directory",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "rag_index",
-          "page_count": 25,
-          "page_start": 141,
-          "page_end": 185,
+          "page_count": 21,
+          "page_start": 139,
+          "page_end": 159,
           "needs_embedding": true,
           "needs_structured_lookup": false
         },
@@ -142,7 +141,7 @@
     {
       "content_type": "faculty_student_services",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "rag_index",
           "page_count": 1,
@@ -177,7 +176,7 @@
     {
       "content_type": "general_info",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "archive_only",
           "page_count": 3,
@@ -212,12 +211,12 @@
     {
       "content_type": "ktx_procedure_archive",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "archive_only",
-          "page_count": 2,
+          "page_count": 3,
           "page_start": 161,
-          "page_end": 162,
+          "page_end": 163,
           "needs_embedding": false,
           "needs_structured_lookup": false
         },
@@ -246,7 +245,7 @@
     {
       "content_type": "low_text_or_blank",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "archive_only",
           "page_count": 2,
@@ -277,12 +276,12 @@
     {
       "content_type": "office_directory",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "rag_index",
-          "page_count": 17,
-          "page_start": 129,
-          "page_end": 180,
+          "page_count": 12,
+          "page_start": 127,
+          "page_end": 138,
           "needs_embedding": true,
           "needs_structured_lookup": false
         },
@@ -312,12 +311,12 @@
     {
       "content_type": "reference_directory",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "archive_only",
           "page_count": 4,
-          "page_start": 163,
-          "page_end": 166,
+          "page_start": 164,
+          "page_end": 167,
           "needs_embedding": false,
           "needs_structured_lookup": false
         },
@@ -346,12 +345,12 @@
     {
       "content_type": "regulation_text",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "rag_index",
-          "page_count": 116,
+          "page_count": 115,
           "page_start": 8,
-          "page_end": 128,
+          "page_end": 168,
           "needs_embedding": true,
           "needs_structured_lookup": false
         },
@@ -381,12 +380,12 @@
     {
       "content_type": "scoring_form_table",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "rag_index",
           "page_count": 5,
-          "page_start": 82,
-          "page_end": 86,
+          "page_start": 77,
+          "page_end": 81,
           "needs_embedding": true,
           "needs_structured_lookup": false
         },
@@ -414,45 +413,14 @@
       ]
     },
     {
-      "content_type": "scoring_table",
-      "by_cohort": {
-        "K48-K49": {
-          "exists": true,
-          "content_mode": "structured_only",
-          "page_count": 6,
-          "page_start": 169,
-          "page_end": 174,
-          "needs_embedding": false,
-          "needs_structured_lookup": true
-        },
-        "K50": {
-          "exists": false,
-          "content_mode": null,
-          "page_count": 0,
-          "page_start": null,
-          "page_end": null
-        },
-        "K51": {
-          "exists": false,
-          "content_mode": null,
-          "page_count": 0,
-          "page_start": null,
-          "page_end": null
-        }
-      },
-      "diff_notes": [
-        "Không có trong: K50, K51"
-      ]
-    },
-    {
       "content_type": "toc_or_index",
       "by_cohort": {
-        "K48-K49": {
+        "K49": {
           "exists": true,
           "content_mode": "archive_only",
-          "page_count": 3,
-          "page_start": 186,
-          "page_end": 188,
+          "page_count": 8,
+          "page_start": 169,
+          "page_end": 176,
           "needs_embedding": false,
           "needs_structured_lookup": false
         },
@@ -482,14 +450,12 @@
     {
       "content_type": "unknown",
       "by_cohort": {
-        "K48-K49": {
-          "exists": true,
-          "content_mode": "archive_only",
-          "page_count": 2,
-          "page_start": 167,
-          "page_end": 168,
-          "needs_embedding": false,
-          "needs_structured_lookup": false
+        "K49": {
+          "exists": false,
+          "content_mode": null,
+          "page_count": 0,
+          "page_start": null,
+          "page_end": null
         },
         "K50": {
           "exists": true,
@@ -511,7 +477,7 @@
         }
       },
       "diff_notes": [
-        "Khác vị trí/phạm vi trang giữa các khóa"
+        "Không có trong: K49"
       ]
     }
   ]

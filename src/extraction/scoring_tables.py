@@ -189,7 +189,7 @@ def _scholarship_classification_table(cohort: str) -> dict[str, Any]:
     return {
         "table_id": "scholarship_classification",
         "table_name": "Xếp loại học bổng khuyến khích học tập",
-        "source_pages": [53],
+        "source_pages": [49],
         "review_status": "needs_human_verified",
         "schema_variant": "score_ranges",
         "rows": [
@@ -218,7 +218,7 @@ def _scholarship_classification_table(cohort: str) -> dict[str, Any]:
 def _scholarship_amount_table(cohort: str) -> dict[str, Any] | None:
     """Return the source-verified HBKKHT amount formula table for a cohort."""
 
-    if cohort not in {"K48-K49", "K50", "K51", "K50-K51"}:
+    if cohort not in {"K49", "K50", "K51", "K50-K51"}:
         return None
 
     tuition_basis = (
@@ -259,7 +259,7 @@ def _scholarship_score_formula_table(cohort: str) -> dict[str, Any] | None:
     """Return the ranking-score formula as part of the scholarship policy bundle."""
 
     source_pages = {
-        "K48-K49": [52, 53],
+        "K49": [48, 49],
         "K50": [71, 72, 73],
         "K51": [70, 71, 72],
         "K50-K51": [70, 71, 72],
@@ -337,7 +337,7 @@ def _scholarship_eligibility_table(cohort: str) -> dict[str, Any] | None:
                 ),
             },
         ]
-    elif cohort in {"K48-K49", "K50", "K50-K51"}:
+    elif cohort in {"K49", "K50", "K50-K51"}:
         rows = [
             *common_rows,
             {

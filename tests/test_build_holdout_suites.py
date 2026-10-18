@@ -44,7 +44,7 @@ def test_suites_share_the_deterministic_gold(tmp_path):
          "selected_cohort": "K50", "clarify": "Thiếu điểm rèn luyện."},
         {"query": "Cách nấu phở?", "category": "out_of_domain", "slice": "boundary.out_of_domain",
          "selected_cohort": "K50", "out_of_domain": True},
-    ], extras=[{"query": "Bị cảnh báo học tập khi nào?", "selected_cohort": "K48-K49",
+    ], extras=[{"query": "Bị cảnh báo học tập khi nào?", "selected_cohort": "K49",
                 "policy": ["QuyCheDaoTao_Chuong3_Dieu12", WARNING]}])
 
     answers, retrieval = build(bundle)
@@ -59,7 +59,7 @@ def test_suites_share_the_deterministic_gold(tmp_path):
     # Retrieval: policy questions without history, then the retrieval-only extras.
     assert [r["id"] for r in retrieval] == ["official_v2_ret_002", "official_v2_ret_004", "official_v2_ret_extra_001"]
     assert retrieval[1]["cohort"] == "general" and retrieval[1]["requested_cohorts"] == ["K50", "K51"]
-    assert retrieval[2]["cohort"] == "K48-K49" and all(r["independent_holdout"] for r in retrieval)
+    assert retrieval[2]["cohort"] == "K49" and all(r["independent_holdout"] for r in retrieval)
 
 
 def test_equivalent_sources_form_one_requirement(tmp_path):

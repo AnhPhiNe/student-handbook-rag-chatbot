@@ -14,6 +14,7 @@ from .metrics import (
     retrieval_metrics,
     safe_mean,
 )
+from src.common.cohort import valid_cohorts
 from src.retrieval.core.retrieval_mode import (
     DEFAULT_RETRIEVAL_MODE,
     SUPPORTED_RETRIEVAL_MODES,
@@ -459,13 +460,10 @@ def _retrieval_summary(
 
 
 def _cohort_from_parent_id(parent_id: str) -> str | None:
-    if parent_id.startswith("K48-K49_"):
-        return "K48-K49"
-    if parent_id.startswith("K50_"):
-        return "K50"
-    if parent_id.startswith("K51_"):
-        return "K51"
-    return None
+    return next(
+        (cohort for cohort in valid_cohorts() if parent_id.startswith(f"{cohort}_")),
+        None,
+    )
 
 
 def _retrieval_metrics_for_execution_units(
@@ -480,7 +478,7 @@ def _retrieval_metrics_for_execution_units(
     QueryPlan executes a ``general`` regulation task once per applicable cohort
     and returns up to five primary parents for each unit. A global cutoff over
     the flattened groups would incorrectly turn the first K50 result into rank
-    six merely because five K48-K49 parents were emitted first.
+    six merely because five K49 parents were emitted first.
     """
 
     def score(ids: list[str], relevance: dict[str, int]) -> dict[str, float]:

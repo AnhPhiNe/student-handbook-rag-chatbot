@@ -53,14 +53,8 @@ def cohort_matches(actual: Any, expected: str | None) -> bool:
     if not expected or expected == "general":
         return True
     if isinstance(actual, list):
-        return expected in actual or (
-            expected == "K48-K49" and any(item in actual for item in ("K48", "K49"))
-        )
-    return (
-        str(actual or "") in {expected, "K48", "K49"}
-        if expected == "K48-K49"
-        else str(actual or "") == expected
-    )
+        return expected in actual
+    return str(actual or "") == expected
 
 
 def citation_parent_id(citation: dict[str, Any]) -> str:

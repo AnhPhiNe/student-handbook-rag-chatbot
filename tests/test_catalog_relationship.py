@@ -22,7 +22,7 @@ def directories():
     }
 
 
-@pytest.mark.parametrize("cohort", ["K48-K49", "K50", "K51"])
+@pytest.mark.parametrize("cohort", ["K49", "K50", "K51"])
 @pytest.mark.parametrize("unit,email", [
     ("Thư viện", "thuvien@hcmue.edu.vn"),
     ("Phòng Hợp tác Quốc tế", "phonghtqt@hcmue.edu.vn"),

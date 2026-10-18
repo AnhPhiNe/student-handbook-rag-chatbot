@@ -311,10 +311,10 @@ their golds were re-checked against it before any run (`K49_GOLD_CHANGES.md`,
 `gold_adjustments.yaml`). The run is pre-registered in SPEC (run K49): K49 is
 a new baseline, not compared with the K48-K49 figures above, and K50 and K51
 are a regression check paired against run A, with C3 as a second reference.
-It has not been run yet: the new collections
+It has not been run yet. The new collections
 (`student_handbook_table_search_3bbd93e9f05a` / `parent_docs_table_search_3bbd93e9f05a`)
-are built locally in `output/k49_candidate_v2` and await the owner's approval to
-publish.
+were published and verified on 2026-10-18: 2,720 vectors (K49 830, K50 922, K51
+968) and 561 parents, with no payload, vector or parent mismatch.
 
 ## What these results do not establish
 

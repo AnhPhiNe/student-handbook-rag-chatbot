@@ -71,3 +71,22 @@ questions, a pattern v61 never showed. It traces to one v62 edit: the clause
 bullet. v62b puts that clause back in its v61 place and wording; nothing else
 changes. Both suites are rerun in full under the same rule; v62b results are
 post-fix measurements on v1/v2.
+
+## Result (2026-10-18): rejected, v61 stays
+
+| Suite | v61 | v62 | v62b |
+| --- | --- | --- | --- |
+| official_v1 (135) | 132 | 132 | 132 |
+| official_v2 (154) | 142 | 139 | **136** |
+| v2 structured false positives | 1 | 3 | 3 |
+| pass/fail probes, pass_fail_ungraded on pf01–04, pf08 | 4/5 | 5/5 | 5/5 |
+| contact probes (rubric v2) | 7/8 | 7/8 | 7/8 |
+
+v62b fails rule 1 on official_v2 (136 < 142 − 3). Restoring the value-passes
+clause fixed the four over-split cases (v1 014, 054; v2 008, 068), but v2 059,
+085 and 112 fail on both v62 and v62b and pass on v61. They are the same kind of
+error each time (059 table instead of RAG, 085 directory instead of RAG for
+"nộp đơn ở đâu", 112 second score left out), so the shorter wording is likely
+the cause, not noise. No further rewrite was measured on v1/v2. Reports:
+`data/eval/reports/official_v{1,2}_deterministic_20261018T{114343,115716}Z` (v61,
+baseline worktree), `…T115155Z / T120552Z` (v62), `…T123154Z / T123005Z` (v62b).

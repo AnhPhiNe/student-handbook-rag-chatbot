@@ -213,9 +213,9 @@ def test_rejects_missing_key_and_unknown_effort(monkeypatch):
 
 
 @pytest.mark.parametrize(("config_path", "effort", "model", "base_url", "timeout"), [
-    ("configs/answer_generation.yaml", "none", "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    ("configs/answer_generation.yaml", "none", "deepseek-ai/DeepSeek-V4.1-Flash",
      "https://api.deepinfra.com/v1/openai", 120),
-    ("configs/answer_generation_eval_patient.yaml", "none", "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    ("configs/answer_generation_eval_patient.yaml", "none", "deepseek-ai/DeepSeek-V4.1-Flash",
      "https://api.deepinfra.com/v1/openai", 120),
     ("configs/experiments/answer_deepseek_low.yaml", "low", "deepseek-flash", "https://api.deepseek.com", 60),
 ])

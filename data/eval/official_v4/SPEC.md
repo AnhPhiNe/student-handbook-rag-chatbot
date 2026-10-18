@@ -403,20 +403,22 @@ author nor its models wrote.
   narrower than the K49 dormitory procedure) and V4-209 (planner asked instead of
   reading the history); K50 and K51 0.975 against A 0.964, paired +0.011
   [−0.011, +0.033], no new zero: the regression check passes.
-- **Run P: composer prompt v3.41 and model DeepSeek-V4.1-Flash-1017, together**
-  (owner, 2026-10-18/19; written 2026-10-19, before any v4 answer of this
-  configuration was produced). Two changes are measured as one:
-  - prompt v3.36 → v3.41 (commit `35469798`): the v3.36 rules stated once
-    each under five principles, and one rule changed by the owner's choice: a
-    part without evidence gets "Khi chưa tìm thấy căn cứ cho một ý, nói rõ điều
-    đó và không gợi ý đơn vị hay thông tin liên hệ nào cho ý đó" (v3.42 added
-    the same sentence to v3.36 and failed run A's email criterion; v3.41 is
-    measured on its own terms). v3.41 was drafted on official_v1 and
-    development questions; it keeps rules that came from earlier v4 cases;
-  - composer model and provider (commit `9d81e0b7`):
-    `deepseek-ai/DeepSeek-V4.1-Flash-1017` on DeepInfra only, reasoning none
-    (the model is listed with "can-disable-reasoning"; that none disables
-    thinking on it is checked on the first targeted replies), no fallback.
+- **Run P: composer prompt v3.41 on DeepSeek-V4.1-Flash, DeepInfra only**
+  (owner, 2026-10-19). First registered the same day (commit `d4ab548a`) as
+  v3.41 together with `deepseek-ai/DeepSeek-V4.1-Flash-1017`; its gates stopped
+  that configuration before any v4 answer was produced (outcomes below), and the
+  owner then chose V4.1-Flash. This amendment is written after those gate
+  results and before run P starts.
+  - The change measured is the prompt, v3.36 → v3.41 (commit `35469798`): the
+    v3.36 rules stated once each under five principles, and one rule changed by
+    the owner's choice: a part without evidence gets "Khi chưa tìm thấy căn cứ
+    cho một ý, nói rõ điều đó và không gợi ý đơn vị hay thông tin liên hệ nào
+    cho ý đó" (v3.42 added the same sentence to v3.36 and failed run A's email
+    criterion; v3.41 is measured on its own terms). v3.41 was drafted on
+    official_v1 and development questions; it keeps rules that came from
+    earlier v4 cases.
+  - Composer: `deepseek-ai/DeepSeek-V4.1-Flash` on DeepInfra only, reasoning
+    none, no fallback (the DeepSeek API path is dropped by the owner's choice).
   - **Baseline: run K49** (`official_v4_answers_20261018T073835Z`, commit
     `ea4fc1bd`), not rerun: prompt v3.36, reasoning none, configured DeepSeek
     API first with DeepInfra fallback; its records show 232 of 246 answers
@@ -430,26 +432,30 @@ author nor its models wrote.
     `student_handbook_table_search_3bbd93e9f05a` /
     `parent_docs_table_search_3bbd93e9f05a`, Voyage rerank-3,
     `configs/answer_generation_eval_patient.yaml`, 16 answer workers, judge
-    gpt-oss-120b on DeepInfra with packet `judge-packet-v3-source-clauses`.
-    With the plans fixed, P differs from K49 only in retrieval execution, the
-    composer prompt and the composer model.
-  - **Order, each step a gate for the next**: (1) about 20 targeted composer
-    replies: the 12 contact and referral questions of `ask_fresh.json` through
-    the full pipeline, and V4-229, 142, 144, 231, 236, 081, 031, 035 from K49's
-    recorded packets, read against the referral and contact rules; a clear
-    error stops here and goes to the owner. (2) The development length and
-    required-facts check below. (3) Run P, exactly once.
-  - **Development required-facts check** (before P): the development
-    questions with `must_include` facts (supplementary, table_adjacent,
-    regulated_where, the n group of where_and_mixed) plus the 12 ask_fresh
-    questions are run once through the pipeline; from those identical packets
-    the composer answers twice, as K49 (v3.36, DeepSeek-V4.1-Flash on
-    DeepInfra) and as P (v3.41, V4.1-Flash-1017). Required facts are counted
-    case-insensitively. Shorter answers are accepted only if P's required-fact
-    count is not lower than K49's; a lower count stops before run P. Median
-    answer lengths are reported. (Earlier, on 2026-10-11 packets, v3.41 with
-    V4.1-Flash met 96 of 106 facts, the same as v3.40, with answers about 10%
-    shorter.)
+    gpt-oss-120b on DeepInfra with packet `judge-packet-v3-source-clauses`
+    (judge workers are not fixed). With the plans fixed, P differs from K49
+    in retrieval execution, the composer prompt, and for 14 cases the provider
+    serving the same weights.
+  - **Gate outcomes for the 1017 configuration** (2026-10-19): (1) 20 targeted
+    replies (12 ask_fresh questions through the pipeline, V4-229, 142, 144,
+    231, 236, 081, 031, 035 from K49's packets): none disables thinking on 1017
+    (0 reasoning tokens); the owner's sentence removed ungrounded referrals in
+    6 replies; V4-142 gave the institute's address without phone, email and
+    website (3 draws per arm: full fields 3/3 with V4.1-Flash under either
+    prompt, 1/3 and 2/3 with 1017); the rector's-phone question leaked
+    `nghidinh116@` under both prompts (known limit). (2) Development
+    required-facts check, 100 questions with identical packets, 106 facts:
+    v3.36 + V4.1-Flash 95 (median 704 characters), v3.41 + 1017 93 (538):
+    sup_05 stated 2 points for a first exam warning instead of 3 (an adjacent
+    row; 1 of 5 redraws with 1017 under v3.36, 0 of 10 with V4.1-Flash), and
+    sup_20 says "lâm thời" where the counter looks for "tạm thời". The gate
+    failed and the 1017 configuration was not run.
+  - **Gates for this configuration**: the same development check gave
+    v3.41 + V4.1-Flash 94 of 106 by count (median 573 characters, 19% shorter
+    than v3.36); its one difference from v3.36 is the same sup_20 wording
+    ("lâm thời"), read and found not to be a missing fact. Recorded as passed
+    on that reading. The 20 targeted replies are repeated with V4.1-Flash before
+    P and read the same way; a clear error stops there.
   - **Validity**, checked in the run log before any score is read: no 402 or
     authentication error, no dense retrieval falling back to BM25 only, no
     reranker skip. Affected cases are rerun whole before scoring; if that is
@@ -462,10 +468,8 @@ author nor its models wrote.
     email outside the directories, except a procedure mailbox on its own
     procedure. The 18 out-of-scope and partly out-of-scope cases are read one
     by one as in C3; one that presents another group's rule as the asker's
-    fails and blocks the deploy.
-  - **A failure does not say which change caused it**: separating prompt from
-    model needs a second run (v3.41 with V4.1-Flash, or v3.36 with 1017), which
-    is decided by the owner after P is read.
+    fails and blocks the deploy. If all hold, the owner has decided to deploy
+    v3.41 with this composer.
   - **v4 is not a hold-out for this change**: runs R, R2 and A were read
     before the owner's referral sentence was chosen. Whatever the outcome, the
     prompt is not tuned on v4 after P. The deploy is separate from the planner

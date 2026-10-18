@@ -345,3 +345,15 @@ def test_trace_says_why_a_task_is_not_what_the_planner_proposed() -> None:
     traced = meta["query_plan"]["tasks"][0]
     assert traced["validation_errors"] == ["t1:slot_span_mismatch:faculty"]
     assert traced["normalization_warnings"] == ["reading_default_applied:requested_field"]
+
+
+def test_trace_keeps_the_value_the_normalizer_dropped() -> None:
+    result = _query_plan_result()
+    task = result["query_plan"]["tasks"][0]
+    task["normalization_warnings"] = ["ungrounded_slot:service"]
+    task["normalization_drops"] = [{"slot": "service", "warning": "ungrounded_slot",
+                                    "value": "mượn sách", "span": "mượn sách thư viện"}]
+
+    traced = build_trace_metadata(result, query="Mượn sách ở đâu?")["query_plan"]["tasks"][0]
+
+    assert traced["normalization_drops"] == task["normalization_drops"]

@@ -48,6 +48,15 @@ def _slot_verification_role(slot_spec: dict[str, Any] | None) -> str:
     return role if role in SLOT_VERIFICATION_ROLES else DEFAULT_SLOT_VERIFICATION_ROLE
 
 
+def _is_score_slot(slot_spec: dict[str, Any] | None) -> bool:
+    """A slot whose value is a score the student writes (registry `value_kind`).
+
+    Its number must keep any denominator the source writes, and the normalizer
+    may take it from the source as written (`repair_numeric_slot_spans`).
+    """
+    return (slot_spec or {}).get("value_kind") == "score"
+
+
 def _is_semantic_result_input_slot(slot_spec: dict[str, Any] | None) -> bool:
     """Identify canonical string selectors whose meaning belongs to the planner."""
 
@@ -494,7 +503,7 @@ def validate_fact_lock_inputs(
         )
         if span_error:
             errors.append(f"{span_error}:{slot_name}")
-        elif lookup_type == "scoring" and slot_name == "score_or_grade":
+        elif _is_score_slot(slot_schema[slot_name]):
             if not _score_span_matches_source(value, span, query):
                 errors.append(f"slot_span_mismatch:{slot_name}")
     if grounded_value_slots == 0:
@@ -582,12 +591,13 @@ def validate_structured_task(
 
     errors.extend(_validate_slot_contract(slots, spec))
 
-    if (lookup_type == "scoring" and _is_present(slots.get("score_or_grade"))
-            and not _score_span_matches_source(slots["score_or_grade"],
-                                              spans.get("score_or_grade"), source_text)):
-        error = "slot_span_mismatch:score_or_grade"
-        if error not in errors:
-            errors.append(error)
+    for slot_name, schema in slot_schema.items():
+        if (_is_score_slot(schema) and _is_present(slots.get(slot_name))
+                and not _score_span_matches_source(slots[slot_name],
+                                                  spans.get(slot_name), source_text)):
+            error = f"slot_span_mismatch:{slot_name}"
+            if error not in errors:
+                errors.append(error)
 
     return errors
 
@@ -603,11 +613,11 @@ def repair_numeric_slot_spans(
     The planner may quote a score's span from its own task paraphrase ("81 điểm
     rèn luyện" for "bạn em 81 điểm") or write the number differently ("2.83"
     for "2,83", "1.6/4" for "1.6 theo thang điểm 4"); the span check then
-    drops a value the student did give. For a slot the registry marks
-    `numeric_span_repair`, a number found exactly once in ``source_text`` (the
-    question and visible history, never a task paraphrase) becomes both value
-    and span, as the student wrote it. A number the source does not hold is
-    left for validation to drop.
+    drops a value the student did give. For a slot of `value_kind: score`, a
+    number found exactly once in ``source_text`` (the question and visible
+    history, never a task paraphrase) becomes both value and span, as the
+    student wrote it. A number the source does not hold is left for validation
+    to drop.
     """
 
     registry = registry or load_lookup_registry()
@@ -617,7 +627,7 @@ def repair_numeric_slot_spans(
     warnings: list[str] = []
     for slot_name, schema in (spec.get("slot_schema") or {}).items():
         value = slots.get(slot_name)
-        if not schema.get("numeric_span_repair") or not _is_present(value):
+        if not _is_score_slot(schema) or not _is_present(value):
             continue
         span = spans.get(slot_name)
         if _slot_span_error(value, span, schema, source_text) is None and (

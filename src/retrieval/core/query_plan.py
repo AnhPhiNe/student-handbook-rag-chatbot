@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import json
 import re
 from functools import partial
 from typing import Any
@@ -951,8 +952,12 @@ def _normalize_structured_task(
                 and error.partition(":")[2] in required_slots
             )
         }
+        # The task's slots are all lost here; log the ones that failed.
+        drops = _normalization_drops(
+            normalization_warnings + validation_errors, slots, spans, decision,
+        )
         if len(missing_student_input) == len(validation_errors):
-            return _clarify_task(
+            return _with_drops(_clarify_task(
                 task_id,
                 question,
                 cohorts=cohorts,
@@ -961,14 +966,16 @@ def _normalize_structured_task(
                 or "Bạn có thể nói rõ hơn phần thông tin cần tra cứu không?",
                 validation_errors=errors,
                 normalization_warnings=normalization_warnings,
-            ), errors
+            ), drops), errors
 
         # A structured task must never reach the executor with unresolved
         # contract errors. Preserve sibling tasks by degrading only this task
         # to regulation RAG instead of invalidating the complete plan.
-        return _rag_task(task_id, question, cohorts, errors, normalization_warnings), errors
+        return _with_drops(
+            _rag_task(task_id, question, cohorts, errors, normalization_warnings), drops,
+        ), errors
 
-    return {
+    return _with_drops({
         "id": task_id,
         "question": question,
         "mode": "structured",
@@ -984,7 +991,64 @@ def _normalize_structured_task(
             if normalization_warnings
             else {}
         ),
-    }, errors
+    }, _normalization_drops(normalization_warnings, slots, spans, decision)), errors
+
+
+# Long values are cut so a trace stays small; the code and slot name are kept whole.
+_DROP_LOG_MAX_CHARS = 80
+
+
+def _clip_for_log(value: Any) -> Any:
+    if isinstance(value, str):
+        return value if len(value) <= _DROP_LOG_MAX_CHARS else value[:_DROP_LOG_MAX_CHARS] + "…"
+    if isinstance(value, list):
+        return [_clip_for_log(item) for item in value[:5]]
+    if isinstance(value, dict):
+        return _clip_for_log(json.dumps(value, ensure_ascii=False, sort_keys=True))
+    return value
+
+
+def _normalization_drops(
+    codes: list[str],
+    planner_slots: dict[str, Any],
+    planner_spans: dict[str, Any],
+    decision: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """What the planner gave for each slot the normalizer dropped, repaired or replaced.
+
+    normalization_warnings and validation_errors name only the slot; this
+    keeps the planner's value and span beside the code, so a trace shows
+    whether a drop removed a value the student did write. ``kept`` is the
+    value the task carries on after a repair or a default.
+    """
+
+    kept_slots = decision.get("slots") or {}
+    drops: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for code in codes:
+        warning, _, slot = code.partition(":")
+        if not slot or (warning, slot) in seen or (
+            warning not in {*_SLOT_PROBLEMS, "unknown_slot", "unknown_slot_span",
+                            "numeric_span_repaired", "reading_default_applied"}
+        ):
+            continue
+        seen.add((warning, slot))
+        entry = {
+            "slot": slot,
+            "warning": warning,
+            "value": _clip_for_log(planner_slots.get(slot)),
+            "span": _clip_for_log(planner_spans.get(slot)),
+        }
+        if warning in {"numeric_span_repaired", "reading_default_applied"}:
+            entry["kept"] = _clip_for_log(kept_slots.get(slot))
+        drops.append(entry)
+    return drops
+
+
+def _with_drops(task: dict[str, Any], drops: list[dict[str, Any]]) -> dict[str, Any]:
+    if drops:
+        task["normalization_drops"] = drops
+    return task
 
 
 def _apply_declared_reading_defaults(
@@ -1234,6 +1298,12 @@ def _merge_compatible_structured_tasks(
         )
         if warnings:
             existing["normalization_warnings"] = warnings
+        drops = (existing.get("normalization_drops") or []) + [
+            drop for drop in task.get("normalization_drops") or []
+            if drop not in (existing.get("normalization_drops") or [])
+        ]
+        if drops:
+            existing["normalization_drops"] = drops
     return merged
 
 

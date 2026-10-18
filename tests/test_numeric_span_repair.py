@@ -93,3 +93,23 @@ def test_a_conflicting_scale_or_two_readings_is_not_repaired():
         operation="academic_classification", score="3,6/10", span="3,6/10",
     )
     assert "score_or_grade" not in task["slots"]
+
+
+def test_the_plan_logs_what_was_dropped_and_what_was_repaired():
+    dropped = _scoring_task(
+        "Khung điểm rèn luyện từ 80 đến dưới 90 thì xếp loại gì?",
+        question="85 điểm rèn luyện xếp loại gì?",
+        operation="conduct_classification", score=85, span="85 điểm",
+    )
+    assert {"slot": "score_or_grade", "warning": "ungrounded_slot",
+            "value": 85, "span": "85 điểm"} in dropped["normalization_drops"]
+
+    repaired = _scoring_task(
+        "Em được 78 điểm rèn luyện, bạn em 81 điểm thì mỗi người xếp loại gì?",
+        question="Bạn em được 81 điểm rèn luyện thì xếp loại gì?",
+        operation="conduct_classification", score=81, span="81 điểm rèn luyện " * 10,
+    )
+    entry, = repaired["normalization_drops"]
+    assert entry["warning"] == "numeric_span_repaired" and entry["kept"] == "81"
+    # Long planner text is cut for the trace.
+    assert len(entry["span"]) == 81 and entry["span"].endswith("…")

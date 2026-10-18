@@ -377,6 +377,20 @@ and the 18 out-of-scope cases pass reading. On 100 development questions with
 identical packets, v3.41 kept v3.36's required facts with answers 19% shorter
 (median 573 against 704 characters). v3.41 is not deployed.
 
+**Run Q, v3.43** (v3.41 without the no-referral sentence; same baseline, plans,
+composer and judge; `official_v4_answers_20261018T182906Z`, commit `74054466`;
+21 judge timeouts judged again before scoring). In scope 0.964 against K49
+0.969, paired −0.005 [−0.017, +0.006], 11 unsupported claims against 12, no
+stray email, the 18 out-of-scope cases pass. The rule fails on one new zero,
+V4-172: Q and K49 give the same dress-code answer and both omit the smoking
+ban, scored 0.0 and 0.6. The largest other drop, V4-235 (1.0 → 0.5), has no
+referral to Phòng CTCT&HSSV this time, which v3.43 neither asks for nor
+forbids. On the development set v3.43 kept v3.36's 95 of 106 facts with
+answers 14% shorter. Both new zeros (V4-195 in P, V4-172 in Q) are a case
+where the two runs give the same answer and the judge scores the baseline a
+little above zero: the no-new-zero rule, as written, does not separate a judge
+difference from a new error. v3.43 is not deployed.
+
 ## What these results do not establish
 
 - **Run B is not a hold-out.** Its figure describes the deployed system; the

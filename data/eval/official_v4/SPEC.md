@@ -509,6 +509,21 @@ author nor its models wrote.
     K49 and P, scored 0.2 and 0.0) is reported separately but stays under the
     rule. If all hold, the owner has decided to deploy v3.43 with this
     composer. The prompt is not tuned on v4 after Q.
+  Gates (2026-10-19): development check 95 of 106 facts, the same as v3.36,
+  median 608 characters against 704; targeted replies give grounded units with
+  full contacts, and the known leak returns on two personal-contact questions
+  (`nghidinh116@` offered for a lecturer's email and the rector's phone; v3.36
+  leaks on the second too). The owner chose to run Q.
+  Outcome (2026-10-19, `official_v4_answers_20261018T182906Z`, commit
+  `74054466`; 21 judge calls timed out with 32 judge workers and were judged
+  again in `reruns/attempt_judge_1`; no 402, authentication error, BM25-only
+  search or reranker skip): in scope Q 0.964 against K49 0.969, paired −0.005,
+  95% cluster interval [−0.017, +0.006]; no email outside the directories
+  except `nghidinh116@` on its own procedure (V4-124, V4-167); the 18
+  out-of-scope cases pass reading. **One new zero, V4-172** (K49 0.6): both runs
+  give the same dress-code answer and both omit the smoking ban the gold
+  requires; the judge scored them 0.6 and 0.0. By the rule a new zero fails Q,
+  so v3.43 is not kept and not deployed.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

@@ -349,6 +349,34 @@ student rule to another group. V4-081 and V4-211 (staff conduct) say the
 handbook does not state the point instead of saying it is outside the
 assistant's scope, as in runs C3 and A; V4-197 now scores 1.0.
 
+## Composer prompt v3.41, the rules as principles: run P (2026-10-19)
+
+v3.41 states the v3.36 rules once each under five principles and adds the
+owner's sentence that a part without evidence gets no suggested unit or contact.
+Run `official_v4_answers_20261018T175106Z`, commit `216bbea0`, as pre-registered
+in SPEC (run P, amended before the run): K49's plans replayed, composer
+DeepSeek-V4.1-Flash on DeepInfra only, reasoning none, judge gpt-oss-120b on
+DeepInfra. No provider error, BM25-only search or reranker skip. **Not a
+hold-out**: earlier v4 runs informed the referral rule. A first registration
+with DeepSeek-V4.1-Flash-1017 stopped at its gates before any v4 answer (SPEC).
+
+| In scope (228) | `answer_correctness` | Zeros | Unsupported claims |
+|---|---:|---|---:|
+| K49 (v3.36) | 0.969 | V4-070, V4-209 | 12 |
+| P (v3.41) | 0.960 | V4-070, V4-209, **V4-195** | 14 |
+
+Paired difference −0.009, 95% cluster interval [−0.017, −0.003]: above the
+−0.03 margin but below zero. The rule fails on the new zero: V4-195, a
+follow-up asking for K51, gets the liên thông durations in both runs, scored
+0.2 in K49 and 0.0 in P. The largest other drops are the referral rule doing
+what it says and the gold expecting the referral: V4-229 and V4-235 (1.0 →
+0.6) no longer point to Phòng CTCT&HSSV for the scholarship list, which the
+golds ask for; V4-226 (1.0 → 0.6) omits asking back for the JLPT level.
+Emails stay inside the directories except `nghidinh116@` on its own procedure,
+and the 18 out-of-scope cases pass reading. On 100 development questions with
+identical packets, v3.41 kept v3.36's required facts with answers 19% shorter
+(median 573 against 704 characters). v3.41 is not deployed.
+
 ## What these results do not establish
 
 - **Run B is not a hold-out.** Its figure describes the deployed system; the

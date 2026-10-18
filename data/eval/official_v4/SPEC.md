@@ -474,6 +474,16 @@ author nor its models wrote.
     before the owner's referral sentence was chosen. Whatever the outcome, the
     prompt is not tuned on v4 after P. The deploy is separate from the planner
     v62 / normalizer v35 work.
+  Outcome (2026-10-19, `official_v4_answers_20261018T175106Z`, commit
+  `216bbea0`, all 246 composed by V4.1-Flash on DeepInfra; the log shows no
+  402, authentication error, BM25-only search or reranker skip): in scope P
+  0.960 against K49 0.969, paired −0.009, 95% cluster interval [−0.017,
+  −0.003]; no email outside the directories except `nghidinh116@` on its own
+  procedure (V4-124, V4-167); the 18 out-of-scope cases pass reading. **One new
+  zero, V4-195** (K49 0.2): both runs give the same wrong answer to the
+  follow-up "Còn khóa K51 thì sao ạ?" (the liên thông durations, 2 and 4 years,
+  instead of chính quy 4 and 6). By the rule a new zero fails P, so v3.41 is
+  not kept and not deployed.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

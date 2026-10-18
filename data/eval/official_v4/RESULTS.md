@@ -304,17 +304,50 @@ Same replayed v61 plans and build as C3; rules in `SPEC.md` (runs N, R, R2, A).
   worktree), `official_v4_answers_20261011T120228Z` (A). N's per-case records
   were lost when that worktree was cleared; only its figures above remain.
 
-## The K49 handbook replaces K48-K49: run K49 (pending)
+## The K49 handbook replaces K48-K49: run K49 (2026-10-18)
 
 The 89 cases drawn for K48-K49 now target K49, built from the K49 handbook, and
-their golds were re-checked against it before any run (`K49_GOLD_CHANGES.md`,
-`gold_adjustments.yaml`). The run is pre-registered in SPEC (run K49): K49 is
-a new baseline, not compared with the K48-K49 figures above, and K50 and K51
-are a regression check paired against run A, with C3 as a second reference.
-It has not been run yet. The new collections
-(`student_handbook_table_search_3bbd93e9f05a` / `parent_docs_table_search_3bbd93e9f05a`)
-were published and verified on 2026-10-18: 2,720 vectors (K49 830, K50 922, K51
-968) and 561 parents, with no payload, vector or parent mismatch.
+their golds were re-checked against it before the run (`K49_GOLD_CHANGES.md`,
+`gold_adjustments.yaml`). Run `official_v4_answers_20261018T073835Z`, commit
+`ea4fc1bd`, as pre-registered in SPEC (run K49): build `973ef632`, collections
+`…3bbd93e9f05a`, planner v61 with the pass/fail course text (all 246 cases
+planned live; plans kept in `official_v4_k49_plans.json`), composer v3.36
+reasoning none on the DeepSeek API, judge gpt-oss-120b on DeepInfra, 16
+workers. Every case was answered and judged on the first pass; no provider
+error, so nothing was rerun.
+
+| In scope | n | `answer_correctness` | 95% cluster interval | Zeros |
+|---|---:|---:|---|---|
+| All | 228 | 0.969 | [0.950, 0.986] | V4-070, V4-209 |
+| **K49 (new baseline)** | 85 | **0.960** | [0.918, 0.992] | V4-070, V4-209 |
+| K50 and K51 | 143 | 0.975 | [0.955, 0.990] | none |
+
+**K50 and K51, regression check.** Paired against run A on the same 143 cases:
+0.975 against 0.964, difference +0.011, 95% cluster interval [−0.011, +0.033],
+no new zero; against C3: +0.007 [−0.007, +0.024]. The pre-registered check
+passes (lower bound above −0.03, no new zero). The difference also carries the
+new plans, the pass/fail course text and A's prompt v3.42 against v3.36. The
+largest drop, V4-195 (1.0 → 0.2), is a follow-up on K51 that answered with
+K50's liên thông durations from the conversation (2 and 4 years) instead of
+K51's table; K51's data did not change, so it is planner or composer variance.
+Run N's in-scope 0.972 is context only; its records are lost.
+
+**K49, the two zeros.**
+- V4-070 asks where to apply for the dormitory and to replace a student card.
+  The answer names the dormitory office for the application (K49's procedure,
+  p.161–163, has the dormitory office receive the papers) and Phòng CTCT và HSSV
+  for the card; the gold names Phòng CTCT và HSSV for both (Quy chế CTSV Điều
+  14, also in K49). Both readings are in the K49 handbook; the gold was not
+  widened before the run and is not edited now (SPEC). Run A scored 0.3.
+- V4-209 is a follow-up ("the email of those units") after a turn naming the
+  Đoàn Thanh niên and Hội Sinh viên; the new plan asked which unit was meant
+  instead of reading the history. Run A, on the old cached plan, scored 1.0: a
+  planner miss, not a data error.
+
+**Out of scope** (read one by one): no answer applies the chính quy or the
+student rule to another group. V4-081 and V4-211 (staff conduct) say the
+handbook does not state the point instead of saying it is outside the
+assistant's scope, as in runs C3 and A; V4-197 now scores 1.0.
 
 ## What these results do not establish
 

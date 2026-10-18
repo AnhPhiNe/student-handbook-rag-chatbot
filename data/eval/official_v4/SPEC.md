@@ -398,6 +398,11 @@ author nor its models wrote.
   - The cases out of scope or partly out of scope keep the C2 lists.
   - Provider errors are rerun whole under the existing rules; gold found wrong
     after the run is not edited and is reported with both figures.
+  Outcome (2026-10-18, `official_v4_answers_20261018T073835Z`, commit `ea4fc1bd`,
+  no provider error): K49 in scope 0.960 [0.918, 0.992], zeros V4-070 (gold
+  narrower than the K49 dormitory procedure) and V4-209 (planner asked instead of
+  reading the history); K50 and K51 0.975 against A 0.964, paired +0.011
+  [−0.011, +0.033], no new zero: the regression check passes.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

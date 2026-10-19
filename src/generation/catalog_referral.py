@@ -73,14 +73,14 @@ def referable_tasks(retrieval_result: dict[str, Any] | None) -> list[dict[str, A
 def select_referral(
     selector: DirectorySelector, catalog: list[dict[str, Any]], *, task_question: str, query: str, cohort: str,
 ) -> dict[str, Any]:
-    """Ask the selector once which catalog service does the asked work; a decision, never a guess."""
+    """Ask the selector once which unit is in charge of the asked matter (its referral wording)."""
     normalized = normalize_cohort(cohort)
     records = [item for item in catalog if is_validated_source_applicable(item, normalized)]
     if not records:
         return {"status": "none", "reason": "empty_catalog"}
     question = json.dumps({"câu hỏi gốc": query, "ý chưa có căn cứ": task_question}, ensure_ascii=False)
-    prompt, ids = render_prompt("student_service", task_question, records, question=question)
-    selection = _ask(selector.client, "student_service", prompt, ids, "llm_selector")
+    prompt, ids = render_prompt("service_referral", task_question, records, question=question)
+    selection = _ask(selector.client, "service_referral", prompt, ids, "llm_selector")
     if selection.status != MATCH or not selection.records:
         return {"status": selection.status, "reply": selection.reply}
     record = selection.records[0]

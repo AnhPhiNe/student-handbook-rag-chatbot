@@ -155,3 +155,24 @@ def test_the_prompt_asks_for_the_marker_and_keeps_grounded_units():
     assert "[[CHUA_CAN_CU: task_id]]" in prompt
     assert "Được nêu một đơn vị và thông tin liên hệ của đơn vị đó khi evidence cho biết đơn vị đó làm đúng việc được hỏi" in prompt
     assert "không nêu đơn vị, số điện thoại hay email lấy từ đoạn khác" in prompt
+
+
+def test_the_referral_wording_leaves_the_directory_lookup_prompts_unchanged():
+    """The referral asks which unit is in charge; the lookups keep their exact wording (2026-10-19)."""
+    import hashlib
+
+    from src.retrieval.core.directory_selector import render_prompt
+
+    records = [{"unit_name": "Trạm Y tế", "service": "Làm thẻ và phát thẻ bảo hiểm y tế", "aliases": []},
+               {"unit_name": "Phòng Đào tạo", "service": "Tổ chức đăng ký học phần", "aliases": ["PĐT"]}]
+    expected = {
+        "student_service": "9de226a5b65d3204685cef3c001646082d06f4e0250617ac6ff7fe00f517c047",
+        "office": "4d2a957e1c6d6d37c75d27e2165a64ff3274cbc70b0ad4841aba6fe3bf51ecac",
+        "faculty": "197187befd278710d4cf78ce167ff83769ad2f584715a492c7548cb9e6afa831",
+    }
+    for lookup_type, digest in expected.items():
+        prompt, _ = render_prompt(lookup_type, "thẻ bảo hiểm y tế", records,
+                                  question="Em mất thẻ BHYT thì làm lại ở đâu?", requested_field="phone")
+        assert hashlib.sha256(prompt.encode()).hexdigest() == digest, lookup_type
+    referral, _ = render_prompt("service_referral", "Căn tin mở cửa mấy giờ?", records, question="Căn tin?")
+    assert "đơn vị phụ trách đúng việc đó" in referral and "thông tin riêng của một người" in referral

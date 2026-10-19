@@ -617,6 +617,49 @@ author nor its models wrote.
   for the dormitory, a gold narrower than the K49 procedure, as recorded for
   run K49). As fixed before the run, this is reported as judge spread and the
   owner decides; every other criterion holds.
+  S was merged (PR #25) and deployed (Space 90c9f00).
+- **Run T: end to end, with the referral template** (owner, 2026-10-19; written
+  before the template code is committed and before any run of it; the run is
+  coordinated with the owner by the planning session and is not started here).
+  - Change on S (code, not prompt; composer prompt still v3.44): when the
+    composer marks EVERY task it composed and the selector matched each of
+    them, the composer's body is not shown; the answer is a fixed template,
+    "{Sổ tay sinh viên khóa … (năm học …)} không quy định về việc này." and one
+    block per matched unit, "Bạn có thể liên hệ **{unit}** (phụ trách: …):" with
+    the catalog record's contacts, and no citations. A mixed question (at least
+    one task not marked) keeps the body plus the referral; marked tasks without
+    a match (none, ambiguous, unavailable) keep the body. The stream decides at
+    its first chunk: if every composed task already has a match it holds the
+    body until the composer finishes and then shows the template or the body,
+    so a discarded body is never shown. Reason (live, production v3.44, 10
+    draws): for a forgotten student-email password the referral was right every
+    time, but in 5 of 6 draws the body also pointed to Phòng CTCT&HSSV with
+    contacts from other passages, once `nghidinh116@`.
+  - Development gates, before run T, on
+    `data/eval/development/catalog_referral_questions.yaml` version 2 (61
+    questions: the 50 of S, plus 7 control questions whose regulations name
+    where to go, c01-c07, and 4 referral questions in K49 and K50, k01-k04; the
+    added gold is a draft for the owner's review), each run once through the
+    full pipeline as served (S's configuration plus the template):
+    - **false template**: the template on any control question; must be 0;
+    - wrong-unit rate at most 5% and no referral or template on the 10
+      no-referral questions, as in S;
+    - every template and referral carries exactly the catalog record's
+      contacts; no email outside the directories;
+    - reported: template rate on the referral questions, referral rate, and the
+      control answers read for whether they name the expected unit.
+  - Run T on official_v4, against run K49 (`official_v4_answers_20261018T073835Z`):
+    the deployed system end to end, planned live by Luna with prompt v62 and
+    normalizer v35 (not K49's replayed plans, so the planner is part of the
+    difference), composer v3.44 with the catalog referral and the template,
+    selector on DeepInfra only, the same collections, judge and packet as K49.
+    Keep the template if, in scope: the lower bound of the 95% cluster interval
+    of the paired `answer_correctness` difference (T minus K49) is at least
+    −0.03; no new zero, except one read as the same answer as K49's (judge
+    spread, left to the owner); no email outside the directories except a
+    procedure mailbox on its own procedure; the 18 out-of-scope cases pass
+    reading; every templated answer is read, and one where the evidence did
+    answer a composed task fails T.
   - official_v4 run S, after the development set passes: baseline run Q
     (`official_v4_answers_20261018T182906Z`, v3.43, production), K49's plans
     (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`), the same composer,

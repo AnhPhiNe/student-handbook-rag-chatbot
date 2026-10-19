@@ -12,6 +12,7 @@ RUNTIME_FILES = (
     "configs/structured_lookup_registry.yaml",
     "configs/office_aliases.yaml",
     "configs/handbook_currency.yaml",
+    "configs/social_replies.yaml",
     "data/processed/tables/formula_rules.json",
     "data/processed/tables/structured_tables_registry.json",
     "data/processed/directories/student_service_directory.json",

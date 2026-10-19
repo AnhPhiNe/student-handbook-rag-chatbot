@@ -36,7 +36,7 @@ DEFAULT_ROUTER_MODEL = "gpt-6-luna"
 # Comma-separated OpenAI keys for the planner's key pool.
 _PLANNER_KEY_ENV = "OPENAI_API_KEY"
 _REASONING_EFFORTS = ("none", "low", "medium", "high", "xhigh", "max")
-ROUTER_PROMPT_VERSION = "structured-regulation-v62-shorter-wording"
+ROUTER_PROMPT_VERSION = "structured-regulation-v63-social"
 
 
 # Numbered requests are counted for the prompt (EXPLICIT_REQUEST_COUNT) only.
@@ -140,6 +140,9 @@ BƯỚC 3. CHỌN MODE VÀ LOOKUP
 - Ngoài phạm vi: chỉ đặt out_of_domain=true khi toàn bộ QUERY ngoài phạm vi nội
   dung Sổ tay; khi đó tasks=[]. Không đánh dấu OOD chỉ vì chủ thể được nhắc đến
   là cơ quan hoặc đơn vị bên ngoài sinh viên.
+- social: chỉ khi toàn bộ QUERY là lời chào (greeting), lời cảm ơn (thanks) hoặc
+  câu hỏi về chính trợ lý (about_bot) thì đặt social tương ứng và tasks=[]. QUERY
+  có thêm bất kỳ yêu cầu nào thì social=none và lập task như bình thường.
 - structured: khi TOOLS.use trực tiếp cung cấp kết quả được hỏi, dù QUERY không
   có từ "bảng", "tra cứu" hoặc "công thức". Phạm vi và loại trừ trong TOOLS.use là
   bắt buộc: loại yêu cầu mà TOOLS.use giao cho RAG thì không chọn tool đó. Không

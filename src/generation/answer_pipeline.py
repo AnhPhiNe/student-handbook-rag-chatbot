@@ -50,6 +50,7 @@ from .prompt_builder import (
     build_answer_prompt_bundle,
 )
 from .plan_executor import PlanExecutor, StructuredCatalogs
+from .social_replies import reply_for
 from .structured_result_presenter import build_structured_results
 from .verbatim_identifiers import IdentifierCorrector
 
@@ -492,14 +493,18 @@ class AnswerPipeline:
             prepared.clarification_needed = True
             return prepared
 
+        social = retrieval_result.get("social")
+        if social not in (None, "none"):
+            # A greeting, thanks or question about the assistant: a fixed reply,
+            # no composer and no citations.
+            prepared.terminal_status = "social"
+            prepared.terminal_answer = reply_for(str(social), cohort)
+            prepared.fallback_reason = "social"
+            return prepared
+
         if retrieval_result.get("out_of_domain"):
             prepared.terminal_status = "out_of_domain"
-            prepared.terminal_answer = (
-                "Câu hỏi này nằm ngoài phạm vi Sổ tay sinh viên nên mình không thể hỗ trợ được. "
-                "Sổ tay chủ yếu bao gồm các nội dung như: quy chế đào tạo, "
-                "thủ tục hành chính, học bổng, rèn luyện, ký túc xá, thông tin phòng ban và khoa/ngành. "
-                "Bạn có thể hỏi lại theo một nội dung liên quan đến sổ tay nhé!"
-            )
+            prepared.terminal_answer = reply_for("out_of_domain", cohort)
             prepared.fallback_reason = "out_of_domain"
             return prepared
 

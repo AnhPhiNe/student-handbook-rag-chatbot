@@ -24,10 +24,12 @@ from .structured_routing import (
 )
 
 QUERY_PLAN_SCHEMA_VERSION = "v1"
-QUERY_PLAN_NORMALIZER_VERSION = "v35-score-as-written"
-QUERY_PLAN_STRICT_SCHEMA_VERSION = "v2-field-descriptions"
+QUERY_PLAN_NORMALIZER_VERSION = "v36-social"
+QUERY_PLAN_STRICT_SCHEMA_VERSION = "v3-social"
 MAX_QUERY_TASKS = 3
 MAX_RAW_QUERY_TASKS = 12
+# A whole query that is only a greeting, thanks or a question about the assistant.
+SOCIAL_KINDS = ("none", "greeting", "thanks", "about_bot")
 ALLOWED_TASK_MODES = {"structured", "rag", "clarify"}
 
 _BARE_ARTICLE_QUESTION_WORDS = {
@@ -138,6 +140,7 @@ def query_plan_response_schema() -> dict[str, Any]:
                 "items": {"type": "integer"},
             },
             "out_of_domain": {"type": ["boolean", "null"]},
+            "social": {"type": "string", "enum": list(SOCIAL_KINDS)},
             "tasks": {
                 "type": "array",
                 "minItems": 0,
@@ -202,6 +205,7 @@ def query_plan_response_schema() -> dict[str, Any]:
             "standalone_query",
             "referenced_turns",
             "out_of_domain",
+            "social",
             "tasks",
         ],
     }
@@ -332,8 +336,10 @@ def normalize_query_plan(
        history: ask the student to restate the question.
     3. A cohort that contradicts the admission year in the question, or a bare
        "Điều N" with no document or topic: ask which one is meant.
-    4. Out of domain: no tasks.
-    5. Each task is normalized on its own (`_normalize_task`), so one bad task
+    4. A social query (greeting, thanks, about the assistant) with no task:
+       a template reply, before out of domain. Any task cancels it.
+    5. Out of domain: no tasks.
+    6. Each task is normalized on its own (`_normalize_task`), so one bad task
        does not invalidate its siblings. Identical lookups and per-cohort
        copies are merged; more than MAX_QUERY_TASKS asks the student to choose.
 
@@ -364,6 +370,24 @@ def normalize_query_plan(
     if context_mode not in {"standalone", "follow_up", "ambiguous"}:
         context_mode = "ambiguous"
     normalized_query = str(payload.get("normalized_query") or query).strip() or query
+
+    # A social reply is only for a query with nothing to look up: any task the
+    # planner proposed wins, and social wins over out_of_domain.
+    social = payload.get("social")
+    raw_task_list = payload.get("tasks")
+    if social in SOCIAL_KINDS and social != "none" and not raw_task_list:
+        return {
+            "schema_version": QUERY_PLAN_SCHEMA_VERSION,
+            "context_mode": "standalone",
+            "normalized_query": normalized_query,
+            "standalone_query": None,
+            "referenced_turns": [],
+            "out_of_domain": False,
+            "social": social,
+            "tasks": [],
+            "planner_fallback": payload.get("planner_fallback"),
+            "planner_validation_errors": [],
+        }, []
 
     history = _history_references(payload, context_mode, visible_history, grounding_context)
     if history is None:

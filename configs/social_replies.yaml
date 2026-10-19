@@ -1,0 +1,15 @@
+# Fixed replies for a query that is only a greeting, thanks or a question about
+# the assistant (QueryPlan.social), and for an out-of-domain query. No composer
+# and no citations. One variant is picked at random; "{khóa}" is replaced by the
+# student's selected cohort, and a variant with it is skipped when none is
+# selected. Wording approved by the owner on 2026-10-19.
+greeting:
+  - "Chào bạn! Mình là trợ lý Sổ tay sinh viên HCMUE. Bạn cần hỏi về quy chế học vụ, học bổng, điểm rèn luyện hay thủ tục nào không?"
+  - "Xin chào! Bạn cứ hỏi mình về nội dung trong Sổ tay sinh viên khóa {khóa} nhé."
+thanks:
+  - "Không có gì nhé! Cần hỏi thêm gì về Sổ tay sinh viên thì bạn cứ nhắn mình."
+  - "Rất vui được giúp bạn. Chúc bạn học tốt!"
+about_bot:
+  - "Mình là trợ lý trả lời dựa trên Sổ tay sinh viên HCMUE (khóa K49, K50, K51). Mình có thể giúp về quy chế đào tạo, học bổng, điểm rèn luyện, thủ tục hành chính, ký túc xá và thông tin liên hệ phòng ban, khoa. Mỗi câu trả lời đều ghi nguồn trong sổ tay. Với thông tin thay đổi theo từng đợt như lịch thi hay học phí năm nay, bạn nên xem thông báo chính thức của trường."
+out_of_domain:
+  - "Câu này nằm ngoài nội dung Sổ tay sinh viên nên mình không trả lời được. Mình có thể giúp bạn về quy chế học vụ, học bổng, điểm rèn luyện, thủ tục hoặc liên hệ phòng ban nhé!"

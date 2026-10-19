@@ -15,7 +15,8 @@ from src.retrieval.core.structured_routing import load_lookup_registry, validate
 def _payload(task, query="Xin hỏi thông tin."):
     return {"schema_version": "v1", "context_mode": "standalone",
             "normalized_query": query, "standalone_query": None,
-            "referenced_turns": [], "out_of_domain": False, "tasks": [task]}
+            "referenced_turns": [], "out_of_domain": False, "social": "none",
+            "tasks": [task]}
 
 
 def _task(lookup_type, slots, spans=None):

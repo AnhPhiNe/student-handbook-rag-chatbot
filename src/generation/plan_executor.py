@@ -157,6 +157,7 @@ class PlanExecutor:
             "standalone_query",
             "referenced_turns",
             "out_of_domain",
+            "social",
             "tasks",
         )
         plan = {key: raw_plan.get(key) for key in plan_keys}
@@ -207,6 +208,25 @@ class PlanExecutor:
         }
         if raw_plan.get("planner_diagnostics") is not None:
             base_result["planner_diagnostics"] = raw_plan["planner_diagnostics"]
+        if plan.get("social") not in (None, "none"):
+            # The answer is a fixed reply; nothing is looked up.
+            return {
+                **base_result,
+                "intent": "social",
+                "strategy": "query_plan",
+                "execution_mode": "none",
+                "structured_result": None,
+                "retrieved_items": [],
+                "citations": [],
+                "task_results": [],
+                "coverage_by_task": {},
+                "supports_task_ids": {},
+                "needs_llm_answer": False,
+                "needs_clarification": False,
+                "clarification_question": None,
+                "out_of_domain": False,
+                "social": plan["social"],
+            }
         if plan.get("out_of_domain"):
             return {
                 **base_result,

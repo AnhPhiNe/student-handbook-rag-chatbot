@@ -1329,6 +1329,29 @@ grounded even if the planner gives both tasks the same one; no grounding check
 can see that pairing error. In 74 saved plans with two or more scores and
 scored tasks it was not observed.
 
+## Greetings, thanks and "who are you" get a fixed reply (2026-10-19)
+
+Production answered "Xin chào", "Cảm ơn bạn nhé" and "Bạn là ai vậy?" with the
+out-of-domain refusal. QueryPlan now carries `social` (none, greeting, thanks,
+about_bot). The planner sets it only when the whole query is social (prompt
+v63 adds one rule and changes no existing rule text); the normalizer (v36)
+keeps it only when no task was planned, and it then wins over out_of_domain,
+so "Chào bạn, cho em hỏi học bổng…" plans as before. The pipeline answers a
+social query, and an out-of-domain one, from `configs/social_replies.yaml`
+(the owner's wording, a random variant, the cohort filled in where marked)
+without the composer and without citations. The out-of-domain refusal was
+reworded at the same time.
+
+**Validated on probes only, by the owner's budget decision** (about $0.39 of
+API credit left): no official suite was rerun. 20 planner probes
+(`data/eval/development/social_probes.yaml`, written before the run): 17/20,
+every clear case right (9 social, 3 greeting-plus-question planned normally, 3
+out of domain), about $0.022 at $0.10/$0.50 per million tokens. Misses, all
+borderline: "bạn giỏi quá" → about_bot (a fitting reply), "tạm biệt nhé" → a
+RAG task (no farewell kind exists), "ok" → clarify. What this cannot show: how
+the added rule and schema field shift routing on ordinary questions; v62
+showed that a wording change alone can move 2–3 official cases.
+
 ## The K49 handbook replaces K48-K49 (2026-10-13)
 
 The cohort labelled K48-K49 had been built from the K48 handbook (2022 – 2023)

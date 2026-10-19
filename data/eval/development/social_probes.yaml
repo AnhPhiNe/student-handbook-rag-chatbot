@@ -29,6 +29,12 @@
 # in both earlier runs): the rule opens with "không yêu cầu thông tin nào", and
 # asking for the bot's sources reads as an information request. About $0.030;
 # all three runs together about $0.076.
+#
+# Rerun after v63d (opening: "không yêu cầu thông tin nào về nội dung Sổ tay,
+# mà chỉ là lời giao tiếp hoặc hỏi về chính trợ lý"), expectations unchanged:
+# 26/27, the same as v63c. so09 is still one RAG task, so the opening was not
+# its only cause; "nguồn" may read as a question about where the handbook's
+# content comes from. About $0.030; all four runs together about $0.106.
 version: 1
 cases:
   # Whole social queries.

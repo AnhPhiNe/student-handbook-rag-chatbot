@@ -1334,7 +1334,7 @@ scored tasks it was not observed.
 Production answered "Xin chào", "Cảm ơn bạn nhé" and "Bạn là ai vậy?" with the
 out-of-domain refusal. QueryPlan now carries `social` (none, greeting, thanks,
 about_bot). The planner sets it only when the query asks for no information
-(prompt v63c adds one rule, by purpose, and changes no existing rule text); the normalizer (v36)
+(prompt v63d adds one rule, by purpose, and changes no existing rule text); the normalizer (v36)
 keeps it only when no task was planned, and it then wins over out_of_domain,
 so "Chào bạn, cho em hỏi học bổng…" plans as before. The pipeline answers a
 social query, and an out-of-domain one, from `configs/social_replies.yaml`
@@ -1355,8 +1355,11 @@ rejected adding words one at a time and approved defining social by purpose
 goodbye) or asks about the assistant (about_bot); a line that fits none, such
 as "hôm nay buồn quá", stays out of domain. On 27 probes, five of them new and
 written before the run: 26/27. The miss is "Bạn trả lời dựa trên nguồn nào?",
-now a RAG task, since asking for the bot's sources reads as an information
-request. All three runs cost about $0.076 at $0.10/$0.50 per million tokens. What this cannot show: how
+now a RAG task. Prompt v63d narrows the opening to "no information request
+about the handbook's content, only conversation or a question about the
+assistant"; the 27 probes again give 26/27 and that question is still a RAG
+task, so the opening was not its only cause. All four runs cost about $0.106
+at $0.10/$0.50 per million tokens. What this cannot show: how
 the added rule and schema field shift routing on ordinary questions; v62
 showed that a wording change alone can move 2–3 official cases.
 

@@ -578,6 +578,24 @@ author nor its models wrote.
     - every referral's contacts equal the catalog record's;
     - and, as in P and Q, no email outside the directories in any answer.
     A failure stops before the official_v4 run and goes to the owner.
+    Development outcomes (2026-10-19; no 402 or provider error):
+    - First pass (commit `5061ad96`): 9 referrals on the 40 referral cases, 0
+      wrong unit, 0 false referral, contacts equal to the catalog, no stray
+      email. The rule passed, but the selector answered "none" for 6 marked
+      cases whose unit the catalog names (it asked which service answers the
+      request, and the catalog holds no hour or date). Reported to the owner,
+      who chose to revise before official_v4.
+    - Revision (commit `991c4310`): the referral asks the selector its own
+      question, which unit is in charge of the asked matter, with "none" for
+      one person's details, staff rules or a matter no entry names, and never a
+      unit for a general "other matters" duty. The lookup prompts are
+      unchanged. Written after the first pass was read, so the second pass on
+      the same 50 questions is optimistic; official_v4 is the check.
+    - Second pass: 17 referrals, 0 wrong unit (0%), 0 false referral, contacts
+      equal to the catalog, no stray email. With the existing catalog route
+      (19 cases), 36 of 40 referral cases name a gold unit; the other 4 were
+      not marked by the composer (r13, r18, r24, r35). Passes; official_v4 run
+      S next, on the owner's go-ahead.
   - official_v4 run S, after the development set passes: baseline run Q
     (`official_v4_answers_20261018T182906Z`, v3.43, production), K49's plans
     (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`), the same composer,

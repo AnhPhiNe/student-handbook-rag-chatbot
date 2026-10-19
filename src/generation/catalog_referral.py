@@ -82,10 +82,10 @@ def select_referral(
     prompt, ids = render_prompt("service_referral", task_question, records, question=question)
     selection = _ask(selector.client, "service_referral", prompt, ids, "llm_selector")
     if selection.status != MATCH or not selection.records:
-        return {"status": selection.status, "reply": selection.reply}
+        return {"status": selection.status, "reply": selection.reply, "cohort": cohort}
     record = selection.records[0]
     return {"status": MATCH, "service_id": record.get("service_id"), "unit_name": record.get("unit_name"),
-            "record": record, "reply": selection.reply}
+            "record": record, "reply": selection.reply, "cohort": cohort}
 
 
 def start_referrals(
@@ -149,6 +149,64 @@ def render_referrals(decisions: list[dict[str, Any]]) -> str:
         seen.add(decision.get("unit_name"))
         lines = [f"**Gợi ý nơi liên hệ:** Sổ tay không quy định về ý này; bạn có thể liên hệ "
                  f"**{record.get('unit_name')}** (phụ trách: {str(record.get('service') or '').strip()})."]
+        blocks.append("\n".join(lines + _contact_lines(record)))
+    return "\n\n".join(blocks)
+
+
+def composed_task_ids(context_used: str) -> list[str]:
+    """The task ids of every unit the composer was given (any mode), in packet order."""
+    try:
+        units = json.loads(context_used or "{}").get("units") or []
+    except (ValueError, AttributeError):
+        return []
+    task_ids: list[str] = []
+    for unit in units:
+        task_id = str(unit.get("task_id") or "")
+        if task_id and task_id not in task_ids:
+            task_ids.append(task_id)
+    return task_ids
+
+
+def template_applies(composed: list[str], unsupported: list[str], decisions: list[dict[str, Any]]) -> bool:
+    """True when the composer marked every task it composed and each has a catalog match.
+
+    Then nothing in the composed answer is supported, and the fixed template
+    replaces it (owner, 2026-10-19): passages that were retrieved but do not
+    answer still carried other units' contacts into the body.
+    """
+    if not composed or not set(composed) <= set(unsupported):
+        return False
+    matched = {d.get("task_id") for d in decisions if d.get("status") == MATCH and d.get("record")}
+    return set(composed) <= matched
+
+
+def template_possible(futures: dict[str, Future], composed: list[str], timeout: float = 20.0) -> bool:
+    """Whether the template could apply once the composer finishes: every composed task has a match.
+
+    The stream asks this before releasing any text, so a body the template
+    would replace is never shown.
+    """
+    if not composed or any(task_id not in futures for task_id in composed):
+        return False
+    decisions = collect_referrals(futures, composed, timeout=timeout)
+    return all(d.get("status") == MATCH and d.get("record") for d in decisions)
+
+
+def render_template(decisions: list[dict[str, Any]]) -> str:
+    """The whole answer when no composed task has evidence: the handbook, then one block per unit."""
+    from .prompt_builder import handbook_label
+
+    matched = [d for d in decisions if d.get("status") == MATCH and d.get("record")]
+    cohort = str(matched[0].get("cohort") or "") if matched else ""
+    handbook = handbook_label(cohort) or "Sổ tay sinh viên"
+    blocks, seen = [f"{handbook} không quy định về việc này."], set()
+    for decision in matched:
+        record = decision["record"]
+        if record.get("unit_name") in seen:
+            continue
+        seen.add(record.get("unit_name"))
+        lines = [f"Bạn có thể liên hệ **{record.get('unit_name')}** "
+                 f"(phụ trách: {str(record.get('service') or '').strip()}):"]
         blocks.append("\n".join(lines + _contact_lines(record)))
     return "\n\n".join(blocks)
 

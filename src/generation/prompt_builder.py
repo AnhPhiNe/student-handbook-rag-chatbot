@@ -155,6 +155,12 @@ def _handbook_currency() -> tuple[dict[str, str], tuple[tuple[str, str], ...]]:
     return years, notes
 
 
+def handbook_label(cohort: str) -> str | None:
+    """The handbook a cohort's sources are printed in, as answers name it."""
+    years, _ = _handbook_currency()
+    return f"Sổ tay sinh viên khóa {cohort} (năm học {years[cohort]})" if cohort in years else None
+
+
 def _with_handbook_labels(packet: dict[str, Any]) -> dict[str, Any]:
     """Name the handbook each source is printed in, and attach its currency note.
 
@@ -168,7 +174,7 @@ def _with_handbook_labels(packet: dict[str, Any]) -> dict[str, Any]:
         for source in unit.get("primary_evidence") or []:
             cohort = str(source.get("source_cohort") or unit.get("cohort") or "")
             if cohort in years:
-                source["printed_in"] = f"Sổ tay sinh viên khóa {cohort} (năm học {years[cohort]})"
+                source["printed_in"] = handbook_label(cohort)
             source_id = str(source.get("source_id") or "")
             note = next((text for prefix, text in notes if source_id.startswith(prefix)), None)
             if note:

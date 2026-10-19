@@ -31,11 +31,15 @@ from .catalog_referral import (
     MARKER_OPENING,
     UNCLOSED_MARKER,
     collect_referrals,
+    composed_task_ids,
     public_decisions,
     render_referrals,
+    render_template,
     split_unsupported_marker,
     start_referrals,
     take_unsupported_marker,
+    template_applies,
+    template_possible,
 )
 from .citation_formatter import prioritize_citations_by_answer_anchors
 from .deepseek_client import DeepSeekClient
@@ -719,7 +723,14 @@ class AnswerPipeline:
         public_citations = self._citations_for_answer(prepared.all_citations, final_answer)
         # Appended after the identifier corrector: catalog contacts are not evidence text.
         referrals = collect_referrals(prepared.referral_futures, unsupported)
-        if referral_text := render_referrals(referrals):
+        referral_template = template_applies(
+            composed_task_ids(prepared.context_used), unsupported, referrals)
+        if referral_template:
+            # Nothing composed is supported: the template replaces the body, and
+            # the passages it was composed from answered nothing, so none is cited.
+            final_answer = render_template(referrals)
+            public_citations = []
+        elif referral_text := render_referrals(referrals):
             final_answer = f"{final_answer.rstrip()}\n\n{referral_text}"
         output = self._build_output(
             query=query,
@@ -734,6 +745,7 @@ class AnswerPipeline:
             model_used=llm_result.get("model_used"),
             tracker=tracker,
             catalog_referrals=public_decisions(referrals),
+            referral_template=referral_template,
         )
         return output
 
@@ -922,6 +934,13 @@ class AnswerPipeline:
         terminal_error_type: str | None = None
         corrector = IdentifierCorrector(prepared.context_used, query)
         cleaner = StreamAnswerCleaner(fix=corrector.fix)
+        # When every composed task has a catalog match, the template may replace the
+        # whole body, so the body is held back until the composer has finished and
+        # shown only if the template does not apply. Decided at the first chunk, by
+        # when the selector, started before the composer, has normally answered.
+        composed = composed_task_ids(prepared.context_used)
+        hold_body: bool | None = None
+        referral_template = False
         try:
             llm_client = self._get_llm_client()
             start_time_llm = datetime.now(timezone.utc).isoformat()
@@ -935,16 +954,25 @@ class AnswerPipeline:
                     if isinstance(completed.value, dict):
                         stream_result = completed.value
                     break
-                if safe_text := cleaner.feed(str(chunk)):
+                if hold_body is None:
+                    hold_body = template_possible(prepared.referral_futures, composed)
+                if (safe_text := cleaner.feed(str(chunk))) and not hold_body:
                     yield {"type": "token", "text": safe_text}
-            if final_tail := cleaner.finish():
+            if (final_tail := cleaner.finish()) and not hold_body:
                 yield {"type": "token", "text": final_tail}
             final_answer_for_citations = cleaner.text
             if not final_answer_for_citations.strip():
                 raise RuntimeError("Empty answer after output cleanup.")
             referrals = collect_referrals(prepared.referral_futures, cleaner.unsupported)
-            if referral_text := render_referrals(referrals):
-                yield {"type": "token", "text": f"\n\n{referral_text}"}
+            if hold_body and template_applies(composed, cleaner.unsupported, referrals):
+                referral_template = True
+                final_answer_for_citations = render_template(referrals)
+                yield {"type": "token", "text": final_answer_for_citations}
+            else:
+                if hold_body:
+                    yield {"type": "token", "text": cleaner.text}
+                if referral_text := render_referrals(referrals):
+                    yield {"type": "token", "text": f"\n\n{referral_text}"}
             if referrals:
                 logger.info("catalog_referrals", extra={
                     "trace_id": trace_id, "catalog_referrals": public_decisions(referrals)})
@@ -972,7 +1000,11 @@ class AnswerPipeline:
                     end_time=datetime.now(timezone.utc).isoformat(),
                     metadata={"error_type": terminal_error_type},
                 )
-            if final_tail := cleaner.finish():
+            final_tail = cleaner.finish()
+            if hold_body and cleaner.parts:
+                # Nothing was shown yet: show what the composer wrote before failing.
+                yield {"type": "token", "text": cleaner.text}
+            elif final_tail:
                 yield {"type": "token", "text": final_tail}
             if cleaner.parts:
                 final_answer_for_citations = cleaner.text
@@ -984,7 +1016,8 @@ class AnswerPipeline:
                 yield {"type": "token", "text": fallback}
 
         tracker.counters.update(corrector.counts)
-        final_citations = self._citations_for_answer(prepared.all_citations, final_answer_for_citations)
+        final_citations = ([] if referral_template else
+                           self._citations_for_answer(prepared.all_citations, final_answer_for_citations))
         yield self._build_stream_metadata(
             retrieval_result,
             status=terminal_status,
@@ -1075,6 +1108,7 @@ class AnswerPipeline:
         model_used: str | None = None,
         tracker: Any = None,
         catalog_referrals: list[dict[str, Any]] | None = None,
+        referral_template: bool = False,
     ) -> dict[str, Any]:
         """Assemble the canonical answer result consumed by all adapters."""
 
@@ -1139,6 +1173,8 @@ class AnswerPipeline:
             "clarification_needed": clarification_needed,
             # Parts the composer marked as without evidence, and the catalog referral for each.
             "catalog_referrals": catalog_referrals or [],
+            # True when every composed part was unsupported and the template replaced the body.
+            "referral_template": referral_template,
             "context_used": context_used,
             "tracker": tracker,
             "evaluation_telemetry": self._finalize_evaluation_telemetry(

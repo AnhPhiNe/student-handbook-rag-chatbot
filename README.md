@@ -29,7 +29,7 @@
 
 1. [Overview](#overview)
 2. [Highlights](#highlights)
-3. [Architecture](#architecture): [request lifecycle](#request-lifecycle), [a query plan in practice](#a-query-plan-in-practice), [deep dives](#deep-dives)
+3. [Architecture](#architecture): [request lifecycle](#request-lifecycle), [a query plan in practice](#a-query-plan-in-practice)
 4. [Design decisions](#design-decisions)
 5. [Knowledge base](#knowledge-base)
 6. [Evaluation](#evaluation)
@@ -37,7 +37,7 @@
 8. [API](#api)
 9. [Frontend](#frontend)
 10. [Operations and security](#operations-and-security)
-11. [Project structure](#project-structure): [code map](#code-map)
+11. [Project structure](#project-structure)
 12. [Deployment](#deployment)
 13. [What the evidence supports, and what comes next](#what-the-evidence-supports-and-what-comes-next)
 14. [Documentation](#documentation)
@@ -56,7 +56,9 @@ HCMUE AI answers those questions from the three handbooks, K49, K50 and K51, and
 | Regulation or procedure | *Muốn bảo lưu kết quả học tập cần điều kiện gì?*<br/><sub>what is required to defer one's studies</sub> | Hybrid retrieval over handbook articles, answered with citations |
 | Several requests | *Học phí K51 thế nào và học bổng loại giỏi cần bao nhiêu điểm?*<br/><sub>what is K51 tuition, and what score does a merit scholarship need</sub> | One task per request, merged into a single answer |
 | Missing information | *Điểm của em được xếp loại gì?* (no score given)<br/><sub>what classification does my grade fall into</sub> | A clarifying question for the missing value |
-| Out of scope | *Hôm nay trời mưa không?*<br/><sub>is it raining today</sub> | A statement that the handbook does not cover it |
+| Not in the handbook | *Quên mật khẩu email sinh viên thì làm sao?*<br/><sub>I forgot my student email password</sub> | The handbook says nothing, so a fixed reply names the unit in charge with its catalog contacts |
+| Greeting or thanks | *Xin chào*, *cảm ơn nhé*, *bạn là ai?* | A fixed friendly reply, no search |
+| Out of scope | *Hôm nay trời mưa không?*<br/><sub>is it raining today</sub> | A short reply saying what the assistant covers |
 
 The web app also includes a GPA calculator, credit and tuition tools, scholarship rules, downloadable forms and a student survival guide.
 
@@ -81,14 +83,18 @@ flowchart TD
     Normalizer -->|structured task| Lookup["Structured lookup<br/>reviewed JSON tables and directories"]
     Normalizer -->|RAG task| Retrieve["Hybrid retrieval<br/>bge-m3 dense + BM25, 24 each, RRF k=60"]
     Normalizer -->|clarify task| Clarify["Clarifying question"]
+    Normalizer -->|social or out of domain| Fixed["Fixed reply<br/>configs/social_replies.yaml"]
     Retrieve --> Rerank["Voyage rerank-3 on the 24 children<br/>fails open to the RRF order"]
     Rerank --> Parents["Parent articles<br/>MongoDB"]
     Lookup --> Merge["Merge tasks<br/>keep task and cohort scope"]
     Parents --> Merge
     Clarify --> Merge
     Merge --> Packet["Guards and evidence packet<br/>citations, context budget"]
-    Packet -->|answerable| Composer["Composer: DeepSeek flash, thinking off<br/>sync or streaming"]
+    Packet -->|answerable| Composer["Composer: DeepSeek-V4.1-Flash on DeepInfra, reasoning off<br/>sync or streaming"]
+    Composer -->|task marked unsupported| Referral["Catalog referral<br/>directory selector picks the unit in charge"]
     Composer --> API
+    Referral --> API
+    Fixed --> API
 ```
 
 **Reading the diagram**, two things that are easy to misread:
@@ -98,7 +104,7 @@ flowchart TD
   every task against the question text and the lookup registry before a single lookup
   executes.
 - **Every branch out of the normalizer can end without a composer call.** A clarify
-  task, an out-of-domain question, or a request where nothing is answerable returns an
+  task, an out-of-domain question, a greeting, or a request where nothing is answerable returns an
   explicit status and never reaches the composer - what keeps a wrong-but-fluent answer from
   being generated in the first place.
 
@@ -114,7 +120,9 @@ flowchart TD
 | Situation | Outcome |
 |---|---|
 | The whole request lacks a required value | `needs_clarification`, with no composer call |
-| The question is outside the handbooks | `out_of_domain`, with no composer call |
+| The question is outside the handbooks | `out_of_domain`, a fixed reply, with no composer call |
+| A greeting, thanks or a question about the assistant | `social`, a fixed reply, with no composer call |
+| A task has no evidence in the handbook | The composer marks it; if the catalog names the unit in charge, a labelled referral with its contacts is added. When every task is marked and matched, the reply is that referral alone |
 | Only part of a compound question is answerable | The answered parts plus a question about the missing part |
 | No key is available or the provider fails | An explicit error status; failures are never cached |
 | The reranker is unavailable or slower than 10 s | The original RRF order is used and the request continues |
@@ -149,188 +157,7 @@ For *"K51: IELTS 6.0 tương đương bậc mấy? Và muốn bảo lưu kết q
 
 `t1` reads the K51 foreign-language equivalency table and locks the result: IELTS 6.0 falls in the 5.5–6.5 band, which is level 4 (`matched_level: bac_4`). `t2` retrieves the K51 regulation on deferring studies. Both results go into one evidence packet and one answer. If the planner had written `"score_or_level": "7.0"`, a score the student never typed, the normalizer would drop it. The lookup would still return the IELTS row, but with no matched level, so the answer could not state a level for a score nobody asked about.
 
-### Deep dives
-
-<details>
-<summary><strong>Query understanding: planner and normalizer</strong></summary>
-
-```mermaid
-flowchart TD
-    Q["Question + cohort + recent history"] --> Slang["Expand student slang and abbreviations"]
-    Slang --> Hit{"Router cache hit?"}
-    Hit -->|yes| Done["Validated plan"]
-    Hit -->|no| Key["Take an OpenAI key from the rate-limited pool"]
-    Key --> LLM["gpt-6-luna: QueryPlan under a strict JSON schema<br/>lookup registry and cohort years in the prompt"]
-    LLM -.->|429| Next["Cool that key down, try the next key"]
-    Next -.-> Key
-    LLM -.->|timeout or 5xx after retries| Safe["Safe RAG plan"]
-    LLM --> Norm["Normalizer, per task"]
-    Norm --> Count{"Numbered requests<br/>match the task count?"}
-    Count -->|no| Repair["One repair call, then normalize again"]
-    Repair -->|still no| Safe
-    Repair -->|yes| Fatal
-    Count -->|yes| Fatal{"Unreadable task or invalid<br/>structured task left?"}
-    Fatal -->|yes| Safe
-    Fatal -->|no| Done
-    Done --> Cache[("Router cache")]
-```
-
-What the normalizer does to each task:
-
-| Check | Effect |
-|---|---|
-| A value that selects a row or a fact has no span in the question | The value is dropped; the lookup runs without it |
-| A unit or program name differs from the span it quotes | Kept, as the planner's reading of the student's words; the span itself must still be in the question |
-| A field choice is missing or outside its allowed values | The registry's `default_reading` is used where one is declared (a contact card shows every field, the program catalog resolves the faculty) |
-| A required value the student never gave is missing | The task becomes a clarifying question that names what is missing (for a faculty, "Bạn cho mình biết tên khoa nhé." — tell me which faculty) |
-| The lookup type is not in the registry | The task becomes a clarifying question |
-| Any other structured-contract error | Only that task falls back to RAG; sibling tasks are kept |
-| `out_of_domain` is set but the question uses handbook vocabulary | The flag is overridden and the question is answered from the handbook |
-
-Every check writes its outcome to the trace as `plan_validation_errors` and
-`plan_normalization_warnings`, so a changed plan carries its own reason.
-
-</details>
-
-<details>
-<summary><strong>Structured lookup</strong></summary>
-
-```mermaid
-flowchart TD
-    T["Structured task: lookup_type, slots, cohort"] --> D{"lookup_type"}
-    D -->|"scoring · foreign_language ·<br/>study_duration · scholarship_classification"| Tables["Select reviewed tables<br/>that apply to the cohort"]
-    D -->|"office · faculty · program · student_service"| Dir["Match unit names and aliases<br/>in the directory profiles"]
-    D -->|formula| F["Formula rule, variables and source<br/>no calculation"]
-    Tables --> Scope{"How many tables<br/>apply to this cohort?"}
-    Scope -->|"one"| One{"Grounded inputs and<br/>exactly one matching row?"}
-    One -->|yes| Resolved["resolved: table + resolved_result<br/>fact lock ON"]
-    One -->|no| Evidence["evidence_only: the full table"]
-    Scope -->|"several, mutually exclusive"| Multi["evidence_only: every table,<br/>each with its own resolved_rows<br/>fact lock OFF"]
-    Tables -->|required input missing| Clarify["needs_clarification"]
-    Dir -->|match| Records["evidence_only: matching records"]
-    Dir -->|ambiguous| Clarify
-    D -->|nothing found| Fallback["No result: the task uses RAG"]
-```
-
-The layer distinguishes three outcomes, and the distinction is the point:
-
-- **One table, one row → `resolved_result`, fact lock on.** Inputs are grounded and
-  exactly one row applies, so the system commits to a value; the composer is told to
-  copy it verbatim, never re-read the table. The full table travels alongside it so the
-  answer can explain the value in context.
-- **Several tables apply → `resolved_rows` per table, fact lock deliberately off.** K51
-  grades foundation and remaining courses on different scales, so 5.2 is a pass
-  (*Đạt*) in one table and a fail (*Không đạt*) in the other. Without a grounded `course_scope`, the system
-  cannot know which the student means, so it locks nothing and returns every applicable
-  table - but it still resolves the matching row *inside each one*, rather than leaving
-  the arithmetic to the composer. This exists because the composer once read the
-  interval itself and reported a failing 5.2 as a pass. Picking which scope applies is
-  semantics and stays with the composer; finding the row inside a scope is arithmetic
-  and belongs to the resolver.
-- **Nothing resolvable → `evidence_only` or a clarifying question.** Scoring is the only
-  lookup where several applicable tables mean mutually exclusive answers. A scholarship
-  question also returns several tables - amount, classification, eligibility, formula -
-  but those are complementary facets with no single row to pick, so `resolved_rows` does
-  not apply to them.
-
-</details>
-
-<details>
-<summary><strong>Retrieval</strong></summary>
-
-```mermaid
-flowchart TD
-    Q["RAG task query + cohort"] --> Dense["bge-m3 embedding via the DeepInfra API<br/>Qdrant search with cohort filter<br/>top 24 children"]
-    Q --> Lex["In-process BM25<br/>built from Qdrant payloads at startup<br/>top 24 children"]
-    Dense -.->|embedding call fails| Lex
-    Dense --> RRF["Reciprocal rank fusion, k = 60<br/>pool of 24"]
-    Lex --> RRF
-    RRF -->|"neither returns anything"| None["No evidence for this task"]
-    RRF --> Rerank["Voyage rerank-3<br/>all 24 children, 10 s timeout"]
-    Rerank -->|valid scores| Group["Group children by parent article<br/>parent score = best child<br/>keep the top 5 parents"]
-    Rerank -.->|"no key · HTTP error · timeout · invalid reply"| Group
-    Group --> Mongo[("MongoDB parents<br/>with an in-process LRU cache")]
-    Mongo --> Evidence["Primary evidence: full articles<br/>plus the matching child text"]
-    Group --> Graph["Cross-reference graph<br/>NetworkX, depth 2"]
-    Graph --> Related["related_references<br/>UI navigation only, never evidence"]
-```
-
-Children are small, so matching stays precise; the writer always receives the full parent article, so the context stays complete. Scoring a parent by its best child means several matching children of one article do not push other articles out of the top 5. The `no_graph` and `vector_only` modes switch off the graph and BM25 for ablations, and `STUDENT_RAG_RERANKER_ENABLED=false` switches off reranking.
-
-</details>
-
-<details>
-<summary><strong>Container start: what is ready before the first question</strong></summary>
-
-```mermaid
-flowchart TD
-    Boot["Container starts<br/>uvicorn, one worker"] --> Life["FastAPI lifespan"]
-    Life --> Port["Port opens immediately<br/>/health answers right away"]
-    Life --> Flag{"STUDENT_RAG_WARMUP_ON_STARTUP?"}
-    Flag -->|off, the local default| Lazy["Everything stays lazy:<br/>the first question builds it"]
-    Flag -->|"on, set by the Dockerfile"| Thread["Background warm-up thread"]
-    Thread --> Cat["Catalogs, parent docstore,<br/>planner client, plan executor, composer client"]
-    Cat --> Retr["Hybrid retriever singleton<br/>embedding and reranker clients"]
-    Retr --> BM["BM25 index<br/>scroll Qdrant, then wait up to 180 s"]
-    BM --> Ready["Warm: the first question costs what the second does"]
-    BM -.->|"timeout or Qdrant unreachable"| Degraded["BM25 degraded, dense retrieval still serves"]
-```
-
-Two properties here were learned by measuring the deployed Space, not by reasoning
-about it:
-
-- **Warm-up runs on a background thread, never in the startup path.** The container has
-  to answer `/health` while the pipeline is still being built, or the platform health
-  check fails and restarts it into a loop - so the port opens first and warming happens
-  beside it. (This mattered most when the embedding model ran in the container; it now
-  runs behind the DeepInfra API, so the image holds no model.)
-- **It warms the retriever, not just the model.** An earlier version warmed the model,
-  catalogs and clients but left the hybrid retriever lazy. Measured on the live Space: a
-  structured question answered in 4.7 s, but the first RAG question took 23.3 s and the
-  second took 6.9 s - the first one paid about 16 s to build the retriever and scroll
-  Qdrant for the BM25 index. Warming the retriever too brought it to 7.5 s, matching the
-  second.
-- **It can only make startup slower, never broken.** BM25 is fail-open, so a timeout or
-  an unreachable Qdrant leaves dense retrieval serving, and any exception is logged
-  rather than propagated.
-
-</details>
-
-<details>
-<summary><strong>One streaming request, end to end</strong></summary>
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant C as Client
-    participant A as FastAPI /chat/stream
-    participant P as AnswerPipeline
-    participant G as Luna planner
-    participant S as Qdrant, BM25, MongoDB
-    participant M as DeepSeek composer
-    C->>A: question, cohort, recent history
-    A-->>C: queued (repeats while waiting for a slot)
-    A->>P: start
-    P-->>C: progress (analyzing the question)
-    P->>G: plan (router cache first)
-    G-->>P: QueryPlan
-    P-->>C: progress (searching the handbook)
-    P->>S: lookups and retrieval, one task at a time
-    S-->>P: evidence
-    alt nothing answerable
-        P-->>C: token (clarification or out-of-scope reply), done
-    else answerable
-        P-->>C: progress (composing), metadata (citations, tables)
-        P->>M: evidence packet
-        M-->>P: text chunks
-        P-->>C: token, token, ..., done
-    end
-    A-)A: send the trace to LangSmith in the background
-```
-
-`/chat` runs the same preparation and returns the finished answer as one JSON response.
-
-</details>
+The planner, normalizer, structured lookup, retrieval, start-up and streaming paths are drawn step by step in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), with a code map of the functions a request meets.
 
 ## Design decisions
 
@@ -356,7 +183,7 @@ sequenceDiagram
 | Cross-reference edges | 78 | Related-article navigation in the UI |
 | Embedding | `BAAI/bge-m3`, 1,024 dimensions | Dense child retrieval |
 
-Per cohort: K49 has 169 parents and 820 children, K50 has 192 and 911, and K51 has 200 and 957. The K49 cohort replaced K48–K49 on 2026-10-13: that cohort had been built from the K48 handbook (2022 – 2023) alone, and K48 students have graduated. Its collections are `student_handbook_table_search_3bbd93e9f05a` (children and table descriptions) and `parent_docs_table_search_3bbd93e9f05a` (parents); the suffix is a hash of the build and its table descriptions, recorded in the candidate manifest, so a collection name always identifies one build. They were published and verified on 2026-10-18 (2,720 vectors, 561 parents, no mismatch); the deployed backend still serves build `7754cc9c` (K48-K49, K50, K51) from `…e55308ddae85` until the owner deploys. A clause with its lead-in and points is one chunk, never split; [`check_chunk_invariants.py`](scripts/check_chunk_invariants.py) fails the build if a line is lost, a chunk starts or ends mid-sentence, or a list leaves its lead-in. The search index covers what applies to full-time (*chính quy*) university students of the main campus (District 5): articles for part-time study, the college programme and staff only get no search chunk ([`corpus_scope.yaml`](configs/corpus_scope.yaml)), and branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
+Per cohort: K49 has 169 parents and 820 children, K50 has 192 and 911, and K51 has 200 and 957. The K49 cohort replaced K48–K49 on 2026-10-18: that cohort had been built from the K48 handbook (2022 – 2023) alone, and K48 students have graduated. Its collections are `student_handbook_table_search_3bbd93e9f05a` (children and table descriptions) and `parent_docs_table_search_3bbd93e9f05a` (parents); the suffix is a hash of the build and its table descriptions, recorded in the candidate manifest, so a collection name always identifies one build. They were published and verified on 2026-10-18 (2,720 vectors, 561 parents, no mismatch) and serve production since that day. A clause with its lead-in and points is one chunk, never split; [`check_chunk_invariants.py`](scripts/check_chunk_invariants.py) fails the build if a line is lost, a chunk starts or ends mid-sentence, or a list leaves its lead-in. The search index covers what applies to full-time (*chính quy*) university students of the main campus (District 5): articles for part-time study, the college programme and staff only get no search chunk ([`corpus_scope.yaml`](configs/corpus_scope.yaml)), and branch-campus units are left out of the directories. Counts, hashes and the target collections are recorded in [`build_manifest.json`](data/processed/metadata/build_manifest.json).
 
 ### Offline build
 
@@ -379,163 +206,40 @@ Rebuild locally without touching the remote stores:
 
 ```bash
 PUSH_REMOTE=0 python -m scripts.build_multi_cohort \
-  --qdrant-collection student_handbook_clause_v36 --mongo-collection parent_docs_clause_v36
+  --qdrant-collection <qdrant_collection> --mongo-collection <mongo_collection>
 python -m scripts.structure_chunking --publish-artifacts
 python -m scripts.build_artifact_manifest \
-  --qdrant-collection student_handbook_clause_v36 --mongo-collection parent_docs_clause_v36
+  --qdrant-collection <qdrant_collection> --mongo-collection <mongo_collection>
 ```
 
-The first command overwrites `data/processed/`, so run it in a clean worktree; the second replaces the children with one chunk per clause and checks the chunk invariants, and the third writes the manifest. The only inputs are the PDFs in `data/raw/`, the reviewed configs and `data/curated/` (the reviewed table regions and, per handbook, the index of its articles in `article_index/<cohort>.csv`); two runs give the same bytes. With `PUSH_REMOTE=1` it also preflights the target collections, embeds and uploads, then verifies the remote contents against the manifest. See the [parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md).
+The first command overwrites `data/processed/`, so run it in a clean worktree; the second replaces the children with one chunk per clause and checks the chunk invariants, and the third writes the manifest. The only inputs are the PDFs in `data/raw/`, the reviewed configs and `data/curated/` (the reviewed table regions and, per handbook, the index of its articles in `article_index/<cohort>.csv`); two runs give the same bytes. With `PUSH_REMOTE=1` it also preflights the target collections, embeds and uploads, then verifies the remote contents against the manifest. The collection names are only recorded in the manifest. Production collections are published from a frozen candidate with `scripts.build_table_search_candidate` and `scripts.publish_table_search_candidate`, which always write new collections. See the [parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) and the [script index](scripts/README.md).
 
 ## Evaluation
 
-Two hand-authored datasets, every expected answer anchored to a handbook source.
-`official_v1` is the development set the planner prompts were tuned on
-([notes](data/eval/official_v1/README.md)). `official_v2` is a spent hold-out, now a
-regression set: its single hold-out run exposed a real defect, and every run since is
-labelled as such ([dataset notes](data/eval/official_v2/README.md)).
+Hand-authored datasets, every expected answer anchored to a handbook source.
+`official_v4` (246 questions, 228 in scope) measures answer quality and is used
+for every change since 2026-09-30; each run is pre-registered in
+[SPEC.md](data/eval/official_v4/SPEC.md) before it is read. `official_v1` (the
+development set) and `official_v2` (a spent hold-out) measure the planner and
+retrieval. Answers are scored by a pinned LLM judge (`openai/gpt-oss-120b`).
 
-| Suite | v1 / v2 cases | What it measures |
-|---|---:|---|
-| Deterministic | 135 / 154 | Planning and structured execution against accepted outcomes: task split, lookup choice, cohort, grounded slots and the exact table value |
-| Retrieval | 155 / 93 | Ranking of the retrieved evidence: Hit@k, MRR, nDCG@5 and required-source recall |
-| Generate + judge | 150 / 154 | End-to-end answers scored by a pinned LLM judge (`openai/gpt-oss-120b`): correctness, faithfulness, citation correctness, context recall and precision, hallucination rate |
-| Production | 60 / — | Requests against the deployed API: success rate, 429s, cache behavior, streaming time to first token and p95 latency, with pass/fail release gates |
+| Run | Date | System | `answer_correctness`, 228 in scope |
+|---|---|---|---:|
+| K49 | 2026-10-18 | K49 handbook; composer v3.36 | K49 0.960, K50+K51 0.975 |
+| Q | 2026-10-19 | Composer v3.43 on DeepInfra | 0.964 |
+| S | 2026-10-19 | Composer v3.44 with catalog referral | **0.972** (paired +0.008, CI [−0.006, +0.023] against Q) |
 
-### Results
+Runs Q and S reuse run K49's planner decisions, so they isolate the composer.
+**Not yet measured end to end:** the deployed combination of planner v63d,
+normalizer v36, composer v3.44, the referral template and the social replies.
+The template and the social replies are validated on development sets and
+probes only. official_v4 is not a hold-out, its questions are synthetic, and
+the judge has no measured agreement with a human rater.
 
-> [!NOTE]
-> These results measure the stack of 2026-09-12: Qwen3 planner on Groq, Gemini 3.1
-> Flash-Lite composer, a local `bge-m3` model, Cohere reranking and the v33 data. The
-> current stack (Luna planner, DeepSeek composer, `bge-m3` over an API, Voyage rerank-3,
-> build `7754cc9c`) has separate results in [official_v4/RESULTS.md](data/eval/official_v4/RESULTS.md):
-> the deployed system (run C3) scores answer correctness 0.970 on the 228 in-scope cases.
-> Run A is the historical hold-out; runs B and C onward are post-fix measurements. `official_v3`
-> was used after its first run and is no longer a clean hold-out. These scores do
-> not certify the later offline hardening changes or the public deployment.
-
-`official_v2`'s hold-out run: 2026-09-12, commit `d09e970`, planner Qwen3 `v43` on Groq,
-composer Gemini 3.1 Flash-Lite, judge `openai/gpt-oss-120b`. Production: `official_v1`'s
-60 requests against the live Space the same day, commit `6eba6d4a`. Intervals are 95%:
-Wilson for pass rates, bootstrap for judge scores.
-
-#### Deterministic — 92.2% (142/154), CI 86.9–95.5
-
-| Capability | Cases | Pass rate | Answer correctness¹ |
-|---|---:|---:|---:|
-| Single lookup or single regulation | 68 | 94.1% | 96.8 |
-| Follow-up question with history | 25 | 92.0% | 94.2 |
-| Missing input, clarify, or out of domain | 13 | 92.3% | 99.2 |
-| Two or three requests in one message | 27 | 88.9% | 94.8 |
-| Several entities in one question | 12 | 100.0% | 95.0 |
-| Cohort comparison | 9 | 77.8% | 100.0 |
-| **Reweighted to expected traffic mix²** | 154 | **93.1%** | **96.5** |
-
-¹ From the paired generate+judge run on the same questions.
-² Weights from [`slice_weights.yaml`](data/eval/official_v2/slice_weights.yaml), an estimate — see notes below.
-
-Cohorts score within 4 points of each other (K48–K49, built from the K48 handbook then, 90.2, K50 94.1, K51 92.3); the 32
-stress-tagged cases score 90.6% deterministic / 100 answer correctness. Running the suite twice separates real failures
-from planner noise: 11 of the 12 failing cases fail both times, 3 more flip on only one
-run. `official_v1` (development set, same runtime): 129/135, unchanged since before this
-session's refactors, same six failing cases.
-
-**One real defect surfaced this way.** K51 grades foundation and remaining courses on
-different scales; without a `course_scope` slot the resolver returned every table and the
-composer picked the wrong interval, calling a failing 5.2 a pass. Fixed in `536169fc` by
-resolving the row inside each table instead of leaving it to the composer. `official_v1`
-re-run: 129/135, no regression. `official_v2` re-run: 141/154 — **not a new hold-out
-number**, since the fix came from reading a v2 failure; 92.2% above stands as the one
-hold-out result the bundle will ever produce.
-
-#### Retrieval
-
-| Metric | Result |
-|---|---:|
-| Hit@1 | 77.4% |
-| **Hit@5** | **94.6%**, CI 88.0–97.7 |
-| MRR | 84.8 |
-| nDCG@5 | 85.3 |
-| Required-source recall@5 | 91.9% |
-
-#### Generate + judge
-
-| Metric | Result |
-|---|---:|
-| **Answer correctness** | **96.3**, CI 93.4–98.6 |
-| Faithfulness | 96.0 |
-| Answer relevancy | 98.8 |
-| Citation correctness | 96.6 |
-| Context recall | 84.5 |
-| Context precision | 60.8³ |
-| Hallucination rate | 6.5% |
-| Critical false passes | 3 of 154 |
-
-³ The composer is handed more evidence than a given answer draws on — a token-spend cost, not a correctness one.
-
-#### Production — release gates: 7 of 12 pass
-
-| Gate | Result |
-|---|---:|
-| `success_rate` | 96.7% |
-| `telemetry_coverage` | 0% |
-| `warm_cache_hit_rate` | 90% |
-| `cold_cache_status_coverage` | 100% |
-| `warm_cache_status_coverage` | 100% |
-| `streaming_ttft_coverage` | 100% |
-| `http_429_rate` | 0% |
-| `cold_cache_hit_rate` | 0% |
-| `deterministic_p95_ms` | 20,054 ms |
-| `warm_cache_p95_ms` | 4,313 ms |
-| `rag_p95_ms` | 9,111 ms |
-| `streaming_ttft_p95_ms` | 13,050 ms |
-
-| Scenario | p50 | p95 | Success |
-|---|---:|---:|---:|
-| Warm cache | 2,396 ms | 4,313 ms | 100% |
-| Streaming | 3,411 ms | 15,084 ms | 90% |
-| Deterministic | 5,147 ms | 20,054 ms | 100% |
-| Cold RAG | 6,852 ms | 9,111 ms | 100% |
-| Burst | 7,555 ms | 15,308 ms | 90% |
-
-Five gates fail. `telemetry_coverage` needs `STUDENT_RAG_EVAL_TELEMETRY=true`, which
-production correctly leaves off — a configuration mismatch, not a defect. The three
-p95 latency gates (`deterministic_p95_ms`, `warm_cache_p95_ms`, `streaming_ttft_p95_ms`)
-were calibrated on a **local** backend: a 2026-08-08 smoke run hit 2,940 ms on localhost
-against the same 3,000 ms limit that the deployed free-tier Space's 5,147 ms
-deterministic p50 alone cannot meet, since the Space pays for two LLM round trips and a
-network hop that localhost never did. Recalibrating those thresholds against the real
-deployment target — not lowering them to pass — is the fix. `success_rate` misses its
-98% target because of two payload failures: one (`official_prod_052`) is a Groq/Gemini
-rate limit hit since evaluation and production share a key pool by choice, and the other
-(`official_prod_042`) is an unexplained streaming `RuntimeError`, left open rather than
-explained away. Thresholds, per-gate verdicts and the 31.2 s outlier:
-[PRODUCTION_RESULTS.md](data/eval/official_v1/PRODUCTION_RESULTS.md).
-
-### Notes on these numbers
-
-- The questions were written from handbook content in student phrasing, not collected
-  from real students, so the reweighted score's traffic mix is the author's estimate —
-  several administrative lookups in the set may be questions nobody asks.
-- Directory lookup was probed separately over all 239 service records: every one
-  resolves correctly when the query stays close to the catalog wording, and 220 of 239
-  survive a mechanical shortening. The 9 that don't all land on one unit whose name
-  matches the common word `đào tạo` ("training"); the only real pattern among them is postgraduate
-  services this undergraduate handbook doesn't cover.
-- One author wrote both datasets; no second reviewer checked them.
-- The judge is an LLM whose agreement with a human rater hasn't been measured.
-
-### Running the suites
-
-```bash
-python -m scripts.run_official_deterministic --bundle official_v2 --current-worktree
-python -m scripts.run_official_answers --bundle official_v2 --suite retrieval
-python -m scripts.run_official_answers --bundle official_v2 --suite answers
-python -m scripts.run_official_answers --bundle official_v1 --suite production --base-url https://<your-space>.hf.space
-python -m scripts.report_official_slices <run>/deterministic.json --bundle official_v2
-```
-
-Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`. `--limit N` runs a smoke subset, and `--output DIR` resumes an interrupted run. `--retrieval-mode no_graph` or `--retrieval-mode vector_only` runs a retrieval ablation. [`regrade_official_deterministic.py`](scripts/regrade_official_deterministic.py) rescores a saved run without any model calls. The suites disable the router cache, and they call paid providers.
+- Run details: [RESULTS.md](data/eval/official_v4/RESULTS.md).
+- Datasets, suites, commands and the 2026-09-12 hold-out result:
+  [docs/EVALUATION.md](docs/EVALUATION.md).
+- Component switches for ablations: [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md).
 
 ## Getting started
 
@@ -543,7 +247,7 @@ Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`.
 
 - Python 3.11 and Node.js 20
 - A Qdrant collection and a MongoDB database loaded from the current build (see [Offline build](#offline-build))
-- API keys for OpenAI (planner), DeepSeek (composer and directory selector) and DeepInfra (BGE-M3 embeddings) and Voyage (the rerank-3 reranker). LangSmith (tracing) is optional.
+- API keys for OpenAI (planner), DeepInfra (composer, directory selector and BGE-M3 embeddings) and Voyage (the rerank-3 reranker). LangSmith (tracing) is optional.
 
 ### Backend
 
@@ -620,7 +324,7 @@ curl -X POST http://127.0.0.1:8000/chat \
   -d '{"query": "IELTS 6.0 tương đương bậc mấy?", "cohort": "K51"}'
 ```
 
-The response carries `answer`, `status` (`answered`, `needs_clarification`, `out_of_domain`, `low_confidence`, ...), `citations`, `structured_results` and `related_references`.
+The response carries `answer`, `status` (`answered`, `needs_clarification`, `out_of_domain`, `social`, `low_confidence`, ...), `citations`, `structured_results` and `related_references`.
 
 ## Frontend
 
@@ -649,13 +353,16 @@ Conversation history lives in the browser's `sessionStorage` and is sent with ea
 ## Project structure
 
 ```text
-├── configs/                  # Planner, retrieval, composer and lookup-registry settings
+├── configs/                  # Runtime, build and evaluation settings (index: configs/README.md)
 ├── data/
 │   ├── raw/                  # Source handbook PDFs
 │   ├── curated/              # Reviewed table regions and corrections
 │   ├── processed/            # Versioned build output: parents, children, tables, graph, manifest
 │   ├── eval/official_v1/     # Development set, plus the production-suite results
-│   └── eval/official_v2/     # Frozen bundle: one hold-out run, now a regression set
+│   ├── eval/official_v2/     # Spent hold-out, now a regression set
+│   ├── eval/official_v3/     # Archived (still on the retired K48-K49 cohort)
+│   ├── eval/official_v4/     # Answer-quality benchmark: SPEC (pre-registrations) and RESULTS
+│   └── eval/development/     # Small probe sets, one per feature
 ├── src/
 │   ├── api/                  # FastAPI routes, schemas, admission control, health checks, startup warm-up, tracing
 │   ├── services/             # Shared AnswerPipeline lifecycle
@@ -668,10 +375,10 @@ Conversation history lives in the browser's `sessionStorage` and is sent with ea
 │   ├── extraction/           # Structured-record extraction
 │   ├── chunking/             # Parent article construction
 │   └── evaluation/           # Suites: deterministic, retrieval, answers, production
-├── scripts/                  # Build, publish, evaluation and deploy entry points
+├── scripts/                  # Build, publish, evaluation and deploy entry points (index: scripts/README.md)
 ├── frontend/                 # React 19 + TypeScript + Vite client
 ├── tests/                    # Unit, contract and regression tests
-└── docs/                     # Build and execution contracts; dated experiment logs in docs/archive/
+└── docs/                     # Architecture, evaluation, experiments, design decisions (index: docs/README.md)
 ```
 
 A suggested reading order for the backend: [`schemas.py`](src/api/schemas.py), then [`answer_pipeline.py`](src/generation/answer_pipeline.py), [`ai_router.py`](src/retrieval/core/ai_router.py), [`query_plan.py`](src/retrieval/core/query_plan.py), [`structured_dispatcher.py`](src/retrieval/core/structured_dispatcher.py) and [`hybrid_pipeline.py`](src/retrieval/core/hybrid_pipeline.py), and finally [`prompt_builder.py`](src/generation/prompt_builder.py). Read the matching tests alongside each file.
@@ -684,75 +391,7 @@ A suggested reading order for the backend: [`schemas.py`](src/api/schemas.py), t
 | [`structured_lookup_registry.yaml`](configs/structured_lookup_registry.yaml) | Lookup capabilities, slots and aliases shown to the planner |
 | [`hcmue_slang_dictionary.yaml`](configs/hcmue_slang_dictionary.yaml) | Student slang and abbreviation normalization |
 
-### Code map
-
-The functions a reader following a request would meet, in the order a request meets
-them. Each one is the entry point of its layer; the modules hold the rest.
-
-**Serving one question** — `src/services`, `src/generation`
-
-| Function | What it does |
-|---|---|
-| `AnswerService.answer` · `.answer_stream` | One lazily built pipeline shared by the API and the UI. `warm()` builds up front what the first question would otherwise build itself. |
-| `AnswerPipeline.prepare_answer` | The work both paths share: routing, retrieval, guardrails, prompt. The two paths then differ only in how they emit. |
-| `PlanExecutor.run` · `.execute_task` · `.aggregate_results` | Runs at most three independent tasks, each across its cohorts, then merges them into one retrieval contract. |
-| `is_context_empty` · `is_low_confidence` · `build_fallback_answer` | The last gate before generation: with no evidence, or evidence too weak, the composer is never called. |
-| `StreamAnswerCleaner.feed` · `.finish` | Cleans the answer as it streams and holds back the tail, so a half-written marker never reaches the screen. |
-
-**Planning and validating** — `src/retrieval/core`
-
-| Function | What it does |
-|---|---|
-| `AIRouter.plan` | Asks the planner for a `QueryPlan` under a strict JSON schema, rotating keys and retrying within a bounded budget; a failure returns the safe RAG plan rather than an error. |
-| `normalize_query_plan` | The deterministic gate. Current identity: `v34-ask-for-what-is-missing`. |
-| `grounding_text` · `visible_history_turns` | The student's own words, from the question and the history actually shown. A plan cannot cite what the model never saw. |
-| `validate_structured_task` | Checks one task against its lookup contract: required slots, types, allowed values, and where each value came from. |
-| `validate_fact_lock_inputs` | Lists the reasons a task must *not* pin a value. An empty list means it may, if its values select exactly one row. |
-| `safe_rag_fallback_plan` | One bounded RAG task for when no plan can be trusted. |
-
-**Retrieval** — `src/retrieval/core`
-
-| Function | What it does |
-|---|---|
-| `ChildParentHybridRetriever.retrieve` | The whole hybrid path in one call: candidates, fusion, reranking, grouping into parents, graph neighbours. |
-| `EmbeddingClient.embed_query` | BGE-M3 over the DeepInfra API, short timeout and one retry; on failure BM25 serves alone. |
-| `BM25Retriever._tokenize` | Vietnamese segmentation with underthesea, identifiers and certificate names kept whole, and an unaccented twin for every token so unaccented questions still match. |
-| `reciprocal_rank_fusion` | Fuses the two lists by rank alone, so two incomparable score scales can be combined. |
-| `Reranker.rerank` | Voyage `rerank-3` over all 24 children. A missing key, timeout, HTTP error or malformed reply keeps the RRF order and records the reason. |
-| `raw_table_for_handle` | A search hit opens its reviewed table only when table id, content hash, parent, cohort and document all match. |
-| `build_related_references` | Builds the related-article cards for the UI. They never enter the prompt or the citations. |
-
-**Structured lookup** — `src/retrieval/core`
-
-| Function | What it does |
-|---|---|
-| `resolve_structured_task` | Dispatches to one of four families: reference tables, directories, the program catalog, formulas. |
-| `exact_matches` | Records whose name or alias equals the text after folding; an exact hit needs no model call. |
-| `DirectorySelector.select` | Otherwise asks the selector model to choose from that cohort's closed list, and asks again with reasoning on if the first pass finds nothing. |
-| `parse_reply` | Validates the model's answer against the ids it was shown, so it cannot name a record that was not offered. |
-| `is_validated_source_applicable` | Another cohort's source is evidence only where cross-cohort applicability was declared and verified at ingestion. |
-| `collect_applicable_amendments` | Pulls the amendments that apply to the asked cohort, so a superseded clause is not answered as current. |
-
-**Prompt and citations** — `src/generation`
-
-| Function | What it does |
-|---|---|
-| `build_answer_prompt_bundle` | Builds the composer prompt and returns the exact evidence JSON it was given, so a trace shows what the model actually saw. |
-| `build_authorized_evidence_packet` | Groups already-authorized evidence by task and cohort; nothing unauthorized can reach the packet. |
-| `limit_context` | Trims to the character budget. On this corpus it never fires (the five longest parents total 54,427 characters against 120,000 usable). |
-| `build_citations_from_vector_results` · `build_citation_from_lookup` | Citations for the retrieval branch and for the structured branch, both bound to their source. |
-
-**Building the corpus** — `scripts`
-
-| Function | What it does |
-|---|---|
-| `split_segments` | Rejoins the lines the PDF wrapped, then opens a segment at each marked line or table. |
-| `unit_chunk` | The core rule: a clause, or an article without clauses, is one chunk. Never split. |
-| `load_layout_fixes` | The 24 reviewed entries in `configs/layout_fixes.yaml`. Each one only groups lines; one that matches nothing fails the build. |
-| `apply_scope` | Removes out-of-scope clauses from the search index. The parent text is untouched, so citations stay verbatim. |
-| `context_header` | Builds the "document › chapter › article" line. It reaches the embedding and the reranker only, never the chunk text. |
-| `check_chunk_invariants.check` | Reads each article's raw lines, not the chunker's output, and fails the build on a lost line, a cut sentence, a heading-only chunk, a stray column header or a list separated from its lead-in. |
-| `build_table_descriptions` | One search handle per approved table, carrying field names and labels but no numbers. The numbers stay in the table. |
+The functions a request meets, layer by layer, are listed in the [code map](docs/ARCHITECTURE.md#code-map).
 
 ## Deployment
 
@@ -760,10 +399,10 @@ them. Each one is the entry point of its layer; the modules hold the rest.
 |---|---|---|
 | Frontend | Vercel ([hcmuebot.id.vn](https://hcmuebot.id.vn)) | Static React build; `/api/visits` is proxied to the backend |
 | Backend | Hugging Face Spaces (Docker) | One worker; runtime files come from an explicit allowlist |
-| Vector store | Qdrant | Collection `student_handbook_table_search_e55308ddae85` (build `7754cc9c`) |
-| Documents | MongoDB | Collection `parent_docs_table_search_e55308ddae85` |
+| Vector store | Qdrant | Collection `student_handbook_table_search_3bbd93e9f05a` (build `973ef632`) |
+| Documents | MongoDB | Collection `parent_docs_table_search_3bbd93e9f05a` |
 
-[`deploy_hf_backend.ps1`](scripts/deploy_hf_backend.ps1) packages only the allowlisted runtime files and checks that the build manifest targets the intended collections. `-DryRun` validates the package without touching the Space. After a deploy, check `/health/readiness`, then run the production suite against the Space.
+[`deploy_hf_backend.ps1`](scripts/deploy_hf_backend.ps1) packages only the allowlisted runtime files and checks that the build manifest targets the intended collections. `-DryRun` validates the package without touching the Space. Pass `-CandidateArtifacts <published candidate folder>` so the target collections come from its manifest. After a deploy, check `/health/readiness` and ask a few known questions. To roll back, point the Space back at its previous commit; the earlier collections are kept.
 
 ## What the evidence supports, and what comes next
 
@@ -773,7 +412,9 @@ evidence stops, and what would extend it.
 | Where the evidence stops | What would close it |
 |---|---|
 | **Few baselines.** Component ablations on the development set (planner models, composers, directory selection, embeddings, rerankers, BM25, candidate depth) are in [DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md), but nothing yet compares the typed-plan design against plain RAG or a long-context model given the whole handbook. | Run those two baselines on the hold-out for the paper. |
-| **The hold-out is spent.** `official_v2` produced one hold-out measurement; reading its failure informed a fix, so every later run of it is a regression check on a seen set. | A fresh bundle, frozen before any code sees a result from it. |
+| **The hold-out is spent.** `official_v2` produced one hold-out measurement; reading its failure informed a fix, so every later run of it is a regression check on a seen set. `official_v4` has guided changes since its first runs. | A fresh bundle, frozen before any code sees a result from it. |
+| **The deployed combination is unmeasured.** Planner v63d, normalizer v36 and composer v3.44 were each checked, but never together on `official_v4`. | One end-to-end run against run K49. |
+| **Some ablations need switches.** Plain RAG, no normalizer, no structured lookups, BM25 only and dynamic k cannot be run without code ([list](docs/EXPERIMENTS.md#missing-switches-for-a-paper)). | Add each as a flag that defaults to production behaviour. |
 | **The judge is unvalidated.** Every quality score comes from an LLM judge with no measured agreement to a human rater. | A sample double-scored by a person, compared to the judge. |
 | **Neither dataset is real traffic.** Both were written from handbook content in student phrasing, so the reweighted score's slice mix is an estimate. | A closed beta with real students; slice weights refit to the observed query mix. |
 | **Production gates measure the wrong baseline.** Three of the five failing release gates were calibrated on localhost, not the deployed Space. | Recalibrate the thresholds against the real deployment target — never lower them just to turn the run green. |
@@ -781,13 +422,17 @@ evidence stops, and what would extend it.
 
 ## Documentation
 
+Start at [docs/README.md](docs/README.md). The main pages:
+
 | Document | Content |
 |---|---|
-| [Parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) | How parents, children and reviewed tables are built and validated |
+| [Architecture](docs/ARCHITECTURE.md) | Step-by-step diagrams of each path and the code map |
+| [Experiments](docs/EXPERIMENTS.md) | Component versions, ablation switches, baseline runs |
+| [Evaluation](docs/EVALUATION.md) | Datasets, suites, commands, the 2026-09-12 hold-out |
 | [Design decisions](docs/DESIGN_DECISIONS.md) | Every model and component choice, with the measurements that decided it |
 | [Structured execution contract](docs/STRUCTURED_EXECUTION_CONTRACT.md) | Lookup capabilities, fact locks and evidence rules |
+| [Parent/child build contract](docs/PARENT_CHILD_BUILD_CONTRACT.md) | How parents, children and reviewed tables are built and validated |
 | [Technical debt](docs/TECHNICAL_DEBT.md) | Known maintenance boundaries |
-| [Archive](docs/archive/README.md) | Dated experiment logs, audits and earlier system guides (planner versions, composer and rerank A/Bs) |
 
 ## License
 

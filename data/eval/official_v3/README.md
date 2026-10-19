@@ -1,5 +1,12 @@
 # Official evaluation v3: planner hold-out
 
+> [!WARNING]
+> **Archived on 2026-10-19.** The cases are still labelled with the retired
+> K48-K49 cohort (built from the K48 handbook), which K49 replaced on
+> 2026-10-18; six of them need a K49 decision before the bundle can run again.
+> It was also used after its first run, so it is no longer a clean hold-out.
+> Kept for its history; not part of the current evaluation.
+
 official_v3 measures the planner and structured execution on the kinds of question students ask: single requests, several requests at once, comparisons, follow-ups, boundary cases and one-hop relations. It is the hold-out for the planner rebuilt in 2026-09, from prompt v44 onward and the move to OpenAI Luna.
 
 **Rule:** never use a v3 result to change the system. Prompts, rules, catalogs and code are tuned on official_v1, official_v2 and the smoke bundles only. v3 is run on the final system, and its result is reported as it comes out.

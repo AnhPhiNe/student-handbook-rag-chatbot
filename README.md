@@ -563,8 +563,8 @@ Interactive API docs are then served at `http://127.0.0.1:8000/docs`.
 | `MONGODB_URL`, `MONGODB_DB_NAME`, `MONGODB_PARENT_COLLECTION` | yes | Parent articles |
 | `OPENAI_API_KEY` | yes | Planner (`gpt-6-luna`, strict QueryPlan schema; settings in `configs/ai_router.yaml`) |
 | `GROQ_API_KEYS` | no | Evaluation judge only |
-| `DEEPSEEK_API_KEY` | yes | Directory selector, which picks the service, office, faculty or program a student names when no name matches exactly (`directory_selector` in `configs/answer_generation.yaml`) |
-| `DEEPINFRA_API_KEY` | yes | Composer (`llm`, DeepSeek-V4.1-Flash), the directory selector's fallback, and BGE-M3 query and document embeddings |
+| `DEEPSEEK_API_KEY` | no | Only the experiment configs in `configs/experiments/` that call the DeepSeek API directly |
+| `DEEPINFRA_API_KEY` | yes | Composer (`llm`, DeepSeek-V4.1-Flash), the directory selector, which picks the service, office, faculty or program a student names when no name matches exactly and the unit a catalog referral names (`directory_selector`; both in `configs/answer_generation.yaml`), and BGE-M3 query and document embeddings |
 | `VOYAGE_API_KEY` | yes | The Voyage `rerank-3` reranker (`configs/retrieval.yaml`); a reranker failure keeps the RRF order |
 | `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT` | no | Request tracing and user feedback |
 | `STUDENT_RAG_CORS_ORIGINS` | no | Comma-separated browser origins allowed to call the API (needed when the frontend is on another domain) |

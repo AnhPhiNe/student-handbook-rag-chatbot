@@ -530,6 +530,105 @@ author nor its models wrote.
   same answer as the baseline's (only the judge's score differs). This is a
   decision made after the result, not a pass of the rule; v3.43 is deployed
   with planner v62 and normalizer v35, a combination not measured here.
+- **Run S: a catalog referral for parts without evidence, and a narrow composer
+  rule** (owner, 2026-10-19, one change; drafted before any code and completed
+  with the owner's three choices below before code was written: trigger B, the
+  gold approved as drafted, the selector on DeepInfra only). Composer prompt
+  v3.44 (`student-handbook-answer-v3.44-catalog-referral`).
+  - Composer rule (on v3.43): a unit and its contacts may still be named when
+    the unit's evidence says that unit handles the asked matter (v3.43
+    behaviour, so V4-229 and V4-235 keep their referral). For a part without
+    evidence the answer says the handbook does not cover it and names no unit,
+    phone or email taken from other passages (the `nghidinh116@` case);
+    referral for that part belongs to the system.
+  - Referral path: the existing `student_service` lookup and directory selector
+    over the closed catalog, asked with that task's question and the original
+    query as context, without the thinking retry. A match appends a separate,
+    labelled referral ("Sổ tay không quy định về ý này; bạn có thể liên hệ …")
+    whose contacts come from the catalog record by id. Ambiguous, none or
+    unavailable: no referral and no clarification. No referral for
+    personal-contact, staff-only or out-of-domain questions.
+  - Trigger: **B, the composer's marker** (owner's choice). The task-level
+    `coverage` is "uncovered" only when retrieval returns nothing: in run Q 0
+    of 355 composed units were uncovered, and the cases this targets (V4-229,
+    V4-235, the rector's phone) are all "covered", so it cannot drive the
+    referral. The composer ends its answer with one line
+    `[[CHUA_CAN_CU: t…]]` listing the task ids whose asked point has no
+    evidence; the line is removed before the student sees the answer (the
+    stream holds it back). The selector runs for every task answered from
+    regulation text while the composer writes; its decision is used only for
+    the marked tasks. Rejected: (C) a separate per-task answerability check.
+  - Directory selector: `deepseek-ai/DeepSeek-V4.1-Flash` on DeepInfra only
+    (owner's choice; it was the DeepSeek API first), for its existing lookups
+    too, so S also carries that provider change against Q.
+  - Development set: `data/eval/development/catalog_referral_questions.yaml`,
+    50 questions (40 with a gold catalog service over 20 units, 10 with no
+    referral right: 4 personal-contact, 2 staff-only, 4 out-of-domain); gold
+    approved by the owner as drafted (2026-10-19). Each question runs once
+    through the full pipeline in S's configuration, cohort K51, on the K49
+    collections. A referral is a `catalog_referrals` entry with status "match"
+    (rendered in the answer). Metrics, fixed before code:
+    - **wrong-unit rate** (primary): among the 40 referral cases, referrals
+      naming a unit outside the gold units, divided by referrals made; must be
+      at most 5%;
+    - **false referral**: any referral on the 10 no-referral cases; must be 0;
+    - **abstain rate**: referral cases with no referral, reported, with cases
+      the composer did not mark (answered from evidence, or asked for
+      clarification) counted apart;
+    - every referral's contacts equal the catalog record's;
+    - and, as in P and Q, no email outside the directories in any answer.
+    A failure stops before the official_v4 run and goes to the owner.
+    Development outcomes (2026-10-19; no 402 or provider error):
+    - First pass (commit `5061ad96`): 9 referrals on the 40 referral cases, 0
+      wrong unit, 0 false referral, contacts equal to the catalog, no stray
+      email. The rule passed, but the selector answered "none" for 6 marked
+      cases whose unit the catalog names (it asked which service answers the
+      request, and the catalog holds no hour or date). Reported to the owner,
+      who chose to revise before official_v4.
+    - Revision (commit `991c4310`): the referral asks the selector its own
+      question, which unit is in charge of the asked matter, with "none" for
+      one person's details, staff rules or a matter no entry names, and never a
+      unit for a general "other matters" duty. The lookup prompts are
+      unchanged. Written after the first pass was read, so the second pass on
+      the same 50 questions is optimistic; official_v4 is the check.
+    - Second pass: 17 referrals, 0 wrong unit (0%), 0 false referral, contacts
+      equal to the catalog, no stray email. With the existing catalog route
+      (19 cases), 36 of 40 referral cases name a gold unit; the other 4 were
+      not marked by the composer (r13, r18, r24, r35). Passes; official_v4 run
+      S next, on the owner's go-ahead.
+    - Run S execution (owner, 2026-10-19, before the run): 32 answer workers
+      and 24 judge workers, for speed (Q used 16 answer workers). Workers change
+      the wait, not the answers; the validity checks above catch the timeouts
+      more concurrency may cause, and those cases are rerun before scoring.
+  Outcome (2026-10-19, `official_v4_answers_20261019T061552Z`, commit
+  `1fb42eb0`; all 246 answered and judged on the first pass; no 402,
+  authentication error, BM25-only search or reranker skip): in scope S 0.972
+  against Q 0.964, paired +0.008, 95% cluster interval [−0.006, +0.023]; no
+  email outside the directories except `nghidinh116@` on its own procedure
+  (V4-124, V4-126, V4-167); the 18 out-of-scope cases pass reading; no grounded
+  referral of Q with contacts is lost (Q names units with contacts only in
+  V4-091 and V4-226, and S keeps them; the other units Q names and S does not
+  are steps of a described procedure). One borderline case: V4-121, where Q
+  says to ask Phòng KHCN&MT about registering a research topic (grounded, no
+  contacts) and S does not (1.0 → 0.6). The composer marked 21 answers and
+  the referral was added to 2 (V4-096 Ký túc xá, V4-235 Phòng CTCT&HSSV).
+  **One new zero, V4-070** (Q 0.5): S's answer is read as the same as Q's
+  (the same two units with the same contacts; the gold names Phòng CTCT&HSSV
+  for the dormitory, a gold narrower than the K49 procedure, as recorded for
+  run K49). As fixed before the run, this is reported as judge spread and the
+  owner decides; every other criterion holds.
+  - official_v4 run S, after the development set passes: baseline run Q
+    (`official_v4_answers_20261018T182906Z`, v3.43, production), K49's plans
+    (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`), the same composer,
+    judge, packet and validity checks as Q. Keep S if, in scope: no grounded
+    referral of Q is lost (a unit Q names with contacts from that unit's
+    evidence and S does not, confirmed by reading); the lower bound of the 95%
+    cluster interval of the paired `answer_correctness` difference (S minus Q)
+    is at least −0.03; no new zero; no email outside the directories except a
+    procedure mailbox on its own procedure; the 18 out-of-scope cases pass
+    reading. Judge noise of the V4-172 kind is possible: a new zero whose
+    answer is read as the same as Q's is reported as such, and the owner
+    decides on it; any other new zero fails S. No deploy without the owner.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

@@ -1,0 +1,95 @@
+# Questions the handbook's regulations and notices do not answer, for the
+# catalog-referral path (official_v4 SPEC, run S).
+#
+# Purpose: when a part of a question has no evidence, the system may append a
+# referral to a unit from the student-service catalog
+# (data/processed/directories/student_service_directory.json), picked by the
+# existing directory selector over that closed list. This set measures the
+# referral itself: whether the unit is right, whether the path stays silent when
+# no unit fits, and whether it refers personal-contact, staff-only or
+# out-of-domain questions anywhere.
+#
+# Development data, not a hold-out: DRAFT written 2026-10-19 by the AI assistant
+# from the K51 service catalog and a text search of the regulations, before any
+# code or run. The owner reviews the gold before it is used; until then
+# `review_status: draft`; approved without change on 2026-10-19. No official_v4
+# wording was copied.
+#
+# Fields:
+#   kind: referral   a catalog service handles the matter; the handbook text does
+#                    not give the specific asked (a date, a price, a step)
+#         personal   asks for one person's contact or record: no referral
+#         staff      a rule for staff, outside the assistant's scope: no referral
+#         ood        outside the handbook's domain: no referral
+#   gold: the catalog service ids that are a right referral (any one counts);
+#         [] means no referral is right. Ids are K51 records; the unit is what
+#         the wrong-unit metric compares.
+version: 1
+review_status: approved by the owner as drafted (2026-10-19)
+cohort: K51
+cases:
+  # ---- referral: Phòng Công nghệ Thông tin
+  - {id: r01, kind: referral, query: "Em quên mật khẩu email sinh viên của trường thì phải làm sao để lấy lại ạ?", gold: [K51_K51_phong_cong_nghe_thong_tin_service_1]}
+  - {id: r02, kind: referral, query: "Tài khoản đăng nhập trang đăng ký học phần của em bị khóa, em cần ai hỗ trợ?", gold: [K51_K51_phong_cong_nghe_thong_tin_service_3]}
+  - {id: r03, kind: referral, query: "Mạng wifi trong trường hay bị rớt, em muốn báo lỗi thì báo cho ai?", gold: [K51_K51_phong_cong_nghe_thong_tin_service_5, K51_K51_phong_cong_nghe_thong_tin_service_6]}
+  # ---- referral: Phòng Quản trị – Thiết bị
+  - {id: r04, kind: referral, query: "Lớp em cần mượn micro và amply cho buổi thuyết trình tuần sau thì mượn ở đâu?", gold: [K51_K51_phong_quan_tri_thiet_bi_service_2]}
+  - {id: r05, kind: referral, query: "Máy chiếu trong phòng học bị hỏng thì sinh viên báo cho ai sửa?", gold: [K51_K51_phong_quan_tri_thiet_bi_service_3]}
+  - {id: r06, kind: referral, query: "Căn tin trường ở cơ sở An Dương Vương mở cửa đến mấy giờ vậy ạ?", gold: [K51_K51_phong_quan_tri_thiet_bi_service_4]}
+  - {id: r07, kind: referral, query: "Em làm mất vé gửi xe ở bãi xe cơ sở Lê Văn Sỹ thì phải làm gì?", gold: [K51_K51_phong_quan_tri_thiet_bi_service_4]}
+  - {id: r08, kind: referral, query: "Câu lạc bộ của em muốn mượn một phòng học vào cuối tuần để sinh hoạt thì đăng ký ở đâu?", gold: [K51_K51_phong_quan_tri_thiet_bi_service_1]}
+  # ---- referral: Phòng Khảo thí và Đảm bảo chất lượng
+  - {id: r09, kind: referral, query: "Em cần bảng điểm có xác nhận của trường để nộp hồ sơ xin việc thì xin ở đâu, mất mấy ngày?", gold: [K51_K51_phong_khao_thi_va_dam_bao_chat_luong_service_2]}
+  - {id: r10, kind: referral, query: "Em đã có chứng chỉ TOEIC và muốn nộp để được miễn học phần ngoại ngữ, hạn nộp đợt này là khi nào?", gold: [K51_K51_phong_khao_thi_va_dam_bao_chat_luong_service_4]}
+  # ---- referral: Phòng Kế hoạch – Tài chính
+  - {id: r11, kind: referral, query: "Em đã chuyển khoản đóng học phí ba ngày rồi mà trên hệ thống vẫn báo nợ, em hỏi ai ạ?", gold: [K51_K51_phong_ke_hoach_tai_chinh_service_1]}
+  - {id: r12, kind: referral, query: "Tiền học bổng khuyến khích học kỳ 1 khi nào được chuyển vào tài khoản của sinh viên?", gold: [K51_K51_phong_ke_hoach_tai_chinh_service_2, K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_5]}
+  # ---- referral: Phòng Công tác chính trị và Học sinh, sinh viên
+  - {id: r13, kind: referral, query: "Danh sách sinh viên được miễn giảm học phí học kỳ này đã công bố chưa, em xem ở đâu?", gold: [K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_5]}
+  - {id: r14, kind: referral, query: "Em muốn gửi góp ý về chất lượng nhà vệ sinh ở khu giảng đường thì gửi cho ai?", gold: [K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_7, K51_K51_phong_quan_tri_thiet_bi_service_1]}
+  - {id: r15, kind: referral, query: "Em muốn xin giấy giới thiệu của trường để đi thực tế ở một công ty, xin ở đâu ạ?", gold: [K51_K51_phong_cong_tac_chinh_tri_va_hoc_sinh_sinh_vien_service_5, K51_K51_phong_dao_tao_service_3]}
+  # ---- referral: Phòng Đào tạo
+  - {id: r16, kind: referral, query: "Khi nào trường công bố thời khóa biểu học kỳ sau vậy ạ?", gold: [K51_K51_phong_dao_tao_service_2, K51_K51_phong_dao_tao_service_7]}
+  - {id: r17, kind: referral, query: "Đợt đăng ký học phần học kỳ hè năm nay mở vào ngày nào?", gold: [K51_K51_phong_dao_tao_service_2, K51_K51_phong_dao_tao_service_7]}
+  - {id: r18, kind: referral, query: "Em đã có quyết định công nhận tốt nghiệp, khi nào em nhận được bằng?", gold: [K51_K51_phong_dao_tao_service_6]}
+  - {id: r19, kind: referral, query: "Đợt xét tốt nghiệp tháng này hạn chót nộp hồ sơ là ngày mấy?", gold: [K51_K51_phong_dao_tao_service_5]}
+  # ---- referral: Phòng Thanh tra Đào tạo
+  - {id: r20, kind: referral, query: "Thầy dạy một môn của lớp em thường xuyên nghỉ mà không dạy bù, em muốn phản ánh thì gửi ở đâu?", gold: [K51_K51_phong_thanh_tra_dao_tao_service_1]}
+  # ---- referral: Ký túc xá
+  - {id: r21, kind: referral, query: "Đợt đăng ký ở ký túc xá cho năm học tới khi nào mở vậy ạ?", gold: [K51_K51_ky_tuc_xa_service_1]}
+  - {id: r22, kind: referral, query: "Ký túc xá có câu lạc bộ thể thao hay hoạt động ngoại khóa nào cho sinh viên nội trú tham gia không?", gold: [K51_K51_ky_tuc_xa_service_2]}
+  # ---- referral: Nhà xuất bản
+  - {id: r23, kind: referral, query: "Em muốn mua giáo trình Tâm lý học đại cương do trường xuất bản thì mua ở đâu, giá bao nhiêu?", gold: [K51_K51_nha_xuat_ban_dai_hoc_su_pham_thanh_pho_ho_chi_minh_service_1, K51_K51_nha_xuat_ban_dai_hoc_su_pham_thanh_pho_ho_chi_minh_service_2]}
+  # ---- referral: Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp
+  - {id: r24, kind: referral, query: "Trường có giới thiệu nhà trọ giá rẻ gần trường cho sinh viên năm nhất không ạ?", gold: [K51_K51_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_1]}
+  - {id: r25, kind: referral, query: "Em muốn tìm việc làm thêm buổi tối, trường có chỗ nào giới thiệu việc không?", gold: [K51_K51_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_1]}
+  - {id: r26, kind: referral, query: "Em có ý tưởng khởi nghiệp và muốn được hướng dẫn để tham gia cuộc thi khởi nghiệp, em hỏi ai?", gold: [K51_K51_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_3]}
+  - {id: r27, kind: referral, query: "Ngày hội việc làm năm nay của trường tổ chức vào lúc nào?", gold: [K51_K51_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_7]}
+  - {id: r28, kind: referral, query: "Em muốn đăng ký làm cộng tác viên hỗ trợ các sự kiện của trường thì đăng ký ở đâu?", gold: [K51_K51_trung_tam_ho_tro_sinh_vien_va_phat_trien_khoi_nghiep_service_4]}
+  # ---- referral: Trung tâm Ngoại ngữ, Trung tâm Tin học
+  - {id: r29, kind: referral, query: "Em muốn thi IELTS ngay tại trường thì đăng ký ở đâu và lệ phí bao nhiêu?", gold: [K51_K51_trung_tam_ngoai_ngu_service_3]}
+  - {id: r30, kind: referral, query: "Lịch thi chứng chỉ ngoại ngữ bậc 3 theo khung 6 bậc đợt tới là khi nào?", gold: [K51_K51_trung_tam_ngoai_ngu_service_2]}
+  - {id: r31, kind: referral, query: "Em muốn học thêm một lớp tin học văn phòng ngắn hạn ở trường thì đăng ký ở đâu?", gold: [K51_K51_trung_tam_tin_hoc_service_2]}
+  # ---- referral: other units
+  - {id: r32, kind: referral, query: "Em muốn tập giảng thử trong phòng học thông minh trước đợt kiến tập thì đăng ký thế nào?", gold: [K51_K51_trung_tam_phat_trien_ky_nang_su_pham_service_1]}
+  - {id: r33, kind: referral, query: "Em bị sốt trong giờ học thì có chỗ nào trong trường khám và cho thuốc không?", gold: [K51_K51_tram_y_te_service_2, K51_K51_tram_y_te_service_3]}
+  - {id: r34, kind: referral, query: "Em bị mất thẻ bảo hiểm y tế sinh viên thì làm lại ở đâu?", gold: [K51_K51_tram_y_te_service_4]}
+  - {id: r35, kind: referral, query: "Hạn đăng ký đề tài nghiên cứu khoa học sinh viên năm nay là khi nào?", gold: [K51_K51_phong_khoa_hoc_cong_nghe_va_moi_truong_tap_chi_khoa_hoc_service_1]}
+  - {id: r36, kind: referral, query: "Trường có chương trình cho sinh viên đi trao đổi học thuật ở nước ngoài không, em hỏi thông tin ở đâu?", gold: [K51_K51_phong_hop_tac_quoc_te_service_3, K51_K51_phong_hop_tac_quoc_te_service_2]}
+  - {id: r37, kind: referral, query: "Em muốn tìm luận văn thạc sĩ cũ của trường để tham khảo thì tìm ở đâu?", gold: [K51_K51_thu_vien_service_1]}
+  - {id: r38, kind: referral, query: "Sau khi tốt nghiệp em muốn học thạc sĩ ở trường, hồ sơ dự tuyển nộp khi nào?", gold: [K51_K51_phong_sau_dai_hoc_service_2]}
+  - {id: r39, kind: referral, query: "Em muốn học cách thiết kế bài giảng điện tử, trường có chỗ nào hướng dẫn không?", gold: [K51_K51_vien_nghien_cuu_giao_duc_service_2]}
+  - {id: r40, kind: referral, query: "Em muốn tham gia hoạt động tình nguyện mùa hè xanh thì đăng ký ở đâu?", gold: [K51_K51_doan_thanh_nien_va_hoi_sinh_vien_truong_service_1]}
+  # ---- no referral: one person's contact or record
+  - {id: n01, kind: personal, query: "Cho em xin số điện thoại riêng của thầy hiệu trưởng.", gold: []}
+  - {id: n02, kind: personal, query: "Cho em xin email cá nhân của cô dạy môn Giáo dục học lớp em.", gold: []}
+  - {id: n03, kind: personal, query: "Bạn lớp trưởng lớp em tên gì, số điện thoại bao nhiêu?", gold: []}
+  - {id: n04, kind: personal, query: "Điểm thi môn Triết của bạn Nguyễn Văn An lớp em được bao nhiêu?", gold: []}
+  # ---- no referral: rules for staff, outside the assistant's scope
+  - {id: n05, kind: staff, query: "Lương của giảng viên trường mình một tháng khoảng bao nhiêu?", gold: []}
+  - {id: n06, kind: staff, query: "Viên chức của trường được nghỉ phép năm bao nhiêu ngày?", gold: []}
+  # ---- no referral: outside the handbook's domain
+  - {id: n07, kind: ood, query: "Hôm nay thời tiết ở Sài Gòn có mưa không?", gold: []}
+  - {id: n08, kind: ood, query: "Chỉ em cách nấu phở bò với.", gold: []}
+  - {id: n09, kind: ood, query: "Tối qua đội tuyển Việt Nam đá với Thái Lan tỉ số bao nhiêu?", gold: []}
+  - {id: n10, kind: ood, query: "Giá vàng hôm nay là bao nhiêu một chỉ?", gold: []}

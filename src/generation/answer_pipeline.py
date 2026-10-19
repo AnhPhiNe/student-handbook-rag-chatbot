@@ -27,6 +27,16 @@ from .answer_formatter import (
     sources_section_start,
 )
 from .answer_guardrails import build_fallback_answer, is_low_confidence
+from .catalog_referral import (
+    MARKER_OPENING,
+    UNCLOSED_MARKER,
+    collect_referrals,
+    public_decisions,
+    render_referrals,
+    split_unsupported_marker,
+    start_referrals,
+    take_unsupported_marker,
+)
 from .citation_formatter import prioritize_citations_by_answer_anchors
 from .deepseek_client import DeepSeekClient
 from .fallback_client import FallbackLLMClient
@@ -121,6 +131,8 @@ class PreparedAnswer:
     error_type: str | None = None
     error_message: str | None = None
     clarification_needed: bool = False
+    # Catalog referral lookups started while the composer writes, by task id.
+    referral_futures: dict[str, Any] = field(default_factory=dict)
 
 
 class StreamAnswerCleaner:
@@ -141,6 +153,14 @@ class StreamAnswerCleaner:
         self._pending = ""
         self._released_any = False
         self._in_sources = False
+        # Task ids the composer marked as without evidence (catalog referral).
+        self.unsupported: list[str] = []
+        self._dropped = ""  # text after a dropped source footer, read only for markers
+
+    def _take_markers(self, text: str) -> str:
+        text, task_ids = take_unsupported_marker(text)
+        self.unsupported.extend(task_id for task_id in task_ids if task_id not in self.unsupported)
+        return text
 
     @property
     def text(self) -> str:
@@ -150,6 +170,8 @@ class StreamAnswerCleaner:
     def feed(self, chunk: str) -> str:
         """Add one streamed chunk; return the text now safe to show ("" if none)."""
         if self._in_sources:
+            self._dropped += chunk
+            self._take_markers(self._dropped)  # the marker still counts after a dropped footer
             return ""
         self._pending += chunk
         if not self._released_any:
@@ -159,12 +181,20 @@ class StreamAnswerCleaner:
             at_line_start=(not self.parts or self.parts[-1].endswith("\n")),
         )
         if source_start is not None:
+            self._dropped = self._pending[source_start:]
+            self._take_markers(self._dropped)
             self._pending = self._pending[:source_start]
             self._in_sources = True
-        self._pending = clean_stream_fragment(self._pending)
+        self._pending = self._take_markers(clean_stream_fragment(self._pending))
         if len(self._pending) <= STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS:
             return ""
         cut = len(self._pending) - STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS
+        # A marker that has started but not closed is never released.
+        opening = self._pending.find(MARKER_OPENING)
+        if opening >= 0:
+            cut = min(cut, opening)
+            if cut <= 0:
+                return ""
         boundary = max(self._pending.rfind(" ", 0, cut), self._pending.rfind("\n", 0, cut))
         if boundary >= 0:
             cut = boundary + 1
@@ -179,7 +209,10 @@ class StreamAnswerCleaner:
 
     def finish(self) -> str:
         """Release the held-back tail once the stream has ended."""
-        if not self._pending:
+        self._pending = self._take_markers(self._pending)
+        self._pending = UNCLOSED_MARKER.sub("", self._pending)
+        if not self._pending.strip():
+            self._pending = ""
             return ""
         # Source footers were removed at the real stream line boundaries in
         # feed(); do not reinterpret a mid-sentence tail as a new heading.
@@ -510,6 +543,15 @@ class AnswerPipeline:
             max_context_chars=self.max_context_chars,
             cohort=cohort,
         )
+        executor = getattr(self, "_plan_executor", None)
+        if executor is not None:
+            with tracking(tracker):  # the selector calls record on this request's usage
+                prepared.referral_futures = start_referrals(
+                    executor.directory_selector,
+                    executor.catalogs.student_service_directory,
+                    retrieval_result,
+                    effective_query,
+                )
         if telemetry is not None:
             telemetry["context_build_ms"] = (time.monotonic() - context_started) * 1000
             telemetry["context_chars"] = len(prepared.context_used)
@@ -628,13 +670,12 @@ class AnswerPipeline:
         )
 
         final_answer = ""
+        unsupported: list[str] = []
         if llm_result.get("ok"):
             corrector = IdentifierCorrector(prepared.context_used, query)
+            composed, unsupported = split_unsupported_marker(str(llm_result.get("text") or "").strip())
             final_answer = corrector.fix(
-                format_final_response(
-                    str(llm_result.get("text") or "").strip(),
-                    primary_citations=selected_citations,
-                )
+                format_final_response(composed, primary_citations=selected_citations)
             )
             tracker.counters.update(corrector.counts)
             if not final_answer.strip():
@@ -676,6 +717,10 @@ class AnswerPipeline:
             )
 
         public_citations = self._citations_for_answer(prepared.all_citations, final_answer)
+        # Appended after the identifier corrector: catalog contacts are not evidence text.
+        referrals = collect_referrals(prepared.referral_futures, unsupported)
+        if referral_text := render_referrals(referrals):
+            final_answer = f"{final_answer.rstrip()}\n\n{referral_text}"
         output = self._build_output(
             query=query,
             retrieval_result=retrieval_result,
@@ -688,6 +733,7 @@ class AnswerPipeline:
             llm_called=True,
             model_used=llm_result.get("model_used"),
             tracker=tracker,
+            catalog_referrals=public_decisions(referrals),
         )
         return output
 
@@ -896,6 +942,12 @@ class AnswerPipeline:
             final_answer_for_citations = cleaner.text
             if not final_answer_for_citations.strip():
                 raise RuntimeError("Empty answer after output cleanup.")
+            referrals = collect_referrals(prepared.referral_futures, cleaner.unsupported)
+            if referral_text := render_referrals(referrals):
+                yield {"type": "token", "text": f"\n\n{referral_text}"}
+            if referrals:
+                logger.info("catalog_referrals", extra={
+                    "trace_id": trace_id, "catalog_referrals": public_decisions(referrals)})
             end_time_llm = datetime.now(timezone.utc).isoformat()
 
             _record_generation_usage(
@@ -1022,6 +1074,7 @@ class AnswerPipeline:
         clarification_needed: bool = False,
         model_used: str | None = None,
         tracker: Any = None,
+        catalog_referrals: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         """Assemble the canonical answer result consumed by all adapters."""
 
@@ -1084,6 +1137,8 @@ class AnswerPipeline:
             "model_used": model_used,
             "model": model_used,
             "clarification_needed": clarification_needed,
+            # Parts the composer marked as without evidence, and the catalog referral for each.
+            "catalog_referrals": catalog_referrals or [],
             "context_used": context_used,
             "tracker": tracker,
             "evaluation_telemetry": self._finalize_evaluation_telemetry(

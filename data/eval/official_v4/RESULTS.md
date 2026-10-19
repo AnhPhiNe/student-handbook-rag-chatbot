@@ -392,6 +392,27 @@ little above zero: the no-new-zero rule, as written, does not separate a judge
 difference from a new error. The rule fails; the owner deployed v3.43 anyway,
 as an exception decided after reading the result (SPEC, run Q).
 
+## A catalog referral for parts without evidence: run S (2026-10-19)
+
+Composer v3.44 marks the tasks it finds no evidence for; for those, the
+directory selector, asked which catalog unit is in charge of the matter, adds a
+labelled referral with the catalog record's contacts. The selector moves to
+DeepInfra only. Run `official_v4_answers_20261019T061552Z`, commit `1fb42eb0`,
+against run Q (production v3.43) with K49's plans; not a hold-out.
+
+| In scope (228) | `answer_correctness` | Zeros | Unsupported claims |
+|---|---:|---|---:|
+| Q (v3.43, production) | 0.964 | V4-209, V4-172 | 11 |
+| S (v3.44 + referral) | 0.972 | V4-209, **V4-070** | 11 |
+
+Paired +0.008, 95% cluster interval [−0.006, +0.023]. No stray email, the 18
+out-of-scope cases pass, no grounded referral with contacts is lost. On v4 the
+composer marked 21 answers and the referral was added to 2. The one new zero,
+V4-070, has the same answer as Q (0.5 there); the pre-registration leaves it to
+the owner. V4-121 lost a grounded pointer, without contacts, to Phòng KHCN&MT (1.0 →
+0.6). On the 50 development questions the referral named 17 units, none wrong,
+and none on the 10 personal, staff or out-of-domain questions.
+
 ## What these results do not establish
 
 - **Run B is not a hold-out.** Its figure describes the deployed system; the

@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import Any
 
 from src.generation.answer_formatter import format_final_response
+from src.generation.catalog_referral import split_unsupported_marker
 from src.generation.citation_formatter import prioritize_citations_by_answer_anchors
 from src.generation.prompt_builder import ANSWER_PROMPT_VERSION, render_answer_prompt
 from src.retrieval.core.retrieval_mode import DEFAULT_RETRIEVAL_MODE
@@ -37,7 +38,9 @@ def replay_record(source: dict[str, Any], *, client: Any, public_max_sources: in
     started = time.perf_counter()
     result = client.generate(prompt)
     llm_ms = (time.perf_counter() - started) * 1000
-    answer = format_final_response(str(result.get("text") or "").strip()) if result.get("ok") else ""
+    # A replay has no selector: the marker of unsupported parts is removed, no referral is added.
+    composed, _ = split_unsupported_marker(str(result.get("text") or "").strip())
+    answer = format_final_response(composed) if result.get("ok") else ""
     ok = bool(answer.strip())
     telemetry = {**(source.get("evaluation_telemetry") or {}), "llm_ms": llm_ms,
                  "retry_count": max(0, int(result.get("attempts") or 1) - 1)}

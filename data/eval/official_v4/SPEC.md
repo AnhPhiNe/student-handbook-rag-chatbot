@@ -651,7 +651,7 @@ author nor its models wrote.
     `data/eval/development/catalog_referral_questions.yaml` version 2 (61
     questions: the 50 of S, 7 control questions whose regulations name where
     to go, c01-c07, and 4 referral questions in K49 and K50, k01-k04; the added
-    gold is a draft for the owner's review), each run once through the full
+    gold was approved by the owner as drafted), each run once through the full
     pipeline as served: no template on a control question (must be 0); wrong
     unit at most 5% and no referral or template on the 10 no-referral
     questions, as in S; contacts exactly the catalog record's; no email outside

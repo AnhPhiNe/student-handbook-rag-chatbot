@@ -31,7 +31,7 @@
 version: 2
 review_status: >-
   r01-n10 approved by the owner as drafted (2026-10-19); c01-c07 and k01-k04
-  added 2026-10-19 as a DRAFT for the owner's review
+  added 2026-10-19 and approved by the owner as drafted (2026-10-19)
 cohort: K51
 cases:
   # ---- referral: Phòng Công nghệ Thông tin
@@ -99,7 +99,7 @@ cases:
   - {id: n08, kind: ood, query: "Chỉ em cách nấu phở bò với.", gold: []}
   - {id: n09, kind: ood, query: "Tối qua đội tuyển Việt Nam đá với Thái Lan tỉ số bao nhiêu?", gold: []}
   - {id: n10, kind: ood, query: "Giá vàng hôm nay là bao nhiêu một chỉ?", gold: []}
-  # ---- control: the regulations name where to go (draft, for review)
+  # ---- control: the regulations name where to go (approved 2026-10-19)
   - {id: c01, kind: control, query: "Nếu không đồng ý với kết quả đánh giá điểm rèn luyện thì em gửi đơn khiếu nại ở đâu và trong thời hạn bao lâu?", gold: [], expected_unit: "Phòng Công tác chính trị và Học sinh, sinh viên"}
   - {id: c02, kind: control, query: "Đơn vị nào trong trường tổ chức xét cấp học bổng khuyến khích học tập cho sinh viên?", gold: [], expected_unit: "Phòng Công tác chính trị và Học sinh, sinh viên"}
   - {id: c03, kind: control, query: "Hồ sơ xin miễn, giảm học phí thì sinh viên học ở cơ sở chính nộp ở đâu?", gold: [], expected_unit: "Phòng Công tác chính trị và Học sinh, sinh viên"}
@@ -107,7 +107,7 @@ cases:
   - {id: c05, kind: control, query: "Muốn xin nghỉ học tạm thời thì đơn cần có xác nhận của ai, và việc không nợ học phí do đơn vị nào xác nhận?", gold: [], expected_unit: "Trưởng khoa; Phòng Kế hoạch – Tài chính"}
   - {id: c06, kind: control, query: "Ban cán sự lớp sinh viên năm thứ nhất do ai chỉ định?", gold: [], expected_unit: "khoa"}
   - {id: c07, kind: control, cohort: K50, query: "Kết quả điểm rèn luyện của em bị chấm thấp, em muốn khiếu nại thì gửi đơn về đâu?", gold: [], expected_unit: "Phòng Công tác chính trị và Học sinh, sinh viên"}
-  # ---- referral in K49 and K50 (draft, for review)
+  # ---- referral in K49 and K50 (approved 2026-10-19)
   - {id: k01, kind: referral, cohort: K50, query: "Em quên mật khẩu email sinh viên thì làm sao để lấy lại ạ?", gold: [K50_K50_phong_cong_nghe_thong_tin_service_1]}
   - {id: k02, kind: referral, cohort: K49, query: "Căn tin trường mở cửa đến mấy giờ vậy ạ?", gold: [K49_K49_phong_quan_tri_thiet_bi_service_4]}
   - {id: k03, kind: referral, cohort: K50, query: "Lớp em muốn mượn micro và amply cho buổi sinh hoạt lớp thì mượn ở đâu?", gold: [K50_K50_phong_quan_tri_thiet_bi_service_2]}

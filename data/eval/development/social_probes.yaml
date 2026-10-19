@@ -16,6 +16,11 @@
 # exists, so a goodbye searches the handbook); so20 "ok" -> clarify.
 # About 10,220 input and 80-270 output tokens per call; about $0.022 for the
 # 20 calls at $0.10/$0.50 per million tokens, cache discount not counted.
+#
+# Rerun after v63b ("lời cảm ơn hoặc tạm biệt (thanks)"), 22 probes: 20/22.
+# so19, so21, so22 (farewells) -> thanks. Every clear case still passes
+# (so10 now plans structured + rag). Misses unchanged: so18 -> about_bot,
+# so20 "ok" -> clarify. About $0.024; both runs together about $0.046.
 version: 1
 cases:
   # Whole social queries.

@@ -1346,9 +1346,12 @@ reworded at the same time.
 API credit left): no official suite was rerun. 20 planner probes
 (`data/eval/development/social_probes.yaml`, written before the run): 17/20,
 every clear case right (9 social, 3 greeting-plus-question planned normally, 3
-out of domain), about $0.022 at $0.10/$0.50 per million tokens. Misses, all
-borderline: "bạn giỏi quá" → about_bot (a fitting reply), "tạm biệt nhé" → a
-RAG task (no farewell kind exists), "ok" → clarify. What this cannot show: how
+out of domain), about $0.022 at $0.10/$0.50 per million tokens; "tạm biệt
+nhé" went to a RAG task. With the owner's wording "lời cảm ơn hoặc tạm biệt
+(thanks)" (prompt v63b) and two more farewell probes: 20/22, all three
+farewells → thanks, every clear case still right; about $0.046 for both runs.
+Remaining misses, both borderline: "bạn giỏi quá" → about_bot (a fitting
+reply) and "ok" → clarify. What this cannot show: how
 the added rule and schema field shift routing on ordinary questions; v62
 showed that a wording change alone can move 2–3 official cases.
 

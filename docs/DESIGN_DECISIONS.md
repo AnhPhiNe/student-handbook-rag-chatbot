@@ -4,8 +4,9 @@ The measured component choices and later candidate changes are recorded below.
 Not every later change has a full end-to-end comparison; candidate-only checks
 are labelled explicitly. This document collects the comparisons: what was
 compared, on which data, what the numbers were, and why the choice was made.
-The dated logs of each experiment are in [archive/](archive/README.md); the raw
-reports are listed at the end.
+The dated logs of the earlier experiments were removed from the tree on
+2026-10-19; they remain in git history at commit `635c0e7c` (`docs/archive/`).
+The raw reports are listed at the end.
 
 ## How to read the numbers
 
@@ -29,8 +30,8 @@ reports are listed at the end.
 
 | Component | Chosen | Alternatives measured | Deciding evidence |
 |---|---|---|---|
-| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; prompt v62 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | v62 (shorter v61 wording, owner choice 2026-10-18): official_v1 132 = v61 132, official_v2 139 vs v61 142, at the edge of the pre-registered rule; known regressions in `ROUTING_EVIDENCE_RELEASE.md` stage 26 |
-| Composer | DeepSeek-V4.1-Flash on DeepInfra only, reasoning none, prompt v3.43 (the rules as five principles) | Gemini 3.1 Flash-Lite; reasoning low; the DeepSeek API first; DeepSeek-V4.1-Flash-1017; a rule forbidding referrals without evidence (v3.41, v3.42) | official_v4 runs N (none against low) and Q (v3.43 against v3.36: −0.005, CI [−0.017, +0.006]); v3.43 deployed by the owner although its new-zero criterion failed (2026-10-19, below) |
+| Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; prompt v63d (v62 plus a `social` field, 2026-10-19, probes only) | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | v62 (shorter v61 wording, owner choice 2026-10-18): official_v1 132 = v61 132, official_v2 139 vs v61 142, at the edge of the pre-registered rule; known regressions in `ROUTING_EVIDENCE_RELEASE.md` stage 26 |
+| Composer | DeepSeek-V4.1-Flash on DeepInfra only, reasoning none, prompt v3.44 (v3.43 plus the no-evidence marker for the catalog referral and its template) | Gemini 3.1 Flash-Lite; reasoning low; the DeepSeek API first; DeepSeek-V4.1-Flash-1017; a rule forbidding referrals without evidence (v3.41, v3.42) | official_v4 runs N (none against low) and Q (v3.43 against v3.36: −0.005, CI [−0.017, +0.006]); v3.43 deployed by the owner although its new-zero criterion failed; run S (v3.44 + referral) 0.972 against Q 0.964, +0.008 [−0.006, +0.023] (2026-10-19, below) |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
 | Reranker | Voyage `rerank-3`, on all 24 fused children (2026-09-30) | Qwen3-Reranker-8B, 4B, 0.6B on DeepInfra; Cohere rerank-v4.0-fast; none | first 0.942 / top-5 155/155 at p90 0.85 s, against 8B 0.923 / 155 at p90 4.7 s, 4B 0.903 / 153, Cohere 0.897, none 0.832 / 148. Chosen for availability: the DeepInfra 8B endpoint stalled for over four hours on 2026-09-30 |
@@ -223,7 +224,7 @@ and is corrected before the student sees it.
 
 | Version | Date | Change | Evidence |
 |---|---|---|---|
-| v3.23 | 2026-09-06 | Material exceptions in the evidence | Six-case smoke (Gemini): 5/6 main criteria met; the scholarship answer omitted the exclusion of bridging students ([archive](archive/COMPOSER_V323_RELEASE_SMOKE.md)) |
+| v3.23 | 2026-09-06 | Material exceptions in the evidence | Six-case smoke (Gemini): 5/6 main criteria met; the scholarship answer omitted the exclusion of bridging students (log in git history: `docs/archive/COMPOSER_V323_RELEASE_SMOKE.md` at `635c0e7c`) |
 | v3.24 | 2026-09-06 | Table reading and cohort context grounded in the prompt | Not measured separately |
 | v3.25 | 2026-09 | | Used for the Gemini/DeepSeek A/B above. A review of 146 real packets found every source marked `candidate`, so the rule "answer candidate-only units cautiously" applied to every answer and matched DeepSeek hedging before correct answers |
 | v3.26 | 2026-09-27 | An input section defines the packet; `candidate` is the default and answers normally when it directly answers | From the v3.25 review |

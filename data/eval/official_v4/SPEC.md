@@ -660,6 +660,15 @@ author nor its models wrote.
     procedure mailbox on its own procedure; the 18 out-of-scope cases pass
     reading; every templated answer is read, and one where the evidence did
     answer a composed task fails T.
+  Development outcome (2026-10-19, commit `9f4eb436`, main's live planner v62
+  and normalizer v35, one pass, no provider error), added gold still a draft:
+  **0 false template** on the 7 controls (none was marked; c01, c03, c07 name
+  Phòng CTCT&HSSV with its deadline from the regulation, c04 Phòng Khảo thí,
+  c05 the dean and Phòng Kế hoạch – Tài chính, c06 the faculty; c02 was asked
+  back by the existing directory lookup, not by this change); 19 referrals on
+  the 44 referral questions, all of them templates, 0 wrong unit; no referral
+  or template on the 10 no-referral questions; contacts equal to the catalog;
+  no email outside the directories. The gates pass.
   - official_v4 run S, after the development set passes: baseline run Q
     (`official_v4_answers_20261018T182906Z`, v3.43, production), K49's plans
     (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`), the same composer,

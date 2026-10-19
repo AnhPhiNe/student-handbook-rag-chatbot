@@ -530,6 +530,54 @@ author nor its models wrote.
   same answer as the baseline's (only the judge's score differs). This is a
   decision made after the result, not a pass of the rule; v3.43 is deployed
   with planner v62 and normalizer v35, a combination not measured here.
+- **Run S: a catalog referral for parts without evidence, and a narrow composer
+  rule** (owner, 2026-10-19, one change; DRAFT written before any code, to be
+  completed with the trigger and the reviewed gold before code is written).
+  - Composer rule (on v3.43): a unit and its contacts may still be named when
+    the unit's evidence says that unit handles the asked matter (v3.43
+    behaviour, so V4-229 and V4-235 keep their referral). For a part without
+    evidence the answer says the handbook does not cover it and names no unit,
+    phone or email taken from other passages (the `nghidinh116@` case);
+    referral for that part belongs to the system.
+  - Referral path: the existing `student_service` lookup and directory selector
+    over the closed catalog, asked with that task's question and the original
+    query as context, without the thinking retry. A match appends a separate,
+    labelled referral ("Sổ tay không quy định về ý này; bạn có thể liên hệ …")
+    whose contacts come from the catalog record by id. Ambiguous, none or
+    unavailable: no referral and no clarification. No referral for
+    personal-contact, staff-only or out-of-domain questions.
+  - Trigger: **to be chosen by the owner before code**. The task-level
+    `coverage` is "uncovered" only when retrieval returns nothing: in run Q 0
+    of 355 composed units were uncovered, and the cases this targets (V4-229,
+    V4-235, the rector's phone) are all "covered", so a trigger on it alone
+    would not fire. Options: (B) the composer marks, in a fixed machine-read
+    line that is removed before the student sees the answer, the task ids it
+    could not support, and the referral is appended for those; (C) a separate
+    per-task check asks whether the evidence answers the task question.
+  - Development set: `data/eval/development/catalog_referral_questions.yaml`,
+    50 questions (40 with a gold catalog service over 20 units, 10 with no
+    referral right: 4 personal-contact, 2 staff-only, 4 out-of-domain); the
+    owner reviews the gold before use. Each question runs once through the full
+    pipeline. Metrics, fixed now:
+    - **wrong-unit rate** (primary): among the 40 referral cases, referrals
+      naming a unit outside the gold units, divided by referrals made; must be
+      at most 5%;
+    - **false referral**: any referral on the 10 no-referral cases; must be 0;
+    - **abstain rate**: referral cases with no referral, reported, with cases
+      the composer answered from evidence counted apart;
+    - every referral's contacts equal the catalog record's.
+  - official_v4 run S, after the development set passes: baseline run Q
+    (`official_v4_answers_20261018T182906Z`, v3.43, production), K49's plans
+    (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`), the same composer,
+    judge, packet and validity checks as Q. Keep S if, in scope: no grounded
+    referral of Q is lost (a unit Q names with contacts from that unit's
+    evidence and S does not, confirmed by reading); the lower bound of the 95%
+    cluster interval of the paired `answer_correctness` difference (S minus Q)
+    is at least −0.03; no new zero; no email outside the directories except a
+    procedure mailbox on its own procedure; the 18 out-of-scope cases pass
+    reading. Judge noise of the V4-172 kind is possible: a new zero whose
+    answer is read as the same as Q's is reported as such, and the owner
+    decides on it; any other new zero fails S. No deploy without the owner.
 - The timeout list is read from the run log (the reranker warning is printed
   while its case is running): the answer records do not keep the reranker
   telemetry.

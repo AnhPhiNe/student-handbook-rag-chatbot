@@ -40,5 +40,8 @@ cases:
   - {id: so16, cohort: K51, query: "Bạn giúp được gì?", expected: [about_bot]}
   - {id: so17, cohort: K51, query: "hôm nay buồn quá", expected: [ood, greeting]}
   - {id: so18, cohort: K51, query: "bạn giỏi quá", expected: [thanks, ood]}
-  - {id: so19, cohort: K50, query: "tạm biệt nhé", expected: [thanks, greeting, ood]}
+  - {id: so19, cohort: K50, query: "tạm biệt nhé", expected: [thanks]}
   - {id: so20, cohort: K51, query: "ok", expected: [thanks, greeting, ood]}
+  # Farewells (added 2026-10-19 with the "hoặc tạm biệt" wording): thanks.
+  - {id: so21, cohort: K51, query: "bye bạn nha", expected: [thanks]}
+  - {id: so22, cohort: K49, query: "Mình đi đây, hẹn gặp lại nhé", expected: [thanks]}

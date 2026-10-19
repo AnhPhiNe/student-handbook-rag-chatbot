@@ -191,7 +191,7 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
     # v63 adds the social field and its one prompt rule (35,028 characters).
     assert stats["total_chars"] <= 35100
     assert stats["estimated_input_tokens"] <= 8800
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v63-social"
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v63b-social-farewell"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K49":[2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 

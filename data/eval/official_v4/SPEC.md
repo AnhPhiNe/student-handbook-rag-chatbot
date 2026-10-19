@@ -600,6 +600,23 @@ author nor its models wrote.
       and 24 judge workers, for speed (Q used 16 answer workers). Workers change
       the wait, not the answers; the validity checks above catch the timeouts
       more concurrency may cause, and those cases are rerun before scoring.
+  Outcome (2026-10-19, `official_v4_answers_20261019T061552Z`, commit
+  `1fb42eb0`; all 246 answered and judged on the first pass; no 402,
+  authentication error, BM25-only search or reranker skip): in scope S 0.972
+  against Q 0.964, paired +0.008, 95% cluster interval [−0.006, +0.023]; no
+  email outside the directories except `nghidinh116@` on its own procedure
+  (V4-124, V4-126, V4-167); the 18 out-of-scope cases pass reading; no grounded
+  referral of Q with contacts is lost (Q names units with contacts only in
+  V4-091 and V4-226, and S keeps them; the other units Q names and S does not
+  are steps of a described procedure). One borderline case: V4-121, where Q
+  says to ask Phòng KHCN&MT about registering a research topic (grounded, no
+  contacts) and S does not (1.0 → 0.6). The composer marked 21 answers and
+  the referral was added to 2 (V4-096 Ký túc xá, V4-235 Phòng CTCT&HSSV).
+  **One new zero, V4-070** (Q 0.5): S's answer is read as the same as Q's
+  (the same two units with the same contacts; the gold names Phòng CTCT&HSSV
+  for the dormitory, a gold narrower than the K49 procedure, as recorded for
+  run K49). As fixed before the run, this is reported as judge spread and the
+  owner decides; every other criterion holds.
   - official_v4 run S, after the development set passes: baseline run Q
     (`official_v4_answers_20261018T182906Z`, v3.43, production), K49's plans
     (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`), the same composer,

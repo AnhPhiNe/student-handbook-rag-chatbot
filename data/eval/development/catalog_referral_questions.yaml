@@ -12,7 +12,8 @@
 # Development data, not a hold-out: DRAFT written 2026-10-19 by the AI assistant
 # from the K51 service catalog and a text search of the regulations, before any
 # code or run. The owner reviews the gold before it is used; until then
-# `review_status: draft`. No official_v4 wording was copied.
+# `review_status: draft`; approved without change on 2026-10-19. No official_v4
+# wording was copied.
 #
 # Fields:
 #   kind: referral   a catalog service handles the matter; the handbook text does
@@ -24,7 +25,7 @@
 #         [] means no referral is right. Ids are K51 records; the unit is what
 #         the wrong-unit metric compares.
 version: 1
-review_status: draft
+review_status: approved by the owner as drafted (2026-10-19)
 cohort: K51
 cases:
   # ---- referral: Phòng Công nghệ Thông tin

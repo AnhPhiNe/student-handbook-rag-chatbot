@@ -531,8 +531,10 @@ author nor its models wrote.
   decision made after the result, not a pass of the rule; v3.43 is deployed
   with planner v62 and normalizer v35, a combination not measured here.
 - **Run S: a catalog referral for parts without evidence, and a narrow composer
-  rule** (owner, 2026-10-19, one change; DRAFT written before any code, to be
-  completed with the trigger and the reviewed gold before code is written).
+  rule** (owner, 2026-10-19, one change; drafted before any code and completed
+  with the owner's three choices below before code was written: trigger B, the
+  gold approved as drafted, the selector on DeepInfra only). Composer prompt
+  v3.44 (`student-handbook-answer-v3.44-catalog-referral`).
   - Composer rule (on v3.43): a unit and its contacts may still be named when
     the unit's evidence says that unit handles the asked matter (v3.43
     behaviour, so V4-229 and V4-235 keep their referral). For a part without
@@ -546,26 +548,36 @@ author nor its models wrote.
     whose contacts come from the catalog record by id. Ambiguous, none or
     unavailable: no referral and no clarification. No referral for
     personal-contact, staff-only or out-of-domain questions.
-  - Trigger: **to be chosen by the owner before code**. The task-level
+  - Trigger: **B, the composer's marker** (owner's choice). The task-level
     `coverage` is "uncovered" only when retrieval returns nothing: in run Q 0
     of 355 composed units were uncovered, and the cases this targets (V4-229,
-    V4-235, the rector's phone) are all "covered", so a trigger on it alone
-    would not fire. Options: (B) the composer marks, in a fixed machine-read
-    line that is removed before the student sees the answer, the task ids it
-    could not support, and the referral is appended for those; (C) a separate
-    per-task check asks whether the evidence answers the task question.
+    V4-235, the rector's phone) are all "covered", so it cannot drive the
+    referral. The composer ends its answer with one line
+    `[[CHUA_CAN_CU: t…]]` listing the task ids whose asked point has no
+    evidence; the line is removed before the student sees the answer (the
+    stream holds it back). The selector runs for every task answered from
+    regulation text while the composer writes; its decision is used only for
+    the marked tasks. Rejected: (C) a separate per-task answerability check.
+  - Directory selector: `deepseek-ai/DeepSeek-V4.1-Flash` on DeepInfra only
+    (owner's choice; it was the DeepSeek API first), for its existing lookups
+    too, so S also carries that provider change against Q.
   - Development set: `data/eval/development/catalog_referral_questions.yaml`,
     50 questions (40 with a gold catalog service over 20 units, 10 with no
-    referral right: 4 personal-contact, 2 staff-only, 4 out-of-domain); the
-    owner reviews the gold before use. Each question runs once through the full
-    pipeline. Metrics, fixed now:
+    referral right: 4 personal-contact, 2 staff-only, 4 out-of-domain); gold
+    approved by the owner as drafted (2026-10-19). Each question runs once
+    through the full pipeline in S's configuration, cohort K51, on the K49
+    collections. A referral is a `catalog_referrals` entry with status "match"
+    (rendered in the answer). Metrics, fixed before code:
     - **wrong-unit rate** (primary): among the 40 referral cases, referrals
       naming a unit outside the gold units, divided by referrals made; must be
       at most 5%;
     - **false referral**: any referral on the 10 no-referral cases; must be 0;
     - **abstain rate**: referral cases with no referral, reported, with cases
-      the composer answered from evidence counted apart;
-    - every referral's contacts equal the catalog record's.
+      the composer did not mark (answered from evidence, or asked for
+      clarification) counted apart;
+    - every referral's contacts equal the catalog record's;
+    - and, as in P and Q, no email outside the directories in any answer.
+    A failure stops before the official_v4 run and goes to the owner.
   - official_v4 run S, after the development set passes: baseline run Q
     (`official_v4_answers_20261018T182906Z`, v3.43, production), K49's plans
     (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`), the same composer,

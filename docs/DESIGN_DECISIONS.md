@@ -1329,6 +1329,40 @@ grounded even if the planner gives both tasks the same one; no grounding check
 can see that pairing error. In 74 saved plans with two or more scores and
 scored tasks it was not observed.
 
+## Greetings, thanks and "who are you" get a fixed reply (2026-10-19)
+
+Production answered "Xin chào", "Cảm ơn bạn nhé" and "Bạn là ai vậy?" with the
+out-of-domain refusal. QueryPlan now carries `social` (none, greeting, thanks,
+about_bot). The planner sets it only when the query asks for no information
+(prompt v63d adds one rule, by purpose, and changes no existing rule text); the normalizer (v36)
+keeps it only when no task was planned, and it then wins over out_of_domain,
+so "Chào bạn, cho em hỏi học bổng…" plans as before. The pipeline answers a
+social query, and an out-of-domain one, from `configs/social_replies.yaml`
+(the owner's wording, a random variant, the cohort filled in where marked)
+without the composer and without citations. The out-of-domain refusal was
+reworded at the same time.
+
+**Validated on probes only, by the owner's budget decision** (about $0.39 of
+API credit left): no official suite was rerun. 20 planner probes
+(`data/eval/development/social_probes.yaml`, written before the run): 17/20,
+every clear case right (9 social, 3 greeting-plus-question planned normally, 3
+out of domain), about $0.022 at $0.10/$0.50 per million tokens; "tạm biệt
+nhé" went to a RAG task. With the owner's wording "lời cảm ơn hoặc tạm biệt
+(thanks)" (prompt v63b) and two more farewell probes: 20/22. The owner then
+rejected adding words one at a time and approved defining social by purpose
+(prompt v63c): a line with no information request opens the conversation
+(greeting), replies to or closes it (thanks: thanks, praise, agreement,
+goodbye) or asks about the assistant (about_bot); a line that fits none, such
+as "hôm nay buồn quá", stays out of domain. On 27 probes, five of them new and
+written before the run: 26/27. The miss is "Bạn trả lời dựa trên nguồn nào?",
+now a RAG task. Prompt v63d narrows the opening to "no information request
+about the handbook's content, only conversation or a question about the
+assistant"; the 27 probes again give 26/27 and that question is still a RAG
+task, so the opening was not its only cause. All four runs cost about $0.106
+at $0.10/$0.50 per million tokens. What this cannot show: how
+the added rule and schema field shift routing on ordinary questions; v62
+showed that a wording change alone can move 2–3 official cases.
+
 ## The K49 handbook replaces K48-K49 (2026-10-13)
 
 The cohort labelled K48-K49 had been built from the K48 handbook (2022 – 2023)

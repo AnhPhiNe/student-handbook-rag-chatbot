@@ -147,6 +147,7 @@ Copy-RequiredFile "configs\hcmue_slang_dictionary.yaml" "configs\hcmue_slang_dic
 Copy-RequiredFile "configs\office_aliases.yaml" "configs\office_aliases.yaml"
 Copy-RequiredFile "configs\structured_lookup_registry.yaml" "configs\structured_lookup_registry.yaml"
 Copy-RequiredFile "configs\handbook_currency.yaml" "configs\handbook_currency.yaml"
+Copy-RequiredFile "configs\social_replies.yaml" "configs\social_replies.yaml"
 Copy-RequiredFile "Dockerfile" "Dockerfile"
 Copy-RequiredFile ".dockerignore" ".dockerignore"
 Copy-RequiredFile "requirements.txt" "requirements.txt"

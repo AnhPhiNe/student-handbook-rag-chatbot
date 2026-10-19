@@ -39,7 +39,7 @@ def test_authored_output_shapes_normalize_without_errors(mode):
     payload = {
         "schema_version": "v1", "context_mode": "ambiguous" if mode == "clarify" else "standalone",
         "normalized_query": query, "standalone_query": None, "referenced_turns": [],
-        "out_of_domain": mode == "out_of_domain", "tasks": [] if mode == "out_of_domain" else [task],
+        "out_of_domain": mode == "out_of_domain", "social": "none", "tasks": [] if mode == "out_of_domain" else [task],
     }
     schema = query_plan_response_schema()
     assert set(payload) == set(schema["required"])

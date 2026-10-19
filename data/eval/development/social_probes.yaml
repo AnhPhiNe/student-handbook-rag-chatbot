@@ -1,0 +1,77 @@
+# Planner probes for QueryPlan.social (prompt v63, normalizer v36), 2026-10-19.
+# Written before any run. Not answer gold and not a hold-out. This is the only
+# live check of the change: by the owner's budget decision no official suite
+# was rerun.
+#
+# expected: accepted outcomes of the normalized plan:
+#   greeting | thanks | about_bot  -> social reply, no tasks
+#   ood                            -> out_of_domain, no tasks
+#   tasks                          -> a normal plan with at least one task
+#
+# Results (gpt-6-luna medium, prompt v63, normalizer v36, one run, 2026-10-19):
+# 17/20. All 15 clear cases pass: 9 social, 3 mixed planned normally (rag,
+# structured, structured), 3 out of domain. Borderline: so16 about_bot, so17
+# ood (pass); so18 "bạn giỏi quá" -> about_bot (a fitting reply the expected
+# list left out); so19 "tạm biệt nhé" -> one RAG task (no farewell kind
+# exists, so a goodbye searches the handbook); so20 "ok" -> clarify.
+# About 10,220 input and 80-270 output tokens per call; about $0.022 for the
+# 20 calls at $0.10/$0.50 per million tokens, cache discount not counted.
+#
+# Rerun after v63b ("lời cảm ơn hoặc tạm biệt (thanks)"), 22 probes: 20/22.
+# so19, so21, so22 (farewells) -> thanks. Every clear case still passes
+# (so10 now plans structured + rag). Misses unchanged: so18 -> about_bot,
+# so20 "ok" -> clarify. About $0.024; both runs together about $0.046.
+#
+# Rerun after v63c (social by purpose), 27 probes with the expectations below:
+# 26/27. All five new probes pass (so23-25, so27 -> thanks; so26 -> clarify, a
+# normal plan). Every farewell, praise and agreement line -> thanks; so17 stays
+# ood. Miss: so09 "Bạn trả lời dựa trên nguồn nào?" -> one RAG task (about_bot
+# in both earlier runs): the rule opens with "không yêu cầu thông tin nào", and
+# asking for the bot's sources reads as an information request. About $0.030;
+# all three runs together about $0.076.
+#
+# Rerun after v63d (opening: "không yêu cầu thông tin nào về nội dung Sổ tay,
+# mà chỉ là lời giao tiếp hoặc hỏi về chính trợ lý"), expectations unchanged:
+# 26/27, the same as v63c. so09 is still one RAG task, so the opening was not
+# its only cause; "nguồn" may read as a question about where the handbook's
+# content comes from. About $0.030; all four runs together about $0.106.
+version: 1
+cases:
+  # Whole social queries.
+  - {id: so01, cohort: K51, query: "Xin chào", expected: [greeting]}
+  - {id: so02, cohort: K50, query: "chào bạn", expected: [greeting]}
+  - {id: so03, cohort: K49, query: "hello", expected: [greeting]}
+  - {id: so04, cohort: K51, query: "Chào buổi sáng ạ", expected: [greeting]}
+  - {id: so05, cohort: K51, query: "Cảm ơn bạn nhé", expected: [thanks]}
+  - {id: so06, cohort: K50, query: "thanks nha", expected: [thanks]}
+  - {id: so07, cohort: K51, query: "cám ơn nhiều ạ, mình hiểu rồi", expected: [thanks]}
+  - {id: so08, cohort: K51, query: "Bạn là ai vậy?", expected: [about_bot]}
+  - {id: so09, cohort: K50, query: "Bạn trả lời dựa trên nguồn nào?", expected: [about_bot]}
+  # A greeting or thanks together with a real question plans normally.
+  - {id: so10, cohort: K51, query: "Chào bạn, cho em hỏi học bổng khuyến khích học tập xét thế nào?", expected: [tasks]}
+  - {id: so11, cohort: K50, query: "Cảm ơn nha, vậy 85 điểm rèn luyện thì xếp loại gì?", expected: [tasks]}
+  - {id: so12, cohort: K51, query: "Hi, email Phòng Đào tạo là gì vậy?", expected: [tasks]}
+  # Clearly outside the handbook stays out of domain.
+  - {id: so13, cohort: K51, query: "Thời tiết hôm nay thế nào?", expected: [ood]}
+  - {id: so14, cohort: K51, query: "Viết giúp mình một bài thơ về mùa thu", expected: [ood]}
+  - {id: so15, cohort: K50, query: "Giá vàng hôm nay bao nhiêu?", expected: [ood]}
+  # Borderline: more than one reading is acceptable.
+  - {id: so16, cohort: K51, query: "Bạn giúp được gì?", expected: [about_bot]}
+  - {id: so17, cohort: K51, query: "hôm nay buồn quá", expected: [ood]}
+  - {id: so18, cohort: K51, query: "bạn giỏi quá", expected: [thanks]}
+  - {id: so19, cohort: K50, query: "tạm biệt nhé", expected: [thanks]}
+  - {id: so20, cohort: K51, query: "ok", expected: [thanks]}
+  # Farewells (added 2026-10-19 with the "hoặc tạm biệt" wording): thanks.
+  - {id: so21, cohort: K51, query: "bye bạn nha", expected: [thanks]}
+  - {id: so22, cohort: K49, query: "Mình đi đây, hẹn gặp lại nhé", expected: [thanks]}
+  # v63c defines social by purpose (2026-10-19): a reply or closing line (thanks,
+  # praise, agreement, goodbye) is thanks; a line with no request that fits no
+  # purpose stays out of domain. Definition changes, not tuning: so17 -> ood
+  # only, so18 and so20 -> thanks (so19 already). New probes below were written
+  # from that definition before the run; none of their words is in the social
+  # rule ("hiểu" and "hay" appear elsewhere in the prompt with other meanings).
+  - {id: so23, cohort: K51, query: "bye nha", expected: [thanks]}
+  - {id: so24, cohort: K50, query: "dạ em hiểu rồi", expected: [thanks]}
+  - {id: so25, cohort: K51, query: "hay ghê", expected: [thanks]}
+  - {id: so26, cohort: K51, query: "ok vậy còn K50 thì sao?", expected: [tasks]}
+  - {id: so27, cohort: K49, query: "hẹn gặp lại", expected: [thanks]}

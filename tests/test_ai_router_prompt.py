@@ -188,9 +188,11 @@ def test_strict_planner_prompt_stays_within_budget(monkeypatch, tmp_path: Path) 
     )
     # v62 shortens the v61 wording (35,794 characters) without changing a rule.
     # Character-based estimates, not provider tokenizer or billing counts.
-    assert stats["total_chars"] <= 34800
-    assert stats["estimated_input_tokens"] <= 8700
-    assert ROUTER_PROMPT_VERSION == "structured-regulation-v62-shorter-wording"
+    # v63 adds the social field and its one prompt rule; v63c states it by
+    # purpose (35,142 characters).
+    assert stats["total_chars"] <= 35200
+    assert stats["estimated_input_tokens"] <= 8800
+    assert ROUTER_PROMPT_VERSION == "structured-regulation-v63d-social-handbook-scope"
     assert "OUTPUT CONTRACT" not in dynamic_prompt
     assert 'COHORT_ADMISSION_YEARS: {"K49":[2023],"K50":[2024],"K51":[2025]}' in dynamic_prompt
 

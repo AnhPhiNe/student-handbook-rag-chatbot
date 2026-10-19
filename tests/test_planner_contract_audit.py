@@ -59,6 +59,7 @@ def _plan(
         "standalone_query": None,
         "referenced_turns": [],
         "out_of_domain": False,
+        "social": "none",
         "tasks": [
             {
                 "id": "t1",

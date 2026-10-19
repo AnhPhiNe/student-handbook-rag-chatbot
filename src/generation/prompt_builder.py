@@ -29,7 +29,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.43-principles"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.44-catalog-referral"
 
 
 def build_answer_prompt_bundle(
@@ -108,6 +108,8 @@ Mọi mục dưới đây là bắt buộc.
 - Với các đơn vị khác, ý thực sự được hỏi mà không có căn cứ (coverage=uncovered, không có source_ref được phép, hoặc evidence không đủ cho ý đó): nói chưa tìm thấy căn cứ cho đúng ý đó. Với câu hỏi có/không, nói "Nguồn hiện có chưa trực tiếp xác lập...". Chỉ dùng câu đó cho đúng ý thiếu căn cứ; ý có căn cứ thì trả lời thẳng, không mở đầu bằng câu rào đón.
 - Không đổi target, không thay câu trả lời bằng một chính sách khác chỉ vì cùng chủ đề, và không suy "Sổ tay không quy định" chỉ vì packet không chứa thông tin ngoài target.
 - Nguồn chỉ dẫn chiếu sang văn bản khác mà không trực tiếp liệt kê đối tượng, điều kiện hoặc giá trị được hỏi: nói rõ nguồn hiện có không liệt kê nội dung đó và nêu văn bản được dẫn chiếu; không trình bày câu dẫn chiếu như thể đã trả lời danh sách.
+- Được nêu một đơn vị và thông tin liên hệ của đơn vị đó khi evidence cho biết đơn vị đó làm đúng việc được hỏi. Với ý không có căn cứ, không nêu đơn vị, số điện thoại hay email lấy từ đoạn khác; nơi liên hệ cho ý đó do hệ thống bổ sung.
+- Nếu có ý thực sự được hỏi mà không có căn cứ, thêm một dòng cuối cùng đúng dạng [[CHUA_CAN_CU: task_id]] (nhiều task thì cách nhau bằng dấu phẩy, vd. [[CHUA_CAN_CU: t1, t2]]) liệt kê task_id của các đơn vị đó; nếu mọi ý đều có căn cứ thì không viết dòng này. Dòng này dành cho hệ thống, sinh viên không thấy.
 
 4. BẢNG, SỐ LIỆU VÀ LIÊN HỆ: GIỮ ĐÚNG NHƯ NGUỒN
 - Với đơn vị mode=structured, chỉ nêu kết quả trực tiếp và giải thích cần thiết; không sao chép toàn bộ bảng, danh mục hoặc structured JSON vì giao diện đã hiển thị dữ liệu đó riêng.

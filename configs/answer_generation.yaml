@@ -43,21 +43,19 @@ llm:
 # Picks the directory records (service, office, faculty, program) a student
 # names when no name matches exactly; see src/retrieval/core/directory_selector.py.
 directory_selector:
+  # DeepSeek-V4.1-Flash on DeepInfra only, like the composer (owner,
+  # 2026-10-19): one provider to fund. DeepInfra takes the same thinking
+  # parameters (none does not think, low does).
   provider: deepseek
-  model_name: deepseek-flash
+  base_url: https://api.deepinfra.com/v1/openai
+  model_name: deepseek-ai/DeepSeek-V4.1-Flash
   reasoning_effort: none
-  api_keys_env_var: DEEPSEEK_API_KEY
-  # The same weights on DeepInfra when the DeepSeek API cannot answer or
-  # DEEPSEEK_API_KEY is empty. See src/generation/fallback_client.py.
-  fallback:
-    base_url: https://api.deepinfra.com/v1/openai
-    model_name: deepseek-ai/DeepSeek-V4.1-Flash
-    api_keys_env_var: DEEPINFRA_API_KEY
+  api_keys_env_var: DEEPINFRA_API_KEY
   max_output_tokens: 200
   max_retries: 1
   request_timeout_seconds: 15
-  # DeepSeek limits concurrency, not a request rate; this is only a local
-  # guard. A limited key fails fast and the student is asked instead.
+  # A local guard only. A limited key fails fast and the student is asked
+  # instead.
   key_pool:
     rpm_limit_per_key: 300
   # When the answer above finds nothing, the same prompt is asked once more

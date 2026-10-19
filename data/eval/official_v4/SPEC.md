@@ -596,6 +596,10 @@ author nor its models wrote.
       (19 cases), 36 of 40 referral cases name a gold unit; the other 4 were
       not marked by the composer (r13, r18, r24, r35). Passes; official_v4 run
       S next, on the owner's go-ahead.
+    - Run S execution (owner, 2026-10-19, before the run): 32 answer workers
+      and 24 judge workers, for speed (Q used 16 answer workers). Workers change
+      the wait, not the answers; the validity checks above catch the timeouts
+      more concurrency may cause, and those cases are rerun before scoring.
   - official_v4 run S, after the development set passes: baseline run Q
     (`official_v4_answers_20261018T182906Z`, v3.43, production), K49's plans
     (`official_v4_k49_plans.json`, sha256 `d6a0731b…f7f2`), the same composer,

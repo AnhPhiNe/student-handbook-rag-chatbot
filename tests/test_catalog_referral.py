@@ -101,7 +101,7 @@ def test_a_marked_part_gets_the_catalog_unit_with_the_catalog_contacts(transport
         assert decisions == [{"task_id": "t2", "status": "match",
                               "service_id": "K51_phong_ke_hoach_tai_chinh_service_2",
                               "unit_name": "Phòng Kế hoạch – Tài chính",
-                              "reply": json.dumps({"decision": "match", "ids": ["S02"]})}]
+                              "reply": json.dumps({"decision": "match", "ids": ["S02"]}), "cohort": "K51"}]
 
 
 @pytest.mark.parametrize("reply", [{"decision": "none", "ids": []},
@@ -176,3 +176,57 @@ def test_the_referral_wording_leaves_the_directory_lookup_prompts_unchanged():
         assert hashlib.sha256(prompt.encode()).hexdigest() == digest, lookup_type
     referral, _ = render_prompt("service_referral", "Căn tin mở cửa mấy giờ?", records, question="Căn tin?")
     assert "đơn vị phụ trách đúng việc đó" in referral and "thông tin riêng của một người" in referral
+
+
+# The template (owner, 2026-10-19): when every composed task is marked and matched, the body is
+# replaced, because retrieved passages that do not answer still carried other units' contacts into it.
+
+@pytest.mark.parametrize("transport", ["sync", "stream"])
+def test_the_template_replaces_the_body_when_every_composed_task_is_unsupported(transport):
+    from src.generation.prompt_builder import handbook_label
+
+    body = "Phòng CTCT&HSSV, email nghidinh116@hcmue.edu.vn, nhánh 127. " * 12  # a long body the stream would release
+    pipeline, _ = _pipeline([body[:300], body[300:], "\n[[CHUA_CAN_CU: t1, t2]]"],
+                            {"decision": "match", "ids": ["S02"]})
+    if transport == "stream":
+        events = list(pipeline.answer_stream("Điều kiện học bổng và khi nào chuyển tiền?", cohort="K51"))
+        tokens = [e["text"] for e in events if e["type"] == "token"]
+        assert not any("nghidinh116" in token or "CTCT" in token for token in tokens)  # no body text shown
+        answer = "".join(tokens)
+        assert events[-1]["citations_used"] == []
+    else:
+        result = pipeline.answer("Điều kiện học bổng và khi nào chuyển tiền?", cohort="K51")
+        answer = result["answer"]
+        assert result["referral_template"] is True and result["citations_used"] == []
+    record = CATALOG[1]
+    assert answer.startswith(f"{handbook_label('K51')} không quy định về việc này.")
+    assert f"Bạn có thể liên hệ **{record['unit_name']}** (phụ trách: {record['service']}):" in answer
+    # The contacts are the catalog record's, field for field; one block for the one unit.
+    assert "- Điện thoại: (028) 38352020, số máy nội bộ 136, 137" in answer
+    assert "- Email: phongkhtc@hcmue.edu.vn" in answer and "- Website: phongkhtc.hcmue.edu.vn" in answer
+    assert "- Văn phòng: Nhà A, tầng 2, P.205" in answer
+    assert answer.count("Bạn có thể liên hệ") == 1 and "nghidinh116" not in answer
+
+
+@pytest.mark.parametrize("transport", ["sync", "stream"])
+def test_a_mixed_question_keeps_the_body_and_adds_the_referral(transport):
+    pipeline, _ = _pipeline([ANSWER, "\n[[CHUA_CAN_CU: t2]]"], {"decision": "match", "ids": ["S02"]})
+    answer, _ = _answer(pipeline, transport)
+    assert answer.startswith(ANSWER) and "Gợi ý nơi liên hệ" in answer and "không quy định về việc này." not in answer
+
+
+@pytest.mark.parametrize("transport", ["sync", "stream"])
+def test_all_unsupported_without_a_match_keeps_the_body(transport):
+    pipeline, _ = _pipeline([ANSWER, "\n[[CHUA_CAN_CU: t1, t2]]"], {"decision": "none", "ids": []})
+    answer, _ = _answer(pipeline, transport)
+    assert answer == ANSWER
+
+
+def test_the_template_needs_every_composed_task_marked_and_matched():
+    from src.generation.catalog_referral import template_applies
+
+    match = lambda task_id: {"task_id": task_id, "status": "match", "record": CATALOG[0]}  # noqa: E731
+    assert template_applies(["t1", "t2"], ["t1", "t2"], [match("t1"), match("t2")])
+    assert not template_applies(["t1", "t2"], ["t2"], [match("t2")])  # t1 has evidence
+    assert not template_applies(["t1", "t2"], ["t1", "t2"], [match("t1"), {"task_id": "t2", "status": "none"}])
+    assert not template_applies([], ["t1"], [match("t1")])

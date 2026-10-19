@@ -1333,8 +1333,8 @@ scored tasks it was not observed.
 
 Production answered "Xin chào", "Cảm ơn bạn nhé" and "Bạn là ai vậy?" with the
 out-of-domain refusal. QueryPlan now carries `social` (none, greeting, thanks,
-about_bot). The planner sets it only when the whole query is social (prompt
-v63 adds one rule and changes no existing rule text); the normalizer (v36)
+about_bot). The planner sets it only when the query asks for no information
+(prompt v63c adds one rule, by purpose, and changes no existing rule text); the normalizer (v36)
 keeps it only when no task was planned, and it then wins over out_of_domain,
 so "Chào bạn, cho em hỏi học bổng…" plans as before. The pipeline answers a
 social query, and an out-of-domain one, from `configs/social_replies.yaml`
@@ -1348,10 +1348,15 @@ API credit left): no official suite was rerun. 20 planner probes
 every clear case right (9 social, 3 greeting-plus-question planned normally, 3
 out of domain), about $0.022 at $0.10/$0.50 per million tokens; "tạm biệt
 nhé" went to a RAG task. With the owner's wording "lời cảm ơn hoặc tạm biệt
-(thanks)" (prompt v63b) and two more farewell probes: 20/22, all three
-farewells → thanks, every clear case still right; about $0.046 for both runs.
-Remaining misses, both borderline: "bạn giỏi quá" → about_bot (a fitting
-reply) and "ok" → clarify. What this cannot show: how
+(thanks)" (prompt v63b) and two more farewell probes: 20/22. The owner then
+rejected adding words one at a time and approved defining social by purpose
+(prompt v63c): a line with no information request opens the conversation
+(greeting), replies to or closes it (thanks: thanks, praise, agreement,
+goodbye) or asks about the assistant (about_bot); a line that fits none, such
+as "hôm nay buồn quá", stays out of domain. On 27 probes, five of them new and
+written before the run: 26/27. The miss is "Bạn trả lời dựa trên nguồn nào?",
+now a RAG task, since asking for the bot's sources reads as an information
+request. All three runs cost about $0.076 at $0.10/$0.50 per million tokens. What this cannot show: how
 the added rule and schema field shift routing on ordinary questions; v62
 showed that a wording change alone can move 2–3 official cases.
 

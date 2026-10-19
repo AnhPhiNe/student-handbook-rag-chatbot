@@ -43,10 +43,21 @@ cases:
   - {id: so15, cohort: K50, query: "Giá vàng hôm nay bao nhiêu?", expected: [ood]}
   # Borderline: more than one reading is acceptable.
   - {id: so16, cohort: K51, query: "Bạn giúp được gì?", expected: [about_bot]}
-  - {id: so17, cohort: K51, query: "hôm nay buồn quá", expected: [ood, greeting]}
-  - {id: so18, cohort: K51, query: "bạn giỏi quá", expected: [thanks, ood]}
+  - {id: so17, cohort: K51, query: "hôm nay buồn quá", expected: [ood]}
+  - {id: so18, cohort: K51, query: "bạn giỏi quá", expected: [thanks]}
   - {id: so19, cohort: K50, query: "tạm biệt nhé", expected: [thanks]}
-  - {id: so20, cohort: K51, query: "ok", expected: [thanks, greeting, ood]}
+  - {id: so20, cohort: K51, query: "ok", expected: [thanks]}
   # Farewells (added 2026-10-19 with the "hoặc tạm biệt" wording): thanks.
   - {id: so21, cohort: K51, query: "bye bạn nha", expected: [thanks]}
   - {id: so22, cohort: K49, query: "Mình đi đây, hẹn gặp lại nhé", expected: [thanks]}
+  # v63c defines social by purpose (2026-10-19): a reply or closing line (thanks,
+  # praise, agreement, goodbye) is thanks; a line with no request that fits no
+  # purpose stays out of domain. Definition changes, not tuning: so17 -> ood
+  # only, so18 and so20 -> thanks (so19 already). New probes below were written
+  # from that definition before the run; none of their words is in the social
+  # rule ("hiểu" and "hay" appear elsewhere in the prompt with other meanings).
+  - {id: so23, cohort: K51, query: "bye nha", expected: [thanks]}
+  - {id: so24, cohort: K50, query: "dạ em hiểu rồi", expected: [thanks]}
+  - {id: so25, cohort: K51, query: "hay ghê", expected: [thanks]}
+  - {id: so26, cohort: K51, query: "ok vậy còn K50 thì sao?", expected: [tasks]}
+  - {id: so27, cohort: K49, query: "hẹn gặp lại", expected: [thanks]}

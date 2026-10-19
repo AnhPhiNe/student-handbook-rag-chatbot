@@ -409,7 +409,7 @@ Paired +0.008, 95% cluster interval [−0.006, +0.023]. No stray email, the 18
 out-of-scope cases pass, no grounded referral with contacts is lost. On v4 the
 composer marked 21 answers and the referral was added to 2. The one new zero,
 V4-070, has the same answer as Q (0.5 there); the pre-registration leaves it to
-the owner. V4-121 lost an ungrounded-contact pointer to Phòng KHCN&MT (1.0 →
+the owner. V4-121 lost a grounded pointer, without contacts, to Phòng KHCN&MT (1.0 →
 0.6). On the 50 development questions the referral named 17 units, none wrong,
 and none on the 10 personal, staff or out-of-domain questions.
 

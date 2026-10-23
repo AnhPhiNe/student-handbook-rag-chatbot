@@ -164,7 +164,7 @@ function App() {
               )}
               {activeTab === 'bieu-mau' && <FormPage />}
               {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} />}
-              {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} />}
+              {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} onNavigate={handleNavigate} />}
               {activeTab === 'target-gpa' && <TargetGpaPage key={cohort} cohort={cohort} />}
               {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
               {activeTab === 'scholarship' && <ScholarshipPage />}

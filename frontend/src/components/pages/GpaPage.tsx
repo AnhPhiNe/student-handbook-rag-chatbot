@@ -1,65 +1,51 @@
-import { useMemo, useState, type ReactNode } from 'react';
-import { GraduationCap, Plus, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { GraduationCap, Plus, Trash2, X, RotateCcw } from 'lucide-react';
 import {
   calculateGpa,
-  convertScore10ToGrade,
   getCourseGrade,
   getCourseGroupOptions,
   getDefaultCourseGroup,
-  getGradeScale,
   isCreditsInvalid,
   isScore10Invalid,
   type Cohort,
   type CourseInput,
   type GradeScaleRow,
-  type LetterGrade,
 } from '../../utils/gradeScale';
 import { sanitizeDecimal } from '../../utils/numberInput';
-import { getGradeTone } from '../../utils/gradeTone';
 import { useAnimatedNumber } from '../../hooks/useAnimatedNumber';
 import { GpaReferenceModal } from '../GpaReferenceModal';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
-import { ResetButton } from '../tool/ToolSection';
-import { ResultCard, type ResultTone } from '../tool/ResultCard';
-import { ScoreBar } from '../tool/ScoreBar';
-import { ToolMobileSummary } from '../tool/ToolMobileSummary';
-import { ResultFacts } from '../tool/ResultFacts';
-import { ResultCallout } from '../tool/ResultCallout';
 
 interface GpaPageProps {
   cohort: Cohort;
+  onNavigate?: (tab: string) => void;
 }
 
-type InputType = 'score10' | 'letter';
-
-const INPUT_MODES: Array<{ id: InputType; label: string }> = [
-  { id: 'score10', label: 'Thang 10 (8.5)' },
-  { id: 'letter', label: 'Điểm chữ (A, B+)' },
-];
-
-function newCourse(id: string, cohort: Cohort, inputType: InputType = 'score10'): CourseInput {
+function newCourse(id: string, cohort: Cohort): CourseInput {
   return {
     id,
     name: '',
     credits: '',
-    inputType,
+    inputType: 'score10',
     score10: '',
     letter: '',
     courseGroup: getDefaultCourseGroup(cohort),
   };
 }
 
-function createEmptyCourses(cohort: Cohort, inputType: InputType = 'score10'): CourseInput[] {
+function createEmptyCourses(cohort: Cohort): CourseInput[] {
   return [
-    newCourse('course-1', cohort, inputType),
-    newCourse('course-2', cohort, inputType),
-    newCourse('course-3', cohort, inputType),
+    newCourse('course-1', cohort),
+    newCourse('course-2', cohort),
+    newCourse('course-3', cohort),
+    newCourse('course-4', cohort),
+    newCourse('course-5', cohort),
   ];
 }
 
 interface AcademicTier {
   label: string;
-  tone: ResultTone;
+  tone: 'success' | 'warning' | 'danger';
   description: ReactNode;
 }
 
@@ -99,46 +85,88 @@ function getAcademicTier(gpa: number): AcademicTier {
   };
 }
 
-interface GradeCellProps {
-  grade: GradeScaleRow | null;
-  inputType: InputType;
-  isScoreErr: boolean;
-  isCreditsErr: boolean;
+// Bảng màu chuẩn mực cho điểm chữ theo quy chế
+function getGradeBadgeClass(grade: GradeScaleRow | null): string {
+  if (!grade) return 'empty';
+  if (grade.status === 'Không đạt') return 'grade-F';
+  const letter = grade.letter;
+  if (letter === 'A') return 'grade-A';
+  if (letter === 'B+' || letter === 'B') return 'grade-B';
+  if (letter === 'C+' || letter === 'C') return 'grade-C';
+  if (letter === 'D+' || letter === 'D') return 'grade-D';
+  return 'grade-F';
 }
 
-function GradeCell({ grade, inputType, isScoreErr, isCreditsErr }: GradeCellProps) {
-  if (isScoreErr) {
-    return <span className="gpa-mini-chip failed">Lỗi điểm</span>;
-  }
-  if (isCreditsErr && grade) {
-    return <span className="gpa-mini-chip failed">Lỗi TC</span>;
-  }
-  if (!grade) {
-    return <span className="gpa-grade-placeholder" aria-label="Chưa có điểm">—</span>;
-  }
+interface SheetState {
+  courseId: string;
+  isNew: boolean;
+  courseTitle: string;
+  credits: string;
+  score10: string;
+  courseGroup: CourseInput['courseGroup'];
+}
 
-  const isFailed = grade.status === 'Không đạt';
+interface CreditWheelPickerProps {
+  value: string;
+  onChange: (val: string) => void;
+}
+
+function CreditWheelPicker({ value, onChange }: CreditWheelPickerProps) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const itemWidth = 72; // 72px gọn gàng, vuốt mượt mà vừa vặn
+  const items = useMemo(() => ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], []);
+  const selectedNum = value.trim() || '3';
+
+  // Canh số được chọn vào đúng tâm khi mount
+  useEffect(() => {
+    const idx = items.indexOf(selectedNum);
+    if (idx !== -1 && trackRef.current) {
+      trackRef.current.scrollLeft = idx * itemWidth;
+    }
+  }, []);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollLeft = e.currentTarget.scrollLeft;
+    const centerIndex = Math.round(scrollLeft / itemWidth);
+    const clamped = Math.max(0, Math.min(items.length - 1, centerIndex));
+    const newVal = items[clamped];
+    if (newVal !== value) {
+      onChange(newVal);
+    }
+  };
+
+  const handleItemClick = (num: string, idx: number) => {
+    onChange(num);
+    if (trackRef.current) {
+      trackRef.current.scrollTo({ left: idx * itemWidth, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <span className={`gpa-mini-chip ${isFailed ? 'failed' : 'passed'} grade-tone-${getGradeTone(grade)}`}>
-      {inputType === 'score10' ? (
-        <>
-          <strong>{grade.letter}</strong>
-          <span>({grade.score4.toFixed(1)})</span>
-        </>
-      ) : (
-        <>
-          <strong>{grade.score4.toFixed(1)}</strong>
-          {isFailed && <span className="gpa-chip-status-text">Rớt</span>}
-        </>
-      )}
-    </span>
+    <div className="wheel-picker-wrapper">
+      <div className="wheel-center-indicator" />
+      <div ref={trackRef} className="wheel-picker-track" onScroll={handleScroll}>
+        {items.map((num, idx) => {
+          const isActive = num === selectedNum;
+          return (
+            <div
+              key={num}
+              className={`wheel-item ${isActive ? 'active' : ''}`}
+              onClick={() => handleItemClick(num, idx)}
+            >
+              <span className="wheel-num">{num}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
-export function GpaPage({ cohort }: GpaPageProps) {
-  const [globalInputType, setGlobalInputType] = useState<InputType>('score10');
-  const [courses, setCourses] = useState<CourseInput[]>(() => createEmptyCourses(cohort, 'score10'));
+export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
+  const [courses, setCourses] = useState<CourseInput[]>(() => createEmptyCourses(cohort));
   const [referenceModalTab, setReferenceModalTab] = useState<'scale' | 'rules' | null>(null);
+  const [sheetState, setSheetState] = useState<SheetState | null>(null);
 
   const result = useMemo(() => calculateGpa(courses, cohort), [courses, cohort]);
   const groupOptions = getCourseGroupOptions(cohort);
@@ -155,44 +183,17 @@ export function GpaPage({ cohort }: GpaPageProps) {
       const grade = getCourseGrade(course, cohort);
       if (!grade) return;
       if (grade.status === 'Đạt') passed++;
-      else failedCourses.push(`Môn học ${index + 1} (${grade.letter})`);
+      else failedCourses.push(`Học phần ${index + 1} (${grade.letter})`);
     });
     return { passed, failed: failedCourses.length, failedCourses };
   }, [courses, cohort]);
-
-  const validationMessage = useMemo(() => {
-    const hasScoreError = globalInputType === 'score10' && courses.some((course) => isScore10Invalid(course.score10));
-    const hasCreditsError = courses.some((course) => isCreditsInvalid(course.credits));
-    if (hasScoreError && hasCreditsError) return 'Điểm và số tín chỉ ở các ô báo đỏ chưa hợp lệ.';
-    if (hasScoreError) return 'Điểm thang 10 phải từ 0 đến 10. Hãy sửa các ô báo đỏ.';
-    if (hasCreditsError) return 'Số tín chỉ mỗi môn phải từ 1 đến 30. Hãy sửa các ô báo đỏ.';
-    return null;
-  }, [courses, globalInputType]);
-
-  const changeGlobalInputType = (type: InputType) => {
-    setGlobalInputType(type);
-    setCourses((current) =>
-      current.map((course) => {
-        if (type !== 'letter') return { ...course, inputType: type };
-        let letter: LetterGrade | '' = course.letter || '';
-        if (course.score10.trim() !== '') {
-          const score = Number(course.score10.trim().replace(',', '.'));
-          if (Number.isFinite(score) && score >= 0 && score <= 10) {
-            const grade = convertScore10ToGrade(score, cohort, course.courseGroup);
-            if (grade) letter = grade.letter;
-          }
-        }
-        return { ...course, inputType: type, letter };
-      })
-    );
-  };
 
   const updateCourse = (id: string, patch: Partial<CourseInput>) => {
     setCourses((current) => current.map((course) => (course.id === id ? { ...course, ...patch } : course)));
   };
 
   const addCourse = () => {
-    setCourses((current) => [...current, newCourse(`course-${Date.now()}`, cohort, globalInputType)]);
+    setCourses((current) => [...current, newCourse(`course-${Date.now()}`, cohort)]);
   };
 
   const removeCourse = (id: string) => {
@@ -200,262 +201,565 @@ export function GpaPage({ cohort }: GpaPageProps) {
   };
 
   const resetCourses = () => {
-    if (courses.some((course) => course.name || course.credits || course.score10 || course.letter)) {
+    if (courses.some((course) => course.name || course.credits || course.score10)) {
       if (!window.confirm('Bạn có chắc chắn muốn làm mới (xóa trắng) danh sách môn học không?')) {
         return;
       }
     }
-    setCourses(createEmptyCourses(cohort, globalInputType));
+    setCourses(createEmptyCourses(cohort));
   };
 
-  const renderGroupSelect = (course: CourseInput, index: number, className: string) => (
-    <select
-      className={className}
-      value={course.courseGroup ?? getDefaultCourseGroup(cohort)}
-      onChange={(e) => updateCourse(course.id, { courseGroup: e.target.value as CourseInput['courseGroup'] })}
-      aria-label={`Nhóm môn của môn học ${index + 1}`}
-    >
-      {groupOptions.map((option) => (
-        <option key={option.id} value={option.id}>
-          {option.shortLabel}
-        </option>
-      ))}
-    </select>
-  );
+  // Open Bottom Sheet for Mobile
+  const handleOpenEditSheet = (course: CourseInput, index: number) => {
+    setSheetState({
+      courseId: course.id,
+      isNew: false,
+      courseTitle: `Học phần ${index + 1}`,
+      credits: course.credits || '3',
+      score10: course.score10,
+      courseGroup: course.courseGroup ?? getDefaultCourseGroup(cohort),
+    });
+  };
 
-  const renderCreditsInput = (course: CourseInput, index: number, compact: boolean) => (
-    <input
-      type="text"
-      inputMode="decimal"
-      className={`gpa-input-field credits ${compact ? 'compact' : ''} ${isCreditsInvalid(course.credits) ? 'input-error' : ''}`}
-      value={course.credits}
-      onChange={(e) => updateCourse(course.id, { credits: sanitizeDecimal(e.target.value) })}
-      placeholder="--"
-      aria-label={`Số tín chỉ môn học ${index + 1}`}
-      aria-invalid={isCreditsInvalid(course.credits)}
-    />
-  );
+  const handleOpenAddSheet = () => {
+    const newId = `course-${Date.now()}`;
+    setSheetState({
+      courseId: newId,
+      isNew: true,
+      courseTitle: `Học phần ${courses.length + 1}`,
+      credits: '3',
+      score10: '',
+      courseGroup: getDefaultCourseGroup(cohort),
+    });
+  };
 
-  const renderScoreInput = (course: CourseInput, index: number, compact: boolean) => {
-    if (globalInputType === 'score10') {
-      const isScoreErr = isScore10Invalid(course.score10);
-      return (
-        <input
-          type="text"
-          inputMode="decimal"
-          className={`gpa-input-field score mode-score10 ${compact ? 'compact' : ''} ${isScoreErr ? 'input-error' : ''}`}
-          value={course.score10}
-          onChange={(e) => updateCourse(course.id, { score10: sanitizeDecimal(e.target.value) })}
-          placeholder="--"
-          aria-label={`Điểm thang 10 môn học ${index + 1}`}
-          aria-invalid={isScoreErr}
-        />
-      );
+  const sheetPreviewGrade = useMemo(() => {
+    if (!sheetState || !sheetState.score10.trim()) return null;
+    const tempCourse: CourseInput = {
+      id: sheetState.courseId,
+      name: '',
+      credits: sheetState.credits,
+      inputType: 'score10',
+      score10: sheetState.score10,
+      letter: '',
+      courseGroup: sheetState.courseGroup,
+    };
+    return getCourseGrade(tempCourse, cohort);
+  }, [sheetState, cohort]);
+
+  const handleSaveSheet = () => {
+    if (!sheetState) return;
+    if (sheetState.isNew) {
+      const newCourseObj: CourseInput = {
+        id: sheetState.courseId,
+        name: '',
+        credits: sheetState.credits.trim() || '3',
+        inputType: 'score10',
+        score10: sheetState.score10,
+        letter: '',
+        courseGroup: sheetState.courseGroup,
+      };
+      setCourses((curr) => [...curr, newCourseObj]);
+    } else {
+      updateCourse(sheetState.courseId, {
+        credits: sheetState.credits.trim() || '3',
+        score10: sheetState.score10,
+        courseGroup: sheetState.courseGroup,
+      });
     }
-    const scale = getGradeScale(cohort, course.courseGroup);
-    return (
-      <select
-        className={`gpa-select-field mode-letter ${compact ? 'compact' : ''} ${!course.letter ? 'unselected' : ''}`}
-        value={course.letter || ''}
-        onChange={(e) => updateCourse(course.id, { letter: e.target.value as LetterGrade })}
-        aria-label={`Điểm chữ môn học ${index + 1}`}
-      >
-        <option value="">-- Chọn --</option>
-        {scale.rows.map((row) => (
-          <option key={row.letter} value={row.letter}>
-            {row.letter}
-          </option>
-        ))}
-      </select>
-    );
+    setSheetState(null);
   };
 
-  const gradeCell = (course: CourseInput) => (
-    <GradeCell
-      grade={getCourseGrade(course, cohort)}
-      inputType={globalInputType}
-      isScoreErr={globalInputType === 'score10' && isScore10Invalid(course.score10)}
-      isCreditsErr={isCreditsInvalid(course.credits)}
-    />
-  );
+  const handleDeleteFromSheet = () => {
+    if (!sheetState || sheetState.isNew) return;
+    removeCourse(sheetState.courseId);
+    setSheetState(null);
+  };
+
+  const progressPercent = hasResult ? Math.min(100, Math.max(0, (result.gpa / 4.0) * 100)) : 0;
 
   return (
     <div className="page-container tool-page simplified">
+      
+      {/* HEADER DESKTOP */}
       <ToolPageHeader
         icon={GraduationCap}
         title="Tính GPA học kỳ"
         description={
           <>
-            Tính điểm trung bình học kỳ và xếp loại theo quy chế của <strong>{cohort}</strong>.
+            Tính điểm trung bình học kỳ và dự báo xếp loại học lực theo quy chế <strong>{cohort}</strong>.
           </>
         }
       />
 
-      <ToolMobileSummary
-        label="GPA học kỳ"
-        value={hasResult ? result.gpa.toFixed(2) : '--'}
-        unit="/ 4.00"
-        chip={academicTier?.label}
-        tone={academicTier?.tone}
-      />
-
-      <div className="tool-grid wide">
-        <div className="tool-main">
-          <div className="tool-toolbar">
-            <div className="tool-segmented" role="group" aria-label="Cách nhập điểm">
-              {INPUT_MODES.map((mode) => (
-                <button
-                  key={mode.id}
-                  type="button"
-                  aria-pressed={globalInputType === mode.id}
-                  onClick={() => changeGlobalInputType(mode.id)}
-                >
-                  {mode.label}
-                </button>
-              ))}
+      {/* ============================================================== */}
+      {/* 1. BẢN DESKTOP CHUẨN MỰC: 2 CỘT SONG SONG (ĐÚNG NHƯ BẢN THẢO LUẬN) */}
+      {/* ============================================================== */}
+      <div className="gpa-desktop-layout">
+        
+        {/* CỘT TRÁI (65%): BẢNG NHẬP LIỆU LIỀN KHỐI (UNIFIED TABLE CARD) */}
+        <div className="gpa-d-table-card">
+          
+          {/* TOOLBAR TÍCH HỢP TRÊN ĐẦU BẢNG */}
+          <div className="gpa-d-toolbar">
+            <div className="gpa-d-toolbar-title">
+              <span className="gpa-d-table-heading">Bảng môn học</span>
+              <span className="gpa-d-table-sub">({courses.length} học phần)</span>
             </div>
-            <ResetButton onClick={resetCourses} />
+
+            <button
+              type="button"
+              className="gpa-d-reset-btn"
+              onClick={resetCourses}
+              title="Xóa trắng để nhập lại"
+            >
+              <RotateCcw size={14} />
+              <span>Đặt lại</span>
+            </button>
           </div>
 
-          <div className="gpa-desktop-table-container">
-            <div className="gpa-table-header-row has-group">
-              <span className="th-col th-course">Học phần</span>
-              <span className="th-col th-group">Nhóm môn</span>
-              <span className="th-col th-creds">Tín chỉ</span>
-              <span className="th-col th-score">{globalInputType === 'score10' ? 'Điểm 10' : 'Điểm chữ'}</span>
-              <span className="th-col th-grade">Quy đổi</span>
-              <span className="th-col th-del"></span>
-            </div>
-
-            <div className="gpa-table-body">
+          {/* BẢNG HỌC PHẦN */}
+          <table className="gpa-d-table">
+            <thead className="gpa-d-thead">
+              <tr>
+                <th style={{ width: '18%', paddingLeft: '1.25rem' }}>Học phần</th>
+                <th style={{ width: '28%' }}>Nhóm môn</th>
+                <th style={{ width: '14%', textAlign: 'center' }}>Tín chỉ</th>
+                <th style={{ width: '16%', textAlign: 'center' }}>Điểm 10</th>
+                <th style={{ width: '16%', textAlign: 'center' }}>Quy đổi</th>
+                <th style={{ width: '8%', paddingRight: '1rem', textAlign: 'center' }}></th>
+              </tr>
+            </thead>
+            <tbody className="gpa-d-tbody">
               {courses.map((course, index) => {
-                const isFailed = getCourseGrade(course, cohort)?.status === 'Không đạt';
+                const grade = getCourseGrade(course, cohort);
+                const isScoreErr = isScore10Invalid(course.score10);
+                const isCreditsErr = isCreditsInvalid(course.credits);
+
                 return (
-                  <div key={course.id} className={`gpa-table-row has-group ${isFailed ? 'row-failed' : ''}`}>
-                    <div className="td-col td-course">
-                      <span className="gpa-course-fixed-title">Môn học {index + 1}</span>
-                    </div>
-                    {renderGroupSelect(course, index, 'gpa-row-group-select')}
-                    <div className="td-creds">{renderCreditsInput(course, index, false)}</div>
-                    <div className="td-score">{renderScoreInput(course, index, false)}</div>
-                    <div className="td-grade">{gradeCell(course)}</div>
-                    <div className="td-del">
+                  <tr key={course.id}>
+                    <td style={{ paddingLeft: '1.25rem' }}>
+                      <span className="gpa-d-course-name">Học phần {index + 1}</span>
+                    </td>
+                    <td>
+                      <select
+                        className="gpa-d-group-select"
+                        value={course.courseGroup ?? getDefaultCourseGroup(cohort)}
+                        onChange={(e) => updateCourse(course.id, { courseGroup: e.target.value as CourseInput['courseGroup'] })}
+                        aria-label={`Nhóm môn của Học phần ${index + 1}`}
+                      >
+                        {groupOptions.map((opt) => (
+                          <option key={opt.id} value={opt.id}>
+                            {opt.shortLabel}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        className={`gpa-d-cred-input ${isCreditsErr ? 'input-error' : ''}`}
+                        value={course.credits}
+                        onChange={(e) => updateCourse(course.id, { credits: sanitizeDecimal(e.target.value) })}
+                        placeholder="--"
+                        aria-label={`Số tín chỉ Học phần ${index + 1}`}
+                      />
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        className={`gpa-d-score-input ${isScoreErr ? 'input-error' : ''}`}
+                        value={course.score10}
+                        onChange={(e) => updateCourse(course.id, { score10: sanitizeDecimal(e.target.value) })}
+                        placeholder="--"
+                        aria-label={`Điểm thang 10 Học phần ${index + 1}`}
+                      />
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      {grade ? (
+                        <span className={`gpa-d-grade-badge ${getGradeBadgeClass(grade)}`}>
+                          <strong>{grade.letter}</strong>
+                          <span style={{ marginLeft: '4px', opacity: 0.85 }}>({grade.score4.toFixed(1)})</span>
+                        </span>
+                      ) : (
+                        <span className="gpa-d-grade-badge empty">—</span>
+                      )}
+                    </td>
+                    <td style={{ paddingRight: '1rem', textAlign: 'center' }}>
                       <button
                         type="button"
-                        className="gpa-row-del-btn"
+                        className="gpa-d-del-btn"
                         onClick={() => removeCourse(course.id)}
                         disabled={courses.length <= 1}
-                        aria-label={`Xóa môn học ${index + 1}`}
                         title={courses.length <= 1 ? 'Cần giữ ít nhất 1 môn' : 'Xóa môn này'}
+                        aria-label={`Xóa Học phần ${index + 1}`}
                       >
-                        <Trash2 size={15} aria-hidden="true" />
+                        <Trash2 size={15} />
                       </button>
-                    </div>
-                  </div>
+                    </td>
+                  </tr>
                 );
               })}
+            </tbody>
+          </table>
+
+          {/* NÚT THÊM MÔN HỌC LIỀN KHỐI Ở ĐÁY BẢNG */}
+          <button type="button" className="gpa-d-add-btn" onClick={addCourse}>
+            <Plus size={16} />
+            <span>Thêm môn học</span>
+          </button>
+
+        </div>
+
+        {/* CỘT PHẢI (35%): CARD KẾT QUẢ DỰ TÍNH CỐ ĐỊNH (STICKY RESULT CARD) */}
+        <div className="gpa-d-sticky-col">
+          <div className="gpa-d-result-card">
+            
+            {/* Header Kết Quả */}
+            <div className="gpa-d-result-header">
+              <span className="gpa-d-result-title">Kết quả dự tính</span>
+              {academicTier ? (
+                <span className={`gpa-d-result-badge tier-${academicTier.tone}`}>
+                  • {academicTier.label}
+                </span>
+              ) : (
+                <span className="gpa-d-result-badge" style={{ opacity: 0.6 }}>
+                  • Chưa xếp loại
+                </span>
+              )}
+            </div>
+
+            {/* Con Số GPA To Bản */}
+            <div className="gpa-d-score-section">
+              <span className="gpa-d-score-sub">GPA học kỳ</span>
+              <div className="gpa-d-score-row">
+                <span className="gpa-d-big-val">{hasResult ? animatedGpa.toFixed(2) : '--'}</span>
+                <span className="gpa-d-big-max">/ 4.00</span>
+              </div>
+              
+              {/* Thanh tiến độ */}
+              <div className="gpa-d-bar-track">
+                <div
+                  className="gpa-d-bar-fill"
+                  style={{
+                    width: `${progressPercent}%`,
+                    backgroundColor: academicTier?.tone === 'danger' ? '#ef4444' : academicTier?.tone === 'warning' ? '#f59e0b' : '#10b981',
+                  }}
+                />
+              </div>
+              <div className="gpa-d-bar-scale">
+                <span>0.0</span>
+                <span>4.00</span>
+              </div>
+            </div>
+
+            {/* Thống Kê 4 Chỉ Số */}
+            <div className="gpa-d-stats-grid">
+              <div className="gpa-d-stat-box">
+                <p className="gpa-d-stat-label">Tín chỉ</p>
+                <p className="gpa-d-stat-val">{hasResult ? result.totalCredits : 0}</p>
+              </div>
+              <div className="gpa-d-stat-box">
+                <p className="gpa-d-stat-label">Môn tính</p>
+                <p className="gpa-d-stat-val">{hasResult ? result.countedCourses : 0}</p>
+              </div>
+              <div className={`gpa-d-stat-box ${courseStats.passed > 0 ? 'passed' : ''}`}>
+                <p className="gpa-d-stat-label">Đạt</p>
+                <p className="gpa-d-stat-val">{courseStats.passed}</p>
+              </div>
+              <div className="gpa-d-stat-box">
+                <p className="gpa-d-stat-label">Rớt</p>
+                <p className="gpa-d-stat-val" style={{ color: courseStats.failed > 0 ? '#ef4444' : undefined }}>
+                  {courseStats.failed}
+                </p>
+              </div>
+            </div>
+
+            {/* Điều Hướng Tính Điểm Học Bổng */}
+            <div className="gpa-d-scholarship-prompt">
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <span>💡</span>
+                <span>Cần tính điểm học bổng?</span>
+              </span>
+              <button
+                type="button"
+                className="gpa-d-prompt-btn"
+                onClick={() => (onNavigate ? onNavigate('scholarship') : undefined)}
+              >
+                Tính điểm học bổng →
+              </button>
+            </div>
+
+            {/* Footer Modal Link */}
+            <div className="gpa-d-result-footer">
+              <button
+                type="button"
+                className="gpa-d-footer-link"
+                onClick={() => setReferenceModalTab('scale')}
+              >
+                <span>📖 Bảng quy đổi {cohort}</span>
+                <span>↗</span>
+              </button>
+              <span className="gpa-d-footer-watermark">ĐHSP TP.HCM</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      {/* ============================================================== */}
+      {/* 2. BẢN MOBILE NATIVE: KHỚP 100% ẢNH THIẾT KẾ BẠN ĐÃ DUYỆT */}
+      {/* ============================================================== */}
+      <div className="gpa-mobile-layout">
+        
+        {/* TIÊU ĐỀ MOBILE GỌN 1 HÀNG KHÔNG CHOÁN DIỆN TÍCH */}
+        <div className="gpa-m-page-header">
+          <div className="gpa-m-title-wrap">
+            <span className="gpa-m-title-icon">🎓</span>
+            <h1 className="gpa-m-page-title">Tính GPA học kỳ</h1>
+          </div>
+        </div>
+
+        {/* MOBILE HERO SCORE CARD (PHƯƠNG ÁN 1: THOÁNG ĐÃNG ĐẲNG CẤP APPLE) */}
+        <div className="gpa-mobile-hero-container">
+          <div className="gpa-mobile-hero-card">
+            <div className="gpa-m-score-row">
+              <span className="gpa-m-score-val">{hasResult ? animatedGpa.toFixed(2) : '--'}</span>
+              <span className="gpa-m-score-max">/ 4.00</span>
+            </div>
+
+            {/* Viên thuốc hợp nhất (Phương án 2 Capsule) */}
+            <div className="gpa-m-capsule-wrap">
+              {hasResult && academicTier ? (
+                <div className="gpa-m-capsule">
+                  <span className={`gpa-m-tier-badge tier-${academicTier.tone}`}>{academicTier.label}</span>
+                  <span className="gpa-m-sep">│</span>
+                  <span className="gpa-m-creds">
+                    {result.totalCredits} <span className="gpa-m-unit">tín chỉ</span>
+                  </span>
+                  <span className="gpa-m-bullet">•</span>
+                  <span className="gpa-m-pass">
+                    {courseStats.passed}/{result.countedCourses} <span className="gpa-m-unit">đạt</span>
+                  </span>
+                </div>
+              ) : (
+                <div className="gpa-m-capsule empty">
+                  <span>Chưa nhập điểm • Nhập môn học bên dưới</span>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="gpa-mobile-cards-list">
+          {/* GỢI Ý HỌC BỔNG NHẸ NHÀNG BÊN NGOÀI CARD */}
+          {hasResult && result.gpa >= 2.5 && (
+            <div className="gpa-m-scholarship-banner">
+              <div className="gpa-m-scholarship-left">
+                <span className="gpa-m-scholarship-icon">💡</span>
+                <span className="gpa-m-scholarship-text">
+                  Đạt chuẩn xét học bổng <strong>{academicTier?.label}</strong>
+                </span>
+              </div>
+              <button
+                type="button"
+                className="gpa-m-scholarship-link"
+                onClick={() => (onNavigate ? onNavigate('scholarship') : undefined)}
+              >
+                Tính ngay →
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* TOOLBAR MOBILE (SIÊU GỌN - 1 HÀNG DUY NHẤT) */}
+        <div className="gpa-m-toolbar">
+          <span className="gpa-m-toolbar-count">Môn học ({courses.length})</span>
+
+          <button
+            type="button"
+            className="gpa-m-reset-btn"
+            onClick={resetCourses}
+          >
+            Đặt lại
+          </button>
+        </div>
+
+        {/* INSET GROUPED LIST MOBILE (ĐIỂM CHỮ MÀU SẮC SINH ĐỘNG) */}
+        <div className="gpa-mobile-grouped-list">
+          <div className="gpa-m-list-card">
             {courses.map((course, index) => {
-              const isFailed = getCourseGrade(course, cohort)?.status === 'Không đạt';
+              const grade = getCourseGrade(course, cohort);
+              const isFailed = grade?.status === 'Không đạt';
+              const groupOption = groupOptions.find((o) => o.id === (course.courseGroup ?? getDefaultCourseGroup(cohort)));
+
               return (
-                <div key={course.id} className={`gpa-mobile-card ${isFailed ? 'card-failed' : ''}`}>
-                  <div className="gpa-mobile-card-header">
-                    <div className="gpa-m-header-left">
-                      <span className="gpa-m-fixed-title">Môn học {index + 1}</span>
-                    </div>
-                    <div className="gpa-m-header-right">
-                      {renderGroupSelect(course, index, 'gpa-m-group-select')}
-                      <button
-                        type="button"
-                        className="gpa-m-del-btn"
-                        onClick={() => removeCourse(course.id)}
-                        disabled={courses.length <= 1}
-                        aria-label={`Xóa môn học ${index + 1}`}
-                      >
-                        <Trash2 size={15} aria-hidden="true" />
-                      </button>
-                    </div>
+                <div
+                  key={course.id}
+                  className={`gpa-m-list-row ${isFailed ? 'row-failed' : ''}`}
+                  onClick={() => handleOpenEditSheet(course, index)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      handleOpenEditSheet(course, index);
+                    }
+                  }}
+                  aria-label={`Chỉnh sửa Học phần ${index + 1}`}
+                >
+                  <div className="gpa-m-row-left">
+                    <span className="gpa-m-row-title">Học phần {index + 1}</span>
+                    <span className="gpa-m-row-desc">
+                      {course.credits ? `${course.credits} tín chỉ` : 'Chưa có TC'} • {groupOption?.shortLabel || 'Đại cương'}
+                    </span>
                   </div>
 
-                  <div className="gpa-mobile-card-grid">
-                    <div className="gpa-m-grid-field">
-                      <span className="gpa-m-field-label">Tín chỉ</span>
-                      {renderCreditsInput(course, index, true)}
-                    </div>
-                    <div className="gpa-m-grid-field">
-                      <span className="gpa-m-field-label">{globalInputType === 'score10' ? 'Điểm 10' : 'Điểm chữ'}</span>
-                      {renderScoreInput(course, index, true)}
-                    </div>
-                    <div className="gpa-m-grid-field">
-                      <span className="gpa-m-field-label">Quy đổi</span>
-                      <div className="gpa-m-chip-wrapper">{gradeCell(course)}</div>
-                    </div>
+                  <div className="gpa-m-row-right">
+                    {course.score10 ? (
+                      <span className="gpa-m-row-score">{course.score10}</span>
+                    ) : (
+                      <span className="gpa-m-row-placeholder">--</span>
+                    )}
+
+                    {grade ? (
+                      <span className={`gpa-m-row-badge ${getGradeBadgeClass(grade)}`}>
+                        {grade.letter}
+                      </span>
+                    ) : (
+                      <span className="gpa-m-row-badge empty">—</span>
+                    )}
+
+                    <span className="gpa-m-row-chevron">›</span>
                   </div>
                 </div>
               );
             })}
-          </div>
 
-          <div className="gpa-bottom-add">
-            <button type="button" className="gpa-add-dashed-btn" onClick={addCourse}>
-              <Plus size={16} aria-hidden="true" />
-              <span>Thêm môn học</span>
+            {/* NÚT THÊM MÔN DUY NHẤT Ở CHÂN DANH SÁCH MOBILE */}
+            <button
+              type="button"
+              className="gpa-m-add-row-btn"
+              onClick={handleOpenAddSheet}
+              aria-label="Thêm môn học mới"
+            >
+              <span>+ Thêm môn học</span>
             </button>
           </div>
         </div>
 
-        <ResultCard id="gpa-result" tone={academicTier?.tone} chip={academicTier?.label}>
-          {hasResult ? (
-            <>
-              <div aria-live="polite">
-                <p className="tool-big-label">GPA học kỳ</p>
-                <p className="tool-big">
-                  <strong>{animatedGpa.toFixed(2)}</strong>
-                  <span>/ 4.00</span>
-                </p>
-              </div>
-              <ScoreBar value={result.gpa} max={4} maxLabel="4.00" />
-              <ResultFacts
-                facts={[
-                  { label: 'Tín chỉ', value: result.totalCredits },
-                  { label: 'Môn tính', value: result.countedCourses },
-                  { label: 'Đạt', value: courseStats.passed, tone: courseStats.passed > 0 ? 'success' : null },
-                  { label: 'Rớt', value: courseStats.failed, tone: courseStats.failed > 0 ? 'danger' : null },
-                ]}
-              />
-              {courseStats.failed > 0 ? (
-                <ResultCallout tone="danger">
-                  <strong>{courseStats.failed} môn chưa đạt:</strong> {courseStats.failedCourses.join(', ')}. Các môn này cần học lại.
-                </ResultCallout>
-              ) : (
-                academicTier && <ResultCallout tone={academicTier.tone}>{academicTier.description}</ResultCallout>
-              )}
-            </>
-          ) : (
-            <p className="tool-empty">Nhập số tín chỉ và điểm của từng môn để tính GPA học kỳ.</p>
-          )}
-
-          {validationMessage && (
-            <p className="tool-error" role="alert">
-              {validationMessage}
-            </p>
-          )}
-
-          <div className="tool-source">
-            <span>Theo bảng quy đổi điểm của {cohort}.</span>
-            <button type="button" className="tool-text-btn" onClick={() => setReferenceModalTab('rules')}>
-              Quy chế điểm
-            </button>
-            <button type="button" className="tool-text-btn" onClick={() => setReferenceModalTab('scale')}>
-              Bảng quy đổi điểm
-            </button>
-          </div>
-        </ResultCard>
       </div>
 
+      {/* ============================================================== */}
+      {/* MOBILE 1-TOUCH BOTTOM SHEET EDITOR */}
+      {/* ============================================================== */}
+      {sheetState && (
+        <div className="gpa-m-sheet-overlay" onClick={() => setSheetState(null)}>
+          <div
+            className="gpa-m-sheet-container"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="gpa-sheet-title"
+          >
+            {/* Grab Handle */}
+            <div className="gpa-m-sheet-handle-bar">
+              <div className="gpa-m-sheet-handle" />
+            </div>
+
+            {/* Header */}
+            <div className="gpa-m-sheet-header">
+              <h3 id="gpa-sheet-title" className="gpa-m-sheet-title">
+                {sheetState.courseTitle}
+              </h3>
+              <button
+                type="button"
+                className="gpa-m-sheet-close-btn"
+                onClick={() => setSheetState(null)}
+                aria-label="Đóng bảng chỉnh sửa"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Content Body */}
+            <div className="gpa-m-sheet-body">
+              {/* 1. Số tín chỉ: Con lăn thước cuộn (Wheel Picker) */}
+              <div className="gpa-m-sheet-field">
+                <div className="gpa-m-sheet-label-row">
+                  <label className="gpa-m-sheet-label">1. Số tín chỉ</label>
+                  <span className="gpa-m-sheet-hint">{sheetState.credits ? `${sheetState.credits} tín chỉ` : '3 tín chỉ'}</span>
+                </div>
+                <CreditWheelPicker
+                  value={sheetState.credits}
+                  onChange={(val) => setSheetState((s) => (s ? { ...s, credits: val } : null))}
+                />
+              </div>
+
+              {/* 2. Điểm học phần thang 10 */}
+              <div className="gpa-m-sheet-field">
+                <div className="gpa-m-sheet-label-row">
+                  <label className="gpa-m-sheet-label">2. Điểm học phần (Thang 10)</label>
+                  {sheetPreviewGrade && (
+                    <span className={`gpa-m-sheet-live-preview ${getGradeBadgeClass(sheetPreviewGrade)}`}>
+                      Quy đổi: <strong>{sheetPreviewGrade.letter}</strong> ({sheetPreviewGrade.score4.toFixed(1)})
+                    </span>
+                  )}
+                </div>
+
+                <div className="gpa-m-score-input-wrap">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className="gpa-m-score-input"
+                    value={sheetState.score10}
+                    onChange={(e) => {
+                      const val = sanitizeDecimal(e.target.value);
+                      setSheetState((s) => (s ? { ...s, score10: val } : null));
+                    }}
+                    placeholder="8.5"
+                    autoFocus
+                    aria-label="Nhập điểm thang 10"
+                  />
+                </div>
+              </div>
+
+              {/* 3. Phân loại môn */}
+              <div className="gpa-m-sheet-field">
+                <label className="gpa-m-sheet-label">3. Phân loại môn học</label>
+                <div className="gpa-m-sheet-group-grid">
+                  {groupOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      className={`gpa-m-group-pill ${sheetState.courseGroup === option.id ? 'active' : ''}`}
+                      onClick={() => setSheetState((s) => (s ? { ...s, courseGroup: option.id } : null))}
+                    >
+                      {option.shortLabel}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4. Nút hành động */}
+              <div className="gpa-m-sheet-actions">
+                <button type="button" className="gpa-m-sheet-save-btn" onClick={handleSaveSheet}>
+                  {sheetState.isNew ? 'Thêm môn học' : 'Lưu thay đổi'}
+                </button>
+
+                {!sheetState.isNew && courses.length > 1 && (
+                  <button type="button" className="gpa-m-sheet-del-btn" onClick={handleDeleteFromSheet}>
+                    <Trash2 size={16} />
+                    <span>Xóa môn này</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL QUY CHẾ VÀ BẢNG ĐIỂM */}
       <GpaReferenceModal
         isOpen={referenceModalTab !== null}
         onClose={() => setReferenceModalTab(null)}

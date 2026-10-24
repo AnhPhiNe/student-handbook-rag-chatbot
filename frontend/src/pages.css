@@ -6522,44 +6522,917 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 /* ==========================================================================
-   Target GPA Page (Mục tiêu GPA - Overhaul)
+   Target GPA Studio 2.0 (Mục tiêu GPA - Style 1 Natural 2-Column Flow)
    ========================================================================== */
 
-/* Internal Panels for Visual Separation */
-
-.target-gpa-input {
+.target-gpa-header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  gap: 1rem;
+  max-width: 960px;
   width: 100%;
-  height: 38px;
+  margin-left: auto;
+  margin-right: auto;
   box-sizing: border-box;
-  padding: 0 4.5rem 0 0.85rem;
-  border-radius: 9px;
-  border: 1px solid var(--input-border);
-  background: var(--input-bg);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
-.target-gpa-input:hover {
-  border-color: color-mix(in srgb, var(--primary) 35%, var(--input-border));
-}
-
-.target-gpa-input:focus {
+.tool-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #e2e8f0);
   background: var(--card-bg, #ffffff);
-  border-color: var(--primary);
+  color: var(--text-muted, #64748b);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.tool-reset-btn:hover {
+  background: #f1f5f9;
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme='dark'] .tool-reset-btn {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .tool-reset-btn:hover {
+  background: #334155;
+  color: #f87171;
+}
+
+.target-gpa-studio {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 0 2rem;
+  box-sizing: border-box;
+}
+
+/* 3 Tabs Bar */
+.target-gpa-tabs-bar {
+  background: var(--input-bg, #f1f5f9);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.target-gpa-tabs-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.target-gpa-tabs-row {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  min-width: max-content;
+}
+
+.target-gpa-tab-item {
+  flex: 1;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-muted, #475569);
+  border: none;
+  background: transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .target-gpa-tab-item {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.82rem;
+  }
+}
+
+.target-gpa-tab-item:hover {
+  color: var(--text-primary, #0f172a);
+}
+
+.target-gpa-tab-item.active {
+  background: var(--card-bg, #ffffff);
+  color: #102A4A;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  font-weight: 800;
+}
+
+[data-theme='dark'] .target-gpa-tab-item.active {
+  background: #1e293b;
+  color: #93c5fd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* 2-Column Layout */
+.target-gpa-layout-2col {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr);
+  gap: 1.65rem;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 840px) {
+  .target-gpa-layout-2col {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+.target-gpa-form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Form Cards */
+.target-gpa-form-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+[data-theme='dark'] .target-gpa-form-card {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.target-gpa-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #102A4A;
+}
+
+[data-theme='dark'] .target-gpa-card-title {
+  color: #93c5fd;
+}
+
+.target-gpa-tag-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.18rem 0.6rem;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+[data-theme='dark'] .target-gpa-tag-status {
+  color: #34d399;
+}
+
+.target-gpa-fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .target-gpa-fields-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.target-gpa-field-item label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted, #475569);
+  margin-bottom: 0.4rem;
+}
+
+.target-gpa-input-box {
+  display: flex;
+  align-items: center;
+  background: var(--card-bg, #ffffff);
+  border: 1.5px solid var(--border-dark, #cbd5e1);
+  border-radius: 9px;
+  padding: 0.6rem 0.8rem;
+  transition: all 0.15s;
+}
+
+[data-theme='dark'] .target-gpa-input-box {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.target-gpa-input-box:focus-within {
+  border-color: #102A4A;
+  box-shadow: 0 0 0 3px rgba(16, 42, 74, 0.1);
+}
+
+[data-theme='dark'] .target-gpa-input-box:focus-within {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.15);
+}
+
+.target-gpa-input-box input {
+  border: none;
+  background: transparent;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.15);
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #102A4A;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 0;
 }
 
-.target-gpa-input.input-error {
-  border-color: #ef4444 !important;
-  background-color: rgba(239, 68, 68, 0.07) !important;
-  color: #dc2626 !important;
-  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25) !important;
+[data-theme='dark'] .target-gpa-input-box input {
+  color: #f8fafc;
 }
 
-/* Dedicated Tier Row in Right Sticky Card */
+.target-gpa-input-box span {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-sub, #64748b);
+  white-space: nowrap;
+  margin-left: 0.35rem;
+  flex-shrink: 0;
+}
+
+.target-gpa-progress-hint {
+  margin-top: 0.45rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-sub, #64748b);
+  font-weight: 600;
+}
+
+.target-gpa-mini-progress {
+  height: 5px;
+  background: var(--border-color, #e2e8f0);
+  border-radius: 3px;
+  margin-top: 0.4rem;
+  overflow: hidden;
+}
+
+[data-theme='dark'] .target-gpa-mini-progress {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.target-gpa-mini-fill {
+  height: 100%;
+  background: #047857;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Slider & Stepper Controls */
+.target-gpa-slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.target-gpa-slider-header label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted, #475569);
+}
+
+.target-gpa-slider-val-tag {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #102A4A;
+  background: var(--input-bg, #f8fafc);
+  border: 1px solid var(--border-dark, #cbd5e1);
+  padding: 0.2rem 0.65rem;
+  border-radius: 7px;
+}
+
+[data-theme='dark'] .target-gpa-slider-val-tag {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #93c5fd;
+}
+
+.target-gpa-slider-val-tag span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-sub, #64748b);
+}
+
+.target-gpa-slider-range {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #3b82f6 0%, #059669 65%, #d97706 100%);
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin: 0.85rem 0 0.65rem;
+}
+
+.target-gpa-slider-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  background: #ffffff;
+  border: 3.5px solid #102A4A;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease;
+}
+
+.target-gpa-slider-range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+[data-theme='dark'] .target-gpa-slider-range::-webkit-slider-thumb {
+  border-color: #93c5fd;
+}
+
+.target-gpa-presets-row {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.target-gpa-btn-preset {
+  flex: 1;
+  padding: 0.45rem 0.3rem;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--input-bg, #f8fafc);
+  border-radius: 8px;
+  color: var(--text-muted, #475569);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+[data-theme='dark'] .target-gpa-btn-preset {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.target-gpa-btn-preset:hover {
+  background: #f1f5f9;
+}
+
+.target-gpa-btn-preset.active {
+  background: #102A4A;
+  color: #ffffff;
+  border-color: #102A4A;
+  font-weight: 800;
+}
+
+[data-theme='dark'] .target-gpa-btn-preset.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+/* Stepper row */
+.target-gpa-stepper-row {
+  margin-top: 1.15rem;
+  padding-top: 1.15rem;
+  border-top: 1px dashed var(--border-color, #e2e8f0);
+}
+
+[data-theme='dark'] .target-gpa-stepper-row {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.target-gpa-stepper-row label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted, #475569);
+  margin-bottom: 0.45rem;
+}
+
+.target-gpa-stepper-combo {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.target-gpa-stepper-wrap {
+  display: inline-flex;
+  border: 1.5px solid var(--border-dark, #cbd5e1);
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--card-bg, #ffffff);
+}
+
+[data-theme='dark'] .target-gpa-stepper-wrap {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: #0f172a;
+}
+
+.target-gpa-stepper-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--card-bg, #ffffff);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary, #0f172a);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+[data-theme='dark'] .target-gpa-stepper-btn {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+.target-gpa-stepper-btn:hover {
+  background: #f1f5f9;
+}
+
+[data-theme='dark'] .target-gpa-stepper-btn:hover {
+  background: #1e293b;
+}
+
+.target-gpa-stepper-val {
+  min-width: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #102A4A;
+  border-left: 1px solid var(--border-color, #e2e8f0);
+  border-right: 1px solid var(--border-color, #e2e8f0);
+  background: var(--input-bg, #f8fafc);
+}
+
+[data-theme='dark'] .target-gpa-stepper-val {
+  border-left-color: rgba(255, 255, 255, 0.1);
+  border-right-color: rgba(255, 255, 255, 0.1);
+  background: #1e293b;
+  color: #93c5fd;
+}
+
+.target-gpa-pill-btn {
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--card-bg, #ffffff);
+  color: var(--text-muted, #475569);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+[data-theme='dark'] .target-gpa-pill-btn {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.target-gpa-pill-btn:hover {
+  background: #f1f5f9;
+}
+
+.target-gpa-pill-btn.active {
+  background: #eff6ff;
+  color: #1e40af;
+  border-color: #bfdbfe;
+  font-weight: 800;
+}
+
+[data-theme='dark'] .target-gpa-pill-btn.active {
+  background: rgba(37, 99, 235, 0.2);
+  color: #93c5fd;
+  border-color: #2563eb;
+}
+
+/* Right Result Card (Unified Intelligence Card - Clean & Anti AI Slop) */
+.target-gpa-result-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-dark, #cbd5e1);
+  border-radius: 16px;
+  padding: 1.35rem;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  position: sticky;
+  top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+[data-theme='dark'] .target-gpa-result-card {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.target-gpa-res-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .target-gpa-res-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.target-gpa-res-header .res-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #102A4A;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+[data-theme='dark'] .target-gpa-res-header .res-title {
+  color: #93c5fd;
+}
+
+.target-gpa-badge-feasible {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.16rem 0.6rem;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+[data-theme='dark'] .target-gpa-badge-feasible {
+  color: #34d399;
+}
+
+.target-gpa-badge-feasible.danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.target-gpa-hero-section {
+  text-align: center;
+  padding: 0.35rem 0;
+}
+
+.target-gpa-hero-section .hero-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-sub, #64748b);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
+}
+
+.target-gpa-hero-section .hero-score {
+  font-size: 2.85rem;
+  font-weight: 900;
+  color: #102A4A;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+[data-theme='dark'] .target-gpa-hero-section .hero-score {
+  color: #f8fafc;
+}
+
+.target-gpa-hero-section .hero-score.danger {
+  color: #ef4444;
+}
+
+.target-gpa-hero-section .hero-score span {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-sub, #64748b);
+}
+
+.target-gpa-hero-section .hero-rank {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #102A4A;
+}
+
+[data-theme='dark'] .target-gpa-hero-section .hero-rank {
+  color: #cbd5e1;
+}
+
+/* Prescription Section */
+.target-gpa-presc-section {
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-color, #e2e8f0);
+}
+
+[data-theme='dark'] .target-gpa-presc-section {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.target-gpa-presc-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #102A4A;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme='dark'] .target-gpa-presc-title {
+  color: #93c5fd;
+}
+
+.target-gpa-presc-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.target-gpa-badge-grade {
+  flex: 1;
+  text-align: center;
+  background: var(--input-bg, #f8fafc);
+  color: var(--text-primary, #0f172a);
+  border: 1px solid var(--border-dark, #cbd5e1);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+}
+
+[data-theme='dark'] .target-gpa-badge-grade {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+}
+
+.target-gpa-clean-notice {
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color, #e2e8f0);
+  font-size: 0.76rem;
+  color: var(--text-muted, #475569);
+  line-height: 1.45;
+}
+
+[data-theme='dark'] .target-gpa-clean-notice {
+  border-top-color: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+}
+
+.target-gpa-clean-notice strong {
+  color: #102A4A;
+}
+
+[data-theme='dark'] .target-gpa-clean-notice strong {
+  color: #93c5fd;
+}
+
+/* Retake table */
+.target-gpa-retake-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.35rem 0 0.75rem;
+}
+
+.target-gpa-retake-table th {
+  text-align: left;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--text-muted, #475569);
+  padding-bottom: 0.45rem;
+}
+
+.target-gpa-retake-table td {
+  padding: 0.3rem 0.2rem;
+}
+
+.target-gpa-select {
+  width: 100%;
+  padding: 0.55rem 0.6rem;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #102A4A;
+  background: var(--card-bg, #ffffff);
+  border: 1.5px solid var(--border-dark, #cbd5e1);
+  border-radius: 8px;
+  outline: none;
+}
+
+[data-theme='dark'] .target-gpa-select {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+}
+
+.target-gpa-btn-add {
+  width: 100%;
+  padding: 0.55rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #102A4A;
+  border: 1.5px dashed var(--border-dark, #cbd5e1);
+  border-radius: 8px;
+  background: var(--card-bg, #ffffff);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+[data-theme='dark'] .target-gpa-btn-add {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #93c5fd;
+}
+
+.target-gpa-btn-add:hover {
+  background: #f1f5f9;
+  border-color: #102A4A;
+}
+
+[data-theme='dark'] .target-gpa-btn-add:hover {
+  background: #1e293b;
+}
+
+.target-gpa-btn-del {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #94a3b8);
+  padding: 0.45rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.target-gpa-btn-del:hover:not(:disabled) {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.target-gpa-btn-del:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.target-gpa-impact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.95rem;
+  background: var(--input-bg, #f8fafc);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 9px;
+}
+
+[data-theme='dark'] .target-gpa-impact-row {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.target-gpa-impact-row .target-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #102A4A;
+}
+
+[data-theme='dark'] .target-gpa-impact-row .target-label {
+  color: #93c5fd;
+}
+
+.target-gpa-impact-row .target-val {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #047857;
+}
+
+[data-theme='dark'] .target-gpa-impact-row .target-val {
+  color: #34d399;
+}
+
+/* Roadmap 3 Cards */
+.target-gpa-roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.55rem;
+  margin-top: 0.5rem;
+}
+
+.target-gpa-roadmap-card {
+  background: var(--input-bg, #f8fafc);
+  border: 1px solid var(--border-dark, #cbd5e1);
+  border-radius: 10px;
+  padding: 0.75rem 0.45rem;
+  text-align: center;
+}
+
+[data-theme='dark'] .target-gpa-roadmap-card {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.target-gpa-roadmap-card.grad-finish {
+  background: var(--card-bg, #ffffff);
+  border: 2px solid #102A4A;
+  box-shadow: 0 2px 6px rgba(16, 42, 74, 0.08);
+}
+
+[data-theme='dark'] .target-gpa-roadmap-card.grad-finish {
+  background: #1e293b;
+  border-color: #93c5fd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.target-gpa-roadmap-card .m-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-sub, #64748b);
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+}
+
+.target-gpa-roadmap-card.grad-finish .m-title {
+  color: #102A4A;
+  font-weight: 800;
+}
+
+[data-theme='dark'] .target-gpa-roadmap-card.grad-finish .m-title {
+  color: #93c5fd;
+}
+
+.target-gpa-roadmap-card .m-score {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #102A4A;
+  line-height: 1;
+  margin-bottom: 0.2rem;
+}
+
+[data-theme='dark'] .target-gpa-roadmap-card .m-score {
+  color: #f8fafc;
+}
+
+.target-gpa-roadmap-card.grad-finish .m-score {
+  color: #047857;
+}
+
+[data-theme='dark'] .target-gpa-roadmap-card.grad-finish .m-score {
+  color: #34d399;
+}
+
+.target-gpa-roadmap-card .m-sub {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted, #475569);
+}
+
+.target-gpa-roadmap-card.grad-finish .m-sub {
+  color: #102A4A;
+  font-weight: 800;
+}
+
+[data-theme='dark'] .target-gpa-roadmap-card.grad-finish .m-sub {
+  color: #93c5fd;
+}
 
 /* ==================== Trang Mục tiêu môn học (Course Target Page) ==================== */
 

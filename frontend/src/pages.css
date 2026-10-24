@@ -6526,19 +6526,19 @@ input:checked + .slider:before { transform: translateX(20px); }
    ========================================================================== */
 
 .target-gpa-wrapper {
-  padding: 1.25rem 4rem 1.5rem !important;
+  padding: 4rem 4rem 2rem !important;
   width: 100% !important;
   max-width: 100% !important;
   margin: 0 !important;
   box-sizing: border-box !important;
   align-items: stretch !important;
-  gap: 0.85rem !important;
+  gap: 1.5rem !important;
 }
 
 .target-gpa-wrapper .page-header.compact {
   width: 100% !important;
   max-width: 100% !important;
-  margin: 0 0 0.5rem 0 !important;
+  margin: 0 !important;
   text-align: left !important;
 }
 

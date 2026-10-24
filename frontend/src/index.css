@@ -22,6 +22,7 @@
   
   --text-primary: #1E293B;
   --text-secondary: #64748B;
+  --text-muted: #64748B;
   --text-sidebar: rgba(255, 255, 255, 0.7);
   --text-sidebar-active: #ffffff;
   
@@ -114,6 +115,7 @@ html {
   
   --text-primary: #F1F5F9;
   --text-secondary: #94A3B8;
+  --text-muted: #94A3B8;
   --text-sidebar: rgba(255, 255, 255, 0.6);
   
   --border-color: rgba(255, 255, 255, 0.08);

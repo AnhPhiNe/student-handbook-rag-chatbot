@@ -177,386 +177,395 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
   return (
     <div className="page-container tool-page simplified">
-      <div className="target-gpa-header-wrap">
-        <ToolPageHeader
-          icon={TrendingUp}
-          title="Mục tiêu GPA"
-          description="Studio tính toán chiến lược GPA học kỳ, cải thiện môn F/D và lộ trình tốt nghiệp toàn khóa."
-        />
-        <button
-          type="button"
-          className="tool-reset-btn"
-          onClick={handleReset}
-          title="Đặt lại thông số"
-          aria-label="Đặt lại thông số"
-        >
-          <RotateCcw size={15} />
-          <span>Đặt lại</span>
-        </button>
-      </div>
+      {/* Standard Clean Page Header (Khớp 100% Hình 2) */}
+      <ToolPageHeader
+        icon={TrendingUp}
+        title="Mục tiêu GPA"
+        description="Tính toán chiến lược GPA học kỳ, cải thiện môn F/D và lộ trình tốt nghiệp toàn khóa."
+      />
 
       <div className="target-gpa-studio">
-        {/* 3-Tab Navigation Bar */}
-        <div className="target-gpa-tabs-bar" role="tablist" aria-label="Các chế độ tính toán GPA">
-          <div className="target-gpa-tabs-row">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'term'}
-              className={`target-gpa-tab-item ${activeTab === 'term' ? 'active' : ''}`}
-              onClick={() => setActiveTab('term')}
-            >
-              🎯 1 Học Kỳ Tới
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'retake'}
-              className={`target-gpa-tab-item ${activeTab === 'retake' ? 'active' : ''}`}
-              onClick={() => setActiveTab('retake')}
-            >
-              ⚡ Cải Thiện Môn F/D
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'roadmap'}
-              className={`target-gpa-tab-item ${activeTab === 'roadmap' ? 'active' : ''}`}
-              onClick={() => setActiveTab('roadmap')}
-            >
-              🎓 Lộ Trình Ra Trường
-            </button>
-          </div>
-        </div>
-
-        {/* 2-Column Layout */}
+        {/* 2-Column Layout (Tương đồng Hình 2: Trái 60% Thẻ Nhập Liệu, Phải 40% Kết Quả) */}
         <div className="target-gpa-layout-2col">
-          {/* Left Column: Form Cards */}
-          <div className="target-gpa-form-stack">
-            {/* Card 1: Shared Profile (Điểm Hiện Tại) */}
-            <div className="target-gpa-form-card">
-              <div className="target-gpa-card-title">
-                <span>1. Điểm Hiện Tại</span>
-                <span className="target-gpa-tag-status">
-                  {isProfileValid ? '✓ Đã lưu' : 'Chưa lưu'}
-                </span>
+          {/* CỘT TRÁI: THẺ LIỀN KHỐI (UNIFIED MASTER CARD) */}
+          <div className="target-gpa-master-card">
+            {/* TOOLBAR TÍCH HỢP ĐẦU THẺ (Khớp 100% Toolbar Hình 2) */}
+            <div className="target-gpa-card-toolbar">
+              <div className="target-gpa-toolbar-left">
+                <span className="target-gpa-toolbar-heading">Thiết lập mục tiêu</span>
+                <span className="target-gpa-toolbar-sub">(3 chế độ)</span>
               </div>
 
-              <div className="target-gpa-fields-grid">
-                <div className="target-gpa-field-item">
-                  <label htmlFor="target-curr-gpa">GPA tích lũy:</label>
-                  <div className="target-gpa-input-box">
-                    <input
-                      id="target-curr-gpa"
-                      type="text"
-                      inputMode="decimal"
-                      value={currentGpaStr}
-                      onChange={(e) => handleCurrentGpaChange(e.target.value)}
-                      placeholder="2.85"
-                    />
-                    <span>/ 4.00</span>
-                  </div>
-                </div>
-
-                <div className="target-gpa-field-item">
-                  <label htmlFor="target-curr-creds">Đã tích lũy:</label>
-                  <div className="target-gpa-input-box">
-                    <input
-                      id="target-curr-creds"
-                      type="text"
-                      inputMode="numeric"
-                      value={currentCreditsStr}
-                      onChange={(e) => handleCurrentCreditsChange(e.target.value)}
-                      placeholder="60"
-                    />
-                    <span>TC</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="target-gpa-progress-hint">
-                <span>Tiến độ chương trình</span>
-                <span>
-                  {currentCreditsStr || '0'} / 135 TC ({progressPercent}%)
-                </span>
-              </div>
-              <div className="target-gpa-mini-progress">
-                <div
-                  className="target-gpa-mini-fill"
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
+              <button
+                type="button"
+                className="target-gpa-reset-btn"
+                onClick={handleReset}
+                title="Đặt lại thông số"
+                aria-label="Đặt lại thông số"
+              >
+                <RotateCcw size={14} />
+                <span>Đặt lại</span>
+              </button>
             </div>
 
-            {/* Card 2: Tab-specific Controls */}
-            {activeTab === 'term' && (
-              <div className="target-gpa-form-card">
+            {/* THÂN THẺ LIỀN MẠCH */}
+            <div className="target-gpa-card-body">
+              {/* BỘ CHỌN 3 CHẾ ĐỘ (High-Contrast Segmented Switcher) */}
+              <div className="target-gpa-tabs-bar" role="tablist" aria-label="Các chế độ tính toán GPA">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'term'}
+                  className={`target-gpa-tab-item ${activeTab === 'term' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('term')}
+                >
+                  🎯 1 Học Kỳ Tới
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'retake'}
+                  className={`target-gpa-tab-item ${activeTab === 'retake' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('retake')}
+                >
+                  ⚡ Cải Thiện Môn F/D
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'roadmap'}
+                  className={`target-gpa-tab-item ${activeTab === 'roadmap' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('roadmap')}
+                >
+                  🎓 Lộ Trình Ra Trường
+                </button>
+              </div>
+
+              {/* PHẦN 1: ĐIỂM HIỆN TẠI (Dùng chung cho cả 3 chế độ) */}
+              <div className="target-gpa-section-block">
                 <div className="target-gpa-card-title">
-                  <span>2. Mục Tiêu Kỳ Tới</span>
+                  <span>1. Điểm Tích Lũy Hiện Tại</span>
+                  <span className="target-gpa-tag-status">
+                    {isProfileValid ? '✓ Đã lưu' : 'Chưa lưu'}
+                  </span>
                 </div>
 
-                {/* Slider for Target GPA */}
-                <div className="target-gpa-slider-header">
-                  <label htmlFor="target-goal-slider">GPA muốn đạt:</label>
-                  <div className="target-gpa-slider-val-tag">
-                    {format2(Number(targetGpaStr) || 3.2)} <span>/ 4.00</span>
-                  </div>
-                </div>
-
-                <input
-                  id="target-goal-slider"
-                  type="range"
-                  className="target-gpa-slider-range"
-                  min="2.00"
-                  max="4.00"
-                  step="0.05"
-                  value={Number(targetGpaStr) || 3.2}
-                  onChange={(e) => setTargetGpaStr(e.target.value)}
-                  aria-label="Kéo chọn GPA muốn đạt"
-                />
-
-                <div className="target-gpa-presets-row" role="group" aria-label="Chọn nhanh mức GPA mục tiêu">
-                  {TARGET_PRESETS.map((p) => {
-                    const isActive = targetGpaStr === p.value;
-                    return (
-                      <button
-                        key={p.value}
-                        type="button"
-                        className={`target-gpa-btn-preset ${isActive ? 'active' : ''}`}
-                        onClick={() => setTargetGpaStr(p.value)}
-                      >
-                        {p.label} ({p.value})
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Stepper for Future Credits */}
-                <div className="target-gpa-stepper-row">
-                  <label>Tín chỉ kỳ tới:</label>
-                  <div className="target-gpa-stepper-combo">
-                    <div className="target-gpa-stepper-wrap">
-                      <button
-                        type="button"
-                        className="target-gpa-stepper-btn"
-                        onClick={() => setFutureCredits((prev) => Math.max(3, prev - 1))}
-                        aria-label="Giảm 1 tín chỉ"
-                      >
-                        −
-                      </button>
-                      <div className="target-gpa-stepper-val">{futureCredits} TC</div>
-                      <button
-                        type="button"
-                        className="target-gpa-stepper-btn"
-                        onClick={() => setFutureCredits((prev) => Math.min(35, prev + 1))}
-                        aria-label="Tăng 1 tín chỉ"
-                      >
-                        +
-                      </button>
+                <div className="target-gpa-fields-grid">
+                  <div className="target-gpa-field-item">
+                    <label htmlFor="target-curr-gpa">GPA tích lũy:</label>
+                    <div className="target-gpa-input-box">
+                      <input
+                        id="target-curr-gpa"
+                        type="text"
+                        inputMode="decimal"
+                        value={currentGpaStr}
+                        onChange={(e) => handleCurrentGpaChange(e.target.value)}
+                        placeholder="2.85"
+                      />
+                      <span>/ 4.00</span>
                     </div>
-
-                    {TERM_CREDIT_PRESETS.map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        className={`target-gpa-pill-btn ${futureCredits === c ? 'active' : ''}`}
-                        onClick={() => setFutureCredits(c)}
-                      >
-                        {c} TC
-                      </button>
-                    ))}
                   </div>
+
+                  <div className="target-gpa-field-item">
+                    <label htmlFor="target-curr-creds">Đã tích lũy:</label>
+                    <div className="target-gpa-input-box">
+                      <input
+                        id="target-curr-creds"
+                        type="text"
+                        inputMode="numeric"
+                        value={currentCreditsStr}
+                        onChange={(e) => handleCurrentCreditsChange(e.target.value)}
+                        placeholder="60"
+                      />
+                      <span>TC</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="target-gpa-progress-hint">
+                  <span>Tiến độ chương trình</span>
+                  <span>
+                    {currentCreditsStr || '0'} / 135 TC ({progressPercent}%)
+                  </span>
+                </div>
+                <div className="target-gpa-mini-progress">
+                  <div
+                    className="target-gpa-mini-fill"
+                    style={{ width: `${progressPercent}%` }}
+                  />
                 </div>
               </div>
-            )}
 
-            {activeTab === 'retake' && (
-              <div className="target-gpa-form-card">
-                <div className="target-gpa-card-title">
-                  <span>2. Môn Cải Thiện Điểm</span>
+              {/* PHẦN 2: THÔNG SỐ TÙY CHỌN THEO CHẾ ĐỘ */}
+              {activeTab === 'term' && (
+                <div className="target-gpa-section-block divider">
+                  <div className="target-gpa-card-title">
+                    <span>2. Mục Tiêu Học Kỳ Tới</span>
+                  </div>
+
+                  {/* Slider for Target GPA */}
+                  <div className="target-gpa-slider-header">
+                    <label htmlFor="target-goal-slider">GPA muốn đạt:</label>
+                    <div className="target-gpa-slider-val-tag">
+                      {format2(Number(targetGpaStr) || 3.2)} <span>/ 4.00</span>
+                    </div>
+                  </div>
+
+                  <input
+                    id="target-goal-slider"
+                    type="range"
+                    className="target-gpa-slider-range"
+                    min="2.00"
+                    max="4.00"
+                    step="0.05"
+                    value={Number(targetGpaStr) || 3.2}
+                    onChange={(e) => setTargetGpaStr(e.target.value)}
+                    aria-label="Kéo chọn GPA muốn đạt"
+                  />
+
+                  <div className="target-gpa-presets-row" role="group" aria-label="Chọn nhanh mức GPA mục tiêu">
+                    {TARGET_PRESETS.map((p) => {
+                      const isActive = targetGpaStr === p.value;
+                      return (
+                        <button
+                          key={p.value}
+                          type="button"
+                          className={`target-gpa-btn-preset ${isActive ? 'active' : ''}`}
+                          onClick={() => setTargetGpaStr(p.value)}
+                        >
+                          {p.label} ({p.value})
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Stepper for Future Credits */}
+                  <div className="target-gpa-stepper-row">
+                    <label>Tín chỉ kỳ tới:</label>
+                    <div className="target-gpa-stepper-combo">
+                      <div className="target-gpa-stepper-wrap">
+                        <button
+                          type="button"
+                          className="target-gpa-stepper-btn"
+                          onClick={() => setFutureCredits((prev) => Math.max(3, prev - 1))}
+                          aria-label="Giảm 1 tín chỉ"
+                        >
+                          −
+                        </button>
+                        <div className="target-gpa-stepper-val">{futureCredits} TC</div>
+                        <button
+                          type="button"
+                          className="target-gpa-stepper-btn"
+                          onClick={() => setFutureCredits((prev) => Math.min(35, prev + 1))}
+                          aria-label="Tăng 1 tín chỉ"
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      {TERM_CREDIT_PRESETS.map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          className={`target-gpa-pill-btn ${futureCredits === c ? 'active' : ''}`}
+                          onClick={() => setFutureCredits(c)}
+                        >
+                          {c} TC
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
+              )}
 
-                <table className="target-gpa-retake-table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: '28%' }}>Môn</th>
-                      <th style={{ width: '24%' }}>Điểm cũ</th>
-                      <th style={{ width: '20%' }}>Số TC</th>
-                      <th style={{ width: '22%' }}>Mục tiêu</th>
-                      <th style={{ width: '6%' }}></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {retakes.map((course, idx) => (
-                      <tr key={course.id}>
-                        <td>
-                          <input
-                            type="text"
-                            className="target-gpa-select"
-                            value={course.label ?? `Môn ${idx + 1}`}
-                            onChange={(e) =>
-                              handleUpdateRetake(course.id, 'label', e.target.value)
-                            }
-                            aria-label={`Tên môn ${idx + 1}`}
-                          />
-                        </td>
-                        <td>
-                          <select
-                            className="target-gpa-select"
-                            value={course.oldGrade}
-                            onChange={(e) =>
-                              handleUpdateRetake(course.id, 'oldGrade', Number(e.target.value))
-                            }
-                            aria-label="Điểm cũ"
-                          >
-                            <option value={0.0}>F (0.0)</option>
-                            <option value={1.0}>D (1.0)</option>
-                            <option value={1.5}>D+ (1.5)</option>
-                            <option value={2.0}>C (2.0)</option>
-                          </select>
-                        </td>
-                        <td>
-                          <select
-                            className="target-gpa-select"
-                            value={course.credits}
-                            onChange={(e) =>
-                              handleUpdateRetake(course.id, 'credits', Number(e.target.value))
-                            }
-                            aria-label="Số tín chỉ"
-                          >
-                            <option value={1}>1 TC</option>
-                            <option value={2}>2 TC</option>
-                            <option value={3}>3 TC</option>
-                            <option value={4}>4 TC</option>
-                          </select>
-                        </td>
-                        <td>
-                          <select
-                            className="target-gpa-select"
-                            value={course.targetGrade}
-                            onChange={(e) =>
-                              handleUpdateRetake(course.id, 'targetGrade', Number(e.target.value))
-                            }
-                            aria-label="Mục tiêu điểm mới"
-                          >
-                            <option value={4.0}>A (4.0)</option>
-                            <option value={3.5}>B+ (3.5)</option>
-                            <option value={3.0}>B (3.0)</option>
-                            <option value={2.5}>C+ (2.5)</option>
-                          </select>
-                        </td>
-                        <td>
-                          <button
-                            type="button"
-                            className="target-gpa-btn-del"
-                            disabled={retakes.length <= 1}
-                            onClick={() => handleRemoveRetake(course.id)}
-                            title="Xóa môn"
-                            aria-label="Xóa môn này"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </td>
+              {activeTab === 'retake' && (
+                <div className="target-gpa-section-block divider">
+                  <div className="target-gpa-card-title">
+                    <span>2. Chọn Môn Cần Học Lại / Nâng Điểm</span>
+                  </div>
+
+                  <table className="target-gpa-retake-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: '28%' }}>Môn</th>
+                        <th style={{ width: '24%' }}>Điểm cũ</th>
+                        <th style={{ width: '20%' }}>Số TC</th>
+                        <th style={{ width: '22%' }}>Mục tiêu</th>
+                        <th style={{ width: '6%' }}></th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {retakes.map((course, idx) => (
+                        <tr key={course.id}>
+                          <td>
+                            <input
+                              type="text"
+                              className="target-gpa-select"
+                              value={course.label ?? `Môn ${idx + 1}`}
+                              onChange={(e) =>
+                                handleUpdateRetake(course.id, 'label', e.target.value)
+                              }
+                              aria-label={`Tên môn ${idx + 1}`}
+                            />
+                          </td>
+                          <td>
+                            <select
+                              className="target-gpa-select"
+                              value={course.oldGrade}
+                              onChange={(e) =>
+                                handleUpdateRetake(course.id, 'oldGrade', Number(e.target.value))
+                              }
+                              aria-label="Điểm cũ"
+                            >
+                              <option value={0.0}>F (0.0)</option>
+                              <option value={1.0}>D (1.0)</option>
+                              <option value={1.5}>D+ (1.5)</option>
+                              <option value={2.0}>C (2.0)</option>
+                            </select>
+                          </td>
+                          <td>
+                            <select
+                              className="target-gpa-select"
+                              value={course.credits}
+                              onChange={(e) =>
+                                handleUpdateRetake(course.id, 'credits', Number(e.target.value))
+                              }
+                              aria-label="Số tín chỉ"
+                            >
+                              <option value={1}>1 TC</option>
+                              <option value={2}>2 TC</option>
+                              <option value={3}>3 TC</option>
+                              <option value={4}>4 TC</option>
+                            </select>
+                          </td>
+                          <td>
+                            <select
+                              className="target-gpa-select"
+                              value={course.targetGrade}
+                              onChange={(e) =>
+                                handleUpdateRetake(course.id, 'targetGrade', Number(e.target.value))
+                              }
+                              aria-label="Mục tiêu điểm mới"
+                            >
+                              <option value={4.0}>A (4.0)</option>
+                              <option value={3.5}>B+ (3.5)</option>
+                              <option value={3.0}>B (3.0)</option>
+                              <option value={2.5}>C+ (2.5)</option>
+                            </select>
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="target-gpa-btn-del"
+                              disabled={retakes.length <= 1}
+                              onClick={() => handleRemoveRetake(course.id)}
+                              title="Xóa môn"
+                              aria-label="Xóa môn này"
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
 
-                {retakes.length < 6 && (
-                  <button
-                    type="button"
-                    className="target-gpa-btn-add"
-                    onClick={handleAddRetake}
-                  >
-                    + Thêm Môn Cải Thiện
-                  </button>
-                )}
-              </div>
-            )}
-
-            {activeTab === 'roadmap' && (
-              <div className="target-gpa-form-card">
-                <div className="target-gpa-card-title">
-                  <span>2. Kế Hoạch Tốt Nghiệp</span>
+                  {retakes.length < 6 && (
+                    <button
+                      type="button"
+                      className="target-gpa-btn-add"
+                      onClick={handleAddRetake}
+                    >
+                      + Thêm Môn Cải Thiện
+                    </button>
+                  )}
                 </div>
+              )}
 
-                {/* Slider for Graduation GPA */}
-                <div className="target-gpa-slider-header">
-                  <label htmlFor="target-grad-slider">GPA tốt nghiệp muốn đạt:</label>
-                  <div className="target-gpa-slider-val-tag">
-                    {format2(Number(targetGradGpaStr) || 3.2)} <span>/ 4.00</span>
+              {activeTab === 'roadmap' && (
+                <div className="target-gpa-section-block divider">
+                  <div className="target-gpa-card-title">
+                    <span>2. Kế Hoạch Tốt Nghiệp</span>
                   </div>
-                </div>
 
-                <input
-                  id="target-grad-slider"
-                  type="range"
-                  className="target-gpa-slider-range"
-                  min="2.00"
-                  max="4.00"
-                  step="0.05"
-                  value={Number(targetGradGpaStr) || 3.2}
-                  onChange={(e) => setTargetGradGpaStr(e.target.value)}
-                  aria-label="Kéo chọn GPA tốt nghiệp muốn đạt"
-                />
-
-                <div className="target-gpa-presets-row" role="group" aria-label="Chọn nhanh mức GPA tốt nghiệp">
-                  {TARGET_PRESETS.map((p) => {
-                    const isActive = targetGradGpaStr === p.value;
-                    return (
-                      <button
-                        key={p.value}
-                        type="button"
-                        className={`target-gpa-btn-preset ${isActive ? 'active' : ''}`}
-                        onClick={() => setTargetGradGpaStr(p.value)}
-                      >
-                        {p.label} ({p.value})
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Stepper for Remaining Credits */}
-                <div className="target-gpa-stepper-row">
-                  <label>Tín chỉ còn lại để ra trường:</label>
-                  <div className="target-gpa-stepper-combo">
-                    <div className="target-gpa-stepper-wrap">
-                      <button
-                        type="button"
-                        className="target-gpa-stepper-btn"
-                        onClick={() => setRemainingCredits((prev) => Math.max(3, prev - 3))}
-                        aria-label="Giảm 3 tín chỉ"
-                      >
-                        −
-                      </button>
-                      <div className="target-gpa-stepper-val">{remainingCredits} TC</div>
-                      <button
-                        type="button"
-                        className="target-gpa-stepper-btn"
-                        onClick={() => setRemainingCredits((prev) => Math.min(150, prev + 3))}
-                        aria-label="Tăng 3 tín chỉ"
-                      >
-                        +
-                      </button>
+                  {/* Slider for Graduation GPA */}
+                  <div className="target-gpa-slider-header">
+                    <label htmlFor="target-grad-slider">GPA tốt nghiệp muốn đạt:</label>
+                    <div className="target-gpa-slider-val-tag">
+                      {format2(Number(targetGradGpaStr) || 3.2)} <span>/ 4.00</span>
                     </div>
+                  </div>
 
-                    {ROADMAP_CREDIT_PRESETS.map((c) => (
-                      <button
-                        key={c}
-                        type="button"
-                        className={`target-gpa-pill-btn ${remainingCredits === c ? 'active' : ''}`}
-                        onClick={() => setRemainingCredits(c)}
-                      >
-                        {c} TC
-                      </button>
-                    ))}
+                  <input
+                    id="target-grad-slider"
+                    type="range"
+                    className="target-gpa-slider-range"
+                    min="2.00"
+                    max="4.00"
+                    step="0.05"
+                    value={Number(targetGradGpaStr) || 3.2}
+                    onChange={(e) => setTargetGradGpaStr(e.target.value)}
+                    aria-label="Kéo chọn GPA tốt nghiệp muốn đạt"
+                  />
+
+                  <div className="target-gpa-presets-row" role="group" aria-label="Chọn nhanh mức GPA tốt nghiệp">
+                    {TARGET_PRESETS.map((p) => {
+                      const isActive = targetGradGpaStr === p.value;
+                      return (
+                        <button
+                          key={p.value}
+                          type="button"
+                          className={`target-gpa-btn-preset ${isActive ? 'active' : ''}`}
+                          onClick={() => setTargetGradGpaStr(p.value)}
+                        >
+                          {p.label} ({p.value})
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Stepper for Remaining Credits */}
+                  <div className="target-gpa-stepper-row">
+                    <label>Tín chỉ còn lại để ra trường:</label>
+                    <div className="target-gpa-stepper-combo">
+                      <div className="target-gpa-stepper-wrap">
+                        <button
+                          type="button"
+                          className="target-gpa-stepper-btn"
+                          onClick={() => setRemainingCredits((prev) => Math.max(3, prev - 3))}
+                          aria-label="Giảm 3 tín chỉ"
+                        >
+                          −
+                        </button>
+                        <div className="target-gpa-stepper-val">{remainingCredits} TC</div>
+                        <button
+                          type="button"
+                          className="target-gpa-stepper-btn"
+                          onClick={() => setRemainingCredits((prev) => Math.min(150, prev + 3))}
+                          aria-label="Tăng 3 tín chỉ"
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      {ROADMAP_CREDIT_PRESETS.map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          className={`target-gpa-pill-btn ${remainingCredits === c ? 'active' : ''}`}
+                          onClick={() => setRemainingCredits(c)}
+                        >
+                          {c} TC
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
-          {/* Right Column: Unified Result Card */}
+          {/* CỘT PHẢI: THẺ KẾT QUẢ DỰ TÍNH (STICKY RESULT CARD) */}
           <div className="target-gpa-sticky-col">
             <div className="target-gpa-result-card" id="target-gpa-result">
               {activeTab === 'term' && (

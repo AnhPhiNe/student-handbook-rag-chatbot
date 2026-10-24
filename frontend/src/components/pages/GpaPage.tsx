@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { GraduationCap, Plus, Trash2, X, RotateCcw } from 'lucide-react';
+import { ArrowRight, GraduationCap, Plus, Trash2, X, RotateCcw } from 'lucide-react';
 import {
   calculateGpa,
   getCourseGrade,
@@ -533,16 +533,17 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
 
             {/* Điều Hướng Tính Điểm Học Bổng */}
             <div className="gpa-d-scholarship-prompt">
-              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <span>💡</span>
-                <span>Bạn muốn tính điểm xét học bổng?</span>
+              <span className="gpa-prompt-left">
+                <GraduationCap size={16} className="gpa-prompt-icon" />
+                <span className="gpa-prompt-text">Bạn muốn tính điểm xét học bổng?</span>
               </span>
               <button
                 type="button"
-                className="gpa-d-prompt-btn"
+                className="gpa-prompt-pill-btn"
                 onClick={() => (onNavigate ? onNavigate('scholarship') : undefined)}
               >
-                Tính điểm xét học bổng →
+                <span>Tính điểm</span>
+                <ArrowRight size={13} />
               </button>
             </div>
 
@@ -616,18 +617,19 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
           {/* GỢI Ý HỌC BỔNG NHẸ NHÀNG BÊN NGOÀI CARD */}
           {hasResult && result.gpa >= 2.5 && (
             <div className="gpa-m-scholarship-banner">
-              <div className="gpa-m-scholarship-left">
-                <span className="gpa-m-scholarship-icon">💡</span>
-                <span className="gpa-m-scholarship-text">
+              <div className="gpa-prompt-left">
+                <GraduationCap size={15} className="gpa-prompt-icon" />
+                <span className="gpa-prompt-text">
                   Bạn muốn tính điểm xét học bổng?
                 </span>
               </div>
               <button
                 type="button"
-                className="gpa-m-scholarship-link"
+                className="gpa-prompt-pill-btn"
                 onClick={() => (onNavigate ? onNavigate('scholarship') : undefined)}
               >
-                Tính điểm xét học bổng →
+                <span>Tính điểm</span>
+                <ArrowRight size={13} />
               </button>
             </div>
           )}

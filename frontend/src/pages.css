@@ -1397,8 +1397,43 @@
 
 .gpa-d-cred-input.input-error,
 .gpa-d-score-input.input-error {
-  border-color: #ef4444;
-  background: rgba(239, 68, 68, 0.05);
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.05) !important;
+}
+
+.gpa-d-input-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.gpa-d-error-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #ef4444;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.gpa-d-error-banner {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 12px;
+  padding: 0.55rem 0.8rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: #dc2626;
+  line-height: 1.35;
+}
+
+[data-theme='dark'] .gpa-d-error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
 }
 
 .gpa-d-letter-select {
@@ -1715,24 +1750,24 @@
 }
 
 @media (max-width: 900px) {
-  .tool-page.simplified {
+  .tool-page.simplified.gpa-page-wrapper {
     padding: 0.75rem 0.85rem 5rem !important;
     align-items: stretch !important;
     gap: 0.75rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
-  .gpa-mobile-layout {
+  .gpa-page-wrapper .gpa-mobile-layout {
     display: block !important;
     width: 100% !important;
     max-width: 480px;
     margin: 0 auto;
     box-sizing: border-box;
   }
-  .tool-page.simplified > .page-header {
+  .gpa-page-wrapper > .page-header {
     display: none !important;
   }
-  .tool-page.simplified #gpa-result {
+  .gpa-page-wrapper #gpa-result {
     display: none !important;
   }
 }
@@ -2175,6 +2210,7 @@
 .gpa-m-sheet-container {
   width: 100%;
   max-width: 460px;
+  max-height: 88dvh;
   background: var(--card-bg, #ffffff);
   border-top-left-radius: 22px;
   border-top-right-radius: 22px;
@@ -2186,6 +2222,7 @@
   flex-direction: column;
   gap: 0.75rem;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 [data-theme='dark'] .gpa-m-sheet-container {
@@ -2202,6 +2239,7 @@
   display: flex;
   justify-content: center;
   padding-bottom: 0.15rem;
+  flex-shrink: 0;
 }
 
 .gpa-m-sheet-handle {
@@ -2217,6 +2255,7 @@
   justify-content: space-between;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.55rem;
+  flex-shrink: 0;
 }
 
 .gpa-m-sheet-title {
@@ -2249,6 +2288,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 0.15rem;
+  padding-bottom: 0.5rem;
+  overscroll-behavior: contain;
 }
 
 .gpa-m-sheet-field {
@@ -2282,6 +2326,77 @@
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--primary);
+}
+
+/* Direct credit input in Mobile Sheet */
+.gpa-m-cred-direct-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.gpa-m-cred-input-direct {
+  width: 48px;
+  padding: 0.2rem 0.35rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-display, inherit);
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.gpa-m-cred-input-direct:focus {
+  border-color: #102A4A;
+  background: var(--card-bg, #ffffff);
+  box-shadow: 0 0 0 2px rgba(16, 42, 74, 0.15);
+}
+
+[data-theme='dark'] .gpa-m-cred-input-direct {
+  background: #0f172a;
+  border-color: #334155;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .gpa-m-cred-input-direct:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.25);
+}
+
+.gpa-m-cred-input-direct.input-error,
+.gpa-m-score-input-wrap.input-error {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.06) !important;
+}
+
+.gpa-m-cred-unit-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.gpa-m-inline-error {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ef4444;
+  margin-top: 0.15rem;
+}
+
+.gpa-m-wheel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
+}
+
+.gpa-m-wheel-guide {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 /* HORIZONTAL WHEEL / RULER PICKER FOR CREDITS (APPLE HEALTH / AGE PICKER STYLE) */
@@ -2527,6 +2642,14 @@
 
 .gpa-m-sheet-save-btn:active {
   transform: scale(0.99);
+}
+
+.gpa-m-sheet-save-btn.disabled,
+.gpa-m-sheet-save-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .gpa-m-sheet-del-btn {

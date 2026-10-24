@@ -2328,55 +2328,9 @@
   color: var(--primary);
 }
 
-/* Direct credit input in Mobile Sheet */
-.gpa-m-cred-direct-box {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.gpa-m-cred-input-direct {
-  width: 48px;
-  padding: 0.2rem 0.35rem;
-  border-radius: 8px;
-  border: 1.5px solid var(--border-color);
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  font-family: var(--font-display, inherit);
-  font-size: 0.95rem;
-  font-weight: 800;
-  text-align: center;
-  outline: none;
-  transition: all 0.15s ease;
-}
-
-.gpa-m-cred-input-direct:focus {
-  border-color: #102A4A;
-  background: var(--card-bg, #ffffff);
-  box-shadow: 0 0 0 2px rgba(16, 42, 74, 0.15);
-}
-
-[data-theme='dark'] .gpa-m-cred-input-direct {
-  background: #0f172a;
-  border-color: #334155;
-  color: #ffffff;
-}
-
-[data-theme='dark'] .gpa-m-cred-input-direct:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.25);
-}
-
-.gpa-m-cred-input-direct.input-error,
 .gpa-m-score-input-wrap.input-error {
   border-color: #ef4444 !important;
   background: rgba(239, 68, 68, 0.06) !important;
-}
-
-.gpa-m-cred-unit-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-secondary);
 }
 
 .gpa-m-inline-error {
@@ -2384,19 +2338,6 @@
   font-weight: 700;
   color: #ef4444;
   margin-top: 0.15rem;
-}
-
-.gpa-m-wheel-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  margin-top: 0.2rem;
-}
-
-.gpa-m-wheel-guide {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: var(--text-muted);
 }
 
 /* HORIZONTAL WHEEL / RULER PICKER FOR CREDITS (APPLE HEALTH / AGE PICKER STYLE) */

@@ -115,15 +115,15 @@ function CreditWheelPicker({ value, onChange }: CreditWheelPickerProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const itemWidth = 72; // 72px gọn gàng, vuốt mượt mà vừa vặn
   const items = useMemo(() => ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], []);
-  const selectedNum = value.trim();
+  const selectedNum = value.trim() || '3';
 
-  // Canh số được chọn vào đúng tâm khi mount hoặc khi ô nhập đổi giá trị
+  // Canh số được chọn vào đúng tâm khi mount
   useEffect(() => {
     const idx = items.indexOf(selectedNum);
     if (idx !== -1 && trackRef.current) {
-      trackRef.current.scrollTo({ left: idx * itemWidth, behavior: 'smooth' });
+      trackRef.current.scrollLeft = idx * itemWidth;
     }
-  }, [selectedNum, items]);
+  }, []);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollLeft = e.currentTarget.scrollLeft;
@@ -149,15 +149,13 @@ function CreditWheelPicker({ value, onChange }: CreditWheelPickerProps) {
         {items.map((num, idx) => {
           const isActive = num === selectedNum;
           return (
-            <button
-              type="button"
+            <div
               key={num}
               className={`wheel-item ${isActive ? 'active' : ''}`}
               onClick={() => handleItemClick(num, idx)}
-              aria-label={`Chọn ${num} tín chỉ`}
             >
               <span className="wheel-num">{num}</span>
-            </button>
+            </div>
           );
         })}
       </div>
@@ -766,42 +764,18 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
 
                 return (
                   <>
-                    {/* 1. Số tín chỉ: Cho phép nhập trực tiếp VÀ vuốt nhanh con lăn */}
+                    {/* 1. Số tín chỉ: Con lăn thước cuộn (Wheel Picker) */}
                     <div className="gpa-m-sheet-field">
                       <div className="gpa-m-sheet-label-row">
-                        <label className="gpa-m-sheet-label" htmlFor="gpa-sheet-cred-input">
-                          1. Số tín chỉ
-                        </label>
-                        <div className="gpa-m-cred-direct-box">
-                          <input
-                            id="gpa-sheet-cred-input"
-                            type="text"
-                            inputMode="numeric"
-                            className={`gpa-m-cred-input-direct ${sheetCredErr ? 'input-error' : ''}`}
-                            value={sheetState.credits}
-                            onChange={(e) => {
-                              const val = sanitizeDecimal(e.target.value);
-                              setSheetState((s) => (s ? { ...s, credits: val } : null));
-                            }}
-                            placeholder="3"
-                            aria-label="Nhập trực tiếp số tín chỉ"
-                            aria-invalid={sheetCredErr}
-                          />
-                          <span className="gpa-m-cred-unit-label">tín chỉ</span>
-                        </div>
+                        <label className="gpa-m-sheet-label">1. Số tín chỉ</label>
+                        <span className="gpa-m-sheet-hint">
+                          {sheetState.credits ? `${sheetState.credits} tín chỉ` : '3 tín chỉ'}
+                        </span>
                       </div>
-
-                      {sheetCredErr && (
-                        <span className="gpa-m-inline-error">⚠️ Số tín chỉ phải từ 1 đến 30</span>
-                      )}
-
-                      <div className="gpa-m-wheel-section">
-                        <span className="gpa-m-wheel-guide">Hoặc vuốt nhanh con lăn (1 – 10):</span>
-                        <CreditWheelPicker
-                          value={sheetState.credits}
-                          onChange={(val) => setSheetState((s) => (s ? { ...s, credits: val } : null))}
-                        />
-                      </div>
+                      <CreditWheelPicker
+                        value={sheetState.credits}
+                        onChange={(val) => setSheetState((s) => (s ? { ...s, credits: val } : null))}
+                      />
                     </div>
 
                     {/* 2. Điểm học phần thang 10 */}

@@ -401,7 +401,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                           aria-label={`Số tín chỉ Học phần ${index + 1}`}
                           aria-invalid={isCreditsErr}
                         />
-                        {isCreditsErr && <span className="gpa-d-error-tag">1 – 30 TC</span>}
+                        {isCreditsErr && <span className="gpa-d-error-tag">1 – 10 TC</span>}
                       </div>
                     </td>
                     <td style={{ textAlign: 'center' }}>

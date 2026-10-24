@@ -164,7 +164,7 @@ export function isCreditsInvalid(rawCredits: string): boolean {
   const trimmed = rawCredits.trim();
   if (trimmed === '') return false;
   const val = Number(trimmed.replace(',', '.'));
-  return !Number.isFinite(val) || val <= 0 || val > 30;
+  return !Number.isFinite(val) || val < 1 || val > 10 || !Number.isInteger(val);
 }
 
 export function isScore10Invalid(rawScore: string): boolean {

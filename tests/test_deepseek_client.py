@@ -114,8 +114,11 @@ def test_composer_default_and_explicit_caps_do_not_change_selector_budgets(monke
     import copy
     import yaml
     from src.generation.answer_pipeline import create_composer_client, create_directory_selector
+    from src.generation import openai_composer
 
     monkeypatch.setattr(module, "load_project_env", lambda: None)
+    monkeypatch.setattr(openai_composer, "load_project_env", lambda: None)
+    monkeypatch.setenv("OPENAI_API_KEY", "offline-openai-key")
     monkeypatch.setenv("DEEPSEEK_API_KEY", "offline-deepseek-key")
     monkeypatch.setenv("DEEPINFRA_API_KEY", "offline-deepinfra-key")
     with open("configs/answer_generation.yaml", encoding="utf-8") as file:
@@ -213,8 +216,6 @@ def test_rejects_missing_key_and_unknown_effort(monkeypatch):
 
 
 @pytest.mark.parametrize(("config_path", "effort", "model", "base_url", "timeout"), [
-    ("configs/answer_generation.yaml", "none", "deepseek-ai/DeepSeek-V4.1-Flash",
-     "https://api.deepinfra.com/v1/openai", 120),
     ("configs/answer_generation_eval_patient.yaml", "none", "deepseek-ai/DeepSeek-V4.1-Flash",
      "https://api.deepinfra.com/v1/openai", 120),
     ("configs/experiments/answer_deepseek_low.yaml", "low", "deepseek-flash", "https://api.deepseek.com", 60),

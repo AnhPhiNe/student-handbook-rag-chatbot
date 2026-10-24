@@ -43,6 +43,7 @@ from .catalog_referral import (
 )
 from .citation_formatter import prioritize_citations_by_answer_anchors
 from .deepseek_client import DeepSeekClient
+from .openai_composer import OpenAIComposerClient
 from .fallback_client import FallbackLLMClient
 from .progress import describe_sources, reporting_to
 from .prompt_builder import (
@@ -55,9 +56,9 @@ from .structured_result_presenter import build_structured_results
 from .verbatim_identifiers import IdentifierCorrector
 
 DEFAULT_CONFIG_PATH = Path("configs/answer_generation.yaml")
-COMPOSER_PROVIDERS = {"deepseek"}
+COMPOSER_PROVIDERS = {"deepseek", "openai"}
 
-PIPELINE_VERSION = "v87-program-existence-evidence"
+PIPELINE_VERSION = "v88-luna-composer-catalog-referral"
 STREAM_OUTPUT_GUARDRAIL_BUFFER_CHARS = 256
 logger = logging.getLogger("student_handbook_rag.generation.answer_pipeline")
 _evaluation_telemetry: ContextVar[dict[str, Any] | None] = ContextVar(
@@ -260,6 +261,19 @@ def with_fallback(build: Callable[[dict[str, Any]], Any], config: dict[str, Any]
 def create_composer_client(llm_config: dict[str, Any]) -> Any:
     """Build the configured composer client (shared by the pipeline and replays)."""
     provider = llm_config.get("provider", "deepseek")
+    if provider == "openai":
+        return OpenAIComposerClient(
+            model_name=llm_config["model_name"],
+            reasoning_effort=llm_config.get("reasoning_effort", "medium"),
+            verbosity=llm_config.get("verbosity", "medium"),
+            max_output_tokens=llm_config.get("max_output_tokens"),
+            max_retries=llm_config.get("max_retries", 2),
+            retry_base_delay_seconds=llm_config.get("retry_base_delay_seconds", 2),
+            retry_max_delay_seconds=llm_config.get("retry_max_delay_seconds", 20),
+            request_timeout_seconds=llm_config.get("request_timeout_seconds", 120),
+            api_keys_env_var=llm_config.get("api_keys_env_var", "OPENAI_API_KEY"),
+            key_pool_config=llm_config.get("key_pool"),
+        )
     if provider == "deepseek":
         return with_fallback(_composer_client, llm_config)
     raise ValueError(f"Unsupported composer provider: {provider}")

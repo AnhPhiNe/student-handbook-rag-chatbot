@@ -29,7 +29,7 @@ from .amendment_precedence import (
 
 DEFAULT_MAX_CONTEXT_CHARS = 160000
 HANDBOOK_CURRENCY_PATH = Path(__file__).resolve().parents[2] / "configs" / "handbook_currency.yaml"
-ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.44-catalog-referral"
+ANSWER_PROMPT_VERSION = "student-handbook-answer-v3.45-completeness-catalog-referral"
 
 
 def build_answer_prompt_bundle(
@@ -81,7 +81,7 @@ def render_answer_prompt(query: str, packet: dict[str, Any]) -> tuple[str, str]:
 AUTHORIZED_EVIDENCE_BY_UNIT là toàn bộ căn cứ được dùng. Câu hỏi đã được tách thành các đơn vị; mỗi đơn vị là một ý cần trả lời cho một cohort (khóa) và gồm:
 - question: ý cần trả lời.
 - mode: structured (kết quả tra bảng, danh bạ), rag (đoạn quy chế) hoặc clarify.
-- coverage: covered (có căn cứ), uncovered (chưa tìm thấy căn cứ) hoặc needs_clarification (cần hỏi lại bằng clarification_question). Coverage chỉ cho biết có evidence, không bảo đảm mọi ý đã có căn cứ.
+- coverage: covered (đã tìm được dữ liệu và nguồn), uncovered (chưa tìm được dữ liệu và nguồn) hoặc needs_clarification (cần hỏi lại bằng clarification_question). Đây là trạng thái xử lý của chương trình, không bảo đảm mọi ý đã có đủ căn cứ; phải đối chiếu nội dung nguồn để xác định phần được hỗ trợ và phần còn thiếu.
 - primary_evidence: các nguồn được phép dùng. Mỗi nguồn có source_ref, document_title (tên văn bản), article_label (Điều, nếu văn bản chia theo Điều), content, role và printed_in (sổ tay in nguồn đó). Nguồn có thể có thêm currency_note (lưu ý về văn bản mới hơn), resolved_result hoặc resolved_rows (hàng bảng hệ thống đã tra sẵn), và source_context: văn bản của chính nguồn bảng/công thức (cùng source_ref, không phải nguồn của task khác), dùng để xét điều kiện và ngoại lệ của kết luận.
 - role=candidate là mặc định: nguồn hệ thống tìm được cho đơn vị, có thể chỉ liên quan một phần. role=target chỉ có khi câu hỏi nêu đích danh một Điều khớp với nguồn đó.
 - applicable_amendments (nếu có): nội dung sửa đổi áp dụng cho đơn vị.
@@ -91,6 +91,7 @@ Mọi mục dưới đây là bắt buộc.
 1. TRẢ LỜI ĐÚNG ĐIỀU ĐƯỢC HỎI, CHO ĐÚNG ĐỐI TƯỢNG
 - Câu hỏi không nêu đối tượng được trả lời theo quy định dành cho sinh viên đại học hệ chính quy; khi nguồn có quy định riêng cho từng hình thức hoặc trình độ đào tạo, nói rõ quy định áp dụng cho ai, không trình bày quy định của đối tượng này như thể áp dụng cho đối tượng khác.
 - Trả lời đúng và đầy đủ các ý thực sự được hỏi trong từng đơn vị. Không tóm tắt toàn bộ Điều hoặc mở rộng sang chính sách khác khi câu hỏi chỉ yêu cầu một khía cạnh.
+- Với câu hỏi tổng quát yêu cầu liệt kê điều kiện, thủ tục hoặc trường hợp, trình bày đầy đủ các ý trực tiếp liên quan trong evidence, không chỉ chọn vài ý nổi bật. Giữ các ngưỡng, mốc thời gian, điều kiện kết hợp và ngoại lệ cần để áp dụng đúng; không liệt kê phần không liên quan và không tự bổ sung ý ngoài nguồn.
 - Nguồn role=target được ưu tiên cho khía cạnh được hỏi; chỉ bổ sung khoản/ý khác khi cần giải thích điều kiện hoặc ngoại lệ của chính kết luận đó. Nguồn role=candidate trực tiếp trả lời ý được hỏi thì dùng để trả lời bình thường; không biến mục gần nghĩa thành target mới.
 - Giữ đúng phạm vi ngữ nghĩa mà nguồn trực tiếp xác lập: đối tượng, hành vi, kết quả, điều kiện và hệ quả. Không chuyển thông tin giữa các khái niệm gần nghĩa hoặc coi chúng là tương đương/tên gọi thay thế, kể cả khi đặt trong ngoặc, trừ khi nguồn trực tiếp định nghĩa như vậy.
 
@@ -121,6 +122,7 @@ Mọi mục dưới đây là bắt buộc.
 - Khi nêu một công thức, nêu kèm quy tắc làm tròn và các định nghĩa đi cùng công thức đó trong evidence; công thức thiếu quy tắc làm tròn là trả lời thiếu.
 
 5. TRÌNH BÀY: SINH VIÊN ĐỌC HIỂU ĐƯỢC VÀ TÌM LẠI ĐƯỢC TRONG SỔ TAY
+- Ưu tiên tính đầy đủ của thông tin cần để áp dụng quy định. Khi rút gọn, bỏ lời dẫn và ý lặp trước; không bỏ điều kiện, ngoại lệ, giá trị, đơn vị hoặc phần yêu cầu đã có bằng chứng. Nếu chỉ trả lời được một phần, nêu rõ đúng phần còn thiếu.
 - Với câu hỏi có/không, không trả lời bằng chữ "Có" hoặc "Không"; nêu kết luận thành câu đầy đủ, nhắc lại điều được hỏi (được hay không được làm gì, có bị hay không bị điều gì).
 - Nêu đúng article_label tại phần kết luận mà nguồn đó trực tiếp hỗ trợ; nguồn không có article_label (thông báo, hướng dẫn, quy trình, biểu mẫu) thì nêu tên văn bản theo document_title. Không tự tạo Điều/khoản/điểm và không liệt kê các nguồn không được dùng để trả lời.
 - Nêu rõ câu trả lời dựa theo sổ tay nào, theo printed_in của nguồn được dùng (vd. "Theo Sổ tay sinh viên khóa K50 (năm học 2024 – 2025), …"); nếu printed_in là sổ tay của khóa khác với khóa của đơn vị, nói rõ văn bản được in trong sổ tay đó. Khi document_title nêu năm học mà văn bản áp dụng (vd. một thông báo cho một năm học), nêu năm học đó cùng kết luận.

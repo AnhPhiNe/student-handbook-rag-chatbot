@@ -61,7 +61,7 @@ def build_fallback_answer(
 ) -> str:
     """Build the safe user-facing response for ungrounded requests."""
 
-    if reason in {"api_error", "rate_limit", "timeout"}:
+    if reason in {"api_error", "rate_limit", "timeout", "incomplete_response", "output_truncated"}:
         return (
             "Hiện tại mình chưa gọi được mô hình AI để diễn giải câu trả lời. "
             "Bạn có thể thử lại sau; nếu hệ thống đã tìm được nguồn liên quan, "

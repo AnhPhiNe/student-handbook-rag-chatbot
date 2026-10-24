@@ -7,6 +7,14 @@ compared, on which data, what the numbers were, and why the choice was made.
 The dated logs of each experiment are in [archive/](archive/README.md); the raw
 reports are listed at the end.
 
+On 2026-10-24, the owner selected `gpt-6-luna` with medium reasoning and medium
+text verbosity as the development composer, without a model A/B evaluation.
+Prompt v3.45 adds general completeness instructions to v3.44 and retains its
+catalog-referral markers and template. Earlier DeepSeek scores below remain
+historical measurements; they do not establish Luna's quality. The current
+main defaults for selector, referrals, timeout and no application output ceiling
+are preserved.
+
 ## How to read the numbers
 
 - **Almost every number is a development measurement.** `official_v1` (135
@@ -30,7 +38,7 @@ reports are listed at the end.
 | Component | Chosen | Alternatives measured | Deciding evidence |
 |---|---|---|---|
 | Planner | OpenAI `gpt-6-luna`, reasoning medium, strict schema; prompt v62 | Qwen3.8 on Groq, Cohere Command A+, DeepSeek flash (none, low, medium) | v62 (shorter v61 wording, owner choice 2026-10-18): official_v1 132 = v61 132, official_v2 139 vs v61 142, at the edge of the pre-registered rule; known regressions in `ROUTING_EVIDENCE_RELEASE.md` stage 26 |
-| Composer | DeepSeek-V4.1-Flash on DeepInfra only, reasoning none, prompt v3.43 (the rules as five principles) | Gemini 3.1 Flash-Lite; reasoning low; the DeepSeek API first; DeepSeek-V4.1-Flash-1017; a rule forbidding referrals without evidence (v3.41, v3.42) | official_v4 runs N (none against low) and Q (v3.43 against v3.36: −0.005, CI [−0.017, +0.006]); v3.43 deployed by the owner although its new-zero criterion failed (2026-10-19, below) |
+| Composer | GPT-6 Luna on OpenAI Responses, reasoning medium, text verbosity medium, prompt v3.45 with catalog referrals | Historical DeepSeek/Gemini alternatives and runs below | Development choice on 2026-10-24 without a model A/B evaluation; earlier scores describe the earlier DeepSeek configurations |
 | Directory selection | Exact name, otherwise DeepSeek picks from the closed catalog; when it finds nothing, the same prompt again with thinking low | Fuzzy-score thresholds; looser prompt wording; thinking on every call | Development cases: 10 wrong units under thresholds, 0 with the selector. The second look: everyday wordings 42 → 47 of 47, 0 wrong, median 0.86 s against 1.5 s for thinking on every call |
 | Embedding | `BAAI/bge-m3` over the DeepInfra API | Local `bge-m3`; Qwen3-Embedding-8B | API vectors identical to local; Qwen3-8B ties after reranking, with query p50 6.3 s against 1.3 s |
 | Reranker | Voyage `rerank-3`, on all 24 fused children (2026-09-30) | Qwen3-Reranker-8B, 4B, 0.6B on DeepInfra; Cohere rerank-v4.0-fast; none | first 0.942 / top-5 155/155 at p90 0.85 s, against 8B 0.923 / 155 at p90 4.7 s, 4B 0.903 / 153, Cohere 0.897, none 0.832 / 148. Chosen for availability: the DeepInfra 8B endpoint stalled for over four hours on 2026-09-30 |

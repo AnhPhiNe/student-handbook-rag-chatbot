@@ -87,7 +87,7 @@ flowchart TD
     Parents --> Merge
     Clarify --> Merge
     Merge --> Packet["Guards and evidence packet<br/>citations, context budget"]
-    Packet -->|answerable| Composer["Composer: DeepSeek flash, thinking off<br/>sync or streaming"]
+    Packet -->|answerable| Composer["Composer: GPT-6 Luna, reasoning medium<br/>Responses API; sync or streaming"]
     Composer --> API
 ```
 
@@ -108,7 +108,7 @@ flowchart TD
 2. **Plan.** The planner reads the student's own words and splits the question into typed tasks. The normalizer validates and canonicalizes that plan before anything runs; slang rewriting is applied to retrieval queries.
 3. **Execute.** Each task runs per cohort. Structured tasks read reviewed tables and directories. RAG tasks retrieve narrative chunks, rerank them and expand them to full articles. Clarify tasks carry the question to ask.
 4. **Guard.** Task results are merged without mixing cohorts. If nothing can be answered, the request stops with an explicit status and no composer call.
-5. **Compose.** The evidence packet goes to the DeepSeek composer. The model answers the covered tasks and asks for anything missing.
+5. **Compose.** The evidence packet goes to GPT-6 Luna over Responses API. The model answers supported parts and identifies missing evidence or input. Catalog referrals run alongside composition; the existing unsupported markers and referral template remain in place.
 6. **Deliver.** The same prepared answer is returned as JSON (`/chat`) or streamed as server-sent events (`/chat/stream`), with citations, structured results and related-article links.
 
 | Situation | Outcome |
@@ -543,7 +543,7 @@ Each run writes its report and a `run_snapshot.json` under `data/eval/reports/`.
 
 - Python 3.11 and Node.js 20
 - A Qdrant collection and a MongoDB database loaded from the current build (see [Offline build](#offline-build))
-- API keys for OpenAI (planner), DeepSeek (composer and directory selector) and DeepInfra (BGE-M3 embeddings) and Voyage (the rerank-3 reranker). LangSmith (tracing) is optional.
+- API keys for OpenAI (planner and composer), DeepInfra (directory selector, catalog referrals and BGE-M3 embeddings), and Voyage (the rerank-3 reranker). LangSmith (tracing) is optional.
 
 ### Backend
 
@@ -561,10 +561,10 @@ Interactive API docs are then served at `http://127.0.0.1:8000/docs`.
 |---|:---:|---|
 | `QDRANT_URL`, `QDRANT_API_KEY`, `QDRANT_COLLECTION_NAME` | yes | Vector store for narrative children |
 | `MONGODB_URL`, `MONGODB_DB_NAME`, `MONGODB_PARENT_COLLECTION` | yes | Parent articles |
-| `OPENAI_API_KEY` | yes | Planner (`gpt-6-luna`, strict QueryPlan schema; settings in `configs/ai_router.yaml`) |
+| `OPENAI_API_KEY` | yes | Planner (`gpt-6-luna`, strict QueryPlan schema, `configs/ai_router.yaml`) and composer (`gpt-6-luna`, reasoning medium, Responses API, `configs/answer_generation.yaml`) |
 | `GROQ_API_KEYS` | no | Evaluation judge only |
 | `DEEPSEEK_API_KEY` | no | Only the experiment configs in `configs/experiments/` that call the DeepSeek API directly |
-| `DEEPINFRA_API_KEY` | yes | Composer (`llm`, DeepSeek-V4.1-Flash), the directory selector, which picks the service, office, faculty or program a student names when no name matches exactly and the unit a catalog referral names (`directory_selector`; both in `configs/answer_generation.yaml`), and BGE-M3 query and document embeddings |
+| `DEEPINFRA_API_KEY` | yes | Directory selector and catalog referrals (`directory_selector` in `configs/answer_generation.yaml`), and BGE-M3 query and document embeddings |
 | `VOYAGE_API_KEY` | yes | The Voyage `rerank-3` reranker (`configs/retrieval.yaml`); a reranker failure keeps the RRF order |
 | `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT` | no | Request tracing and user feedback |
 | `STUDENT_RAG_CORS_ORIGINS` | no | Comma-separated browser origins allowed to call the API (needed when the frontend is on another domain) |

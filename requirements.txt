@@ -5,7 +5,7 @@ uvicorn[standard]>=0.30,<1.0
 python-dotenv>=1.0,<2.0
 requests>=2.34,<3.0
 groq>=0.13.0  
-# OpenAI SDK: the gpt-6-luna planner and the DeepSeek composer (OpenAI-compatible API).
+# OpenAI SDK: Luna planner/composer and the DeepInfra-hosted directory selector.
 openai==2.54.0
 langsmith>=0.1.0
 qdrant-client>=1.9.0

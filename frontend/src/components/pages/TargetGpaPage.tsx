@@ -23,11 +23,13 @@ type TabType = 'term' | 'retake' | 'roadmap';
 interface StoredGpaProfile {
   currentGpa: string;
   currentCredits: string;
+  totalDegreeCredits: string;
 }
 
 const DEFAULT_PROFILE: StoredGpaProfile = {
   currentGpa: '2.85',
   currentCredits: '60',
+  totalDegreeCredits: '135',
 };
 
 const TARGET_PRESETS = [
@@ -51,9 +53,11 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
   const currentGpaStr = profile?.currentGpa ?? DEFAULT_PROFILE.currentGpa;
   const currentCreditsStr = profile?.currentCredits ?? DEFAULT_PROFILE.currentCredits;
+  const totalDegreeCreditsStr = profile?.totalDegreeCredits ?? DEFAULT_PROFILE.totalDegreeCredits;
 
   const currentGpaNum = Number(currentGpaStr);
   const currentCreditsNum = Number(currentCreditsStr);
+  const totalDegreeCreditsNum = Number(totalDegreeCreditsStr) || 135;
 
   const isProfileValid =
     Number.isFinite(currentGpaNum) &&
@@ -61,12 +65,10 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     currentGpaNum <= 4.0 &&
     Number.isFinite(currentCreditsNum) &&
     currentCreditsNum >= 0 &&
-    currentCreditsNum <= 250;
-
-  const progressPercent = Math.min(
-    100,
-    Math.max(0, Math.round(((Number.isFinite(currentCreditsNum) ? currentCreditsNum : 0) / 135) * 100)),
-  );
+    currentCreditsNum <= 250 &&
+    Number.isFinite(totalDegreeCreditsNum) &&
+    totalDegreeCreditsNum >= 50 &&
+    totalDegreeCreditsNum <= 300;
 
   // Tab 1: 1 Học Kỳ Tới State
   const [targetGpaStr, setTargetGpaStr] = useState('3.20');
@@ -80,7 +82,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
   // Tab 3: Lộ Trình Ra Trường State
   const [targetGradGpaStr, setTargetGradGpaStr] = useState('3.20');
   const [remainingCredits, setRemainingCredits] = useState(() =>
-    Math.max(15, 135 - (Number.isFinite(currentCreditsNum) ? currentCreditsNum : 60)),
+    Math.max(15, (Number(profile?.totalDegreeCredits) || 135) - (Number.isFinite(currentCreditsNum) ? currentCreditsNum : 60)),
   );
 
   // Reference Modal State
@@ -118,9 +120,9 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       currentCreditsNum,
       Number(targetGradGpaStr) || 3.20,
       remainingCredits,
-      135,
+      totalDegreeCreditsNum,
     );
-  }, [currentGpaNum, currentCreditsNum, targetGradGpaStr, remainingCredits]);
+  }, [currentGpaNum, currentCreditsNum, targetGradGpaStr, remainingCredits, totalDegreeCreditsNum]);
 
   // Handlers for profile updates
   const handleCurrentGpaChange = (val: string) => {
@@ -128,6 +130,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     setProfile((prev) => ({
       currentGpa: clean,
       currentCredits: prev?.currentCredits ?? DEFAULT_PROFILE.currentCredits,
+      totalDegreeCredits: prev?.totalDegreeCredits ?? DEFAULT_PROFILE.totalDegreeCredits,
     }));
   };
 
@@ -136,6 +139,16 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     setProfile((prev) => ({
       currentGpa: prev?.currentGpa ?? DEFAULT_PROFILE.currentGpa,
       currentCredits: clean,
+      totalDegreeCredits: prev?.totalDegreeCredits ?? DEFAULT_PROFILE.totalDegreeCredits,
+    }));
+  };
+
+  const handleTotalDegreeCreditsChange = (val: string) => {
+    const clean = sanitizeDecimal(val);
+    setProfile((prev) => ({
+      currentGpa: prev?.currentGpa ?? DEFAULT_PROFILE.currentGpa,
+      currentCredits: prev?.currentCredits ?? DEFAULT_PROFILE.currentCredits,
+      totalDegreeCredits: clean,
     }));
   };
 
@@ -176,7 +189,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
   };
 
   return (
-    <div className="page-container tool-page simplified">
+    <div className="page-container tool-page simplified target-gpa-wrapper">
       {/* Standard Clean Page Header (Khớp 100% Hình 2) */}
       <ToolPageHeader
         icon={TrendingUp}
@@ -184,119 +197,123 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
         description="Tính toán chiến lược GPA học kỳ, cải thiện môn F/D và lộ trình tốt nghiệp toàn khóa."
       />
 
-      <div className="target-gpa-studio">
-        {/* 2-Column Layout (Tương đồng Hình 2: Trái 60% Thẻ Nhập Liệu, Phải 40% Kết Quả) */}
-        <div className="target-gpa-layout-2col">
-          {/* CỘT TRÁI: THẺ LIỀN KHỐI (UNIFIED MASTER CARD) */}
-          <div className="target-gpa-master-card">
-            {/* TOOLBAR TÍCH HỢP ĐẦU THẺ (Khớp 100% Toolbar Hình 2) */}
-            <div className="target-gpa-card-toolbar">
-              <div className="target-gpa-toolbar-left">
-                <span className="target-gpa-toolbar-heading">Thiết lập mục tiêu</span>
-                <span className="target-gpa-toolbar-sub">(3 chế độ)</span>
-              </div>
+      {/* 2-Column Layout (Tương đồng Hình 2: Trái 63% Thẻ Nhập Liệu, Phải 37% Kết Quả) */}
+      <div className="target-gpa-layout-2col">
+        {/* CỘT TRÁI: THẺ LIỀN KHỐI (UNIFIED MASTER CARD) */}
+        <div className="target-gpa-master-card">
+          {/* TOOLBAR TÍCH HỢP ĐẦU THẺ (Khớp 100% Toolbar Hình 2) */}
+          <div className="target-gpa-card-toolbar">
+            <div className="target-gpa-toolbar-left">
+              <span className="target-gpa-toolbar-heading">Thiết lập mục tiêu</span>
+              <span className="target-gpa-toolbar-sub">(3 chế độ)</span>
+            </div>
 
+            <button
+              type="button"
+              className="target-gpa-reset-btn"
+              onClick={handleReset}
+              title="Đặt lại thông số"
+              aria-label="Đặt lại thông số"
+            >
+              <RotateCcw size={14} />
+              <span>Đặt lại</span>
+            </button>
+          </div>
+
+          {/* THÂN THẺ LIỀN MẠCH */}
+          <div className="target-gpa-card-body">
+            {/* BỘ CHỌN 3 CHẾ ĐỘ (High-Contrast Segmented Switcher) */}
+            <div className="target-gpa-tabs-bar" role="tablist" aria-label="Các chế độ tính toán GPA">
               <button
                 type="button"
-                className="target-gpa-reset-btn"
-                onClick={handleReset}
-                title="Đặt lại thông số"
-                aria-label="Đặt lại thông số"
+                role="tab"
+                aria-selected={activeTab === 'term'}
+                className={`target-gpa-tab-item ${activeTab === 'term' ? 'active' : ''}`}
+                onClick={() => setActiveTab('term')}
               >
-                <RotateCcw size={14} />
-                <span>Đặt lại</span>
+                🎯 1 Học Kỳ Tới
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'retake'}
+                className={`target-gpa-tab-item ${activeTab === 'retake' ? 'active' : ''}`}
+                onClick={() => setActiveTab('retake')}
+              >
+                ⚡ Cải Thiện Môn F/D
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'roadmap'}
+                className={`target-gpa-tab-item ${activeTab === 'roadmap' ? 'active' : ''}`}
+                onClick={() => setActiveTab('roadmap')}
+              >
+                🎓 Lộ Trình Ra Trường
               </button>
             </div>
 
-            {/* THÂN THẺ LIỀN MẠCH */}
-            <div className="target-gpa-card-body">
-              {/* BỘ CHỌN 3 CHẾ ĐỘ (High-Contrast Segmented Switcher) */}
-              <div className="target-gpa-tabs-bar" role="tablist" aria-label="Các chế độ tính toán GPA">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'term'}
-                  className={`target-gpa-tab-item ${activeTab === 'term' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('term')}
-                >
-                  🎯 1 Học Kỳ Tới
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'retake'}
-                  className={`target-gpa-tab-item ${activeTab === 'retake' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('retake')}
-                >
-                  ⚡ Cải Thiện Môn F/D
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === 'roadmap'}
-                  className={`target-gpa-tab-item ${activeTab === 'roadmap' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('roadmap')}
-                >
-                  🎓 Lộ Trình Ra Trường
-                </button>
+            {/* PHẦN 1: ĐIỂM HIỆN TẠI (Dùng chung cho cả 3 chế độ - 3 ô trên 1 hàng gọn gàng) */}
+            <div className="target-gpa-section-block">
+              <div className="target-gpa-card-title">
+                <span>1. Điểm Tích Lũy Hiện Tại</span>
+                <span className="target-gpa-tag-status">
+                  {isProfileValid ? '✓ Đã lưu' : 'Chưa lưu'}
+                </span>
               </div>
 
-              {/* PHẦN 1: ĐIỂM HIỆN TẠI (Dùng chung cho cả 3 chế độ) */}
-              <div className="target-gpa-section-block">
-                <div className="target-gpa-card-title">
-                  <span>1. Điểm Tích Lũy Hiện Tại</span>
-                  <span className="target-gpa-tag-status">
-                    {isProfileValid ? '✓ Đã lưu' : 'Chưa lưu'}
-                  </span>
-                </div>
-
-                <div className="target-gpa-fields-grid">
-                  <div className="target-gpa-field-item">
-                    <label htmlFor="target-curr-gpa">GPA tích lũy:</label>
-                    <div className="target-gpa-input-box">
-                      <input
-                        id="target-curr-gpa"
-                        type="text"
-                        inputMode="decimal"
-                        value={currentGpaStr}
-                        onChange={(e) => handleCurrentGpaChange(e.target.value)}
-                        placeholder="2.85"
-                      />
-                      <span>/ 4.00</span>
-                    </div>
-                  </div>
-
-                  <div className="target-gpa-field-item">
-                    <label htmlFor="target-curr-creds">Đã tích lũy:</label>
-                    <div className="target-gpa-input-box">
-                      <input
-                        id="target-curr-creds"
-                        type="text"
-                        inputMode="numeric"
-                        value={currentCreditsStr}
-                        onChange={(e) => handleCurrentCreditsChange(e.target.value)}
-                        placeholder="60"
-                      />
-                      <span>TC</span>
-                    </div>
+              <div className="target-gpa-fields-grid">
+                <div className="target-gpa-field-item">
+                  <label htmlFor="target-curr-gpa">GPA tích lũy:</label>
+                  <div className="target-gpa-input-box">
+                    <input
+                      id="target-curr-gpa"
+                      type="text"
+                      inputMode="decimal"
+                      value={currentGpaStr}
+                      onChange={(e) => handleCurrentGpaChange(e.target.value)}
+                      placeholder="2.85"
+                      aria-label="GPA tích lũy hiện tại"
+                    />
+                    <span>/ 4.00</span>
                   </div>
                 </div>
 
-                <div className="target-gpa-progress-hint">
-                  <span>Tiến độ chương trình</span>
-                  <span>
-                    {currentCreditsStr || '0'} / 135 TC ({progressPercent}%)
-                  </span>
+                <div className="target-gpa-field-item">
+                  <label htmlFor="target-curr-creds">Đã tích lũy:</label>
+                  <div className="target-gpa-input-box">
+                    <input
+                      id="target-curr-creds"
+                      type="text"
+                      inputMode="numeric"
+                      value={currentCreditsStr}
+                      onChange={(e) => handleCurrentCreditsChange(e.target.value)}
+                      placeholder="60"
+                      aria-label="Số tín chỉ đã tích lũy"
+                    />
+                    <span>TC</span>
+                  </div>
                 </div>
-                <div className="target-gpa-mini-progress">
-                  <div
-                    className="target-gpa-mini-fill"
-                    style={{ width: `${progressPercent}%` }}
-                  />
+
+                <div className="target-gpa-field-item">
+                  <label htmlFor="target-total-degree-creds">Tổng TC CTĐT:</label>
+                  <div className="target-gpa-input-box">
+                    <input
+                      id="target-total-degree-creds"
+                      type="text"
+                      inputMode="numeric"
+                      value={totalDegreeCreditsStr}
+                      onChange={(e) => handleTotalDegreeCreditsChange(e.target.value)}
+                      placeholder="135"
+                      aria-label="Tổng số tín chỉ theo chương trình đào tạo"
+                    />
+                    <span>TC</span>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              {/* PHẦN 2: THÔNG SỐ TÙY CHỌN THEO CHẾ ĐỘ */}
+            {/* PHẦN 2: THÔNG SỐ TÙY CHỌN THEO CHẾ ĐỘ */}
               {activeTab === 'term' && (
                 <div className="target-gpa-section-block divider">
                   <div className="target-gpa-card-title">
@@ -806,7 +823,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
             </div>
           </div>
         </div>
-      </div>
 
       <GpaReferenceModal
         isOpen={referenceModalTab !== null}

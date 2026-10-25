@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useAnimatedNumber } from '../../hooks/useAnimatedNumber';
 import {
   TrendingUp,
   Trash2,
@@ -8,7 +9,9 @@ import {
   FileText,
   AlertCircle,
   CheckCircle2,
+  X,
 } from 'lucide-react';
+import { CreditWheelPicker } from './GpaPage';
 import { type Cohort } from '../../utils/gradeScale';
 import { sanitizeDecimal } from '../../utils/numberInput';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -180,6 +183,47 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     );
   }, [hasEnteredProfile, currentGpaNum, currentCreditsNum, targetGradGpaStr, remainingCredits, totalDegreeCreditsNum]);
 
+  // Animated Hero Score for Mobile and Desktop
+  const activeHeroNumber = useMemo(() => {
+    if (activeTab === 'term') {
+      if (!termPlan.isComplete || termPlan.status === 'impossible') return 0;
+      if (termPlan.status === 'achieved') return currentGpaNum;
+      return termPlan.requiredGpa;
+    }
+    if (activeTab === 'retake') {
+      return hasEnteredProfile ? retakePlan.newBaselineGpa : 0;
+    }
+    if (activeTab === 'roadmap') {
+      if (!hasEnteredProfile || !targetGradGpaStr || !roadmapPlan.isFeasible) return 0;
+      return roadmapPlan.averageGpaNeeded;
+    }
+    return 0;
+  }, [activeTab, termPlan, currentGpaNum, hasEnteredProfile, retakePlan.newBaselineGpa, targetGradGpaStr, roadmapPlan]);
+
+  const animatedHeroScore = useAnimatedNumber(activeHeroNumber, 2);
+
+  // Dynamic Feasibility Aura status for Mobile Hero Card
+  const heroStatusClass = useMemo(() => {
+    if (activeTab === 'term') {
+      if (!termPlan.isComplete) return '';
+      if (termPlan.status === 'achieved') return 'status-achieved';
+      if (termPlan.status === 'impossible') return 'status-impossible';
+      if (termPlan.requiredGpa > 3.5) return 'status-warning';
+      return 'status-feasible';
+    }
+    if (activeTab === 'retake') {
+      if (!hasEnteredProfile) return '';
+      return retakePlan.deltaGpa > 0 ? 'status-achieved' : 'status-feasible';
+    }
+    if (activeTab === 'roadmap') {
+      if (!hasEnteredProfile || !targetGradGpaStr) return '';
+      if (!roadmapPlan.isFeasible) return 'status-impossible';
+      if (roadmapPlan.averageGpaNeeded > 3.5) return 'status-warning';
+      return 'status-feasible';
+    }
+    return '';
+  }, [activeTab, termPlan, hasEnteredProfile, retakePlan.deltaGpa, targetGradGpaStr, roadmapPlan]);
+
   // Handlers for profile updates
   const handleCurrentGpaChange = (val: string) => {
     const clean = sanitizeDecimal(val);
@@ -239,6 +283,78 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     );
   };
 
+  // Mobile Retake Bottom Sheet State
+  interface MobileRetakeSheetState {
+    index: number;
+    isNew: boolean;
+    id: string;
+    credits: string;
+    oldGrade: number;
+    targetGrade: number;
+  }
+  const [mobileRetakeSheet, setMobileRetakeSheet] = useState<MobileRetakeSheetState | null>(null);
+
+  const openEditRetakeSheet = (index: number) => {
+    const r = retakes[index];
+    if (!r) return;
+    setMobileRetakeSheet({
+      index,
+      isNew: false,
+      id: r.id,
+      credits: String(r.credits),
+      oldGrade: r.oldGrade,
+      targetGrade: r.targetGrade,
+    });
+  };
+
+  const openAddRetakeSheet = () => {
+    if (retakes.length >= 6) return;
+    setMobileRetakeSheet({
+      index: retakes.length,
+      isNew: true,
+      id: `retake-${Date.now()}`,
+      credits: '3',
+      oldGrade: 1.0,
+      targetGrade: 4.0,
+    });
+  };
+
+  const handleSaveMobileRetake = () => {
+    if (!mobileRetakeSheet) return;
+    const parsedCreds = Math.max(1, Math.min(10, parseInt(mobileRetakeSheet.credits, 10) || 3));
+    const oldG = mobileRetakeSheet.oldGrade;
+    const targetG = mobileRetakeSheet.targetGrade <= oldG ? 4.0 : mobileRetakeSheet.targetGrade;
+
+    if (mobileRetakeSheet.isNew) {
+      setRetakes((prev) => [
+        ...prev,
+        {
+          id: mobileRetakeSheet.id,
+          label: `Môn ${prev.length + 1}`,
+          oldGrade: oldG,
+          targetGrade: targetG,
+          credits: parsedCreds,
+        },
+      ]);
+    } else {
+      setRetakes((prev) =>
+        prev.map((r, i) =>
+          i === mobileRetakeSheet.index
+            ? { ...r, credits: parsedCreds, oldGrade: oldG, targetGrade: targetG }
+            : r,
+        ),
+      );
+    }
+    setMobileRetakeSheet(null);
+  };
+
+  const handleDeleteMobileRetake = () => {
+    if (!mobileRetakeSheet) return;
+    if (retakes.length <= 1) return;
+    setRetakes((prev) => prev.filter((_, i) => i !== mobileRetakeSheet.index));
+    setMobileRetakeSheet(null);
+  };
+
   // Handler for Global Reset
   const handleReset = () => {
     if (window.confirm('Bạn có chắc chắn muốn đặt lại các thông số về mặc định không?')) {
@@ -249,6 +365,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
         { id: 'retake-1', label: '', oldGrade: 0.0, targetGrade: 4.0, credits: 3 },
       ]);
       setTargetGradGpaStr('');
+      setMobileRetakeSheet(null);
     }
   };
 
@@ -261,8 +378,11 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
         description="Tính toán chiến lược GPA học kỳ, cải thiện môn và lộ trình tốt nghiệp toàn khóa."
       />
 
-      {/* 2-Column Layout (Tương đồng Hình 2: Trái 63% Thẻ Nhập Liệu, Phải 37% Kết Quả) */}
-      <div className="target-gpa-layout-2col">
+      {/* ============================================================== */}
+      {/* DESKTOP 2-COLUMN VIEW (FAITHFUL TO EXISTING DESIGN) */}
+      {/* ============================================================== */}
+      <div className="target-gpa-desktop-layout">
+        <div className="target-gpa-layout-2col">
         {/* CỘT TRÁI: THẺ LIỀN KHỐI (UNIFIED MASTER CARD) */}
         <div className="target-gpa-master-card">
           {/* TOOLBAR TÍCH HỢP ĐẦU THẺ (Khớp 100% Toolbar Hình 2) */}
@@ -958,6 +1078,640 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ============================================================== */}
+      {/* MOBILE NATIVE LAYOUT (PHƯƠNG ÁN A: ĐỒNG BỘ 100% GPAPAGE) */}
+      {/* ============================================================== */}
+      <div className="target-gpa-mobile-layout">
+        {/* Header di động chuẩn GpaPage (Bỏ nút Đặt lại trơ trọi ở đầu trang) */}
+        <div className="gpa-m-page-header">
+          <div className="gpa-m-title-wrap">
+            <span className="gpa-m-title-icon">🎯</span>
+            <h1 className="gpa-m-page-title">Mục tiêu GPA</h1>
+          </div>
+        </div>
+
+        {/* Hero Score Card */}
+        <div className="gpa-mobile-hero-container">
+          <div className={`gpa-mobile-hero-card ${heroStatusClass}`}>
+            <span className="target-m-hero-sublabel">
+              {activeTab === 'term'
+                ? termPlan.status === 'achieved'
+                  ? 'GPA TÍCH LŨY HIỆN TẠI'
+                  : 'GPA HỌC KỲ TỚI CẦN ĐẠT'
+                : activeTab === 'retake'
+                  ? 'GPA DỰ KIẾN SAU CẢI THIỆN'
+                  : 'GPA MỖI KỲ CẦN ĐẠT'}
+            </span>
+
+            <div className="gpa-m-score-row">
+              <span className="gpa-m-score-val">
+                {activeTab === 'term'
+                  ? termPlan.isComplete
+                    ? termPlan.status === 'impossible'
+                      ? '> 4.0'
+                      : animatedHeroScore.toFixed(2)
+                    : '--'
+                  : activeTab === 'retake'
+                    ? hasEnteredProfile
+                      ? animatedHeroScore.toFixed(2)
+                      : '--'
+                    : hasEnteredProfile && targetGradGpaStr
+                      ? roadmapPlan.isFeasible
+                        ? animatedHeroScore.toFixed(2)
+                        : '> 4.0'
+                      : '--'}
+              </span>
+              <span className="gpa-m-score-max">/ 4.00</span>
+            </div>
+
+            {/* Capsule Pill */}
+            <div className="gpa-m-capsule-wrap">
+              {activeTab === 'term' ? (
+                !termPlan.isComplete ? (
+                  <div className="gpa-m-capsule empty">
+                    <span>Nhập mục tiêu học kỳ để tính</span>
+                  </div>
+                ) : termPlan.status === 'achieved' ? (
+                  <div className="gpa-m-capsule">
+                    <span className="gpa-m-tier-badge">✓ Đã đạt</span>
+                    <span className="gpa-m-sep">│</span>
+                    <span className="gpa-m-creds">Mục tiêu {targetGpaStr || '3.20'}</span>
+                  </div>
+                ) : termPlan.status === 'feasible' ? (
+                  <div className="gpa-m-capsule">
+                    <span className="gpa-m-tier-badge">Mục tiêu {targetGpaStr}</span>
+                    <span className="gpa-m-sep">│</span>
+                    <span className="gpa-m-creds">Điểm chữ {termPlan.equivalentLetter}</span>
+                  </div>
+                ) : (
+                  <div className="gpa-m-capsule">
+                    <span className="gpa-m-tier-badge tier-danger">✕ Không Khả Thi</span>
+                    <span className="gpa-m-sep">│</span>
+                    <span className="gpa-m-creds">Vượt mức tối đa 4.00</span>
+                  </div>
+                )
+              ) : activeTab === 'retake' ? (
+                hasEnteredProfile ? (
+                  <div className="gpa-m-capsule">
+                    <span className="gpa-m-tier-badge">
+                      +{format2(retakePlan.deltaGpa)} GPA
+                    </span>
+                    <span className="gpa-m-sep">│</span>
+                    <span className="gpa-m-creds">{retakes.length} môn cải thiện</span>
+                  </div>
+                ) : (
+                  <div className="gpa-m-capsule empty">
+                    <span>Nhập điểm tích lũy ở mục 1</span>
+                  </div>
+                )
+              ) : (
+                /* roadmap */
+                !hasEnteredProfile || !targetGradGpaStr ? (
+                  <div className="gpa-m-capsule empty">
+                    <span>Nhập mục tiêu ra trường để tính</span>
+                  </div>
+                ) : roadmapPlan.isFeasible ? (
+                  <div className="gpa-m-capsule">
+                    <span className="gpa-m-tier-badge">
+                      {Number(targetGradGpaStr) >= 3.6
+                        ? 'Xuất sắc'
+                        : Number(targetGradGpaStr) >= 3.2
+                          ? 'Giỏi'
+                          : 'Khá'}
+                    </span>
+                    <span className="gpa-m-sep">│</span>
+                    <span className="gpa-m-creds">~{roadmapPlan.termsRemaining} kỳ nữa</span>
+                  </div>
+                ) : (
+                  <div className="gpa-m-capsule">
+                    <span className="gpa-m-tier-badge tier-danger">✕ Không Khả Thi</span>
+                    <span className="gpa-m-sep">│</span>
+                    <span className="gpa-m-creds">Vượt mức tối đa 4.00</span>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* Standalone Alert Banner outside Hero Card */}
+          {activeTab === 'term' && termPlan.isComplete && termPlan.status === 'impossible' && (
+            <div className="target-m-alert-banner" role="alert">
+              <AlertCircle size={16} className="target-m-alert-icon" />
+              <div>
+                Mục tiêu vượt quá 4.00! Với {futureCredits} tín chỉ, bạn cần tích lũy tối thiểu{' '}
+                <strong>{termPlan.minCreditsNeeded} TC</strong> hoặc hạ mục tiêu GPA xuống.
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'roadmap' && hasEnteredProfile && targetGradGpaStr && !roadmapPlan.isFeasible && (
+            <div className="target-m-alert-banner" role="alert">
+              <AlertCircle size={16} className="target-m-alert-icon" />
+              <div>
+                Mục tiêu tốt nghiệp {targetGradGpaStr} đòi hỏi GPA mỗi kỳ &gt; 4.00. Hãy cân nhắc học cải thiện các môn F/D ở Tab &quot;Cải thiện&quot; để tăng điểm nền.
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Toolbar thiết lập mục tiêu (Đồng bộ vị trí với Desktop & GpaPage) */}
+        <div className="target-m-toolbar">
+          <span className="target-m-toolbar-heading">Thiết lập mục tiêu</span>
+          <button
+            type="button"
+            className="target-m-reset-btn"
+            onClick={handleReset}
+            title="Đặt lại thông số về mặc định"
+            aria-label="Đặt lại thông số"
+          >
+            <RotateCcw size={12} />
+            <span>Đặt lại</span>
+          </button>
+        </div>
+
+        {/* 3-Tab Segmented Switcher */}
+        <div className="target-m-tab-switcher" role="tablist" aria-label="Bộ chọn chế độ tính toán GPA">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'term'}
+            className={`target-m-tab-btn ${activeTab === 'term' ? 'active' : ''}`}
+            onClick={() => setActiveTab('term')}
+          >
+            🎯 Kỳ Tới
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'retake'}
+            className={`target-m-tab-btn ${activeTab === 'retake' ? 'active' : ''}`}
+            onClick={() => setActiveTab('retake')}
+          >
+            ⚡ Cải Thiện
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'roadmap'}
+            className={`target-m-tab-btn ${activeTab === 'roadmap' ? 'active' : ''}`}
+            onClick={() => setActiveTab('roadmap')}
+          >
+            🎓 Tốt Nghiệp
+          </button>
+        </div>
+
+        {/* Card 1: Điểm Tích Lũy Hiện Tại (Dùng chung cho cả 3 tabs) */}
+        <div className="target-m-card">
+          <div className="target-m-card-header">
+            <span className="target-m-card-title">
+              <span className="target-m-badge-num">1</span>
+              Điểm Tích Lũy Hiện Tại
+            </span>
+            <span className={`target-m-badge-saved ${!isProfileValid ? 'empty' : ''}`}>
+              {isProfileValid ? '✓ Đã lưu' : 'Chưa nhập'}
+            </span>
+          </div>
+
+          <div className="target-m-grid-3">
+            <div>
+              <label className="target-m-field-label" htmlFor="m-curr-gpa">GPA tích lũy</label>
+              <div className="target-m-input-box">
+                <input
+                  id="m-curr-gpa"
+                  type="text"
+                  inputMode="decimal"
+                  value={currentGpaStr}
+                  onChange={(e) => handleCurrentGpaChange(e.target.value)}
+                  placeholder="VD: 2.85"
+                  className="target-m-input"
+                  aria-label="GPA tích lũy hiện tại"
+                />
+                <span className="target-m-unit">/4</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="target-m-field-label" htmlFor="m-curr-creds">Đã tích lũy</label>
+              <div className="target-m-input-box">
+                <input
+                  id="m-curr-creds"
+                  type="text"
+                  inputMode="numeric"
+                  value={currentCreditsStr}
+                  onChange={(e) => handleCurrentCreditsChange(e.target.value)}
+                  placeholder="VD: 60"
+                  className="target-m-input"
+                  aria-label="Số tín chỉ đã tích lũy"
+                />
+                <span className="target-m-unit">TC</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="target-m-field-label" htmlFor="m-total-degree">Tổng CTĐT</label>
+              <div className="target-m-input-box">
+                <input
+                  id="m-total-degree"
+                  type="text"
+                  inputMode="numeric"
+                  value={totalDegreeCreditsStr}
+                  onChange={(e) => handleTotalDegreeCreditsChange(e.target.value)}
+                  placeholder="135"
+                  className="target-m-input"
+                  aria-label="Tổng tín chỉ chương trình đào tạo"
+                />
+                <span className="target-m-unit">TC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Container với chuyển cảnh êm ái */}
+        <div key={activeTab} className="target-m-tab-content">
+        {/* Tab 1 Content: Mục tiêu học kỳ tới */}
+        {activeTab === 'term' && (
+          <div className="target-m-card">
+            <div className="target-m-card-header">
+              <span className="target-m-card-title">
+                <span className="target-m-badge-num">2</span>
+                Mục Tiêu Học Kỳ Tới
+              </span>
+              <div className="target-m-target-display">
+                <span className="target-m-target-num">{targetGpaStr || '3.20'}</span>
+                <span className="target-m-target-max">/ 4.00</span>
+              </div>
+            </div>
+
+            {/* GPA Slider */}
+            <input
+              type="range"
+              min="2.00"
+              max="4.00"
+              step="0.05"
+              value={targetGpaStr || '3.20'}
+              onChange={(e) => setTargetGpaStr(e.target.value)}
+              className="target-m-slider"
+              aria-label="Thanh trượt chọn GPA mục tiêu học kỳ tới"
+            />
+
+            {/* 3 Presets */}
+            <div className="target-m-preset-grid">
+              {TARGET_PRESETS.map((preset) => {
+                const isActive = targetGpaStr === preset.value;
+                return (
+                  <button
+                    key={preset.value}
+                    type="button"
+                    className={`target-m-preset-btn ${isActive ? 'active' : ''}`}
+                    onClick={() => setTargetGpaStr(preset.value)}
+                  >
+                    {preset.label} ({preset.value})
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Stepper Tín chỉ */}
+            <div className="target-m-stepper-row">
+              <span className="target-m-stepper-label">Tín chỉ kỳ tới:</span>
+              <div className="target-m-stepper">
+                <button
+                  type="button"
+                  className="target-m-stepper-btn"
+                  onClick={() => setFutureCredits((prev) => Math.max(3, prev - 1))}
+                  aria-label="Giảm 1 tín chỉ"
+                >
+                  −
+                </button>
+                <span className="target-m-stepper-val">{futureCredits} TC</span>
+                <button
+                  type="button"
+                  className="target-m-stepper-btn"
+                  onClick={() => setFutureCredits((prev) => Math.min(30, prev + 1))}
+                  aria-label="Tăng 1 tín chỉ"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Credit Pills (Chuẩn công thái học 1-chạm) */}
+            <div className="target-m-quick-creds-row">
+              {TERM_CREDIT_PRESETS.map((cr) => (
+                <button
+                  key={cr}
+                  type="button"
+                  className={`target-m-quick-cred-btn ${futureCredits === cr ? 'active' : ''}`}
+                  onClick={() => setFutureCredits(cr)}
+                >
+                  {cr} TC
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tab 2 Content: Cải thiện môn F/D */}
+        {activeTab === 'retake' && (
+          <div>
+            <div className="target-m-retake-header">
+              <span className="target-m-retake-count">
+                Môn học cải thiện ({retakes.length})
+              </span>
+              {retakes.length > 0 && (
+                <span className="target-m-retake-hint">
+                  Chạm dòng để sửa hoặc xóa
+                </span>
+              )}
+            </div>
+
+            <div className="gpa-mobile-grouped-list">
+              <div className="gpa-m-list-card">
+                {retakes.length === 0 ? (
+                  <div className="target-m-empty-list">
+                    Chưa có môn cải thiện nào
+                  </div>
+                ) : (
+                  retakes.map((course, idx) => {
+                  const oldGradeObj = RETAKE_OLD_GRADES.find((g) => g.value === course.oldGrade);
+                  const targetGradeObj = ALL_TARGET_GRADES.find((g) => g.value === course.targetGrade);
+                  const oldLabel = oldGradeObj?.label || `${course.oldGrade}`;
+                  const targetLabel = targetGradeObj?.label || `${course.targetGrade}`;
+
+                  return (
+                    <div
+                      key={course.id}
+                      className="gpa-m-list-row cursor-pointer"
+                      onClick={() => openEditRetakeSheet(idx)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          openEditRetakeSheet(idx);
+                        }
+                      }}
+                      aria-label={`Chỉnh sửa Môn học ${idx + 1}`}
+                    >
+                      <div className="gpa-m-row-left">
+                        <span className="gpa-m-row-title">Môn học {idx + 1}</span>
+                        <span className="gpa-m-row-desc">
+                          {course.credits} tín chỉ • Điểm cũ:{' '}
+                          <strong style={{ color: 'var(--text-secondary)' }}>{oldLabel}</strong>
+                        </span>
+                      </div>
+
+                      <div className="gpa-m-row-right">
+                        <span className="target-m-course-target-pill">
+                          <span>Mục tiêu:</span>
+                          <strong>{targetLabel}</strong>
+                        </span>
+                        <span className="gpa-m-row-chevron">›</span>
+                      </div>
+                    </div>
+                  );
+                  })
+                )}
+
+                {retakes.length < 6 && (
+                  <button
+                    type="button"
+                    className="gpa-m-add-row-btn"
+                    onClick={openAddRetakeSheet}
+                    aria-label="Thêm môn cải thiện"
+                  >
+                    <span>+ Thêm môn cải thiện</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3 Content: Lộ trình ra trường */}
+        {activeTab === 'roadmap' && (
+          <div className="target-m-card">
+            <div className="target-m-card-header">
+              <span className="target-m-card-title">
+                <span className="target-m-badge-num">2</span>
+                Mục Tiêu Tốt Nghiệp
+              </span>
+              <div className="target-m-target-display">
+                <span className="target-m-target-num">{targetGradGpaStr || '3.20'}</span>
+                <span className="target-m-target-max">/ 4.00</span>
+              </div>
+            </div>
+
+            {/* 3 Presets */}
+            <div className="target-m-preset-grid">
+              {TARGET_PRESETS.map((preset) => {
+                const isActive = targetGradGpaStr === preset.value;
+                return (
+                  <button
+                    key={preset.value}
+                    type="button"
+                    className={`target-m-preset-btn ${isActive ? 'active' : ''}`}
+                    onClick={() => setTargetGradGpaStr(preset.value)}
+                  >
+                    {preset.label} ({preset.value})
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Slider GPA */}
+            <div style={{ marginTop: '0.4rem', marginBottom: '0.6rem' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontSize: '0.7rem',
+                  color: 'var(--text-muted)',
+                  fontWeight: 600,
+                  marginBottom: '0.25rem',
+                }}
+              >
+                <span>Kéo tinh chỉnh GPA:</span>
+                <span style={{ color: 'var(--brand-primary, #0f294a)', fontWeight: 700 }}>
+                  2.00 ➔ 4.00
+                </span>
+              </div>
+              <input
+                type="range"
+                min="2.00"
+                max="4.00"
+                step="0.05"
+                value={targetGradGpaStr || '3.20'}
+                onChange={(e) => setTargetGradGpaStr(e.target.value)}
+                className="target-m-slider"
+                aria-label="Thanh trượt chọn GPA mục tiêu tốt nghiệp"
+              />
+            </div>
+
+            {/* Clean 1-Line Progress Summary */}
+            <div className="target-m-summary-line">
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600 }}>
+                <span>⏳</span> Còn lại:{' '}
+                <strong style={{ color: 'var(--text-primary)', fontWeight: 800 }}>
+                  {hasEnteredProfile ? `${remainingCredits} TC` : '-- TC'}
+                </strong>
+              </span>
+              <span className="target-m-summary-tag">
+                {hasEnteredProfile ? `~${roadmapPlan.termsRemaining} học kỳ (15 TC/kỳ)` : '--'}
+              </span>
+            </div>
+          </div>
+        )}
+
+        </div>
+
+        {/* Clean 1-Line Mobile Footer */}
+        <div className="target-m-footer-note">
+          * Kết quả tính toán theo Quy chế đào tạo tín chỉ ĐHSP TP.HCM
+        </div>
+      </div>
+
+      {/* ============================================================== */}
+      {/* MOBILE 1-TOUCH BOTTOM SHEET EDITOR (PHƯƠNG ÁN A: DROPDOWN ĐẦY ĐỦ) */}
+      {/* ============================================================== */}
+      {mobileRetakeSheet && (
+        <div className="gpa-m-sheet-overlay" onClick={() => setMobileRetakeSheet(null)}>
+          <div
+            className="gpa-m-sheet-container"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="target-sheet-title"
+          >
+            {/* Grab Handle */}
+            <div className="gpa-m-sheet-handle-bar">
+              <div className="gpa-m-sheet-handle" />
+            </div>
+
+            {/* Header */}
+            <div className="gpa-m-sheet-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1rem' }}>⚡</span>
+                <h3 id="target-sheet-title" className="gpa-m-sheet-title">
+                  Môn học {mobileRetakeSheet.index + 1}
+                </h3>
+              </div>
+              <button
+                type="button"
+                className="gpa-m-sheet-close-btn"
+                onClick={() => setMobileRetakeSheet(null)}
+                aria-label="Đóng bảng chỉnh sửa"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Sheet Body */}
+            <div className="gpa-m-sheet-body">
+              {/* 1. Số tín chỉ: Wheel Picker */}
+              <div className="gpa-m-sheet-field">
+                <div className="gpa-m-sheet-label-row">
+                  <label className="gpa-m-sheet-label">1. Số tín chỉ</label>
+                  <span className="gpa-m-sheet-hint">
+                    {mobileRetakeSheet.credits || '3'} tín chỉ
+                  </span>
+                </div>
+                <CreditWheelPicker
+                  value={mobileRetakeSheet.credits}
+                  onChange={(val) =>
+                    setMobileRetakeSheet((s) => (s ? { ...s, credits: val } : null))
+                  }
+                />
+              </div>
+
+              {/* 2. Chuyển đổi điểm số: Dual Dropdown (Phương Án A) */}
+              <div className="gpa-m-sheet-field">
+                <label className="gpa-m-sheet-label">
+                  2. Chuyển đổi điểm số (Đầy đủ 8 mốc)
+                </label>
+                <div className="target-m-dual-select">
+                  {/* Điểm cũ */}
+                  <div className="target-m-select-box">
+                    <span className="target-m-select-label">Điểm cũ</span>
+                    <select
+                      className="target-m-native-select"
+                      value={mobileRetakeSheet.oldGrade}
+                      onChange={(e) => {
+                        const newOld = Number(e.target.value);
+                        setMobileRetakeSheet((s) => {
+                          if (!s) return null;
+                          const newTarget = s.targetGrade <= newOld ? 4.0 : s.targetGrade;
+                          return { ...s, oldGrade: newOld, targetGrade: newTarget };
+                        });
+                      }}
+                      aria-label="Chọn điểm cũ"
+                    >
+                      {RETAKE_OLD_GRADES.map((g) => (
+                        <option key={g.value} value={g.value}>
+                          {g.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Mũi tên */}
+                  <div className="target-m-select-arrow" aria-hidden="true">
+                    ➔
+                  </div>
+
+                  {/* Mục tiêu */}
+                  <div className="target-m-select-box target">
+                    <span className="target-m-select-label">Mục tiêu</span>
+                    <select
+                      className="target-m-native-select"
+                      value={mobileRetakeSheet.targetGrade}
+                      onChange={(e) => {
+                        const newTarget = Number(e.target.value);
+                        setMobileRetakeSheet((s) => (s ? { ...s, targetGrade: newTarget } : null));
+                      }}
+                      aria-label="Chọn điểm mục tiêu"
+                    >
+                      {ALL_TARGET_GRADES.map((g) => (
+                        <option
+                          key={g.value}
+                          value={g.value}
+                          disabled={g.value <= mobileRetakeSheet.oldGrade}
+                        >
+                          {g.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="gpa-m-sheet-actions">
+                <button
+                  type="button"
+                  className="gpa-m-sheet-save-btn"
+                  onClick={handleSaveMobileRetake}
+                >
+                  {mobileRetakeSheet.isNew ? 'Thêm học phần' : 'Lưu thay đổi'}
+                </button>
+
+                {!mobileRetakeSheet.isNew && (
+                  <button
+                    type="button"
+                    className="gpa-m-sheet-del-btn"
+                    onClick={handleDeleteMobileRetake}
+                  >
+                    <Trash2 size={16} />
+                    <span>Xóa môn này</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <GpaReferenceModal
         isOpen={referenceModalTab !== null}

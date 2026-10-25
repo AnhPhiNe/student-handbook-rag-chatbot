@@ -106,12 +106,12 @@ interface SheetState {
   courseGroup: CourseInput['courseGroup'];
 }
 
-interface CreditWheelPickerProps {
+export interface CreditWheelPickerProps {
   value: string;
   onChange: (val: string) => void;
 }
 
-function CreditWheelPicker({ value, onChange }: CreditWheelPickerProps) {
+export function CreditWheelPicker({ value, onChange }: CreditWheelPickerProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const itemWidth = 72; // 72px gọn gàng, vuốt mượt mà vừa vặn
   const items = useMemo(() => ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], []);

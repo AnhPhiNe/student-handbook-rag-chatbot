@@ -654,7 +654,9 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                   <div className="target-gpa-presc-section">
                     <div className="target-gpa-presc-title">
                       <span>
-                        Gợi ý phân bổ điểm ({futureCredits} TC ~ {prescription.totalCourses} môn)
+                        {termPlan.status === 'impossible'
+                          ? 'Yêu cầu tối thiểu để đạt:'
+                          : `Phân bổ mục tiêu (${futureCredits} TC ~ ${prescription.totalCourses} môn):`}
                       </span>
                     </div>
                     <div className="target-gpa-presc-badges">
@@ -664,7 +666,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                         </div>
                       ) : termPlan.status === 'impossible' ? (
                         <div className="target-gpa-badge-grade">
-                          Cần {termPlan.minCreditsNeeded ?? '> 20'} TC điểm A toàn bộ
+                          Cần tối thiểu {termPlan.minCreditsNeeded ?? '> 20'} TC điểm A toàn bộ
                         </div>
                       ) : (
                         <>
@@ -690,23 +692,15 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
                   <div className="target-gpa-clean-notice">
                     {!hasEnteredProfile ? (
-                      <>Nhập GPA và số tín chỉ ở Mục 1 để hệ thống tính toán điểm số cần đạt.</>
+                      <>Nhập điểm ở Mục 1 để nhận phân bổ chi tiết.</>
                     ) : termPlan.status === 'impossible' ? (
-                      <>
-                        Mục tiêu vượt 4.00 trong 1 kỳ. Cần tối thiểu{' '}
-                        <strong>{termPlan.minCreditsNeeded ?? '> 20'} TC</strong> điểm A toàn bộ.
-                      </>
+                      <>Nên phân bổ đều điểm số sang Tab Lộ Trình Ra Trường.</>
                     ) : termPlan.status === 'achieved' ? (
-                      <>GPA hiện tại đã vượt mục tiêu đề ra. Hãy tiếp tục duy trì phong độ kỳ tới.</>
+                      <>Tiếp tục giữ vững kết quả học tập ở kỳ tới.</>
                     ) : (
                       <>
-                        Cần đạt tối thiểu{' '}
-                        <strong>
-                          {prescription.coursesA > 0
-                            ? `${prescription.coursesA} môn A`
-                            : `${prescription.coursesBPlus} môn B+`}
-                        </strong>{' '}
-                        trong kỳ tới để chạm mức <strong>{format2(Number(targetGpaStr) || 3.2)}</strong>.
+                        Đạt phân bổ điểm trên để chạm mức{' '}
+                        <strong>{format2(Number(targetGpaStr) || 3.2)}</strong>.
                       </>
                     )}
                   </div>
@@ -747,7 +741,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
                   {!hasEnteredProfile ? (
                     <div className="target-gpa-clean-notice">
-                      Chọn các môn cần học lại để dự báo mức tăng điểm GPA tích lũy sau khi cải thiện.
+                      Chọn môn cần học lại để dự báo mức tăng GPA.
                     </div>
                   ) : (
                     <>
@@ -779,7 +773,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                       </div>
 
                       <div className="target-gpa-clean-notice">
-                        Điểm mới sẽ ghi đè điểm cũ vào công thức tích lũy mà không làm phát sinh thêm tín chỉ tốt nghiệp.
+                        Điểm mới sẽ thay thế điểm cũ vào bảng điểm tích lũy.
                       </div>
                     </>
                   )}

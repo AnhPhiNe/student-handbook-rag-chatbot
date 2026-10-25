@@ -196,6 +196,15 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     );
   }, [hasEnteredProfile, currentGpaNum, currentCreditsNum, targetGradGpaStr, remainingCredits, totalDegreeCreditsNum]);
 
+  // Best possible graduation GPA (every remaining credit an A): shown when the target is out of reach.
+  const maxGradGpa =
+    totalDegreeCreditsNum > 0
+      ? Math.min(4, (currentGpaNum * currentCreditsNum + 4 * Math.max(0, remainingCredits)) / totalDegreeCreditsNum)
+      : 0;
+  const roadmapNeededLabel = Number.isFinite(roadmapPlan.averageGpaNeeded)
+    ? format2(roadmapPlan.averageGpaNeeded)
+    : '> 4.00';
+
   // Animated Hero Score for Mobile and Desktop
   const activeHeroNumber = useMemo(() => {
     if (activeTab === 'term') {
@@ -988,9 +997,13 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                                 : 'score-feasible'
                           }`}
                         >
-                          {format2(roadmapPlan.averageGpaNeeded)} <span>/ 4.00</span>
+                          {roadmapNeededLabel} <span>/ 4.00</span>
                         </div>
                         <div className="hero-rank">
+                          {!roadmapPlan.isFeasible ? (
+                            <>Cao nhất khi ra trường: <strong>{format2(maxGradGpa)}</strong></>
+                          ) : (
+                            <>
                           Tương đương mức điểm chữ:{' '}
                           {roadmapPlan.averageGpaNeeded >= 3.6
                             ? 'A / B+'
@@ -999,6 +1012,8 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                               : roadmapPlan.averageGpaNeeded >= 2.5
                                 ? 'B'
                                 : 'C+'}
+                            </>
+                          )}
                         </div>
                       </>
                     )}
@@ -1145,7 +1160,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     : hasEnteredProfile && targetGradGpaStr
                       ? roadmapPlan.isFeasible
                         ? animatedHeroScore.toFixed(2)
-                        : '> 4.0'
+                        : roadmapNeededLabel
                       : '--'}
               </span>
               <span className="gpa-m-score-max">/ 4.00</span>
@@ -1211,7 +1226,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                   <div className="gpa-m-capsule">
                     <span className="gpa-m-tier-badge tier-danger">✕ Không khả thi</span>
                     <span className="gpa-m-sep">│</span>
-                    <span className="gpa-m-creds">Vượt mức tối đa 4.00</span>
+                    <span className="gpa-m-creds">Cao nhất khi ra trường: {format2(maxGradGpa)}</span>
                   </div>
                 )
               )}

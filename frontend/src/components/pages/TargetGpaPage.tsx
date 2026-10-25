@@ -37,6 +37,9 @@ interface TargetGpaPageProps {
 
 type TabType = 'term' | 'retake' | 'roadmap';
 
+/** A retake row being edited: the old grade stays empty until the student picks it. */
+type RetakeDraft = Omit<RetakeCourse, 'oldGrade'> & { oldGrade: number | null };
+
 interface StoredGpaProfile {
   currentGpa: string;
   currentCredits: string;
@@ -117,8 +120,14 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
   const [futureCredits, setFutureCredits] = useState(15);
 
   // Tab 2: Cải Thiện Môn F/D State
-  const [retakes, setRetakes] = useState<RetakeCourse[]>([]);
-  const hasRetakes = retakes.length > 0;
+  // A course row has no old grade until the student picks one; only complete rows count.
+  const [retakes, setRetakes] = useState<RetakeDraft[]>([]);
+  const completeRetakes = useMemo(
+    () => retakes.filter((r): r is RetakeCourse => r.oldGrade !== null),
+    [retakes],
+  );
+  const hasRetakeRows = retakes.length > 0;
+  const hasRetakes = completeRetakes.length > 0;
 
   // Tab 3: Lộ Trình Ra Trường State
   const [targetGradGpaStr, setTargetGradGpaStr] = useState('');
@@ -162,11 +171,11 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     return calculateRetakeImpact(
       currentGpaNum,
       currentCreditsNum,
-      retakes,
+      completeRetakes,
       15,
       Number(targetGpaStr) || 3.20,
     );
-  }, [currentGpaNum, currentCreditsNum, retakes, targetGpaStr]);
+  }, [currentGpaNum, currentCreditsNum, completeRetakes, targetGpaStr]);
 
   // Tab 3 Calculations
   const roadmapPlan = useMemo(() => {
@@ -263,7 +272,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     const nextIdx = retakes.length + 1;
     setRetakes((prev) => [
       ...prev,
-      { id: nextId, label: `Môn ${nextIdx}`, oldGrade: 0.0, targetGrade: 4.0, credits: 3 },
+      { id: nextId, label: `Môn ${nextIdx}`, oldGrade: null, targetGrade: 4.0, credits: 3 },
     ]);
   };
 
@@ -271,7 +280,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     setRetakes((prev) => prev.filter((r) => r.id !== id));
   };
 
-  const handleUpdateRetake = (id: string, field: keyof RetakeCourse, val: number | string) => {
+  const handleUpdateRetake = (id: string, field: keyof RetakeDraft, val: number | string) => {
     setRetakes((prev) =>
       prev.map((r) => {
         if (r.id !== id) return r;
@@ -292,7 +301,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
     isNew: boolean;
     id: string;
     credits: string;
-    oldGrade: number;
+    oldGrade: number | null;
     targetGrade: number;
   }
   const [mobileRetakeSheet, setMobileRetakeSheet] = useState<MobileRetakeSheetState | null>(null);
@@ -317,13 +326,13 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       isNew: true,
       id: `retake-${Date.now()}`,
       credits: '3',
-      oldGrade: 1.0,
+      oldGrade: null,
       targetGrade: 4.0,
     });
   };
 
   const handleSaveMobileRetake = () => {
-    if (!mobileRetakeSheet) return;
+    if (!mobileRetakeSheet || mobileRetakeSheet.oldGrade === null) return;
     const parsedCreds = Math.max(1, Math.min(10, parseInt(mobileRetakeSheet.credits, 10) || 3));
     const oldG = mobileRetakeSheet.oldGrade;
     const targetG = mobileRetakeSheet.targetGrade <= oldG ? 4.0 : mobileRetakeSheet.targetGrade;
@@ -589,7 +598,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     <span>2. Chọn môn cải thiện</span>
                   </div>
 
-                  {hasRetakes && (
+                  {hasRetakeRows && (
                   <table className="target-gpa-retake-table">
                     <thead>
                       <tr>
@@ -618,12 +627,15 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                           <td>
                             <select
                               className="target-gpa-select"
-                              value={course.oldGrade}
+                              value={course.oldGrade ?? ''}
                               onChange={(e) =>
                                 handleUpdateRetake(course.id, 'oldGrade', Number(e.target.value))
                               }
                               aria-label="Điểm cũ"
                             >
+                              <option value="" disabled>
+                                Chọn điểm
+                              </option>
                               {RETAKE_OLD_GRADES.map((g) => (
                                 <option key={g.value} value={g.value}>
                                   {g.label}
@@ -655,7 +667,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                               }
                               aria-label="Mục tiêu điểm mới"
                             >
-                              {ALL_TARGET_GRADES.filter((g) => g.value > course.oldGrade).map((g) => (
+                              {ALL_TARGET_GRADES.filter((g) => g.value > (course.oldGrade ?? -1)).map((g) => (
                                 <option key={g.value} value={g.value}>
                                   {g.label}
                                 </option>
@@ -881,7 +893,9 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                         <div className="hero-rank">
                           {!hasEnteredProfile
                             ? 'Vui lòng nhập GPA và số TC ở Mục 1'
-                            : 'Thêm ít nhất một môn cải thiện ở Mục 2'}
+                            : hasRetakeRows
+                              ? 'Chọn điểm cũ của môn cải thiện ở Mục 2'
+                              : 'Thêm ít nhất một môn cải thiện ở Mục 2'}
                         </div>
                       </>
                     ) : (
@@ -1172,7 +1186,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                   </div>
                 ) : (
                   <div className="gpa-m-capsule empty">
-                    <span>{hasEnteredProfile ? 'Thêm môn cải thiện bên dưới' : 'Nhập điểm tích lũy ở mục 1'}</span>
+                    <span>{!hasEnteredProfile ? 'Nhập điểm tích lũy ở mục 1' : hasRetakeRows ? 'Chọn điểm cũ của môn bên dưới' : 'Thêm môn cải thiện bên dưới'}</span>
                   </div>
                 )
               ) : (
@@ -1445,7 +1459,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 {retakes.map((course, idx) => {
                   const oldGradeObj = RETAKE_OLD_GRADES.find((g) => g.value === course.oldGrade);
                   const targetGradeObj = ALL_TARGET_GRADES.find((g) => g.value === course.targetGrade);
-                  const oldLabel = oldGradeObj?.label || `${course.oldGrade}`;
+                  const oldLabel = course.oldGrade === null ? 'chưa chọn' : oldGradeObj?.label || `${course.oldGrade}`;
                   const targetLabel = targetGradeObj?.label || `${course.targetGrade}`;
 
                   return (
@@ -1645,7 +1659,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     <span className="target-m-select-label">Điểm cũ</span>
                     <select
                       className="target-m-native-select"
-                      value={mobileRetakeSheet.oldGrade}
+                      value={mobileRetakeSheet.oldGrade ?? ''}
                       onChange={(e) => {
                         const newOld = Number(e.target.value);
                         setMobileRetakeSheet((s) => {
@@ -1656,6 +1670,9 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                       }}
                       aria-label="Chọn điểm cũ"
                     >
+                      <option value="" disabled>
+                        Chọn
+                      </option>
                       {RETAKE_OLD_GRADES.map((g) => (
                         <option key={g.value} value={g.value}>
                           {g.label}
@@ -1685,7 +1702,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                         <option
                           key={g.value}
                           value={g.value}
-                          disabled={g.value <= mobileRetakeSheet.oldGrade}
+                          disabled={g.value <= (mobileRetakeSheet.oldGrade ?? -1)}
                         >
                           {g.label}
                         </option>
@@ -1699,8 +1716,9 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
               <div className="gpa-m-sheet-actions">
                 <button
                   type="button"
-                  className="gpa-m-sheet-save-btn"
+                  className={`gpa-m-sheet-save-btn ${mobileRetakeSheet.oldGrade === null ? 'disabled' : ''}`}
                   onClick={handleSaveMobileRetake}
+                  disabled={mobileRetakeSheet.oldGrade === null}
                 >
                   {mobileRetakeSheet.isNew ? 'Thêm học phần' : 'Lưu thay đổi'}
                 </button>

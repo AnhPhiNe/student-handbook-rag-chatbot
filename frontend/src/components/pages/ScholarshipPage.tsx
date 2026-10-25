@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { Award, ChevronDown, Minus, Plus, MessageCircle } from 'lucide-react';
+import { Award, ChevronDown, History, Minus, Plus, MessageCircle } from 'lucide-react';
 import {
   calculateScholarshipScore,
   getFinalSemesterMinCredits,
@@ -15,6 +15,7 @@ import {
 import type { Cohort } from '../../utils/gradeScale';
 import type { GradeTone } from '../../utils/gradeTone';
 import { sanitizeDecimal, sanitizeInteger } from '../../utils/numberInput';
+import { useStudentProfile } from '../../hooks/useStudentProfile';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
 import { ResetButton } from '../tool/ToolSection';
 import { ProgramSearch } from '../tool/ProgramSearch';
@@ -88,6 +89,10 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
   const [schoolYear, setSchoolYear] = useState<SchoolYear>(DEFAULT_YEAR);
   const [pickedTier, setPickedTier] = useState<ScholarshipClassification | null>(null);
   const [estimateOpen, setEstimateOpen] = useState(false);
+
+  // Offered, never filled in silently: the semester GPA last calculated on the GPA page.
+  const { profile } = useStudentProfile();
+  const lastSemesterGpa = profile.lastSemesterGpa;
 
   const conductRef = useRef<HTMLInputElement | null>(null);
   const focusProgram = useRef(false);
@@ -338,6 +343,19 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                 />
                 <i>/ 4</i>
               </div>
+              {academicScore === '' && lastSemesterGpa && (
+                <button
+                  type="button"
+                  className="sc-use-last"
+                  onClick={() => {
+                    setAcademicScore(lastSemesterGpa);
+                    conductRef.current?.focus();
+                  }}
+                >
+                  <History size={13} aria-hidden="true" />
+                  Dùng GPA học kỳ vừa tính: {lastSemesterGpa}
+                </button>
+              )}
               {academicError && (
                 <span id="scholarship-gpa-error" className="sc-ferr">
                   {academicError}

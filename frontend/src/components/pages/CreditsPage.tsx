@@ -6,6 +6,8 @@ import {
   type CreditThresholdStatus,
   type GraduationClassification,
 } from '../../utils/creditThreshold';
+import { useStudentProfile } from '../../hooks/useStudentProfile';
+import { integerCredits } from '../../utils/studentProfile';
 import { sanitizeInteger } from '../../utils/numberInput';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
 import { ResetButton } from '../tool/ToolSection';
@@ -75,7 +77,9 @@ function CreditMeter({ failed, maxCredits }: CreditMeterProps) {
 }
 
 export function CreditsPage({ onAskChat }: CreditsPageProps) {
-  const [totalCredits, setTotalCredits] = useState('');
+  // The degree total is the student's own number: reuse the one saved by the GPA target page.
+  const { profile, update: updateProfile } = useStudentProfile();
+  const [totalCredits, setTotalCredits] = useState(() => integerCredits(profile.totalDegreeCredits));
   const [failedCredits, setFailedCredits] = useState('');
   const [classification, setClassification] = useState<GraduationClassification | null>(null);
   const failedRef = useRef<HTMLInputElement>(null);
@@ -199,7 +203,11 @@ export function CreditsPage({ onAskChat }: CreditsPageProps) {
                   autoComplete="off"
                   placeholder="VD: 130"
                   value={totalCredits}
-                  onChange={(e) => setTotalCredits(sanitizeInteger(e.target.value))}
+                  onChange={(e) => {
+                    const next = sanitizeInteger(e.target.value);
+                    setTotalCredits(next);
+                    updateProfile({ totalDegreeCredits: next });
+                  }}
                   onKeyDown={handleTotalKeyDown}
                   aria-describedby="credits-total-hint"
                 />

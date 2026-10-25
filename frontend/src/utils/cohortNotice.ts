@@ -9,6 +9,15 @@ export const TOOL_TABS = new Set([
   'credits',
 ]);
 
+/**
+ * Pages are keyed by cohort and reset on a switch; these two keep part of what was typed
+ * because it lives in the shared saved profile. Other pages keep nothing, so they get no claim.
+ */
+export const KEPT_DATA_NOTES: Record<string, string> = {
+  'target-gpa': 'GPA và tín chỉ đã nhập được giữ.',
+  credits: 'Tổng tín chỉ toàn khóa được giữ.',
+};
+
 /** "C (5.5)" style label of the lowest passing grade of a scale. */
 function passLabel(cohort: Cohort, group: 'foundation' | 'remaining'): string {
   const scale = GRADE_SCALE_BY_COHORT[cohort].find((s) => s.id === group);

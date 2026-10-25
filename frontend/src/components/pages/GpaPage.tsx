@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useId, useRef, useState, type ReactNode } from 'react';
+import { useStudentProfile } from '../../hooks/useStudentProfile';
 import { AlertTriangle, ArrowRight, ArrowUpRight, BookOpen, GraduationCap, Plus, Trash2, X, RotateCcw } from 'lucide-react';
 import {
   calculateGpa,
@@ -248,6 +249,17 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
     return courses.filter((c) => isCreditsInvalid(c.credits) || isScore10Invalid(c.score10)).length;
   }, [courses]);
   const hasInvalidData = invalidCoursesCount > 0;
+
+  // Keep the last valid semester GPA so the scholarship page can offer it (never while rows are invalid).
+  const { profile, update: updateProfile } = useStudentProfile();
+  const savedSemesterGpa = profile.lastSemesterGpa;
+  const semesterGpaText = hasResult && !hasInvalidData ? result.gpa.toFixed(2) : null;
+  useEffect(() => {
+    if (semesterGpaText && semesterGpaText !== savedSemesterGpa) {
+      const timer = window.setTimeout(() => updateProfile({ lastSemesterGpa: semesterGpaText }), 400);
+      return () => window.clearTimeout(timer);
+    }
+  }, [semesterGpaText, savedSemesterGpa, updateProfile]);
 
   const closeSheet = () => {
     setSheetState(null);

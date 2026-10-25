@@ -27,7 +27,7 @@ import { MobileScrollAffordance } from './components/MobileScrollAffordance';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
 import { IS_CHAT_MAINTENANCE } from './config/features';
 import { useToast } from './components/Toast';
-import { cohortChangeMessage, shouldNotifyCohortChange } from './utils/cohortNotice';
+import { KEPT_DATA_NOTES, cohortChangeMessage, shouldNotifyCohortChange } from './utils/cohortNotice';
 
 const COHORT_SELECTOR_TABS = new Set([
   'home',
@@ -50,7 +50,7 @@ function App() {
   const setCohort = (nextCohort: Cohort) => {
     // Tool pages are keyed by cohort and reset, so say what changed for grading.
     if (shouldNotifyCohortChange(storedCohort ? cohort : null, nextCohort, activeTab)) {
-      toast.show(cohortChangeMessage(nextCohort), 'info');
+      toast.show(cohortChangeMessage(nextCohort, KEPT_DATA_NOTES[activeTab]), 'info');
     }
     setStoredCohort(nextCohort);
   };

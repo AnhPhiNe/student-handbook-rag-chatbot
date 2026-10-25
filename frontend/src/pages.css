@@ -11375,3 +11375,52 @@ p.tool-source > svg {
   [data-theme='dark'] .cr-verdict.ok { background: rgba(52, 211, 153, 0.12); color: #a7f3d0; }
   .cr-cls { padding: 12px 14px 14px; }
 }
+
+/* Small text button that clears what the tool pages saved on this device */
+.tool-clear-saved {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+  padding: 0.25rem 0.1rem;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.tool-clear-saved:hover { color: var(--danger, #dc2626); }
+.tool-clear-saved:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+@media (max-width: 900px) {
+  .tool-clear-saved { min-height: 40px; font-size: 0.82rem; }
+}
+
+/* Offer to reuse the semester GPA calculated on the GPA page */
+.sc-use-last {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.12));
+  border-radius: 14px;
+  text-align: left;
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sc-use-last:hover { background: color-mix(in srgb, var(--primary) 14%, transparent); }
+.sc-use-last:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+[data-theme='dark'] .sc-use-last { border-color: rgba(255, 255, 255, 0.16); }
+@media (max-width: 900px) {
+  .sc-use-last { min-height: 40px; font-size: 0.82rem; }
+}

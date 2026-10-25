@@ -19,7 +19,8 @@ import {
 import { CreditWheelPicker } from './GpaPage';
 import { type Cohort } from '../../utils/gradeScale';
 import { sanitizeDecimal } from '../../utils/numberInput';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useStudentProfile } from '../../hooks/useStudentProfile';
+import { hasStoredProfile } from '../../utils/studentProfile';
 import { GpaReferenceModal } from '../GpaReferenceModal';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
 import {
@@ -39,18 +40,6 @@ type TabType = 'term' | 'retake' | 'roadmap';
 
 /** A retake row being edited: the old grade stays empty until the student picks it. */
 type RetakeDraft = Omit<RetakeCourse, 'oldGrade'> & { oldGrade: number | null };
-
-interface StoredGpaProfile {
-  currentGpa: string;
-  currentCredits: string;
-  totalDegreeCredits: string;
-}
-
-const DEFAULT_PROFILE: StoredGpaProfile = {
-  currentGpa: '',
-  currentCredits: '',
-  totalDegreeCredits: '',
-};
 
 const TARGET_PRESETS = [
   { label: 'Khá', value: '2.50' },
@@ -85,14 +74,11 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
   const [activeTab, setActiveTab] = useState<TabType>('term');
 
   // Shared Profile State across all tabs (persisted in localStorage)
-  const [profile, setProfile] = useLocalStorage<StoredGpaProfile>(
-    'hcmue_target_gpa_profile',
-    DEFAULT_PROFILE,
-  );
+  const { profile, update: updateProfile, clear: clearProfile } = useStudentProfile();
 
-  const currentGpaStr = profile?.currentGpa ?? DEFAULT_PROFILE.currentGpa;
-  const currentCreditsStr = profile?.currentCredits ?? DEFAULT_PROFILE.currentCredits;
-  const totalDegreeCreditsStr = profile?.totalDegreeCredits ?? DEFAULT_PROFILE.totalDegreeCredits;
+  const currentGpaStr = profile.currentGpa;
+  const currentCreditsStr = profile.currentCredits;
+  const totalDegreeCreditsStr = profile.totalDegreeCredits;
 
   const currentGpaNum = Number(currentGpaStr);
   const currentCreditsNum = Number(currentCreditsStr);
@@ -247,31 +233,15 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
   }, [activeTab, termPlan, hasEnteredProfile, hasRetakes, retakePlan.deltaGpa, targetGradGpaStr, roadmapPlan]);
 
   // Handlers for profile updates
-  const handleCurrentGpaChange = (val: string) => {
-    const clean = sanitizeDecimal(val);
-    setProfile((prev) => ({
-      currentGpa: clean,
-      currentCredits: prev?.currentCredits ?? DEFAULT_PROFILE.currentCredits,
-      totalDegreeCredits: prev?.totalDegreeCredits ?? DEFAULT_PROFILE.totalDegreeCredits,
-    }));
-  };
+  const handleCurrentGpaChange = (val: string) => updateProfile({ currentGpa: sanitizeDecimal(val) });
+  const handleCurrentCreditsChange = (val: string) => updateProfile({ currentCredits: sanitizeDecimal(val) });
+  const handleTotalDegreeCreditsChange = (val: string) => updateProfile({ totalDegreeCredits: sanitizeDecimal(val) });
 
-  const handleCurrentCreditsChange = (val: string) => {
-    const clean = sanitizeDecimal(val);
-    setProfile((prev) => ({
-      currentGpa: prev?.currentGpa ?? DEFAULT_PROFILE.currentGpa,
-      currentCredits: clean,
-      totalDegreeCredits: prev?.totalDegreeCredits ?? DEFAULT_PROFILE.totalDegreeCredits,
-    }));
-  };
-
-  const handleTotalDegreeCreditsChange = (val: string) => {
-    const clean = sanitizeDecimal(val);
-    setProfile((prev) => ({
-      currentGpa: prev?.currentGpa ?? DEFAULT_PROFILE.currentGpa,
-      currentCredits: prev?.currentCredits ?? DEFAULT_PROFILE.currentCredits,
-      totalDegreeCredits: clean,
-    }));
+  const canClearSaved = hasStoredProfile(profile);
+  const handleClearSaved = () => {
+    if (window.confirm('Xóa GPA, số tín chỉ và các số liệu đã lưu trên máy này?')) {
+      clearProfile();
+    }
   };
 
   // Handlers for Tab 2 (Retake Courses)
@@ -378,7 +348,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
   // Handler for Global Reset
   const handleReset = () => {
     if (window.confirm('Bạn có chắc chắn muốn đặt lại các thông số về mặc định không?')) {
-      setProfile(DEFAULT_PROFILE);
+      clearProfile();
       setTargetGpaStr('');
       setFutureCredits(15);
       setRetakes([]);
@@ -517,6 +487,12 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                   </div>
                 </div>
               </div>
+              {canClearSaved && (
+                <button type="button" className="tool-clear-saved" onClick={handleClearSaved}>
+                  <Trash2 size={13} aria-hidden="true" />
+                  Xóa dữ liệu đã lưu
+                </button>
+              )}
             </div>
 
             {/* PHẦN 2: THÔNG SỐ TÙY CHỌN THEO CHẾ ĐỘ */}
@@ -1368,6 +1344,12 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
             </div>
           </div>
           <div className="target-m-field-hint">Đã tích lũy: tính cả TC môn bị F</div>
+          {canClearSaved && (
+            <button type="button" className="tool-clear-saved" onClick={handleClearSaved}>
+              <Trash2 size={13} aria-hidden="true" />
+              Xóa dữ liệu đã lưu
+            </button>
+          )}
         </div>
 
         {/* Content Container với chuyển cảnh êm ái */}

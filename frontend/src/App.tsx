@@ -26,6 +26,8 @@ import { SystemStatusBadge } from './components/SystemStatusBadge';
 import { MobileScrollAffordance } from './components/MobileScrollAffordance';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
 import { IS_CHAT_MAINTENANCE } from './config/features';
+import { useToast } from './components/Toast';
+import { cohortChangeMessage, shouldNotifyCohortChange } from './utils/cohortNotice';
 
 const COHORT_SELECTOR_TABS = new Set([
   'home',
@@ -43,11 +45,18 @@ function App() {
   const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('hcmue-theme', defaultTheme);
   const [storedCohort, setStoredCohort] = useLocalStorage<Cohort | null>('hcmue-cohort', null);
   const cohort = storedCohort ? normalizeFrontendCohort(storedCohort) : 'K49'; // Fallback an toàn cho utils
-  const setCohort = (nextCohort: Cohort) => setStoredCohort(nextCohort);
+  const toast = useToast();
+  const [activeTab, setActiveTab] = useState('home');
+  const setCohort = (nextCohort: Cohort) => {
+    // Tool pages are keyed by cohort and reset, so say what changed for grading.
+    if (shouldNotifyCohortChange(storedCohort ? cohort : null, nextCohort, activeTab)) {
+      toast.show(cohortChangeMessage(nextCohort), 'info');
+    }
+    setStoredCohort(nextCohort);
+  };
   
   const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
 
-  const [activeTab, setActiveTab] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isCohortModalDismissed, setIsCohortModalDismissed] = useState(false);

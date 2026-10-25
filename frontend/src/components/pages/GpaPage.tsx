@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ArrowRight, GraduationCap, Plus, Trash2, X, RotateCcw } from 'lucide-react';
+import { useEffect, useMemo, useId, useRef, useState, type ReactNode } from 'react';
+import { AlertTriangle, ArrowRight, ArrowUpRight, BookOpen, GraduationCap, Plus, Trash2, X, RotateCcw } from 'lucide-react';
 import {
   calculateGpa,
   getCourseGrade,
@@ -109,21 +109,26 @@ interface SheetState {
 export interface CreditWheelPickerProps {
   value: string;
   onChange: (val: string) => void;
+  /** id của phần tử nhãn gắn với listbox */
+  labelledBy?: string;
 }
 
-export function CreditWheelPicker({ value, onChange }: CreditWheelPickerProps) {
+export function CreditWheelPicker({ value, onChange, labelledBy }: CreditWheelPickerProps) {
+  const idPrefix = useId();
   const trackRef = useRef<HTMLDivElement>(null);
   const itemWidth = 72; // 72px gọn gàng, vuốt mượt mà vừa vặn
   const items = useMemo(() => ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], []);
   const selectedNum = value.trim() || '3';
 
-  // Canh số được chọn vào đúng tâm khi mount
+  const initialNumRef = useRef(selectedNum);
+
+  // Canh số được chọn vào đúng tâm khi mount (chỉ chạy một lần)
   useEffect(() => {
-    const idx = items.indexOf(selectedNum);
+    const idx = items.indexOf(initialNumRef.current);
     if (idx !== -1 && trackRef.current) {
       trackRef.current.scrollLeft = idx * itemWidth;
     }
-  }, []);
+  }, [items]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const scrollLeft = e.currentTarget.scrollLeft;
@@ -142,15 +147,42 @@ export function CreditWheelPicker({ value, onChange }: CreditWheelPickerProps) {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const idx = Math.max(0, items.indexOf(selectedNum));
+    let next: number;
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') next = idx - 1;
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') next = idx + 1;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = items.length - 1;
+    else return;
+    e.preventDefault();
+    next = Math.max(0, Math.min(items.length - 1, next));
+    if (next !== idx) handleItemClick(items[next], next);
+  };
+
   return (
     <div className="wheel-picker-wrapper">
       <div className="wheel-center-indicator" />
-      <div ref={trackRef} className="wheel-picker-track" onScroll={handleScroll}>
+      <div
+        ref={trackRef}
+        className="wheel-picker-track"
+        onScroll={handleScroll}
+        role="listbox"
+        aria-label="Số tín chỉ"
+        aria-labelledby={labelledBy}
+        aria-orientation="horizontal"
+        tabIndex={0}
+        aria-activedescendant={`${idPrefix}-opt-${selectedNum}`}
+        onKeyDown={handleKeyDown}
+      >
         {items.map((num, idx) => {
           const isActive = num === selectedNum;
           return (
             <div
               key={num}
+              id={`${idPrefix}-opt-${num}`}
+              role="option"
+              aria-selected={isActive}
               className={`wheel-item ${isActive ? 'active' : ''}`}
               onClick={() => handleItemClick(num, idx)}
             >
@@ -436,7 +468,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                         onClick={() => removeCourse(course.id)}
                         disabled={courses.length <= 1}
                         title={courses.length <= 1 ? 'Cần giữ ít nhất 1 môn' : 'Xóa môn này'}
-                        aria-label={`Xóa Học phần ${index + 1}`}
+                        aria-label={`Xóa học phần ${index + 1}`}
                       >
                         <Trash2 size={15} />
                       </button>
@@ -476,7 +508,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
             {/* Cảnh Báo Khi Có Dữ Liệu Sai */}
             {hasInvalidData && (
               <div className="gpa-d-error-banner" role="alert">
-                <span style={{ fontSize: '1.05rem', lineHeight: 1 }}>⚠️</span>
+                <AlertTriangle size={16} aria-hidden="true" style={{ flexShrink: 0, marginTop: '0.05rem' }} />
                 <span>
                   Có <strong>{invalidCoursesCount}</strong> học phần nhập sai dữ liệu. Vui lòng kiểm tra lại các ô có viền đỏ.
                 </span>
@@ -554,8 +586,9 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                 className="gpa-d-footer-link"
                 onClick={() => setReferenceModalTab('scale')}
               >
-                <span>📖 Bảng quy đổi {cohort}</span>
-                <span>↗</span>
+                <BookOpen size={14} aria-hidden="true" />
+                <span>Bảng quy đổi {cohort}</span>
+                <ArrowUpRight size={14} aria-hidden="true" />
               </button>
               <span className="gpa-d-footer-watermark">ĐHSP TP.HCM</span>
             </div>
@@ -573,7 +606,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
         {/* TIÊU ĐỀ MOBILE GỌN 1 HÀNG KHÔNG CHOÁN DIỆN TÍCH */}
         <div className="gpa-m-page-header">
           <div className="gpa-m-title-wrap">
-            <span className="gpa-m-title-icon">🎓</span>
+            <GraduationCap size={20} className="gpa-m-title-icon" aria-hidden="true" />
             <h1 className="gpa-m-page-title">Tính GPA học kỳ</h1>
           </div>
         </div>
@@ -609,7 +642,8 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
 
             {hasInvalidData && (
               <div className="gpa-m-hero-alert" role="alert">
-                ⚠️ {invalidCoursesCount} học phần nhập sai dữ liệu
+                <AlertTriangle size={14} aria-hidden="true" />
+                <span>{invalidCoursesCount} học phần nhập sai dữ liệu</span>
               </div>
             )}
           </div>
@@ -769,12 +803,13 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                     {/* 1. Số tín chỉ: Con lăn thước cuộn (Wheel Picker) */}
                     <div className="gpa-m-sheet-field">
                       <div className="gpa-m-sheet-label-row">
-                        <label className="gpa-m-sheet-label">1. Số tín chỉ</label>
+                        <span id="gpa-sheet-credits-label" className="gpa-m-sheet-label">1. Số tín chỉ</span>
                         <span className="gpa-m-sheet-hint">
                           {sheetState.credits ? `${sheetState.credits} tín chỉ` : '3 tín chỉ'}
                         </span>
                       </div>
                       <CreditWheelPicker
+                        labelledBy="gpa-sheet-credits-label"
                         value={sheetState.credits}
                         onChange={(val) => setSheetState((s) => (s ? { ...s, credits: val } : null))}
                       />
@@ -812,7 +847,10 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                       </div>
 
                       {sheetScoreErr && (
-                        <span className="gpa-m-inline-error">⚠️ Điểm phải từ 0.0 đến 10.0</span>
+                        <span className="gpa-m-inline-error">
+                          <AlertTriangle size={13} aria-hidden="true" />
+                          Điểm phải từ 0.0 đến 10.0
+                        </span>
                       )}
                     </div>
 

@@ -3018,6 +3018,35 @@
   color: var(--text-secondary);
 }
 
+.gpa-scale-block.is-active {
+  padding: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--primary-color, #1e3a8a) 35%, var(--border-color));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--primary-color, #1e3a8a) 4%, transparent);
+}
+
+.gpa-scale-block-header .gpa-scale-active-tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  vertical-align: middle;
+  color: #fff;
+  background: var(--primary-color, #1e3a8a);
+}
+
+[data-theme='dark'] .gpa-scale-block.is-active {
+  border-color: rgba(147, 197, 253, 0.4);
+  background: rgba(147, 197, 253, 0.06);
+}
+
+[data-theme='dark'] .gpa-scale-block-header .gpa-scale-active-tag {
+  color: #0f172a;
+  background: #93c5fd;
+}
+
 .gpa-scale-rows-container {
   display: flex;
   flex-direction: column;

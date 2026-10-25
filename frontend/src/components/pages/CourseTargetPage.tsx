@@ -475,6 +475,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
         onClose={() => setReferenceModalOpen(false)}
         cohort={cohort}
         initialTab="scale"
+        activeGroup={activeGroup}
       />
     </div>
   );

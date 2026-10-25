@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { TrendingUp, Trash2, RotateCcw } from 'lucide-react';
+import { TrendingUp, Trash2, RotateCcw, BookOpen, ExternalLink } from 'lucide-react';
 import { type Cohort } from '../../utils/gradeScale';
 import { sanitizeDecimal } from '../../utils/numberInput';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -27,8 +27,8 @@ interface StoredGpaProfile {
 }
 
 const DEFAULT_PROFILE: StoredGpaProfile = {
-  currentGpa: '2.85',
-  currentCredits: '60',
+  currentGpa: '',
+  currentCredits: '',
   totalDegreeCredits: '135',
 };
 
@@ -40,6 +40,26 @@ const TARGET_PRESETS = [
 
 const TERM_CREDIT_PRESETS = [12, 15, 18, 21];
 const ROADMAP_CREDIT_PRESETS = [30, 45, 60, 75];
+
+const RETAKE_OLD_GRADES = [
+  { label: 'F (0.0)', value: 0.0 },
+  { label: 'D (1.0)', value: 1.0 },
+  { label: 'D+ (1.5)', value: 1.5 },
+  { label: 'C (2.0)', value: 2.0 },
+  { label: 'C+ (2.5)', value: 2.5 },
+  { label: 'B (3.0)', value: 3.0 },
+  { label: 'B+ (3.5)', value: 3.5 },
+];
+
+const ALL_TARGET_GRADES = [
+  { label: 'D (1.0)', value: 1.0 },
+  { label: 'D+ (1.5)', value: 1.5 },
+  { label: 'C (2.0)', value: 2.0 },
+  { label: 'C+ (2.5)', value: 2.5 },
+  { label: 'B (3.0)', value: 3.0 },
+  { label: 'B+ (3.5)', value: 3.5 },
+  { label: 'A (4.0)', value: 4.0 },
+];
 
 export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
   // Tab Navigation
@@ -59,13 +79,18 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
   const currentCreditsNum = Number(currentCreditsStr);
   const totalDegreeCreditsNum = Number(totalDegreeCreditsStr) || 135;
 
-  const isProfileValid =
+  const hasEnteredProfile =
+    currentGpaStr.trim() !== '' &&
+    currentCreditsStr.trim() !== '' &&
     Number.isFinite(currentGpaNum) &&
     currentGpaNum >= 0 &&
     currentGpaNum <= 4.0 &&
     Number.isFinite(currentCreditsNum) &&
     currentCreditsNum >= 0 &&
-    currentCreditsNum <= 250 &&
+    currentCreditsNum <= 250;
+
+  const isProfileValid =
+    hasEnteredProfile &&
     Number.isFinite(totalDegreeCreditsNum) &&
     totalDegreeCreditsNum >= 50 &&
     totalDegreeCreditsNum <= 300;
@@ -141,6 +166,13 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       currentCredits: clean,
       totalDegreeCredits: prev?.totalDegreeCredits ?? DEFAULT_PROFILE.totalDegreeCredits,
     }));
+    const num = Number(clean);
+    if (Number.isFinite(num) && num > 0) {
+      const total = Number(profile?.totalDegreeCredits) || 135;
+      if (total > num) {
+        setRemainingCredits(total - num);
+      }
+    }
   };
 
   const handleTotalDegreeCreditsChange = (val: string) => {
@@ -150,6 +182,13 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       currentCredits: prev?.currentCredits ?? DEFAULT_PROFILE.currentCredits,
       totalDegreeCredits: clean,
     }));
+    const total = Number(clean);
+    if (Number.isFinite(total) && total > 0) {
+      const creds = Number(profile?.currentCredits) || 0;
+      if (total > creds) {
+        setRemainingCredits(total - creds);
+      }
+    }
   };
 
   // Handlers for Tab 2 (Retake Courses)
@@ -170,7 +209,16 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
   const handleUpdateRetake = (id: string, field: keyof RetakeCourse, val: number | string) => {
     setRetakes((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, [field]: val } : r)),
+      prev.map((r) => {
+        if (r.id !== id) return r;
+        if (field === 'oldGrade') {
+          const newOld = Number(val);
+          // Điểm mục tiêu phải luôn lớn hơn điểm cũ
+          const newTarget = r.targetGrade <= newOld ? 4.0 : r.targetGrade;
+          return { ...r, oldGrade: newOld, targetGrade: newTarget };
+        }
+        return { ...r, [field]: val };
+      }),
     );
   };
 
@@ -257,8 +305,8 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
             <div className="target-gpa-section-block">
               <div className="target-gpa-card-title">
                 <span>1. Điểm Tích Lũy Hiện Tại</span>
-                <span className="target-gpa-tag-status">
-                  {isProfileValid ? '✓ Đã lưu' : 'Chưa lưu'}
+                <span className={`target-gpa-tag-status ${!isProfileValid ? 'empty' : ''}`}>
+                  {isProfileValid ? '✓ Đã lưu' : 'Chưa nhập'}
                 </span>
               </div>
 
@@ -434,10 +482,11 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                               }
                               aria-label="Điểm cũ"
                             >
-                              <option value={0.0}>F (0.0)</option>
-                              <option value={1.0}>D (1.0)</option>
-                              <option value={1.5}>D+ (1.5)</option>
-                              <option value={2.0}>C (2.0)</option>
+                              {RETAKE_OLD_GRADES.map((g) => (
+                                <option key={g.value} value={g.value}>
+                                  {g.label}
+                                </option>
+                              ))}
                             </select>
                           </td>
                           <td>
@@ -464,10 +513,11 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                               }
                               aria-label="Mục tiêu điểm mới"
                             >
-                              <option value={4.0}>A (4.0)</option>
-                              <option value={3.5}>B+ (3.5)</option>
-                              <option value={3.0}>B (3.0)</option>
-                              <option value={2.5}>C+ (2.5)</option>
+                              {ALL_TARGET_GRADES.filter((g) => g.value > course.oldGrade).map((g) => (
+                                <option key={g.value} value={g.value}>
+                                  {g.label}
+                                </option>
+                              ))}
                             </select>
                           </td>
                           <td>
@@ -589,13 +639,13 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 <>
                   <div className="target-gpa-res-header">
                     <span className="res-title">KẾT QUẢ KỲ TỚI</span>
-                    {termPlan.status === 'achieved' && (
+                    {!hasEnteredProfile ? (
+                      <span className="target-gpa-badge-feasible neutral">Chờ nhập liệu</span>
+                    ) : termPlan.status === 'achieved' ? (
                       <span className="target-gpa-badge-feasible">✓ Đã Đạt</span>
-                    )}
-                    {termPlan.status === 'impossible' && (
+                    ) : termPlan.status === 'impossible' ? (
                       <span className="target-gpa-badge-feasible danger">✕ Không Khả Thi</span>
-                    )}
-                    {termPlan.status === 'feasible' && (
+                    ) : (
                       <span
                         className={`target-gpa-badge-feasible ${
                           termPlan.requiredGpa >= 3.6 ? 'warning' : ''
@@ -607,10 +657,18 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                   </div>
 
                   <div className="target-gpa-hero-section">
-                    {termPlan.status === 'achieved' ? (
+                    {!hasEnteredProfile ? (
+                      <>
+                        <div className="hero-label">GPA HỌC KỲ TỚI CẦN ĐẠT</div>
+                        <div className="hero-score score-empty">
+                          -- <span>/ 4.00</span>
+                        </div>
+                        <div className="hero-rank">Vui lòng nhập GPA và số TC ở Mục 1</div>
+                      </>
+                    ) : termPlan.status === 'achieved' ? (
                       <>
                         <div className="hero-label">GPA TÍCH LŨY HIỆN TẠI</div>
-                        <div className="hero-score">
+                        <div className="hero-score score-achieved">
                           {format2(currentGpaNum)} <span>/ 4.00</span>
                         </div>
                         <div className="hero-rank">
@@ -620,15 +678,19 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     ) : termPlan.status === 'impossible' ? (
                       <>
                         <div className="hero-label">GPA HỌC KỲ TỚI CẦN ĐẠT</div>
-                        <div className="hero-score danger">
+                        <div className="hero-score score-impossible">
                           {format2(termPlan.requiredGpa)} <span>/ 4.00</span>
                         </div>
-                        <div className="hero-rank">Vượt quá thang điểm tối đa (4.00)</div>
+                        <div className="hero-rank error">Vượt quá thang điểm tối đa (4.00)</div>
                       </>
                     ) : (
                       <>
                         <div className="hero-label">GPA HỌC KỲ TỚI CẦN ĐẠT</div>
-                        <div className="hero-score">
+                        <div
+                          className={`hero-score ${
+                            termPlan.requiredGpa >= 3.6 ? 'score-warning' : 'score-feasible'
+                          }`}
+                        >
                           {format2(termPlan.requiredGpa)} <span>/ 4.00</span>
                         </div>
                         <div className="hero-rank">
@@ -645,7 +707,11 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                       </span>
                     </div>
                     <div className="target-gpa-presc-badges">
-                      {termPlan.status === 'impossible' ? (
+                      {!hasEnteredProfile ? (
+                        <div className="target-gpa-badge-grade empty">
+                          Chưa có thông tin điểm hiện tại
+                        </div>
+                      ) : termPlan.status === 'impossible' ? (
                         <div className="target-gpa-badge-grade">
                           Cần {termPlan.minCreditsNeeded ?? '> 20'} TC điểm A toàn bộ
                         </div>
@@ -672,7 +738,9 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                   </div>
 
                   <div className="target-gpa-clean-notice">
-                    {termPlan.status === 'impossible' ? (
+                    {!hasEnteredProfile ? (
+                      <>Nhập GPA tích lũy và số tín chỉ đã học để hệ thống tính toán chính xác điểm số cần đạt.</>
+                    ) : termPlan.status === 'impossible' ? (
                       <>
                         Không thể đạt <strong>{format2(Number(targetGpaStr) || 3.2)}</strong> chỉ với{' '}
                         <strong>{futureCredits} TC</strong> trong 1 kỳ.{' '}
@@ -708,29 +776,45 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 <>
                   <div className="target-gpa-res-header">
                     <span className="res-title">HIỆU QUẢ CẢI THIỆN</span>
-                    <span className="target-gpa-badge-feasible">● Tăng Vọt</span>
+                    {!hasEnteredProfile ? (
+                      <span className="target-gpa-badge-feasible neutral">Chờ nhập liệu</span>
+                    ) : (
+                      <span className="target-gpa-badge-feasible">● Tăng Vọt</span>
+                    )}
                   </div>
 
                   <div className="target-gpa-hero-section">
                     <div className="hero-label">MỨC KÉO ĐIỂM TỰ THÂN</div>
-                    <div className="hero-score">
-                      ▲ +{format2(retakePlan.deltaGpa)} <span>GPA</span>
-                    </div>
-                    <div className="hero-rank">
-                      GPA mới: {format2(currentGpaNum)} ➔ {format2(retakePlan.newBaselineGpa)}
-                    </div>
+                    {!hasEnteredProfile ? (
+                      <>
+                        <div className="hero-score score-empty">
+                          -- <span>GPA</span>
+                        </div>
+                        <div className="hero-rank">Vui lòng nhập GPA và số TC ở Mục 1</div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="hero-score score-boost">
+                          ▲ +{format2(retakePlan.deltaGpa)} <span>GPA</span>
+                        </div>
+                        <div className="hero-rank">
+                          GPA mới: {format2(currentGpaNum)} ➔ {format2(retakePlan.newBaselineGpa)}
+                        </div>
+                      </>
+                    )}
                   </div>
 
-                  <div className="target-gpa-impact-row">
-                    <span className="target-label">Nhận thêm:</span>
-                    <span className="target-val">
-                      +{retakePlan.qualityPointsAdded} Điểm chất lượng
-                    </span>
-                  </div>
+                  {/* Đã bỏ mục "Nhận thêm: +12 Điểm chất lượng" theo yêu cầu người dùng */}
 
                   <div className="target-gpa-clean-notice">
-                    Học lại <strong>{retakes.length} môn</strong> giúp nâng trực tiếp điểm tích lũy lên{' '}
-                    <strong>{format2(retakePlan.newBaselineGpa)}</strong> mà không làm tăng tổng tín chỉ tốt nghiệp.
+                    {!hasEnteredProfile ? (
+                      <>Chọn các môn bị điểm thấp (F, D, C...) để dự báo mức tăng điểm GPA tích lũy sau khi học lại.</>
+                    ) : (
+                      <>
+                        Học lại <strong>{retakes.length} môn</strong> giúp nâng trực tiếp điểm tích lũy lên{' '}
+                        <strong>{format2(retakePlan.newBaselineGpa)}</strong> mà không làm tăng tổng tín chỉ tốt nghiệp.
+                      </>
+                    )}
                   </div>
                 </>
               )}
@@ -739,49 +823,76 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 <>
                   <div className="target-gpa-res-header">
                     <span className="res-title">LỘ TRÌNH DÀI HẠN</span>
-                    <span
-                      className={`target-gpa-badge-feasible ${
-                        roadmapPlan.isFeasible ? '' : 'danger'
-                      }`}
-                    >
-                      {roadmapPlan.isFeasible ? '● Khả Thi' : '✕ Quá Tải'}
-                    </span>
+                    {!hasEnteredProfile ? (
+                      <span className="target-gpa-badge-feasible neutral">Chờ nhập liệu</span>
+                    ) : (
+                      <span
+                        className={`target-gpa-badge-feasible ${
+                          roadmapPlan.isFeasible ? '' : 'danger'
+                        }`}
+                      >
+                        {roadmapPlan.isFeasible ? '● Khả Thi' : '✕ Quá Tải'}
+                      </span>
+                    )}
                   </div>
 
                   <div className="target-gpa-hero-section">
                     <div className="hero-label">GPA CẦN DUY TRÌ MỖI KỲ</div>
-                    <div
-                      className={`hero-score ${
-                        roadmapPlan.isFeasible ? '' : 'danger'
-                      }`}
-                    >
-                      {format2(roadmapPlan.averageGpaNeeded)} <span>/ 4.00</span>
-                    </div>
-                    <div className="hero-rank">
-                      Dự kiến còn ~{roadmapPlan.termsRemaining} học kỳ (15 TC/kỳ)
-                    </div>
+                    {!hasEnteredProfile ? (
+                      <>
+                        <div className="hero-score score-empty">
+                          -- <span>/ 4.00</span>
+                        </div>
+                        <div className="hero-rank">Vui lòng nhập GPA và số TC ở Mục 1</div>
+                      </>
+                    ) : (
+                      <>
+                        <div
+                          className={`hero-score ${
+                            !roadmapPlan.isFeasible
+                              ? 'score-impossible'
+                              : roadmapPlan.averageGpaNeeded >= 3.6
+                                ? 'score-warning'
+                                : 'score-feasible'
+                          }`}
+                        >
+                          {format2(roadmapPlan.averageGpaNeeded)} <span>/ 4.00</span>
+                        </div>
+                        <div className="hero-rank">
+                          Dự kiến còn ~{roadmapPlan.termsRemaining} học kỳ (15 TC/kỳ)
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <div className="target-gpa-roadmap-grid">
                     <div className="target-gpa-roadmap-card">
                       <div className="m-title">{roadmapPlan.milestones[0].title}</div>
-                      <div className="m-score">{roadmapPlan.milestones[0].score}</div>
+                      <div className={`m-score ${!hasEnteredProfile ? 'empty' : 'pace'}`}>
+                        {hasEnteredProfile ? roadmapPlan.milestones[0].score : '--'}
+                      </div>
                       <div className="m-sub">{roadmapPlan.milestones[0].sub}</div>
                     </div>
                     <div className="target-gpa-roadmap-card">
                       <div className="m-title">{roadmapPlan.milestones[1].title}</div>
-                      <div className="m-score">{roadmapPlan.milestones[1].score}</div>
+                      <div className={`m-score ${!hasEnteredProfile ? 'empty' : 'pace'}`}>
+                        {hasEnteredProfile ? roadmapPlan.milestones[1].score : '--'}
+                      </div>
                       <div className="m-sub">{roadmapPlan.milestones[1].sub}</div>
                     </div>
                     <div className="target-gpa-roadmap-card grad-finish">
                       <div className="m-title">{roadmapPlan.milestones[2].title}</div>
-                      <div className="m-score">{roadmapPlan.milestones[2].score}</div>
+                      <div className={`m-score ${!hasEnteredProfile ? 'empty' : 'finish'}`}>
+                        {hasEnteredProfile ? roadmapPlan.milestones[2].score : '--'}
+                      </div>
                       <div className="m-sub">{roadmapPlan.milestones[2].sub}</div>
                     </div>
                   </div>
 
                   <div className="target-gpa-clean-notice">
-                    {roadmapPlan.isFeasible ? (
+                    {!hasEnteredProfile ? (
+                      <>Nhập thông tin tín chỉ đã tích lũy và số TC CTĐT để vạch ra chiến lược duy trì điểm số mỗi kỳ.</>
+                    ) : roadmapPlan.isFeasible ? (
                       <>
                         Duy trì mức <strong>{format2(roadmapPlan.averageGpaNeeded)}</strong> mỗi kỳ trong{' '}
                         <strong>{roadmapPlan.termsRemaining} kỳ tới</strong> để tốt nghiệp loại{' '}
@@ -802,23 +913,33 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 </>
               )}
 
-              {/* Shared Result Card Footer */}
-              <div className="tool-source">
-                <span>Kết quả chỉ để tham khảo.</span>
-                <button
-                  type="button"
-                  className="tool-text-btn"
-                  onClick={() => setReferenceModalTab('rules')}
-                >
-                  Quy chế điểm
-                </button>
-                <button
-                  type="button"
-                  className="tool-text-btn"
-                  onClick={() => setReferenceModalTab('scale')}
-                >
-                  Bảng quy đổi điểm
-                </button>
+              {/* Redesigned Clean Result Card Footer (Thay thế hoàn toàn Hình 4) */}
+              <div className="target-gpa-result-footer">
+                <div className="target-gpa-footer-pills">
+                  <button
+                    type="button"
+                    className="target-gpa-footer-pill"
+                    onClick={() => setReferenceModalTab('scale')}
+                    title="Tra cứu bảng quy đổi thang điểm 10, thang điểm 4 và điểm chữ"
+                  >
+                    <BookOpen size={13} />
+                    <span>Bảng quy đổi {cohort}</span>
+                    <ExternalLink size={11} className="target-gpa-pill-arrow" />
+                  </button>
+                  <button
+                    type="button"
+                    className="target-gpa-footer-pill"
+                    onClick={() => setReferenceModalTab('rules')}
+                    title="Tra cứu trích dẫn điều khoản quy chế đào tạo tín chỉ"
+                  >
+                    <span>📖 Quy chế đào tạo</span>
+                    <ExternalLink size={11} className="target-gpa-pill-arrow" />
+                  </button>
+                </div>
+                <div className="target-gpa-footer-meta">
+                  <span className="target-gpa-meta-note">* Kết quả mang tính tham khảo</span>
+                  <span className="target-gpa-meta-school">ĐHSP TP.HCM</span>
+                </div>
               </div>
             </div>
           </div>

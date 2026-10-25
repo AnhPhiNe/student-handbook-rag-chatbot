@@ -6760,8 +6760,20 @@ input:checked + .slider:before { transform: translateX(20px); }
   border: 1px solid rgba(16, 185, 129, 0.25);
 }
 
+.target-gpa-tag-status.empty {
+  background: rgba(100, 116, 139, 0.1);
+  color: var(--text-muted, #64748b);
+  border-color: rgba(100, 116, 139, 0.2);
+}
+
 [data-theme='dark'] .target-gpa-tag-status {
   color: #34d399;
+}
+
+[data-theme='dark'] .target-gpa-tag-status.empty {
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 /* 3-Column Inputs Grid (GPA tích lũy, Đã tích lũy, Tổng TC CTĐT) */
@@ -7144,6 +7156,18 @@ input:checked + .slider:before { transform: translateX(20px); }
   border-color: rgba(245, 158, 11, 0.25);
 }
 
+.target-gpa-badge-feasible.neutral {
+  background: rgba(100, 116, 139, 0.1);
+  color: var(--text-muted, #64748b);
+  border-color: rgba(100, 116, 139, 0.2);
+}
+
+[data-theme='dark'] .target-gpa-badge-feasible.neutral {
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
 .target-gpa-hero-section {
   text-align: center;
   padding: 0.2rem 0;
@@ -7170,8 +7194,44 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #f8fafc;
 }
 
-.target-gpa-hero-section .hero-score.danger {
-  color: #ef4444;
+.target-gpa-hero-section .hero-score.danger,
+.target-gpa-hero-section .hero-score.score-impossible {
+  color: #dc2626;
+}
+
+[data-theme='dark'] .target-gpa-hero-section .hero-score.danger,
+[data-theme='dark'] .target-gpa-hero-section .hero-score.score-impossible {
+  color: #f87171;
+}
+
+.target-gpa-hero-section .hero-score.score-achieved,
+.target-gpa-hero-section .hero-score.score-boost {
+  color: #059669;
+}
+
+[data-theme='dark'] .target-gpa-hero-section .hero-score.score-achieved,
+[data-theme='dark'] .target-gpa-hero-section .hero-score.score-boost {
+  color: #34d399;
+}
+
+.target-gpa-hero-section .hero-score.score-feasible {
+  color: #2563eb;
+}
+
+[data-theme='dark'] .target-gpa-hero-section .hero-score.score-feasible {
+  color: #60a5fa;
+}
+
+.target-gpa-hero-section .hero-score.score-warning {
+  color: #d97706;
+}
+
+[data-theme='dark'] .target-gpa-hero-section .hero-score.score-warning {
+  color: #fbbf24;
+}
+
+.target-gpa-hero-section .hero-score.score-empty {
+  color: var(--text-muted, #94a3b8);
 }
 
 .target-gpa-hero-section .hero-score span {
@@ -7233,10 +7293,20 @@ input:checked + .slider:before { transform: translateX(20px); }
   border-radius: 7px;
 }
 
+.target-gpa-badge-grade.empty {
+  color: var(--text-muted, #64748b);
+  border-style: dashed;
+}
+
 [data-theme='dark'] .target-gpa-badge-grade {
   background: #0f172a;
   border-color: rgba(255, 255, 255, 0.15);
   color: #f8fafc;
+}
+
+[data-theme='dark'] .target-gpa-badge-grade.empty {
+  color: #94a3b8;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .target-gpa-clean-notice {
@@ -7446,12 +7516,26 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #f8fafc;
 }
 
-.target-gpa-roadmap-card.grad-finish .m-score {
-  color: #047857;
+.target-gpa-roadmap-card .m-score.pace {
+  color: #2563eb;
 }
 
-[data-theme='dark'] .target-gpa-roadmap-card.grad-finish .m-score {
+[data-theme='dark'] .target-gpa-roadmap-card .m-score.pace {
+  color: #60a5fa;
+}
+
+.target-gpa-roadmap-card.grad-finish .m-score,
+.target-gpa-roadmap-card .m-score.finish {
+  color: #059669;
+}
+
+[data-theme='dark'] .target-gpa-roadmap-card.grad-finish .m-score,
+[data-theme='dark'] .target-gpa-roadmap-card .m-score.finish {
   color: #34d399;
+}
+
+.target-gpa-roadmap-card .m-score.empty {
+  color: var(--text-muted, #94a3b8);
 }
 
 .target-gpa-roadmap-card .m-sub {
@@ -7467,6 +7551,95 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 [data-theme='dark'] .target-gpa-roadmap-card.grad-finish .m-sub {
   color: #93c5fd;
+}
+
+/* Result Card Footer (Redesigned clean reference pills & meta) */
+.target-gpa-result-footer {
+  margin-top: 0.2rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border-color, #e2e8f0);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+[data-theme='dark'] .target-gpa-result-footer {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.target-gpa-footer-pills {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.target-gpa-footer-pill {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #102A4A;
+  background: var(--input-bg, #f8fafc);
+  border: 1px solid var(--border-dark, #cbd5e1);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .target-gpa-footer-pill {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #93c5fd;
+}
+
+.target-gpa-footer-pill:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .target-gpa-footer-pill:hover {
+  background: rgba(37, 99, 235, 0.15);
+  border-color: #3b82f6;
+  color: #bfdbfe;
+}
+
+.target-gpa-footer-pill .target-gpa-pill-arrow {
+  color: var(--text-sub, #94a3b8);
+  transition: transform 0.15s ease;
+}
+
+.target-gpa-footer-pill:hover .target-gpa-pill-arrow {
+  transform: translate(1px, -1px);
+  color: #2563eb;
+}
+
+[data-theme='dark'] .target-gpa-footer-pill:hover .target-gpa-pill-arrow {
+  color: #60a5fa;
+}
+
+.target-gpa-footer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: var(--text-muted, #94a3b8);
+  padding: 0 0.15rem;
+}
+
+.target-gpa-meta-note {
+  font-style: italic;
+}
+
+.target-gpa-meta-school {
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 /* ==================== Trang Mục tiêu môn học (Course Target Page) ==================== */

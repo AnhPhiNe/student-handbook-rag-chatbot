@@ -6838,8 +6838,18 @@ input:checked + .slider:before { transform: translateX(20px); }
   width: 0;
 }
 
+.target-gpa-input-box input::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
 [data-theme='dark'] .target-gpa-input-box input {
   color: #f8fafc;
+}
+
+[data-theme='dark'] .target-gpa-input-box input::placeholder {
+  color: #64748b;
 }
 
 .target-gpa-input-box span {

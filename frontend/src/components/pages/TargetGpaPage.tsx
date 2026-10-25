@@ -308,7 +308,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                       inputMode="decimal"
                       value={currentGpaStr}
                       onChange={(e) => handleCurrentGpaChange(e.target.value)}
-                      placeholder="2.85"
+                      placeholder="VD: 2.85"
                       aria-label="GPA tích lũy hiện tại"
                     />
                     <span>/ 4.00</span>
@@ -324,7 +324,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                       inputMode="numeric"
                       value={currentCreditsStr}
                       onChange={(e) => handleCurrentCreditsChange(e.target.value)}
-                      placeholder="60"
+                      placeholder="VD: 60"
                       aria-label="Số tín chỉ đã tích lũy"
                     />
                     <span>TC</span>

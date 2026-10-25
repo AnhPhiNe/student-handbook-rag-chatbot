@@ -7317,9 +7317,10 @@ input:checked + .slider:before { transform: translateX(20px); }
 .target-gpa-clean-notice {
   padding-top: 0.6rem;
   border-top: 1px solid var(--border-color, #e2e8f0);
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: var(--text-muted, #475569);
   line-height: 1.4;
+  text-wrap: balance;
 }
 
 [data-theme='dark'] .target-gpa-clean-notice {
@@ -7539,16 +7540,19 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .target-gpa-roadmap-snapshot .snapshot-label {
   font-size: 0.68rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-muted, #64748b);
   text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .target-gpa-roadmap-snapshot .snapshot-val {
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 900;
   color: #102A4A;
-  line-height: 1.2;
+  line-height: 1.25;
+  white-space: nowrap;
 }
 
 [data-theme='dark'] .target-gpa-roadmap-snapshot .snapshot-val {
@@ -7565,10 +7569,11 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .target-gpa-roadmap-snapshot .snapshot-sub {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-muted, #64748b);
-  margin-top: 0.1rem;
+  margin-top: 0.15rem;
+  white-space: nowrap;
 }
 
 /* Result Card Footer (Redesigned clean reference pills & meta) */

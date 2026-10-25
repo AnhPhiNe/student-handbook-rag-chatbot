@@ -869,19 +869,19 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     </div>
                   </div>
 
-                  {/* Thẻ Tóm Tắt Kế Hoạch 2 Cột (Không lặp lại số liệu) */}
+                  {/* Thẻ Tóm Tắt Kế Hoạch 2 Cột (Gọn gàng, không ngắt dòng) */}
                   <div className="target-gpa-roadmap-snapshot">
                     <div className="snapshot-box">
-                      <span className="snapshot-label">Khối lượng & Thời gian</span>
+                      <span className="snapshot-label">Còn lại</span>
                       <strong className="snapshot-val">
                         {hasEnteredProfile ? `${remainingCredits} TC` : '-- TC'}
                         <span className="snapshot-sub">
-                          {hasEnteredProfile ? `~${roadmapPlan.termsRemaining} học kỳ (~15 TC/kỳ)` : '--'}
+                          {hasEnteredProfile ? `~${roadmapPlan.termsRemaining} học kỳ` : '--'}
                         </span>
                       </strong>
                     </div>
                     <div className="snapshot-box">
-                      <span className="snapshot-label">Mục tiêu bằng cấp</span>
+                      <span className="snapshot-label">Mục tiêu</span>
                       <strong className="snapshot-val finish">
                         {Number(targetGradGpaStr) >= 3.6
                           ? 'Xuất Sắc 🎓'
@@ -889,7 +889,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                             ? 'Bằng Giỏi 🎓'
                             : 'Bằng Khá 🎓'}
                         <span className="snapshot-sub">
-                          GPA tích lũy ≥ {format2(Number(targetGradGpaStr) || 3.2)}
+                          GPA ≥ {format2(Number(targetGradGpaStr) || 3.2)}
                         </span>
                       </strong>
                     </div>
@@ -897,11 +897,11 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
                   <div className="target-gpa-clean-notice">
                     {!hasEnteredProfile ? (
-                      <>Nhập điểm tích lũy và số tín chỉ ở Mục 1 để vạch ra chiến lược dài hạn.</>
+                      <>Nhập điểm và tín chỉ ở Mục 1 để tính lộ trình.</>
                     ) : !roadmapPlan.isFeasible ? (
-                      <>Mục tiêu đòi hỏi vượt 4.00 cho số tín chỉ còn lại. Hãy kết hợp học cải thiện môn ở Tab 2.</>
+                      <>Mục tiêu vượt 4.00. Cần học cải thiện môn ở Tab 2 để giảm áp lực.</>
                     ) : (
-                      <>Đăng ký đều đặn ~15 TC mỗi kỳ và duy trì mức điểm trên để về đích đúng hạn.</>
+                      <>Duy trì mức điểm này để tốt nghiệp đúng hạn.</>
                     )}
                   </div>
                 </>

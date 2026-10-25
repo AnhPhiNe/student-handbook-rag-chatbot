@@ -7326,18 +7326,17 @@ input:checked + .slider:before { transform: translateX(20px); }
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-/* Callout Boxes (Thoát khỏi thiết kế nút bấm, thể hiện đúng tính chất thông tin/cảnh báo) */
+/* Callout Cards (Bo viền đồng đều 4 cạnh, thiết kế tự nhiên, không tô đậm 1 cạnh) */
 .target-gpa-callout-impossible {
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  background: rgba(239, 68, 68, 0.06);
-  border: 1px solid rgba(239, 68, 68, 0.18);
-  border-left: 3.5px solid #ef4444;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.16);
   border-radius: 8px;
-  padding: 0.55rem 0.75rem;
+  padding: 0.6rem 0.8rem;
   font-size: 0.78rem;
-  line-height: 1.45;
+  line-height: 1.4;
   color: #991b1b;
   margin-top: 0.6rem;
   text-align: left;
@@ -7346,14 +7345,16 @@ input:checked + .slider:before { transform: translateX(20px); }
 [data-theme='dark'] .target-gpa-callout-impossible {
   background: rgba(239, 68, 68, 0.1);
   border-color: rgba(239, 68, 68, 0.25);
-  border-left-color: #f87171;
   color: #fecaca;
 }
 
 .target-gpa-callout-impossible .callout-icon {
-  font-size: 0.95rem;
   flex-shrink: 0;
-  line-height: 1.2;
+  color: #ef4444;
+}
+
+[data-theme='dark'] .target-gpa-callout-impossible .callout-icon {
+  color: #f87171;
 }
 
 .target-gpa-callout-impossible strong {
@@ -7367,31 +7368,32 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .target-gpa-callout-achieved {
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-left: 3.5px solid #10b981;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.18);
   border-radius: 8px;
-  padding: 0.55rem 0.75rem;
+  padding: 0.6rem 0.8rem;
   font-size: 0.78rem;
-  line-height: 1.45;
+  line-height: 1.4;
   color: #065f46;
   margin-top: 0.6rem;
   text-align: left;
 }
 
 [data-theme='dark'] .target-gpa-callout-achieved {
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(16, 185, 129, 0.1);
   border-color: rgba(16, 185, 129, 0.25);
-  border-left-color: #34d399;
   color: #a7f3d0;
 }
 
 .target-gpa-callout-achieved .callout-icon {
-  font-size: 0.95rem;
   flex-shrink: 0;
-  line-height: 1.2;
+  color: #10b981;
+}
+
+[data-theme='dark'] .target-gpa-callout-achieved .callout-icon {
+  color: #34d399;
 }
 
 .target-gpa-empty-hint {

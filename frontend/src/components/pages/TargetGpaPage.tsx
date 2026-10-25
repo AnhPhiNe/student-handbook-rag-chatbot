@@ -1,5 +1,14 @@
 import { useMemo, useState } from 'react';
-import { TrendingUp, Trash2, RotateCcw, BookOpen, ExternalLink, FileText } from 'lucide-react';
+import {
+  TrendingUp,
+  Trash2,
+  RotateCcw,
+  BookOpen,
+  ExternalLink,
+  FileText,
+  AlertCircle,
+  CheckCircle2,
+} from 'lucide-react';
 import { type Cohort } from '../../utils/gradeScale';
 import { sanitizeDecimal } from '../../utils/numberInput';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -657,14 +666,14 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     </div>
                   ) : termPlan.status === 'impossible' ? (
                     <div className="target-gpa-callout-impossible">
-                      <span className="callout-icon">💡</span>
+                      <AlertCircle size={15} className="callout-icon" />
                       <span>
                         Cần tích lũy tối thiểu <strong>{termPlan.minCreditsNeeded ?? '> 20'} TC</strong> điểm A toàn bộ để đạt mục tiêu này.
                       </span>
                     </div>
                   ) : termPlan.status === 'achieved' ? (
                     <div className="target-gpa-callout-achieved">
-                      <span className="callout-icon">🎉</span>
+                      <CheckCircle2 size={15} className="callout-icon" />
                       <span>Điểm tích lũy hiện tại đã đạt hoặc vượt mục tiêu này.</span>
                     </div>
                   ) : (
@@ -869,7 +878,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
                   {hasEnteredProfile && !roadmapPlan.isFeasible && (
                     <div className="target-gpa-callout-impossible">
-                      <span className="callout-icon">⚠️</span>
+                      <AlertCircle size={15} className="callout-icon" />
                       <span>Mục tiêu vượt 4.00. Cần học cải thiện môn ở Tab 2 để giảm áp lực.</span>
                     </div>
                   )}

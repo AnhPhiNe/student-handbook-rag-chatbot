@@ -74,6 +74,16 @@ function App() {
     setActiveTab(nextTab);
   };
 
+  // Jump to the chat tab and ask a question there (same maintenance guard as navigating to chat).
+  const askChat = (text: string) => {
+    if (IS_CHAT_MAINTENANCE) {
+      setIsMaintenanceModalOpen(true);
+      return;
+    }
+    setActiveTab('chat');
+    void sendMessage(text);
+  };
+
   return (
     <ErrorBoundary>
       <div className="app-container">
@@ -167,7 +177,7 @@ function App() {
               {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} onNavigate={handleNavigate} />}
               {activeTab === 'target-gpa' && <TargetGpaPage key={cohort} cohort={cohort} />}
               {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
-              {activeTab === 'scholarship' && <ScholarshipPage />}
+              {activeTab === 'scholarship' && <ScholarshipPage key={cohort} cohort={cohort} onAskChat={askChat} />}
               {activeTab === 'tuition' && <TuitionPage />}
               {activeTab === 'credits' && <CreditsPage />}
               {activeTab === 'survival-guide' && <SurvivalGuidePage />}

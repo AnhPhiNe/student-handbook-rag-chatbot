@@ -15,7 +15,7 @@ import { ResultCard } from '../tool/ResultCard';
 import { DetailsToggle } from '../tool/DetailsToggle';
 import { ResultFacts } from '../tool/ResultFacts';
 
-const DEFAULT_YEAR: SchoolYear = '2024-2025';
+const DEFAULT_YEAR: SchoolYear = SCHOOL_YEARS[SCHOOL_YEARS.length - 1];
 const DEFAULT_CREDITS = '15';
 const YEAR_OPTIONS = SCHOOL_YEARS.map((year) => ({ value: year, label: `Năm học ${year}` }));
 

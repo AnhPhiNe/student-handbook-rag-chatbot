@@ -578,30 +578,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                       );
                     })}
                   </div>
-
-                  {/* Tự động tính toán tiến độ dựa trên Mục 1 (không cần nhập trùng lặp) */}
-                  <div className="target-gpa-roadmap-auto-calc">
-                    <div className="auto-calc-badge">
-                      <span className="auto-calc-label">Tín chỉ còn lại</span>
-                      <span className="auto-calc-val">
-                        {hasEnteredProfile ? `${remainingCredits} TC` : '-- TC'}
-                      </span>
-                    </div>
-                    <div className="auto-calc-badge">
-                      <span className="auto-calc-label">Dự kiến hoàn thành</span>
-                      <span className="auto-calc-val">
-                        {hasEnteredProfile ? `~${roadmapPlan.termsRemaining} học kỳ` : '--'}
-                      </span>
-                    </div>
-                    <div className="auto-calc-badge">
-                      <span className="auto-calc-label">Tiến độ tích lũy</span>
-                      <span className="auto-calc-val">
-                        {hasEnteredProfile && totalDegreeCreditsNum > 0
-                          ? `${Math.min(100, Math.round((currentCreditsNum / totalDegreeCreditsNum) * 100))}%`
-                          : '--%'}
-                      </span>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
@@ -850,55 +826,82 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                           {format2(roadmapPlan.averageGpaNeeded)} <span>/ 4.00</span>
                         </div>
                         <div className="hero-rank">
-                          Dự kiến còn ~{roadmapPlan.termsRemaining} học kỳ (15 TC/kỳ)
+                          Tương đương mức điểm chữ:{' '}
+                          {roadmapPlan.averageGpaNeeded >= 3.6
+                            ? 'A / B+'
+                            : roadmapPlan.averageGpaNeeded >= 3.2
+                              ? 'B+'
+                              : roadmapPlan.averageGpaNeeded >= 2.5
+                                ? 'B'
+                                : 'C+'}
                         </div>
                       </>
                     )}
                   </div>
 
-                  <div className="target-gpa-roadmap-grid">
-                    <div className="target-gpa-roadmap-card">
-                      <div className="m-title">{roadmapPlan.milestones[0].title}</div>
-                      <div className={`m-score ${!hasEnteredProfile ? 'empty' : 'pace'}`}>
-                        {hasEnteredProfile ? roadmapPlan.milestones[0].score : '--'}
-                      </div>
-                      <div className="m-sub">{roadmapPlan.milestones[0].sub}</div>
+                  {/* Thanh Tiến Độ Tích Lũy Trực Quan */}
+                  <div className="target-gpa-progress-section">
+                    <div className="progress-header">
+                      <span>
+                        Đã học:{' '}
+                        <strong>
+                          {hasEnteredProfile
+                            ? `${currentCreditsNum} / ${totalDegreeCreditsNum} TC`
+                            : '-- / -- TC'}
+                        </strong>
+                      </span>
+                      <span className="progress-pct">
+                        {hasEnteredProfile && totalDegreeCreditsNum > 0
+                          ? `${Math.min(100, Math.round((currentCreditsNum / totalDegreeCreditsNum) * 100))}%`
+                          : '0%'}
+                      </span>
                     </div>
-                    <div className="target-gpa-roadmap-card">
-                      <div className="m-title">{roadmapPlan.milestones[1].title}</div>
-                      <div className={`m-score ${!hasEnteredProfile ? 'empty' : 'pace'}`}>
-                        {hasEnteredProfile ? roadmapPlan.milestones[1].score : '--'}
-                      </div>
-                      <div className="m-sub">{roadmapPlan.milestones[1].sub}</div>
+                    <div className="progress-track">
+                      <div
+                        className="progress-fill"
+                        style={{
+                          width:
+                            hasEnteredProfile && totalDegreeCreditsNum > 0
+                              ? `${Math.min(100, Math.round((currentCreditsNum / totalDegreeCreditsNum) * 100))}%`
+                              : '0%',
+                        }}
+                      />
                     </div>
-                    <div className="target-gpa-roadmap-card grad-finish">
-                      <div className="m-title">{roadmapPlan.milestones[2].title}</div>
-                      <div className={`m-score ${!hasEnteredProfile ? 'empty' : 'finish'}`}>
-                        {hasEnteredProfile ? roadmapPlan.milestones[2].score : '--'}
-                      </div>
-                      <div className="m-sub">{roadmapPlan.milestones[2].sub}</div>
+                  </div>
+
+                  {/* Thẻ Tóm Tắt Kế Hoạch 2 Cột (Không lặp lại số liệu) */}
+                  <div className="target-gpa-roadmap-snapshot">
+                    <div className="snapshot-box">
+                      <span className="snapshot-label">Khối lượng & Thời gian</span>
+                      <strong className="snapshot-val">
+                        {hasEnteredProfile ? `${remainingCredits} TC` : '-- TC'}
+                        <span className="snapshot-sub">
+                          {hasEnteredProfile ? `~${roadmapPlan.termsRemaining} học kỳ (~15 TC/kỳ)` : '--'}
+                        </span>
+                      </strong>
+                    </div>
+                    <div className="snapshot-box">
+                      <span className="snapshot-label">Mục tiêu bằng cấp</span>
+                      <strong className="snapshot-val finish">
+                        {Number(targetGradGpaStr) >= 3.6
+                          ? 'Xuất Sắc 🎓'
+                          : Number(targetGradGpaStr) >= 3.2
+                            ? 'Bằng Giỏi 🎓'
+                            : 'Bằng Khá 🎓'}
+                        <span className="snapshot-sub">
+                          GPA tích lũy ≥ {format2(Number(targetGradGpaStr) || 3.2)}
+                        </span>
+                      </strong>
                     </div>
                   </div>
 
                   <div className="target-gpa-clean-notice">
                     {!hasEnteredProfile ? (
-                      <>Nhập thông tin tín chỉ đã tích lũy và số TC CTĐT để vạch ra chiến lược duy trì điểm số mỗi kỳ.</>
-                    ) : roadmapPlan.isFeasible ? (
-                      <>
-                        Duy trì mức <strong>{format2(roadmapPlan.averageGpaNeeded)}</strong> mỗi kỳ trong{' '}
-                        <strong>{roadmapPlan.termsRemaining} kỳ tới</strong> để tốt nghiệp loại{' '}
-                        <strong>
-                          {Number(targetGradGpaStr) >= 3.6
-                            ? 'Xuất Sắc'
-                            : Number(targetGradGpaStr) >= 3.2
-                              ? 'Giỏi'
-                              : 'Khá'}
-                        </strong>.
-                      </>
+                      <>Nhập điểm tích lũy và số tín chỉ ở Mục 1 để vạch ra chiến lược dài hạn.</>
+                    ) : !roadmapPlan.isFeasible ? (
+                      <>Mục tiêu đòi hỏi vượt 4.00 cho số tín chỉ còn lại. Hãy kết hợp học cải thiện môn ở Tab 2.</>
                     ) : (
-                      <>
-                        Mục tiêu <strong>{format2(Number(targetGradGpaStr) || 3.2)}</strong> đòi hỏi điểm trung bình vượt quá 4.00 cho số tín chỉ còn lại. Hãy kết hợp học cải thiện môn F/D ở Tab 2.
-                      </>
+                      <>Đăng ký đều đặn ~15 TC mỗi kỳ và duy trì mức điểm trên để về đích đúng hạn.</>
                     )}
                   </div>
                 </>

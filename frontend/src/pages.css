@@ -7459,103 +7459,116 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #34d399;
 }
 
-/* Roadmap 3 Cards */
-.target-gpa-roadmap-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  margin-top: 0.45rem;
+/* Roadmap Degree Progress Bar (Thanh tiến độ trực quan, không lặp lại) */
+.target-gpa-progress-section {
+  margin: 0.2rem 0 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
-.target-gpa-roadmap-card {
-  background: var(--input-bg, #f8fafc);
-  border: 1px solid var(--border-dark, #cbd5e1);
-  border-radius: 9px;
-  padding: 0.65rem 0.4rem;
-  text-align: center;
+.target-gpa-progress-section .progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.73rem;
+  color: var(--text-muted, #64748b);
 }
 
-[data-theme='dark'] .target-gpa-roadmap-card {
+.target-gpa-progress-section .progress-header strong {
+  color: #102A4A;
+  font-weight: 800;
+}
+
+[data-theme='dark'] .target-gpa-progress-section .progress-header strong {
+  color: #93c5fd;
+}
+
+.target-gpa-progress-section .progress-pct {
+  font-weight: 900;
+  color: #2563eb;
+}
+
+[data-theme='dark'] .target-gpa-progress-section .progress-pct {
+  color: #60a5fa;
+}
+
+.target-gpa-progress-section .progress-track {
+  width: 100%;
+  height: 7px;
+  background: var(--input-bg, #f1f5f9);
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1px solid var(--border-color, #e2e8f0);
+}
+
+[data-theme='dark'] .target-gpa-progress-section .progress-track {
   background: #0f172a;
   border-color: rgba(255, 255, 255, 0.1);
 }
 
-.target-gpa-roadmap-card.grad-finish {
-  background: var(--card-bg, #ffffff);
-  border: 2px solid #102A4A;
-  box-shadow: 0 2px 6px rgba(16, 42, 74, 0.08);
+.target-gpa-progress-section .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #059669);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
 }
 
-[data-theme='dark'] .target-gpa-roadmap-card.grad-finish {
-  background: #1e293b;
-  border-color: #93c5fd;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+/* Roadmap 2-Cell Snapshot (Không trùng lặp bất kỳ số liệu nào) */
+.target-gpa-roadmap-snapshot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0.45rem;
 }
 
-.target-gpa-roadmap-card .m-title {
-  font-size: 0.7rem;
+.target-gpa-roadmap-snapshot .snapshot-box {
+  background: var(--input-bg, #f8fafc);
+  border: 1px solid var(--border-dark, #cbd5e1);
+  border-radius: 9px;
+  padding: 0.55rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+[data-theme='dark'] .target-gpa-roadmap-snapshot .snapshot-box {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.target-gpa-roadmap-snapshot .snapshot-label {
+  font-size: 0.68rem;
   font-weight: 700;
-  color: var(--text-sub, #64748b);
-  margin-bottom: 0.2rem;
-  white-space: nowrap;
+  color: var(--text-muted, #64748b);
+  text-transform: uppercase;
 }
 
-.target-gpa-roadmap-card.grad-finish .m-title {
-  color: #102A4A;
-  font-weight: 800;
-}
-
-[data-theme='dark'] .target-gpa-roadmap-card.grad-finish .m-title {
-  color: #93c5fd;
-}
-
-.target-gpa-roadmap-card .m-score {
-  font-size: 1.15rem;
+.target-gpa-roadmap-snapshot .snapshot-val {
+  font-size: 0.95rem;
   font-weight: 900;
   color: #102A4A;
-  line-height: 1;
-  margin-bottom: 0.15rem;
+  line-height: 1.2;
 }
 
-[data-theme='dark'] .target-gpa-roadmap-card .m-score {
+[data-theme='dark'] .target-gpa-roadmap-snapshot .snapshot-val {
   color: #f8fafc;
 }
 
-.target-gpa-roadmap-card .m-score.pace {
-  color: #2563eb;
-}
-
-[data-theme='dark'] .target-gpa-roadmap-card .m-score.pace {
-  color: #60a5fa;
-}
-
-.target-gpa-roadmap-card.grad-finish .m-score,
-.target-gpa-roadmap-card .m-score.finish {
+.target-gpa-roadmap-snapshot .snapshot-val.finish {
   color: #059669;
 }
 
-[data-theme='dark'] .target-gpa-roadmap-card.grad-finish .m-score,
-[data-theme='dark'] .target-gpa-roadmap-card .m-score.finish {
+[data-theme='dark'] .target-gpa-roadmap-snapshot .snapshot-val.finish {
   color: #34d399;
 }
 
-.target-gpa-roadmap-card .m-score.empty {
-  color: var(--text-muted, #94a3b8);
-}
-
-.target-gpa-roadmap-card .m-sub {
+.target-gpa-roadmap-snapshot .snapshot-sub {
+  display: block;
   font-size: 0.68rem;
   font-weight: 700;
-  color: var(--text-muted, #475569);
-}
-
-.target-gpa-roadmap-card.grad-finish .m-sub {
-  color: #102A4A;
-  font-weight: 800;
-}
-
-[data-theme='dark'] .target-gpa-roadmap-card.grad-finish .m-sub {
-  color: #93c5fd;
+  color: var(--text-muted, #64748b);
+  margin-top: 0.1rem;
 }
 
 /* Result Card Footer (Redesigned clean reference pills & meta) */
@@ -7728,51 +7741,6 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #93c5fd;
 }
 
-/* Tab 3 Roadmap Auto Stats in Section 2 (Tự động tính toán, triệt tiêu stepper thừa) */
-.target-gpa-roadmap-auto-calc {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px dashed var(--border-color, #e2e8f0);
-}
-
-[data-theme='dark'] .target-gpa-roadmap-auto-calc {
-  border-top-color: rgba(255, 255, 255, 0.08);
-}
-
-.target-gpa-roadmap-auto-calc .auto-calc-badge {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  background: var(--input-bg, #f8fafc);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 8px;
-  padding: 0.45rem 0.6rem;
-}
-
-[data-theme='dark'] .target-gpa-roadmap-auto-calc .auto-calc-badge {
-  background: #0f172a;
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.target-gpa-roadmap-auto-calc .auto-calc-label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: var(--text-muted, #64748b);
-  text-transform: uppercase;
-}
-
-.target-gpa-roadmap-auto-calc .auto-calc-val {
-  font-size: 0.88rem;
-  font-weight: 900;
-  color: #102A4A;
-}
-
-[data-theme='dark'] .target-gpa-roadmap-auto-calc .auto-calc-val {
-  color: #93c5fd;
-}
 
 .target-gpa-footer-meta {
   display: flex;

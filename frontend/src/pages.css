@@ -6823,10 +6823,13 @@ input:checked + .slider:before { transform: translateX(20px); }
   box-shadow: 0 0 0 2.5px rgba(147, 197, 253, 0.15);
 }
 
-.target-gpa-input-box input {
-  border: none;
-  background: transparent;
-  outline: none;
+.target-gpa-input-box input,
+.target-gpa-input-box input:focus,
+.target-gpa-input-box input:focus-visible {
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
   font-size: 1.05rem;
   font-weight: 900;
   color: #102A4A;
@@ -7097,6 +7100,8 @@ input:checked + .slider:before { transform: translateX(20px); }
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 [data-theme='dark'] .target-gpa-result-card {
@@ -7569,26 +7574,26 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .target-gpa-footer-pills {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
 }
 
 .target-gpa-footer-pill {
-  flex: 1;
-  display: inline-flex;
+  width: 100%;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 0.45rem 0.65rem;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
   border-radius: 8px;
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   font-weight: 700;
   color: #102A4A;
   background: var(--input-bg, #f8fafc);
   border: 1px solid var(--border-dark, #cbd5e1);
   cursor: pointer;
   transition: all 0.15s ease;
-  white-space: nowrap;
+  box-sizing: border-box;
 }
 
 [data-theme='dark'] .target-gpa-footer-pill {
@@ -7610,18 +7615,163 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #bfdbfe;
 }
 
+.target-gpa-footer-pill span {
+  flex: 1;
+  text-align: left;
+}
+
 .target-gpa-footer-pill .target-gpa-pill-arrow {
+  margin-left: auto;
   color: var(--text-sub, #94a3b8);
   transition: transform 0.15s ease;
 }
 
 .target-gpa-footer-pill:hover .target-gpa-pill-arrow {
-  transform: translate(1px, -1px);
+  transform: translate(2px, -2px);
   color: #2563eb;
 }
 
 [data-theme='dark'] .target-gpa-footer-pill:hover .target-gpa-pill-arrow {
   color: #60a5fa;
+}
+
+/* Tab 2 Enhanced Visual Compare Box & Stats (Thoáng đãng, số to rõ ràng) */
+.target-gpa-compare-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: var(--input-bg, #f8fafc);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  margin: 0.35rem 0;
+}
+
+[data-theme='dark'] .target-gpa-compare-box {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.target-gpa-compare-box .compare-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.target-gpa-compare-box .compare-caption {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted, #64748b);
+  text-transform: uppercase;
+}
+
+.target-gpa-compare-box .compare-num {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #102A4A;
+}
+
+[data-theme='dark'] .target-gpa-compare-box .compare-num {
+  color: #f8fafc;
+}
+
+.target-gpa-compare-box .compare-col.highlight .compare-num {
+  color: #059669;
+}
+
+[data-theme='dark'] .target-gpa-compare-box .compare-col.highlight .compare-num {
+  color: #34d399;
+}
+
+.target-gpa-compare-box .compare-arrow {
+  font-size: 1.15rem;
+  color: var(--text-muted, #94a3b8);
+  font-weight: 800;
+}
+
+.target-gpa-retake-stats {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0.45rem;
+}
+
+.target-gpa-retake-stats .retake-stat-pill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-dark, #cbd5e1);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+}
+
+[data-theme='dark'] .target-gpa-retake-stats .retake-stat-pill {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.target-gpa-retake-stats .retake-stat-pill span {
+  color: var(--text-muted, #64748b);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.target-gpa-retake-stats .retake-stat-pill strong {
+  color: #102A4A;
+  font-size: 0.76rem;
+  font-weight: 800;
+  margin-top: 0.15rem;
+}
+
+[data-theme='dark'] .target-gpa-retake-stats .retake-stat-pill strong {
+  color: #93c5fd;
+}
+
+/* Tab 3 Roadmap Auto Stats in Section 2 (Tự động tính toán, triệt tiêu stepper thừa) */
+.target-gpa-roadmap-auto-calc {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color, #e2e8f0);
+}
+
+[data-theme='dark'] .target-gpa-roadmap-auto-calc {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.target-gpa-roadmap-auto-calc .auto-calc-badge {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  background: var(--input-bg, #f8fafc);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+}
+
+[data-theme='dark'] .target-gpa-roadmap-auto-calc .auto-calc-badge {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.target-gpa-roadmap-auto-calc .auto-calc-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted, #64748b);
+  text-transform: uppercase;
+}
+
+.target-gpa-roadmap-auto-calc .auto-calc-val {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #102A4A;
+}
+
+[data-theme='dark'] .target-gpa-roadmap-auto-calc .auto-calc-val {
+  color: #93c5fd;
 }
 
 .target-gpa-footer-meta {

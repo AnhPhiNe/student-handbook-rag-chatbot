@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { TrendingUp, Trash2, RotateCcw, BookOpen, ExternalLink } from 'lucide-react';
+import { TrendingUp, Trash2, RotateCcw, BookOpen, ExternalLink, FileText } from 'lucide-react';
 import { type Cohort } from '../../utils/gradeScale';
 import { sanitizeDecimal } from '../../utils/numberInput';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -39,7 +39,6 @@ const TARGET_PRESETS = [
 ];
 
 const TERM_CREDIT_PRESETS = [12, 15, 18, 21];
-const ROADMAP_CREDIT_PRESETS = [30, 45, 60, 75];
 
 const RETAKE_OLD_GRADES = [
   { label: 'F (0.0)', value: 0.0 },
@@ -106,9 +105,13 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
   // Tab 3: Lộ Trình Ra Trường State
   const [targetGradGpaStr, setTargetGradGpaStr] = useState('3.20');
-  const [remainingCredits, setRemainingCredits] = useState(() =>
-    Math.max(15, (Number(profile?.totalDegreeCredits) || 135) - (Number.isFinite(currentCreditsNum) ? currentCreditsNum : 60)),
-  );
+  
+  // Tín chỉ còn lại tự động suy ra từ CTĐT và số TC đã tích lũy (không bắt người dùng nhập trùng lặp)
+  const remainingCredits = useMemo(() => {
+    const total = Number.isFinite(totalDegreeCreditsNum) && totalDegreeCreditsNum > 0 ? totalDegreeCreditsNum : 135;
+    const current = Number.isFinite(currentCreditsNum) ? currentCreditsNum : 0;
+    return Math.max(1, total - current);
+  }, [totalDegreeCreditsNum, currentCreditsNum]);
 
   // Reference Modal State
   const [referenceModalTab, setReferenceModalTab] = useState<'scale' | 'rules' | null>(null);
@@ -166,13 +169,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       currentCredits: clean,
       totalDegreeCredits: prev?.totalDegreeCredits ?? DEFAULT_PROFILE.totalDegreeCredits,
     }));
-    const num = Number(clean);
-    if (Number.isFinite(num) && num > 0) {
-      const total = Number(profile?.totalDegreeCredits) || 135;
-      if (total > num) {
-        setRemainingCredits(total - num);
-      }
-    }
   };
 
   const handleTotalDegreeCreditsChange = (val: string) => {
@@ -182,13 +178,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       currentCredits: prev?.currentCredits ?? DEFAULT_PROFILE.currentCredits,
       totalDegreeCredits: clean,
     }));
-    const total = Number(clean);
-    if (Number.isFinite(total) && total > 0) {
-      const creds = Number(profile?.currentCredits) || 0;
-      if (total > creds) {
-        setRemainingCredits(total - creds);
-      }
-    }
   };
 
   // Handlers for Tab 2 (Retake Courses)
@@ -232,7 +221,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
         { id: 'retake-1', label: 'Môn 1', oldGrade: 0.0, targetGrade: 4.0, credits: 3 },
       ]);
       setTargetGradGpaStr('3.20');
-      setRemainingCredits(75);
     }
   };
 
@@ -242,7 +230,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
       <ToolPageHeader
         icon={TrendingUp}
         title="Mục tiêu GPA"
-        description="Tính toán chiến lược GPA học kỳ, cải thiện môn F/D và lộ trình tốt nghiệp toàn khóa."
+        description="Tính toán chiến lược GPA học kỳ, cải thiện môn và lộ trình tốt nghiệp toàn khóa."
       />
 
       {/* 2-Column Layout (Tương đồng Hình 2: Trái 63% Thẻ Nhập Liệu, Phải 37% Kết Quả) */}
@@ -288,7 +276,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 className={`target-gpa-tab-item ${activeTab === 'retake' ? 'active' : ''}`}
                 onClick={() => setActiveTab('retake')}
               >
-                ⚡ Cải Thiện Môn F/D
+                ⚡ Cải Thiện Môn
               </button>
               <button
                 type="button"
@@ -446,7 +434,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
               {activeTab === 'retake' && (
                 <div className="target-gpa-section-block divider">
                   <div className="target-gpa-card-title">
-                    <span>2. Chọn Môn Cần Học Lại / Nâng Điểm</span>
+                    <span>2. Chọn Môn Cải Thiện</span>
                   </div>
 
                   <table className="target-gpa-retake-table">
@@ -591,40 +579,27 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     })}
                   </div>
 
-                  {/* Stepper for Remaining Credits */}
-                  <div className="target-gpa-stepper-row">
-                    <label>Tín chỉ còn lại để ra trường:</label>
-                    <div className="target-gpa-stepper-combo">
-                      <div className="target-gpa-stepper-wrap">
-                        <button
-                          type="button"
-                          className="target-gpa-stepper-btn"
-                          onClick={() => setRemainingCredits((prev) => Math.max(3, prev - 3))}
-                          aria-label="Giảm 3 tín chỉ"
-                        >
-                          −
-                        </button>
-                        <div className="target-gpa-stepper-val">{remainingCredits} TC</div>
-                        <button
-                          type="button"
-                          className="target-gpa-stepper-btn"
-                          onClick={() => setRemainingCredits((prev) => Math.min(150, prev + 3))}
-                          aria-label="Tăng 3 tín chỉ"
-                        >
-                          +
-                        </button>
-                      </div>
-
-                      {ROADMAP_CREDIT_PRESETS.map((c) => (
-                        <button
-                          key={c}
-                          type="button"
-                          className={`target-gpa-pill-btn ${remainingCredits === c ? 'active' : ''}`}
-                          onClick={() => setRemainingCredits(c)}
-                        >
-                          {c} TC
-                        </button>
-                      ))}
+                  {/* Tự động tính toán tiến độ dựa trên Mục 1 (không cần nhập trùng lặp) */}
+                  <div className="target-gpa-roadmap-auto-calc">
+                    <div className="auto-calc-badge">
+                      <span className="auto-calc-label">Tín chỉ còn lại</span>
+                      <span className="auto-calc-val">
+                        {hasEnteredProfile ? `${remainingCredits} TC` : '-- TC'}
+                      </span>
+                    </div>
+                    <div className="auto-calc-badge">
+                      <span className="auto-calc-label">Dự kiến hoàn thành</span>
+                      <span className="auto-calc-val">
+                        {hasEnteredProfile ? `~${roadmapPlan.termsRemaining} học kỳ` : '--'}
+                      </span>
+                    </div>
+                    <div className="auto-calc-badge">
+                      <span className="auto-calc-label">Tiến độ tích lũy</span>
+                      <span className="auto-calc-val">
+                        {hasEnteredProfile && totalDegreeCreditsNum > 0
+                          ? `${Math.min(100, Math.round((currentCreditsNum / totalDegreeCreditsNum) * 100))}%`
+                          : '--%'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -739,33 +714,23 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
 
                   <div className="target-gpa-clean-notice">
                     {!hasEnteredProfile ? (
-                      <>Nhập GPA tích lũy và số tín chỉ đã học để hệ thống tính toán chính xác điểm số cần đạt.</>
+                      <>Nhập GPA và số tín chỉ ở Mục 1 để hệ thống tính toán điểm số cần đạt.</>
                     ) : termPlan.status === 'impossible' ? (
                       <>
-                        Không thể đạt <strong>{format2(Number(targetGpaStr) || 3.2)}</strong> chỉ với{' '}
-                        <strong>{futureCredits} TC</strong> trong 1 kỳ.{' '}
-                        {termPlan.minCreditsNeeded ? (
-                          <>
-                            Cần học tối thiểu <strong>{termPlan.minCreditsNeeded} TC</strong> và đạt{' '}
-                            <strong>4.00</strong> toàn bộ.
-                          </>
-                        ) : null}
+                        Mục tiêu vượt 4.00 trong 1 kỳ. Cần tối thiểu{' '}
+                        <strong>{termPlan.minCreditsNeeded ?? '> 20'} TC</strong> điểm A toàn bộ.
                       </>
                     ) : termPlan.status === 'achieved' ? (
-                      <>
-                        GPA hiện tại (<strong>{format2(currentGpaNum)}</strong>) đã đạt hoặc vượt mục tiêu{' '}
-                        <strong>{format2(Number(targetGpaStr) || 3.2)}</strong>. Hãy tiếp tục giữ vững phong độ ở kỳ tới.
-                      </>
+                      <>GPA hiện tại đã vượt mục tiêu đề ra. Hãy tiếp tục duy trì phong độ kỳ tới.</>
                     ) : (
                       <>
-                        Cần tối thiểu{' '}
+                        Cần đạt tối thiểu{' '}
                         <strong>
                           {prescription.coursesA > 0
                             ? `${prescription.coursesA} môn A`
                             : `${prescription.coursesBPlus} môn B+`}
                         </strong>{' '}
-                        để kéo GPA tích lũy lên{' '}
-                        <strong>{format2(Number(targetGpaStr) || 3.2)}</strong>. Có thể đăng ký thêm môn tự chọn vừa sức.
+                        trong kỳ tới để chạm mức <strong>{format2(Number(targetGpaStr) || 3.2)}</strong>.
                       </>
                     )}
                   </div>
@@ -798,24 +763,50 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                           ▲ +{format2(retakePlan.deltaGpa)} <span>GPA</span>
                         </div>
                         <div className="hero-rank">
-                          GPA mới: {format2(currentGpaNum)} ➔ {format2(retakePlan.newBaselineGpa)}
+                          Kéo điểm trực tiếp từ {retakes.length} môn học lại
                         </div>
                       </>
                     )}
                   </div>
 
-                  {/* Đã bỏ mục "Nhận thêm: +12 Điểm chất lượng" theo yêu cầu người dùng */}
+                  {!hasEnteredProfile ? (
+                    <div className="target-gpa-clean-notice">
+                      Chọn các môn cần học lại để dự báo mức tăng điểm GPA tích lũy sau khi cải thiện.
+                    </div>
+                  ) : (
+                    <>
+                      {/* Thẻ So Sánh Trực Quan Before -> After (Thoáng đãng, số to rõ ràng) */}
+                      <div className="target-gpa-compare-box">
+                        <div className="compare-col">
+                          <span className="compare-caption">GPA ban đầu</span>
+                          <span className="compare-num">{format2(currentGpaNum)}</span>
+                        </div>
+                        <div className="compare-arrow">➔</div>
+                        <div className="compare-col highlight">
+                          <span className="compare-caption">GPA sau cải thiện</span>
+                          <span className="compare-num boost">{format2(retakePlan.newBaselineGpa)}</span>
+                        </div>
+                      </div>
 
-                  <div className="target-gpa-clean-notice">
-                    {!hasEnteredProfile ? (
-                      <>Chọn các môn bị điểm thấp (F, D, C...) để dự báo mức tăng điểm GPA tích lũy sau khi học lại.</>
-                    ) : (
-                      <>
-                        Học lại <strong>{retakes.length} môn</strong> giúp nâng trực tiếp điểm tích lũy lên{' '}
-                        <strong>{format2(retakePlan.newBaselineGpa)}</strong> mà không làm tăng tổng tín chỉ tốt nghiệp.
-                      </>
-                    )}
-                  </div>
+                      {/* Thông số quy mô cải thiện */}
+                      <div className="target-gpa-retake-stats">
+                        <div className="retake-stat-pill">
+                          <span>Quy mô:</span>
+                          <strong>
+                            {retakes.length} môn ({retakes.reduce((sum, r) => sum + r.credits, 0)} TC)
+                          </strong>
+                        </div>
+                        <div className="retake-stat-pill">
+                          <span>Cơ chế:</span>
+                          <strong>Thay thế điểm cũ</strong>
+                        </div>
+                      </div>
+
+                      <div className="target-gpa-clean-notice">
+                        Điểm mới sẽ ghi đè điểm cũ vào công thức tích lũy mà không làm phát sinh thêm tín chỉ tốt nghiệp.
+                      </div>
+                    </>
+                  )}
                 </>
               )}
 
@@ -932,7 +923,8 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     onClick={() => setReferenceModalTab('rules')}
                     title="Tra cứu trích dẫn điều khoản quy chế đào tạo tín chỉ"
                   >
-                    <span>📖 Quy chế đào tạo</span>
+                    <FileText size={13} />
+                    <span>Quy chế đào tạo</span>
                     <ExternalLink size={11} className="target-gpa-pill-arrow" />
                   </button>
                 </div>

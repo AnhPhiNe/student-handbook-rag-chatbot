@@ -1,36 +1,38 @@
 import { useState } from 'react';
-import { BookOpen, Calculator } from 'lucide-react';
+import { Calculator, GraduationCap, MessageCircle, Minus, Plus } from 'lucide-react';
 import {
   SCHOOL_YEARS,
   formatVnd,
   type SchoolYear,
   type TuitionProgram,
 } from '../../data/tuitionRates';
+import { estimateSemester, isTeacherTraining } from '../../utils/tuition';
+import { sanitizeInteger } from '../../utils/numberInput';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
-import { ResetButton, ToolSection } from '../tool/ToolSection';
-import { SelectField } from '../tool/fields';
-import { NumberStepper } from '../tool/NumberStepper';
+import { ResetButton } from '../tool/ToolSection';
 import { ProgramSearch } from '../tool/ProgramSearch';
-import { ResultCard } from '../tool/ResultCard';
-import { DetailsToggle } from '../tool/DetailsToggle';
-import { ResultFacts } from '../tool/ResultFacts';
+
+interface TuitionPageProps {
+  onAskChat: (text: string) => void;
+}
 
 const DEFAULT_YEAR: SchoolYear = SCHOOL_YEARS[SCHOOL_YEARS.length - 1];
-const DEFAULT_CREDITS = '15';
-const YEAR_OPTIONS = SCHOOL_YEARS.map((year) => ({ value: year, label: `Năm học ${year}` }));
+const MAX_RETAKE_CREDITS = 99;
+const DECREE_116_QUESTION = 'Chính sách hỗ trợ học phí và sinh hoạt phí theo Nghị định 116 cho sinh viên sư phạm là gì?';
 
-export function TuitionPage() {
+/** Amount without the trailing " đ" that formatVnd adds, so the unit can be styled apart. */
+const plainAmount = (value: number) => formatVnd(value).replace(/\s*đ$/, '');
+
+export function TuitionPage({ onAskChat }: TuitionPageProps) {
   const [query, setQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<TuitionProgram | null>(null);
   const [schoolYear, setSchoolYear] = useState<SchoolYear>(DEFAULT_YEAR);
-  const [credits, setCredits] = useState(DEFAULT_CREDITS);
+  const [retake, setRetake] = useState('0');
 
-  const creditCount = Number(credits);
-  const hasValidCredits = Number.isFinite(creditCount) && creditCount > 0;
-  const annual = selectedProgram?.annual[schoolYear] ?? 0;
-  const semester = annual / 2;
-  const perCredit = selectedProgram?.perCredit[schoolYear] ?? 0;
-  const creditEstimate = hasValidCredits ? perCredit * creditCount : 0;
+  const retakeCredits = Number(retake) || 0;
+  const estimate = selectedProgram ? estimateSemester(selectedProgram, schoolYear, retakeCredits) : null;
+  const hasRetake = Boolean(estimate && estimate.extra > 0);
+  const teacherTraining = Boolean(selectedProgram && isTeacherTraining(selectedProgram.code));
 
   const handleQueryChange = (value: string) => {
     setQuery(value);
@@ -52,99 +54,141 @@ export function TuitionPage() {
   const handleReset = () => {
     clearProgram();
     setSchoolYear(DEFAULT_YEAR);
-    setCredits(DEFAULT_CREDITS);
+    setRetake('0');
+  };
+
+  const stepRetake = (delta: number) => {
+    setRetake(String(Math.min(MAX_RETAKE_CREDITS, Math.max(0, retakeCredits + delta))));
   };
 
   return (
-    <div className="page-container tool-page simplified">
+    <div className="page-container tool-page simplified sc-page tu-page">
       <ToolPageHeader
         icon={Calculator}
         title="Ước tính học phí"
-        description="Tra học phí theo ngành và năm học, rồi ước tính theo số tín chỉ bạn đăng ký."
+        description="Tra học phí học kỳ theo ngành và năm học, cộng thêm tín chỉ học lại nếu có."
       />
 
-      <div className="tool-grid">
-        <div className="tool-main">
-          <ToolSection id="tuition-input" title="Ngành và học kỳ" action={<ResetButton onClick={handleReset} />}>
+      <div className="gpa-m-page-header sc-m-header">
+        <div className="gpa-m-title-wrap">
+          <Calculator size={18} aria-hidden="true" className="sc-m-title-icon" />
+          <h1 className="gpa-m-page-title">Ước tính học phí</h1>
+        </div>
+      </div>
+
+      <div className="sc-grid">
+        <section className="sc-result" aria-label="Kết quả">
+          <div aria-live="polite">
+            <div className="sc-label">{hasRetake ? 'Tổng học phí học kỳ' : 'Học phí 1 học kỳ chính'}</div>
+            <div className="sc-num">
+              {estimate ? (
+                <>
+                  <b className="amt">{plainAmount(estimate.total)}</b>
+                  <span>đ</span>
+                </>
+              ) : (
+                <b className="none">--</b>
+              )}
+            </div>
+            <div className="sc-cap-wrap">
+              {estimate ? (
+                <span className="sc-cap">
+                  {hasRetake
+                    ? `Học kỳ ${plainAmount(estimate.semester)} đ + học lại ${plainAmount(estimate.extra)} đ`
+                    : `Năm học ${schoolYear.replace('-20', '–')}`}
+                </span>
+              ) : (
+                <span className="sc-cap empty">Chọn ngành đào tạo bên dưới</span>
+              )}
+            </div>
+          </div>
+
+          {estimate && (
+            <>
+              <dl className="tu-facts">
+                <div>
+                  <dt>Học lại, cải thiện / TC</dt>
+                  <dd>{formatVnd(estimate.perCredit)}</dd>
+                </div>
+                <div>
+                  <dt>Học phí cả năm</dt>
+                  <dd>{formatVnd(estimate.annual)}</dd>
+                </div>
+              </dl>
+
+              {teacherTraining && (
+                <div className="tu-note">
+                  <GraduationCap size={18} aria-hidden="true" />
+                  <div>
+                    Ngành sư phạm: nếu được duyệt hưởng <b>Nghị định 116</b>, Nhà nước hỗ trợ tiền học phí và 3,63 triệu
+                    đồng/tháng sinh hoạt phí (có điều kiện bồi hoàn).
+                    <br />
+                    <button type="button" className="tu-ask" onClick={() => onAskChat(DECREE_116_QUESTION)}>
+                      <MessageCircle size={14} aria-hidden="true" />
+                      Hỏi chatbot về Nghị định 116
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {estimate && <p className="tu-foot">Chưa gồm các khoản thu khác (nếu có). Số thực tế theo thông báo của trường.</p>}
+        </section>
+
+        <section className="sc-sheet" aria-labelledby="tu-sheet-title">
+          <div className="sc-sheet-head">
+            <h2 id="tu-sheet-title">Thông tin</h2>
+            <ResetButton onClick={handleReset} />
+          </div>
+
+          <div className="sc-opt-body tu-inputs">
             <ProgramSearch
               id="tuition-program"
               label="Ngành đào tạo"
-              hint="Gõ tên hoặc mã ngành rồi chọn trong danh sách."
               query={query}
               selectedProgram={selectedProgram}
               onQueryChange={handleQueryChange}
               onSelect={selectProgram}
               onClear={clearProgram}
             />
-            <div className="tool-fields">
-              <SelectField
-                id="tuition-year"
-                label="Năm học"
-                value={schoolYear}
-                options={YEAR_OPTIONS}
-                onChange={setSchoolYear}
-              />
-              <NumberStepper
-                id="tuition-credits"
-                label="Số tín chỉ học kỳ"
-                hint="Số tín chỉ bạn dự kiến đăng ký."
-                value={credits}
-                min={0}
-                fallback={0}
-                onChange={setCredits}
-              />
-            </div>
-          </ToolSection>
-        </div>
-
-        <ResultCard id="tuition-result">
-          {selectedProgram ? (
-            <>
-              <div aria-live="polite">
-                <p className="tool-big-label">
-                  {hasValidCredits ? `Học phí cho ${creditCount} tín chỉ` : `Học phí cả năm ${schoolYear}`}
-                </p>
-                <p className="tool-big money">
-                  <strong>{formatVnd(hasValidCredits ? creditEstimate : annual)}</strong>
-                </p>
+            <div>
+              <div className="sc-sub" id="tu-year-label">
+                Năm học
               </div>
-              <p className="tool-sub">
-                {selectedProgram.name} ({selectedProgram.code})
-              </p>
-              <ResultFacts
-                facts={[
-                  { label: 'Đơn giá / TC', value: formatVnd(perCredit) },
-                  { label: 'Cả năm', value: formatVnd(annual) },
-                  { label: '1 học kỳ', value: formatVnd(semester) },
-                ]}
+              <div className="sc-years" role="group" aria-labelledby="tu-year-label">
+                {SCHOOL_YEARS.map((year) => (
+                  <button key={year} type="button" aria-pressed={year === schoolYear} onClick={() => setSchoolYear(year)}>
+                    {year.replace('-20', '–')}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="sc-row tu-row">
+            <label className="sc-row-label" htmlFor="tuition-retake">
+              Tín chỉ học lại, cải thiện
+            </label>
+            <span className="sc-step">
+              <button type="button" onClick={() => stepRetake(-1)} aria-label="Giảm số tín chỉ">
+                <Minus size={16} aria-hidden="true" />
+              </button>
+              <input
+                id="tuition-retake"
+                type="text"
+                inputMode="numeric"
+                maxLength={2}
+                value={retake}
+                onChange={(e) => setRetake(sanitizeInteger(e.target.value))}
+                onBlur={() => setRetake(String(retakeCredits))}
               />
-
-              <DetailsToggle id="tuition-calc" label="Xem cách tính">
-                <dl className="tool-calc">
-                  <dt>Đơn giá 1 tín chỉ ({schoolYear})</dt>
-                  <dd>{formatVnd(perCredit)}</dd>
-                  {hasValidCredits && (
-                    <>
-                      <dt>Học phí theo tín chỉ</dt>
-                      <dd>{creditCount} × {formatVnd(perCredit)} = {formatVnd(creditEstimate)}</dd>
-                    </>
-                  )}
-                  <dt>Học phí cả năm</dt>
-                  <dd>{formatVnd(annual)}</dd>
-                  <dt>Ước tính 1 học kỳ (cả năm ÷ 2)</dt>
-                  <dd>{formatVnd(semester)}</dd>
-                </dl>
-              </DetailsToggle>
-
-              <p className="tool-source">
-                <BookOpen size={14} aria-hidden="true" />
-                Theo bảng học phí năm học {schoolYear}. Số tiền thực tế theo thông báo thu học phí của Nhà trường.
-              </p>
-            </>
-          ) : (
-            <p className="tool-empty">Chọn ngành đào tạo để xem học phí.</p>
-          )}
-        </ResultCard>
+              <button type="button" onClick={() => stepRetake(1)} aria-label="Tăng số tín chỉ">
+                <Plus size={16} aria-hidden="true" />
+              </button>
+            </span>
+          </div>
+        </section>
       </div>
     </div>
   );

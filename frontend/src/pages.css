@@ -11193,3 +11193,81 @@ p.tool-source > svg {
   .sc-opt-toggle { padding: 0 14px; }
   .sc-opt-body { padding: 0 14px 14px; }
 }
+
+/* ==================================================================
+   Ước tính học phí (TuitionPage) - "tu-" block
+   Reuses the "sc-" skin (navy hero on mobile, light card on desktop); only what is new lives here.
+   ================================================================== */
+.tu-page .sc-num b.amt { font-size: 2.6rem; white-space: nowrap; }
+.tu-page .sc-num span { white-space: nowrap; }
+.tu-page .sc-cap { text-align: left; }
+
+.tu-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--sc-line);
+  text-align: left;
+}
+.tu-facts div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.tu-facts dt { font-size: 0.72rem; color: var(--sc-text2); }
+.tu-facts dd {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tu-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-align: left;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  background: color-mix(in srgb, #16a34a 8%, var(--sc-card));
+  border: 1px solid color-mix(in srgb, #16a34a 30%, var(--sc-line));
+}
+.tu-note > svg { flex: 0 0 auto; margin-top: 1px; color: var(--sc-ok); }
+.tu-note b { color: var(--sc-ok); }
+.tu-ask {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--sc-accent);
+  cursor: pointer;
+}
+.tu-ask:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 2px; }
+.tu-foot { margin: 12px 0 0; font-size: 0.74rem; color: var(--sc-text2); text-align: left; }
+
+.tu-inputs { padding-top: 8px; }
+.tu-row { margin-top: 2px; margin-bottom: 14px; }
+
+@media (max-width: 900px) {
+  .tu-page .sc-num b.amt,
+  [data-theme='dark'] .tu-page .sc-num b.amt { font-size: 2rem; }
+  .tu-facts { border-top-color: rgba(255, 255, 255, 0.12); }
+  .tu-facts dt { color: rgba(191, 219, 254, 0.85); }
+  .tu-note { background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.3); }
+  .tu-note > svg,
+  .tu-note b { color: #6ee7b7; }
+  .tu-ask { color: #bfdbfe; }
+  .tu-ask:focus-visible { outline-color: #93c5fd; }
+  .tu-foot { color: rgba(191, 219, 254, 0.8); }
+  .tu-inputs { padding-left: 14px; padding-right: 14px; }
+}

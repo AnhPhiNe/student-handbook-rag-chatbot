@@ -6557,6 +6557,30 @@ input:checked + .slider:before { transform: translateX(20px); }
     grid-template-columns: minmax(0, 1fr);
     gap: 1.25rem;
   }
+  .target-gpa-container {
+    padding-bottom: 6.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .target-gpa-tabs-bar {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .target-gpa-tabs-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .target-gpa-tab-item {
+    font-size: 0.78rem;
+    padding: 0.45rem 0.55rem;
+    white-space: nowrap;
+    flex: 1 0 auto;
+  }
+  .target-gpa-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Master Form Card (Left Column) */

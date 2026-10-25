@@ -1,5 +1,5 @@
-import { useMemo, useState, type ReactNode } from 'react';
-import { Plus, Target, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
+import { ArrowUpRight, Plus, Target, X } from 'lucide-react';
 import {
   getCourseGroupOptions,
   getDefaultCourseGroup,
@@ -7,18 +7,19 @@ import {
   isSplitGradeCohort,
   type Cohort,
   type CourseGroup,
-  type GradeScaleRow,
 } from '../../utils/gradeScale';
 import { sanitizeDecimal } from '../../utils/numberInput';
 import { getGradeTone } from '../../utils/gradeTone';
+import {
+  analyzeCourseTarget,
+  HARD_FINAL_SCORE,
+  isScoreInvalid,
+  isWeightInvalid,
+} from '../../utils/courseTarget';
 import { useAnimatedNumber } from '../../hooks/useAnimatedNumber';
 import { GpaReferenceModal } from '../GpaReferenceModal';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
 import { ResetButton } from '../tool/ToolSection';
-import { ResultCard, type ResultTone } from '../tool/ResultCard';
-import { ToolMobileSummary } from '../tool/ToolMobileSummary';
-import { ResultFacts } from '../tool/ResultFacts';
-import { ResultCallout } from '../tool/ResultCallout';
 
 interface CourseTargetPageProps {
   cohort: Cohort;
@@ -31,30 +32,19 @@ interface ScoreComponent {
   score: string;
 }
 
-type TargetStatus = 'possible' | 'achieved' | 'impossible';
-
-interface GradeTarget {
-  grade: GradeScaleRow;
-  requiredScore: number | null;
-  status: TargetStatus;
-}
-
 interface SyllabusPreset {
   label: string;
   components: Array<{ name: string; weight: string }>;
 }
 
 const SYLLABUS_PRESETS: SyllabusPreset[] = [
-  { label: '20% - 20% (Thi 60%)', components: [{ name: 'Quá trình', weight: '20' }, { name: 'Giữa kỳ', weight: '20' }] },
-  { label: '30% (Thi 70%)', components: [{ name: 'Quá trình', weight: '30' }] },
-  { label: '10% - 30% (Thi 60%)', components: [{ name: 'Chuyên cần', weight: '10' }, { name: 'Giữa kỳ', weight: '30' }] },
-  { label: '10% - 40% (Thi 50%)', components: [{ name: 'Chuyên cần', weight: '10' }, { name: 'Giữa kỳ', weight: '40' }] },
+  { label: '20·20·60', components: [{ name: 'Quá trình', weight: '20' }, { name: 'Giữa kỳ', weight: '20' }] },
+  { label: '30·70', components: [{ name: 'Quá trình', weight: '30' }] },
+  { label: '10·30·60', components: [{ name: 'Chuyên cần', weight: '10' }, { name: 'Giữa kỳ', weight: '30' }] },
+  { label: '10·40·50', components: [{ name: 'Chuyên cần', weight: '10' }, { name: 'Giữa kỳ', weight: '40' }] },
 ];
 
 const COMPONENT_NAMES = ['Quá trình', 'Chuyên cần', 'Giữa kỳ', 'Thực hành', 'Bài tập', 'Tiểu luận', 'Thuyết trình', 'Khác'];
-
-// A required final score above this is reachable but hard, so the result is flagged as a warning.
-const HARD_FINAL_SCORE = 8;
 
 // Ids for columns added after the defaults; a module counter keeps handlers pure.
 let addedComponentCount = 0;
@@ -70,17 +60,40 @@ function defaultComponents(): ScoreComponent[] {
   ];
 }
 
+function signature(items: Array<{ name: string; weight: string }>) {
+  return items.map((item) => `${item.name}:${item.weight}`).join('|');
+}
+
+const fmt = (value: number) => value.toFixed(2);
+
 export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
   const [courseGroup, setCourseGroup] = useState<CourseGroup>(getDefaultCourseGroup(cohort));
   const [components, setComponents] = useState<ScoreComponent[]>(defaultComponents);
-  const [referenceModalTab, setReferenceModalTab] = useState<'scale' | 'rules' | null>(null);
+  // null means "the pass grade" (the lowest passing row), which is also what reset restores.
+  const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
+  const [referenceModalOpen, setReferenceModalOpen] = useState(false);
+
+  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const pendingFocus = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (pendingFocus.current) {
+      inputRefs.current[pendingFocus.current]?.focus();
+      pendingFocus.current = null;
+    }
+  });
 
   const isSplit = isSplitGradeCohort(cohort);
   const activeGroup = isSplit ? courseGroup : getDefaultCourseGroup(cohort);
   const scale = getGradeScale(cohort, activeGroup);
+  const passingRows = useMemo(() => scale.rows.filter((row) => row.status === 'Đạt'), [scale]);
+  const passRow = passingRows.length > 0 ? passingRows[passingRows.length - 1] : null;
+  const selectedRow = passingRows.find((row) => row.letter === selectedLetter) ?? passRow;
 
   const addComponent = () => {
-    setComponents((current) => [...current, { id: createComponentId(), name: 'Quá trình', weight: '', score: '' }]);
+    const id = createComponentId();
+    pendingFocus.current = `w-${id}`;
+    setComponents((current) => [...current, { id, name: 'Bài tập', weight: '', score: '' }]);
   };
 
   const removeComponent = (id: string) => {
@@ -92,14 +105,14 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
   };
 
   const applyPreset = (preset: SyllabusPreset) => {
-    setComponents(
-      preset.components.map((component) => ({
-        id: createComponentId(),
-        name: component.name,
-        weight: component.weight,
-        score: '',
-      }))
-    );
+    const next = preset.components.map((component) => ({
+      id: createComponentId(),
+      name: component.name,
+      weight: component.weight,
+      score: components.find((existing) => existing.name === component.name)?.score ?? '',
+    }));
+    pendingFocus.current = `s-${next[0].id}`;
+    setComponents(next);
   };
 
   const handleReset = () => {
@@ -108,163 +121,197 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
       return;
     }
     setComponents(defaultComponents());
+    setSelectedLetter(null);
   };
 
-  const result = useMemo(() => {
-    let totalWeight = 0;
-    let accumulatedScore = 0;
-    let weightedCount = 0;
-    let hasInvalidWeight = false;
-    let hasInvalidScore = false;
-    let hasMissingScore = false;
-
-    for (const component of components) {
-      const weight = Number(component.weight);
-      const score = Number(component.score);
-
-      if (component.weight !== '') {
-        if (!Number.isFinite(weight) || weight < 0 || weight > 100) {
-          hasInvalidWeight = true;
-        } else {
-          totalWeight += weight;
-          if (weight > 0) weightedCount += 1;
-          if (weight > 0 && component.score === '') hasMissingScore = true;
-        }
-      }
-
-      if (component.score !== '') {
-        if (!Number.isFinite(score) || score < 0 || score > 10) {
-          hasInvalidScore = true;
-        } else if (component.weight !== '' && Number.isFinite(weight) && weight >= 0) {
-          accumulatedScore += (score * weight) / 100;
-        }
-      }
+  const handleEnter = (event: KeyboardEvent<HTMLInputElement>, index: number, kind: 'w' | 's') => {
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    const current = components[index];
+    if (kind === 'w') {
+      inputRefs.current[`s-${current.id}`]?.focus();
+      return;
     }
+    const next = components[index + 1];
+    if (!next) {
+      event.currentTarget.blur();
+      return;
+    }
+    inputRefs.current[`${next.weight === '' ? 'w' : 's'}-${next.id}`]?.focus();
+  };
 
-    const remainingWeight = Math.max(0, 100 - totalWeight);
-    const hasWeightOverflow = totalWeight > 100;
-    // A column with a weight but no score would otherwise count as 0 and show alarming targets.
-    const isComplete = !hasWeightOverflow && !hasInvalidWeight && !hasInvalidScore && !hasMissingScore && weightedCount > 0;
-
-    const targets: GradeTarget[] = scale.rows
-      .filter((row) => row.status === 'Đạt')
-      .map((grade) => {
-        const missingScore = grade.min10 - accumulatedScore;
-        if (remainingWeight === 0) {
-          return { grade, requiredScore: null, status: missingScore <= 0 ? 'achieved' : 'impossible' };
-        }
-        const requiredScore = (missingScore * 100) / remainingWeight;
-        const status: TargetStatus = requiredScore > 10 ? 'impossible' : requiredScore <= 0 ? 'achieved' : 'possible';
-        return { grade, requiredScore, status };
-      });
-
-    let errorMessage: string | null = null;
-    if (hasWeightOverflow) errorMessage = `Tổng trọng số đang là ${totalWeight}%, vượt quá 100%. Hãy sửa lại các cột.`;
-    else if (hasInvalidWeight) errorMessage = 'Trọng số mỗi cột phải từ 0 đến 100%.';
-    else if (hasInvalidScore) errorMessage = 'Điểm mỗi cột phải từ 0 đến 10.';
-
-    return {
-      totalWeight,
-      remainingWeight,
-      accumulatedScore,
-      isComplete,
-      hasWeightOverflow,
-      weightedCount,
-      targets,
-      passTarget: targets.length > 0 ? targets[targets.length - 1] : null,
-      errorMessage,
-    };
-  }, [components, scale]);
-
-  const passTarget = result.isComplete ? result.passTarget : null;
-  let tone: ResultTone | null = null;
-  let chip: string | null = null;
-  if (passTarget?.status === 'achieved') {
-    tone = 'success';
-    chip = 'Đã đủ qua môn';
-  } else if (passTarget?.status === 'impossible') {
-    tone = 'danger';
-    chip = 'Không thể qua môn';
-  } else if (passTarget?.requiredScore != null) {
-    const isHard = passTarget.requiredScore > HARD_FINAL_SCORE;
-    tone = isHard ? 'warning' : 'success';
-    chip = isHard ? 'Cần điểm thi cao' : 'Khả thi';
-  }
+  const result = useMemo(() => analyzeCourseTarget(components, passingRows), [components, passingRows]);
+  const selectedTarget = selectedRow ? result.targets.find((t) => t.grade.letter === selectedRow.letter) ?? null : null;
+  const target = result.isReady ? selectedTarget : null;
 
   const animatedRequired = useAnimatedNumber(
-    passTarget?.status === 'possible' && passTarget.requiredScore != null ? Math.round(passTarget.requiredScore * 100) / 100 : 0,
+    target?.status === 'possible' && target.requiredScore != null ? target.requiredScore : 0,
     2,
   );
 
-  // The lowest grade above the pass mark that the final exam can still reach, as a stretch goal.
-  const stretchTarget = passTarget
-    ? result.targets.slice(0, -1).reverse().find((target) => target.status === 'possible') ?? null
-    : null;
-  const stretchAdvice =
-    stretchTarget?.requiredScore != null ? (
-      <>
-        {' '}Muốn đạt <strong>{stretchTarget.grade.letter}</strong> cần thi <strong>{stretchTarget.requiredScore.toFixed(2)}</strong>.
-      </>
-    ) : null;
-
-  let passAdvice: ReactNode = null;
-  if (passTarget?.status === 'possible' && passTarget.requiredScore != null) {
-    passAdvice = (
-      <>
-        Cần thi từ <strong>{passTarget.requiredScore.toFixed(2)}</strong> điểm để qua môn.{stretchAdvice}
-      </>
-    );
-  } else if (passTarget?.status === 'achieved') {
-    passAdvice = <>Điểm các cột đã đủ qua môn.{stretchAdvice}</>;
-  } else if (passTarget?.status === 'impossible') {
-    passAdvice =
-      result.remainingWeight === 0 ? (
-        <>
-          Điểm các cột chưa đủ mức qua môn <strong>({passTarget.grade.letter})</strong> và không còn điểm thi cuối kỳ.
-        </>
-      ) : (
-        <>
-          Dù thi được <strong>10</strong> điểm cũng chưa đủ mức qua môn <strong>({passTarget.grade.letter})</strong>.
-        </>
-      );
-  }
-
-  const emptyMessage =
-    result.weightedCount === 0
-      ? 'Nhập trọng số và điểm của các cột đã có để xem điểm thi cần đạt.'
-      : 'Nhập điểm cho mọi cột đã có trọng số để xem điểm thi cần đạt.';
-
-  const summaryValue =
-    passTarget?.status === 'achieved'
-      ? 'Đã đủ'
-      : passTarget?.status === 'impossible'
-      ? '> 10'
-      : passTarget?.requiredScore != null
-      ? passTarget.requiredScore.toFixed(2)
-      : '--';
+  const bestReachable = result.targets.find((t) => t.status !== 'impossible') ?? null;
+  const isHard = target?.status === 'possible' && (target.requiredScore ?? 0) > HARD_FINAL_SCORE;
+  const skin = !target
+    ? ''
+    : target.status === 'achieved'
+    ? 'ct-s-ok'
+    : target.status === 'impossible'
+    ? 'ct-s-bad'
+    : isHard
+    ? 'ct-s-warn'
+    : 'ct-s-ok';
 
   const groupLabel = getCourseGroupOptions(cohort).find((option) => option.id === activeGroup)?.shortLabel;
+  const selectedTone = selectedRow ? `grade-tone-${getGradeTone(selectedRow)} ct-gn-${getGradeTone(selectedRow)}` : '';
+  const labelLetter = selectedRow?.letter ?? '';
+  const isPassSelected = selectedRow != null && selectedRow.letter === passRow?.letter;
+
+  const base = (
+    <>
+      Đang có <b>{fmt(result.accumulatedScore)}</b> • Thi {result.remainingWeight}%
+    </>
+  );
+
+  let bigNumber;
+  let capsule;
+  if (!target) {
+    bigNumber = (
+      <>
+        <b>--</b>
+        <span>/ 10</span>
+      </>
+    );
+    capsule = (
+      <span className="ct-cap empty">{result.errorMessage ? 'Sửa các cột đang báo lỗi' : 'Nhập điểm các cột đã có bên dưới'}</span>
+    );
+  } else if (target.status === 'achieved') {
+    bigNumber = <b className="word">Đã đủ</b>;
+    capsule = (
+      <span className="ct-cap">
+        <span className="ct-badge">Đã đạt</span>
+        <span className="ct-sep">│</span>
+        {base}
+      </span>
+    );
+  } else if (target.status === 'impossible') {
+    bigNumber = <b className="word">Không thể</b>;
+    capsule = (
+      <span className="ct-cap">
+        <span className="ct-badge bad">Thi 10 vẫn chưa đủ</span>
+        <span className="ct-sep">│</span>
+        {bestReachable ? `Cao nhất ${bestReachable.grade.letter}` : 'Không qua được môn'}
+      </span>
+    );
+  } else {
+    bigNumber = (
+      <>
+        <b>{fmt(animatedRequired)}</b>
+        <span>/ 10</span>
+      </>
+    );
+    capsule = (
+      <span className="ct-cap">
+        <span className={`ct-badge${isHard ? ' warn' : ''}`}>{isHard ? 'Cần điểm cao' : 'Khả thi'}</span>
+        <span className="ct-sep">│</span>
+        {base}
+      </span>
+    );
+  }
+
+  let needChip;
+  if (!target) {
+    needChip = <span className="ct-need empty">—</span>;
+  } else if (target.status === 'achieved') {
+    needChip = <span className={`ct-need ${selectedTone}`}>Đã đủ</span>;
+  } else if (target.status === 'impossible') {
+    needChip = <span className={`ct-need ${selectedTone}`}>&gt; 10</span>;
+  } else {
+    needChip = (
+      <span className={`ct-need ${selectedTone}`}>
+        <small>cần</small>
+        {fmt(target.requiredScore ?? 0)}
+      </span>
+    );
+  }
+
+  const presetSignature = signature(components);
+  const ribbonSegments = components
+    .map((component, index) => ({ index, weight: isWeightInvalid(component.weight) ? 0 : Number(component.weight) || 0 }))
+    .filter((segment) => segment.weight > 0);
 
   return (
-    <div className="page-container tool-page simplified">
+    <div className="page-container tool-page simplified ct-page">
       <ToolPageHeader
         icon={Target}
         title="Mục tiêu môn học"
         description={`Tính điểm thi cuối kỳ cần đạt từ các cột điểm đã có, theo thang điểm ${cohort}.`}
       />
 
-      <ToolMobileSummary
-        label={`Thi cần đạt${result.passTarget ? ` (${result.passTarget.grade.letter})` : ''}`}
-        value={summaryValue}
-        unit={passTarget?.status === 'possible' ? '/ 10' : undefined}
-        chip={chip}
-        tone={tone}
-      />
+      <div className="gpa-m-page-header ct-m-header">
+        <div className="gpa-m-title-wrap">
+          <Target size={18} aria-hidden="true" className="ct-m-title-icon" />
+          <h1 className="gpa-m-page-title">Mục tiêu môn học</h1>
+        </div>
+      </div>
 
-      <div className="tool-grid wide">
-        <div className="tool-main">
-          <div className="tool-toolbar">
-            {isSplit ? (
+      <div className="ct-grid">
+        <section className={`ct-result ${skin}`} aria-label="Kết quả">
+          <div aria-live="polite">
+            <div className="ct-label">
+              Điểm thi cuối kỳ để đạt {labelLetter}
+              {isPassSelected ? ' (qua môn)' : ''}
+            </div>
+            <div className="ct-num">{bigNumber}</div>
+            <div className="ct-cap-wrap">{capsule}</div>
+          </div>
+
+          <div className="ct-strip" role="group" aria-label="Chọn mức điểm muốn đạt" style={{ '--ct-n': passingRows.length } as CSSProperties}>
+            {result.targets.map((item) => {
+              const tone = getGradeTone(item.grade);
+              const state = !result.isReady ? '' : item.status === 'achieved' ? 'done' : item.status === 'impossible' ? 'no' : 'ok';
+              return (
+                <button
+                  key={item.grade.letter}
+                  type="button"
+                  aria-pressed={item.grade.letter === selectedRow?.letter}
+                  className={`${state} grade-tone-${tone} ct-gn-${tone}`}
+                  onClick={() => setSelectedLetter(item.grade.letter)}
+                >
+                  <span className="l">{item.grade.letter}</span>
+                  <span className="v">
+                    {!result.isReady ? '·' : item.status === 'achieved' ? '✓' : item.status === 'impossible' ? '—' : fmt(item.requiredScore ?? 0)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {result.errorMessage && (
+            <p className="ct-err" role="alert">
+              {result.errorMessage}
+            </p>
+          )}
+
+          <div className="ct-foot">
+            <span>
+              Thang điểm {cohort}
+              {isSplit && groupLabel ? `, nhóm ${groupLabel}` : ''}
+            </span>
+            <button type="button" className="ct-link" onClick={() => setReferenceModalOpen(true)}>
+              Bảng quy đổi
+              <ArrowUpRight size={13} aria-hidden="true" />
+            </button>
+          </div>
+        </section>
+
+        <section className="ct-sheet" aria-labelledby="ct-sheet-title">
+          <div className="ct-sheet-head">
+            <h2 id="ct-sheet-title">Đề cương điểm</h2>
+            <ResetButton onClick={handleReset} />
+          </div>
+
+          {isSplit && (
+            <div className="ct-group">
               <div className="tool-segmented" role="group" aria-label="Nhóm môn học">
                 {getCourseGroupOptions(cohort).map((option) => (
                   <button
@@ -278,230 +325,156 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                   </button>
                 ))}
               </div>
+            </div>
+          )}
+
+          <div className="ct-ribbon" aria-hidden="true">
+            {result.hasWeightOverflow ? (
+              <div className="ct-rib over" style={{ flex: 1 }} />
             ) : (
-              <span className="tool-toolbar-label">Các cột điểm đã có</span>
+              <>
+                {ribbonSegments.map((segment) => (
+                  <div key={segment.index} className={`ct-rib seg-${segment.index % 4}`} style={{ flex: `${segment.weight} 1 0` }} />
+                ))}
+                {result.remainingWeight > 0 && <div className="ct-rib final" style={{ flex: `${result.remainingWeight} 1 0` }} />}
+              </>
             )}
-            <ResetButton onClick={handleReset} />
+          </div>
+          {result.hasWeightOverflow && (
+            <div className="ct-legend">
+              <span>
+                Tổng trọng số <b>{result.totalWeight}%</b>
+              </span>
+              <span>vượt 100%</span>
+            </div>
+          )}
+
+          <div className="ct-presets" role="group" aria-label="Mẫu trọng số">
+            <small>Mẫu:</small>
+            {SYLLABUS_PRESETS.map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                aria-pressed={signature(preset.components) === presetSignature}
+                onClick={() => applyPreset(preset)}
+              >
+                {preset.label}
+              </button>
+            ))}
           </div>
 
-          <div className="course-target-form-card">
-            <div className="course-target-presets-bar">
-              <span className="course-target-presets-label">Mẫu trọng số:</span>
-              {SYLLABUS_PRESETS.map((preset) => (
-                <button
-                  key={preset.label}
-                  type="button"
-                  className="course-target-preset-chip"
-                  onClick={() => applyPreset(preset)}
-                >
-                  {preset.label}
-                </button>
+          <div className="ct-tbl" role="table" aria-label="Các cột điểm">
+            <div className="ct-tr ct-th" role="row">
+              <span role="columnheader">Cột điểm</span>
+              <span role="columnheader">Trọng số</span>
+              <span role="columnheader">Điểm</span>
+              <span />
+            </div>
+            <div role="rowgroup">
+              {components.map((component, index) => (
+                <div className="ct-tr" role="row" key={component.id}>
+                  <span className="ct-namewrap" role="cell">
+                    <span className={`ct-dot seg-${index % 4}`} />
+                    <select
+                      className="ct-name"
+                      value={component.name}
+                      onChange={(e) => updateComponent(component.id, 'name', e.target.value)}
+                      aria-label={`Tên cột điểm ${index + 1}`}
+                    >
+                      {COMPONENT_NAMES.map((name) => (
+                        <option key={name} value={name}>
+                          {name}
+                        </option>
+                      ))}
+                    </select>
+                  </span>
+                  <span role="cell">
+                    <label className={`ct-box${isWeightInvalid(component.weight) ? ' bad' : ''}`}>
+                      <input
+                        ref={(el) => {
+                          inputRefs.current[`w-${component.id}`] = el;
+                        }}
+                        type="text"
+                        inputMode="decimal"
+                        enterKeyHint="next"
+                        placeholder="20"
+                        value={component.weight}
+                        onChange={(e) => updateComponent(component.id, 'weight', sanitizeDecimal(e.target.value))}
+                        onKeyDown={(e) => handleEnter(e, index, 'w')}
+                        aria-label={`Trọng số cột ${index + 1} (${component.name})`}
+                        aria-invalid={isWeightInvalid(component.weight)}
+                      />
+                      <i>%</i>
+                    </label>
+                  </span>
+                  <span role="cell">
+                    <label className={`ct-box score${isScoreInvalid(component.score) ? ' bad' : ''}`}>
+                      <input
+                        ref={(el) => {
+                          inputRefs.current[`s-${component.id}`] = el;
+                        }}
+                        type="text"
+                        inputMode="decimal"
+                        enterKeyHint="next"
+                        placeholder="7.5"
+                        value={component.score}
+                        onChange={(e) => updateComponent(component.id, 'score', sanitizeDecimal(e.target.value))}
+                        onKeyDown={(e) => handleEnter(e, index, 's')}
+                        aria-label={`Điểm cột ${index + 1} (${component.name})`}
+                        aria-invalid={isScoreInvalid(component.score)}
+                      />
+                      <i>/10</i>
+                    </label>
+                  </span>
+                  <span role="cell">
+                    {components.length > 1 && (
+                      <button
+                        type="button"
+                        className="ct-del"
+                        onClick={() => removeComponent(component.id)}
+                        aria-label={`Xóa cột điểm ${index + 1}`}
+                      >
+                        <X size={16} aria-hidden="true" />
+                      </button>
+                    )}
+                  </span>
+                </div>
               ))}
             </div>
 
-            <div className="course-target-table-wrap">
-              <table className="course-target-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: '35%' }}>Thành phần</th>
-                    <th style={{ width: '28%' }}>Trọng số (%)</th>
-                    <th style={{ width: '28%' }}>Điểm (10)</th>
-                    <th style={{ width: '9%' }}>
-                      <span className="sr-only">Xóa</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {components.map((component, index) => {
-                    const weight = Number(component.weight);
-                    const score = Number(component.score);
-                    const isWeightInvalid = component.weight !== '' && (!Number.isFinite(weight) || weight < 0 || weight > 100);
-                    const isScoreInvalid = component.score !== '' && (!Number.isFinite(score) || score < 0 || score > 10);
-                    return (
-                      <tr key={component.id}>
-                        <td>
-                          <select
-                            value={component.name}
-                            onChange={(e) => updateComponent(component.id, 'name', e.target.value)}
-                            className="course-target-select"
-                            aria-label={`Tên cột điểm ${index + 1}`}
-                          >
-                            {COMPONENT_NAMES.map((name) => (
-                              <option key={name} value={name}>
-                                {name}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                        <td>
-                          <div className="course-target-input-wrap">
-                            <input
-                              type="text"
-                              inputMode="decimal"
-                              value={component.weight}
-                              onChange={(e) => updateComponent(component.id, 'weight', sanitizeDecimal(e.target.value))}
-                              className={`course-target-input ${isWeightInvalid ? 'input-error' : ''}`}
-                              placeholder="VD: 20"
-                              aria-label={`Trọng số cột ${index + 1}`}
-                              aria-invalid={isWeightInvalid}
-                            />
-                            <span className="course-target-affix">%</span>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="course-target-input-wrap">
-                            <input
-                              type="text"
-                              inputMode="decimal"
-                              value={component.score}
-                              onChange={(e) => updateComponent(component.id, 'score', sanitizeDecimal(e.target.value))}
-                              className={`course-target-input ${isScoreInvalid ? 'input-error' : ''}`}
-                              placeholder="VD: 7.5"
-                              aria-label={`Điểm cột ${index + 1}`}
-                              aria-invalid={isScoreInvalid}
-                            />
-                            <span className="course-target-affix">/ 10</span>
-                          </div>
-                        </td>
-                        <td style={{ textAlign: 'center' }}>
-                          {components.length > 1 && (
-                            <button
-                              type="button"
-                              className="course-target-del-btn"
-                              onClick={() => removeComponent(component.id)}
-                              aria-label={`Xóa cột điểm ${index + 1}`}
-                            >
-                              <Trash2 size={15} aria-hidden="true" />
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="course-target-weight-bar-card">
-              <div className="course-target-weight-header">
-                <div className="course-target-weight-stat">
-                  <span className="course-target-dot entered" />
-                  <span>
-                    Đã có: <strong>{result.totalWeight}%</strong>
-                  </span>
-                </div>
-                <div className="course-target-weight-stat">
-                  <span className="course-target-dot final" />
-                  <span>
-                    Thi cuối kỳ: <strong>{result.hasWeightOverflow ? '0%' : `${result.remainingWeight}%`}</strong>
-                  </span>
-                </div>
-              </div>
-              <div className="course-target-progress-track">
-                <div
-                  className={`course-target-progress-fill entered ${result.hasWeightOverflow ? 'error' : ''}`}
-                  style={{ width: `${Math.min(100, Math.max(0, result.totalWeight))}%` }}
-                />
-                {result.totalWeight < 100 && (
-                  <div className="course-target-progress-fill final" style={{ width: `${result.remainingWeight}%` }} />
+            <div className={`ct-tr final${result.hasWeightOverflow ? ' over' : ''}`} role="row">
+              <span className="ct-namewrap" role="cell">
+                <span className="ct-dot final" />
+                Thi cuối kỳ
+              </span>
+              <span className="ct-lock" role="cell">
+                {result.hasWeightOverflow ? (
+                  <>
+                    —<small>vượt 100%</small>
+                  </>
+                ) : (
+                  <>
+                    {result.remainingWeight}%<small>tự tính</small>
+                  </>
                 )}
-              </div>
+              </span>
+              <span role="cell">{needChip}</span>
+              <span />
             </div>
-          </div>
 
-          <div className="gpa-bottom-add">
-            <button
-              type="button"
-              className="gpa-add-dashed-btn"
-              onClick={addComponent}
-              disabled={result.totalWeight >= 100}
-            >
+            <button type="button" className="ct-add" onClick={addComponent} disabled={result.totalWeight >= 100}>
               <Plus size={16} aria-hidden="true" />
-              <span>Thêm cột điểm</span>
+              Thêm cột điểm
             </button>
           </div>
-        </div>
-
-        <ResultCard id="course-target-result" title="Mục tiêu cuối kỳ" tone={tone} chip={chip}>
-          {passTarget ? (
-            <>
-              <div aria-live="polite">
-                <p className="tool-big-label">Điểm thi cuối kỳ cần đạt để qua môn ({passTarget.grade.letter})</p>
-                {passTarget.status === 'possible' && (
-                  <p className="tool-big">
-                    <strong>{animatedRequired.toFixed(2)}</strong>
-                    <span>/ 10</span>
-                  </p>
-                )}
-                {passTarget.status === 'achieved' && (
-                  <p className="tool-big text">
-                    <strong>Đã đủ</strong>
-                    <span>điểm qua môn</span>
-                  </p>
-                )}
-                {passTarget.status === 'impossible' && (
-                  <p className="tool-big text danger">
-                    <strong>&gt; 10</strong>
-                    <span>không thể qua môn</span>
-                  </p>
-                )}
-              </div>
-              <ResultFacts
-                facts={[
-                  { label: 'Điểm tích lũy', value: result.accumulatedScore.toFixed(2) },
-                  { label: 'Đã có', value: `${result.totalWeight}%` },
-                  { label: 'Thi cuối kỳ', value: `${result.remainingWeight}%` },
-                ]}
-              />
-              {passAdvice && <ResultCallout tone={tone}>{passAdvice}</ResultCallout>}
-
-              <p className="tool-grade-list-title">Điểm thi cần cho từng mức</p>
-              <ul className="tool-grade-list">
-                {result.targets.map((target) => (
-                  <li key={target.grade.letter} className={target === passTarget ? 'is-pass' : undefined}>
-                    <span>
-                      <span className={`tool-grade-letter grade-tone-${getGradeTone(target.grade)}`}>{target.grade.letter}</span>
-                      <span className="tool-grade-min">từ {target.grade.min10.toFixed(1)}</span>
-                      {target === passTarget && <span className="tool-grade-tag">mức qua môn</span>}
-                    </span>
-                    <span className={`tool-grade-value ${target.status}`}>
-                      {target.status === 'achieved'
-                        ? 'Đã đạt'
-                        : target.status === 'impossible'
-                        ? 'Không thể'
-                        : target.requiredScore?.toFixed(2)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : (
-            !result.errorMessage && <p className="tool-empty">{emptyMessage}</p>
-          )}
-
-          {result.errorMessage && (
-            <p className="tool-error" role="alert">
-              {result.errorMessage}
-            </p>
-          )}
-
-          <div className="tool-source">
-            <span>
-              Theo thang điểm {cohort}
-              {isSplit && groupLabel ? `, nhóm ${groupLabel}` : ''}.
-            </span>
-            <button type="button" className="tool-text-btn" onClick={() => setReferenceModalTab('scale')}>
-              Bảng quy đổi điểm
-            </button>
-          </div>
-        </ResultCard>
+        </section>
       </div>
 
       <GpaReferenceModal
-        isOpen={referenceModalTab !== null}
-        onClose={() => setReferenceModalTab(null)}
+        isOpen={referenceModalOpen}
+        onClose={() => setReferenceModalOpen(false)}
         cohort={cohort}
-        initialTab={referenceModalTab ?? 'scale'}
+        initialTab="scale"
       />
     </div>
   );

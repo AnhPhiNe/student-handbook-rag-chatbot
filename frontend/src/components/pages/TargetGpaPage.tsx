@@ -651,59 +651,46 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     )}
                   </div>
 
-                  <div className="target-gpa-presc-section">
-                    <div className="target-gpa-presc-title">
+                  {!hasEnteredProfile ? (
+                    <div className="target-gpa-empty-hint">
+                      Nhập điểm tích lũy và số TC ở Mục 1 để nhận phân bổ chi tiết.
+                    </div>
+                  ) : termPlan.status === 'impossible' ? (
+                    <div className="target-gpa-callout-impossible">
+                      <span className="callout-icon">💡</span>
                       <span>
-                        {termPlan.status === 'impossible'
-                          ? 'Yêu cầu tối thiểu để đạt:'
-                          : `Phân bổ mục tiêu (${futureCredits} TC ~ ${prescription.totalCourses} môn):`}
+                        Cần tích lũy tối thiểu <strong>{termPlan.minCreditsNeeded ?? '> 20'} TC</strong> điểm A toàn bộ để đạt mục tiêu này.
                       </span>
                     </div>
-                    <div className="target-gpa-presc-badges">
-                      {!hasEnteredProfile ? (
-                        <div className="target-gpa-badge-grade empty">
-                          Chưa có thông tin điểm hiện tại
-                        </div>
-                      ) : termPlan.status === 'impossible' ? (
-                        <div className="target-gpa-badge-grade">
-                          Cần tối thiểu {termPlan.minCreditsNeeded ?? '> 20'} TC điểm A toàn bộ
-                        </div>
-                      ) : (
-                        <>
-                          {prescription.coursesA > 0 && (
-                            <div className="target-gpa-badge-grade">
-                              {prescription.coursesA} môn A (4.0)
-                            </div>
-                          )}
-                          {prescription.coursesBPlus > 0 && (
-                            <div className="target-gpa-badge-grade">
-                              {prescription.coursesBPlus} môn B+ (3.5)
-                            </div>
-                          )}
-                          {prescription.coursesB > 0 && (
-                            <div className="target-gpa-badge-grade">
-                              {prescription.coursesB} môn B (3.0)
-                            </div>
-                          )}
-                        </>
-                      )}
+                  ) : termPlan.status === 'achieved' ? (
+                    <div className="target-gpa-callout-achieved">
+                      <span className="callout-icon">🎉</span>
+                      <span>Điểm tích lũy hiện tại đã đạt hoặc vượt mục tiêu này.</span>
                     </div>
-                  </div>
-
-                  <div className="target-gpa-clean-notice">
-                    {!hasEnteredProfile ? (
-                      <>Nhập điểm ở Mục 1 để nhận phân bổ chi tiết.</>
-                    ) : termPlan.status === 'impossible' ? (
-                      <>Nên phân bổ đều điểm số sang Tab Lộ Trình Ra Trường.</>
-                    ) : termPlan.status === 'achieved' ? (
-                      <>Tiếp tục giữ vững kết quả học tập ở kỳ tới.</>
-                    ) : (
-                      <>
-                        Đạt phân bổ điểm trên để chạm mức{' '}
-                        <strong>{format2(Number(targetGpaStr) || 3.2)}</strong>.
-                      </>
-                    )}
-                  </div>
+                  ) : (
+                    <div className="target-gpa-presc-section">
+                      <div className="target-gpa-presc-title">
+                        <span>Phân bổ mục tiêu ({futureCredits} TC ~ {prescription.totalCourses} môn):</span>
+                      </div>
+                      <div className="target-gpa-presc-badges">
+                        {prescription.coursesA > 0 && (
+                          <div className="target-gpa-badge-grade">
+                            {prescription.coursesA} môn A (4.0)
+                          </div>
+                        )}
+                        {prescription.coursesBPlus > 0 && (
+                          <div className="target-gpa-badge-grade">
+                            {prescription.coursesBPlus} môn B+ (3.5)
+                          </div>
+                        )}
+                        {prescription.coursesB > 0 && (
+                          <div className="target-gpa-badge-grade">
+                            {prescription.coursesB} môn B (3.0)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
 
@@ -728,20 +715,15 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                         <div className="hero-rank">Vui lòng nhập GPA và số TC ở Mục 1</div>
                       </>
                     ) : (
-                      <>
-                        <div className="hero-score score-boost">
-                          ▲ +{format2(retakePlan.deltaGpa)} <span>GPA</span>
-                        </div>
-                        <div className="hero-rank">
-                          Kéo điểm trực tiếp từ {retakes.length} môn học lại
-                        </div>
-                      </>
+                      <div className="hero-score score-boost">
+                        ▲ +{format2(retakePlan.deltaGpa)} <span>GPA</span>
+                      </div>
                     )}
                   </div>
 
                   {!hasEnteredProfile ? (
-                    <div className="target-gpa-clean-notice">
-                      Chọn môn cần học lại để dự báo mức tăng GPA.
+                    <div className="target-gpa-empty-hint">
+                      Chọn môn và điểm cải thiện để xem GPA tăng thêm.
                     </div>
                   ) : (
                     <>
@@ -770,10 +752,6 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                           <span>Cơ chế:</span>
                           <strong>Thay thế điểm cũ</strong>
                         </div>
-                      </div>
-
-                      <div className="target-gpa-clean-notice">
-                        Điểm mới sẽ thay thế điểm cũ vào bảng điểm tích lũy.
                       </div>
                     </>
                   )}
@@ -889,15 +867,12 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     </div>
                   </div>
 
-                  <div className="target-gpa-clean-notice">
-                    {!hasEnteredProfile ? (
-                      <>Nhập điểm và tín chỉ ở Mục 1 để tính lộ trình.</>
-                    ) : !roadmapPlan.isFeasible ? (
-                      <>Mục tiêu vượt 4.00. Cần học cải thiện môn ở Tab 2 để giảm áp lực.</>
-                    ) : (
-                      <>Duy trì mức điểm này để tốt nghiệp đúng hạn.</>
-                    )}
-                  </div>
+                  {hasEnteredProfile && !roadmapPlan.isFeasible && (
+                    <div className="target-gpa-callout-impossible">
+                      <span className="callout-icon">⚠️</span>
+                      <span>Mục tiêu vượt 4.00. Cần học cải thiện môn ở Tab 2 để giảm áp lực.</span>
+                    </div>
+                  )}
                 </>
               )}
 

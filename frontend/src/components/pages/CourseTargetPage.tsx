@@ -18,6 +18,8 @@ import {
 } from '../../utils/courseTarget';
 import { useAnimatedNumber } from '../../hooks/useAnimatedNumber';
 import { GpaReferenceModal } from '../GpaReferenceModal';
+import { ShareResultButton } from '../tool/ShareResultButton';
+import { courseTargetShareText } from '../../utils/shareText';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
 import { ResetButton } from '../tool/ToolSection';
 
@@ -166,6 +168,19 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
   const labelLetter = selectedRow?.letter ?? '';
   const isPassSelected = selectedRow != null && selectedRow.letter === passRow?.letter;
 
+  const shareText =
+    target && selectedRow
+      ? courseTargetShareText({
+          status: target.status,
+          letter: selectedRow.letter,
+          isPassGrade: isPassSelected,
+          requiredScore: target.requiredScore,
+          coveredPercent: 100 - result.remainingWeight,
+          bestLetter: bestReachable?.grade.letter ?? null,
+          cohort,
+        })
+      : null;
+
   const base = (
     <>
       Đang có <b>{fmt(result.accumulatedScore)}</b> • Thi {result.remainingWeight}%
@@ -297,10 +312,13 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               Thang điểm {cohort}
               {isSplit && groupLabel ? `, nhóm ${groupLabel}` : ''}
             </span>
-            <button type="button" className="ct-link" onClick={() => setReferenceModalOpen(true)}>
-              Bảng quy đổi
-              <ArrowUpRight size={13} aria-hidden="true" />
-            </button>
+            <div className="tool-foot-actions">
+              <ShareResultButton text={shareText} className="ct-link" />
+              <button type="button" className="ct-link" onClick={() => setReferenceModalOpen(true)}>
+                Bảng quy đổi
+                <ArrowUpRight size={13} aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </section>
 

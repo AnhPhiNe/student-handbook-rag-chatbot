@@ -8,6 +8,8 @@ import {
 } from '../../data/tuitionRates';
 import { estimateSemester, isTeacherTraining } from '../../utils/tuition';
 import { sanitizeInteger } from '../../utils/numberInput';
+import { ShareResultButton } from '../tool/ShareResultButton';
+import { tuitionShareText } from '../../utils/shareText';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
 import { ResetButton } from '../tool/ToolSection';
 import { ProgramSearch } from '../tool/ProgramSearch';
@@ -33,6 +35,17 @@ export function TuitionPage({ onAskChat }: TuitionPageProps) {
   const estimate = selectedProgram ? estimateSemester(selectedProgram, schoolYear, retakeCredits) : null;
   const hasRetake = Boolean(estimate && estimate.extra > 0);
   const teacherTraining = Boolean(selectedProgram && isTeacherTraining(selectedProgram.code));
+
+  const shareText =
+    estimate && selectedProgram
+      ? tuitionShareText({
+          total: estimate.total,
+          semester: estimate.semester,
+          extra: estimate.extra,
+          programName: selectedProgram.name,
+          year: schoolYear.replace('-20', '–'),
+        })
+      : null;
 
   const handleQueryChange = (value: string) => {
     setQuery(value);
@@ -134,6 +147,11 @@ export function TuitionPage({ onAskChat }: TuitionPageProps) {
           )}
 
           {estimate && <p className="tu-foot">Chưa gồm các khoản thu khác (nếu có). Số thực tế theo thông báo của trường.</p>}
+          {shareText && (
+            <div className="sc-foot">
+              <ShareResultButton text={shareText} className="sc-link" />
+            </div>
+          )}
         </section>
 
         <section className="sc-sheet" aria-labelledby="tu-sheet-title">

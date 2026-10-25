@@ -16,6 +16,8 @@ import type { Cohort } from '../../utils/gradeScale';
 import type { GradeTone } from '../../utils/gradeTone';
 import { sanitizeDecimal, sanitizeInteger } from '../../utils/numberInput';
 import { useStudentProfile } from '../../hooks/useStudentProfile';
+import { ShareResultButton } from '../tool/ShareResultButton';
+import { scholarshipShareText } from '../../utils/shareText';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
 import { ResetButton } from '../tool/ToolSection';
 import { ProgramSearch } from '../tool/ProgramSearch';
@@ -188,6 +190,16 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     event.currentTarget.blur();
   };
 
+  const shareText = result
+    ? scholarshipShareText({
+        classification: result.classification,
+        multiplier: result.multiplier,
+        score: result.score,
+        amount,
+        cohort,
+      })
+    : null;
+
   const skin = !result ? '' : classified ? 'sc-s-ok' : 'sc-s-warn';
   const heroTone = result?.classification ? toneClass(result.classification) : '';
 
@@ -307,6 +319,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
           )}
 
           <div className="sc-foot">
+            <ShareResultButton text={shareText} className="sc-link" />
             <button
               type="button"
               className="sc-link"

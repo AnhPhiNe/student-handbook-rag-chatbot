@@ -22,6 +22,8 @@ import { sanitizeDecimal } from '../../utils/numberInput';
 import { useStudentProfile } from '../../hooks/useStudentProfile';
 import { hasStoredProfile } from '../../utils/studentProfile';
 import { GpaReferenceModal } from '../GpaReferenceModal';
+import { ShareResultButton } from '../tool/ShareResultButton';
+import { targetRetakeShareText, targetRoadmapShareText, targetTermShareText } from '../../utils/shareText';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
 import {
   type RetakeCourse,
@@ -190,6 +192,42 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
   const roadmapNeededLabel = Number.isFinite(roadmapPlan.averageGpaNeeded)
     ? format2(roadmapPlan.averageGpaNeeded)
     : '> 4.00';
+
+  // Plain-text summary of the active tab's result, or null while there is no result to share.
+  const shareText = (() => {
+    if (!hasEnteredProfile) return null;
+    if (activeTab === 'term') {
+      if (!termPlan.isComplete || !targetGpaStr || termPlan.status === 'empty') return null;
+      return targetTermShareText({
+        status: termPlan.status,
+        requiredGpa: termPlan.requiredGpa,
+        targetGpa: Number(targetGpaStr),
+        currentGpa: currentGpaNum,
+        cohort,
+      });
+    }
+    if (activeTab === 'retake') {
+      if (!hasRetakes) return null;
+      return targetRetakeShareText({
+        courses: completeRetakes.length,
+        credits: completeRetakes.reduce((sum, r) => sum + r.credits, 0),
+        baselineGpa: currentGpaNum,
+        newGpa: retakePlan.newBaselineGpa,
+        deltaGpa: retakePlan.deltaGpa,
+        cohort,
+      });
+    }
+    if (!targetGradGpaStr) return null;
+    return targetRoadmapShareText({
+      feasible: roadmapPlan.isFeasible,
+      targetGpa: Number(targetGradGpaStr),
+      neededGpa: roadmapPlan.averageGpaNeeded,
+      maxGpa: maxGradGpa,
+      remainingCredits,
+      terms: roadmapPlan.termsRemaining,
+      cohort,
+    });
+  })();
 
   // Animated Hero Score for Mobile and Desktop
   const activeHeroNumber = useMemo(() => {
@@ -1085,6 +1123,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                     <span>Quy chế đào tạo</span>
                     <ExternalLink size={11} className="target-gpa-pill-arrow" />
                   </button>
+                  <ShareResultButton text={shareText} className="target-gpa-footer-pill" />
                 </div>
                 <div className="target-gpa-footer-meta">
                   <span className="target-gpa-meta-note">* Kết quả mang tính tham khảo</span>
@@ -1207,6 +1246,7 @@ export function TargetGpaPage({ cohort = 'K51' }: TargetGpaPageProps) {
                 )
               )}
             </div>
+            <ShareResultButton text={shareText} className="tool-share-hero" />
           </div>
 
           {/* Standalone Alert Banner outside Hero Card */}

@@ -9,10 +9,14 @@ import {
 import { useStudentProfile } from '../../hooks/useStudentProfile';
 import { integerCredits } from '../../utils/studentProfile';
 import { sanitizeInteger } from '../../utils/numberInput';
+import { ShareResultButton } from '../tool/ShareResultButton';
+import { creditsShareText } from '../../utils/shareText';
+import type { Cohort } from '../../utils/gradeScale';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
 import { ResetButton } from '../tool/ToolSection';
 
 interface CreditsPageProps {
+  cohort: Cohort;
   onAskChat: (text: string) => void;
 }
 
@@ -76,7 +80,7 @@ function CreditMeter({ failed, maxCredits }: CreditMeterProps) {
   );
 }
 
-export function CreditsPage({ onAskChat }: CreditsPageProps) {
+export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
   // The degree total is the student's own number: reuse the one saved by the GPA target page.
   const { profile, update: updateProfile } = useStudentProfile();
   const [totalCredits, setTotalCredits] = useState(() => integerCredits(profile.totalDegreeCredits));
@@ -89,6 +93,17 @@ export function CreditsPage({ onAskChat }: CreditsPageProps) {
   const result = totalCredits === '' ? null : calculateCreditThreshold(total, failed);
   const exceeded = result?.status === 'exceeded';
   const verdict = result ? getDowngradeVerdict(result.status, classification) : null;
+
+  const shareText = result
+    ? creditsShareText({
+        status: result.status,
+        failedCredits: failed,
+        maxCredits: result.maxCredits,
+        creditsLeft: result.creditsLeft,
+        totalCredits: total,
+        cohort,
+      })
+    : null;
 
   const handleReset = () => {
     setTotalCredits('');
@@ -178,10 +193,13 @@ export function CreditsPage({ onAskChat }: CreditsPageProps) {
 
           <div className="cr-foot">
             <span>Khoản 3 Điều 15 Quy chế đào tạo</span>
-            <button type="button" className="sc-link" onClick={() => onAskChat(DOWNGRADE_QUESTION)}>
-              <MessageCircle size={14} aria-hidden="true" />
-              Hỏi chatbot
-            </button>
+            <div className="tool-foot-actions">
+              <ShareResultButton text={shareText} className="sc-link" />
+              <button type="button" className="sc-link" onClick={() => onAskChat(DOWNGRADE_QUESTION)}>
+                <MessageCircle size={14} aria-hidden="true" />
+                Hỏi chatbot
+              </button>
+            </div>
           </div>
         </section>
 

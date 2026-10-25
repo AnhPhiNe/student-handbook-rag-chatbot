@@ -11424,3 +11424,38 @@ p.tool-source > svg {
 @media (max-width: 900px) {
   .sc-use-last { min-height: 40px; font-size: 0.82rem; }
 }
+
+/* Sao chép kết quả: sits in each result card's footer row */
+.tool-foot-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
+.sc-foot { gap: 16px; flex-wrap: wrap; }
+.tool-share-btn { gap: 5px; }
+.target-gpa-footer-pill.tool-share-btn { gap: 0.5rem; }
+.gpa-d-result-footer { flex-wrap: wrap; gap: 0.35rem 0.75rem; }
+.gpa-d-result-footer .gpa-d-footer-link { white-space: nowrap; }
+.gpa-d-result-footer .gpa-d-footer-watermark { margin-left: auto; white-space: nowrap; }
+/* Mobile hero cards are dark in both themes */
+.tool-share-hero {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0.6rem auto 0;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.gpa-mobile-hero-card .tool-share-hero { display: flex; width: fit-content; }
+.tool-share-hero:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@media (max-width: 900px) {
+  .tool-share-btn,
+  .tool-share-hero { min-height: 40px; }
+  .cr-foot,
+  .ct-foot { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .cr-foot .tool-foot-actions,
+  .ct-foot .tool-foot-actions { justify-content: flex-start; }
+}

@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useId, useRef, useState, type ReactNode } from 'react';
+import { ShareResultButton } from '../tool/ShareResultButton';
+import { gpaShareText } from '../../utils/shareText';
 import { useStudentProfile } from '../../hooks/useStudentProfile';
 import { AlertTriangle, ArrowRight, ArrowUpRight, BookOpen, GraduationCap, Plus, Trash2, X, RotateCcw } from 'lucide-react';
 import {
@@ -254,6 +256,10 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
   const { profile, update: updateProfile } = useStudentProfile();
   const savedSemesterGpa = profile.lastSemesterGpa;
   const semesterGpaText = hasResult && !hasInvalidData ? result.gpa.toFixed(2) : null;
+  const shareText =
+    semesterGpaText && academicTier
+      ? gpaShareText({ gpa: Number(semesterGpaText), tier: academicTier.label, credits: result.totalCredits, cohort })
+      : null;
   useEffect(() => {
     if (semesterGpaText && semesterGpaText !== savedSemesterGpa) {
       const timer = window.setTimeout(() => updateProfile({ lastSemesterGpa: semesterGpaText }), 400);
@@ -602,6 +608,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                 <span>Bảng quy đổi {cohort}</span>
                 <ArrowUpRight size={14} aria-hidden="true" />
               </button>
+              <ShareResultButton text={shareText} className="gpa-d-footer-link" />
               <span className="gpa-d-footer-watermark">ĐHSP TP.HCM</span>
             </div>
 
@@ -651,6 +658,8 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                 </div>
               )}
             </div>
+
+            <ShareResultButton text={shareText} className="tool-share-hero" />
 
             {hasInvalidData && (
               <div className="gpa-m-hero-alert" role="alert">

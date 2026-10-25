@@ -188,7 +188,7 @@ function App() {
               {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
               {activeTab === 'scholarship' && <ScholarshipPage key={cohort} cohort={cohort} onAskChat={askChat} />}
               {activeTab === 'tuition' && <TuitionPage key={cohort} onAskChat={askChat} />}
-              {activeTab === 'credits' && <CreditsPage key={cohort} onAskChat={askChat} />}
+              {activeTab === 'credits' && <CreditsPage key={cohort} cohort={cohort} onAskChat={askChat} />}
               {activeTab === 'survival-guide' && <SurvivalGuidePage />}
               {activeTab === 'huong-dan' && <GuidePage onNavigate={handleNavigate} />}
 

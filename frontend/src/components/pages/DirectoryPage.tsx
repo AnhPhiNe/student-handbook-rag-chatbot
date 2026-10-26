@@ -208,7 +208,16 @@ export function DirectoryPage({ onAskChat }: DirectoryPageProps) {
   const task = TASKS.find((item) => item.label === taskLabel) ?? null;
   const pool = kind === 'office' ? OFFICES : FACULTIES;
   const browsing = !task && !trimmed;
-  const items = task ? unitsForTask(pool, task.match) : searchUnits(pool, trimmed);
+  // Browsing lists one kind at a time; a search or a task looks at both so no hit hides behind the other tab.
+  const groups: { label: string; units: DirectoryUnit[] }[] = browsing
+    ? [{ label: '', units: pool }]
+    : task
+      ? [{ label: 'Phòng ban', units: unitsForTask(OFFICES, task.match) }]
+      : [
+          { label: 'Phòng ban', units: searchUnits(OFFICES, trimmed) },
+          { label: 'Khoa', units: searchUnits(FACULTIES, trimmed) },
+        ].filter((group) => group.units.length > 0);
+  const items = groups.flatMap((group) => group.units);
   const question = trimmed ? queryQuestion(trimmed) : GENERIC_QUESTION;
 
   const changeQuery = (value: string) => {
@@ -282,16 +291,18 @@ export function DirectoryPage({ onAskChat }: DirectoryPageProps) {
             ))}
           </div>
 
-          <div className="dir-tabs" role="group" aria-label="Loại đơn vị">
-            {KINDS.map(({ value, label }) => (
-              <button key={value} type="button" aria-pressed={kind === value} onClick={() => switchKind(value)}>
-                {label}
-              </button>
-            ))}
-          </div>
+          {browsing && (
+            <div className="dir-tabs" role="group" aria-label="Loại đơn vị">
+              {KINDS.map(({ value, label }) => (
+                <button key={value} type="button" aria-pressed={kind === value} onClick={() => switchKind(value)}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
         </section>
 
-        <div className={browsing ? 'dir-rows' : 'dir-list'} aria-live="polite">
+        <div className={browsing ? 'dir-rows' : 'dir-results'} aria-live="polite">
           {items.length === 0 ? (
             <div className="dir-empty">
               Không tìm thấy đơn vị phù hợp với “{trimmed}”.
@@ -311,8 +322,19 @@ export function DirectoryPage({ onAskChat }: DirectoryPageProps) {
               />
             ))
           ) : (
-            items.map((unit) => (
-              <UnitCard key={unitKey(unit)} unit={unit} query={task ? '' : trimmed} highlighted compact={false} />
+            groups.map((group) => (
+              <section key={group.label} className="dir-group" aria-label={`${group.label}: ${group.units.length} kết quả`}>
+                {!task && (
+                  <h2 className="dir-group-title">
+                    {group.label} <span>({group.units.length})</span>
+                  </h2>
+                )}
+                <div className="dir-list">
+                  {group.units.map((unit) => (
+                    <UnitCard key={unitKey(unit)} unit={unit} query={task ? '' : trimmed} highlighted compact={false} />
+                  ))}
+                </div>
+              </section>
             ))
           )}
         </div>

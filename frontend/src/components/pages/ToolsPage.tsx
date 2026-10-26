@@ -8,11 +8,13 @@ import {
   Pin,
   PinOff,
   Search,
+  Star,
   ShieldCheck,
   Target,
   TrendingUp,
   type LucideIcon,
 } from 'lucide-react';
+import { SHOW_EXPERIENCE_PAGE } from '../../config/features';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { arrangePinnedTools, togglePinnedId } from '../../utils/pinnedTools';
 
@@ -84,6 +86,17 @@ const TOOL_GROUPS: ToolGroup[] = [
   {
     title: 'Tài nguyên',
     tools: [
+      ...(SHOW_EXPERIENCE_PAGE
+        ? [
+            {
+              id: 'kinh-nghiem',
+              title: 'Kinh nghiệm học bổng',
+              description: 'Chia sẻ của bạn đã giữ học bổng Xuất sắc.',
+              icon: Star,
+              tone: 'orange' as const,
+            },
+          ]
+        : []),
       {
         id: 'danh-ba',
         title: 'Danh bạ',

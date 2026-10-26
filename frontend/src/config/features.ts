@@ -34,3 +34,20 @@ export const IS_CHAT_MAINTENANCE: boolean = (() => {
   // 3. Sử dụng giá trị cấu hình mặc định
   return DEFAULT_CHAT_MAINTENANCE;
 })();
+
+/**
+ * 📝 TRANG "KINH NGHIỆM HỌC BỔNG" (SHOW_EXPERIENCE_PAGE):
+ * Nội dung hiện vẫn là bản mẫu (xem `src/data/experience.ts`), nên trang chỉ hiện khi:
+ * 1. Chạy chế độ phát triển (`npm run dev`), hoặc
+ * 2. Đặt biến môi trường `VITE_SHOW_EXPERIENCE=true`, hoặc
+ * 3. Thêm `?experience=true` vào URL để xem thử.
+ * Khi false, mục menu biến mất và không thể mở trang.
+ */
+export const SHOW_EXPERIENCE_PAGE: boolean = (() => {
+  if (import.meta.env.DEV) return true;
+  if (import.meta.env.VITE_SHOW_EXPERIENCE === 'true') return true;
+  if (typeof window !== 'undefined') {
+    return new URLSearchParams(window.location.search).get('experience') === 'true';
+  }
+  return false;
+})();

@@ -12,6 +12,7 @@ const ScholarshipPage = React.lazy(() => import('./components/pages/ScholarshipP
 const ToolsPage = React.lazy(() => import('./components/pages/ToolsPage').then(module => ({ default: module.ToolsPage })));
 const TuitionPage = React.lazy(() => import('./components/pages/TuitionPage').then(module => ({ default: module.TuitionPage })));
 const CreditsPage = React.lazy(() => import('./components/pages/CreditsPage').then(module => ({ default: module.CreditsPage })));
+const ExperiencePage = React.lazy(() => import('./components/pages/ExperiencePage').then(module => ({ default: module.ExperiencePage })));
 const DirectoryPage = React.lazy(() => import('./components/pages/DirectoryPage').then(module => ({ default: module.DirectoryPage })));
 
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -24,7 +25,7 @@ import { ChatMaintenanceModal } from './components/ChatMaintenanceModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
 import { MobileScrollAffordance } from './components/MobileScrollAffordance';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
-import { IS_CHAT_MAINTENANCE } from './config/features';
+import { IS_CHAT_MAINTENANCE, SHOW_EXPERIENCE_PAGE } from './config/features';
 import { useToast } from './components/Toast';
 import { KEPT_DATA_NOTES, cohortChangeMessage, shouldNotifyCohortChange } from './utils/cohortNotice';
 
@@ -79,6 +80,7 @@ function App() {
       setIsMaintenanceModalOpen(true);
       return;
     }
+    if (nextTab === 'kinh-nghiem' && !SHOW_EXPERIENCE_PAGE) return;
     setActiveTab(nextTab);
   };
 
@@ -187,6 +189,7 @@ function App() {
               {activeTab === 'scholarship' && <ScholarshipPage key={cohort} cohort={cohort} onAskChat={askChat} />}
               {activeTab === 'tuition' && <TuitionPage key={cohort} onAskChat={askChat} />}
               {activeTab === 'credits' && <CreditsPage key={cohort} cohort={cohort} onAskChat={askChat} />}
+              {SHOW_EXPERIENCE_PAGE && activeTab === 'kinh-nghiem' && <ExperiencePage onAskChat={askChat} onNavigate={handleNavigate} />}
               {activeTab === 'danh-ba' && <DirectoryPage onAskChat={askChat} />}
               {activeTab === 'huong-dan' && <GuidePage onNavigate={handleNavigate} />}
 

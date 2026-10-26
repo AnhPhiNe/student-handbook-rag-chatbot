@@ -1,5 +1,5 @@
-import { MessageSquare, BookOpen, Wrench, Home } from 'lucide-react';
-import { IS_CHAT_MAINTENANCE } from '../config/features';
+import { MessageSquare, BookOpen, Wrench, Home, Star } from 'lucide-react';
+import { IS_CHAT_MAINTENANCE, SHOW_EXPERIENCE_PAGE } from '../config/features';
 
 interface BottomTabBarProps {
   activeTab: string;
@@ -12,11 +12,12 @@ export function BottomTabBar({ activeTab, onTabChange }: BottomTabBarProps) {
     { id: 'home', icon: Home, label: 'Trang chủ' },
     { id: 'chat', icon: MessageSquare, label: 'Chat' },
     { id: 'tools', icon: Wrench, label: 'Công cụ' },
+    ...(SHOW_EXPERIENCE_PAGE ? [{ id: 'kinh-nghiem', icon: Star, label: 'Kinh nghiệm' }] : []),
     { id: 'huong-dan', icon: BookOpen, label: 'Hướng dẫn' }
   ];
 
   return (
-    <nav className="bottom-tab-bar">
+    <nav className={`bottom-tab-bar${tabs.length > 4 ? ' five-tabs' : ''}`}>
       {tabs.map(tab => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id || (tab.id === 'tools' && toolTabs.has(activeTab));

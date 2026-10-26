@@ -296,6 +296,7 @@ export function DirectoryPage({ onAskChat }: DirectoryPageProps) {
               {KINDS.map(({ value, label }) => (
                 <button key={value} type="button" aria-pressed={kind === value} onClick={() => switchKind(value)}>
                   {label}
+                  <span className="dir-tab-count">{value === 'office' ? OFFICES.length : FACULTIES.length}</span>
                 </button>
               ))}
             </div>

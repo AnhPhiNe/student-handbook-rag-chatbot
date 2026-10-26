@@ -10726,6 +10726,18 @@ p.tool-source > svg {
   color: var(--dir-text2);
 }
 .dir-group-title span { font-weight: 600; }
+.dir-tab-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--dir-text2);
+  background: color-mix(in srgb, var(--dir-accent) 10%, transparent);
+}
+.dir-tabs button[aria-pressed='true'] .dir-tab-count { color: var(--dir-accent); }
 /* Desktop: a compact switch on the left, so its halves never read as result column headings. */
 @media (min-width: 901px) {
   .dir-tabs { display: inline-flex; margin-left: 18px; }

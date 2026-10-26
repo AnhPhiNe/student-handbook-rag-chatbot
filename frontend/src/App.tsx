@@ -12,6 +12,7 @@ const ScholarshipPage = React.lazy(() => import('./components/pages/ScholarshipP
 const ToolsPage = React.lazy(() => import('./components/pages/ToolsPage').then(module => ({ default: module.ToolsPage })));
 const TuitionPage = React.lazy(() => import('./components/pages/TuitionPage').then(module => ({ default: module.TuitionPage })));
 const CreditsPage = React.lazy(() => import('./components/pages/CreditsPage').then(module => ({ default: module.CreditsPage })));
+const DirectoryPage = React.lazy(() => import('./components/pages/DirectoryPage').then(module => ({ default: module.DirectoryPage })));
 
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
@@ -186,6 +187,7 @@ function App() {
               {activeTab === 'scholarship' && <ScholarshipPage key={cohort} cohort={cohort} onAskChat={askChat} />}
               {activeTab === 'tuition' && <TuitionPage key={cohort} onAskChat={askChat} />}
               {activeTab === 'credits' && <CreditsPage key={cohort} cohort={cohort} onAskChat={askChat} />}
+              {activeTab === 'danh-ba' && <DirectoryPage onAskChat={askChat} />}
               {activeTab === 'huong-dan' && <GuidePage onNavigate={handleNavigate} />}
 
             </Suspense>

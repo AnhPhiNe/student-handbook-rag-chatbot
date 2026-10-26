@@ -2,6 +2,7 @@ import {
   Award,
   BookOpenCheck,
   Calculator,
+  Contact,
   GraduationCap,
   LayoutGrid,
   Pin,
@@ -83,6 +84,13 @@ const TOOL_GROUPS: ToolGroup[] = [
   {
     title: 'Tài nguyên',
     tools: [
+      {
+        id: 'danh-ba',
+        title: 'Danh bạ',
+        description: 'Tìm phòng ban, khoa và số liên hệ.',
+        icon: Contact,
+        tone: 'cyan',
+      },
       {
         id: 'huong-dan',
         title: 'Hướng dẫn sử dụng',

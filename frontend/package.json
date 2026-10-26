@@ -10,7 +10,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "node --test \"tests/**/*.test.ts\"",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:directory": "node scripts/build-directory.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

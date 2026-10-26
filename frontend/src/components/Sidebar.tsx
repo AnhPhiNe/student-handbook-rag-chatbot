@@ -1,4 +1,4 @@
-import { Award, Calculator, GraduationCap, HelpCircle, MessageSquare, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home } from 'lucide-react';
+import { Award, Calculator, GraduationCap, HelpCircle, MessageSquare, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Contact } from 'lucide-react';
 const logoHcmue = '/logo_hcmue.png?v=2';
 import { VisitorCounter } from './VisitorCounter';
 import { IS_CHAT_MAINTENANCE } from '../config/features';
@@ -99,6 +99,11 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onC
 
           <div className="sidebar-nav-section">
             <div className="sidebar-nav-title">Tài nguyên</div>
+            <button className={`nav-item ${activeTab === 'danh-ba' ? 'active' : ''}`} onClick={() => handleTabClick('danh-ba')} aria-label="Danh bạ">
+              {activeTab === 'danh-ba' && <div className="active-indicator" />}
+              <Contact size={18} />
+              <span>Danh bạ</span>
+            </button>
             <button className={`nav-item ${activeTab === 'huong-dan' ? 'active' : ''}`} onClick={() => handleTabClick('huong-dan')} aria-label="Hướng dẫn">
               {activeTab === 'huong-dan' && <div className="active-indicator" />}
               <HelpCircle size={18} />

@@ -1,9 +1,7 @@
 import {
   ArrowRight,
-  FileText,
   LayoutGrid,
   MessageSquare,
-  Sparkles,
   type LucideIcon,
 } from 'lucide-react';
 import { IS_CHAT_MAINTENANCE } from '../../config/features';
@@ -38,20 +36,6 @@ const HOME_ACTIONS: HomeAction[] = [
     description: 'Tính GPA, lập mục tiêu, ước tính học phí và kiểm tra các điều kiện học tập.',
     icon: LayoutGrid,
     tone: 'violet',
-  },
-  {
-    id: 'survival-guide',
-    title: 'Phương pháp học tập',
-    description: 'Khám phá cách ghi nhớ, tập trung và quản lý mục tiêu hiệu quả.',
-    icon: Sparkles,
-    tone: 'cyan',
-  },
-  {
-    id: 'bieu-mau',
-    title: 'Biểu mẫu',
-    description: 'Tìm kiếm và tải nhanh các biểu mẫu sinh viên hiện có trên hệ thống.',
-    icon: FileText,
-    tone: 'green',
   },
 ];
 

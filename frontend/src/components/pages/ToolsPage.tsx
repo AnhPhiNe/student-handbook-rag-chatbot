@@ -2,14 +2,12 @@ import {
   Award,
   BookOpenCheck,
   Calculator,
-  FileText,
   GraduationCap,
   LayoutGrid,
   Pin,
   PinOff,
   Search,
   ShieldCheck,
-  Sparkles,
   Target,
   TrendingUp,
   type LucideIcon,
@@ -86,20 +84,6 @@ const TOOL_GROUPS: ToolGroup[] = [
     title: 'Tài nguyên',
     tools: [
       {
-        id: 'survival-guide',
-        title: 'Phương pháp học tập',
-        description: 'Gợi ý cách ghi nhớ và tập trung.',
-        icon: Sparkles,
-        tone: 'violet',
-      },
-      {
-        id: 'bieu-mau',
-        title: 'Biểu mẫu',
-        description: 'Tìm và tải biểu mẫu sinh viên.',
-        icon: FileText,
-        tone: 'green',
-      },
-      {
         id: 'huong-dan',
         title: 'Hướng dẫn sử dụng',
         description: 'Xem cách sử dụng hệ thống.',
@@ -111,6 +95,8 @@ const TOOL_GROUPS: ToolGroup[] = [
 ];
 
 const PINNED_GROUP_TITLE = 'Đã ghim';
+const CALC_TOOL_COUNT = TOOL_GROUPS[0].tools.length;
+const RESOURCE_COUNT = TOOL_GROUPS.slice(1).reduce((sum, group) => sum + group.tools.length, 0);
 
 export function ToolsPage({ onNavigate }: ToolsPageProps) {
   const [storedPins, setStoredPins] = useLocalStorage<string[]>('hcmue-pinned-tools', []);
@@ -164,11 +150,11 @@ export function ToolsPage({ onNavigate }: ToolsPageProps) {
           <div className="page-context-badges tools-summary-badges" aria-label="Tổng quan danh mục công cụ">
             <span className="page-context-badge primary">
               <Calculator size={14} aria-hidden="true" />
-              6 công cụ tính toán
+              {CALC_TOOL_COUNT} công cụ tính toán
             </span>
             <span className="page-context-badge">
               <Search size={14} aria-hidden="true" />
-              3 tài nguyên
+              {RESOURCE_COUNT} tài nguyên
             </span>
           </div>
         </div>

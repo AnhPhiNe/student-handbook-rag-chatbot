@@ -4,7 +4,6 @@ import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
 import { useChat } from './hooks/useChat';
 const HomePage = React.lazy(() => import('./components/pages/HomePage').then(module => ({ default: module.HomePage })));
-const FormPage = React.lazy(() => import('./components/pages/FormPage').then(module => ({ default: module.FormPage })));
 const GuidePage = React.lazy(() => import('./components/pages/GuidePage').then(module => ({ default: module.GuidePage })));
 const GpaPage = React.lazy(() => import('./components/pages/GpaPage').then(module => ({ default: module.GpaPage })));
 const TargetGpaPage = React.lazy(() => import('./components/pages/TargetGpaPage').then(module => ({ default: module.TargetGpaPage })));
@@ -12,7 +11,6 @@ const CourseTargetPage = React.lazy(() => import('./components/pages/CourseTarge
 const ScholarshipPage = React.lazy(() => import('./components/pages/ScholarshipPage').then(module => ({ default: module.ScholarshipPage })));
 const ToolsPage = React.lazy(() => import('./components/pages/ToolsPage').then(module => ({ default: module.ToolsPage })));
 const TuitionPage = React.lazy(() => import('./components/pages/TuitionPage').then(module => ({ default: module.TuitionPage })));
-const SurvivalGuidePage = React.lazy(() => import('./components/pages/SurvivalGuidePage').then(module => ({ default: module.SurvivalGuidePage })));
 const CreditsPage = React.lazy(() => import('./components/pages/CreditsPage').then(module => ({ default: module.CreditsPage })));
 
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -181,7 +179,6 @@ function App() {
                   cohort={cohort}
                 />
               )}
-              {activeTab === 'bieu-mau' && <FormPage />}
               {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} />}
               {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} onNavigate={handleNavigate} />}
               {activeTab === 'target-gpa' && <TargetGpaPage key={cohort} cohort={cohort} />}
@@ -189,7 +186,6 @@ function App() {
               {activeTab === 'scholarship' && <ScholarshipPage key={cohort} cohort={cohort} onAskChat={askChat} />}
               {activeTab === 'tuition' && <TuitionPage key={cohort} onAskChat={askChat} />}
               {activeTab === 'credits' && <CreditsPage key={cohort} cohort={cohort} onAskChat={askChat} />}
-              {activeTab === 'survival-guide' && <SurvivalGuidePage />}
               {activeTab === 'huong-dan' && <GuidePage onNavigate={handleNavigate} />}
 
             </Suspense>

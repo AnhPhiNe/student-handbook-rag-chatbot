@@ -123,7 +123,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   }
 };
 
-export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, onNavigateTab, onClearChat }: ChatAreaProps) {
+export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, onClearChat }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
@@ -160,11 +160,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   };
 
   const handleQuickAccess = (id: string) => {
-    if (id === 'bieu-mau') {
-      if (onNavigateTab) onNavigateTab('bieu-mau');
-      return;
-    }
-    
     const card = ACTION_CARDS.find(c => c.id === id);
     const title = card ? card.label : id;
     

@@ -12,6 +12,12 @@ describe('foldText', () => {
 });
 
 describe('searchUnits', () => {
+  it('finds branch-campus units by campus name, with or without diacritics', () => {
+    const found = searchUnits(FACULTIES, 'long an');
+    assert.ok(found.length > 0);
+    assert.ok(found.every((unit) => unit.campus === 'Phân hiệu Long An'));
+    assert.deepEqual(searchUnits(FACULTIES, 'gia lai').length, searchUnits(FACULTIES, 'Gia Lai').length);
+  });
   it('finds the exam office for "phúc khảo"', () => {
     assert.ok(names('phúc khảo').includes('Phòng Khảo thí và Đảm bảo chất lượng'));
   });

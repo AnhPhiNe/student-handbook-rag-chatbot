@@ -12,6 +12,7 @@ export function foldText(text: string): string {
 function matchesQuery(unit: DirectoryUnit, folded: string): boolean {
   if (foldText(unit.name).includes(folded)) return true;
   if (unit.aliases.some((alias) => foldText(alias).includes(folded))) return true;
+  if (unit.campus && foldText(unit.campus).includes(folded)) return true;
   if (unit.services.some((service) => foldText(service).includes(folded))) return true;
   // A keyword also matches inside a longer question: "toi can phuc khao" contains "phuc khao".
   return unit.keywords.some((keyword) => {

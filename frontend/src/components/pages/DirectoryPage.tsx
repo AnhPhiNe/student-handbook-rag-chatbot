@@ -50,7 +50,7 @@ const TASKS: DirectoryTask[] = [
 type UnitKind = 'office' | 'faculty';
 
 const MAX_SERVICES = 3;
-const GENERIC_QUESTION = 'Tôi cần liên hệ phòng nào để …?';
+const GENERIC_QUESTION = 'Các phòng ban của trường phụ trách những việc gì cho sinh viên?';
 const queryQuestion = (query: string) => `Tôi cần liên hệ đơn vị nào về "${query}"?`;
 // Two faculty-level units can share a name (one per campus); the email tells them apart.
 const unitKey = (unit: DirectoryUnit) => `${unit.name}|${unit.emails[0] ?? ''}`;

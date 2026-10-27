@@ -79,8 +79,11 @@ async function checkHfSpaceStage(parentSignal: AbortSignal): Promise<SystemStatu
 export function SystemStatusBadge({
   compact = false,
   hideWhenOnline = false,
+  variant = 'badge',
 }: {
   compact?: boolean;
+  /** 'strip' is the full-width line under the phone header. */
+  variant?: 'badge' | 'strip';
   /** Render nothing while the backend is healthy or still being checked. */
   hideWhenOnline?: boolean;
 }) {
@@ -144,7 +147,7 @@ export function SystemStatusBadge({
     checking: 'Đang kiểm tra',
     online: 'Hệ thống sẵn sàng',
     degraded: 'Đang cập nhật',
-    offline: 'Tạm thời gián đoạn',
+    offline: 'Chat tạm gián đoạn',
   };
 
   const titleByStatus: Record<SystemStatus, string> = {
@@ -155,6 +158,16 @@ export function SystemStatusBadge({
   };
 
   if (hideWhenOnline && (status === 'online' || status === 'checking')) return null;
+
+  if (variant === 'strip') {
+    return (
+      <div className="mobile-status-strip" role="status" aria-live="polite" title={titleByStatus[status]}>
+        {status === 'offline'
+          ? 'Chat đang tạm gián đoạn. Công cụ vẫn dùng được.'
+          : 'Chat đang khởi động lại, câu trả lời có thể chậm hơn.'}
+      </div>
+    );
+  }
 
   if (compact) {
     return (

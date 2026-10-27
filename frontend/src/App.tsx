@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { Sun, Moon, Trash2, Loader2 } from 'lucide-react';
+import { Sun, Moon, Plus, Loader2 } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
 import { useChat } from './hooks/useChat';
@@ -21,6 +21,7 @@ import { BottomTabBar } from './components/BottomTabBar';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { CohortSelectionModal } from './components/CohortSelectionModal';
+import { CohortSheet } from './components/CohortSheet';
 import { ChatMaintenanceModal } from './components/ChatMaintenanceModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
 import { MobileScrollAffordance } from './components/MobileScrollAffordance';
@@ -57,7 +58,7 @@ function App() {
   
   const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCohortSheetOpen, setIsCohortSheetOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isCohortModalDismissed, setIsCohortModalDismissed] = useState(false);
   const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false);
@@ -84,6 +85,11 @@ function App() {
     setActiveTab(nextTab);
   };
 
+  const startNewChat = () => {
+    if (messages.length === 0) return;
+    if (window.confirm('Bắt đầu cuộc trò chuyện mới? Cuộc trò chuyện hiện tại sẽ bị xóa.')) clearMessages();
+  };
+
   // Jump to the chat tab and ask a question there (same maintenance guard as navigating to chat).
   const askChat = (text: string) => {
     if (IS_CHAT_MAINTENANCE) {
@@ -98,63 +104,67 @@ function App() {
     <ErrorBoundary>
       <div className="app-container">
           {isMobile && (
-            <MobileHeader 
-              onMenuToggle={() => setIsMobileMenuOpen(true)} 
-              theme={theme} 
-              onToggleTheme={toggleTheme} 
-              cohort={cohort}
-              onCohortChange={setCohort}
-              showCohortSelector={shouldShowCohortSelector}
-            />
+            <>
+              <MobileHeader
+                theme={theme}
+                onToggleTheme={toggleTheme}
+                cohort={cohort}
+                onOpenCohort={() => setIsCohortSheetOpen(true)}
+                showCohortSelector={shouldShowCohortSelector}
+                onNewChat={activeTab === 'chat' && messages.length > 0 ? startNewChat : undefined}
+              />
+              <SystemStatusBadge hideWhenOnline variant="strip" />
+            </>
           )}
           
-          <Sidebar 
-            activeTab={activeTab}
-            onTabChange={handleNavigate}
-            isCollapsed={sidebarCollapsed}
-            isMobileOpen={isMobileMenuOpen}
-            onClose={() => setIsMobileMenuOpen(false)}
-            onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
-          />
+          {!isMobile && (
+            <Sidebar
+              activeTab={activeTab}
+              onTabChange={handleNavigate}
+              isCollapsed={sidebarCollapsed}
+              onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
+            />
+          )}
           
           <div ref={contentAreaRef} className="content-area" style={{ position: 'relative' }}>
             {/* Global Controls */}
             {!isMobile && (
               <>
-                <div className={`global-controls ${shouldShowCohortSelector ? '' : 'compact'}`}>
+                <div className="global-controls">
                 {/* Backend health only matters for chat; elsewhere the badge appears only when something is wrong. */}
                 <SystemStatusBadge hideWhenOnline={activeTab !== 'chat'} />
                 {activeTab === 'chat' && messages.length > 0 && (
-                  <button className="theme-toggle" onClick={() => {
-                    if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử chat không?")) {
-                      clearMessages();
-                    }
-                  }} title="Xóa lịch sử chat">
-                    <Trash2 size={16} />
-                    <span>Xóa chat</span>
+                  <button type="button" className="control-pill" onClick={startNewChat}>
+                    <Plus size={15} aria-hidden="true" />
+                    <span>Cuộc trò chuyện mới</span>
                   </button>
                 )}
-                {shouldShowCohortSelector && (
-                <select 
-                  className="theme-toggle cohort-selector" 
-                  value={cohort} 
-                  onChange={(e) => setCohort(e.target.value as Cohort)}
-                  style={{ cursor: 'pointer', outline: 'none' }}
-                >
-                  <option value="K49">Khóa 49</option>
-                  <option value="K50">Khóa 50</option>
-                  <option value="K51">Khóa 51</option>
-                  <option value="K52" disabled>Khóa 52 (chưa hỗ trợ)</option>
-                </select>
-                )}
-                <button
-                  className="theme-toggle icon-only"
-                  onClick={toggleTheme}
-                  aria-label={`Bật chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
-                  title={`Chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
-                >
-                  {theme === 'light' ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
-                </button>
+                <span className="control-cluster">
+                  {shouldShowCohortSelector && (
+                    <>
+                      <select
+                        value={cohort}
+                        onChange={(e) => setCohort(e.target.value as Cohort)}
+                        aria-label="Chọn khóa áp dụng"
+                      >
+                        <option value="K49">Khóa 49</option>
+                        <option value="K50">Khóa 50</option>
+                        <option value="K51">Khóa 51</option>
+                        <option value="K52" disabled>Khóa 52 (sắp có)</option>
+                      </select>
+                      <span className="control-cluster-divider" aria-hidden="true" />
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    className="control-icon"
+                    onClick={toggleTheme}
+                    aria-label={`Bật chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
+                    title={`Chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
+                  >
+                    {theme === 'light' ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
+                  </button>
+                </span>
               </div>
               </>
             )}
@@ -222,6 +232,14 @@ function App() {
             <CohortSelectionModal
               onSelect={setCohort}
               onDismiss={() => setIsCohortModalDismissed(true)}
+            />
+          )}
+
+          {isCohortSheetOpen && (
+            <CohortSheet
+              cohort={cohort}
+              onSelect={setCohort}
+              onClose={() => setIsCohortSheetOpen(false)}
             />
           )}
 

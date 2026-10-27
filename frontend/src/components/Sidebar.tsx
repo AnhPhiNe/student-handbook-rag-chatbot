@@ -1,131 +1,93 @@
-import { Award, Calculator, GraduationCap, HelpCircle, MessageSquare, ShieldCheck, ChevronLeft, ChevronRight, TrendingUp, Target, Home, Contact, Star } from 'lucide-react';
-const logoHcmue = '/logo_hcmue.png?v=2';
+import { BookOpen, ChevronLeft, ChevronRight, Contact, Home, MessageSquare, Star, Wrench, type LucideIcon } from 'lucide-react';
 import { VisitorCounter } from './VisitorCounter';
 import { IS_CHAT_MAINTENANCE, SHOW_EXPERIENCE_PAGE } from '../config/features';
+
+const logoHcmue = '/logo_hcmue.png?v=2';
+const TOOL_TABS = new Set(['tools', 'gpa', 'target-gpa', 'course-target', 'scholarship', 'tuition', 'credits']);
 
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   isCollapsed: boolean;
-  isMobileOpen: boolean;
-  onClose: () => void;
   onToggleCollapse: () => void;
 }
 
-export function Sidebar({ activeTab, onTabChange, isCollapsed, isMobileOpen, onClose, onToggleCollapse }: SidebarProps) {
-  const handleTabClick = (tab: string) => {
-    onTabChange(tab);
-    onClose(); // close mobile menu on selection
-  };
+interface NavEntry {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+// The same five destinations as the phone tab bar; the six tools live on the tools page.
+const NAV: NavEntry[] = [
+  { id: 'home', label: 'Trang chủ', icon: Home },
+  { id: 'chat', label: 'Chat', icon: MessageSquare },
+  { id: 'tools', label: 'Công cụ', icon: Wrench },
+  ...(SHOW_EXPERIENCE_PAGE ? [{ id: 'kinh-nghiem', label: 'Kinh nghiệm', icon: Star }] : []),
+  { id: 'danh-ba', label: 'Danh bạ', icon: Contact },
+];
+
+export function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleCollapse }: SidebarProps) {
+  const isActive = (id: string) => activeTab === id || (id === 'tools' && TOOL_TABS.has(activeTab));
 
   return (
-    <>
-      {isMobileOpen && <div className="sidebar-backdrop" onClick={onClose} />}
-      
-      <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
-        <button className="collapse-toggle" onClick={onToggleCollapse} aria-label="Thu gọn">
-          {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+    <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+      <div className="sidebar-head">
+        <button type="button" className="sidebar-logo" onClick={() => onTabChange('home')} title="Trang chủ">
+          <img src={logoHcmue} alt="HCMUE" className="sidebar-logo-img" />
+          <span className="sidebar-logo-text">
+            HCMUE AI
+            <small>beta</small>
+          </span>
         </button>
-
         <button
           type="button"
-          className="sidebar-logo" 
-          onClick={() => handleTabClick('home')}
-          title="Trang chủ"
+          className="collapse-toggle"
+          onClick={onToggleCollapse}
+          aria-label={isCollapsed ? 'Mở rộng thanh bên' : 'Thu gọn thanh bên'}
+          title={isCollapsed ? 'Mở rộng' : 'Thu gọn'}
         >
-          <img src={logoHcmue} alt="HCMUE" className="sidebar-logo-img" />
-          <div className="sidebar-logo-text">
-            <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              HCMUE
-              <span className="sidebar-beta-badge">BETA</span>
-            </h2>
-            <p>AI Assistant</p>
-          </div>
+          {isCollapsed ? <ChevronRight size={16} aria-hidden="true" /> : <ChevronLeft size={16} aria-hidden="true" />}
         </button>
-        <nav className="sidebar-nav">
-          <div className="sidebar-nav-section">
-            <div className="sidebar-nav-title">Hỏi đáp</div>
-            <button className={`nav-item ${activeTab === 'home' ? 'active' : ''}`} onClick={() => handleTabClick('home')} aria-label="Trang chủ">
-              {activeTab === 'home' && <div className="active-indicator" />}
-              <Home size={18} />
-              <span>Trang chủ</span>
-            </button>
+      </div>
+
+      <nav className="sidebar-nav" aria-label="Điều hướng chính">
+        {NAV.map(({ id, label, icon: Icon }) => {
+          const maintenance = id === 'chat' && IS_CHAT_MAINTENANCE;
+          return (
             <button
-              className={`nav-item ${activeTab === 'chat' ? 'active' : ''}`}
-              onClick={() => handleTabClick('chat')}
-              aria-label={IS_CHAT_MAINTENANCE ? "Chat (Đang bảo trì)" : "Chat"}
-              title={IS_CHAT_MAINTENANCE ? "Chức năng này đang bảo trì, vui lòng thử lại sau" : undefined}
+              key={id}
+              type="button"
+              className={`nav-item ${isActive(id) ? 'active' : ''}`}
+              onClick={() => onTabChange(id)}
+              aria-current={isActive(id) ? 'page' : undefined}
+              aria-label={maintenance ? `${label} (Đang bảo trì)` : label}
+              title={isCollapsed ? label : undefined}
             >
-              {activeTab === 'chat' && <div className="active-indicator" />}
-              <MessageSquare size={18} />
-              <span>Chat</span>
-              {IS_CHAT_MAINTENANCE && <span className="sidebar-maintenance-badge">Bảo trì</span>}
+              <Icon size={18} aria-hidden="true" />
+              <span>{label}</span>
+              {maintenance && <span className="sidebar-maintenance-badge">Bảo trì</span>}
             </button>
-          </div>
+          );
+        })}
+      </nav>
 
-          <div className="sidebar-nav-section">
-            <div className="sidebar-nav-title">Công cụ</div>
-            <button className={`nav-item ${activeTab === 'gpa' ? 'active' : ''}`} onClick={() => handleTabClick('gpa')} aria-label="Tính GPA">
-              {activeTab === 'gpa' && <div className="active-indicator" />}
-              <GraduationCap size={18} />
-              <span>Tính GPA</span>
-            </button>
-            <button className={`nav-item ${activeTab === 'target-gpa' ? 'active' : ''}`} onClick={() => handleTabClick('target-gpa')} aria-label="Mục tiêu GPA">
-              {activeTab === 'target-gpa' && <div className="active-indicator" />}
-              <TrendingUp size={18} />
-              <span>Mục tiêu GPA</span>
-            </button>
-            <button className={`nav-item ${activeTab === 'course-target' ? 'active' : ''}`} onClick={() => handleTabClick('course-target')} aria-label="Mục tiêu môn học">
-              {activeTab === 'course-target' && <div className="active-indicator" />}
-              <Target size={18} />
-              <span>Mục tiêu môn học</span>
-            </button>
-            <button className={`nav-item ${activeTab === 'scholarship' ? 'active' : ''}`} onClick={() => handleTabClick('scholarship')} aria-label="Tính điểm học bổng">
-              {activeTab === 'scholarship' && <div className="active-indicator" />}
-              <Award size={18} />
-              <span>Tính điểm học bổng</span>
-            </button>
-            <button className={`nav-item ${activeTab === 'tuition' ? 'active' : ''}`} onClick={() => handleTabClick('tuition')} aria-label="Ước tính học phí">
-              {activeTab === 'tuition' && <div className="active-indicator" />}
-              <Calculator size={18} />
-              <span>Ước tính học phí</span>
-            </button>
-            <button className={`nav-item ${activeTab === 'credits' ? 'active' : ''}`} onClick={() => handleTabClick('credits')} aria-label="Kiểm tra hạ bằng">
-              {activeTab === 'credits' && <div className="active-indicator" />}
-              <ShieldCheck size={18} />
-              <span>Kiểm tra hạ bằng</span>
-            </button>
-          </div>
-
-          <div className="sidebar-nav-section">
-            <div className="sidebar-nav-title">Tài nguyên</div>
-            {SHOW_EXPERIENCE_PAGE && (
-              <button className={`nav-item ${activeTab === 'kinh-nghiem' ? 'active' : ''}`} onClick={() => handleTabClick('kinh-nghiem')} aria-label="Kinh nghiệm">
-                {activeTab === 'kinh-nghiem' && <div className="active-indicator" />}
-                <Star size={18} />
-                <span>Kinh nghiệm</span>
-              </button>
-            )}
-            <button className={`nav-item ${activeTab === 'danh-ba' ? 'active' : ''}`} onClick={() => handleTabClick('danh-ba')} aria-label="Danh bạ">
-              {activeTab === 'danh-ba' && <div className="active-indicator" />}
-              <Contact size={18} />
-              <span>Danh bạ</span>
-            </button>
-            <button className={`nav-item ${activeTab === 'huong-dan' ? 'active' : ''}`} onClick={() => handleTabClick('huong-dan')} aria-label="Hướng dẫn">
-              {activeTab === 'huong-dan' && <div className="active-indicator" />}
-              <HelpCircle size={18} />
-              <span>Hướng dẫn</span>
-            </button>
-          </div>
-        </nav>
-
-        <div className="sidebar-footer">
-          <div className="sidebar-visitor-wrapper" style={{ marginBottom: '12px' }}>
-            <VisitorCounter />
-          </div>
-          <p>Dự án cá nhân vì sinh viên HCMUE · Phiên bản 1.0</p>
+      <div className="sidebar-footer">
+        <button
+          type="button"
+          className={`nav-item sidebar-guide ${activeTab === 'huong-dan' ? 'active' : ''}`}
+          onClick={() => onTabChange('huong-dan')}
+          aria-current={activeTab === 'huong-dan' ? 'page' : undefined}
+          title={isCollapsed ? 'Cách dùng web' : undefined}
+        >
+          <BookOpen size={18} aria-hidden="true" />
+          <span>Cách dùng web</span>
+        </button>
+        <div className="sidebar-visitor-wrapper">
+          <VisitorCounter />
         </div>
-      </aside>
-    </>
+        <p>Dự án cá nhân vì sinh viên HCMUE · Phiên bản 1.0</p>
+      </div>
+    </aside>
   );
 }

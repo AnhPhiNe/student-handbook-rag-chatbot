@@ -3804,7 +3804,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   0%, 90%, 100% { transform: scaleY(1); }
   95% { transform: scaleY(0.08); }
 }
-.anim-blink {
+.anim-eyes-blink {
   animation: anime-blink 3.8s ease-in-out infinite;
   transform-origin: 50% 48%;
 }
@@ -3814,7 +3814,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   70%, 80% { transform: translate(1.5px, -0.8px); }
   85%, 95% { transform: translate(-1.5px, 0.8px); }
 }
-.anim-pupil {
+.anim-pupils {
   animation: pupil-glance 6s ease-in-out infinite;
 }
 

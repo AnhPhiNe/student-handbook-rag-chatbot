@@ -15,6 +15,7 @@ import { useStudentProfile } from '../../hooks/useStudentProfile';
 import { sanitizePinnedIds } from '../../utils/pinnedTools';
 import { summarizeProfile, type HomeSummary } from '../../utils/homeSummary';
 import { OwlMascot } from '../OwlMascot';
+import { QuickContacts, TipBoard } from './HomeExtras';
 import './HomePage.css';
 
 interface HomePageProps {
@@ -265,7 +266,11 @@ export function HomePage({ onNavigate, cohort }: HomePageProps) {
               + Ghim thêm
             </button>
           </div>
-        ) : (
+        ) : null}
+        {/* Tips read only from the experience page, so they appear when that page is on;
+            until then the row shows real office numbers instead of sample quotes. */}
+        {desktop && (SHOW_EXPERIENCE_PAGE ? <TipBoard onNavigate={onNavigate} /> : <QuickContacts onNavigate={onNavigate} />)}
+        {desktop ? null : (
           <>
             {summary.hasProfile && (
               <button type="button" className="hp-mgpa" onClick={() => onNavigate('target-gpa')}>

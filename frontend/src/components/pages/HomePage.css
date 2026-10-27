@@ -496,3 +496,144 @@
   .hp-door small { font-size: 0.68rem; }
   .hp-title { font-size: 1.4rem; }
 }
+
+/* ---------- desktop extras: tip board / quick contacts ---------- */
+.hp-extra { margin-top: 26px; }
+.hp-extra-head { display: flex; align-items: center; margin-bottom: 12px; }
+.hp-extra-head h2 {
+  margin: 0;
+  font: 800 0.78rem var(--font-body);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.hp-extra-link {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: none;
+  color: var(--primary);
+  font: 600 0.8rem var(--font-body);
+}
+.hp-tips { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 22px; padding-top: 8px; }
+.hp-tip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 108px;
+  padding: 20px 18px 14px;
+  border: 0;
+  border-radius: 3px 3px 14px 3px;
+  background: var(--paper);
+  color: #1F2937;
+  text-align: left;
+  transform: rotate(var(--tilt));
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06), 0 12px 22px -14px rgba(15, 23, 42, 0.55);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+/* a folded bottom-right corner */
+.hp-tip::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 0 0 14px 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.08) 50%, rgba(255, 255, 255, 0.55) 50%);
+}
+.hp-tip:hover { transform: rotate(0deg) translateY(-3px); box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06), 0 18px 28px -14px rgba(15, 23, 42, 0.6); }
+.hp-tip q { font: 700 1rem/1.45 'Mali', cursive; }
+.hp-tip small { font-size: 0.74rem; color: #4B5563; }
+.hp-tip-fastener { position: absolute; pointer-events: none; }
+/* washi tape across the top */
+.hp-tip-tape .hp-tip-fastener {
+  top: -10px;
+  left: 50%;
+  width: 78px;
+  height: 22px;
+  margin-left: -39px;
+  background: repeating-linear-gradient(45deg, rgba(253, 224, 71, 0.85) 0 6px, rgba(253, 230, 138, 0.85) 6px 12px);
+  transform: rotate(-3deg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+/* a red push pin with a small shadow */
+.hp-tip-pin .hp-tip-fastener {
+  top: -9px;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #FB7185, #BE123C 70%);
+  box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25), inset -2px -2px 3px rgba(0, 0, 0, 0.2);
+}
+/* two short tape strips on the corners */
+.hp-tip-tape-corner .hp-tip-fastener {
+  inset: -8px -10px auto -10px;
+  height: 20px;
+  background:
+    linear-gradient(rgba(147, 197, 253, 0.8), rgba(147, 197, 253, 0.8)) left / 46px 100% no-repeat,
+    linear-gradient(rgba(147, 197, 253, 0.8), rgba(147, 197, 253, 0.8)) right / 46px 100% no-repeat;
+  transform: rotate(2deg);
+}
+.hp-contacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.hp-contact {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.hp-contact::after {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--c);
+  opacity: 0.08;
+}
+.hp-contact i {
+  flex: 0 0 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font: 800 0.8rem var(--font-body);
+  font-style: normal;
+  background: var(--c);
+}
+.hp-contact > span { min-width: 0; }
+.hp-contact b { display: block; font: 700 0.92rem var(--font-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hp-contact small { display: block; margin-top: 2px; font-size: 0.78rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hp-contact-phone {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  color: var(--c);
+  font: 700 0.78rem var(--font-body);
+  white-space: nowrap;
+}
+@media (min-width: 901px) and (max-width: 1240px) {
+  .hp-tips { gap: 16px; }
+  .hp-tip q { font-size: 0.92rem; }
+  .hp-contact-phone { font-size: 0.72rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hp-tip, .hp-tip:hover { transition: none; }
+}

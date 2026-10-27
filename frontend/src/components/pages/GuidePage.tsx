@@ -1,4 +1,4 @@
-import { MessageSquare, Wrench, ShieldAlert, FileText, CheckCircle2, Zap, Target, Award, GraduationCap, HelpCircle, Calculator } from 'lucide-react';
+import { MessageSquare, Wrench, ShieldAlert, CheckCircle2, Zap, Target, Award, GraduationCap, HelpCircle, Calculator } from 'lucide-react';
 
 interface GuidePageProps {
   onNavigate?: (tabId: string) => void;
@@ -94,49 +94,7 @@ export function GuidePage({ onNavigate }: GuidePageProps) {
             </div>
           </section>
 
-          {/* Section 3: Survival Guide */}
-          <section className="guide-section">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6' }}>
-                <Award size={28} />
-              </div>
-              <h2 style={{ margin: 0, fontSize: '1.75rem' }}>3. Phương pháp Học tập</h2>
-            </div>
-            
-            <p style={{ fontSize: '1.05rem', lineHeight: '1.7', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-              Không chỉ cung cấp công cụ tính điểm, Sổ tay còn trang bị cho bạn hệ thống các phương pháp học tập khoa học như Pomodoro, Feynman, Cornell... được tinh chỉnh dành riêng cho môi trường đại học.
-            </p>
-            
-            <div className="hover-card" onClick={() => onNavigate?.('survival-guide')} style={{ padding: '1.75rem', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.15))', borderRadius: '16px', border: '1px solid rgba(139, 92, 246, 0.2)', cursor: 'pointer' }}>
-              <p style={{ margin: '0 0 1.25rem 0', fontSize: '1.05rem', lineHeight: '1.6' }}>
-                Khám phá kho tàng bí kíp trị dứt điểm các "căn bệnh" phổ biến của sinh viên.
-              </p>
-              <ul style={{ margin: 0, paddingLeft: '1.5rem', lineHeight: '1.7', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <li><strong>Bộ lọc theo triệu chứng:</strong> Chỉ cần chọn vấn đề bạn đang gặp phải như "Hay trì hoãn", "Mau quên" hay "Học vẹt", hệ thống sẽ tự động đề xuất phương pháp cứu nguy tức thì.</li>
-                <li><strong>Đồng hồ tích hợp:</strong> Trải nghiệm ngay các phương pháp như Đồng hồ Pomodoro hoặc Quy tắc 2 phút trực tiếp trên web mà không cần tải app khác.</li>
-              </ul>
-            </div>
-          </section>
 
-          {/* Section 4: Forms */}
-          <section className="guide-section">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div style={{ padding: '0.75rem', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
-                <FileText size={28} />
-              </div>
-              <h2 style={{ margin: 0, fontSize: '1.75rem' }}>4. Thư viện Biểu mẫu</h2>
-            </div>
-            
-            <div className="hover-card" onClick={() => onNavigate?.('bieu-mau')} style={{ padding: '1.75rem', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.15))', borderRadius: '16px', border: '1px solid rgba(16, 185, 129, 0.2)', cursor: 'pointer' }}>
-              <p style={{ margin: '0 0 1.25rem 0', fontSize: '1.05rem', lineHeight: '1.6' }}>
-                Không cần vất vả tìm kiếm link tải trên các nhóm lớp nữa. Toàn bộ các loại đơn từ, giấy xác nhận, mẫu nghiên cứu khoa học đều được tập hợp sẵn tại mục <strong>Biểu mẫu</strong>.
-              </p>
-              <ul style={{ margin: 0, paddingLeft: '1.5rem', lineHeight: '1.7', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <li><strong>Tìm kiếm siêu tốc:</strong> Gõ từ khóa như "đăng ký", "xác nhận" để lọc ngay biểu mẫu bạn cần trong nháy mắt.</li>
-                <li><strong>Tải xuống 1-click:</strong> Hỗ trợ tải trực tiếp các file định dạng chuẩn (.doc, .docx, .pdf) về máy tính/điện thoại ngay lập tức.</li>
-              </ul>
-            </div>
-          </section>
 
           {/* Final Warning */}
           <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '1rem 0' }} />

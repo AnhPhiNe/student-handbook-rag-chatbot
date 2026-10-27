@@ -1,3 +1,5 @@
+import type { Cohort } from './gradeScale';
+
 export type ScholarshipClassification = 'Khá' | 'Giỏi' | 'Xuất sắc';
 
 export type ScholarshipTierDetail = {
@@ -98,3 +100,12 @@ export function calculateScholarshipScore(academicScore4: number, conductScore10
   };
 }
 
+
+/**
+ * Minimum credits for a graduating semester to still count for the scholarship.
+ * K51 handbook (Quy chế CTSV, Điều 27 khoản 1 điểm d): cohorts admitted from 2022 need 11 TC;
+ * K49 and K50 handbooks allow registration from 6 TC.
+ */
+export function getFinalSemesterMinCredits(cohort: Cohort): number {
+  return cohort === 'K51' ? 11 : 6;
+}

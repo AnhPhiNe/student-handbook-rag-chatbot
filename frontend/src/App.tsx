@@ -4,7 +4,6 @@ import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
 import { useChat } from './hooks/useChat';
 const HomePage = React.lazy(() => import('./components/pages/HomePage').then(module => ({ default: module.HomePage })));
-const FormPage = React.lazy(() => import('./components/pages/FormPage').then(module => ({ default: module.FormPage })));
 const GuidePage = React.lazy(() => import('./components/pages/GuidePage').then(module => ({ default: module.GuidePage })));
 const GpaPage = React.lazy(() => import('./components/pages/GpaPage').then(module => ({ default: module.GpaPage })));
 const TargetGpaPage = React.lazy(() => import('./components/pages/TargetGpaPage').then(module => ({ default: module.TargetGpaPage })));
@@ -12,8 +11,9 @@ const CourseTargetPage = React.lazy(() => import('./components/pages/CourseTarge
 const ScholarshipPage = React.lazy(() => import('./components/pages/ScholarshipPage').then(module => ({ default: module.ScholarshipPage })));
 const ToolsPage = React.lazy(() => import('./components/pages/ToolsPage').then(module => ({ default: module.ToolsPage })));
 const TuitionPage = React.lazy(() => import('./components/pages/TuitionPage').then(module => ({ default: module.TuitionPage })));
-const SurvivalGuidePage = React.lazy(() => import('./components/pages/SurvivalGuidePage').then(module => ({ default: module.SurvivalGuidePage })));
 const CreditsPage = React.lazy(() => import('./components/pages/CreditsPage').then(module => ({ default: module.CreditsPage })));
+const ExperiencePage = React.lazy(() => import('./components/pages/ExperiencePage').then(module => ({ default: module.ExperiencePage })));
+const DirectoryPage = React.lazy(() => import('./components/pages/DirectoryPage').then(module => ({ default: module.DirectoryPage })));
 
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { MobileHeader } from './components/MobileHeader';
@@ -25,7 +25,9 @@ import { ChatMaintenanceModal } from './components/ChatMaintenanceModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
 import { MobileScrollAffordance } from './components/MobileScrollAffordance';
 import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
-import { IS_CHAT_MAINTENANCE } from './config/features';
+import { IS_CHAT_MAINTENANCE, SHOW_EXPERIENCE_PAGE } from './config/features';
+import { useToast } from './components/Toast';
+import { KEPT_DATA_NOTES, cohortChangeMessage, shouldNotifyCohortChange } from './utils/cohortNotice';
 
 const COHORT_SELECTOR_TABS = new Set([
   'home',
@@ -43,11 +45,18 @@ function App() {
   const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('hcmue-theme', defaultTheme);
   const [storedCohort, setStoredCohort] = useLocalStorage<Cohort | null>('hcmue-cohort', null);
   const cohort = storedCohort ? normalizeFrontendCohort(storedCohort) : 'K49'; // Fallback an toàn cho utils
-  const setCohort = (nextCohort: Cohort) => setStoredCohort(nextCohort);
+  const toast = useToast();
+  const [activeTab, setActiveTab] = useState('home');
+  const setCohort = (nextCohort: Cohort) => {
+    // Tool pages are keyed by cohort and reset, so say what changed for grading.
+    if (shouldNotifyCohortChange(storedCohort ? cohort : null, nextCohort, activeTab)) {
+      toast.show(cohortChangeMessage(nextCohort, KEPT_DATA_NOTES[activeTab]), 'info');
+    }
+    setStoredCohort(nextCohort);
+  };
   
   const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
 
-  const [activeTab, setActiveTab] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isCohortModalDismissed, setIsCohortModalDismissed] = useState(false);
@@ -71,7 +80,18 @@ function App() {
       setIsMaintenanceModalOpen(true);
       return;
     }
+    if (nextTab === 'kinh-nghiem' && !SHOW_EXPERIENCE_PAGE) return;
     setActiveTab(nextTab);
+  };
+
+  // Jump to the chat tab and ask a question there (same maintenance guard as navigating to chat).
+  const askChat = (text: string) => {
+    if (IS_CHAT_MAINTENANCE) {
+      setIsMaintenanceModalOpen(true);
+      return;
+    }
+    setActiveTab('chat');
+    void sendMessage(text);
   };
 
   return (
@@ -162,15 +182,15 @@ function App() {
                   cohort={cohort}
                 />
               )}
-              {activeTab === 'bieu-mau' && <FormPage />}
               {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} />}
               {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} onNavigate={handleNavigate} />}
               {activeTab === 'target-gpa' && <TargetGpaPage key={cohort} cohort={cohort} />}
               {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
-              {activeTab === 'scholarship' && <ScholarshipPage />}
-              {activeTab === 'tuition' && <TuitionPage />}
-              {activeTab === 'credits' && <CreditsPage />}
-              {activeTab === 'survival-guide' && <SurvivalGuidePage />}
+              {activeTab === 'scholarship' && <ScholarshipPage key={cohort} cohort={cohort} onAskChat={askChat} />}
+              {activeTab === 'tuition' && <TuitionPage key={cohort} onAskChat={askChat} />}
+              {activeTab === 'credits' && <CreditsPage key={cohort} cohort={cohort} onAskChat={askChat} />}
+              {SHOW_EXPERIENCE_PAGE && activeTab === 'kinh-nghiem' && <ExperiencePage onAskChat={askChat} onNavigate={handleNavigate} />}
+              {activeTab === 'danh-ba' && <DirectoryPage onAskChat={askChat} />}
               {activeTab === 'huong-dan' && <GuidePage onNavigate={handleNavigate} />}
 
             </Suspense>

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { calculateCreditThreshold } from '../src/utils/creditThreshold.ts';
+import { calculateCreditThreshold, getDowngradeVerdict } from '../src/utils/creditThreshold.ts';
 
 describe('calculateCreditThreshold', () => {
   it('rounds a fractional 5% allowance down to whole credits', () => {
@@ -48,5 +48,28 @@ describe('calculateCreditThreshold', () => {
     assert.equal(calculateCreditThreshold(-130, 0), null);
     assert.equal(calculateCreditThreshold(Number.NaN, 0), null);
     assert.equal(calculateCreditThreshold(130, -1), null);
+  });
+});
+
+describe('getDowngradeVerdict', () => {
+  it('never downgrades Khá or below', () => {
+    assert.deepEqual(getDowngradeVerdict('exceeded', 'fair'), { tone: 'ok', kind: 'fair-safe' });
+    assert.deepEqual(getDowngradeVerdict('safe', 'fair'), { tone: 'ok', kind: 'fair-safe' });
+  });
+
+  it('downgrades Xuất sắc and Giỏi by one level once exceeded', () => {
+    assert.deepEqual(getDowngradeVerdict('exceeded', 'excellent'), { tone: 'bad', kind: 'downgrade', from: 'Xuất sắc', to: 'Giỏi' });
+    assert.deepEqual(getDowngradeVerdict('exceeded', 'good'), { tone: 'bad', kind: 'downgrade', from: 'Giỏi', to: 'Khá' });
+  });
+
+  it('keeps the selected classification when not exceeded', () => {
+    assert.deepEqual(getDowngradeVerdict('safe', 'excellent'), { tone: 'ok', kind: 'kept', from: 'Xuất sắc' });
+    assert.deepEqual(getDowngradeVerdict('near', 'good'), { tone: 'ok', kind: 'kept', from: 'Giỏi' });
+  });
+
+  it('warns without a selection only when exceeded', () => {
+    assert.deepEqual(getDowngradeVerdict('exceeded', null), { tone: 'bad', kind: 'may-downgrade' });
+    assert.deepEqual(getDowngradeVerdict('safe', null), { tone: 'neutral', kind: 'discipline-only' });
+    assert.deepEqual(getDowngradeVerdict('near', null), { tone: 'neutral', kind: 'discipline-only' });
   });
 });

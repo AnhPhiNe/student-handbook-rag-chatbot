@@ -1,38 +1,54 @@
-import { useState } from 'react';
-import { BookOpen, ShieldCheck } from 'lucide-react';
+import { useRef, useState, type KeyboardEvent } from 'react';
+import { MessageCircle, ShieldCheck } from 'lucide-react';
 import {
   calculateCreditThreshold,
+  getDowngradeVerdict,
   type CreditThresholdStatus,
+  type GraduationClassification,
 } from '../../utils/creditThreshold';
-import { useAnimatedNumber } from '../../hooks/useAnimatedNumber';
+import { useStudentProfile } from '../../hooks/useStudentProfile';
+import { integerCredits } from '../../utils/studentProfile';
+import { sanitizeInteger } from '../../utils/numberInput';
+import { ShareResultButton } from '../tool/ShareResultButton';
+import { creditsShareText } from '../../utils/shareText';
+import type { Cohort } from '../../utils/gradeScale';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
-import { ResetButton, ToolSection } from '../tool/ToolSection';
-import { NumberStepper } from '../tool/NumberStepper';
-import { ResultCard, type ResultTone } from '../tool/ResultCard';
-import { DetailsToggle } from '../tool/DetailsToggle';
-import { ResultFacts } from '../tool/ResultFacts';
-import { ResultCallout } from '../tool/ResultCallout';
+import { ResetButton } from '../tool/ToolSection';
 
-const DEFAULT_TOTAL_CREDITS = '130';
-const DEFAULT_FAILED_CREDITS = '0';
+interface CreditsPageProps {
+  cohort: Cohort;
+  onAskChat: (text: string) => void;
+}
+
 // Above this many allowed credits the one-segment-per-credit meter gets too thin to read.
 const MAX_METER_SEGMENTS = 40;
+const DOWNGRADE_QUESTION = 'Điều kiện bị hạ bậc bằng tốt nghiệp là gì?';
 
 const STATUS_LABELS: Record<CreditThresholdStatus, string> = {
   safe: 'An toàn',
   near: 'Sát ngưỡng',
-  exceeded: 'Đã vượt ngưỡng',
+  exceeded: 'Vượt ngưỡng',
 };
 
-const STATUS_TONES: Record<CreditThresholdStatus, ResultTone> = {
-  safe: 'success',
-  near: 'warning',
-  exceeded: 'danger',
+const STATUS_SKIN: Record<CreditThresholdStatus, string> = {
+  safe: 'sc-s-ok',
+  near: 'sc-s-warn',
+  exceeded: 'sc-s-bad',
 };
 
-function formatCredits(value: number) {
-  return String(Math.round(value * 100) / 100);
-}
+const STATUS_BADGE: Record<CreditThresholdStatus, string> = {
+  safe: '',
+  near: ' warn',
+  exceeded: ' bad',
+};
+
+const CLASSIFICATIONS: { value: GraduationClassification; label: string }[] = [
+  { value: 'excellent', label: 'Xuất sắc' },
+  { value: 'good', label: 'Giỏi' },
+  { value: 'fair', label: 'Khá trở xuống' },
+];
+
+const formatDecimal = (value: number) => String(value).replace('.', ',');
 
 interface CreditMeterProps {
   failed: number;
@@ -44,23 +60,19 @@ function CreditMeter({ failed, maxCredits }: CreditMeterProps) {
   const fillPercent = maxCredits > 0 ? Math.min(100, (failed / maxCredits) * 100) : failed > 0 ? 100 : 0;
 
   return (
-    <div className="tool-bar" role="img" aria-label={`Đã rớt ${failed} trên tối đa ${maxCredits} tín chỉ`}>
+    <div className="cr-meter" role="img" aria-label={`Đã không đạt ${failed} trên tối đa ${maxCredits} tín chỉ`}>
       {segmented ? (
-        <div className="credits-segments">
+        <div className="cr-segs">
           {Array.from({ length: maxCredits }, (_, index) => (
-            <span
-              key={index}
-              className={`credits-segment ${index < failed ? 'on' : ''}`}
-              style={{ transitionDelay: `${index * 25}ms` }}
-            />
+            <i key={index} className={index < failed ? 'on' : ''} />
           ))}
         </div>
       ) : (
-        <div className="tool-bar-track">
-          <div className="tool-bar-fill" style={{ width: `${fillPercent}%` }} />
+        <div className="cr-bar">
+          <i style={{ width: `${fillPercent}%` }} />
         </div>
       )}
-      <div className="tool-scale">
+      <div className="cr-scale">
         <span>0</span>
         <span>Tối đa {maxCredits} TC</span>
       </div>
@@ -68,134 +80,197 @@ function CreditMeter({ failed, maxCredits }: CreditMeterProps) {
   );
 }
 
-export function CreditsPage() {
-  const [totalCredits, setTotalCredits] = useState(DEFAULT_TOTAL_CREDITS);
-  const [failedCredits, setFailedCredits] = useState(DEFAULT_FAILED_CREDITS);
+export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
+  // The degree total is the student's own number: reuse the one saved by the GPA target page.
+  const { profile, update: updateProfile } = useStudentProfile();
+  const [totalCredits, setTotalCredits] = useState(() => integerCredits(profile.totalDegreeCredits));
+  const [failedCredits, setFailedCredits] = useState('');
+  const [classification, setClassification] = useState<GraduationClassification | null>(null);
+  const failedRef = useRef<HTMLInputElement>(null);
 
   const total = Number(totalCredits);
   const failed = Number(failedCredits || 0);
-  const result = calculateCreditThreshold(total, failed);
+  const result = totalCredits === '' ? null : calculateCreditThreshold(total, failed);
   const exceeded = result?.status === 'exceeded';
-  const animatedCreditsLeft = useAnimatedNumber(result ? Math.abs(result.creditsLeft) : 0);
+  const verdict = result ? getDowngradeVerdict(result.status, classification) : null;
+
+  const shareText = result
+    ? creditsShareText({
+        status: result.status,
+        failedCredits: failed,
+        maxCredits: result.maxCredits,
+        creditsLeft: result.creditsLeft,
+        totalCredits: total,
+        cohort,
+      })
+    : null;
 
   const handleReset = () => {
-    setTotalCredits(DEFAULT_TOTAL_CREDITS);
-    setFailedCredits(DEFAULT_FAILED_CREDITS);
+    setTotalCredits('');
+    setFailedCredits('');
+    setClassification(null);
+  };
+
+  const handleTotalKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      failedRef.current?.focus();
+    }
+  };
+
+  const toggleClassification = (value: GraduationClassification) => {
+    setClassification((current) => (current === value ? null : value));
+  };
+
+  const renderVerdict = () => {
+    if (!verdict) return null;
+    switch (verdict.kind) {
+      case 'fair-safe':
+        return <>Xếp loại Khá trở xuống <b>không bị hạ bằng</b> theo quy định này.</>;
+      case 'downgrade':
+        return <>Bằng <b>{verdict.from}</b> sẽ bị hạ xuống <b>{verdict.to}</b>.</>;
+      case 'kept':
+        return <>Bằng <b>{verdict.from}</b> giữ nguyên, nếu không bị kỷ luật từ mức cảnh cáo.</>;
+      case 'may-downgrade':
+        return <>Nếu xếp loại Giỏi hoặc Xuất sắc, bằng sẽ <b>bị hạ một mức</b>.</>;
+      default:
+        return <>Bị kỷ luật từ mức cảnh cáo cũng làm bằng Giỏi, Xuất sắc bị hạ một mức.</>;
+    }
   };
 
   return (
-    <div className="page-container tool-page simplified">
+    <div className="page-container tool-page simplified sc-page cr-page">
       <ToolPageHeader
         icon={ShieldCheck}
-        title="Kiểm tra điều kiện hạ bằng"
-        description="Xem bạn còn được rớt bao nhiêu tín chỉ trước khi bị hạ bậc bằng tốt nghiệp."
+        title="Kiểm tra hạ bằng"
+        description="Xem bạn còn được không đạt bao nhiêu tín chỉ trước khi bằng Giỏi, Xuất sắc bị hạ một mức."
       />
 
-      <div className="tool-grid">
-        <div className="tool-main">
-          <ToolSection id="credits-input" title="Thông tin tín chỉ" action={<ResetButton onClick={handleReset} />}>
-            <div className="tool-fields">
-              <NumberStepper
-                id="credits-total-input"
-                label="Tổng tín chỉ toàn khóa"
-                hint="Xem trong chương trình đào tạo của ngành, thường 120–150 TC."
-                value={totalCredits}
-                min={1}
-                fallback={130}
-                onChange={setTotalCredits}
-              />
-              <NumberStepper
-                id="credits-failed-input"
-                label="Tín chỉ đã rớt, phải học lại"
-                hint="Chỉ tính học phần bị điểm F. Học cải thiện điểm D không tính."
-                value={failedCredits}
-                min={0}
-                fallback={0}
-                onChange={setFailedCredits}
-              />
-            </div>
-          </ToolSection>
-
-          <section className="tool-rules tool-secondary" aria-labelledby="credits-rules-title">
-            <h2 id="credits-rules-title">Quy định hạ bậc tốt nghiệp</h2>
-            <dl>
-              <div>
-                <dt>Bị hạ 1 mức khi</dt>
-                <dd>Tín chỉ học lại vượt 5% tổng tín chỉ toàn khóa, hoặc bị kỷ luật từ mức cảnh cáo trở lên trong thời gian học.</dd>
-              </div>
-              <div>
-                <dt>Chỉ áp dụng cho</dt>
-                <dd>Bằng Xuất sắc (hạ xuống Giỏi) và bằng Giỏi (hạ xuống Khá).</dd>
-              </div>
-              <div>
-                <dt>Không bị hạ nếu</dt>
-                <dd>Xếp loại tốt nghiệp là Khá, Trung bình hoặc Yếu, kể cả khi vượt 5%.</dd>
-              </div>
-            </dl>
-          </section>
+      <div className="gpa-m-page-header sc-m-header">
+        <div className="gpa-m-title-wrap">
+          <ShieldCheck size={18} aria-hidden="true" className="sc-m-title-icon" />
+          <h1 className="gpa-m-page-title">Kiểm tra hạ bằng</h1>
         </div>
+      </div>
 
-        <ResultCard
-          id="credits-result"
-          tone={result ? STATUS_TONES[result.status] : null}
-          chip={result ? STATUS_LABELS[result.status] : null}
-        >
-          {result ? (
-            <>
-              <div aria-live="polite">
-                <p className="tool-big-label">
-                  {exceeded ? 'Số tín chỉ đã vượt mức tối đa' : 'Còn được rớt thêm tối đa'}
-                </p>
-                <p className={`tool-big ${exceeded ? 'danger' : ''}`}>
-                  <strong>{animatedCreditsLeft}</strong>
+      <div className="sc-grid">
+        <section className={`sc-result ${result ? STATUS_SKIN[result.status] : ''}`} aria-label="Kết quả">
+          <div aria-live="polite">
+            <div className="sc-label">{exceeded ? 'Đã vượt mức tối đa' : 'Còn được không đạt tối đa'}</div>
+            <div className="sc-num">
+              {result ? (
+                <>
+                  <b className={exceeded ? 'neg' : ''}>{Math.abs(result.creditsLeft)}</b>
                   <span>tín chỉ</span>
-                </p>
-              </div>
-              {!Number.isInteger(result.threshold) && (
-                <p className="tool-footnote">
-                  5% của {total} TC là {formatCredits(result.threshold)} TC, làm tròn xuống thành {result.maxCredits} TC vì mỗi học phần có số tín chỉ nguyên.
-                </p>
+                </>
+              ) : (
+                <b className="none">--</b>
               )}
+            </div>
+            <div className="sc-cap-wrap">
+              {result ? (
+                <span className="sc-cap">
+                  <span className={`sc-badge${STATUS_BADGE[result.status]}`}>{STATUS_LABELS[result.status]}</span>
+                  <span className="sc-sep">│</span>
+                  Đã không đạt {failed} / tối đa {result.maxCredits} TC
+                </span>
+              ) : (
+                <span className="sc-cap empty">Nhập tổng tín chỉ toàn khóa bên dưới</span>
+              )}
+            </div>
+          </div>
+
+          {result && verdict && (
+            <>
               <CreditMeter failed={failed} maxCredits={result.maxCredits} />
-
-              <ResultFacts
-                facts={[
-                  {
-                    label: 'Đã rớt',
-                    value: `${failed} TC`,
-                    tone: result.status === 'safe' ? null : STATUS_TONES[result.status],
-                  },
-                  { label: 'Tối đa được rớt', value: `${result.maxCredits} TC` },
-                  { label: 'Ngưỡng 5%', value: `${formatCredits(result.threshold)} TC` },
-                ]}
-              />
-
-              <ResultCallout tone={STATUS_TONES[result.status]}>{result.message}</ResultCallout>
-
-              <DetailsToggle id="credits-calc" label="Xem cách tính">
-                <dl className="tool-calc">
-                  <dt>Tổng tín chỉ toàn khóa</dt>
-                  <dd>{total} TC</dd>
-                  <dt>Ngưỡng 5%</dt>
-                  <dd>{total} × 5% = {formatCredits(result.threshold)} TC</dd>
-                  <dt>Mức tối đa (làm tròn xuống)</dt>
-                  <dd>{result.maxCredits} TC</dd>
-                  <dt>Đã rớt, phải học lại</dt>
-                  <dd>{failed} TC</dd>
-                  <dt>{exceeded ? 'Vượt mức tối đa' : 'Còn được rớt thêm'}</dt>
-                  <dd>{Math.abs(result.creditsLeft)} TC</dd>
-                </dl>
-              </DetailsToggle>
-
-              <p className="tool-source">
-                <BookOpen size={14} aria-hidden="true" />
-                Theo Khoản 3 Điều 15 Quy chế đào tạo. Kết quả chỉ để tham khảo.
+              <p className="cr-why">
+                5% × {total} TC = {formatDecimal(result.threshold)} TC
+                {Number.isInteger(result.threshold) ? '.' : `, làm tròn xuống ${result.maxCredits} TC.`}
               </p>
+              <div className={`cr-verdict ${verdict.tone}`}>{renderVerdict()}</div>
             </>
-          ) : (
-            <p className="tool-empty">Nhập tổng tín chỉ toàn khóa (lớn hơn 0) để xem kết quả.</p>
           )}
-        </ResultCard>
+
+          <div className="cr-foot">
+            <span>Khoản 3 Điều 15 Quy chế đào tạo</span>
+            <div className="tool-foot-actions">
+              <ShareResultButton text={shareText} className="sc-link" />
+              <button type="button" className="sc-link" onClick={() => onAskChat(DOWNGRADE_QUESTION)}>
+                <MessageCircle size={14} aria-hidden="true" />
+                Hỏi chatbot
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section className="sc-sheet" aria-labelledby="cr-sheet-title">
+          <div className="sc-sheet-head">
+            <h2 id="cr-sheet-title">Thông tin</h2>
+            <ResetButton onClick={handleReset} />
+          </div>
+
+          <div className="sc-pair">
+            <div className="sc-field">
+              <label htmlFor="credits-total-input">Tổng tín chỉ toàn khóa</label>
+              <div className="sc-box">
+                <input
+                  id="credits-total-input"
+                  type="text"
+                  inputMode="numeric"
+                  enterKeyHint="next"
+                  autoComplete="off"
+                  placeholder="VD: 130"
+                  value={totalCredits}
+                  onChange={(e) => {
+                    const next = sanitizeInteger(e.target.value);
+                    setTotalCredits(next);
+                    updateProfile({ totalDegreeCredits: next });
+                  }}
+                  onKeyDown={handleTotalKeyDown}
+                  aria-describedby="credits-total-hint"
+                />
+                <i>TC</i>
+              </div>
+              <span id="credits-total-hint" className="cr-hint">
+                Theo chương trình đào tạo
+              </span>
+            </div>
+            <div className="sc-field">
+              <label htmlFor="credits-failed-input">Tín chỉ từng không đạt</label>
+              <div className="sc-box">
+                <input
+                  id="credits-failed-input"
+                  ref={failedRef}
+                  type="text"
+                  inputMode="numeric"
+                  enterKeyHint="done"
+                  autoComplete="off"
+                  placeholder="0"
+                  value={failedCredits}
+                  onChange={(e) => setFailedCredits(sanitizeInteger(e.target.value))}
+                  aria-describedby="credits-failed-hint"
+                />
+                <i>TC</i>
+              </div>
+              <span id="credits-failed-hint" className="cr-hint">
+                Tính cả môn đã học lại và qua. Không tính học cải thiện.
+              </span>
+            </div>
+          </div>
+
+          <div className="cr-cls">
+            <div className="sc-sub" id="cr-cls-label">
+              Xếp loại tốt nghiệp dự kiến <small>(tùy chọn)</small>
+            </div>
+            <div className="sc-years" role="group" aria-labelledby="cr-cls-label">
+              {CLASSIFICATIONS.map(({ value, label }) => (
+                <button key={value} type="button" aria-pressed={classification === value} onClick={() => toggleClassification(value)}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

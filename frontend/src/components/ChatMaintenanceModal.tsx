@@ -78,10 +78,6 @@ export function ChatMaintenanceModal({
                 <CheckCircle2 size={16} className="tool-check-icon" aria-hidden="true" />
                 <span><strong>Mục tiêu môn học</strong> & <strong>Mục tiêu GPA</strong> cần đạt</span>
               </li>
-              <li>
-                <CheckCircle2 size={16} className="tool-check-icon" aria-hidden="true" />
-                <span>Tra cứu <strong>Biểu mẫu sinh viên</strong> & <strong>Phương pháp học tập</strong></span>
-              </li>
             </ul>
           </div>
         </div>

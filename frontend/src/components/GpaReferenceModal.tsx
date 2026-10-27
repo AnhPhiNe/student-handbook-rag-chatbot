@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, GraduationCap, Info, Award, AlertTriangle, BookOpen } from 'lucide-react';
-import type { Cohort } from '../utils/gradeScale';
-import { getGradeScales } from '../utils/gradeScale';
+import type { Cohort, CourseGroup } from '../utils/gradeScale';
+import { getGradeScales, isSplitGradeCohort } from '../utils/gradeScale';
 import { getGradeTone } from '../utils/gradeTone';
 import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
@@ -11,6 +11,8 @@ interface GpaReferenceModalProps {
   onClose: () => void;
   cohort: Cohort;
   initialTab?: 'scale' | 'rules';
+  /** For cohorts with two grade scales: the course group the page is using, shown first and marked. */
+  activeGroup?: CourseGroup;
 }
 
 export function GpaReferenceModal({
@@ -18,6 +20,7 @@ export function GpaReferenceModal({
   onClose,
   cohort,
   initialTab = 'scale',
+  activeGroup,
 }: GpaReferenceModalProps) {
   // Mount the dialog only while it is open and key it on the requested tab, so
   // opening it always starts on that tab. The previous version reset the tab
@@ -30,6 +33,7 @@ export function GpaReferenceModal({
       onClose={onClose}
       cohort={cohort}
       initialTab={initialTab}
+      activeGroup={activeGroup}
     />
   );
 }
@@ -38,6 +42,7 @@ function GpaReferenceDialog({
   onClose,
   cohort,
   initialTab,
+  activeGroup,
 }: Omit<GpaReferenceModalProps, 'isOpen' | 'initialTab'> & { initialTab: 'scale' | 'rules' }) {
   const [activeTab, setActiveTab] = useState<'scale' | 'rules'>(initialTab);
 
@@ -46,8 +51,12 @@ function GpaReferenceDialog({
     onClose,
   });
 
-  const gradeScales = getGradeScales(cohort);
-  const showCourseGroup = gradeScales.length > 1;
+  // Cohorts without split scales list two identical tables, so show one. With split scales, the page's group comes first.
+  const showCourseGroup = isSplitGradeCohort(cohort);
+  const allScales = getGradeScales(cohort);
+  const gradeScales = !showCourseGroup
+    ? allScales.slice(0, 1)
+    : [...allScales].sort((a, b) => Number(b.id === activeGroup) - Number(a.id === activeGroup));
 
   return createPortal(
     <div className="gpa-modal-overlay" onClick={onClose}>
@@ -119,10 +128,16 @@ function GpaReferenceDialog({
                   const failedRows = scale.rows.filter((row) => row.status === 'Không đạt');
 
                   return (
-                    <div key={scale.id} className="gpa-scale-block">
+                    <div
+                      key={scale.id}
+                      className={`gpa-scale-block ${showCourseGroup && scale.id === activeGroup ? 'is-active' : ''}`}
+                    >
                       {showCourseGroup && (
                         <div className="gpa-scale-block-header">
-                          <h4>{scale.label}</h4>
+                          <h4>
+                            {scale.label}
+                            {scale.id === activeGroup && <span className="gpa-scale-active-tag">Đang chọn</span>}
+                          </h4>
                           <span>{scale.applicability}</span>
                         </div>
                       )}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mali:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 @import url('./pages.css');
 
 :root {
@@ -776,6 +776,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; /* six labels stay on one line, so the icons line up */
+}
+
+/* five tabs on a 320px phone leave 64px per label */
+@media (max-width: 360px) {
+  .bottom-tab-bar.five-tabs .tab-btn { font-size: 0.72rem; padding-left: 0; padding-right: 0; }
 }
 
 .tab-btn.active { color: var(--brand-purple); }

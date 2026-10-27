@@ -50,3 +50,33 @@ export function calculateCreditThreshold(totalCredits: number, checkedCredits: n
     message: 'Bạn vẫn còn trong vùng an toàn theo ngưỡng tham khảo. Cứ giữ nhịp học ổn định là được.',
   };
 }
+
+export type GraduationClassification = 'excellent' | 'good' | 'fair';
+
+export type DowngradeVerdict = {
+  tone: 'ok' | 'bad' | 'neutral';
+  kind: 'fair-safe' | 'downgrade' | 'kept' | 'may-downgrade' | 'discipline-only';
+  /** Classification name before a downgrade, or the kept one. */
+  from?: string;
+  /** Classification name after a downgrade. */
+  to?: string;
+};
+
+const DOWNGRADE_NAMES: Record<'excellent' | 'good', [string, string]> = {
+  excellent: ['Xuất sắc', 'Giỏi'],
+  good: ['Giỏi', 'Khá'],
+};
+
+/** What the 5% rule means for the expected classification; `classification` may be unchosen. */
+export function getDowngradeVerdict(
+  status: CreditThresholdStatus,
+  classification: GraduationClassification | null,
+): DowngradeVerdict {
+  const exceeded = status === 'exceeded';
+  if (classification === 'fair') return { tone: 'ok', kind: 'fair-safe' };
+  if (classification) {
+    const [from, to] = DOWNGRADE_NAMES[classification];
+    return exceeded ? { tone: 'bad', kind: 'downgrade', from, to } : { tone: 'ok', kind: 'kept', from };
+  }
+  return exceeded ? { tone: 'bad', kind: 'may-downgrade' } : { tone: 'neutral', kind: 'discipline-only' };
+}

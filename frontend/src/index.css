@@ -580,20 +580,47 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .cohort-sheet-option.current { border-color: #E11D48; background: color-mix(in srgb, #E11D48 7%, transparent); }
 .cohort-sheet-option:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Visit count and version on the usage guide; desktop shows them in the sidebar footer. */
+/* Visit count and version on the usage guide; desktop shows them in the sidebar footer.
+   One quiet footer row in the page's own colours, not a second card inside a card. */
 .guide-about {
   display: none;
   flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-  padding: 14px;
-  border-radius: 16px;
-  background: var(--brand-sidebar);
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.72rem;
+  gap: 6px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 0.74rem;
   text-align: center;
 }
 .guide-about p { margin: 0; }
+.guide-about .visitor-counter {
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.guide-about .visitor-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text-secondary);
+}
+.guide-about .visitor-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22C55E;
+}
+.guide-about .visitor-number { font-size: 0.9rem; color: var(--text-primary); }
 @media (max-width: 900px) {
   .guide-about { display: flex; }
 }

@@ -1,3 +1,4 @@
+import { VisitorCounter } from '../VisitorCounter';
 import { MessageSquare, Wrench, ShieldAlert, CheckCircle2, Zap, Target, Award, GraduationCap, HelpCircle, Calculator } from 'lucide-react';
 
 interface GuidePageProps {
@@ -13,7 +14,7 @@ export function GuidePage({ onNavigate }: GuidePageProps) {
         <div className="page-header center" style={{ marginBottom: '3rem', textAlign: 'center' }}>
           <h1 className="article-title page-title-with-icon guide-page-title">
             <HelpCircle aria-hidden="true" />
-            <span>Hướng dẫn sử dụng toàn tập</span>
+            <span>Cách dùng web</span>
           </h1>
           <p className="article-meta" style={{ fontSize: '1.1rem', maxWidth: '650px', margin: '0 auto', lineHeight: '1.6' }}>
             Khám phá cách tối ưu hóa trải nghiệm của bạn trên Sổ tay Sinh viên HCMUE. Nắm bắt thông tin, tính toán điểm số và giải đáp thắc mắc chỉ trong vài cú click!
@@ -108,7 +109,12 @@ export function GuidePage({ onNavigate }: GuidePageProps) {
               </p>
             </div>
           </div>
-          
+
+          {/* Phones have no sidebar, so the visit count and version live here instead. */}
+          <div className="guide-about">
+            <VisitorCounter />
+            <p>Dự án cá nhân vì sinh viên HCMUE · Phiên bản 1.0</p>
+          </div>
         </div>
       </div>
     </div>

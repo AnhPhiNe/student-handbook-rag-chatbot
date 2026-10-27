@@ -580,6 +580,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .cohort-sheet-option.current { border-color: #E11D48; background: color-mix(in srgb, #E11D48 7%, transparent); }
 .cohort-sheet-option:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Visit count and version on the usage guide; desktop shows them in the sidebar footer. */
+.guide-about {
+  display: none;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--brand-sidebar);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.72rem;
+  text-align: center;
+}
+.guide-about p { margin: 0; }
+@media (max-width: 900px) {
+  .guide-about { display: flex; }
+}
+
 /* ===== SIDEBAR ===== */
 .sidebar {
   background: var(--brand-sidebar);
@@ -3947,6 +3965,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   transform-origin: 74px 48px;
 }
 
+/* Hello wave: the raised right wing swings from its shoulder, three times. */
+@keyframes wing-wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-14deg); }
+  75% { transform: rotate(10deg); }
+}
+.anim-wing-wave {
+  animation: wing-wave 0.55s ease-in-out 3;
+  transform-origin: 72px 48px;
+}
+
 @keyframes eureka-head-nod {
   0%, 100% { transform: rotate(0deg); }
   30% { transform: rotate(4deg) translateY(1px); }
@@ -3965,17 +3994,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* State 1: LẮNG NGHE - Nền trắng + Viền thở nhẹ Xanh Ngọc */
 @keyframes aura-idle-white {
-/* Hello wave: the raised right wing swings from its shoulder, three times. */
-@keyframes wing-wave {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-14deg); }
-  75% { transform: rotate(10deg); }
-}
-.anim-wing-wave {
-  animation: wing-wave 0.55s ease-in-out 3;
-  transform-origin: 72px 48px;
-}
-
   0%, 100% {
     box-shadow: 0 1px 4px rgba(16, 185, 129, 0.15);
     border-color: #a7f3d0;

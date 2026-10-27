@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { GraduationCap, Gift, ArrowDown, Lock, Medal, ArrowLeft, BookOpen, Phone, Shield } from 'lucide-react';
+import { GraduationCap, Gift, ArrowDown, Lock, Medal, BookOpen, Phone, Shield } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
@@ -123,16 +123,16 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   }
 };
 
-export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, onClearChat }: ChatAreaProps) {
+export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, cohort }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
 
   const hour = new Date().getHours();
   let greeting: string;
-  if (hour < 12) greeting = "Chào buổi sáng 🌅";
-  else if (hour < 18) greeting = "Chào buổi chiều ☀️";
-  else greeting = "Chào buổi tối 🌙";
+  if (hour < 12) greeting = "Chào buổi sáng";
+  else if (hour < 18) greeting = "Chào buổi chiều";
+  else greeting = "Chào buổi tối";
 
   const [showScrollButton, setShowScrollButton] = useState(false);
   const displayThinkingMessage = progressMessage;
@@ -182,15 +182,6 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleBackToTopics = () => {
-    if (messages.length <= 2) {
-      if (onClearChat) onClearChat();
-    } else {
-      if (window.confirm("Quay lại màn hình chính sẽ làm mới đoạn chat hiện tại. Bạn có chắc chắn không?")) {
-        if (onClearChat) onClearChat();
-      }
-    }
-  };
 
   // Không sử dụng cold start delay giả nữa, mọi thứ để tự nhiên
 
@@ -220,9 +211,8 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
             {/* Hero - compact */}
             <div className="empty-hero" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
               <OwlMascot state="idle" size={92} showFrame={false} />
-              <h2 className="hero-title" style={{ fontSize: '1.5rem', marginTop: '1rem', color: 'var(--primary)' }}>{greeting}</h2>
-              <p className="hero-subtitle" style={{ marginTop: '0.5rem', fontSize: '1.125rem' }}>Mình là trợ lý AI của Đại học Sư phạm TP.HCM</p>
-              <p className="hero-desc">Bạn cần tìm gì trong sổ tay sinh viên hôm nay?</p>
+              <h2 className="hero-title" style={{ fontSize: '1.5rem', marginTop: '1rem', color: 'var(--primary)' }}>Hỏi mình về Sổ tay nè</h2>
+              <p className="hero-desc">{greeting}! Mình trả lời theo Sổ tay sinh viên khóa {cohort.replace('K', '')}, có dẫn Điều, Khoản.</p>
               {/* The three tips used to be a second dialog after the cohort one; one line here asks nothing of the student. */}
               <p className="chat-question-tip">Mẹo: gõ có dấu, viết đầy đủ thay vì viết tắt, mỗi câu hỏi một ý.</p>
             </div>
@@ -274,34 +264,19 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         </div>
       )}
 
-      <header className="chat-header conversation-header">
-        <div className="chat-header-inner">
-          <button 
-            className="back-btn" 
-            onClick={handleBackToTopics} 
-            title="Quay lại danh sách thẻ gợi ý"
-          >
-            <ArrowLeft size={16} />
-            <span>Quay lại</span>
-          </button>
-          <div className="chat-title-container">
-            <h2 className="chat-title" style={{ margin: 0 }}>Hội thoại với HCMUE AI</h2>
-          </div>
-        </div>
-      </header>
-
       <div className="chat-messages" ref={chatContainerRef} onScroll={handleScroll}>
         {messages.map((msg, index) => {
           const prevMsg = index > 0 ? messages[index - 1] : null;
           const query = msg.role === 'bot' && prevMsg?.role === 'user' ? prevMsg.content : undefined;
           return (
-            <ChatMessage 
-              key={msg.id} 
-              message={msg} 
+            <ChatMessage
+              key={msg.id}
+              message={msg}
               onRetry={onRetry}
               onRegenerate={onRegenerate}
               query={query}
               onSuggestionClick={onSendMessage}
+              cohort={cohort}
             />
           );
         })}

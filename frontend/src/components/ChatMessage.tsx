@@ -2,7 +2,7 @@ import { memo, useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import { BookOpen, Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, FileText, Brain, ExternalLink, X } from 'lucide-react';
+import { BookOpen, Copy, ChevronDown, ChevronRight, Check, ThumbsUp, ThumbsDown, RotateCcw, Share2, Brain, ExternalLink, X } from 'lucide-react';
 import type { Citation, Message, RelatedReference } from '../hooks/useChat';
 import { getApiClientHeaders } from '../utils/clientIdentity';
 import { useToast } from './Toast';
@@ -11,6 +11,7 @@ import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 import { StructuredResults } from './StructuredResults';
 import { OwlMascot, type OwlState } from './OwlMascot';
 import { WaitingIndicator } from './WaitingIndicator';
+import { AnswerSources } from './AnswerSources';
 const userAvatarImg = '/user_avatar.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
@@ -21,6 +22,8 @@ interface ChatMessageProps {
   onRetry?: () => void;
   query?: string;
   onSuggestionClick?: (text: string) => void;
+  /** The student's cohort, so its handbook's sources are listed first. */
+  cohort?: string;
 }
 
 
@@ -94,6 +97,26 @@ function buildPrimaryArticleReferences(citations: Citation[]): RelatedReference[
       detail_kind: citation.detail_kind,
     }];
   });
+}
+
+/** The detail dialog for one source; sources that are not an article still open with their text. */
+function referenceForCitation(citation: Citation): RelatedReference {
+  const [article] = buildPrimaryArticleReferences([citation]);
+  if (article) return article;
+  return {
+    id: citation.canonical_source_id || citation.chunk_id,
+    primary_chunk_id: citation.chunk_id,
+    related_chunk_id: citation.chunk_id,
+    title: citation.parent_title || citation.title || citation.source_section || 'Nguồn tham khảo',
+    source_pages: citation.source_pages,
+    source_url: citation.source_url,
+    cohort: citation.cohort,
+    content: citation.parent_content || citation.content,
+    relevant_excerpt: citation.relevant_excerpt,
+    source_kind: 'primary',
+    table_name: citation.table_name,
+    detail_kind: citation.detail_kind,
+  };
 }
 
 function deduplicatePrimaryReferences(references: RelatedReference[]): RelatedReference[] {
@@ -389,34 +412,6 @@ function formatCitationContentForDisplay(text: string): string {
   return [formattedText, normalizedTables].filter(Boolean).join('\n\n');
 }
 
-function getCitationTypeLabel(citation: Citation): string {
-  return citation.source_label || citation.table_name || 'Nguồn tham khảo';
-}
-
-function getCompactExcerpt(text: string, maxLength = 220): string {
-  // Clean markdown tables out of the compact plain-text excerpt safely without nested regex
-  const lines = text.split('\n');
-  const nonTableLines = lines.filter((line) => {
-    const trimmed = line.trim();
-    return !(trimmed.startsWith('|') && trimmed.endsWith('|'));
-  });
-
-  const withoutTable = nonTableLines.join('\n').trim();
-
-  if (!withoutTable) {
-    return 'Bảng quy định và số liệu chi tiết trong Sổ tay sinh viên HCMUE. Nhấn để mở xem toàn bộ bảng.';
-  }
-
-  const plain = withoutTable
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\*\*/g, '')
-    .replace(/\n+/g, ' ')
-    .trim();
-
-  if (plain.length <= maxLength) return plain;
-  return `${plain.slice(0, maxLength).trim()}...`;
-}
-
 function highlightKeywords(text: string, query?: string, relevantExcerpt?: string): string {
   if (!query || !text) return text;
   
@@ -509,22 +504,8 @@ function highlightKeywords(text: string, query?: string, relevantExcerpt?: strin
     .join('');
 }
 
-function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionClick }: ChatMessageProps) {
+function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionClick, cohort }: ChatMessageProps) {
   const effectiveQuery = message.userQuery || query;
-  const defaultShowSources = !!(message.citations && message.citations.length > 0 && message.citations.length <= 2);
-  const [showSources, setShowSources] = useState(defaultShowSources);
-  const [expandedCitations, setExpandedCitations] = useState<Set<number>>(() => {
-    // Auto-expand citation cards that contain structured tables so the table renders immediately
-    const initial = new Set<number>();
-    if (message.citations) {
-      message.citations.forEach((c, idx) => {
-        if (c.chunk_type === 'structured_lookup' || c.table_name || (c.content && c.content.includes('| --- |'))) {
-          initial.add(idx);
-        }
-      });
-    }
-    return initial;
-  });
   const [activeRelatedReference, setActiveRelatedReference] = useState<RelatedReference | null>(null);
   const [copied, setCopied] = useState(false);
   const relatedReferenceCloseRef = useRef<HTMLButtonElement>(null);
@@ -534,17 +515,6 @@ function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionCl
     initialFocusRef: relatedReferenceCloseRef,
   });
 
-  const toggleCitation = (idx: number) => {
-    setExpandedCitations(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(idx)) {
-        newSet.delete(idx);
-      } else {
-        newSet.add(idx);
-      }
-      return newSet;
-    });
-  };
   const [feedback, setFeedback] = useState<'like'|'dislike'|null>(null);
   const toast = useToast();
 
@@ -755,132 +725,47 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
           )}
 
           {!message.isStreaming && message.citations && message.citations.length > 0 && (
-            <div className="citation-container">
-              <button 
-                type="button"
-                className="citation-toggle-chip" 
-                onClick={() => setShowSources(!showSources)}
-                aria-expanded={showSources}
-              >
-                <BookOpen size={14} />
-                <span>Nguồn tham khảo ({message.citations.length})</span>
-                {showSources ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              </button>
-              
-              {showSources && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.5rem' }}>
-                  {message.citations.map((cit, idx) => {
-                    const isExpanded = expandedCitations.has(idx);
-                    const pagesLabel = cit.source_pages?.length ? `Trang ${cit.source_pages.join(', ')}` : '';
-                    const excerpt = cit.content ? getCompactExcerpt(cit.content) : '';
-                    const citationTitle = cit.title || cit.chunk_id;
-                    const applicability = cit.applicability;
-                    return (
-                        <div
-                          key={cit.canonical_source_id || cit.chunk_id || idx}
-                          className="citation-card"
-                          data-canonical-source-id={cit.canonical_source_id}
-                        >
-                        <div className="citation-card-header" onClick={() => toggleCitation(idx)}>
-                          <div className="citation-card-icon"><FileText size={16} /></div>
-                          <div className="citation-card-body">
-                            <span className="citation-title">{citationTitle}</span>
-                            <div className="citation-meta-row">
-                              <span className="citation-badge">{getCitationTypeLabel(cit)}</span>
-                              {cit.cohort && <span className="citation-badge">{cit.cohort}</span>}
-                              {pagesLabel && <span className="citation-pages">{pagesLabel}</span>}
-                            </div>
-                            {applicability && <span className="citation-applicability">{applicability}</span>}
-                            {!isExpanded && excerpt && (
-                              <div className="citation-excerpt-wrap">
-                                <span className="citation-excerpt-label">Trích đoạn liên quan</span>
-                                <p 
-                                  className="citation-excerpt"
-                                  dangerouslySetInnerHTML={{
-                                    __html: highlightKeywords(excerpt, effectiveQuery, cit.relevant_excerpt)
-                                  }}
-                                />
-                              </div>
-                            )}
-                          </div>
-                          {cit.source_url && (
-                            <a
-                              className="citation-source-link"
-                              href={cit.source_url}
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={(event) => event.stopPropagation()}
-                            >
-                              <ExternalLink size={14} />
-                              <span>Mở nguồn</span>
-                            </a>
-                          )}
-                          <div className="citation-card-toggle">
-                            {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                          </div>
-                        </div>
-                        {isExpanded && cit.content && (
-                          <div className="citation-card-content citation-markdown">
-                            <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                              {highlightKeywords(
-                                formatCitationContentForDisplay(cit.content),
-                                effectiveQuery,
-                                cit.relevant_excerpt,
-                              )}
-                            </ReactMarkdown>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+            <AnswerSources
+              citations={message.citations}
+              cohort={cohort}
+              onOpen={(citation) => setActiveRelatedReference(referenceForCitation(citation))}
+            />
           )}
 
           {!message.isStreaming && !isErrorMsg && (
             <div className="message-card-footer">
               <div className="message-card-footer-main">
                 <div className="meta-actions">
-                  <button className="action-btn" title="Chia sẻ" onClick={handleShare}>
-                    <Share2 size={15} />
-                    <span className="action-btn-label">Chia sẻ</span>
-                  </button>
-                  <button 
-                    className={`action-btn ${feedback === 'like' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`} 
-                    title="Hữu ích" 
+                  <button
+                    type="button"
+                    className={`action-btn ${feedback === 'like' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`}
+                    title="Hữu ích"
+                    aria-label="Hữu ích"
                     onClick={() => handleFeedbackClick('like')}
                     disabled={feedback !== null}
                   >
-                    <ThumbsUp size={15} />
+                    <ThumbsUp size={15} aria-hidden="true" />
                   </button>
-                  <button 
-                    className={`action-btn ${feedback === 'dislike' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`} 
-                    title="Chưa chính xác" 
+                  <button
+                    type="button"
+                    className={`action-btn ${feedback === 'dislike' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`}
+                    title="Chưa chính xác"
+                    aria-label="Chưa chính xác"
                     onClick={() => handleFeedbackClick('dislike')}
                     disabled={feedback !== null}
                   >
-                    <ThumbsDown size={15} />
+                    <ThumbsDown size={15} aria-hidden="true" />
                   </button>
-                  <button className="action-btn" title="Copy" onClick={handleCopy}>
-                    {copied ? <Check size={15} style={{color: 'var(--success)'}}/> : <Copy size={15} />}
-                    <span className="action-btn-label">{copied ? 'Đã copy' : 'Copy'}</span>
+                  <button type="button" className="action-btn" title="Sao chép" onClick={handleCopy}>
+                    {copied ? <Check size={15} style={{color: 'var(--success)'}} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}
+                    <span className="action-btn-label">{copied ? 'Đã chép' : 'Sao chép'}</span>
                   </button>
-                  <button className="action-btn" title="Tạo lại" onClick={() => onRegenerate?.()}>
-                    <RotateCcw size={15} />
-                    <span className="action-btn-label">Tạo lại</span>
+                  <button type="button" className="action-btn" title="Chia sẻ" aria-label="Chia sẻ" onClick={handleShare}>
+                    <Share2 size={15} aria-hidden="true" />
                   </button>
-                </div>
-                
-                <div className="meta-latency-wrapper">
-                  {message.responseTimeMs ? (
-                    <span 
-                      className="metadata-badge latency" 
-                      title={`Tổng thời gian phản hồi: ${(message.responseTimeMs / 1000).toFixed(2)}s${message.ttftMs ? ` (Từ đầu tiên: ${(message.ttftMs / 1000).toFixed(2)}s)` : ''}`}
-                    >
-                      ⏱️ {(message.responseTimeMs / 1000).toFixed(1)}s
-                    </span>
-                  ) : null}
+                  <button type="button" className="action-btn" title="Tạo lại" aria-label="Tạo lại" onClick={() => onRegenerate?.()}>
+                    <RotateCcw size={15} aria-hidden="true" />
+                  </button>
                 </div>
               </div>
 

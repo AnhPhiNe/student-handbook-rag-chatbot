@@ -1054,7 +1054,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 1.5rem 2rem;
+  /* the top-right controls float over this column on desktop; phones reset it below */
+  padding: 4.5rem 2rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -1283,6 +1284,128 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .typing-dot:nth-child(1) { animation-delay: -0.32s; }
 .typing-dot:nth-child(2) { animation-delay: -0.16s; }
 
+/* ===== Answer sources (AnswerSources.tsx) ===== */
+.answer-sources { margin-top: 0.6rem; }
+.answer-sources-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--primary) 4%, var(--bg-primary));
+  color: var(--text-secondary);
+  font: 500 0.82rem var(--font-body);
+  cursor: pointer;
+  max-width: 100%;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.answer-sources-toggle:hover,
+.answer-sources-toggle[aria-expanded='true'] { border-color: color-mix(in srgb, var(--primary) 32%, var(--border-color)); }
+.answer-sources-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.answer-sources-label b { color: var(--text-primary); font-weight: 700; }
+.answer-sources-sep { display: none; }
+/* phones: "5 nguồn · K51, K49" so both cohorts stay visible */
+@media (max-width: 520px) {
+  .answer-sources-from { display: none; }
+  .answer-sources-sep { display: inline; }
+}
+.answer-sources-chevron { color: var(--text-muted); transition: transform 0.2s; }
+.answer-sources-toggle[aria-expanded='true'] .answer-sources-chevron { transform: rotate(180deg); }
+.answer-sources-stack { display: flex; }
+.cohort-dot {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--bot-msg-bg, var(--bg-primary));
+  color: white;
+  font: 800 0.66rem var(--font-body);
+  font-style: normal;
+  background: linear-gradient(135deg, #64748B, #334155);
+}
+.cohort-dot + .cohort-dot { margin-left: -4px; }
+/* one fixed colour per cohort, the same on the dot and the group heading */
+.cohort-dot.cohort-k49, .cohort-chip.cohort-k49 { background: linear-gradient(135deg, #6366F1, #4338CA); }
+.cohort-dot.cohort-k50, .cohort-chip.cohort-k50 { background: linear-gradient(135deg, #0EA5E9, #0369A1); }
+.cohort-dot.cohort-k51, .cohort-chip.cohort-k51 { background: linear-gradient(135deg, #EC4899, #BE185D); }
+.cohort-dot.cohort-k52, .cohort-chip.cohort-k52 { background: linear-gradient(135deg, #10B981, #047857); }
+.answer-sources-list {
+  margin-top: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+.answer-sources-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-top: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--text-secondary) 6%, var(--bg-primary));
+  font: 700 0.76rem var(--font-body);
+  color: var(--text-secondary);
+}
+.answer-sources-group:first-child .answer-sources-heading { border-top: 0; }
+.answer-sources-heading small { margin-left: auto; font-weight: 500; color: var(--text-muted); }
+.cohort-chip {
+  padding: 0 7px;
+  border-radius: 6px;
+  color: white;
+  font: 800 0.7rem/1.6 var(--font-body);
+  font-style: normal;
+  background: #64748B;
+}
+.answer-source-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px 8px 12px;
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  background: none;
+  color: var(--text-muted);
+  text-align: left;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.answer-sources-list > .answer-sources-group:first-child > .answer-source-row:first-child { border-top: 0; }
+.answer-source-row:hover { background: color-mix(in srgb, var(--primary) 6%, transparent); }
+.answer-source-article {
+  min-width: 60px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
+  font: 700 0.74rem var(--font-body);
+  text-align: center;
+  white-space: nowrap;
+}
+.answer-source-text { min-width: 0; }
+.answer-source-text b,
+.answer-source-text small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.answer-source-text b { color: var(--text-primary); font-weight: 600; }
+.answer-source-text small { font-size: 0.72rem; }
+.answer-source-pages { font-size: 0.74rem; white-space: nowrap; }
+.answer-sources-more {
+  display: block;
+  width: 100%;
+  padding: 7px 12px;
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  background: none;
+  color: var(--primary);
+  font: 600 0.78rem var(--font-body);
+  text-align: left;
+  cursor: pointer;
+}
+.disclaimer strong { color: var(--text-primary); font-weight: 600; }
+.waiting-indicator-step { color: var(--text-primary); font-weight: 600; }
+
 /* What the bubble says while the answer is prepared (WaitingIndicator.tsx) */
 .waiting-indicator {
   display: flex;
@@ -1298,7 +1421,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 .waiting-indicator-step {
   font-size: 0.875rem;
-  color: var(--text-secondary);
 }
 .waiting-indicator-time {
   font-size: 0.75rem;
@@ -1402,13 +1524,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   gap: 0.5rem;
 }
 
-.meta-latency-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-left: auto;
-}
-
 .meta-actions { display: flex; gap: 0.4rem; align-items: center; }
 
 .action-btn {
@@ -1440,62 +1555,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   }
 }
 
-/* Citations Pill Chip & Container */
-.citation-container {
-  margin-top: 0.85rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.citation-toggle-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  background: rgba(37, 99, 235, 0.07);
-  border: 1px solid rgba(37, 99, 235, 0.2);
-  color: var(--primary);
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  width: fit-content;
-  user-select: none;
-}
-
-.citation-toggle-chip:hover {
-  background: rgba(37, 99, 235, 0.14);
-  border-color: var(--primary);
-  transform: translateY(-1px);
-}
-
-[data-theme='dark'] .citation-toggle-chip {
-  background: rgba(96, 165, 250, 0.12);
-  border-color: rgba(96, 165, 250, 0.25);
-  color: #93c5fd;
-}
-
-[data-theme='dark'] .citation-toggle-chip:hover {
-  background: rgba(96, 165, 250, 0.2);
-  border-color: #60a5fa;
-}
-
-.citation-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  transition: all var(--transition-fast);
-}
-.citation-card:hover {
-  border-color: var(--primary-light);
-  box-shadow: var(--shadow-sm);
-}
-
 .citation-card-header {
   display: flex;
   align-items: flex-start;
@@ -1524,41 +1583,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   min-width: 0;
 }
 
-.citation-title { font-weight: 600; color: var(--text-primary); line-height: 1.4; }
-.citation-pages { color: var(--text-secondary); font-size: 0.75rem; }
-
-.citation-meta-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  align-items: center;
-  margin-top: 0.25rem;
-}
-
-.citation-badge {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  border-radius: 999px;
-  padding: 0.15rem 0.45rem;
-  background: rgba(59, 130, 246, 0.08);
-  color: var(--primary);
-  border: 1px solid rgba(59, 130, 246, 0.18);
-  font-size: 0.7rem;
-  font-weight: 700;
-}
-
-.citation-applicability,
-.citation-excerpt {
-  color: var(--text-secondary);
-  font-size: 0.75rem;
-  line-height: 1.45;
-}
-
-.citation-applicability {
-  margin-top: 0.2rem;
-}
-
 .citation-excerpt-wrap {
   margin-top: 0.4rem;
 }
@@ -1570,10 +1594,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-}
-
-.citation-excerpt {
-  margin: 0.15rem 0 0;
 }
 
 .citation-source-link {
@@ -2984,25 +3004,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: white;
 }
 
-/* Metadata Badge styles */
-.metadata-badge {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-.metadata-badge.latency {
-  background-color: rgba(107, 114, 128, 0.1);
-  color: var(--text-secondary);
-}
-[data-theme='dark'] .metadata-badge.latency {
-  background-color: rgba(156, 163, 175, 0.2);
-  color: var(--text-secondary);
-}
-
 /* Feedback UX Enhancements */
 @keyframes pulseGlow {
   0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
@@ -4008,29 +4009,5 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .avatar-frame-eureka-white {
   animation: aura-eureka-white 2s ease-in-out infinite;
   background: #ffffff !important;
-}
-
-/* 4. Nâng cấp thiết kế Citation Card dọc */
-.citation-card {
-  border-radius: 14px !important;
-  transition: all 0.2s ease !important;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-}
-.citation-card:hover {
-  border-color: #93c5fd !important;
-  box-shadow: 0 4px 12px rgba(40, 72, 145, 0.08) !important;
-  transform: translateX(2px);
-}
-.citation-card mark {
-  background-color: #fef08a !important;
-  color: #854d0e !important;
-  padding: 0.1rem 0.35rem;
-  border-radius: 4px;
-  font-weight: 500;
-}
-[data-theme='dark'] .citation-card mark {
-  background-color: #854d0e !important;
-  color: #fef08a !important;
 }
 

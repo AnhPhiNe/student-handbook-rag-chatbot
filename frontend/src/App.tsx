@@ -175,7 +175,7 @@ function App() {
                 <p style={{ fontSize: '1.1rem', animation: 'pulse-opacity 2s ease-in-out infinite' }}>Đang tải nội dung...</p>
               </div>
             }>
-              {activeTab === 'home' && <HomePage onNavigate={handleNavigate} />}
+              {activeTab === 'home' && <HomePage onNavigate={handleNavigate} cohort={storedCohort ? cohort : undefined} />}
               {activeTab === 'chat' && (
                 <ChatArea 
                   messages={messages}

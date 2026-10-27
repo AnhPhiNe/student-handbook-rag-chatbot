@@ -637,3 +637,17 @@
 @media (prefers-reduced-motion: reduce) {
   .hp-tip, .hp-tip:hover { transition: none; }
 }
+
+/* ---------- owl reactions ---------- */
+.hp-owl-btn { padding: 0; border: 0; background: none; cursor: pointer; }
+.hp-owl-btn:focus-visible { outline: 2px solid #FDE68A; outline-offset: 4px; border-radius: 50%; }
+.hp-owl-btn[data-hop='true'] { animation: hp-owl-hop 0.45s ease-out; }
+@keyframes hp-owl-hop {
+  40% { transform: translateY(-10px) rotate(-4deg); }
+  70% { transform: translateY(0) rotate(2deg); }
+}
+.hp-say { animation: hp-say-in 0.3s ease-out both; }
+@keyframes hp-say-in { from { opacity: 0; transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) {
+  .hp-owl-btn[data-hop='true'], .hp-say { animation: none; }
+}

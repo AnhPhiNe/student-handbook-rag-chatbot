@@ -3965,6 +3965,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* State 1: LẮNG NGHE - Nền trắng + Viền thở nhẹ Xanh Ngọc */
 @keyframes aura-idle-white {
+/* Hello wave: the raised right wing swings from its shoulder, three times. */
+@keyframes wing-wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-14deg); }
+  75% { transform: rotate(10deg); }
+}
+.anim-wing-wave {
+  animation: wing-wave 0.55s ease-in-out 3;
+  transform-origin: 72px 48px;
+}
+
   0%, 100% {
     box-shadow: 0 1px 4px rgba(16, 185, 129, 0.15);
     border-color: #a7f3d0;

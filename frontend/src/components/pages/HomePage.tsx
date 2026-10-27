@@ -14,7 +14,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useStudentProfile } from '../../hooks/useStudentProfile';
 import { sanitizePinnedIds } from '../../utils/pinnedTools';
 import { summarizeProfile, type HomeSummary } from '../../utils/homeSummary';
-import { OwlMascot } from '../OwlMascot';
+import { OwlMascot, type OwlState } from '../OwlMascot';
 import { QuickContacts, TipBoard } from './HomeExtras';
 import './HomePage.css';
 
@@ -112,13 +112,17 @@ function Heading() {
   );
 }
 
-function AskBox({ onNavigate, placeholder, large }: { onNavigate: (tab: string) => void; placeholder: string; large?: boolean }) {
+function AskBox({ onAsk, onLook, placeholder, large }: { onAsk: () => void; onLook: (on: boolean) => void; placeholder: string; large?: boolean }) {
   return (
     <button
       type="button"
       className={`hp-ask${large ? ' hp-ask-lg' : ''}`}
       aria-label="Mở Chat để hỏi về Sổ tay"
-      onClick={() => onNavigate('chat')}
+      onClick={onAsk}
+      onMouseEnter={() => onLook(true)}
+      onMouseLeave={() => onLook(false)}
+      onFocus={() => onLook(true)}
+      onBlur={() => onLook(false)}
     >
       <Search size={18} aria-hidden="true" />
       <span className="hp-ask-text" key={placeholder}>{placeholder}</span>
@@ -164,6 +168,45 @@ function SideCard({ summary, gpaText, onNavigate }: { summary: HomeSummary; gpaT
   );
 }
 
+// What the owl says, one line per tap. Every line must stay true of the app.
+const OWL_LINES: ReactNode[] = [
+  <>Mình <b>chỉ đọc Sổ tay sinh viên</b> thôi, trả lời kèm Điều, Khoản nha!</>,
+  <>Thử bấm một <b>câu gợi ý</b> bên dưới nè!</>,
+  <>Cần số phòng ban? Mở <b>Danh bạ</b> nha!</>,
+  <>Nhập GPA một lần, <b>các công cụ tự dùng lại</b>.</>,
+];
+const WAVE_MS = 1700;
+const EUREKA_MS = 450;
+
+/** The owl waves once on arrival, reads while the ask box is hovered, and lights up on send. */
+function useOwl(reduced: boolean) {
+  const [greeting, setGreeting] = useState(!reduced);
+  const [mood, setMood] = useState<OwlState>('idle');
+  const [line, setLine] = useState(0);
+  const [hop, setHop] = useState(0);
+  useEffect(() => {
+    if (!greeting) return;
+    const id = window.setTimeout(() => setGreeting(false), WAVE_MS);
+    return () => window.clearTimeout(id);
+  }, [greeting]);
+  return {
+    state: (greeting && mood === 'idle' ? 'wave' : mood) as OwlState,
+    line,
+    hop,
+    look: (on: boolean) => setMood((m) => (m === 'eureka' ? m : on ? 'reading' : 'idle')),
+    poke: () => {
+      setLine((i) => (i + 1) % OWL_LINES.length);
+      setHop((n) => n + 1);
+    },
+    /** Light up, then go; reduced motion goes at once. */
+    send: (go: () => void) => {
+      if (reduced) return go();
+      setMood('eureka');
+      window.setTimeout(go, EUREKA_MS);
+    },
+  };
+}
+
 export function HomePage({ onNavigate, cohort }: HomePageProps) {
   const desktop = useMedia(DESKTOP_QUERY);
   const reduced = useMedia(REDUCED_QUERY);
@@ -177,6 +220,8 @@ export function HomePage({ onNavigate, cohort }: HomePageProps) {
     return () => window.clearInterval(id);
   }, [reduced]);
 
+  const owl = useOwl(reduced);
+  const askChat = () => owl.send(() => onNavigate('chat'));
   const summary = summarizeProfile(profile);
   const counted = useCountUp(summary.gpa ?? 0, reduced);
   const gpaText = counted.toFixed(2);
@@ -193,37 +238,37 @@ export function HomePage({ onNavigate, cohort }: HomePageProps) {
               <span className="hp-pill">Sổ tay HCMUE{cohort ? ` · Khóa ${cohort.replace('K', '')}` : ''}</span>
               <Heading />
               <p className="hp-lead">Hỏi quy chế, tính GPA, học bổng, tìm phòng ban trong vài giây.</p>
-              <AskBox large onNavigate={onNavigate} placeholder={placeholder} />
+              <AskBox large onAsk={askChat} onLook={owl.look} placeholder={placeholder} />
               <div className="hp-chips">
                 {CHIPS.map((chip) => (
-                  <button key={chip} type="button" className="hp-chip" onClick={() => onNavigate('chat')}>
+                  <button key={chip} type="button" className="hp-chip" onClick={askChat}>
                     {chip}
                   </button>
                 ))}
               </div>
             </div>
             <div className="hp-right">
-              <div className="hp-say">
-                Mình <b>chỉ đọc Sổ tay sinh viên</b> thôi, trả lời kèm Điều, Khoản nha!
+              <div className="hp-say" key={owl.line} aria-live="polite">
+                {OWL_LINES[owl.line]}
               </div>
-              <div className="hp-owl hp-owl-lg">
-                <OwlMascot state="idle" size={104} showFrame={false} />
-              </div>
+              <button type="button" className="hp-owl hp-owl-lg hp-owl-btn" key={`owl-${owl.hop}`} data-hop={owl.hop > 0} onClick={owl.poke} aria-label="Cú Sư Phạm, bấm để nghe câu khác">
+                <OwlMascot state={owl.state} size={104} showFrame={false} />
+              </button>
               <SideCard summary={summary} gpaText={gpaText} onNavigate={onNavigate} />
             </div>
           </div>
         ) : (
           <div className="hp-hero-grid">
             <div className="hp-row">
-              <div className="hp-owl">
-                <OwlMascot state="idle" size={78} showFrame={false} />
-              </div>
+              <button type="button" className="hp-owl hp-owl-btn" key={`owl-${owl.hop}`} data-hop={owl.hop > 0} onClick={owl.poke} aria-label="Cú Sư Phạm">
+                <OwlMascot state={owl.state} size={78} showFrame={false} />
+              </button>
               <div className="hp-row-text">
                 <Heading />
                 <span className="hp-pill">Chỉ đọc Sổ tay HCMUE{cohort ? ` · Khóa ${cohort.replace('K', '')}` : ''}</span>
               </div>
             </div>
-            <AskBox onNavigate={onNavigate} placeholder={placeholder} />
+            <AskBox onAsk={askChat} onLook={owl.look} placeholder={placeholder} />
           </div>
         )}
       </section>

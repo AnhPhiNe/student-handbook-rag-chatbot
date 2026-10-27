@@ -1,6 +1,7 @@
 import React from 'react';
 
-export type OwlState = 'idle' | 'reading' | 'eureka';
+// 'wave' raises the right wing to say hello; the rest of the owl stays as in 'idle'.
+export type OwlState = 'idle' | 'reading' | 'eureka' | 'wave';
 
 export interface OwlMascotProps {
   state?: OwlState;
@@ -125,7 +126,7 @@ export const OwlMascot: React.FC<OwlMascotProps> = ({
         {/* ================= BỘ CÁNH ================= */}
         {/* Cánh trái */}
         <g>
-          {state === 'idle' && (
+          {(state === 'idle' || state === 'wave') && (
             <path d="M24,46 Q10,56 16,72 Q26,76 30,60 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="0.8" />
           )}
           {state === 'reading' && (
@@ -150,6 +151,11 @@ export const OwlMascot: React.FC<OwlMascotProps> = ({
             <g className="anim-wing-point">
               <path d="M74,50 Q86,36 80,21 Q75,19 72,27 Q68,36 70,48 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="1" />
               <path d="M78,24 Q80,18 81,15 Q82,18 80,24" fill="#3b82f6" />
+            </g>
+          )}
+          {state === 'wave' && (
+            <g className="anim-wing-wave">
+              <path d="M74,50 Q86,36 80,21 Q75,19 72,27 Q68,36 70,48 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="1" />
             </g>
           )}
         </g>

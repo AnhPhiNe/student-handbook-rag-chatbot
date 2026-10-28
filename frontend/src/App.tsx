@@ -48,6 +48,8 @@ function App() {
   const cohort = storedCohort ? normalizeFrontendCohort(storedCohort) : 'K49'; // Fallback an toàn cho utils
   const toast = useToast();
   const [activeTab, setActiveTab] = useState('home');
+  const [chatDraft, setChatDraft] = useState<{ id: number; text: string } | null>(null);
+  const draftSequence = useRef(0);
   const setCohort = (nextCohort: Cohort) => {
     // Tool pages are keyed by cohort and reset, so say what changed for grading.
     if (shouldNotifyCohortChange(storedCohort ? cohort : null, nextCohort, activeTab)) {
@@ -97,8 +99,19 @@ function App() {
       return;
     }
     setActiveTab('chat');
+    if (isTyping) {
+      setChatDraft({ id: ++draftSequence.current, text });
+      toast.show('Câu hỏi đã được điền vào ô nhập. Bạn có thể gửi khi sẵn sàng.', 'info');
+      return;
+    }
+    setChatDraft(null);
     void sendMessage(text);
   };
+
+  const sendChatMessage = React.useCallback((text: string) => {
+    setChatDraft(null);
+    void sendMessage(text);
+  }, [sendMessage]);
 
   return (
     <ErrorBoundary>
@@ -175,13 +188,14 @@ function App() {
                 <p style={{ fontSize: '1.1rem', animation: 'pulse-opacity 2s ease-in-out infinite' }}>Đang tải nội dung...</p>
               </div>
             }>
-              {activeTab === 'home' && <HomePage onNavigate={handleNavigate} cohort={storedCohort ? cohort : undefined} />}
+              {activeTab === 'home' && <HomePage onNavigate={handleNavigate} onAskChat={askChat} cohort={storedCohort ? cohort : undefined} />}
               {activeTab === 'chat' && (
                 <ChatArea 
                   messages={messages}
                   isTyping={isTyping}
                   progressMessage={progressMessage}
-                  onSendMessage={sendMessage}
+                  onSendMessage={sendChatMessage}
+                  draft={chatDraft}
                   onSendHardcoded={sendHardcodedMessage}
                   onRetry={retryLastMessage}
                   onRegenerate={regenerateLastMessage}

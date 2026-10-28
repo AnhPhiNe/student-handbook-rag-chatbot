@@ -90,6 +90,15 @@
   box-shadow: 0 14px 30px rgba(2, 6, 23, 0.3);
 }
 .hp-ask:focus-visible { outline: 3px solid #FDE68A; outline-offset: 2px; }
+.hp-ask:focus-within { outline: 3px solid #FDE68A; outline-offset: 2px; }
+.hp-ask-input {
+  flex: 1; min-width: 0; width: 100%; padding: 8px 0; border: 0;
+  border-radius: 0; outline: none; box-shadow: none; background: transparent;
+  font: inherit; font-size: 0.92rem; color: #13203A;
+}
+.hp-ask-input::placeholder { color: #64748B; opacity: 1; }
+.hp-ask .hp-go { padding: 0; border: 0; }
+.hp-ask .hp-go:disabled { opacity: 0.55; cursor: default; }
 .hp-ask > svg { flex: 0 0 auto; }
 .hp-ask-text {
   flex: 1;
@@ -499,6 +508,7 @@
 
 /* ---------- desktop extras: tip board / quick contacts ---------- */
 .hp-extra { margin-top: 26px; }
+.hp-sample { margin-left: 8px; font-weight: 500; font-size: 0.65rem; letter-spacing: normal; text-transform: none; }
 .hp-extra-head { display: flex; align-items: center; margin-bottom: 12px; }
 .hp-extra-head h2 {
   margin: 0;

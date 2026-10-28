@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import {
   ArrowRight,
   BookOpen,
@@ -16,10 +16,13 @@ import { sanitizePinnedIds } from '../../utils/pinnedTools';
 import { summarizeProfile, type HomeSummary } from '../../utils/homeSummary';
 import { OwlMascot, type OwlState } from '../OwlMascot';
 import { QuickContacts, TipBoard } from './HomeExtras';
+import { EXPERIENCE } from '../../data/experience';
+import { MAX_QUERY_CHARS } from '../../utils/queryLength';
 import './HomePage.css';
 
 interface HomePageProps {
   onNavigate: (tab: string) => void;
+  onAskChat: (question: string) => void;
   /** e.g. 'K50'; named in the hero pill so the student sees which handbook answers. */
   cohort?: string;
 }
@@ -112,22 +115,29 @@ function Heading() {
   );
 }
 
-function AskBox({ onAsk, onLook, placeholder, large }: { onAsk: () => void; onLook: (on: boolean) => void; placeholder: string; large?: boolean }) {
+function AskBox({ onAsk, onLook, placeholder, large, sending }: { onAsk: (question: string) => void; onLook: (on: boolean) => void; placeholder: string; large?: boolean; sending: boolean }) {
+  const [question, setQuestion] = useState('');
   return (
-    <button
-      type="button"
+    <form
       className={`hp-ask${large ? ' hp-ask-lg' : ''}`}
-      aria-label="Mở Chat để hỏi về Sổ tay"
-      onClick={onAsk}
+      aria-label="Hỏi về Sổ tay"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (question.trim() && !sending) onAsk(question.trim());
+      }}
       onMouseEnter={() => onLook(true)}
       onMouseLeave={() => onLook(false)}
       onFocus={() => onLook(true)}
-      onBlur={() => onLook(false)}
+      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) onLook(false); }}
     >
       <Search size={18} aria-hidden="true" />
-      <span className="hp-ask-text" key={placeholder}>{placeholder}</span>
-      <span className="hp-go"><ArrowRight size={18} aria-hidden="true" /></span>
-    </button>
+      <input className="hp-ask-input" aria-label="Câu hỏi về Sổ tay" placeholder={placeholder}
+        value={question} onChange={(event) => setQuestion(event.target.value)}
+        maxLength={MAX_QUERY_CHARS} disabled={sending} />
+      <button className="hp-go" type="submit" aria-label="Gửi câu hỏi" disabled={!question.trim() || sending}>
+        <ArrowRight size={18} aria-hidden="true" />
+      </button>
+    </form>
   );
 }
 
@@ -177,20 +187,30 @@ const OWL_LINES: ReactNode[] = [
 ];
 const WAVE_MS = 1700;
 const EUREKA_MS = 450;
+const OWL_WELCOME_KEY = 'hcmue-owl-welcomed';
 
 /** The owl waves once on arrival, reads while the ask box is hovered, and lights up on send. */
 function useOwl(reduced: boolean) {
-  const [greeting, setGreeting] = useState(!reduced);
+  const [greeting, setGreeting] = useState(() => {
+    if (reduced) return false;
+    try { return sessionStorage.getItem(OWL_WELCOME_KEY) !== 'true'; } catch { return true; }
+  });
+  const sendTimer = useRef<number | null>(null);
   const [mood, setMood] = useState<OwlState>('idle');
   const [line, setLine] = useState(0);
   const [hop, setHop] = useState(0);
   useEffect(() => {
-    if (!greeting) return;
+    if (!greeting || reduced) return;
+    try { sessionStorage.setItem(OWL_WELCOME_KEY, 'true'); } catch { /* animation still works without storage */ }
     const id = window.setTimeout(() => setGreeting(false), WAVE_MS);
     return () => window.clearTimeout(id);
-  }, [greeting]);
+  }, [greeting, reduced]);
+  useEffect(() => () => {
+    if (sendTimer.current !== null) window.clearTimeout(sendTimer.current);
+  }, []);
   return {
-    state: (greeting && mood === 'idle' ? 'wave' : mood) as OwlState,
+    state: (!reduced && greeting && mood === 'idle' ? 'wave' : mood) as OwlState,
+    sending: mood === 'eureka',
     line,
     hop,
     look: (on: boolean) => setMood((m) => (m === 'eureka' ? m : on ? 'reading' : 'idle')),
@@ -201,13 +221,18 @@ function useOwl(reduced: boolean) {
     /** Light up, then go; reduced motion goes at once. */
     send: (go: () => void) => {
       if (reduced) return go();
+      if (sendTimer.current !== null) return;
       setMood('eureka');
-      window.setTimeout(go, EUREKA_MS);
+      sendTimer.current = window.setTimeout(() => {
+        sendTimer.current = null;
+        setMood('idle');
+        go();
+      }, EUREKA_MS);
     },
   };
 }
 
-export function HomePage({ onNavigate, cohort }: HomePageProps) {
+export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
   const desktop = useMedia(DESKTOP_QUERY);
   const reduced = useMedia(REDUCED_QUERY);
   const [phIndex, setPhIndex] = useState(0);
@@ -221,12 +246,13 @@ export function HomePage({ onNavigate, cohort }: HomePageProps) {
   }, [reduced]);
 
   const owl = useOwl(reduced);
-  const askChat = () => owl.send(() => onNavigate('chat'));
+  const askChat = (question: string) => owl.send(() => onAskChat(question));
   const summary = summarizeProfile(profile);
   const counted = useCountUp(summary.gpa ?? 0, reduced);
   const gpaText = counted.toFixed(2);
   const placeholder = PLACEHOLDERS[reduced ? 0 : phIndex];
   const pins = sanitizePinnedIds(storedPins).filter((id) => id in PIN_TOOLS);
+  const showTips = SHOW_EXPERIENCE_PAGE && (!EXPERIENCE.isSample || import.meta.env.DEV);
 
   return (
     <div className="page-container home-page hp-page">
@@ -238,10 +264,10 @@ export function HomePage({ onNavigate, cohort }: HomePageProps) {
               <span className="hp-pill">Sổ tay HCMUE{cohort ? ` · Khóa ${cohort.replace('K', '')}` : ''}</span>
               <Heading />
               <p className="hp-lead">Hỏi quy chế, tính GPA, học bổng, tìm phòng ban trong vài giây.</p>
-              <AskBox large onAsk={askChat} onLook={owl.look} placeholder={placeholder} />
+              <AskBox large onAsk={askChat} onLook={owl.look} placeholder={placeholder} sending={owl.sending} />
               <div className="hp-chips">
                 {CHIPS.map((chip) => (
-                  <button key={chip} type="button" className="hp-chip" onClick={askChat}>
+                  <button key={chip} type="button" className="hp-chip" disabled={owl.sending} onClick={() => askChat(chip)}>
                     {chip}
                   </button>
                 ))}
@@ -268,7 +294,7 @@ export function HomePage({ onNavigate, cohort }: HomePageProps) {
                 <span className="hp-pill">Chỉ đọc Sổ tay HCMUE{cohort ? ` · Khóa ${cohort.replace('K', '')}` : ''}</span>
               </div>
             </div>
-            <AskBox onAsk={askChat} onLook={owl.look} placeholder={placeholder} />
+            <AskBox onAsk={askChat} onLook={owl.look} placeholder={placeholder} sending={owl.sending} />
           </div>
         )}
       </section>
@@ -314,7 +340,7 @@ export function HomePage({ onNavigate, cohort }: HomePageProps) {
         ) : null}
         {/* Tips read only from the experience page, so they appear when that page is on;
             until then the row shows real office numbers instead of sample quotes. */}
-        {desktop && (SHOW_EXPERIENCE_PAGE ? <TipBoard onNavigate={onNavigate} /> : <QuickContacts onNavigate={onNavigate} />)}
+        {desktop && (showTips ? <TipBoard onNavigate={onNavigate} /> : <QuickContacts onNavigate={onNavigate} />)}
         {desktop ? null : (
           <>
             {summary.hasProfile && (

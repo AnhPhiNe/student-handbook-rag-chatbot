@@ -23,6 +23,7 @@ interface ChatAreaProps {
   onNavigateTab?: (tabId: string) => void;
   onClearChat?: () => void;
   cohort: Cohort;
+  draft?: { id: number; text: string } | null;
 }
 
 const ACTION_CARDS = [
@@ -123,7 +124,7 @@ const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
   }
 };
 
-export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, cohort }: ChatAreaProps) {
+export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, cohort, draft }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
@@ -243,7 +244,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
               <span>{displayThinkingMessage}</span>
             </div>
           )}
-          <ChatInput onSend={onSendMessage} disabled={isTyping} hasError={hasError} />
+          <ChatInput key={draft?.id ?? 'composer'} initialText={draft?.text} onSend={onSendMessage} disabled={isTyping} hasError={hasError} />
         </div>
       </main>
     );
@@ -289,7 +290,7 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         </button>
       )}
 
-      <ChatInput onSend={onSendMessage} disabled={isTyping} hasError={hasError} />
+      <ChatInput key={draft?.id ?? 'composer'} initialText={draft?.text} onSend={onSendMessage} disabled={isTyping} hasError={hasError} />
     </main>
   );
 }

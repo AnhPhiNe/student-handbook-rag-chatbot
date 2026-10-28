@@ -13,10 +13,11 @@ interface ChatInputProps {
   onSend: (text: string) => void;
   disabled?: boolean;
   hasError?: boolean;
+  initialText?: string;
 }
 
-export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps) {
-  const [input, setInput] = useState('');
+export function ChatInput({ onSend, disabled, hasError = false, initialText = '' }: ChatInputProps) {
+  const [input, setInput] = useState(initialText);
   const [queuedMessage, setQueuedMessage] = useState<string | null>(null);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);

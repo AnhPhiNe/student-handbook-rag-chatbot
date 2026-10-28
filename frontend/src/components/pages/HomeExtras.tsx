@@ -19,7 +19,7 @@ export function TipBoard({ onNavigate }: ExtrasProps) {
   return (
     <section className="hp-extra" aria-labelledby="hp-tips-title">
       <div className="hp-extra-head">
-        <h2 id="hp-tips-title">Mẹo từ bạn đi trước</h2>
+        <h2 id="hp-tips-title">Mẹo từ bạn đi trước{EXPERIENCE.isSample && <small className="hp-sample">Nội dung mẫu</small>}</h2>
         <button type="button" className="hp-extra-link" onClick={() => onNavigate('kinh-nghiem')}>
           Đọc thêm <ArrowRight size={14} aria-hidden="true" />
         </button>

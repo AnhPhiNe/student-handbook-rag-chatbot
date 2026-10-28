@@ -10,6 +10,10 @@ export interface CitationLike {
   title?: string;
   source_section?: string;
   source_pages?: number[];
+  document_identity?: string;
+  canonical_source_id?: string;
+  source_parent_id?: string;
+  parent_section_id?: string;
 }
 
 export interface SourceRow {
@@ -21,6 +25,7 @@ export interface SourceRow {
   pages: string;
   /** Index of the first citation merged into this row, for opening its detail. */
   citationIndex: number;
+  citationIndexes: number[];
 }
 
 export interface SourceGroup {
@@ -33,7 +38,7 @@ const DOCUMENT_MAX = 40;
 const NO_COHORT = 'Chung';
 
 function articleOf(citation: CitationLike): string | null {
-  for (const text of [citation.article_label, citation.parent_article, citation.title]) {
+  for (const text of [citation.article_label, citation.parent_article, citation.title, citation.source_section]) {
     const match = text?.match(ARTICLE);
     if (match) return `Điều ${match[1].toLocaleLowerCase('vi')}`;
   }
@@ -50,11 +55,16 @@ export function shortDocumentName(section: string | undefined): string {
 
 /** "tr. 50", "tr. 50–51", or "" when the pages are unknown. */
 export function pageLabel(pages: number[]): string {
-  const sorted = [...new Set(pages)].filter((page) => Number.isFinite(page)).sort((a, b) => a - b);
+  const sorted = [...new Set(pages)].filter((page) => Number.isInteger(page) && page > 0).sort((a, b) => a - b);
   if (sorted.length === 0) return '';
-  const first = sorted[0];
-  const last = sorted[sorted.length - 1];
-  return first === last ? `tr. ${first}` : `tr. ${first}–${last}`;
+  const ranges: string[] = [];
+  for (let i = 0; i < sorted.length; i++) {
+    const first = sorted[i];
+    let last = first;
+    while (sorted[i + 1] === last + 1) last = sorted[++i];
+    ranges.push(first === last ? String(first) : `${first}–${last}`);
+  }
+  return `tr. ${ranges.join(', ')}`;
 }
 
 function rowTitle(citation: CitationLike, article: string | null): string {
@@ -70,12 +80,20 @@ export function groupCitations(citations: CitationLike[], currentCohort?: string
     const cohort = citation.cohort?.trim() || NO_COHORT;
     const article = articleOf(citation);
     const title = rowTitle(citation, article);
-    const key = `${cohort}|${article ?? title}`;
+    // Canonical ids already identify an article/table in a document. Legacy sources
+    // need document + article, or an exact parent id. Never merge by number alone.
+    const identity = citation.canonical_source_id?.trim()
+      || (citation.document_identity?.trim() && article
+        ? JSON.stringify([citation.document_identity.trim(), article]) : '')
+      || citation.source_parent_id?.trim() || citation.parent_section_id?.trim()
+      || `chunk:${citation.chunk_id}`;
+    const key = JSON.stringify([cohort, identity]);
     const rows = groups.get(cohort) ?? new Map();
     groups.set(cohort, rows);
     const existing = rows.get(key);
     if (existing) {
       existing.pages.push(...(citation.source_pages ?? []));
+      existing.row.citationIndexes.push(index);
       return;
     }
     rows.set(key, {
@@ -87,6 +105,7 @@ export function groupCitations(citations: CitationLike[], currentCohort?: string
         document: shortDocumentName(citation.source_section),
         pages: '',
         citationIndex: index,
+        citationIndexes: [index],
       },
     });
   });

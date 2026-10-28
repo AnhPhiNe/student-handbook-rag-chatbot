@@ -7,6 +7,7 @@ describe('pageLabel', () => {
     assert.equal(pageLabel([52]), 'tr. 52');
     assert.equal(pageLabel([51, 50, 51]), 'tr. 50–51');
     assert.equal(pageLabel([]), '');
+    assert.equal(pageLabel([50, 53, 54, NaN, -2, 0, 1.5]), 'tr. 50, 53–54');
   });
 });
 
@@ -22,8 +23,8 @@ describe('shortDocumentName', () => {
 
 describe('groupCitations', () => {
   const citations = [
-    { chunk_id: 'a', cohort: 'K49', article_label: 'Điều 30', parent_title: 'Điều 30. Chính sách miễn, giảm học phí', source_pages: [50] },
-    { chunk_id: 'b', cohort: 'K49', article_label: 'Điều 30', source_pages: [51] },
+    { chunk_id: 'a', cohort: 'K49', document_identity: 'Quy chế CTSV', article_label: 'Điều 30', parent_title: 'Điều 30. Chính sách miễn, giảm học phí', source_pages: [50] },
+    { chunk_id: 'b', cohort: 'K49', document_identity: 'Quy chế CTSV', article_label: 'Điều 30', source_pages: [51] },
     { chunk_id: 'c', cohort: 'K51', article_label: 'Điều 9', title: 'Học phí theo học kỳ', source_pages: [21] },
     { chunk_id: 'd', title: 'Bảng xếp loại học bổng' },
   ];
@@ -36,6 +37,7 @@ describe('groupCitations', () => {
     assert.equal(k49.rows[0].title, 'Chính sách miễn, giảm học phí');
     assert.equal(k49.rows[0].pages, 'tr. 50–51');
     assert.equal(k49.rows[0].citationIndex, 0);
+    assert.deepEqual(k49.rows[0].citationIndexes, [0, 1]);
   });
 
   it('puts the student cohort first and sources without a cohort last', () => {
@@ -50,5 +52,31 @@ describe('groupCitations', () => {
       { chunk_id: 'y', cohort: 'K51', article_label: 'Điều 30' },
     ]);
     assert.equal(groups.length, 2);
+  });
+
+  it('keeps equal article numbers from different documents separate', () => {
+    const [group] = groupCitations([
+      { chunk_id: 'a', cohort: 'K51', article_label: 'Điều 10', document_identity: 'Quy chế đào tạo' },
+      { chunk_id: 'b', cohort: 'K51', article_label: 'Điều 10', document_identity: 'Quy chế CTSV' },
+    ]);
+    assert.equal(group.rows.length, 2);
+  });
+
+  it('does not assume legacy sources with missing identity are one document', () => {
+    const [group] = groupCitations([
+      { chunk_id: 'a', article_label: 'Điều 10' },
+      { chunk_id: 'b', article_label: 'Điều 10' },
+    ]);
+    assert.equal(group.rows.length, 2);
+  });
+
+  it('merges canonical article ids, but keeps distinct table ids separate', () => {
+    const [group] = groupCitations([
+      { chunk_id: 'a', canonical_source_id: 'article-a', article_label: 'Điều 27' },
+      { chunk_id: 'b', canonical_source_id: 'article-a', article_label: 'Điều 27' },
+      { chunk_id: 'c', canonical_source_id: 'table-a', title: 'Bảng học phí' },
+      { chunk_id: 'd', canonical_source_id: 'table-b', title: 'Bảng học phí' },
+    ]);
+    assert.equal(group.rows.length, 3);
   });
 });

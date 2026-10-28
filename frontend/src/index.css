@@ -1436,6 +1436,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .answer-source-text b { color: var(--text-primary); font-weight: 600; }
 .answer-source-text small { font-size: 0.72rem; }
 .answer-source-pages { font-size: 0.74rem; white-space: nowrap; }
+@media (max-width: 520px) {
+  /* The desktop gutter reserves the other avatar's space; phones need that room
+     for article titles and non-contiguous page numbers. */
+  .message-wrapper.bot { padding-right: 0; }
+  .message-wrapper.bot .message-bubble { padding-left: 12px; padding-right: 12px; }
+  .answer-source-row { grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px; padding: 10px 7px; }
+  .answer-source-row > svg { display: none; }
+  .answer-source-article { min-width: 0; padding-left: 6px; padding-right: 6px; }
+}
 .answer-sources-more {
   display: block;
   width: 100%;

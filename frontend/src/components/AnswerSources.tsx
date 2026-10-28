@@ -69,7 +69,15 @@ export function AnswerSources({ citations, cohort, onOpen }: AnswerSourcesProps)
                     key={row.key}
                     type="button"
                     className="answer-source-row"
-                    onClick={() => onOpen(citations[row.citationIndex])}
+                    onClick={() => {
+                      const originals = row.citationIndexes.map((i) => citations[i]);
+                      const text = [...new Set(originals.map((c) => c.parent_content || c.content).filter(Boolean))].join('\n\n');
+                      onOpen({
+                        ...citations[row.citationIndex],
+                        parent_content: text,
+                        source_pages: [...new Set(originals.flatMap((c) => c.source_pages ?? []))].sort((a, b) => a - b),
+                      });
+                    }}
                   >
                     <span className="answer-source-article">{row.article}</span>
                     <span className="answer-source-text">

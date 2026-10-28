@@ -47,6 +47,7 @@ export function BottomTabBar({ activeTab, onTabChange }: BottomTabBarProps) {
           <button
             key={tab.id}
             type="button"
+            data-tab={tab.id}
             className={`tab-btn${isChat ? ' chat' : ''}${isActive ? ' active' : ''}`}
             onClick={() => onTabChange(tab.id)}
             aria-current={isActive ? 'page' : undefined}

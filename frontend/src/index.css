@@ -507,6 +507,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 .tab-icon { display: grid; place-items: center; width: 52px; height: 30px; border-radius: var(--radius-full); transition: background-color 0.2s; }
 .tab-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 350px) {
+  .tab-btn[data-tab='huong-dan'] { flex: 1.22; }
+}
 .tab-btn.active { color: var(--text-primary); }
 .tab-btn.active .tab-label { font-weight: 800; }
 .tab-btn.active:not(.chat) .tab-icon { background: color-mix(in srgb, var(--brand-red) 14%, transparent); color: var(--brand-red); }

@@ -14,9 +14,11 @@ interface ChatInputProps {
   disabled?: boolean;
   hasError?: boolean;
   initialText?: string;
+  placeholderText?: string;
+  onTextChange?: (text: string) => void;
 }
 
-export function ChatInput({ onSend, disabled, hasError = false, initialText = '' }: ChatInputProps) {
+export function ChatInput({ onSend, disabled, hasError = false, initialText = '', placeholderText, onTextChange }: ChatInputProps) {
   const [input, setInput] = useState(initialText);
   const [queuedMessage, setQueuedMessage] = useState<string | null>(null);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
@@ -25,16 +27,21 @@ export function ChatInput({ onSend, disabled, hasError = false, initialText = ''
   const isSubmittingRef = useRef(false);
   const hasFiredRef = useRef(false);
   
-  const placeholder = PLACEHOLDERS[placeholderIdx];
+  const placeholder = placeholderText ?? PLACEHOLDERS[placeholderIdx];
+  const updateInput = (text: string) => {
+    setInput(text);
+    onTextChange?.(text);
+  };
 
   const { normalizedText, charCount, isNearLimit, isOverLimit } = queryLengthState(input);
 
   useEffect(() => {
+    if (placeholderText) return;
     const interval = setInterval(() => {
       setPlaceholderIdx(prev => (prev + 1) % PLACEHOLDERS.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [placeholderText]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -56,13 +63,13 @@ export function ChatInput({ onSend, disabled, hasError = false, initialText = ''
         return; // Chỉ cho phép hàng đợi 1 tin
       }
       setQueuedMessage(normalizedText);
-      setInput('');
+      updateInput('');
       return;
     }
 
     isSubmittingRef.current = true;
     onSend(normalizedText);
-    setInput('');
+    updateInput('');
     
     // Debounce chống click đúp (Double-click guard)
     setTimeout(() => {
@@ -73,7 +80,7 @@ export function ChatInput({ onSend, disabled, hasError = false, initialText = ''
   const handleCancelQueue = () => {
     if (queuedMessage) {
       const restoredText = queuedMessage + (input.trim() ? '\n' + input.trim() : '');
-      setInput(restoredText);
+      updateInput(restoredText);
       setQueuedMessage(null);
       // Tự focus lại
       setTimeout(() => textareaRef.current?.focus(), 50);
@@ -145,7 +152,7 @@ export function ChatInput({ onSend, disabled, hasError = false, initialText = ''
             placeholder={placeholder}
             aria-label="Nhập câu hỏi cho trợ lý AI"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => updateInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={false} // Unblock input
             rows={1}

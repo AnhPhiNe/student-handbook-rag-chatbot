@@ -1,142 +1,32 @@
 import { useRef, useEffect, useState } from 'react';
-import { GraduationCap, Gift, ArrowDown, Lock, Medal, BookOpen, Phone, Shield } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import type { Message } from '../hooks/useChat';
 import type { Cohort } from '../utils/gradeScale';
-import { OwlMascot } from './OwlMascot';
-import { IS_CHAT_MAINTENANCE } from '../config/features';
-
-const IS_MAINTENANCE_MODE = IS_CHAT_MAINTENANCE;
+import { ChatEmptyState } from './ChatEmptyState';
+import './ChatPage.css';
 
 
 interface ChatAreaProps {
   messages: Message[];
   isTyping: boolean;
-  progressMessage?: string;
   onSendMessage: (text: string) => void;
-  onSendHardcoded: (text: string, response: string, suggestions?: string[]) => void;
   onRetry?: () => void;
   onRegenerate?: () => void;
-  theme: 'light' | 'dark';
-  onToggleTheme: () => void;
   onNavigateTab?: (tabId: string) => void;
-  onClearChat?: () => void;
   cohort: Cohort;
   draft?: { id: number; text: string } | null;
 }
 
-const ACTION_CARDS = [
-  { id: 'hoc-vu', label: 'Học tập & Điểm số', icon: BookOpen, color: '#3b82f6', desc: 'Đăng ký môn, tính GPA, học cải thiện...' },
-  { id: 'bao-luu', label: 'Bảo lưu & Tốt nghiệp', icon: GraduationCap, color: '#0ea5e9', desc: 'Tạm nghỉ, thôi học, xét tốt nghiệp...' },
-  { id: 'hoc-bong', label: 'Học bổng & Học phí', icon: Gift, color: '#8b5cf6', desc: 'Điều kiện xét, mức thưởng, miễn giảm...' },
-  { id: 'ren-luyen', label: 'Rèn luyện & Khen thưởng', icon: Medal, color: '#ef4444', desc: 'Điểm rèn luyện, kỷ luật, danh hiệu...' },
-  { id: 'lien-he', label: 'Phòng ban & Liên hệ', icon: Phone, color: '#f59e0b', desc: 'SĐT, email, KTX, hỗ trợ sinh viên...' },
-  { id: 'noi-quy', label: 'Nội quy & Văn hóa', icon: Shield, color: '#0ea5e9', desc: 'Trang phục, thẻ SV, văn hóa ứng xử...' }
-];
-
-type QuickAccessResponse = {
-  response: string;
-  suggestions: string[];
-};
-
-function buildQuickAccessResponse(title: string, hint: string): string {
-  return `## ${title}
-
-${hint}
-
-**Chọn một câu bên dưới hoặc gõ câu tương tự để hỏi AI ngay:**`;
-}
-
-// Local-only responses for quick access cards. These do not call the backend.
-const HARDCODED_RESPONSES: Record<string, QuickAccessResponse> = {
-  'hoc-vu': {
-    response: buildQuickAccessResponse(
-      'Học tập & Điểm số',
-      'Dùng mục này khi bạn thắc mắc về quá trình học, lịch học, điểm số và thi cử:\n\n- **Học vụ:** quy định đăng ký tín chỉ, hủy môn, học lại, học cải\u00A0thiện.\n- **Điểm số & Thi cử:** cách tính điểm trung bình (GPA), quy đổi điểm chữ, vắng thi, gian lận thi\u00A0cử.\n- **Học vụ khác:** điều kiện chuyển ngành, chuyển trường, cảnh báo học\u00A0vụ.'
-    ),
-    suggestions: [
-      'Học cải thiện tính điểm thế nào?',
-      'Thi rớt 3 môn có bị đuổi học?',
-      'Đăng ký học vượt tín chỉ ra sao?',
-      'Hoãn thi cuối kỳ cần điều kiện gì?'
-    ]
-  },
-  'bao-luu': {
-    response: buildQuickAccessResponse(
-      'Bảo lưu & Tốt nghiệp',
-      'Dùng mục này khi bạn quan tâm đến việc tạm dừng học hoặc điều kiện ra trường:\n\n- **Bảo lưu/Tạm nghỉ:** điều kiện bảo lưu kết quả, thời gian tối đa được bảo lưu, quy định xin học\u00A0lại.\n- **Thôi học:** quy định buộc thôi học, tự nguyện xin thôi\u00A0học.\n- **Tốt nghiệp:** điều kiện để được xét tốt nghiệp, quy định về việc xét và nhận\u00A0bằng.'
-    ),
-    suggestions: [
-      'Năm nhất có được xin bảo lưu?',
-      'Thời gian bảo lưu tối đa bao lâu?',
-      'Bị cảnh báo học vụ mấy lần thì đuổi?',
-      'Nợ môn Thể chất có xét tốt nghiệp?'
-    ]
-  },
-  'hoc-bong': {
-    response: buildQuickAccessResponse(
-      'Học bổng & Học phí',
-      'Dùng mục này khi bạn có thắc mắc về quyền lợi tài chính của sinh viên:\n\n- **Học bổng:** điều kiện xét học bổng, mức học bổng, trường hợp bị loại khỏi danh sách xét.\n- **Học phí:** quy định nộp học phí, xử lý khi trễ hạn nộp, các kênh thanh toán học phí hợp lệ.\n- **Miễn giảm/hỗ trợ:** ai được miễn giảm học phí, hỗ trợ chi phí học tập hoặc hỗ trợ sinh hoạt.'
-    ),
-    suggestions: [
-      'Điều kiện để được xét học bổng khuyến khích học tập là gì?',
-      'Đóng học phí trễ bị cấm thi không?',
-      'Mức học bổng Xuất sắc là bao nhiêu?',
-      'Ai thuộc diện miễn giảm học phí?'
-    ]
-  },
-  'ren-luyen': {
-    response: buildQuickAccessResponse(
-      'Rèn luyện & Khen thưởng',
-      'Dùng mục này khi bạn muốn hỏi về quá trình rèn luyện và xử lý vi phạm:\n\n- **Điểm rèn luyện:** bao nhiêu điểm là tốt/xuất sắc, tiêu chí chấm điểm gồm những\u00A0gì.\n- **Khen thưởng:** điều kiện được khen thưởng, danh hiệu hoặc các hình thức ghi nhận sinh\u00A0viên.\n- **Kỷ luật/vi phạm:** vi phạm quy chế thi bị xử lý ra sao, khiển trách/cảnh cáo bao lâu được\u00A0xóa.'
-    ),
-    suggestions: [
-      'Điểm rèn luyện dưới 50 bị cảnh báo?',
-      'Tiêu chí chấm điểm rèn luyện là gì?',
-      'Nhờ người thi hộ bị xử lý ra sao?',
-      'Kỷ luật Cảnh cáo bao lâu được xóa?'
-    ]
-  },
-  'lien-he': {
-    response: buildQuickAccessResponse(
-      'Phòng ban & Liên hệ',
-      'Dùng mục này khi bạn không biết nên liên hệ đơn vị nào trong trường:\n\n- **Phòng Đào tạo / CTSV:** hỏi về lịch học, bảng điểm, học bổng, giấy xác nhận, tạm nghỉ.\n- **Ký túc xá & Trạm y tế:** quy định, điều kiện đăng ký, giờ giấc hoạt động.\n- **Liên hệ khác:** số điện thoại, email, địa chỉ các Phòng, Khoa hoặc hỗ trợ tài khoản sinh viên.'
-    ),
-    suggestions: [
-      'Số điện thoại của Phòng Đào tạo?',
-      'Lỗi tài khoản SV liên hệ phòng nào?',
-      'Phòng nào hỗ trợ in bảng điểm?',
-      'Phòng CTCT-HSSV nằm ở đâu?'
-    ]
-  },
-  'noi-quy': {
-    response: buildQuickAccessResponse(
-      'Nội quy & Văn hóa',
-      'Dùng mục này khi bạn muốn hỏi về các quy định nội quy, văn hóa học đường của trường:\n\n- **Trang phục & Tác phong:** quy định về trang phục, đeo thẻ sinh viên khi đến lớp.\n- **Hành vi cấm:** những việc sinh viên không được làm trong khuôn viên trường (hút thuốc, uống rượu bia, gian lận...).\n- **Văn hóa ứng xử:** quy tắc giao tiếp với giảng viên, cán bộ và bạn bè.'
-    ),
-    suggestions: [
-      'Không đeo thẻ SV có bị cấm thi?',
-      'Sinh viên không được làm những gì?',
-      'Hút thuốc trong trường phạt ra sao?',
-      'Mặc quần đùi đến lớp được không?'
-    ]
-  }
-};
-
-export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, onSendHardcoded, onRetry, onRegenerate, cohort, draft }: ChatAreaProps) {
+export function ChatArea({ messages, isTyping, onSendMessage, onRetry, onRegenerate, cohort, draft, onNavigateTab }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const hasMessages = messages.length > 0;
 
-  const hour = new Date().getHours();
-  let greeting: string;
-  if (hour < 12) greeting = "Chào buổi sáng";
-  else if (hour < 18) greeting = "Chào buổi chiều";
-  else greeting = "Chào buổi tối";
+  const [topic, setTopic] = useState<string | null>(null);
 
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const displayThinkingMessage = progressMessage;
 
   const lastMsg = messages[messages.length - 1];
   const hasError = !isTyping && lastMsg?.role === 'bot' && (lastMsg.content.includes("Xin lỗi, đã có lỗi") || lastMsg.content.includes("Hệ thống AI hiện đang quá tải"));
@@ -160,20 +50,10 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
     setShowScrollButton(isScrolledUp);
   };
 
-  const handleQuickAccess = (id: string) => {
-    const card = ACTION_CARDS.find(c => c.id === id);
-    const title = card ? card.label : id;
-    
-    const userPrompt = `Cho tôi biết thông tin về ${title}`;
-    
-    const quickAccess = HARDCODED_RESPONSES[id];
-    if (quickAccess) onSendHardcoded(userPrompt, quickAccess.response, quickAccess.suggestions);
-  };
-
   // Keyboard shortcut '/' to focus textarea
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === '/' && document.activeElement?.tagName !== 'TEXTAREA') {
+      if (e.key === '/' && !['TEXTAREA', 'INPUT', 'SELECT'].includes(document.activeElement?.tagName ?? '') && !document.activeElement?.hasAttribute('contenteditable')) {
         e.preventDefault();
         const textarea = document.querySelector('.chat-textarea') as HTMLTextAreaElement;
         textarea?.focus();
@@ -184,87 +64,15 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
   }, []);
 
 
-  // Không sử dụng cold start delay giả nữa, mọi thứ để tự nhiên
-
-  // ============ EMPTY STATE ============
-  if (!hasMessages) {
-    return (
-      <main className="chat-area">
-        {IS_MAINTENANCE_MODE && (
-          <div className="maintenance-overlay">
-            <div className="maintenance-card">
-              <div className="maintenance-icon-wrap">
-                <Lock size={32} />
-              </div>
-              <h3>Tính năng đang bảo trì</h3>
-              <p>Trợ lý AI đang tạm nghỉ để nâng cấp dữ liệu. Trong lúc chờ đợi, bạn vẫn có thể dùng thả ga các công cụ <strong>Tính GPA, Mục tiêu GPA, Mục tiêu môn học, Tính điểm học bổng, Ước tính học phí, Kiểm tra hạ bằng, Tra cứu biểu mẫu</strong> và xem <strong>Hướng dẫn</strong> ở menu bên cạnh nhé!</p>
-            </div>
-          </div>
-        )}
-
-        <header className="chat-header">
-          <div style={{flex: 1}}></div>
-        </header>
-
-        {/* Scrollable content area that fills available space */}
-        <div className="empty-state">
-          <div className="empty-state-content">
-            {/* Hero - compact */}
-            <div className="empty-hero" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
-              <OwlMascot state="idle" size={92} showFrame={false} />
-              <h2 className="hero-title" style={{ fontSize: '1.5rem', marginTop: '1rem', color: 'var(--primary)' }}>Hỏi mình về Sổ tay nè</h2>
-              <p className="hero-desc">{greeting}! Mình trả lời theo Sổ tay sinh viên khóa {cohort.replace('K', '')}, có dẫn Điều, Khoản.</p>
-              {/* The three tips used to be a second dialog after the cohort one; one line here asks nothing of the student. */}
-              <p className="chat-question-tip">Mẹo: gõ có dấu, viết đầy đủ thay vì viết tắt, mỗi câu hỏi một ý.</p>
-            </div>
-
-            {/* Action Cards Grid */}
-            <div className="chat-action-cards-grid">
-              {ACTION_CARDS.map(item => (
-                <button key={item.id} className="action-card" onClick={() => handleQuickAccess(item.id)}>
-                  <div className="action-icon" style={{ backgroundColor: `${item.color}15`, color: item.color }}>
-                    <item.icon size={20} />
-                  </div>
-                  <div className="action-text">
-                    <h4>{item.label}</h4>
-                    <p>{item.desc}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-          </div>
-        </div>
-
-        {/* Input pinned to bottom */}
-        <div className="chat-input-pinned">
-          {displayThinkingMessage && (
-            <div className="cold-start-banner" style={{ margin: '0 auto 0.75rem', maxWidth: '780px' }}>
-              <div className="cold-start-spinner" />
-              <span>{displayThinkingMessage}</span>
-            </div>
-          )}
-          <ChatInput key={draft?.id ?? 'composer'} initialText={draft?.text} onSend={onSendMessage} disabled={isTyping} hasError={hasError} />
-        </div>
-      </main>
-    );
-  }
-
-  // ============ CONVERSATION STATE ============
   return (
-    <main className="chat-area">
-      {IS_MAINTENANCE_MODE && (
-        <div className="maintenance-overlay">
-          <div className="maintenance-card">
-            <div className="maintenance-icon-wrap">
-              <Lock size={32} />
-            </div>
-            <h3>Tính năng đang bảo trì</h3>
-            <p>Trợ lý AI đang tạm nghỉ để nâng cấp dữ liệu. Trong lúc chờ đợi, bạn vẫn có thể dùng thả ga các công cụ <strong>Tính GPA, Mục tiêu GPA, Mục tiêu môn học, Tính điểm học bổng, Ước tính học phí, Kiểm tra hạ bằng, Tra cứu biểu mẫu</strong> và xem <strong>Hướng dẫn</strong> ở menu bên cạnh nhé!</p>
-          </div>
-        </div>
-      )}
-
+    <main className={`chat-area chat-page${hasMessages ? ' chat-page-conversation' : ' chat-page-empty'}`}>
+      <header className="cc-header"><span>Sổ tay HCMUE · Khóa {cohort.replace('K', '')}</span></header>
+      {!hasMessages ? (
+        <ChatEmptyState cohort={cohort} topic={topic} onTopicChange={setTopic}
+          onAsk={onSendMessage} onNavigate={onNavigateTab} draft={draft}
+          isTyping={isTyping} hasError={hasError} />
+      ) : (
+      <>
       <div className="chat-messages" ref={chatContainerRef} onScroll={handleScroll}>
         {messages.map((msg, index) => {
           const prevMsg = index > 0 ? messages[index - 1] : null;
@@ -290,7 +98,9 @@ export function ChatArea({ messages, isTyping, progressMessage, onSendMessage, o
         </button>
       )}
 
-      <ChatInput key={draft?.id ?? 'composer'} initialText={draft?.text} onSend={onSendMessage} disabled={isTyping} hasError={hasError} />
+      <ChatInput key={draft?.id ?? 'composer'} initialText={draft?.text} placeholderText="Hỏi tiếp…" onSend={onSendMessage} disabled={isTyping} hasError={hasError} />
+      </>
+      )}
     </main>
   );
 }

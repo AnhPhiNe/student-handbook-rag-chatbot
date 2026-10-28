@@ -3878,6 +3878,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   85% { transform: translateX(35px) skewX(-20deg); opacity: 0; }
 }
 .anim-glasses-sheen {
+  /* Keep reflection hidden when reduced motion finishes the one-shot animation. */
+  opacity: 0;
   animation: glasses-sheen 4.5s ease-in-out infinite;
 }
 

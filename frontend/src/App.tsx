@@ -58,7 +58,7 @@ function App() {
     setStoredCohort(nextCohort);
   };
   
-  const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
+  const { messages, isTyping, sendMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
 
   const [isCohortSheetOpen, setIsCohortSheetOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -145,7 +145,7 @@ function App() {
               <>
                 <div className="global-controls">
                 {/* Backend health only matters for chat; elsewhere the badge appears only when something is wrong. */}
-                <SystemStatusBadge hideWhenOnline={activeTab !== 'chat'} />
+                <SystemStatusBadge hideWhenOnline />
                 {activeTab === 'chat' && messages.length > 0 && (
                   <button type="button" className="control-pill" onClick={startNewChat}>
                     <Plus size={15} aria-hidden="true" />
@@ -193,16 +193,11 @@ function App() {
                 <ChatArea 
                   messages={messages}
                   isTyping={isTyping}
-                  progressMessage={progressMessage}
                   onSendMessage={sendChatMessage}
                   draft={chatDraft}
-                  onSendHardcoded={sendHardcodedMessage}
                   onRetry={retryLastMessage}
                   onRegenerate={regenerateLastMessage}
-                  theme={theme}
-                  onToggleTheme={toggleTheme}
                   onNavigateTab={handleNavigate}
-                  onClearChat={clearMessages}
                   cohort={cohort}
                 />
               )}

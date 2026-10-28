@@ -12,7 +12,6 @@ import { StructuredResults } from './StructuredResults';
 import { OwlMascot, type OwlState } from './OwlMascot';
 import { WaitingIndicator } from './WaitingIndicator';
 import { AnswerSources } from './AnswerSources';
-const userAvatarImg = '/user_avatar.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
@@ -546,11 +545,12 @@ function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionCl
   }, [showInlineFeedback]);
 
   useEffect(() => {
-    if (prevStreamingRef.current === true && message.isStreaming === false) {
-       setJustFinished(true);
-       setTimeout(() => setJustFinished(false), 2000);
-    }
+    const finished = prevStreamingRef.current === true && message.isStreaming === false;
     prevStreamingRef.current = message.isStreaming;
+    if (!finished) return;
+    setJustFinished(true);
+    const timer = window.setTimeout(() => setJustFinished(false), 800);
+    return () => window.clearTimeout(timer);
   }, [message.isStreaming]);
 
   const handleCopy = () => {
@@ -604,8 +604,8 @@ function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionCl
   if (message.role === 'user') {
     return (
       <div className="message-wrapper user">
-        <img src={userAvatarImg} alt="User" className="avatar user" style={{ backgroundColor: 'transparent' }} />
         <div className="message-content user-message-content">
+          <span className="message-user-label">Bạn</span>
           <div className="message-bubble user-bubble">
             {message.content}
           </div>
@@ -633,6 +633,11 @@ function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionCl
   const structuredSourceCitations = (message.structuredResults ?? []).flatMap((result) => (
     result.provenance.source_reference ? [result.provenance.source_reference] : []
   ));
+  // The selected cohort may change while chat history stays. Name the answer's
+  // sources, never relabel an older answer with the current selection.
+  const sourceCohorts = [...new Set([...(message.citations ?? []), ...structuredSourceCitations]
+    .flatMap((citation) => citation.cohort?.trim() ? [citation.cohort.trim()] : []))];
+  const answerHandbook = sourceCohorts.length === 1 ? `Sổ tay ${sourceCohorts[0]}` : 'Sổ tay HCMUE';
 const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleReferences([
     ...(message.citations ?? []),
     ...structuredSourceCitations,
@@ -647,12 +652,13 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
 
   const mascotState: OwlState = message.isStreaming
     ? 'reading'
-    : (!isErrorMsg && (displayContent || (message.structuredResults && message.structuredResults.length > 0)) ? 'eureka' : 'idle');
+    : (!isErrorMsg && justFinished ? 'eureka' : 'idle');
   return (
     <div className="message-wrapper bot" aria-live="polite">
       <OwlMascot state={mascotState} size={44} showFrame={true} />
       <div className="message-content">
         <div className={`message-bubble ${message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? 'typing-indicator' : ''}`}>
+          {(!message.isStreaming || displayContent) && <div className="message-bot-label"><b>Cú Sư Phạm</b><span>{answerHandbook}</span></div>}
           {message.isStreaming && (!displayContent || !isMinDelayPassed) && !thinkContent ? (
             <WaitingIndicator
               startedAt={message.startedAt}
@@ -738,7 +744,7 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
                 <div className="meta-actions">
                   <button
                     type="button"
-                    className={`action-btn ${feedback === 'like' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`}
+                    className={`action-btn ${feedback === 'like' ? 'active' : ''}`}
                     title="Hữu ích"
                     aria-label="Hữu ích"
                     onClick={() => handleFeedbackClick('like')}
@@ -748,7 +754,7 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
                   </button>
                   <button
                     type="button"
-                    className={`action-btn ${feedback === 'dislike' ? 'active' : ''} ${justFinished ? 'pulse-glow' : ''}`}
+                    className={`action-btn ${feedback === 'dislike' ? 'active' : ''}`}
                     title="Chưa chính xác"
                     aria-label="Chưa chính xác"
                     onClick={() => handleFeedbackClick('dislike')}

@@ -41,7 +41,7 @@ export function WaitingIndicator({ startedAt, progress, sources, queuePosition }
             Úi đông quá! Còn {queuePosition} lượt chờ nữa là tới bạn, nhâm nhi ngụm nước đợi AI xíu nha ☕
           </span>
         ) : (
-          progress && <span className="waiting-indicator-step">{progress}</span>
+          <span className="waiting-indicator-step">{progress || 'Đang kết nối…'}</span>
         )}
         {elapsed && <span className="waiting-indicator-time">{elapsed}</span>}
       </div>

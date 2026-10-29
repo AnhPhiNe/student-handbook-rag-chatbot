@@ -18,12 +18,15 @@ interface NavEntry {
 }
 
 // Desktop has room for direct calculator links. Phones retain their five-tab navigation.
-const NAV: NavEntry[] = [
+const PRIMARY_NAV: NavEntry[] = [
   { id: 'home', label: 'Trang chủ', icon: Home },
   { id: 'chat', label: 'Chat', icon: MessageSquare },
-  { id: 'tools', label: 'Công cụ', icon: Wrench },
+];
+
+const RESOURCES: NavEntry[] = [
   ...(SHOW_EXPERIENCE_PAGE ? [{ id: 'kinh-nghiem', label: 'Kinh nghiệm', icon: Star }] : []),
   { id: 'danh-ba', label: 'Danh bạ', icon: Contact },
+  { id: 'huong-dan', label: 'Cách dùng web', icon: BookOpen },
 ];
 
 const CALCULATORS: NavEntry[] = [
@@ -46,7 +49,7 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleCollapse 
         onClick={() => onTabChange(id)} aria-current={isActive(id) ? 'page' : undefined}
         aria-label={maintenance ? `${label} (Đang bảo trì)` : label}
         title={isCollapsed ? label : undefined}>
-        <Icon size={tool ? 16 : 18} aria-hidden="true" />
+        <Icon size={18} aria-hidden="true" />
         <span>{label}</span>
         {maintenance && <span className="sidebar-maintenance-badge">Bảo trì</span>}
       </button>
@@ -75,27 +78,30 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleCollapse 
       </div>
 
       <nav className="sidebar-nav" aria-label="Điều hướng chính">
-        {NAV.map((entry) => entry.id === 'tools' ? (
-          <div className="sidebar-tools" key={entry.id}>
-            {renderLink(entry)}
-            <div className="sidebar-tool-list" role="group" aria-label="Công cụ tính toán">
-              {CALCULATORS.map((tool) => renderLink(tool, true))}
-            </div>
+        <section className="sidebar-group" aria-label="Hỏi đáp">
+          <h2 className="sidebar-group-heading">Hỏi đáp</h2>
+          {PRIMARY_NAV.map((entry) => renderLink(entry))}
+        </section>
+        <section className="sidebar-group" aria-label="Công cụ">
+          <h2 className="sidebar-group-heading sidebar-heading-action">
+            <button type="button" className="sidebar-tools-index" aria-label="Công cụ"
+              aria-current={isActive('tools') ? 'page' : undefined}
+              title="Mở tất cả công cụ" onClick={() => onTabChange('tools')}>
+              <Wrench size={18} className="sidebar-hub-icon" aria-hidden="true" />
+              <span className="sidebar-group-label">Công cụ</span>
+            </button>
+          </h2>
+          <div className="sidebar-tool-list" role="group" aria-label="Công cụ tính toán">
+            {CALCULATORS.map((tool) => renderLink(tool, true))}
           </div>
-        ) : renderLink(entry))}
+        </section>
+        <section className="sidebar-group" aria-label="Xem thêm">
+          <h2 className="sidebar-group-heading">Xem thêm</h2>
+          {RESOURCES.map((entry) => renderLink(entry))}
+        </section>
       </nav>
 
       <div className="sidebar-footer">
-        <button
-          type="button"
-          className={`nav-item sidebar-guide ${activeTab === 'huong-dan' ? 'active' : ''}`}
-          onClick={() => onTabChange('huong-dan')}
-          aria-current={activeTab === 'huong-dan' ? 'page' : undefined}
-          title={isCollapsed ? 'Cách dùng web' : undefined}
-        >
-          <BookOpen size={18} aria-hidden="true" />
-          <span>Cách dùng web</span>
-        </button>
         <div className="sidebar-visitor-wrapper">
           <VisitorCounter />
         </div>

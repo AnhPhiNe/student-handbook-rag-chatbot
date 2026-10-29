@@ -2,7 +2,7 @@ import { useEffect, useMemo, useId, useRef, useState, type ReactNode } from 'rea
 import { ShareResultButton } from '../tool/ShareResultButton';
 import { gpaShareText } from '../../utils/shareText';
 import { useStudentProfile } from '../../hooks/useStudentProfile';
-import { AlertTriangle, ArrowRight, ArrowUpRight, BookOpen, GraduationCap, Plus, Trash2, X, RotateCcw } from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, BookOpen, GraduationCap, Plus, Trash2, X, RotateCcw } from 'lucide-react';
 import {
   calculateGpa,
   getCourseGrade,
@@ -10,6 +10,7 @@ import {
   getDefaultCourseGroup,
   isCreditsInvalid,
   isScore10Invalid,
+  isSplitGradeCohort,
   type Cohort,
   type CourseInput,
   type GradeScaleRow,
@@ -28,7 +29,7 @@ function newCourse(id: string, cohort: Cohort): CourseInput {
   return {
     id,
     name: '',
-    credits: '',
+    credits: '3',
     inputType: 'score10',
     score10: '',
     letter: '',
@@ -202,12 +203,44 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
   const [courses, setCourses] = useState<CourseInput[]>(() => createEmptyCourses(cohort));
   const [referenceModalTab, setReferenceModalTab] = useState<'scale' | 'rules' | null>(null);
   const [sheetState, setSheetState] = useState<SheetState | null>(null);
+  const scoreInputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   const result = useMemo(() => calculateGpa(courses, cohort), [courses, cohort]);
   const groupOptions = getCourseGroupOptions(cohort);
   const hasResult = !result.error && result.totalCredits > 0;
   const academicTier = hasResult ? getAcademicTier(result.gpa) : null;
   const animatedGpa = useAnimatedNumber(hasResult ? result.gpa : 0, 2);
+
+  // Điểm trung bình hệ 10 có trọng số theo tín chỉ của các môn hợp lệ đã nhập điểm thang 10
+  const gpa10 = useMemo(() => {
+    let weightedSum = 0;
+    let totalValidCredits = 0;
+    courses.forEach((course) => {
+      const creds = Number(course.credits.trim().replace(',', '.'));
+      const s10 = Number(course.score10.trim().replace(',', '.'));
+      if (
+        course.credits.trim() &&
+        Number.isFinite(creds) &&
+        creds > 0 &&
+        course.score10.trim() &&
+        Number.isFinite(s10) &&
+        s10 >= 0 &&
+        s10 <= 10
+      ) {
+        weightedSum += s10 * creds;
+        totalValidCredits += creds;
+      }
+    });
+    return totalValidCredits > 0 ? Math.round((weightedSum / totalValidCredits) * 100) / 100 : 0;
+  }, [courses]);
+
+  // Tổng tín chỉ dự kiến của toàn bộ bảng môn học
+  const totalPlannedCredits = useMemo(() => {
+    return courses.reduce((sum, course) => {
+      const creds = Number(course.credits.trim().replace(',', '.'));
+      return sum + (Number.isFinite(creds) && creds > 0 ? creds : 0);
+    }, 0);
+  }, [courses]);
 
   const courseStats = useMemo(() => {
     let passed = 0;
@@ -218,10 +251,22 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
       const grade = getCourseGrade(course, cohort);
       if (!grade) return;
       if (grade.status === 'Đạt') passed++;
-      else failedCourses.push(`Học phần ${index + 1} (${grade.letter})`);
+      else failedCourses.push(`Môn học ${index + 1} (${grade.letter})`);
     });
     return { passed, failed: failedCourses.length, failedCourses };
   }, [courses, cohort]);
+
+  const stepCredits = (id: string, delta: number) => {
+    setCourses((current) =>
+      current.map((course) => {
+        if (course.id !== id) return course;
+        const currentVal = parseInt(course.credits.trim(), 10);
+        const base = Number.isFinite(currentVal) ? currentVal : 3;
+        const nextVal = Math.min(10, Math.max(1, base + delta));
+        return { ...course, credits: String(nextVal) };
+      })
+    );
+  };
 
   const updateCourse = (id: string, patch: Partial<CourseInput>) => {
     setCourses((current) => current.map((course) => (course.id === id ? { ...course, ...patch } : course)));
@@ -236,8 +281,8 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
   };
 
   const resetCourses = () => {
-    if (courses.some((course) => course.name || course.credits || course.score10)) {
-      if (!window.confirm('Bạn có chắc chắn muốn làm mới (xóa trắng) danh sách môn học không?')) {
+    if (courses.some((course) => course.score10.trim() !== '')) {
+      if (!window.confirm('Bạn có chắc chắn muốn làm mới (xóa trắng điểm) danh sách môn học không?')) {
         return;
       }
     }
@@ -290,7 +335,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
     setSheetState({
       courseId: course.id,
       isNew: false,
-      courseTitle: `Học phần ${index + 1}`,
+      courseTitle: `Môn học ${index + 1}`,
       credits: course.credits || '3',
       score10: course.score10,
       courseGroup: course.courseGroup ?? getDefaultCourseGroup(cohort),
@@ -303,7 +348,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
     setSheetState({
       courseId: newId,
       isNew: true,
-      courseTitle: `Học phần ${courses.length + 1}`,
+      courseTitle: `Môn học ${courses.length + 1}`,
       credits: '3',
       score10: '',
       courseGroup: getDefaultCourseGroup(cohort),
@@ -330,7 +375,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
     const credErr = isCreditsInvalid(sheetState.credits);
     const scoreErr = isScore10Invalid(sheetState.score10);
     if (credErr || scoreErr) {
-      return; // Chặn lưu dữ liệu sai
+      return;
     }
     const finalCredits = sheetState.credits.trim() || '3';
     if (sheetState.isNew) {
@@ -362,6 +407,54 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
 
   const progressPercent = hasResult ? Math.min(100, Math.max(0, (result.gpa / 4.0) * 100)) : 0;
 
+  const milestoneMotivation = useMemo(() => {
+    if (!hasResult) {
+      return (
+        <span className="gpa-d-motivation-text">
+          💡 Nhập điểm hệ 10 ở bảng bên trái để xem dự báo học lực
+        </span>
+      );
+    }
+    const gpa = result.gpa;
+    if (gpa >= 3.6) {
+      return (
+        <span className="gpa-d-motivation-text">
+          🎉 Chúc mừng! Bạn đang đạt mức học lực <strong>Xuất sắc</strong> (≥ 3.60)
+        </span>
+      );
+    }
+    if (gpa >= 3.2) {
+      const diff = (3.6 - gpa).toFixed(2);
+      return (
+        <span className="gpa-d-motivation-text">
+          🔥 Cách mức <strong className="gpa-motivate-highlight">Xuất sắc (3.60)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
+        </span>
+      );
+    }
+    if (gpa >= 2.5) {
+      const diff = (3.2 - gpa).toFixed(2);
+      return (
+        <span className="gpa-d-motivation-text">
+          🔥 Cách mức <strong className="gpa-motivate-highlight">Giỏi (3.20)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
+        </span>
+      );
+    }
+    if (gpa >= 2.0) {
+      const diff = (2.5 - gpa).toFixed(2);
+      return (
+        <span className="gpa-d-motivation-text">
+          🔥 Cách mức <strong className="gpa-motivate-highlight">Khá (2.50)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
+        </span>
+      );
+    }
+    const diff = (2.0 - gpa).toFixed(2);
+    return (
+      <span className="gpa-d-motivation-text">
+        🔥 Cách mức <strong className="gpa-motivate-highlight">Trung bình (2.00)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
+      </span>
+    );
+  }, [hasResult, result.gpa]);
+
   return (
     <div className="page-container tool-page simplified gpa-page-wrapper">
       
@@ -377,41 +470,41 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
       />
 
       {/* ============================================================== */}
-      {/* 1. BẢN DESKTOP CHUẨN MỰC: 2 CỘT SONG SONG (ĐÚNG NHƯ BẢN THẢO LUẬN) */}
+      {/* 1. BẢN DESKTOP 2 CỘT CÂN ĐỐI (KHỚP 100% PROTOTYPE V2.3)        */}
       {/* ============================================================== */}
       <div className="gpa-desktop-layout">
         
-        {/* CỘT TRÁI (65%): BẢNG NHẬP LIỆU LIỀN KHỐI (UNIFIED TABLE CARD) */}
+        {/* CỘT TRÁI (7 Cols): BẢNG MÔN HỌC LIỀN KHỐI (4 CỘT CÂN ĐỐI) */}
         <div className="gpa-d-table-card">
           
-          {/* TOOLBAR TÍCH HỢP TRÊN ĐẦU BẢNG */}
+          {/* TOOLBAR ĐẦU BẢNG */}
           <div className="gpa-d-toolbar">
             <div className="gpa-d-toolbar-title">
-              <span className="gpa-d-table-heading">Bảng môn học</span>
-              <span className="gpa-d-table-sub">({courses.length} học phần)</span>
+              <span className="gpa-d-table-heading">BẢNG MÔN HỌC</span>
+              <span className="gpa-d-table-badge">
+                {courses.length} môn • {totalPlannedCredits} TC
+              </span>
             </div>
 
             <button
               type="button"
               className="gpa-d-reset-btn"
               onClick={resetCourses}
-              title="Xóa trắng để nhập lại"
+              title="Làm mới điểm để nhập lại"
             >
               <RotateCcw size={14} />
               <span>Đặt lại</span>
             </button>
           </div>
 
-          {/* BẢNG HỌC PHẦN */}
+          {/* BẢNG 4 CỘT CÂN ĐỐI (26% | 24% | 24% | 26%) */}
           <table className="gpa-d-table">
             <thead className="gpa-d-thead">
               <tr>
-                <th style={{ width: '18%', paddingLeft: '1.25rem' }}>Học phần</th>
-                <th style={{ width: '28%' }}>Nhóm môn</th>
-                <th style={{ width: '14%', textAlign: 'center' }}>Tín chỉ</th>
-                <th style={{ width: '16%', textAlign: 'center' }}>Điểm thang 10</th>
-                <th style={{ width: '16%', textAlign: 'center' }}>Quy đổi</th>
-                <th style={{ width: '8%', paddingRight: '1rem', textAlign: 'center' }}></th>
+                <th style={{ width: '26%', paddingLeft: '1.25rem' }}>Môn học</th>
+                <th style={{ width: '24%', textAlign: 'center' }}>Tín chỉ</th>
+                <th style={{ width: '24%', textAlign: 'center' }}>Điểm hệ 10</th>
+                <th style={{ width: '26%', paddingRight: '1.25rem', textAlign: 'right' }}>Quy đổi</th>
               </tr>
             </thead>
             <tbody className="gpa-d-tbody">
@@ -419,77 +512,120 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                 const grade = getCourseGrade(course, cohort);
                 const isScoreErr = isScore10Invalid(course.score10);
                 const isCreditsErr = isCreditsInvalid(course.credits);
+                const hasScore = course.score10.trim() !== '';
 
                 return (
                   <tr key={course.id}>
+                    {/* Cột 1: MÔN HỌC */}
                     <td style={{ paddingLeft: '1.25rem' }}>
-                      <span className="gpa-d-course-name">Học phần {index + 1}</span>
+                      <div className="gpa-d-course-info">
+                        <span className="gpa-d-course-name">Môn học {index + 1}</span>
+                        {isSplitGradeCohort(cohort) && (
+                          <select
+                            className="gpa-d-group-select-compact"
+                            value={course.courseGroup ?? getDefaultCourseGroup(cohort)}
+                            onChange={(e) => updateCourse(course.id, { courseGroup: e.target.value as CourseInput['courseGroup'] })}
+                            aria-label={`Nhóm môn của Môn học ${index + 1}`}
+                          >
+                            {groupOptions.map((opt) => (
+                              <option key={opt.id} value={opt.id}>
+                                {opt.shortLabel}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
                     </td>
-                    <td>
-                      <select
-                        className="gpa-d-group-select"
-                        value={course.courseGroup ?? getDefaultCourseGroup(cohort)}
-                        onChange={(e) => updateCourse(course.id, { courseGroup: e.target.value as CourseInput['courseGroup'] })}
-                        aria-label={`Nhóm môn của Học phần ${index + 1}`}
-                      >
-                        {groupOptions.map((opt) => (
-                          <option key={opt.id} value={opt.id}>
-                            {opt.shortLabel}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
+
+                    {/* Cột 2: TÍN CHỈ (Stepper Capsule) */}
                     <td style={{ textAlign: 'center' }}>
                       <div className="gpa-d-input-wrap">
-                        <input
-                          type="text"
-                          inputMode="decimal"
-                          className={`gpa-d-cred-input ${isCreditsErr ? 'input-error' : ''}`}
-                          value={course.credits}
-                          onChange={(e) => updateCourse(course.id, { credits: sanitizeDecimal(e.target.value) })}
-                          placeholder="--"
-                          aria-label={`Số tín chỉ Học phần ${index + 1}`}
-                          aria-invalid={isCreditsErr}
-                        />
+                        <div className={`gpa-d-credit-capsule ${isCreditsErr ? 'input-error' : ''}`}>
+                          <button
+                            type="button"
+                            className="credit-step-btn"
+                            onClick={() => stepCredits(course.id, -1)}
+                            aria-label={`Giảm 1 tín chỉ cho Môn học ${index + 1}`}
+                          >
+                            −
+                          </button>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            className="credit-val-input"
+                            value={course.credits}
+                            onChange={(e) => updateCourse(course.id, { credits: sanitizeDecimal(e.target.value) })}
+                            aria-label={`Số tín chỉ Môn học ${index + 1}`}
+                            aria-invalid={isCreditsErr}
+                          />
+                          <button
+                            type="button"
+                            className="credit-step-btn"
+                            onClick={() => stepCredits(course.id, 1)}
+                            aria-label={`Tăng 1 tín chỉ cho Môn học ${index + 1}`}
+                          >
+                            +
+                          </button>
+                        </div>
                         {isCreditsErr && <span className="gpa-d-error-tag">1 – 10 TC</span>}
                       </div>
                     </td>
+
+                    {/* Cột 3: ĐIỂM HỆ 10 */}
                     <td style={{ textAlign: 'center' }}>
                       <div className="gpa-d-input-wrap">
                         <input
+                          ref={(el) => {
+                            scoreInputsRef.current[index] = el;
+                          }}
                           type="text"
                           inputMode="decimal"
-                          className={`gpa-d-score-input ${isScoreErr ? 'input-error' : ''}`}
+                          className={`gpa-d-score10-input ${
+                            isScoreErr ? 'input-error' : hasScore ? 'has-score' : ''
+                          }`}
                           value={course.score10}
                           onChange={(e) => updateCourse(course.id, { score10: sanitizeDecimal(e.target.value) })}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              if (index + 1 < courses.length) {
+                                scoreInputsRef.current[index + 1]?.focus();
+                                scoreInputsRef.current[index + 1]?.select();
+                              }
+                            }
+                          }}
                           placeholder="--"
-                          aria-label={`Điểm thang 10 Học phần ${index + 1}`}
+                          aria-label={`Điểm hệ 10 Môn học ${index + 1}`}
                           aria-invalid={isScoreErr}
                         />
                         {isScoreErr && <span className="gpa-d-error-tag">0 – 10 đ</span>}
                       </div>
                     </td>
-                    <td style={{ textAlign: 'center' }}>
-                      {grade && !isScoreErr && !isCreditsErr ? (
-                        <span className={`gpa-d-grade-badge ${getGradeBadgeClass(grade)}`}>
-                          <strong>{grade.letter}</strong>
-                          <span style={{ marginLeft: '4px', opacity: 0.85 }}>({grade.score4.toFixed(1)})</span>
-                        </span>
-                      ) : (
-                        <span className="gpa-d-grade-badge empty">{isScoreErr || isCreditsErr ? 'Lỗi' : '—'}</span>
-                      )}
-                    </td>
-                    <td style={{ paddingRight: '1rem', textAlign: 'center' }}>
-                      <button
-                        type="button"
-                        className="gpa-d-del-btn"
-                        onClick={() => removeCourse(course.id)}
-                        disabled={courses.length <= 1}
-                        title={courses.length <= 1 ? 'Cần giữ ít nhất 1 môn' : 'Xóa môn này'}
-                        aria-label={`Xóa học phần ${index + 1}`}
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                    {/* Cột 4: QUY ĐỔI & XÓA (Căn phải) */}
+                    <td style={{ paddingRight: '1.25rem', textAlign: 'right' }}>
+                      <div className="gpa-d-convert-cluster">
+                        {grade && !isScoreErr && !isCreditsErr ? (
+                          <span className={`gpa-d-grade-badge ${getGradeBadgeClass(grade)}`}>
+                            <span>{grade.letter}</span>
+                            <span className="gpa-d-badge-sub">({grade.score4.toFixed(1)})</span>
+                          </span>
+                        ) : (
+                          <span className="gpa-d-grade-badge empty">
+                            {isScoreErr || isCreditsErr ? 'Lỗi' : '—'}
+                          </span>
+                        )}
+
+                        <button
+                          type="button"
+                          className="gpa-d-del-btn"
+                          onClick={() => removeCourse(course.id)}
+                          disabled={courses.length <= 1}
+                          title={courses.length <= 1 ? 'Cần giữ ít nhất 1 môn' : 'Xóa môn này'}
+                          aria-label={`Xóa Môn học ${index + 1}`}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -497,27 +633,29 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
             </tbody>
           </table>
 
-          {/* NÚT THÊM MÔN HỌC LIỀN KHỐI Ở ĐÁY BẢNG */}
-          <button type="button" className="gpa-d-add-btn" onClick={addCourse}>
-            <Plus size={16} />
-            <span>Thêm môn học</span>
-          </button>
+          {/* CHÂN BẢNG: NÚT THÊM MÔN VIỀN NÉT ĐỨT */}
+          <div className="gpa-d-add-wrapper">
+            <button type="button" className="gpa-d-add-dashed-btn" onClick={addCourse}>
+              <Plus size={15} />
+              <span>Thêm môn học</span>
+            </button>
+          </div>
 
         </div>
 
-        {/* CỘT PHẢI (35%): CARD KẾT QUẢ DỰ TÍNH CỐ ĐỊNH (STICKY RESULT CARD) */}
+        {/* CỘT PHẢI (5 Cols): THẺ KẾT QUẢ DỰ TÍNH CỐ ĐỊNH (TINH GỌN, SẮC NÉT) */}
         <div className="gpa-d-sticky-col">
           <div className="gpa-d-result-card">
             
             {/* Header Kết Quả */}
             <div className="gpa-d-result-header">
-              <span className="gpa-d-result-title">Kết quả dự tính</span>
-              {academicTier ? (
+              <span className="gpa-d-result-title">KẾT QUẢ DỰ TÍNH</span>
+              {hasResult && academicTier ? (
                 <span className={`gpa-d-result-badge tier-${academicTier.tone}`}>
-                  • {academicTier.label}
+                  ★ Học lực {academicTier.label}
                 </span>
               ) : (
-                <span className="gpa-d-result-badge" style={{ opacity: 0.6 }}>
+                <span className="gpa-d-result-badge unranked">
                   • Chưa xếp loại
                 </span>
               )}
@@ -528,76 +666,89 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
               <div className="gpa-d-error-banner" role="alert">
                 <AlertTriangle size={16} aria-hidden="true" style={{ flexShrink: 0, marginTop: '0.05rem' }} />
                 <span>
-                  Có <strong>{invalidCoursesCount}</strong> học phần nhập sai dữ liệu. Vui lòng kiểm tra lại các ô có viền đỏ.
+                  Có <strong>{invalidCoursesCount}</strong> môn học nhập sai dữ liệu. Vui lòng kiểm tra lại các ô có viền đỏ.
                 </span>
               </div>
             )}
 
-            {/* Con Số GPA To Bản */}
-            <div className="gpa-d-score-section">
-              <span className="gpa-d-score-sub">
-                GPA học kỳ {hasInvalidData ? `(Tạm tính ${result.countedCourses}/${courses.length} môn)` : `(Tính ${result.countedCourses}/${courses.length} môn)`}
-              </span>
-              <div className="gpa-d-score-row">
-                <span className="gpa-d-big-val">{hasResult ? animatedGpa.toFixed(2) : '--'}</span>
-                <span className="gpa-d-big-max">/ 4.00</span>
+            {/* Khu vực Điểm Trung Tâm */}
+            <div className="gpa-d-hero-score-box">
+              <div className="gpa-d-hero-sub">
+                ĐIỂM TRUNG BÌNH HỌC KỲ
               </div>
-              
-              {/* Thanh tiến độ */}
-              <div className="gpa-d-bar-track">
-                <div
-                  className="gpa-d-bar-fill"
-                  style={{
-                    width: `${progressPercent}%`,
-                    backgroundColor: academicTier?.tone === 'danger' ? '#ef4444' : academicTier?.tone === 'warning' ? '#f59e0b' : '#10b981',
-                  }}
-                />
+              <div className="gpa-d-hero-score-row">
+                <span className="gpa-d-hero-score">{hasResult ? animatedGpa.toFixed(2) : '--'}</span>
+                <span className="gpa-d-hero-max">/ 4.00</span>
               </div>
-              <div className="gpa-d-bar-scale">
-                <span>0.0</span>
-                <span>4.00</span>
+
+              <div className="gpa-d-gpa10-pill">
+                <span className="gpa-d-gpa10-label">Trung bình hệ 10:</span>
+                <strong className="gpa-d-gpa10-val">
+                  {hasResult ? `${gpa10.toFixed(2)} / 10` : '-- / 10'}
+                </strong>
               </div>
             </div>
 
-            {/* Thống Kê 4 Chỉ Số */}
+            {/* Khung Thanh Tiến Độ Cột Mốc Học Lực */}
+            <div className="gpa-d-milestone-box">
+              <div className="gpa-d-milestone-labels">
+                <span>0.0</span>
+                <span>TB 2.0</span>
+                <span className="gpa-milestone-blue">Khá 2.5</span>
+                <span className="gpa-milestone-green">Giỏi 3.2</span>
+                <span className="gpa-milestone-amber">XS 3.6</span>
+              </div>
+
+              <div className="gpa-d-milestone-bar-wrap">
+                <div
+                  className="gpa-d-milestone-bar-fill"
+                  style={{ width: `${progressPercent}%` }}
+                />
+                <div className="gpa-d-milestone-tick" style={{ left: '50%' }} title="Trung bình (2.0)" />
+                <div className="gpa-d-milestone-tick" style={{ left: '62.5%' }} title="Khá (2.5)" />
+                <div className="gpa-d-milestone-tick" style={{ left: '80%' }} title="Giỏi (3.2)" />
+                <div className="gpa-d-milestone-tick" style={{ left: '90%' }} title="Xuất sắc (3.6)" />
+              </div>
+
+              <div className="gpa-d-milestone-prompt">
+                {milestoneMotivation}
+              </div>
+            </div>
+
+            {/* 3 Ô Thống Kê Gọn Gàng */}
             <div className="gpa-d-stats-grid">
               <div className="gpa-d-stat-box">
-                <p className="gpa-d-stat-label">Tín chỉ</p>
-                <p className="gpa-d-stat-val">{hasResult ? result.totalCredits : 0}</p>
-              </div>
-              <div className="gpa-d-stat-box">
-                <p className="gpa-d-stat-label">Môn tính</p>
-                <p className="gpa-d-stat-val">{result.countedCourses}/{courses.length}</p>
+                <span className="gpa-d-stat-label">Tín chỉ</span>
+                <span className="gpa-d-stat-val">{hasResult ? result.totalCredits : 0}</span>
               </div>
               <div className={`gpa-d-stat-box ${courseStats.passed > 0 ? 'passed' : ''}`}>
-                <p className="gpa-d-stat-label">Đạt</p>
-                <p className="gpa-d-stat-val">{courseStats.passed}</p>
+                <span className="gpa-d-stat-label">Môn đạt</span>
+                <span className="gpa-d-stat-val">{courseStats.passed}</span>
               </div>
               <div className="gpa-d-stat-box">
-                <p className="gpa-d-stat-label">Rớt</p>
-                <p className="gpa-d-stat-val" style={{ color: courseStats.failed > 0 ? '#ef4444' : undefined }}>
+                <span className="gpa-d-stat-label">Môn rớt</span>
+                <span className="gpa-d-stat-val" style={{ color: courseStats.failed > 0 ? '#ef4444' : undefined }}>
                   {courseStats.failed}
-                </p>
+                </span>
               </div>
             </div>
 
-            {/* Điều Hướng Tính Điểm Học Bổng */}
+            {/* Thanh Tính điểm xét học bổng 1 dòng duy nhất */}
             <div className="gpa-d-scholarship-prompt">
-              <span className="gpa-prompt-left">
-                <GraduationCap size={16} className="gpa-prompt-icon" />
-                <span className="gpa-prompt-text">Bạn muốn tính điểm xét học bổng?</span>
-              </span>
+              <div className="gpa-d-scholarship-left">
+                <span>🎓</span>
+                <span>Tính điểm xét học bổng?</span>
+              </div>
               <button
                 type="button"
-                className="gpa-prompt-pill-btn"
-                onClick={() => (onNavigate ? onNavigate('scholarship') : undefined)}
+                className="gpa-d-scholarship-btn"
+                onClick={() => onNavigate?.('scholarship')}
               >
-                <span>Tính điểm</span>
-                <ArrowRight size={13} />
+                Tính điểm →
               </button>
             </div>
 
-            {/* Footer Modal Link */}
+            {/* Footer */}
             <div className="gpa-d-result-footer">
               <button
                 type="button"
@@ -608,8 +759,11 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                 <span>Bảng quy đổi {cohort}</span>
                 <ArrowUpRight size={14} aria-hidden="true" />
               </button>
-              <ShareResultButton text={shareText} className="gpa-d-footer-link" />
-              <span className="gpa-d-footer-watermark">ĐHSP TP.HCM</span>
+              {shareText ? (
+                <ShareResultButton text={shareText} className="gpa-d-footer-link" />
+              ) : (
+                <span className="gpa-d-footer-watermark">ĐHSP TP.HCM</span>
+              )}
             </div>
 
           </div>
@@ -618,11 +772,11 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
       </div>
 
       {/* ============================================================== */}
-      {/* 2. BẢN MOBILE NATIVE: KHỚP 100% ẢNH THIẾT KẾ BẠN ĐÃ DUYỆT */}
+      {/* 2. BẢN MOBILE NATIVE TINH GỌN (CHO PHÉP GÕ TRỰC TIẾP HOẶC SHEET) */}
       {/* ============================================================== */}
       <div className="gpa-mobile-layout">
         
-        {/* TIÊU ĐỀ MOBILE GỌN 1 HÀNG KHÔNG CHOÁN DIỆN TÍCH */}
+        {/* TIÊU ĐỀ MOBILE GỌN 1 HÀNG */}
         <div className="gpa-m-page-header">
           <div className="gpa-m-title-wrap">
             <GraduationCap size={20} className="gpa-m-title-icon" aria-hidden="true" />
@@ -630,31 +784,38 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
           </div>
         </div>
 
-        {/* MOBILE HERO SCORE CARD (PHƯƠNG ÁN 1: THOÁNG ĐÃNG ĐẲNG CẤP APPLE) */}
+        {/* MOBILE HERO SCORE CARD */}
         <div className="gpa-mobile-hero-container">
           <div className="gpa-mobile-hero-card">
+            <div className="gpa-m-hero-label">GPA HỌC KỲ DỰ TÍNH</div>
             <div className="gpa-m-score-row">
               <span className="gpa-m-score-val">{hasResult ? animatedGpa.toFixed(2) : '--'}</span>
               <span className="gpa-m-score-max">/ 4.00</span>
             </div>
 
-            {/* Viên thuốc hợp nhất (Phương án 2 Capsule) */}
+            {/* Viên thuốc hợp nhất (Capsule đồng nhất, bỏ nền xanh lá chói) */}
             <div className="gpa-m-capsule-wrap">
               {hasResult && academicTier ? (
                 <div className="gpa-m-capsule">
-                  <span className={`gpa-m-tier-badge tier-${academicTier.tone}`}>{academicTier.label}</span>
+                  <span className={`gpa-m-tier-text tier-${academicTier.tone}`}>
+                    ★ {academicTier.label}
+                  </span>
                   <span className="gpa-m-sep">│</span>
-                  <span className="gpa-m-creds">
-                    {result.totalCredits} <span className="gpa-m-unit">tín chỉ</span>
+                  <span className="gpa-m-stat-item">
+                    <span className="gpa-m-unit">Hệ 10:</span> <strong>{gpa10.toFixed(2)}</strong>
+                  </span>
+                  <span className="gpa-m-sep">│</span>
+                  <span className="gpa-m-stat-item">
+                    <strong>{result.totalCredits}</strong> <span className="gpa-m-unit">TC</span>
                   </span>
                   <span className="gpa-m-bullet">•</span>
-                  <span className="gpa-m-pass">
-                    {courseStats.passed}/{result.countedCourses} <span className="gpa-m-unit">đạt</span>
+                  <span className="gpa-m-stat-item">
+                    <strong>{courseStats.passed}/{result.countedCourses}</strong> <span className="gpa-m-unit">đạt</span>
                   </span>
                 </div>
               ) : (
                 <div className="gpa-m-capsule empty">
-                  <span>Chưa nhập điểm • Nhập môn học bên dưới</span>
+                  <span>Chưa nhập điểm • Chạm vào môn bên dưới để nhập</span>
                 </div>
               )}
             </div>
@@ -664,33 +825,30 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
             {hasInvalidData && (
               <div className="gpa-m-hero-alert" role="alert">
                 <AlertTriangle size={14} aria-hidden="true" />
-                <span>{invalidCoursesCount} học phần nhập sai dữ liệu</span>
+                <span>{invalidCoursesCount} môn học nhập sai dữ liệu</span>
               </div>
             )}
           </div>
 
-          {/* GỢI Ý HỌC BỔNG NHẸ NHÀNG BÊN NGOÀI CARD */}
+          {/* GỢI Ý HỌC BỔNG BÊN NGOÀI CARD */}
           {hasResult && result.gpa >= 2.5 && (
             <div className="gpa-m-scholarship-banner">
-              <div className="gpa-prompt-left">
-                <GraduationCap size={15} className="gpa-prompt-icon" />
-                <span className="gpa-prompt-text">
-                  Bạn muốn tính điểm xét học bổng?
-                </span>
+              <div className="gpa-d-scholarship-left">
+                <span>🎓</span>
+                <span>Tính điểm xét học bổng?</span>
               </div>
               <button
                 type="button"
-                className="gpa-prompt-pill-btn"
+                className="gpa-d-scholarship-btn"
                 onClick={() => (onNavigate ? onNavigate('scholarship') : undefined)}
               >
-                <span>Tính điểm</span>
-                <ArrowRight size={13} />
+                Tính điểm →
               </button>
             </div>
           )}
         </div>
 
-        {/* TOOLBAR MOBILE (SIÊU GỌN - 1 HÀNG DUY NHẤT) */}
+        {/* TOOLBAR MOBILE */}
         <div className="gpa-m-toolbar">
           <span className="gpa-m-toolbar-count">Môn học ({courses.length})</span>
 
@@ -699,11 +857,12 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
             className="gpa-m-reset-btn"
             onClick={resetCourses}
           >
-            Đặt lại
+            <RotateCcw size={13} />
+            <span>Đặt lại</span>
           </button>
         </div>
 
-        {/* INSET GROUPED LIST MOBILE (ĐIỂM CHỮ MÀU SẮC SINH ĐỘNG) */}
+        {/* INSET GROUPED LIST MOBILE */}
         <div className="gpa-mobile-grouped-list">
           <div className="gpa-m-list-card">
             {courses.map((course, index) => {
@@ -728,10 +887,10 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                       handleOpenEditSheet(course, index, e.currentTarget);
                     }
                   }}
-                  aria-label={`Chỉnh sửa Học phần ${index + 1}`}
+                  aria-label={`Chỉnh sửa Môn học ${index + 1}`}
                 >
                   <div className="gpa-m-row-left">
-                    <span className="gpa-m-row-title">Học phần {index + 1}</span>
+                    <span className="gpa-m-row-title">Môn học {index + 1}</span>
                     <span className="gpa-m-row-desc">
                       {isCreditsErr ? (
                         <span style={{ color: '#ef4444', fontWeight: 600 }}>Sai tín chỉ</span>
@@ -740,7 +899,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                       ) : (
                         'Chưa có TC'
                       )}{' '}
-                      • {groupOption?.shortLabel || 'Đại cương'}
+                      {isSplitGradeCohort(cohort) ? `• ${groupOption?.shortLabel || 'Đại cương'}` : ''}
                     </span>
                   </div>
 
@@ -767,7 +926,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
               );
             })}
 
-            {/* NÚT THÊM MÔN DUY NHẤT Ở CHÂN DANH SÁCH MOBILE */}
+            {/* NÚT THÊM MÔN Ở CHÂN DANH SÁCH MOBILE */}
             <button
               type="button"
               className="gpa-m-add-row-btn"
@@ -782,7 +941,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
       </div>
 
       {/* ============================================================== */}
-      {/* MOBILE 1-TOUCH BOTTOM SHEET EDITOR */}
+      {/* 3. MOBILE 1-TOUCH BOTTOM SHEET EDITOR                           */}
       {/* ============================================================== */}
       {sheetState && (
         <div className="gpa-m-sheet-overlay" onClick={closeSheet}>
@@ -836,11 +995,11 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                       />
                     </div>
 
-                    {/* 2. Điểm học phần thang 10 */}
+                    {/* 2. Điểm môn học thang 10 */}
                     <div className="gpa-m-sheet-field">
                       <div className="gpa-m-sheet-label-row">
                         <label className="gpa-m-sheet-label" htmlFor="gpa-sheet-score-input">
-                          2. Điểm học phần (Thang 10)
+                          2. Điểm môn học (Thang 10)
                         </label>
                         {sheetPreviewGrade && !sheetScoreErr && (
                           <span className={`gpa-m-sheet-live-preview ${getGradeBadgeClass(sheetPreviewGrade)}`}>
@@ -875,22 +1034,24 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                       )}
                     </div>
 
-                    {/* 3. Phân loại môn */}
-                    <div className="gpa-m-sheet-field">
-                      <label className="gpa-m-sheet-label">3. Phân loại môn học</label>
-                      <div className="gpa-m-sheet-group-grid">
-                        {groupOptions.map((option) => (
-                          <button
-                            key={option.id}
-                            type="button"
-                            className={`gpa-m-group-pill ${sheetState.courseGroup === option.id ? 'active' : ''}`}
-                            onClick={() => setSheetState((s) => (s ? { ...s, courseGroup: option.id } : null))}
-                          >
-                            {option.shortLabel}
-                          </button>
-                        ))}
+                    {/* 3. Phân loại môn (chỉ hiển thị nếu quy chế yêu cầu) */}
+                    {isSplitGradeCohort(cohort) && (
+                      <div className="gpa-m-sheet-field">
+                        <label className="gpa-m-sheet-label">3. Phân loại môn học</label>
+                        <div className="gpa-m-sheet-group-grid">
+                          {groupOptions.map((option) => (
+                            <button
+                              key={option.id}
+                              type="button"
+                              className={`gpa-m-group-pill ${sheetState.courseGroup === option.id ? 'active' : ''}`}
+                              onClick={() => setSheetState((s) => (s ? { ...s, courseGroup: option.id } : null))}
+                            >
+                              {option.shortLabel}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* 4. Nút hành động */}
                     <div className="gpa-m-sheet-actions">
@@ -900,7 +1061,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                         onClick={handleSaveSheet}
                         disabled={sheetCredErr || sheetScoreErr}
                       >
-                        {sheetState.isNew ? 'Thêm học phần' : 'Lưu thay đổi'}
+                        {sheetState.isNew ? 'Thêm môn học' : 'Lưu thay đổi'}
                       </button>
 
                       {!sheetState.isNew && courses.length > 1 && (

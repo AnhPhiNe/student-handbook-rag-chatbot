@@ -115,8 +115,17 @@ function Heading() {
   );
 }
 
-function AskBox({ onAsk, onLook, placeholder, large, sending }: { onAsk: (question: string) => void; onLook: (on: boolean) => void; placeholder: string; large?: boolean; sending: boolean }) {
-  const [question, setQuestion] = useState('');
+interface AskBoxProps {
+  onAsk: (question: string) => void;
+  onLook: (on: boolean) => void;
+  placeholder: string;
+  large?: boolean;
+  sending: boolean;
+  question: string;
+  onQuestionChange: (question: string) => void;
+}
+
+function AskBox({ onAsk, onLook, placeholder, large, sending, question, onQuestionChange }: AskBoxProps) {
   return (
     <form
       className={`hp-ask${large ? ' hp-ask-lg' : ''}`}
@@ -132,7 +141,7 @@ function AskBox({ onAsk, onLook, placeholder, large, sending }: { onAsk: (questi
     >
       <Search size={18} aria-hidden="true" />
       <input className="hp-ask-input" aria-label="Câu hỏi về Sổ tay" placeholder={placeholder}
-        value={question} onChange={(event) => setQuestion(event.target.value)}
+        value={question} onChange={(event) => onQuestionChange(event.target.value)}
         maxLength={MAX_QUERY_CHARS} disabled={sending} />
       <button className="hp-go" type="submit" aria-label="Gửi câu hỏi" disabled={!question.trim() || sending}>
         <ArrowRight size={18} aria-hidden="true" />
@@ -236,6 +245,7 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
   const desktop = useMedia(DESKTOP_QUERY);
   const reduced = useMedia(REDUCED_QUERY);
   const [phIndex, setPhIndex] = useState(0);
+  const [question, setQuestion] = useState('');
   const { profile } = useStudentProfile();
   const [storedPins] = useLocalStorage<unknown>('hcmue-pinned-tools', []);
 
@@ -264,7 +274,7 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
               <span className="hp-pill">Sổ tay HCMUE{cohort ? ` · Khóa ${cohort.replace('K', '')}` : ''}</span>
               <Heading />
               <p className="hp-lead">Hỏi quy chế, tính GPA, học bổng, tìm phòng ban trong vài giây.</p>
-              <AskBox large onAsk={askChat} onLook={owl.look} placeholder={placeholder} sending={owl.sending} />
+              <AskBox large onAsk={askChat} onLook={owl.look} placeholder={placeholder} sending={owl.sending} question={question} onQuestionChange={setQuestion} />
               <div className="hp-chips">
                 {CHIPS.map((chip) => (
                   <button key={chip} type="button" className="hp-chip" disabled={owl.sending} onClick={() => askChat(chip)}>
@@ -294,7 +304,7 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
                 <span className="hp-pill">Chỉ đọc Sổ tay HCMUE{cohort ? ` · Khóa ${cohort.replace('K', '')}` : ''}</span>
               </div>
             </div>
-            <AskBox onAsk={askChat} onLook={owl.look} placeholder={placeholder} sending={owl.sending} />
+            <AskBox onAsk={askChat} onLook={owl.look} placeholder={placeholder} sending={owl.sending} question={question} onQuestionChange={setQuestion} />
           </div>
         )}
       </section>

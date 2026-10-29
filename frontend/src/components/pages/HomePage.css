@@ -1,10 +1,15 @@
 /* Home page. Everything is scoped under .hp-page; the hero is navy in both themes. */
 .page-container.home-page.hp-page {
+  --hp-card: #fff;
+  --hp-bg: #F5F7FB;
   display: block;
   padding: 0 0 2.5rem;
+  background: var(--hp-bg);
 }
+[data-theme='dark'] .page-container.home-page.hp-page { --hp-card: #101A2C; --hp-bg: #070D1A; }
+.page-container.home-page.hp-page::before { display: none; }
 
-.hp-page button { font: inherit; cursor: pointer; }
+:where(.hp-page) button { font: inherit; cursor: pointer; }
 
 /* ---------- hero ---------- */
 .hp-hero {
@@ -97,6 +102,7 @@
   font: inherit; font-size: 0.92rem; color: #13203A;
 }
 .hp-ask-input::placeholder { color: #64748B; opacity: 1; }
+.hp-ask-input:focus-visible { outline: none; box-shadow: none; } /* the containing form supplies the focus ring */
 .hp-ask .hp-go { padding: 0; border: 0; }
 .hp-ask .hp-go:disabled { opacity: 0.55; cursor: default; }
 .hp-ask > svg { flex: 0 0 auto; }
@@ -141,7 +147,7 @@
   min-height: 132px;
   padding: 14px;
   border-radius: 20px;
-  background: var(--bg-secondary);
+  background: var(--hp-card);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   text-align: left;
@@ -443,7 +449,7 @@
     gap: 8px;
     padding: 6px 14px 6px 6px;
     border-radius: 999px;
-    background: var(--bg-secondary);
+    background: var(--hp-card);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
     font: 600 0.84rem var(--font-body);
@@ -599,7 +605,7 @@
   align-items: flex-start;
   padding: 16px;
   border-radius: 18px;
-  background: var(--bg-secondary);
+  background: var(--hp-card);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
   text-decoration: none;

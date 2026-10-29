@@ -16,7 +16,6 @@ import { sanitizePinnedIds } from '../../utils/pinnedTools';
 import { summarizeProfile, type HomeSummary } from '../../utils/homeSummary';
 import { OwlMascot, type OwlState } from '../OwlMascot';
 import { QuickContacts, TipBoard } from './HomeExtras';
-import { EXPERIENCE } from '../../data/experience';
 import { MAX_QUERY_CHARS } from '../../utils/queryLength';
 import './HomePage.css';
 
@@ -43,8 +42,6 @@ const PLACEHOLDERS = [
   'Phúc khảo bài thi ở đâu?',
   'Đăng ký tối thiểu bao nhiêu tín chỉ?',
 ];
-
-const CHIPS = ['HB Xuất sắc cần gì?', 'Rớt môn có hạ bằng?', 'Phúc khảo ở đâu?'];
 
 const DOORS: Door[] = [
   { id: 'chat', title: 'Hỏi AI', hint: 'Có dẫn Điều, Khoản', color: '#1E4FD8', icon: <MessageSquare size={22} />, filled: true },
@@ -190,7 +187,7 @@ function SideCard({ summary, gpaText, onNavigate }: { summary: HomeSummary; gpaT
 // What the owl says, one line per tap. Every line must stay true of the app.
 const OWL_LINES: ReactNode[] = [
   <>Mình <b>chỉ đọc Sổ tay sinh viên</b> thôi, trả lời kèm Điều, Khoản nha!</>,
-  <>Thử bấm một <b>câu gợi ý</b> bên dưới nè!</>,
+  <>Gõ câu hỏi về <b>học bổng, học vụ</b> vào ô hỏi nha!</>,
   <>Cần số phòng ban? Mở <b>Danh bạ</b> nha!</>,
   <>Nhập GPA một lần, <b>các công cụ tự dùng lại</b>.</>,
 ];
@@ -262,10 +259,9 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
   const gpaText = counted.toFixed(2);
   const placeholder = PLACEHOLDERS[reduced ? 0 : phIndex];
   const pins = sanitizePinnedIds(storedPins).filter((id) => id in PIN_TOOLS);
-  const showTips = SHOW_EXPERIENCE_PAGE && (!EXPERIENCE.isSample || import.meta.env.DEV);
 
   return (
-    <div className="page-container home-page hp-page">
+    <div className={`page-container home-page hp-page${desktop && pins.length > 0 ? ' hp-has-pins' : ''}`}>
       <section className="hp-hero">
         <div className="hp-mesh" aria-hidden="true" />
         {desktop ? (
@@ -275,13 +271,6 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
               <Heading />
               <p className="hp-lead">Hỏi quy chế, tính GPA, học bổng, tìm phòng ban trong vài giây.</p>
               <AskBox large onAsk={askChat} onLook={owl.look} placeholder={placeholder} sending={owl.sending} question={question} onQuestionChange={setQuestion} />
-              <div className="hp-chips">
-                {CHIPS.map((chip) => (
-                  <button key={chip} type="button" className="hp-chip" disabled={owl.sending} onClick={() => askChat(chip)}>
-                    {chip}
-                  </button>
-                ))}
-              </div>
             </div>
             <div className="hp-right">
               <div className="hp-say" key={owl.line} aria-live="polite">
@@ -329,11 +318,9 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
           ))}
         </div>
 
-        {desktop ? (
+        {desktop && pins.length > 0 ? (
           <div className="hp-pins">
-            {pins.length > 0 && (
-              <span className="hp-pins-k"><Pin size={14} aria-hidden="true" />Đã ghim</span>
-            )}
+            <span className="hp-pins-k"><Pin size={14} aria-hidden="true" />Đã ghim</span>
             {pins.map((id) => {
               const tool = PIN_TOOLS[id];
               return (
@@ -343,14 +330,11 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
                 </button>
               );
             })}
-            <button type="button" className="hp-pc hp-pc-add" onClick={() => onNavigate('tools')}>
-              + Ghim thêm
-            </button>
           </div>
         ) : null}
         {/* Tips read only from the experience page, so they appear when that page is on;
             until then the row shows real office numbers instead of sample quotes. */}
-        {desktop && (showTips ? <TipBoard onNavigate={onNavigate} /> : <QuickContacts onNavigate={onNavigate} />)}
+        {desktop && (SHOW_EXPERIENCE_PAGE ? <TipBoard onNavigate={onNavigate} /> : <QuickContacts onNavigate={onNavigate} />)}
         {desktop ? null : (
           <>
             {summary.hasProfile && (

@@ -316,20 +316,6 @@
   .hp-ask-lg { height: 62px; margin-top: 0; padding: 0 8px 0 20px; gap: 12px; border-radius: 18px; box-shadow: 0 18px 40px rgba(2, 6, 23, 0.35); }
   .hp-ask-lg .hp-go { flex-basis: 46px; width: 46px; height: 46px; border-radius: 13px; }
   .hp-ask-lg .hp-ask-text { font-size: 1rem; }
-  .hp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-  .hp-chip {
-    padding: 7px 13px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    color: #fff;
-    font: 600 0.8rem var(--font-body);
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-  .hp-chip:hover { background: rgba(255, 255, 255, 0.2); }
-  .hp-chip:focus-visible { outline: 3px solid #FDE68A; outline-offset: 2px; }
-
   .hp-right { position: relative; padding-top: 84px; }
   .hp-say {
     position: absolute;
@@ -467,7 +453,6 @@
     font: 800 0.8rem var(--font-display);
     font-style: normal;
   }
-  .hp-pc-add { padding: 6px 14px; background: none; border: 1.5px dashed var(--border-color); color: var(--text-secondary); }
   .hp-pc:focus-visible { outline: 3px solid var(--brand-red); outline-offset: 2px; }
 }
 
@@ -502,7 +487,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hp-mesh, .hp-door, .hp-ask-text { animation: none; }
-  .hp-door, .hp-pc, .hp-chip { transition: none; }
+  .hp-door, .hp-pc { transition: none; }
   .hp-door:hover, .hp-pc:hover { transform: none; }
 }
 
@@ -649,6 +634,35 @@
   .hp-tips { gap: 16px; }
   .hp-tip q { font-size: 0.92rem; }
   .hp-contact-phone { font-size: 0.72rem; }
+  .hp-contact > i { display: none; }
+  .hp-contact { gap: 0; }
+}
+/* A desktop window at 125% zoom has much less CSS height. Share that space
+   between the hero and the cards, so the contact/note row remains in view. */
+@media (min-width: 901px) and (max-height: 820px) {
+  .page-container.home-page.hp-page { padding-bottom: 20px; }
+  .hp-has-pins { --hp-hero-reserved: 350px; }
+  .hp-hero { padding-top: 60px; padding-bottom: 80px; min-height: clamp(360px, calc(100dvh - var(--hp-hero-reserved, 310px)), 520px); }
+  .hp-title { font-size: clamp(1.9rem, 3vw, 2.7rem); }
+  .hp-glass { padding: 18px; }
+  .hp-glass-top { margin: 8px 0 12px; }
+  .hp-ring-lg { flex-basis: 60px; width: 60px; height: 60px; }
+  .hp-glass-num { font-size: 2.2rem; }
+  .hp-door { min-height: 136px; }
+  .hp-door-icon { width: 42px; height: 42px; border-radius: 13px; }
+  .hp-pins { margin-top: 14px; gap: 8px; }
+  .hp-pc { padding: 5px 10px 5px 5px; gap: 6px; }
+  .hp-pc i { width: 20px; height: 20px; }
+  .hp-extra { margin-top: 18px; }
+  .hp-extra-head { margin-bottom: 8px; }
+  .hp-tip { min-height: 100px; padding: 16px 14px 10px; gap: 6px; }
+  .hp-tip q { font-size: 0.92rem; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .hp-contact { padding: 12px; }
+}
+@media (min-width: 901px) and (max-width: 1100px) and (max-height: 820px) {
+  .hp-right { padding-top: 76px; }
+  .hp-glass { padding: 14px; }
+  .hp-glass-link { margin-top: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hp-tip, .hp-tip:hover { transition: none; }

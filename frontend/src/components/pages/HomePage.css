@@ -3,7 +3,7 @@
   --hp-card: #fff;
   --hp-bg: #F5F7FB;
   display: block;
-  padding: 0 0 2.5rem;
+  padding: 0 0 16px;
   background: var(--hp-bg);
 }
 [data-theme='dark'] .page-container.home-page.hp-page { --hp-card: #101A2C; --hp-bg: #070D1A; }
@@ -302,7 +302,8 @@
 
 /* ---------- desktop ---------- */
 @media (min-width: 901px) {
-  .hp-hero { padding: 64px 48px 96px; min-height: 520px; }
+  .hp-has-pins { --hp-hero-reserved: 430px; }
+  .hp-hero { padding: 64px 48px 96px; min-height: clamp(420px, calc(100dvh - var(--hp-hero-reserved, 380px)), 520px); }
   .hp-hero-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 330px;
@@ -524,8 +525,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 108px;
-  padding: 20px 18px 14px;
+  min-height: 140px;
+  padding: 24px 20px 16px;
   border: 0;
   border-radius: 3px 3px 14px 3px;
   background: var(--paper);
@@ -547,8 +548,8 @@
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.08) 50%, rgba(255, 255, 255, 0.55) 50%);
 }
 .hp-tip:hover { transform: rotate(0deg) translateY(-3px); box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06), 0 18px 28px -14px rgba(15, 23, 42, 0.6); }
-.hp-tip q { font: 700 1rem/1.45 'Mali', cursive; }
-.hp-tip small { font-size: 0.74rem; color: #4B5563; }
+.hp-tip q { font: 700 1rem/1.45 'Mali', cursive; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.hp-tip small { margin-top: auto; font-size: 0.74rem; color: #4B5563; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hp-tip-fastener { position: absolute; pointer-events: none; }
 /* washi tape across the top */
 .hp-tip-tape .hp-tip-fastener {
@@ -639,7 +640,7 @@
 }
 /* A desktop window at 125% zoom has much less CSS height. Share that space
    between the hero and the cards, so the contact/note row remains in view. */
-@media (min-width: 901px) and (max-height: 820px) {
+@media (min-width: 901px) and (max-height: 850px) {
   .page-container.home-page.hp-page { padding-bottom: 20px; }
   .hp-has-pins { --hp-hero-reserved: 350px; }
   .hp-hero { padding-top: 60px; padding-bottom: 80px; min-height: clamp(360px, calc(100dvh - var(--hp-hero-reserved, 310px)), 520px); }
@@ -655,11 +656,12 @@
   .hp-pc i { width: 20px; height: 20px; }
   .hp-extra { margin-top: 18px; }
   .hp-extra-head { margin-bottom: 8px; }
-  .hp-tip { min-height: 100px; padding: 16px 14px 10px; gap: 6px; }
+  .hp-tip { min-height: clamp(100px, calc(100dvh - 610px), 132px); padding: 18px 14px 14px; gap: 6px; }
+  .hp-has-pins .hp-tip { min-height: 100px; }
   .hp-tip q { font-size: 0.92rem; line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
   .hp-contact { padding: 12px; }
 }
-@media (min-width: 901px) and (max-width: 1100px) and (max-height: 820px) {
+@media (min-width: 901px) and (max-width: 1100px) and (max-height: 850px) {
   .hp-right { padding-top: 76px; }
   .hp-glass { padding: 14px; }
   .hp-glass-link { margin-top: 10px; }

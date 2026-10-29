@@ -1,9 +1,8 @@
-import { BookOpen, ChevronLeft, ChevronRight, Contact, Home, MessageSquare, Star, Wrench, type LucideIcon } from 'lucide-react';
+import { Award, BookOpen, Calculator, ChevronLeft, ChevronRight, Contact, GraduationCap, Home, MessageSquare, ShieldCheck, Star, Target, TrendingUp, Wrench, type LucideIcon } from 'lucide-react';
 import { VisitorCounter } from './VisitorCounter';
 import { IS_CHAT_MAINTENANCE, SHOW_EXPERIENCE_PAGE } from '../config/features';
 
 const logoHcmue = '/logo_hcmue.png?v=2';
-const TOOL_TABS = new Set(['tools', 'gpa', 'target-gpa', 'course-target', 'scholarship', 'tuition', 'credits']);
 
 interface SidebarProps {
   activeTab: string;
@@ -18,7 +17,7 @@ interface NavEntry {
   icon: LucideIcon;
 }
 
-// The same five destinations as the phone tab bar; the six tools live on the tools page.
+// Desktop has room for direct calculator links. Phones retain their five-tab navigation.
 const NAV: NavEntry[] = [
   { id: 'home', label: 'Trang chủ', icon: Home },
   { id: 'chat', label: 'Chat', icon: MessageSquare },
@@ -27,8 +26,32 @@ const NAV: NavEntry[] = [
   { id: 'danh-ba', label: 'Danh bạ', icon: Contact },
 ];
 
+const CALCULATORS: NavEntry[] = [
+  { id: 'gpa', label: 'Tính GPA', icon: GraduationCap },
+  { id: 'target-gpa', label: 'Mục tiêu GPA', icon: TrendingUp },
+  { id: 'course-target', label: 'Mục tiêu môn', icon: Target },
+  { id: 'scholarship', label: 'Học bổng', icon: Award },
+  { id: 'tuition', label: 'Học phí', icon: Calculator },
+  { id: 'credits', label: 'Hạ bằng', icon: ShieldCheck },
+];
+
 export function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleCollapse }: SidebarProps) {
-  const isActive = (id: string) => activeTab === id || (id === 'tools' && TOOL_TABS.has(activeTab));
+  const isActive = (id: string) => activeTab === id;
+
+  const renderLink = ({ id, label, icon: Icon }: NavEntry, tool = false) => {
+    const maintenance = id === 'chat' && IS_CHAT_MAINTENANCE;
+    return (
+      <button key={id} type="button"
+        className={`nav-item${tool ? ' sidebar-tool-link' : ''}${isActive(id) ? ' active' : ''}`}
+        onClick={() => onTabChange(id)} aria-current={isActive(id) ? 'page' : undefined}
+        aria-label={maintenance ? `${label} (Đang bảo trì)` : label}
+        title={isCollapsed ? label : undefined}>
+        <Icon size={tool ? 16 : 18} aria-hidden="true" />
+        <span>{label}</span>
+        {maintenance && <span className="sidebar-maintenance-badge">Bảo trì</span>}
+      </button>
+    );
+  };
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -52,24 +75,14 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleCollapse 
       </div>
 
       <nav className="sidebar-nav" aria-label="Điều hướng chính">
-        {NAV.map(({ id, label, icon: Icon }) => {
-          const maintenance = id === 'chat' && IS_CHAT_MAINTENANCE;
-          return (
-            <button
-              key={id}
-              type="button"
-              className={`nav-item ${isActive(id) ? 'active' : ''}`}
-              onClick={() => onTabChange(id)}
-              aria-current={isActive(id) ? 'page' : undefined}
-              aria-label={maintenance ? `${label} (Đang bảo trì)` : label}
-              title={isCollapsed ? label : undefined}
-            >
-              <Icon size={18} aria-hidden="true" />
-              <span>{label}</span>
-              {maintenance && <span className="sidebar-maintenance-badge">Bảo trì</span>}
-            </button>
-          );
-        })}
+        {NAV.map((entry) => entry.id === 'tools' ? (
+          <div className="sidebar-tools" key={entry.id}>
+            {renderLink(entry)}
+            <div className="sidebar-tool-list" role="group" aria-label="Công cụ tính toán">
+              {CALCULATORS.map((tool) => renderLink(tool, true))}
+            </div>
+          </div>
+        ) : renderLink(entry))}
       </nav>
 
       <div className="sidebar-footer">

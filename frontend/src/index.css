@@ -361,7 +361,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.4rem;
   padding: 0.2rem;
   border: 0;
   background: transparent;
@@ -370,12 +370,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   text-align: left;
   white-space: nowrap;
 }
-.sidebar-logo-img { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
+.sidebar-logo-img { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }
 .sidebar-logo-text {
   display: flex;
   align-items: baseline;
-  gap: 6px;
-  font: 800 1.08rem var(--font-display);
+  gap: 4px;
+  font: 800 1rem var(--font-display);
   letter-spacing: -0.01em;
 }
 .sidebar-logo-text small {
@@ -398,6 +398,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 .collapse-toggle:hover { background: rgba(255, 255, 255, 0.16); color: white; }
 .sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto; min-height: 0; }
+.sidebar-tools { min-width: 0; }
+.sidebar-tool-list { display: flex; flex-direction: column; gap: 2px; margin: 3px 0 4px 12px; }
+.sidebar-tool-list .sidebar-tool-link { min-height: 32px; padding: 5px 10px; gap: 9px; font-size: 0.84rem; }
+.sidebar-tool-link > svg { flex-shrink: 0; }
+.sidebar.collapsed .sidebar-tool-list { margin-left: 0; }
+.sidebar.collapsed .sidebar-tool-list .sidebar-tool-link { padding: 5px 0; }
 .sidebar-footer {
   display: flex;
   flex-direction: column;
@@ -637,7 +643,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   padding: 1.15rem 1rem;
   height: 100vh;
   height: 100dvh;
-  width: 292px;
+  width: 232px;
   flex-shrink: 0;
   transition: width var(--transition-normal);
   z-index: 80;
@@ -772,11 +778,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     padding-bottom: 0.35rem;
   }
 
-  .sidebar-logo-img {
-    width: 44px;
-    height: 44px;
-  }
-
   .sidebar-nav {
     gap: 0.9rem;
     padding-top: 0.45rem;
@@ -813,11 +814,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .sidebar-logo {
     min-height: 46px;
     margin-bottom: 0.45rem;
-  }
-
-  .sidebar-logo-img {
-    width: 42px;
-    height: 42px;
   }
 
   .sidebar-nav {
@@ -2812,9 +2808,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 /* MEDIA QUERIES */
-@media (max-width: 1024px) {
-  .sidebar:not(.collapsed) { width: 276px; }
-}
 @media (max-width: 900px) {
   .app-container { flex-direction: column; }
   /* the raised chat tab reaches 14px into the page; keep the last line and the chat input clear of it */

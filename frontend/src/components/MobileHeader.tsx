@@ -1,47 +1,49 @@
-import { Menu, Moon, Sun } from 'lucide-react';
+import { ChevronDown, Moon, Plus, Sun } from 'lucide-react';
 import type { Cohort } from '../utils/gradeScale';
 
+const logoHcmue = '/logo_hcmue.png?v=2';
+
 interface MobileHeaderProps {
-  onMenuToggle: () => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
   cohort: Cohort;
-  onCohortChange: (cohort: Cohort) => void;
+  onOpenCohort: () => void;
   showCohortSelector: boolean;
+  /** Shown on the chat tab only, where a fresh conversation is the common next step. */
+  onNewChat?: () => void;
 }
 
-export function MobileHeader({ onMenuToggle, theme, onToggleTheme, cohort, onCohortChange, showCohortSelector }: MobileHeaderProps) {
+// Every page is one tap away in the tab bar, so the header keeps only what applies to the
+// page itself: the cohort, a new conversation in chat, and the theme.
+export function MobileHeader({ theme, onToggleTheme, cohort, onOpenCohort, showCohortSelector, onNewChat }: MobileHeaderProps) {
   return (
     <header className="mobile-header">
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <button className="mobile-menu-btn" onClick={onMenuToggle} aria-label="Menu" style={{ padding: '4px' }}>
-          <Menu size={26} />
-        </button>
-        
-        <div className="mobile-header-title" style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
-          <span style={{ fontSize: '1.05rem', fontWeight: 700 }}>HCMUE AI</span>
-          <span style={{ backgroundColor: 'rgba(245, 158, 11, 0.2)', color: '#F59E0B', fontSize: '0.65rem', padding: '0.125rem 0.375rem', borderRadius: '4px', letterSpacing: '0.5px' }}>BETA</span>
-        </div>
-      </div>
-      
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <span className="mobile-brand">
+        <img src={logoHcmue} alt="" className="mobile-brand-logo" />
+        <span className="mobile-brand-name">HCMUE AI</span>
+        <small>beta</small>
+      </span>
+      <span className="mobile-header-actions">
         {showCohortSelector && (
-          <select 
-            className="mobile-cohort-selector"
-            style={{ textAlignLast: 'center', paddingLeft: '8px', paddingRight: '8px' }}
-            value={cohort} 
-            onChange={(e) => onCohortChange(e.target.value as Cohort)}
-            aria-label="Chọn khóa áp dụng"
-          >
-            <option value="K49">Khóa 49</option>
-            <option value="K50">Khóa 50</option>
-            <option value="K51">Khóa 51</option>
-          </select>
+          <button type="button" className="mobile-cohort-pill" onClick={onOpenCohort} aria-label={`Đổi khóa, đang chọn ${cohort}`}>
+            {cohort}
+            <ChevronDown size={14} aria-hidden="true" />
+          </button>
         )}
-        <button className="mobile-theme-btn" onClick={onToggleTheme} aria-label="Toggle theme">
-          {theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}
+        {onNewChat && (
+          <button type="button" className="mobile-icon-btn solid" onClick={onNewChat} aria-label="Cuộc trò chuyện mới" title="Cuộc trò chuyện mới">
+            <Plus size={20} aria-hidden="true" />
+          </button>
+        )}
+        <button
+          type="button"
+          className="mobile-icon-btn"
+          onClick={onToggleTheme}
+          aria-label={`Bật chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
+        >
+          {theme === 'light' ? <Moon size={20} aria-hidden="true" /> : <Sun size={20} aria-hidden="true" />}
         </button>
-      </div>
+      </span>
     </header>
   );
 }

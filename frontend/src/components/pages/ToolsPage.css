@@ -1,0 +1,393 @@
+/* Tools hub: header, recent card, tile grid, "Xem thêm" row. */
+.page-container.tools-page {
+  --tools-card: #fff;
+  --tools-bg: #F5F7FB;
+  background: var(--tools-bg);
+}
+
+[data-theme='dark'] .tools-page {
+  --tools-card: #101A2C;
+  --tools-bg: #070D1A;
+}
+.page-container.tools-page::before { display: none; }
+
+.tools-page .tools-shell {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+
+.tools-head {
+  margin: 2px 2px 14px;
+  flex: 1;
+  min-width: 0;
+}
+.tools-header-row { display: flex; align-items: flex-start; gap: 16px; }
+.tools-header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.tools-head h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.tools-head p {
+  margin: 2px 0 0;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+.tools-chip {
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--c);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Card look and faint corner circle shared by the recent card and the tiles. */
+.tools-recent,
+.tools-tile {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background: var(--tools-card);
+  color: var(--text-primary);
+}
+
+.tools-recent::after,
+.tools-tile::after {
+  content: '';
+  position: absolute;
+  right: -28px;
+  top: -30px;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--c);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.tools-recent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.tools-recent > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tools-recent-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.tools-recent-text small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.tools-recent-text b {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tools-recent > svg {
+  flex: 0 0 auto;
+  color: var(--text-muted);
+}
+
+.tools-section {
+  margin-bottom: 18px;
+}
+
+.tools-sect {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 2px 8px;
+}
+
+.tools-sect h2 {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.tools-sect span {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tools-tile {
+  min-height: 108px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.tools-tile.pinned {
+  border-color: color-mix(in srgb, var(--c) 40%, var(--border-color));
+}
+
+.tools-tile-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  padding: 12px 12px 14px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.tools-tile-text {
+  display: block;
+  min-width: 0;
+  width: 100%;
+}
+
+.tools-tile-text b,
+.tools-tile-text small {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tools-tile-text b {
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.tools-tile-text small {
+  margin-top: 3px;
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+}
+
+.tools-pin {
+  position: absolute;
+  z-index: 2;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.tools-pin.on {
+  color: var(--brand-red);
+}
+
+/* A lone last tile becomes a wide row: odd count on 2 columns, one leftover on 3. */
+.tools-grid > .tools-tile:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  min-height: 0;
+}
+
+.tools-grid > .tools-tile:last-child:nth-child(odd) .tools-tile-main {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding-right: 44px;
+}
+
+.tools-grid > .tools-tile:last-child:nth-child(odd) .tools-tile-text {
+  flex: 1;
+  width: auto;
+}
+
+.tools-grid > .tools-tile:last-child:nth-child(odd) .tools-pin {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.tools-more {
+  display: flex;
+  gap: 8px;
+}
+
+.tools-more button {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--tools-card);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.tools-more button svg {
+  color: var(--brand-red);
+}
+
+/* Short labels in narrow boxes: let "Cách dùng web" wrap rather than lose words. */
+.tools-more button span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.tools-recent:focus-visible,
+.tools-tile-main:focus-visible,
+.tools-pin:focus-visible,
+.tools-more button:focus-visible {
+  outline: 2px solid var(--brand-red);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .tools-recent:hover,
+  .tools-tile:hover,
+  .tools-more button:hover {
+    border-color: color-mix(in srgb, var(--text-muted) 60%, var(--border-color));
+  }
+}
+
+.tools-recent:active,
+.tools-more button:active,
+.tools-tile:active {
+  transform: scale(0.98);
+}
+
+/* Keep one 16px gutter on mobile. */
+@media (max-width: 900px) {
+  .page-container.tools-page {
+    padding-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .tools-page .tools-shell {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* Desktop: three columns, so the wide row applies to a single leftover tile instead. */
+@media (min-width: 901px) {
+  .page-container.tools-page { padding-top: 16px; }
+  .tools-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tools-grid > .tools-tile:last-child:nth-child(odd):not(:nth-child(3n + 1)) {
+    grid-column: auto;
+    min-height: 108px;
+  }
+
+  .tools-grid > .tools-tile:last-child:nth-child(odd):not(:nth-child(3n + 1)) .tools-tile-main {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding-right: 12px;
+  }
+
+  .tools-grid > .tools-tile:last-child:nth-child(odd):not(:nth-child(3n + 1)) .tools-tile-text {
+    flex: none;
+    width: 100%;
+  }
+
+  .tools-grid > .tools-tile:last-child:nth-child(odd):not(:nth-child(3n + 1)) .tools-pin {
+    top: 6px;
+    transform: none;
+  }
+
+  .tools-grid > .tools-tile:last-child:nth-child(3n + 1):not(:nth-child(odd)) {
+    grid-column: 1 / -1;
+    min-height: 0;
+  }
+
+  .tools-grid > .tools-tile:last-child:nth-child(3n + 1):not(:nth-child(odd)) .tools-tile-main {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding-right: 44px;
+  }
+
+  .tools-grid > .tools-tile:last-child:nth-child(3n + 1):not(:nth-child(odd)) .tools-tile-text {
+    flex: 1;
+    width: auto;
+  }
+
+  .tools-grid > .tools-tile:last-child:nth-child(3n + 1):not(:nth-child(odd)) .tools-pin {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tools-recent,
+  .tools-tile,
+  .tools-more button {
+    transition: none;
+  }
+
+  .tools-recent:active,
+  .tools-more button:active,
+  .tools-tile:active {
+    transform: none;
+  }
+}

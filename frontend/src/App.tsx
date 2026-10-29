@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { Sun, Moon, Trash2, Loader2 } from 'lucide-react';
+import { Sun, Moon, Plus, Loader2 } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
 import { useChat } from './hooks/useChat';
@@ -21,6 +21,7 @@ import { BottomTabBar } from './components/BottomTabBar';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { CohortSelectionModal } from './components/CohortSelectionModal';
+import { CohortSheet } from './components/CohortSheet';
 import { ChatMaintenanceModal } from './components/ChatMaintenanceModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
 import { MobileScrollAffordance } from './components/MobileScrollAffordance';
@@ -28,10 +29,12 @@ import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
 import { IS_CHAT_MAINTENANCE, SHOW_EXPERIENCE_PAGE } from './config/features';
 import { useToast } from './components/Toast';
 import { KEPT_DATA_NOTES, cohortChangeMessage, shouldNotifyCohortChange } from './utils/cohortNotice';
+import { RECENT_TOOL_KEY, readRecentTool } from './utils/recentTool';
 
 const COHORT_SELECTOR_TABS = new Set([
   'home',
   'chat',
+  'tools',
   'gpa',
   'target-gpa',
   'course-target',
@@ -47,6 +50,8 @@ function App() {
   const cohort = storedCohort ? normalizeFrontendCohort(storedCohort) : 'K49'; // Fallback an toàn cho utils
   const toast = useToast();
   const [activeTab, setActiveTab] = useState('home');
+  const [chatDraft, setChatDraft] = useState<{ id: number; text: string } | null>(null);
+  const draftSequence = useRef(0);
   const setCohort = (nextCohort: Cohort) => {
     // Tool pages are keyed by cohort and reset, so say what changed for grading.
     if (shouldNotifyCohortChange(storedCohort ? cohort : null, nextCohort, activeTab)) {
@@ -55,9 +60,9 @@ function App() {
     setStoredCohort(nextCohort);
   };
   
-  const { messages, isTyping, progressMessage, sendMessage, sendHardcodedMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
+  const { messages, isTyping, sendMessage, clearMessages, retryLastMessage, regenerateLastMessage } = useChat(cohort);
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCohortSheetOpen, setIsCohortSheetOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isCohortModalDismissed, setIsCohortModalDismissed] = useState(false);
   const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false);
@@ -81,7 +86,19 @@ function App() {
       return;
     }
     if (nextTab === 'kinh-nghiem' && !SHOW_EXPERIENCE_PAGE) return;
+    // Home pins and in-chat links open tools too, so "Gần nhất" must follow
+    // navigation from every entry point, not just clicks on the tools hub.
+    const recentTool = readRecentTool(nextTab);
+    if (recentTool) {
+      try { window.localStorage.setItem(RECENT_TOOL_KEY, JSON.stringify(recentTool)); }
+      catch { /* Navigation still works when browser storage is unavailable. */ }
+    }
     setActiveTab(nextTab);
+  };
+
+  const startNewChat = () => {
+    if (messages.length === 0) return;
+    if (window.confirm('Bắt đầu cuộc trò chuyện mới? Cuộc trò chuyện hiện tại sẽ bị xóa.')) clearMessages();
   };
 
   // Jump to the chat tab and ask a question there (same maintenance guard as navigating to chat).
@@ -91,72 +108,89 @@ function App() {
       return;
     }
     setActiveTab('chat');
+    if (isTyping) {
+      setChatDraft({ id: ++draftSequence.current, text });
+      toast.show('Câu hỏi đã được điền vào ô nhập. Bạn có thể gửi khi sẵn sàng.', 'info');
+      return;
+    }
+    setChatDraft(null);
     void sendMessage(text);
   };
+
+  const sendChatMessage = React.useCallback((text: string) => {
+    setChatDraft(null);
+    void sendMessage(text);
+  }, [sendMessage]);
+
+  const desktopControls = (
+    <>
+      {/* Only show a health notice when chat needs attention. */}
+      <SystemStatusBadge hideWhenOnline />
+      {activeTab === 'chat' && messages.length > 0 && (
+        <button type="button" className="control-pill" onClick={startNewChat}>
+          <Plus size={15} aria-hidden="true" />
+          <span>Cuộc trò chuyện mới</span>
+        </button>
+      )}
+      <span className="control-cluster">
+        {shouldShowCohortSelector && (
+          <>
+            <select
+              value={cohort}
+              onChange={(e) => setCohort(e.target.value as Cohort)}
+              aria-label="Chọn khóa áp dụng"
+            >
+              <option value="K49">Khóa 49</option>
+              <option value="K50">Khóa 50</option>
+              <option value="K51">Khóa 51</option>
+              <option value="K52" disabled>Khóa 52 (sắp có)</option>
+            </select>
+            <span className="control-cluster-divider" aria-hidden="true" />
+          </>
+        )}
+        <button
+          type="button"
+          className="control-icon"
+          onClick={toggleTheme}
+          aria-label={`Bật chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
+          title={`Chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
+        >
+          {theme === 'light' ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
+        </button>
+      </span>
+    </>
+  );
 
   return (
     <ErrorBoundary>
       <div className="app-container">
           {isMobile && (
-            <MobileHeader 
-              onMenuToggle={() => setIsMobileMenuOpen(true)} 
-              theme={theme} 
-              onToggleTheme={toggleTheme} 
-              cohort={cohort}
-              onCohortChange={setCohort}
-              showCohortSelector={shouldShowCohortSelector}
+            <>
+              <MobileHeader
+                theme={theme}
+                onToggleTheme={toggleTheme}
+                cohort={cohort}
+                onOpenCohort={() => setIsCohortSheetOpen(true)}
+                showCohortSelector={shouldShowCohortSelector}
+                onNewChat={activeTab === 'chat' && messages.length > 0 ? startNewChat : undefined}
+              />
+              <SystemStatusBadge hideWhenOnline variant="strip" />
+            </>
+          )}
+          
+          {!isMobile && (
+            <Sidebar
+              activeTab={activeTab}
+              onTabChange={handleNavigate}
+              isCollapsed={sidebarCollapsed}
+              onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
             />
           )}
           
-          <Sidebar 
-            activeTab={activeTab}
-            onTabChange={handleNavigate}
-            isCollapsed={sidebarCollapsed}
-            isMobileOpen={isMobileMenuOpen}
-            onClose={() => setIsMobileMenuOpen(false)}
-            onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
-          />
-          
           <div ref={contentAreaRef} className="content-area" style={{ position: 'relative' }}>
             {/* Global Controls */}
-            {!isMobile && (
-              <>
-                <div className={`global-controls ${shouldShowCohortSelector ? '' : 'compact'}`}>
-                {/* Backend health only matters for chat; elsewhere the badge appears only when something is wrong. */}
-                <SystemStatusBadge hideWhenOnline={activeTab !== 'chat'} />
-                {activeTab === 'chat' && messages.length > 0 && (
-                  <button className="theme-toggle" onClick={() => {
-                    if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử chat không?")) {
-                      clearMessages();
-                    }
-                  }} title="Xóa lịch sử chat">
-                    <Trash2 size={16} />
-                    <span>Xóa chat</span>
-                  </button>
-                )}
-                {shouldShowCohortSelector && (
-                <select 
-                  className="theme-toggle cohort-selector" 
-                  value={cohort} 
-                  onChange={(e) => setCohort(e.target.value as Cohort)}
-                  style={{ cursor: 'pointer', outline: 'none' }}
-                >
-                  <option value="K49">Khóa 49</option>
-                  <option value="K50">Khóa 50</option>
-                  <option value="K51">Khóa 51</option>
-                  <option value="K52" disabled>Khóa 52 (chưa hỗ trợ)</option>
-                </select>
-                )}
-                <button
-                  className="theme-toggle icon-only"
-                  onClick={toggleTheme}
-                  aria-label={`Bật chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
-                  title={`Chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
-                >
-                  {theme === 'light' ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
-                </button>
-              </div>
-              </>
+            {!isMobile && activeTab !== 'tools' && (
+              <div className="global-controls">{desktopControls}</div>
             )}
             
             <Suspense fallback={
@@ -165,24 +199,20 @@ function App() {
                 <p style={{ fontSize: '1.1rem', animation: 'pulse-opacity 2s ease-in-out infinite' }}>Đang tải nội dung...</p>
               </div>
             }>
-              {activeTab === 'home' && <HomePage onNavigate={handleNavigate} />}
+              {activeTab === 'home' && <HomePage onNavigate={handleNavigate} onAskChat={askChat} cohort={storedCohort ? cohort : undefined} />}
               {activeTab === 'chat' && (
                 <ChatArea 
                   messages={messages}
                   isTyping={isTyping}
-                  progressMessage={progressMessage}
-                  onSendMessage={sendMessage}
-                  onSendHardcoded={sendHardcodedMessage}
+                  onSendMessage={sendChatMessage}
+                  draft={chatDraft}
                   onRetry={retryLastMessage}
                   onRegenerate={regenerateLastMessage}
-                  theme={theme}
-                  onToggleTheme={toggleTheme}
                   onNavigateTab={handleNavigate}
-                  onClearChat={clearMessages}
                   cohort={cohort}
                 />
               )}
-              {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} />}
+              {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} headerActions={!isMobile ? desktopControls : undefined} />}
               {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} onNavigate={handleNavigate} />}
               {activeTab === 'target-gpa' && <TargetGpaPage key={cohort} cohort={cohort} />}
               {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}
@@ -222,6 +252,14 @@ function App() {
             <CohortSelectionModal
               onSelect={setCohort}
               onDismiss={() => setIsCohortModalDismissed(true)}
+            />
+          )}
+
+          {isCohortSheetOpen && (
+            <CohortSheet
+              cohort={cohort}
+              onSelect={setCohort}
+              onClose={() => setIsCohortSheetOpen(false)}
             />
           )}
 

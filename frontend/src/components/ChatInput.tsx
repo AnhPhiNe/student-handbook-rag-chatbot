@@ -13,10 +13,13 @@ interface ChatInputProps {
   onSend: (text: string) => void;
   disabled?: boolean;
   hasError?: boolean;
+  initialText?: string;
+  placeholderText?: string;
+  onTextChange?: (text: string) => void;
 }
 
-export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps) {
-  const [input, setInput] = useState('');
+export function ChatInput({ onSend, disabled, hasError = false, initialText = '', placeholderText, onTextChange }: ChatInputProps) {
+  const [input, setInput] = useState(initialText);
   const [queuedMessage, setQueuedMessage] = useState<string | null>(null);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
@@ -24,16 +27,21 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
   const isSubmittingRef = useRef(false);
   const hasFiredRef = useRef(false);
   
-  const placeholder = PLACEHOLDERS[placeholderIdx];
+  const placeholder = placeholderText ?? PLACEHOLDERS[placeholderIdx];
+  const updateInput = (text: string) => {
+    setInput(text);
+    onTextChange?.(text);
+  };
 
   const { normalizedText, charCount, isNearLimit, isOverLimit } = queryLengthState(input);
 
   useEffect(() => {
+    if (placeholderText) return;
     const interval = setInterval(() => {
       setPlaceholderIdx(prev => (prev + 1) % PLACEHOLDERS.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [placeholderText]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -55,13 +63,13 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
         return; // Chỉ cho phép hàng đợi 1 tin
       }
       setQueuedMessage(normalizedText);
-      setInput('');
+      updateInput('');
       return;
     }
 
     isSubmittingRef.current = true;
     onSend(normalizedText);
-    setInput('');
+    updateInput('');
     
     // Debounce chống click đúp (Double-click guard)
     setTimeout(() => {
@@ -72,7 +80,7 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
   const handleCancelQueue = () => {
     if (queuedMessage) {
       const restoredText = queuedMessage + (input.trim() ? '\n' + input.trim() : '');
-      setInput(restoredText);
+      updateInput(restoredText);
       setQueuedMessage(null);
       // Tự focus lại
       setTimeout(() => textareaRef.current?.focus(), 50);
@@ -144,7 +152,7 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
             placeholder={placeholder}
             aria-label="Nhập câu hỏi cho trợ lý AI"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => updateInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={false} // Unblock input
             rows={1}
@@ -170,11 +178,11 @@ export function ChatInput({ onSend, disabled, hasError = false }: ChatInputProps
         </div>
         <p className="disclaimer">
           <span className="disclaimer-full">
-            Trợ lý AI có thể mắc lỗi. Vui lòng kiểm tra thông tin quan trọng.
+            <strong>Chỉ trả lời theo Sổ tay sinh viên.</strong> Trợ lý AI có thể mắc lỗi. Vui lòng kiểm tra thông tin quan trọng.
             <br />
             Cuộc trò chuyện được lưu để cải thiện chất lượng, vui lòng không nhập thông tin cá nhân (MSSV, số điện thoại…).
           </span>
-          <span className="disclaimer-short">AI có thể sai. Không nhập MSSV, số điện thoại.</span>
+          <span className="disclaimer-short"><strong>Chỉ trả lời theo Sổ tay sinh viên.</strong> AI có thể sai. Không nhập MSSV, số điện thoại.</span>
         </p>
       </form>
     </div>

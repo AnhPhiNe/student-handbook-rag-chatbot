@@ -35,19 +35,17 @@ export const IS_CHAT_MAINTENANCE: boolean = (() => {
   return DEFAULT_CHAT_MAINTENANCE;
 })();
 
-/**
- * 📝 TRANG "KINH NGHIỆM HỌC BỔNG" (SHOW_EXPERIENCE_PAGE):
- * Nội dung hiện vẫn là bản mẫu (xem `src/data/experience.ts`), nên trang chỉ hiện khi:
- * 1. Chạy chế độ phát triển (`npm run dev`), hoặc
- * 2. Đặt biến môi trường `VITE_SHOW_EXPERIENCE=true`, hoặc
- * 3. Thêm `?experience=true` vào URL để xem thử.
- * Khi false, mục menu biến mất và không thể mở trang.
+/** Experience is enabled by default while the owner completes the content.
+ * Sample notes/pages retain their visible sample labels. The environment flag
+ * or ?experience=false can still disable the page explicitly.
  */
+const experienceQuery = typeof window !== 'undefined'
+  ? new URLSearchParams(window.location.search).get('experience') : null;
+
 export const SHOW_EXPERIENCE_PAGE: boolean = (() => {
-  if (import.meta.env.DEV) return true;
-  if (import.meta.env.VITE_SHOW_EXPERIENCE === 'true') return true;
-  if (typeof window !== 'undefined') {
-    return new URLSearchParams(window.location.search).get('experience') === 'true';
+  if (experienceQuery !== null) return experienceQuery === 'true';
+  if (import.meta.env.VITE_SHOW_EXPERIENCE !== undefined) {
+    return import.meta.env.VITE_SHOW_EXPERIENCE === 'true';
   }
-  return false;
+  return true;
 })();

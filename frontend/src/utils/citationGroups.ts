@@ -9,6 +9,7 @@ export interface CitationLike {
   parent_title?: string;
   title?: string;
   source_section?: string;
+  source_label?: string;
   source_pages?: number[];
   document_identity?: string;
   canonical_source_id?: string;
@@ -49,7 +50,7 @@ function articleOf(citation: CitationLike): string | null {
 export function shortDocumentName(section: string | undefined): string {
   const text = (section ?? '').trim();
   if (!text) return '';
-  const cut = text.split(/\s+(?:đối với|của Trường|ban hành|áp dụng)\s+/u)[0].trim();
+  const cut = text.split(/\s+(?:đối với|của Trường|tại Trường|ban hành|áp dụng)\s+/u)[0].trim();
   return cut.length > DOCUMENT_MAX ? `${cut.slice(0, DOCUMENT_MAX).trimEnd()}…` : cut;
 }
 
@@ -102,7 +103,7 @@ export function groupCitations(citations: CitationLike[], currentCohort?: string
         key,
         article: article ?? 'Mục',
         title,
-        document: shortDocumentName(citation.source_section),
+        document: shortDocumentName(citation.document_identity || citation.source_label || citation.source_section),
         pages: '',
         citationIndex: index,
         citationIndexes: [index],

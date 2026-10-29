@@ -37,6 +37,7 @@ describe('groupCitations', () => {
     assert.equal(k49.rows[0].title, 'Chính sách miễn, giảm học phí');
     assert.equal(k49.rows[0].pages, 'tr. 50–51');
     assert.equal(k49.rows[0].citationIndex, 0);
+    assert.equal(k49.rows[0].document, 'Quy chế CTSV');
     assert.deepEqual(k49.rows[0].citationIndexes, [0, 1]);
   });
 
@@ -52,6 +53,15 @@ describe('groupCitations', () => {
       { chunk_id: 'y', cohort: 'K51', article_label: 'Điều 30' },
     ]);
     assert.equal(groups.length, 2);
+  });
+
+  it('uses the backend document name rather than repeating the article heading', () => {
+    const [group] = groupCitations([
+      { chunk_id: 'a', cohort: 'K51', article_label: 'Điều 16',
+        source_section: 'Điều 16. Nghỉ học tạm thời',
+        document_identity: 'Quy chế đào tạo trình độ đại học tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh' },
+    ]);
+    assert.equal(group.rows[0].document, 'Quy chế đào tạo trình độ đại học');
   });
 
   it('keeps equal article numbers from different documents separate', () => {

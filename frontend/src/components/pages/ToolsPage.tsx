@@ -1,4 +1,5 @@
 import { BookOpenCheck, ChevronRight, Contact, Pin, PinOff, Star, type LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { SHOW_EXPERIENCE_PAGE } from '../../config/features';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { arrangePinnedTools, togglePinnedId } from '../../utils/pinnedTools';
@@ -7,6 +8,7 @@ import './ToolsPage.css';
 
 interface ToolsPageProps {
   onNavigate: (tab: string) => void;
+  headerActions?: ReactNode;
 }
 
 interface ToolItem {
@@ -41,7 +43,7 @@ const MORE_LINKS: MoreLink[] = [
   { id: 'huong-dan', label: 'Cách dùng web', icon: BookOpenCheck },
 ];
 
-export function ToolsPage({ onNavigate }: ToolsPageProps) {
+export function ToolsPage({ onNavigate, headerActions }: ToolsPageProps) {
   const [storedPins, setStoredPins] = useLocalStorage<string[]>('hcmue-pinned-tools', []);
   const [storedRecent, setStoredRecent] = useLocalStorage<string | null>(RECENT_TOOL_KEY, null);
   const { pinned, groups } = arrangePinnedTools([{ title: 'Tính nhanh', tools: CALC_TOOLS }], storedPins);
@@ -92,9 +94,12 @@ export function ToolsPage({ onNavigate }: ToolsPageProps) {
   return (
     <div className="page-container tools-page">
       <div className="tools-shell">
-        <header className="tools-head">
-          <h1>Công cụ</h1>
-          <p>6 công cụ tính theo Sổ tay sinh viên</p>
+        <header className="tools-header-row">
+          <div className="tools-head">
+            <h1>Công cụ</h1>
+            <p>6 công cụ tính theo Sổ tay sinh viên</p>
+          </div>
+          {headerActions && <div className="tools-header-actions">{headerActions}</div>}
         </header>
 
         {recent && (

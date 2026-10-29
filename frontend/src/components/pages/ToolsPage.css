@@ -1,4 +1,16 @@
 /* Tools hub: header, recent card, tile grid, "Xem thêm" row. */
+.page-container.tools-page {
+  --tools-card: #fff;
+  --tools-bg: #F5F7FB;
+  background: var(--tools-bg);
+}
+
+[data-theme='dark'] .tools-page {
+  --tools-card: #101A2C;
+  --tools-bg: #070D1A;
+}
+.page-container.tools-page::before { display: none; }
+
 .tools-page .tools-shell {
   width: 100%;
   max-width: 980px;
@@ -7,8 +19,12 @@
 }
 
 .tools-head {
-  margin: 18px 2px 14px;
+  margin: 2px 2px 14px;
+  flex: 1;
+  min-width: 0;
 }
+.tools-header-row { display: flex; align-items: flex-start; gap: 16px; }
+.tools-header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 
 .tools-head h1 {
   margin: 0;
@@ -48,7 +64,7 @@
   overflow: hidden;
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  background: var(--bg-secondary);
+  background: var(--tools-card);
   color: var(--text-primary);
 }
 
@@ -253,7 +269,7 @@
   padding: 12px;
   border: 1px solid var(--border-color);
   border-radius: 14px;
-  background: var(--bg-secondary);
+  background: var(--tools-card);
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 0.8rem;
@@ -296,8 +312,23 @@
   transform: scale(0.98);
 }
 
+/* Keep one 16px gutter on mobile. */
+@media (max-width: 900px) {
+  .page-container.tools-page {
+    padding-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .tools-page .tools-shell {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 /* Desktop: three columns, so the wide row applies to a single leftover tile instead. */
 @media (min-width: 901px) {
+  .page-container.tools-page { padding-top: 16px; }
   .tools-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

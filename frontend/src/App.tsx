@@ -29,10 +29,12 @@ import { normalizeFrontendCohort, type Cohort } from './utils/gradeScale';
 import { IS_CHAT_MAINTENANCE, SHOW_EXPERIENCE_PAGE } from './config/features';
 import { useToast } from './components/Toast';
 import { KEPT_DATA_NOTES, cohortChangeMessage, shouldNotifyCohortChange } from './utils/cohortNotice';
+import { RECENT_TOOL_KEY, readRecentTool } from './utils/recentTool';
 
 const COHORT_SELECTOR_TABS = new Set([
   'home',
   'chat',
+  'tools',
   'gpa',
   'target-gpa',
   'course-target',
@@ -84,6 +86,13 @@ function App() {
       return;
     }
     if (nextTab === 'kinh-nghiem' && !SHOW_EXPERIENCE_PAGE) return;
+    // Home pins and in-chat links open tools too, so "Gần nhất" must follow
+    // navigation from every entry point, not just clicks on the tools hub.
+    const recentTool = readRecentTool(nextTab);
+    if (recentTool) {
+      try { window.localStorage.setItem(RECENT_TOOL_KEY, JSON.stringify(recentTool)); }
+      catch { /* Navigation still works when browser storage is unavailable. */ }
+    }
     setActiveTab(nextTab);
   };
 
@@ -113,6 +122,45 @@ function App() {
     void sendMessage(text);
   }, [sendMessage]);
 
+  const desktopControls = (
+    <>
+      {/* Only show a health notice when chat needs attention. */}
+      <SystemStatusBadge hideWhenOnline />
+      {activeTab === 'chat' && messages.length > 0 && (
+        <button type="button" className="control-pill" onClick={startNewChat}>
+          <Plus size={15} aria-hidden="true" />
+          <span>Cuộc trò chuyện mới</span>
+        </button>
+      )}
+      <span className="control-cluster">
+        {shouldShowCohortSelector && (
+          <>
+            <select
+              value={cohort}
+              onChange={(e) => setCohort(e.target.value as Cohort)}
+              aria-label="Chọn khóa áp dụng"
+            >
+              <option value="K49">Khóa 49</option>
+              <option value="K50">Khóa 50</option>
+              <option value="K51">Khóa 51</option>
+              <option value="K52" disabled>Khóa 52 (sắp có)</option>
+            </select>
+            <span className="control-cluster-divider" aria-hidden="true" />
+          </>
+        )}
+        <button
+          type="button"
+          className="control-icon"
+          onClick={toggleTheme}
+          aria-label={`Bật chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
+          title={`Chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
+        >
+          {theme === 'light' ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
+        </button>
+      </span>
+    </>
+  );
+
   return (
     <ErrorBoundary>
       <div className="app-container">
@@ -141,45 +189,8 @@ function App() {
           
           <div ref={contentAreaRef} className="content-area" style={{ position: 'relative' }}>
             {/* Global Controls */}
-            {!isMobile && (
-              <>
-                <div className="global-controls">
-                {/* Backend health only matters for chat; elsewhere the badge appears only when something is wrong. */}
-                <SystemStatusBadge hideWhenOnline />
-                {activeTab === 'chat' && messages.length > 0 && (
-                  <button type="button" className="control-pill" onClick={startNewChat}>
-                    <Plus size={15} aria-hidden="true" />
-                    <span>Cuộc trò chuyện mới</span>
-                  </button>
-                )}
-                <span className="control-cluster">
-                  {shouldShowCohortSelector && (
-                    <>
-                      <select
-                        value={cohort}
-                        onChange={(e) => setCohort(e.target.value as Cohort)}
-                        aria-label="Chọn khóa áp dụng"
-                      >
-                        <option value="K49">Khóa 49</option>
-                        <option value="K50">Khóa 50</option>
-                        <option value="K51">Khóa 51</option>
-                        <option value="K52" disabled>Khóa 52 (sắp có)</option>
-                      </select>
-                      <span className="control-cluster-divider" aria-hidden="true" />
-                    </>
-                  )}
-                  <button
-                    type="button"
-                    className="control-icon"
-                    onClick={toggleTheme}
-                    aria-label={`Bật chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
-                    title={`Chế độ ${theme === 'light' ? 'tối' : 'sáng'}`}
-                  >
-                    {theme === 'light' ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
-                  </button>
-                </span>
-              </div>
-              </>
+            {!isMobile && activeTab !== 'tools' && (
+              <div className="global-controls">{desktopControls}</div>
             )}
             
             <Suspense fallback={
@@ -201,7 +212,7 @@ function App() {
                   cohort={cohort}
                 />
               )}
-              {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} />}
+              {activeTab === 'tools' && <ToolsPage onNavigate={handleNavigate} headerActions={!isMobile ? desktopControls : undefined} />}
               {activeTab === 'gpa' && <GpaPage key={cohort} cohort={cohort} onNavigate={handleNavigate} />}
               {activeTab === 'target-gpa' && <TargetGpaPage key={cohort} cohort={cohort} />}
               {activeTab === 'course-target' && <CourseTargetPage key={cohort} cohort={cohort} />}

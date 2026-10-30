@@ -268,7 +268,7 @@ export const OwlMascot: React.FC<OwlMascotProps> = ({
             <polygon points="50,14 18,24 50,31 82,24" fill="url(#capGrad)" stroke="#1e3a8a" strokeWidth="0.8" />
             <path d="M34,26 Q50,30 66,26 L64,31 Q50,35 36,31 Z" fill="#0f172a" />
             <circle cx="50" cy="22.5" r="2.8" fill="url(#goldGrad)" />
-            <g className="anim-tassel-sway">
+            <g className="anim-tassel anim-tassel-sway">
               <path d="M50,22.5 Q32,24 32,36" fill="none" stroke="url(#goldGrad)" strokeWidth="2" />
               <rect x="29.5" y="34" width="5" height="10" rx="2" fill="url(#goldGrad)" />
               <line x1="30" y1="44" x2="34" y2="44" stroke="#b45309" strokeWidth="1" />

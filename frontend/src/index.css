@@ -3864,9 +3864,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   0%, 100% { transform: rotate(0deg); }
   50% { transform: rotate(14deg); }
 }
-.anim-tassel {
+.anim-tassel,
+.anim-tassel-sway {
   animation: tassel-motion 2.6s ease-in-out infinite;
-  transform-origin: 65px 23px;
+  transform-origin: 50px 22.5px;
 }
 
 @keyframes glasses-sheen {

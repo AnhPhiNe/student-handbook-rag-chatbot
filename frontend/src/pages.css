@@ -14289,9 +14289,8 @@ p.tool-source > svg {
   color: #64748b !important;
 }
 
-/* Conclusion surfaces follow verdicts, not academic grade colours. Both responsive
-   views share the desktop verdict; :has keeps the mobile navy hero in sync without
-   duplicating calculation rules. GPA classification and tuition stay neutral. */
+/* Only the small conclusion/prompt surfaces follow verdicts. The outer desktop
+   result cards and mobile navy heroes retain their original appearance. */
 .gpa-page-wrapper:has(#target-gpa-result .gpa-d-result-badge.tier-success),
 .gpa-page-wrapper:has(.ct-v2-score-input):has(.gpa-d-result-header .tier-success),
 .sc-page:not(.tu-page):has(#scholarship-result .gpa-d-result-badge:is(.tier-success, .tier-info, .tier-warning)),
@@ -14301,7 +14300,6 @@ p.tool-source > svg {
   --conclusion-accent: #86efac;
   --conclusion-surface: #edf9f0;
   --conclusion-border: #a3d9b1;
-  --conclusion-navy: #103942;
 }
 
 .gpa-page-wrapper:has(.ct-v2-score-input):has(.gpa-d-result-header .tier-warning),
@@ -14313,7 +14311,6 @@ p.tool-source > svg {
   --conclusion-accent: #fde68a;
   --conclusion-surface: #fff7e6;
   --conclusion-border: #e6c779;
-  --conclusion-navy: #303544;
 }
 
 .gpa-page-wrapper:has(#target-gpa-result .gpa-d-result-badge.tier-danger),
@@ -14324,7 +14321,6 @@ p.tool-source > svg {
   --conclusion-accent: #fecaca;
   --conclusion-surface: #fff0f0;
   --conclusion-border: #e9afaf;
-  --conclusion-navy: #332b43;
 }
 
 [data-theme='dark'] .gpa-page-wrapper {
@@ -14332,35 +14328,15 @@ p.tool-source > svg {
   --conclusion-dark-border: color-mix(in srgb, var(--conclusion-accent, #475569) 42%, #1e293b);
 }
 
-/* Fill the complete conclusion card; keep all existing dimensions and subpanels. */
-.gpa-page-wrapper .gpa-d-result-card {
-  background: var(--conclusion-surface, var(--card-bg, #ffffff));
+/* Keep the tint inside the actual conclusion, never the whole result panel. */
+.gpa-page-wrapper :is(.cr-conclusion-box, .gpa-d-milestone-prompt, .scholarship-m-prompt-box) {
+  background: var(--conclusion-surface, #f8fafc);
   border-color: var(--conclusion-border, var(--border-strong, #cbd5e1));
-}
-
-[data-theme='dark'] .gpa-page-wrapper .gpa-d-result-card {
-  background: var(--conclusion-dark-surface, #1e293b);
-  border-color: var(--conclusion-dark-border, rgba(255, 255, 255, 0.1));
-}
-
-.gpa-page-wrapper .gpa-d-result-card .gpa-d-result-title {
   color: var(--conclusion-ink, var(--text-secondary));
 }
 
-[data-theme='dark'] .gpa-page-wrapper .gpa-d-result-card .gpa-d-result-title {
+[data-theme='dark'] .gpa-page-wrapper :is(.cr-conclusion-box, .gpa-d-milestone-prompt, .scholarship-m-prompt-box) {
+  background: var(--conclusion-dark-surface, #1e293b);
+  border-color: var(--conclusion-dark-border, rgba(255, 255, 255, 0.1));
   color: var(--conclusion-accent, var(--text-secondary));
-}
-
-.gpa-page-wrapper .gpa-mobile-hero-card {
-  background: var(--conclusion-navy, #102a4a);
-  border-color: var(--conclusion-border, #1e4575);
-}
-
-[data-theme='dark'] .gpa-page-wrapper .gpa-mobile-hero-card {
-  background: var(--conclusion-navy, #0d1e35);
-  border-color: var(--conclusion-border, #173b69);
-}
-
-.gpa-page-wrapper:has(#target-gpa-result, #credits-result, #scholarship-result, .ct-v2-score-input) .gpa-mobile-hero-card :is(.gpa-m-hero-label, .gpa-m-tier-text) {
-  color: var(--conclusion-accent, #cbd5e1);
 }

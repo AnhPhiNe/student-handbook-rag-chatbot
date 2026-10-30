@@ -345,32 +345,33 @@
 
   .hp-mascot-row {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: flex-end;
-    gap: 12px;
+    gap: 14px;
   }
 
   .hp-say {
     flex: 1;
     min-width: 0;
     padding: 10px 14px;
-    border-radius: 16px 16px 4px 16px;
+    border-radius: 18px;
     background: #fff;
     color: #13203A;
     font: 500 0.84rem/1.4 var(--font-body);
-    box-shadow: 0 10px 24px rgba(2, 6, 23, 0.3);
+    filter: drop-shadow(0 10px 22px rgba(2, 6, 23, 0.28));
     position: relative;
-    animation: hp-fade 0.35s both;
   }
   .hp-say b { color: #E11D48; }
   .hp-say::after {
     content: '';
     position: absolute;
-    right: -7px;
-    bottom: 8px;
-    border: 7px solid transparent;
-    border-left-color: #fff;
-    border-right: 0;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 11px;
+    height: 11px;
+    background: #fff;
+    border-radius: 2px;
   }
 
   .hp-owl-lg {
@@ -531,7 +532,6 @@
   .hp-hero { padding: 64px 24px 90px; }
   .hp-hero-grid { grid-template-columns: minmax(0, 1fr) 270px; gap: 24px; }
   .hp-title { font-size: 2.3rem; }
-  .hp-say { right: 118px; width: 220px; }
   .hp-glass { padding: 18px; }
   .hp-glass-num { font-size: 2.2rem; }
   .hp-body { padding: 0 24px; }

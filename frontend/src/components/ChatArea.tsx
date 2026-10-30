@@ -66,7 +66,7 @@ export function ChatArea({ messages, isTyping, onSendMessage, onRetry, onRegener
 
   return (
     <main className={`chat-area chat-page${hasMessages ? ' chat-page-conversation' : ' chat-page-empty'}`}>
-      <header className="cc-header"><span>Sổ tay HCMUE · Khóa {cohort.replace('K', '')}</span></header>
+      <header className="cc-header"><span>Sổ tay HCMUE</span></header>
       {!hasMessages ? (
         <ChatEmptyState cohort={cohort} topic={topic} onTopicChange={setTopic}
           onAsk={onSendMessage} onNavigate={onNavigateTab} draft={draft}

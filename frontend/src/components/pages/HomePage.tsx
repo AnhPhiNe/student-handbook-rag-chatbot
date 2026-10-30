@@ -5,15 +5,15 @@ import {
   Contact,
   GraduationCap,
   LayoutGrid,
+  Lightbulb,
   MessageSquare,
   Pin,
+  RotateCw,
   Search,
 } from 'lucide-react';
 import { SHOW_EXPERIENCE_PAGE } from '../../config/features';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { useStudentProfile } from '../../hooks/useStudentProfile';
 import { sanitizePinnedIds } from '../../utils/pinnedTools';
-import { summarizeProfile, type HomeSummary } from '../../utils/homeSummary';
 import { OwlMascot, type OwlState } from '../OwlMascot';
 import { QuickContacts, TipBoard } from './HomeExtras';
 import { MAX_QUERY_CHARS } from '../../utils/queryLength';
@@ -76,31 +76,9 @@ function useMedia(query: string): boolean {
   return matches;
 }
 
-/** Counts from 0 to target once on mount; shows the target at once for reduced motion. */
-function useCountUp(target: number, skip: boolean): number {
-  const [value, setValue] = useState(0);
-  useEffect(() => {
-    if (skip) return;
-    let frame = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / 800);
-      setValue(target * (1 - Math.pow(1 - t, 3)));
-      if (t < 1) frame = requestAnimationFrame(tick);
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [target, skip]);
-  return skip ? target : value;
-}
 
-function Ring({ percent, label, large }: { percent: number; label: string; large?: boolean }) {
-  return (
-    <span className={`hp-ring${large ? ' hp-ring-lg' : ''}`} style={{ '--p': `${percent}%` } as CSSProperties}>
-      <b>{label}</b>
-    </span>
-  );
-}
+
+
 
 function Heading() {
   return (
@@ -147,39 +125,91 @@ function AskBox({ onAsk, onLook, placeholder, large, sending, question, onQuesti
   );
 }
 
-function SideCard({ summary, gpaText, onNavigate }: { summary: HomeSummary; gpaText: string; onNavigate: (tab: string) => void }) {
-  const { gpa, credits } = summary;
+interface WisdomTip {
+  text: ReactNode;
+  citation: string;
+}
+
+const HANDBOOK_TIPS: WisdomTip[] = [
+  {
+    text: (
+      <>
+        Điểm <b>D (1.0)</b> là qua môn, nhưng để tốt nghiệp loại <b>Khá</b> thì GPA tích lũy cần từ <b>2.50</b> trở lên.
+      </>
+    ),
+    citation: 'Trích Điều 14 · Quy chế đào tạo tín chỉ HCMUE',
+  },
+  {
+    text: (
+      <>
+        Sinh viên sư phạm được hỗ trợ sinh hoạt phí <b>3,63 triệu/tháng</b> theo diện <b>Nghị định 116</b>.
+      </>
+    ),
+    citation: 'Trích Nghị định 116/2020/NĐ-CP',
+  },
+  {
+    text: (
+      <>
+        Tránh tích lũy <b>điểm F quá 5%</b> tổng tín chỉ để không bị <b>hạ một bậc</b> tốt nghiệp.
+      </>
+    ),
+    citation: 'Trích Điều 27 · Quy chế xét tốt nghiệp',
+  },
+  {
+    text: (
+      <>
+        Mỗi học kỳ chính cần đăng ký <b>tối thiểu 14 tín chỉ</b> (trừ học kỳ cuối cùng của khóa học).
+      </>
+    ),
+    citation: 'Trích Điều 8 · Đăng ký học phần',
+  },
+  {
+    text: (
+      <>
+        Xét học bổng KKHT cần học <b>tối thiểu 15 tín chỉ</b> và điểm rèn luyện đạt từ <b>Khá (70đ)</b> trở lên.
+      </>
+    ),
+    citation: 'Trích Quy định học bổng KKHT HCMUE',
+  },
+  {
+    text: (
+      <>
+        Sinh viên được <b>rút học phần</b> trong 2 tuần đầu học kỳ mà <b>không bị ghi nhận điểm F</b>.
+      </>
+    ),
+    citation: 'Trích Điều 10 · Rút bớt học phần đã đăng ký',
+  },
+];
+
+function HandbookWisdomCard({
+  tipIndex,
+  onNextTip,
+}: {
+  tipIndex: number;
+  onNextTip: () => void;
+}) {
+  const tip = HANDBOOK_TIPS[tipIndex];
   return (
-    <div className="hp-glass">
-      <span className="hp-glass-k">Của bạn</span>
-      {summary.hasProfile ? (
-        <>
-          <div className="hp-glass-top">
-            <Ring large percent={summary.gpaPercent} label={gpa === null ? '—' : `${summary.gpaPercent}%`} />
-            <span className="hp-glass-gpa">
-              <span className="hp-glass-num">{gpa === null ? '—' : gpaText}</span>
-              <p>{gpa === null ? 'Chưa có GPA tích lũy' : 'GPA tích lũy'}</p>
-            </span>
-          </div>
-          {credits && (
-            <div className="hp-bar">
-              <span>Tín chỉ</span>
-              <i><b style={{ width: `${credits.percent}%` }} /></i>
-              <span>{credits.done}/{credits.total}</span>
-            </div>
-          )}
-          <button type="button" className="hp-glass-link" onClick={() => onNavigate('target-gpa')}>
-            Mở Mục tiêu GPA <ArrowRight size={15} aria-hidden="true" />
-          </button>
-        </>
-      ) : (
-        <div className="hp-glass-empty">
-          <p>Chưa có số liệu</p>
-          <button type="button" className="hp-glass-btn" onClick={() => onNavigate('target-gpa')}>
-            Nhập GPA của bạn
-          </button>
-        </div>
-      )}
+    <div className="hp-wisdom-card">
+      <div className="hp-wisdom-head">
+        <span className="hp-wisdom-badge">
+          <Lightbulb size={14} className="hp-wisdom-icon" aria-hidden="true" />
+          Mẹo quy chế bạn nên biết
+        </span>
+        <button
+          type="button"
+          className="hp-wisdom-rotate"
+          onClick={onNextTip}
+          aria-label="Đổi mẹo quy chế khác"
+        >
+          <span>Đổi mẹo</span>
+          <RotateCw size={12} aria-hidden="true" />
+        </button>
+      </div>
+      <p className="hp-wisdom-text" key={tipIndex}>
+        {tip.text}
+      </p>
+      <span className="hp-wisdom-cite">{tip.citation}</span>
     </div>
   );
 }
@@ -243,7 +273,10 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
   const reduced = useMedia(REDUCED_QUERY);
   const [phIndex, setPhIndex] = useState(0);
   const [question, setQuestion] = useState('');
-  const { profile } = useStudentProfile();
+  const [tipIndex, setTipIndex] = useState(0);
+  const nextTip = () => {
+    setTipIndex((i) => (i + 1) % HANDBOOK_TIPS.length);
+  };
   const [storedPins] = useLocalStorage<unknown>('hcmue-pinned-tools', []);
 
   useEffect(() => {
@@ -254,9 +287,6 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
 
   const owl = useOwl(reduced);
   const askChat = (question: string) => owl.send(() => onAskChat(question));
-  const summary = summarizeProfile(profile);
-  const counted = useCountUp(summary.gpa ?? 0, reduced);
-  const gpaText = counted.toFixed(2);
   const placeholder = PLACEHOLDERS[reduced ? 0 : phIndex];
   const pins = sanitizePinnedIds(storedPins).filter((id) => id in PIN_TOOLS);
 
@@ -273,13 +303,22 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
               <AskBox large onAsk={askChat} onLook={owl.look} placeholder={placeholder} sending={owl.sending} question={question} onQuestionChange={setQuestion} />
             </div>
             <div className="hp-right">
-              <div className="hp-say" key={owl.line} aria-live="polite">
-                {OWL_LINES[owl.line]}
+              <div className="hp-mascot-row">
+                <div className="hp-say" key={owl.line} aria-live="polite">
+                  {OWL_LINES[owl.line]}
+                </div>
+                <button
+                  type="button"
+                  className="hp-owl hp-owl-lg hp-owl-btn"
+                  key={`owl-${owl.hop}`}
+                  data-hop={owl.hop > 0}
+                  onClick={owl.poke}
+                  aria-label="Cú Sư Phạm, bấm để nghe câu khác"
+                >
+                  <OwlMascot state={owl.state} size={88} showFrame={false} />
+                </button>
               </div>
-              <button type="button" className="hp-owl hp-owl-lg hp-owl-btn" key={`owl-${owl.hop}`} data-hop={owl.hop > 0} onClick={owl.poke} aria-label="Cú Sư Phạm, bấm để nghe câu khác">
-                <OwlMascot state={owl.state} size={104} showFrame={false} />
-              </button>
-              <SideCard summary={summary} gpaText={gpaText} onNavigate={onNavigate} />
+              <HandbookWisdomCard tipIndex={tipIndex} onNextTip={nextTip} />
             </div>
           </div>
         ) : (
@@ -336,19 +375,10 @@ export function HomePage({ onNavigate, onAskChat, cohort }: HomePageProps) {
             until then the row shows real office numbers instead of sample quotes. */}
         {desktop && (SHOW_EXPERIENCE_PAGE ? <TipBoard onNavigate={onNavigate} /> : <QuickContacts onNavigate={onNavigate} />)}
         {desktop ? null : (
-          <>
-            {summary.hasProfile && (
-              <button type="button" className="hp-mgpa" onClick={() => onNavigate('target-gpa')}>
-                <Ring percent={summary.gpaPercent} label={summary.gpa === null ? '—' : `${summary.gpaPercent}%`} />
-                <span className="hp-mgpa-tx">
-                  <span className="hp-mgpa-num">{summary.gpa === null ? '—' : gpaText}</span>
-                  <small><b>GPA tích lũy</b>{summary.gpa === null ? ' · Chưa có số liệu' : ''}</small>
-                </span>
-                <span className="hp-mgpa-lk">Xem <ArrowRight size={15} aria-hidden="true" /></span>
-              </button>
-            )}
+          <div className="hp-mobile-wisdom">
+            <HandbookWisdomCard tipIndex={tipIndex} onNextTip={nextTip} />
             <p className="hp-hint">Kết quả chỉ để tham khảo, theo Sổ tay sinh viên.</p>
-          </>
+          </div>
         )}
       </div>
     </div>

@@ -194,7 +194,7 @@ function HandbookWisdomCard({
       <div className="hp-wisdom-head">
         <span className="hp-wisdom-badge">
           <Lightbulb size={14} className="hp-wisdom-icon" aria-hidden="true" />
-          Mẹo quy chế bạn nên biết
+          Mẹo quy chế
         </span>
         <button
           type="button"

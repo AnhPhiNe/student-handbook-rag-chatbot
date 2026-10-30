@@ -435,6 +435,8 @@
     font-size: 0.72rem;
     font-weight: 600;
     cursor: pointer;
+    flex-shrink: 0;
+    white-space: nowrap;
     transition: background 0.15s, border-color 0.15s, transform 0.15s;
   }
   .hp-wisdom-rotate:hover {
@@ -771,6 +773,13 @@
   border: 1px solid var(--border-color);
   box-shadow: 0 8px 20px -8px rgba(15, 42, 85, 0.15);
 }
+.hp-mobile-wisdom .hp-wisdom-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
 .hp-mobile-wisdom .hp-wisdom-badge {
   display: inline-flex;
   align-items: center;
@@ -780,6 +789,8 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #D97706;
+  white-space: nowrap;
+  min-width: 0;
 }
 [data-theme='dark'] .hp-mobile-wisdom .hp-wisdom-badge {
   color: #FDE68A;
@@ -800,6 +811,8 @@
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .hp-mobile-wisdom .hp-wisdom-rotate:active {
   transform: scale(0.96);

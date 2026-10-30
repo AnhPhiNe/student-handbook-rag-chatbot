@@ -1,21 +1,13 @@
-import { useState, type KeyboardEvent, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
-  Award,
-  BookOpen,
-  ChevronRight,
-  ClipboardCheck,
   Contact,
   Copy,
-  CreditCard,
-  GraduationCap,
-  Heart,
-  House,
   Mail,
+  MapPin,
   MessageCircle,
   Phone,
   Search,
   X,
-  type LucideIcon,
 } from 'lucide-react';
 import { DIRECTORY_SOURCE, FACULTIES, OFFICES, type DirectoryUnit } from '../../data/directory';
 import { contactText, findHighlight, searchUnits, telHref, unitsForTask } from '../../utils/directory';
@@ -27,24 +19,23 @@ interface DirectoryPageProps {
 }
 
 interface DirectoryTask {
-  /** Short label under the icon on phones. */
+  /** Short label for the chip button. */
   label: string;
-  /** Full wording for the tooltip and screen readers. */
+  /** Full wording for tooltip and accessibility. */
   full: string;
   /** Part of a unit name the task points at. */
   match: string;
-  icon: LucideIcon;
 }
 
 const TASKS: DirectoryTask[] = [
-  { label: 'Học phí', full: 'Học phí, biên lai', match: 'Kế hoạch – Tài chính', icon: CreditCard },
-  { label: 'Học bổng', full: 'Học bổng, rèn luyện', match: 'Công tác chính trị', icon: Award },
-  { label: 'NĐ 116', full: 'Nghị định 116 (sinh viên sư phạm)', match: 'Công tác chính trị', icon: GraduationCap },
-  { label: 'Học phần', full: 'Đăng ký học phần', match: 'Phòng Đào tạo', icon: BookOpen },
-  { label: 'Thi cử', full: 'Lịch thi, phúc khảo, bảng điểm', match: 'Khảo thí', icon: ClipboardCheck },
-  { label: 'Tài khoản', full: 'Email, tài khoản, wifi', match: 'Phòng Công nghệ Thông tin', icon: Mail },
-  { label: 'KTX', full: 'Ký túc xá', match: 'Ký túc xá', icon: House },
-  { label: 'Y tế', full: 'Bảo hiểm y tế, khám sức khỏe', match: 'Trạm Y tế', icon: Heart },
+  { label: 'Học phí', full: 'Học phí, biên lai', match: 'Kế hoạch – Tài chính' },
+  { label: 'Học bổng', full: 'Học bổng, rèn luyện', match: 'Công tác chính trị' },
+  { label: 'Nghị định 116', full: 'Nghị định 116 (sinh viên sư phạm)', match: 'Công tác chính trị' },
+  { label: 'Đăng ký học phần', full: 'Đăng ký học phần, học vụ', match: 'Phòng Đào tạo' },
+  { label: 'Phúc khảo & Lịch thi', full: 'Lịch thi, phúc khảo, bảng điểm', match: 'Khảo thí' },
+  { label: 'Tài khoản & Wifi', full: 'Email, tài khoản, wifi', match: 'Phòng Công nghệ Thông tin' },
+  { label: 'Ký túc xá', full: 'Ký túc xá', match: 'Ký túc xá' },
+  { label: 'Y tế & BHYT', full: 'Bảo hiểm y tế, khám sức khỏe', match: 'Trạm Y tế' },
 ];
 
 type UnitKind = 'office' | 'faculty';
@@ -52,7 +43,6 @@ type UnitKind = 'office' | 'faculty';
 const MAX_SERVICES = 3;
 const GENERIC_QUESTION = 'Các phòng ban của trường phụ trách những việc gì cho sinh viên?';
 const queryQuestion = (query: string) => `Tôi cần liên hệ đơn vị nào về "${query}"?`;
-// Two faculty-level units can share a name (one per campus); the email tells them apart.
 const unitKey = (unit: DirectoryUnit) => `${unit.name}|${unit.emails[0] ?? ''}`;
 const callHref = (unit: DirectoryUnit) => telHref(unit.phones[0], unit.ext[0]);
 
@@ -69,16 +59,24 @@ function Highlight({ text, query }: { text: string; query: string }): ReactNode 
   );
 }
 
-interface UnitCardProps {
-  unit: DirectoryUnit;
-  /** Text to highlight; empty for a task result or an opened browse row. */
-  query: string;
-  highlighted: boolean;
-  /** An opened browse row already shows the name above, so the card leaves it out. */
-  compact: boolean;
+function formatOffice(office: string): string {
+  if (!office) return '';
+  return office
+    .replace(/,?\s*số 280 An Dương Vương[^;]*?(?=\s*(?:;|$))/gi, ' (Cơ sở ADV)')
+    .replace(/,?\s*số 222 Lê Văn Sỹ[^;]*?(?=\s*(?:;|$))/gi, ' (Cơ sở LVS)')
+    .replace(/^351A?\s*Lạc Long Quân[^;]*?(?=\s*(?:;|$))/gi, '351A Lạc Long Quân (Cơ sở LLQ)')
+    .replace(/\. HCM/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[\.\s]+$/, '');
 }
 
-function UnitCard({ unit, query, highlighted, compact }: UnitCardProps) {
+interface UnitCardProps {
+  unit: DirectoryUnit;
+  query: string;
+}
+
+function UnitCard({ unit, query }: UnitCardProps) {
   const toast = useToast();
   const [showAll, setShowAll] = useState(false);
   const phone = unit.phones[0];
@@ -96,20 +94,38 @@ function UnitCard({ unit, query, highlighted, compact }: UnitCardProps) {
     }
   };
 
+  const tagText =
+    unit.campus && unit.campus !== 'TP.HCM'
+      ? unit.campus
+      : unit.aliases.length > 0
+        ? unit.aliases.join(' · ')
+        : null;
+
   return (
-    <article className={`dir-unit${highlighted ? ' hit' : ''}`}>
-      {!compact && (
-        <>
-          <h3>
+    <article className="dir-card">
+      <div className="dir-card-header">
+        <div className="dir-card-title-group">
+          <h3 className="dir-card-name">
             <Highlight text={unit.name} query={query} />
           </h3>
-          {unit.campus && unit.campus !== 'TP.HCM' && <div className="dir-alias">{unit.campus}</div>}
-          {unit.aliases.length > 0 && <div className="dir-alias">{unit.aliases.join(' · ')}</div>}
-        </>
-      )}
+          {tagText && (
+            <span className="dir-card-tag" title={tagText}>
+              {tagText}
+            </span>
+          )}
+        </div>
+
+        {unit.office && (
+          <div className="dir-card-loc-pill" title={unit.office}>
+            <MapPin size={13} aria-hidden="true" className="dir-card-loc-icon" />
+            <span className="dir-card-loc-text">{formatOffice(unit.office)}</span>
+          </div>
+        )}
+      </div>
+
       {shown.length > 0 && (
-        <>
-          <ul>
+        <div className="dir-card-services">
+          <ul className="dir-card-list">
             {shown.map((service) => (
               <li key={service}>
                 <Highlight text={service} query={query} />
@@ -117,106 +133,78 @@ function UnitCard({ unit, query, highlighted, compact }: UnitCardProps) {
             ))}
           </ul>
           {hidden > 0 && (
-            <button type="button" className="dir-more" onClick={() => setShowAll(true)}>
-              +{hidden} việc khác
+            <button
+              type="button"
+              className="dir-more-btn"
+              onClick={() => setShowAll((prev) => !prev)}
+            >
+              {showAll ? 'Thu gọn' : `+${hidden} việc khác`}
             </button>
           )}
-        </>
+        </div>
       )}
-      <div className="dir-acts">
-        {phone && (
-          <a className="call" href={callHref(unit)}>
-            <Phone size={15} aria-hidden="true" />
-            Gọi
-            <small>
-              {phone}
-              {unit.ext.length > 0 && ` · nhánh ${unit.ext.join(', ')}`}
-            </small>
+
+      <div className="dir-card-actions">
+        {phone ? (
+          <a className="dir-btn-call" href={callHref(unit)} aria-label={`Gọi ${unit.name}`}>
+            <Phone size={14} aria-hidden="true" />
+            <span>
+              Gọi {unit.ext.length > 0 ? `(Nhánh ${unit.ext.join(', ')})` : phone}
+            </span>
+          </a>
+        ) : (
+          <span className="dir-no-phone">Chưa có số hotline</span>
+        )}
+
+        {unit.emails[0] && (
+          <a
+            className="dir-btn-icon"
+            href={`mailto:${unit.emails[0]}`}
+            title={`Email: ${unit.emails[0]}`}
+            aria-label={`Gửi email đến ${unit.emails[0]}`}
+          >
+            <Mail size={15} aria-hidden="true" />
           </a>
         )}
-        {unit.emails.map((email) => (
-          <a key={email} href={`mailto:${email}`}>
-            <Mail size={15} aria-hidden="true" />
-            {email}
-          </a>
-        ))}
-        <button type="button" onClick={() => void handleCopy()} aria-label={`Sao chép liên hệ ${unit.name}`}>
+
+        <button
+          type="button"
+          className="dir-btn-icon"
+          onClick={() => void handleCopy()}
+          title="Sao chép toàn bộ liên hệ"
+          aria-label={`Sao chép liên hệ ${unit.name}`}
+        >
           <Copy size={15} aria-hidden="true" />
-          Sao chép
         </button>
       </div>
-      {unit.office && <div className="dir-loc">{unit.office}</div>}
     </article>
-  );
-}
-
-interface UnitRowProps {
-  unit: DirectoryUnit;
-  open: boolean;
-  onToggle: () => void;
-}
-
-function UnitRow({ unit, open, onToggle }: UnitRowProps) {
-  const keywords = unit.keywords.map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' · ');
-  const subtitle = keywords || unit.services[0] || unit.campus || unit.emails[0];
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    // Enter on the call link inside the row must dial, not toggle.
-    if (event.target !== event.currentTarget) return;
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      onToggle();
-    }
-  };
-
-  return (
-    <>
-      <div className="dir-row" role="button" tabIndex={0} aria-expanded={open} onClick={onToggle} onKeyDown={handleKeyDown}>
-        <span className="dir-row-text">
-          <b>{unit.name}</b>
-          <span>{subtitle}</span>
-        </span>
-        {unit.phones[0] && (
-          <a
-            className="dir-rcall"
-            href={callHref(unit)}
-            aria-label={`Gọi ${unit.name}`}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <Phone size={16} aria-hidden="true" />
-          </a>
-        )}
-        <ChevronRight className={`dir-chev${open ? ' open' : ''}`} size={16} aria-hidden="true" />
-      </div>
-      {open && <UnitCard unit={unit} query="" highlighted={false} compact />}
-    </>
   );
 }
 
 const KINDS: { value: UnitKind; label: string }[] = [
   { value: 'office', label: 'Phòng ban' },
-  { value: 'faculty', label: 'Khoa' },
+  { value: 'faculty', label: 'Khoa đào tạo' },
 ];
 
 export function DirectoryPage({ onAskChat }: DirectoryPageProps) {
   const [query, setQuery] = useState('');
   const [taskLabel, setTaskLabel] = useState<string | null>(null);
   const [kind, setKind] = useState<UnitKind>('office');
-  const [openKey, setOpenKey] = useState<string | null>(null);
 
   const trimmed = query.trim();
   const task = TASKS.find((item) => item.label === taskLabel) ?? null;
   const pool = kind === 'office' ? OFFICES : FACULTIES;
   const browsing = !task && !trimmed;
-  // Browsing lists one kind at a time; a search or a task looks at both so no hit hides behind the other tab.
+
   const groups: { label: string; units: DirectoryUnit[] }[] = browsing
     ? [{ label: '', units: pool }]
     : task
-      ? [{ label: 'Phòng ban', units: unitsForTask(OFFICES, task.match) }]
+      ? [{ label: 'Phòng ban phụ trách', units: unitsForTask(OFFICES, task.match) }]
       : [
           { label: 'Phòng ban', units: searchUnits(OFFICES, trimmed) },
           { label: 'Khoa', units: searchUnits(FACULTIES, trimmed) },
         ].filter((group) => group.units.length > 0);
+
   const items = groups.flatMap((group) => group.units);
   const question = trimmed ? queryQuestion(trimmed) : GENERIC_QUESTION;
 
@@ -227,22 +215,25 @@ export function DirectoryPage({ onAskChat }: DirectoryPageProps) {
 
   const toggleTask = (label: string) => {
     setQuery('');
-    setKind('office');
     setTaskLabel((current) => (current === label ? null : label));
   };
 
   const switchKind = (next: UnitKind) => {
     setKind(next);
     setTaskLabel(null);
-    setOpenKey(null);
+  };
+
+  const resetFilters = () => {
+    setQuery('');
+    setTaskLabel(null);
   };
 
   return (
     <div className="page-container tool-page simplified dir-page">
       <ToolPageHeader
         icon={Contact}
-        title="Danh bạ"
-        description="Tìm nhanh phòng ban, khoa phụ trách việc bạn cần và liên hệ trực tiếp."
+        title="Danh bạ Đơn vị & Khoa"
+        description="Tìm nhanh số điện thoại máy lẻ, email và địa chỉ văn phòng của các phòng ban, khoa phụ trách công việc bạn cần."
       />
 
       <div className="gpa-m-page-header dir-m-header">
@@ -253,7 +244,7 @@ export function DirectoryPage({ onAskChat }: DirectoryPageProps) {
       </div>
 
       <div className="dir-body">
-        <section className="dir-sheet" aria-label="Tìm đơn vị">
+        <section className="dir-sheet" aria-label="Tìm kiếm danh bạ">
           <div className="dir-search">
             <div className="dir-box">
               <Search size={17} aria-hidden="true" />
@@ -262,48 +253,89 @@ export function DirectoryPage({ onAskChat }: DirectoryPageProps) {
                 inputMode="search"
                 enterKeyHint="search"
                 autoComplete="off"
-                placeholder="Bạn cần làm gì? VD: phúc khảo"
+                placeholder="Bạn cần làm gì? VD: xin bảng điểm, phúc khảo, học bổng, KTX, wifi..."
                 aria-label="Tìm theo việc cần làm hoặc tên đơn vị"
                 value={query}
                 onChange={(event) => changeQuery(event.target.value)}
               />
               {query && (
-                <button type="button" className="dir-clear" aria-label="Xóa tìm kiếm" onClick={() => changeQuery('')}>
+                <button
+                  type="button"
+                  className="dir-clear"
+                  aria-label="Xóa tìm kiếm"
+                  onClick={() => changeQuery('')}
+                >
                   <X size={16} aria-hidden="true" />
                 </button>
               )}
             </div>
           </div>
 
-          <div className="dir-chips" role="group" aria-label="Việc hay gặp">
-            {TASKS.map(({ label, full, icon: Icon }) => (
-              <button
-                key={label}
-                type="button"
-                title={full}
-                aria-label={full}
-                aria-pressed={taskLabel === label}
-                onClick={() => toggleTask(label)}
-              >
-                <Icon aria-hidden="true" />
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {browsing && (
-            <div className="dir-tabs" role="group" aria-label="Loại đơn vị">
-              {KINDS.map(({ value, label }) => (
-                <button key={value} type="button" aria-pressed={kind === value} onClick={() => switchKind(value)}>
+          <div className="dir-chips-wrapper">
+            <div className="dir-chips-scroller" role="group" aria-label="Gợi ý việc cần làm">
+              <span className="dir-chips-label">
+                <span className="dir-chips-label-full">Gợi ý tìm kiếm:</span>
+                <span className="dir-chips-label-short">Gợi ý:</span>
+              </span>
+              {TASKS.map(({ label, full }) => (
+                <button
+                  key={label}
+                  type="button"
+                  className={`dir-chip-pill${taskLabel === label ? ' active' : ''}`}
+                  title={full}
+                  aria-label={full}
+                  aria-pressed={taskLabel === label}
+                  onClick={() => toggleTask(label)}
+                >
                   {label}
-                  <span className="dir-tab-count">{value === 'office' ? OFFICES.length : FACULTIES.length}</span>
                 </button>
               ))}
+            </div>
+          </div>
+
+          {browsing ? (
+            <div className="dir-tabs-row">
+              <div className="dir-tabs" role="tablist" aria-label="Loại đơn vị">
+                {KINDS.map(({ value, label }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    role="tab"
+                    aria-selected={kind === value}
+                    aria-pressed={kind === value}
+                    className={`dir-tab-btn${kind === value ? ' active' : ''}`}
+                    onClick={() => switchKind(value)}
+                  >
+                    <span>{label}</span>
+                    <span className="dir-tab-badge">
+                      {value === 'office' ? OFFICES.length : FACULTIES.length}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <div className="dir-count-indicator">
+                Hiển thị <strong>{items.length}</strong> {kind === 'office' ? 'phòng ban' : 'khoa'}
+              </div>
+            </div>
+          ) : (
+            <div className="dir-search-summary">
+              <span>
+                {task
+                  ? `Đơn vị phụ trách: ${task.label}`
+                  : `Kết quả tìm kiếm cho: “${trimmed}” (${items.length})`}
+              </span>
+              <button
+                type="button"
+                className="dir-reset-filter-btn"
+                onClick={resetFilters}
+              >
+                Xem tất cả
+              </button>
             </div>
           )}
         </section>
 
-        <div className={browsing ? 'dir-rows' : 'dir-results'} aria-live="polite">
+        <div className="dir-results" aria-live="polite">
           {items.length === 0 ? (
             <div className="dir-empty">
               Không tìm thấy đơn vị phù hợp với “{trimmed}”.
@@ -313,26 +345,21 @@ export function DirectoryPage({ onAskChat }: DirectoryPageProps) {
                 Hỏi chatbot
               </button>
             </div>
-          ) : browsing ? (
-            items.map((unit) => (
-              <UnitRow
-                key={unitKey(unit)}
-                unit={unit}
-                open={openKey === unitKey(unit)}
-                onToggle={() => setOpenKey((current) => (current === unitKey(unit) ? null : unitKey(unit)))}
-              />
-            ))
           ) : (
             groups.map((group) => (
-              <section key={group.label} className="dir-group" aria-label={`${group.label}: ${group.units.length} kết quả`}>
-                {!task && (
+              <section
+                key={group.label || 'all'}
+                className="dir-group"
+                aria-label={`${group.label || 'Danh sách'}: ${group.units.length} đơn vị`}
+              >
+                {group.label && !task && (
                   <h2 className="dir-group-title">
                     {group.label} <span>({group.units.length})</span>
                   </h2>
                 )}
-                <div className="dir-list">
+                <div className="dir-grid">
                   {group.units.map((unit) => (
-                    <UnitCard key={unitKey(unit)} unit={unit} query={task ? '' : trimmed} highlighted compact={false} />
+                    <UnitCard key={unitKey(unit)} unit={unit} query={task ? '' : trimmed} />
                   ))}
                 </div>
               </section>

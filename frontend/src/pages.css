@@ -14204,11 +14204,18 @@ p.tool-source > svg {
 }
 
 .ct-v2-m-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.8rem;
   font-weight: 800;
   color: #1e293b;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.ct-v2-m-title .gpa-m-page-title {
+  text-transform: none;
 }
 [data-theme='dark'] .ct-v2-m-title {
   color: #f8fafc;
@@ -14271,22 +14278,51 @@ p.tool-source > svg {
 /* ==========================================================================
    UNIFIED 'VD: ...' PLACEHOLDER STYLING ACROSS ALL TOOLS
    ========================================================================== */
-.gpa-d-score10-input::placeholder,
-.ct-v2-score-input::placeholder,
-.ct-v2-weight-input::placeholder,
-.gpa-m-modal-input::placeholder {
-  color: #94a3b8 !important;
+.gpa-page-wrapper input::placeholder {
+  color: #64748b !important;
   font-weight: 500 !important;
-  font-size: 0.8em !important;
+  font-size: 1em !important;
   letter-spacing: 0.01em !important;
   opacity: 1 !important;
 }
 
-[data-theme='dark'] .gpa-d-score10-input::placeholder,
-[data-theme='dark'] .ct-v2-score-input::placeholder,
-[data-theme='dark'] .ct-v2-weight-input::placeholder,
-[data-theme='dark'] .gpa-m-modal-input::placeholder {
-  color: #64748b !important;
+[data-theme='dark'] .gpa-page-wrapper input::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Shared form roles, without changing the root scale or result typography. */
+.gpa-page-wrapper :is(input, select, textarea) {
+  font-family: var(--font-body);
+}
+
+.scholarship-m-credits-sub {
+  font-size: max(0.84rem, 12px);
+  color: #64748b;
+  line-height: 1.4;
+}
+
+[data-theme='dark'] .scholarship-m-credits-sub {
+  color: #94a3b8;
+}
+
+@media (max-width: 900px) {
+  .gpa-page-wrapper :is(.target-m-field-label, .scholarship-m-field-label, .scholarship-m-credits-title, .tool-field-label, .tu-field-label) {
+    font-size: max(0.84rem, 12px);
+    font-weight: 700;
+  }
+
+  .gpa-page-wrapper :is(.target-m-input, .target-gpa-val-input, .scholarship-val-input, .scholarship-search-input, .ct-v2-weight-input, .ct-v2-score-input, .credit-val-input, .stepper-input, .tu-step-input, .cr-input-box input) {
+    font-size: max(1rem, 16px);
+    min-width: 0;
+  }
+
+  .gpa-page-wrapper .credit-val-input {
+    min-width: 3ch;
+  }
+
+  .gpa-page-wrapper .cr-field label.tool-field-label {
+    font-size: max(0.84rem, 12px);
+  }
 }
 
 /* Only the small conclusion/prompt surfaces follow verdicts. The outer desktop

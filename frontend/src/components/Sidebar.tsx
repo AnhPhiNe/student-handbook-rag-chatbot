@@ -1,4 +1,4 @@
-import { Award, BookOpen, Calculator, ChevronLeft, ChevronRight, Contact, GraduationCap, Home, MessageSquare, ShieldCheck, Star, Target, TrendingUp, Wrench, type LucideIcon } from 'lucide-react';
+import { Award, BookOpen, Calculator, ChevronLeft, ChevronRight, Contact, GraduationCap, Home, MessageSquare, ShieldCheck, Star, Target, TrendingUp, type LucideIcon } from 'lucide-react';
 import { VisitorCounter } from './VisitorCounter';
 import { IS_CHAT_MAINTENANCE, SHOW_EXPERIENCE_PAGE } from '../config/features';
 
@@ -83,14 +83,7 @@ export function Sidebar({ activeTab, onTabChange, isCollapsed, onToggleCollapse 
           {PRIMARY_NAV.map((entry) => renderLink(entry))}
         </section>
         <section className="sidebar-group" aria-label="Công cụ">
-          <h2 className="sidebar-group-heading sidebar-heading-action">
-            <button type="button" className="sidebar-tools-index" aria-label="Công cụ"
-              aria-current={isActive('tools') ? 'page' : undefined}
-              title="Mở tất cả công cụ" onClick={() => onTabChange('tools')}>
-              <Wrench size={18} className="sidebar-hub-icon" aria-hidden="true" />
-              <span className="sidebar-group-label">Công cụ</span>
-            </button>
-          </h2>
+          <h2 className="sidebar-group-heading">Công cụ</h2>
           <div className="sidebar-tool-list" role="group" aria-label="Công cụ tính toán">
             {CALCULATORS.map((tool) => renderLink(tool, true))}
           </div>

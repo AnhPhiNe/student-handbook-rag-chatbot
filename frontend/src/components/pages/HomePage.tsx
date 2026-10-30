@@ -175,7 +175,7 @@ const HANDBOOK_TIPS: WisdomTip[] = [
   {
     text: (
       <>
-        Điểm qua môn phụ thuộc <b>khóa và nhóm học phần</b>. Hãy chọn đúng bảng quy đổi trước khi tính GPA.
+        Điểm đạt phụ thuộc <b>khóa và nhóm môn</b>. Chọn đúng bảng quy đổi khi tính GPA.
       </>
     ),
     citation: 'Điều 10 · Quy chế đào tạo và sửa đổi theo khóa',
@@ -183,7 +183,7 @@ const HANDBOOK_TIPS: WisdomTip[] = [
   {
     text: (
       <>
-        Hạng <b>Giỏi, Xuất sắc</b> có thể bị hạ một mức nếu học phần phải học lại vượt <b>5%</b> tín chỉ chương trình hoặc bị kỷ luật từ cảnh cáo.
+        <b>Học lại hoặc kỷ luật</b> có thể làm hạ hạng tốt nghiệp Giỏi, Xuất sắc.
       </>
     ),
     citation: 'Điều 15 khoản 3 · Quy chế đào tạo',
@@ -191,7 +191,7 @@ const HANDBOOK_TIPS: WisdomTip[] = [
   {
     text: (
       <>
-        Khối lượng đăng ký học kỳ chính phụ thuộc <b>kế hoạch học tập chuẩn của chương trình</b>, không có một mức tín chỉ tối thiểu chung cho mọi ngành.
+        Tín chỉ tối thiểu, tối đa mỗi kỳ phụ thuộc <b>kế hoạch chuẩn của chương trình</b>.
       </>
     ),
     citation: 'Điều 9 khoản 1 điểm e · Quy chế đào tạo chính quy',
@@ -199,7 +199,7 @@ const HANDBOOK_TIPS: WisdomTip[] = [
   {
     text: (
       <>
-        Xét học bổng cần kiểm tra đồng thời <b>điểm học tập, rèn luyện và tín chỉ</b>. Học kỳ cuối có điều kiện riêng theo khóa.
+        <b>Học kỳ cuối</b> có điều kiện tín chỉ riêng khi xét học bổng theo khóa.
       </>
     ),
     citation: 'Điều kiện học bổng KKHT · Quy chế công tác sinh viên theo khóa',

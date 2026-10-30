@@ -147,7 +147,7 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
         textNode = <>Bằng <strong>{verdict.from}</strong> sẽ bị hạ xuống <strong>{verdict.to}</strong>.</>;
         break;
       case 'kept':
-        textNode = <>Bằng <strong>{verdict.from}</strong> được giữ nguyên khi tốt nghiệp.</>;
+        textNode = <>Bằng <strong>{verdict.from}</strong> được giữ nguyên nếu không bị kỷ luật từ mức cảnh cáo.</>;
         break;
       case 'may-downgrade':
         textNode = <>Nếu tốt nghiệp Giỏi/Xuất sắc, bằng sẽ <strong>bị hạ một mức</strong>.</>;

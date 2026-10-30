@@ -520,6 +520,7 @@ function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionCl
   const [showInlineFeedback, setShowInlineFeedback] = useState(false);
   const [feedbackText, setFeedbackText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const feedbackSubmittingRef = useRef(false);
   const [showThinking, setShowThinking] = useState(false);
   const [justFinished, setJustFinished] = useState(false);
   const feedbackInputRef = useRef<HTMLTextAreaElement>(null);
@@ -567,10 +568,11 @@ function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionCl
   };
 
   const submitFeedbackToApi = async (type: 'like' | 'dislike', text: string = "") => {
-    if (!message.runId) return;
+    if (!message.runId || feedbackSubmittingRef.current) return;
+    feedbackSubmittingRef.current = true;
     setIsSubmitting(true);
     try {
-      await fetch(`${API_BASE_URL}/chat/feedback`, {
+      const response = await fetch(`${API_BASE_URL}/chat/feedback`, {
         method: 'POST',
         headers: getApiClientHeaders(),
         body: JSON.stringify({
@@ -579,24 +581,26 @@ function ChatMessageView({ message, onRegenerate, onRetry, query, onSuggestionCl
           comment: text || undefined
         })
       });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      setFeedback(type);
+      setShowInlineFeedback(false);
       toast.show("Cảm ơn bạn đã đánh giá!", "success");
     } catch {
       toast.show("Có lỗi xảy ra khi gửi đánh giá.", "error");
     } finally {
+      feedbackSubmittingRef.current = false;
       setIsSubmitting(false);
-      setShowInlineFeedback(false);
     }
   };
 
   const handleFeedbackClick = (type: 'like' | 'dislike') => {
-    if (feedback !== null) return;
-    setFeedback(type);
+    if (feedback !== null || feedbackSubmittingRef.current) return;
     if (type === 'dislike' && message.runId) {
       setShowInlineFeedback(true);
-      setFeedbackText("");
     } else if (type === 'like' && message.runId) {
       submitFeedbackToApi('like');
     } else {
+      setFeedback(type);
       toast.show("Cảm ơn bạn đã đánh giá!", "success");
     }
   };
@@ -748,7 +752,7 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
                     title="Hữu ích"
                     aria-label="Hữu ích"
                     onClick={() => handleFeedbackClick('like')}
-                    disabled={feedback !== null}
+                    disabled={feedback !== null || isSubmitting}
                   >
                     <ThumbsUp size={15} aria-hidden="true" />
                   </button>
@@ -758,7 +762,7 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
                     title="Chưa chính xác"
                     aria-label="Chưa chính xác"
                     onClick={() => handleFeedbackClick('dislike')}
-                    disabled={feedback !== null}
+                    disabled={feedback !== null || isSubmitting}
                   >
                     <ThumbsDown size={15} aria-hidden="true" />
                   </button>
@@ -784,6 +788,8 @@ const primaryReferences = deduplicatePrimaryReferences(buildPrimaryArticleRefere
                     ref={feedbackInputRef}
                     className="inline-feedback-input"
                     value={feedbackText} 
+                    maxLength={2000}
+                    aria-label="Góp ý về câu trả lời"
                     onChange={e => setFeedbackText(e.target.value)} 
                     placeholder="VD: Trả lời sai điều kiện học bổng K51."
                     rows={2}

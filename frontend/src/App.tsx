@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { Sun, Moon, Plus, Loader2 } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { ChatArea } from './components/ChatArea';
+import { CHAT_DRAFT_KEY } from './components/ChatInput';
 import { useChat } from './hooks/useChat';
 const HomePage = React.lazy(() => import('./components/pages/HomePage').then(module => ({ default: module.HomePage })));
 const GuidePage = React.lazy(() => import('./components/pages/GuidePage').then(module => ({ default: module.GuidePage })));
@@ -98,7 +99,11 @@ function App() {
 
   const startNewChat = () => {
     if (messages.length === 0) return;
-    if (window.confirm('Bắt đầu cuộc trò chuyện mới? Cuộc trò chuyện hiện tại sẽ bị xóa.')) clearMessages();
+    if (window.confirm('Bắt đầu cuộc trò chuyện mới? Cuộc trò chuyện hiện tại sẽ bị xóa.')) {
+      try { sessionStorage.removeItem(CHAT_DRAFT_KEY); } catch { /* Storage may be unavailable. */ }
+      setChatDraft(null);
+      clearMessages();
+    }
   };
 
   // Jump to the chat tab and ask a question there (same maintenance guard as navigating to chat).

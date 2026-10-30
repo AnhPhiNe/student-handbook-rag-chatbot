@@ -9,6 +9,20 @@ const PLACEHOLDERS = [
   "Mất thẻ sinh viên thì phải làm sao?"
 ];
 
+export const CHAT_DRAFT_KEY = 'hcmue-chat-draft';
+
+function readDraft(): string {
+  try { return sessionStorage.getItem(CHAT_DRAFT_KEY) ?? ''; }
+  catch { return ''; }
+}
+
+function saveDraft(text: string): void {
+  try {
+    if (text) sessionStorage.setItem(CHAT_DRAFT_KEY, text);
+    else sessionStorage.removeItem(CHAT_DRAFT_KEY);
+  } catch { /* Keep the composer usable if storage is unavailable. */ }
+}
+
 interface ChatInputProps {
   onSend: (text: string) => void;
   disabled?: boolean;
@@ -18,8 +32,8 @@ interface ChatInputProps {
   onTextChange?: (text: string) => void;
 }
 
-export function ChatInput({ onSend, disabled, hasError = false, initialText = '', placeholderText, onTextChange }: ChatInputProps) {
-  const [input, setInput] = useState(initialText);
+export function ChatInput({ onSend, disabled, hasError = false, initialText, placeholderText, onTextChange }: ChatInputProps) {
+  const [input, setInput] = useState(() => initialText || readDraft());
   const [queuedMessage, setQueuedMessage] = useState<string | null>(null);
   const [showLimitWarning, setShowLimitWarning] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
@@ -34,6 +48,13 @@ export function ChatInput({ onSend, disabled, hasError = false, initialText = ''
   };
 
   const { normalizedText, charCount, isNearLimit, isOverLimit } = queryLengthState(input);
+
+  useEffect(() => {
+    // A queued question becomes an editable draft if navigation unmounts this
+    // composer; it must not vanish or send itself in the background.
+    const draft = [queuedMessage, input].filter(Boolean).join('\n');
+    saveDraft(draft);
+  }, [input, queuedMessage]);
 
   useEffect(() => {
     if (placeholderText) return;
@@ -68,8 +89,10 @@ export function ChatInput({ onSend, disabled, hasError = false, initialText = ''
     }
 
     isSubmittingRef.current = true;
-    onSend(normalizedText);
     updateInput('');
+    // Sending can unmount/remount the composer before its effects run.
+    saveDraft('');
+    onSend(normalizedText);
     
     // Debounce chống click đúp (Double-click guard)
     setTimeout(() => {
@@ -96,6 +119,7 @@ export function ChatInput({ onSend, disabled, hasError = false, initialText = ''
       setQueuedMessage(null);
       isSubmittingRef.current = true;
       
+      saveDraft(input);
       onSend(msgToFire);
       
       setTimeout(() => {
@@ -107,7 +131,7 @@ export function ChatInput({ onSend, disabled, hasError = false, initialText = ''
     if (disabled) {
       hasFiredRef.current = false;
     }
-  }, [disabled, queuedMessage, hasError, onSend]);
+  }, [disabled, queuedMessage, hasError, onSend, input]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

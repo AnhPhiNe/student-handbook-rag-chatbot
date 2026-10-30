@@ -130,12 +130,38 @@ export function useChat(cohort: string = 'K49') {
   // every message in the conversation.
   const messagesRef = useRef(messages);
   const isTypingRef = useRef(isTyping);
+  const activeRequestRef = useRef<{ cancel: () => void } | null>(null);
   useEffect(() => { messagesRef.current = messages; }, [messages]);
-  useEffect(() => { isTypingRef.current = isTyping; }, [isTyping]);
+  useEffect(() => () => {
+    const request = activeRequestRef.current;
+    activeRequestRef.current = null;
+    request?.cancel();
+  }, []);
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || isTypingRef.current) return;
     isTypingRef.current = true;  // blocks a second send before the next render
+    const controller = new AbortController();
+    let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let timedOut = false;
+    const request = { cancel: () => {
+      controller.abort();
+      clearTimeout(timeoutId);
+      clearInterval(typingTimer);
+      void reader?.cancel().catch(() => {});
+    } };
+    activeRequestRef.current = request;
+    const isCurrent = () => activeRequestRef.current === request;
+    const resetIdleTimeout = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        if (!isCurrent()) return;
+        timedOut = true;
+        controller.abort();
+        void reader?.cancel().catch(() => {});
+      }, 30000);
+    };
 
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const userMsg: Message = { 
@@ -184,6 +210,7 @@ export function useChat(cohort: string = 'K49') {
     // tích lại markdown của tin nhắn đang gõ, nên 60 lần/giây làm rớt khung hình
     // với câu trả lời dài; bước gấp đôi giữ nguyên tốc độ gõ (~500 ký tự/giây).
     const typingTimer = setInterval(() => {
+      if (!isCurrent()) return;
       if (displayedBotContent.length < targetBotContent.length) {
         const diff = targetBotContent.length - displayedBotContent.length;
         // Tự động điều chỉnh số ký tự mỗi tick để gõ nhịp nhàng:
@@ -195,6 +222,8 @@ export function useChat(cohort: string = 'K49') {
         ));
       } else if (streamDone || streamError) {
         clearInterval(typingTimer);
+        activeRequestRef.current = null;
+        isTypingRef.current = false;
         setIsTyping(false);
         setProgressMessage('');
 
@@ -230,8 +259,7 @@ export function useChat(cohort: string = 'K49') {
           content: m.content.slice(0, 16000)
         }));
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      resetIdleTimeout();
 
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -239,24 +267,32 @@ export function useChat(cohort: string = 'K49') {
         body: JSON.stringify({ query: userMsg.content, chat_history: chatHistory, cohort }),
         signal: controller.signal
       });
-      clearTimeout(timeoutId);
+      if (!isCurrent()) {
+        void response.body?.cancel().catch(() => {});
+        return;
+      }
 
       if (!response.ok) {
+        void response.body?.cancel().catch(() => {});
         if (response.status === 429) throw new Error("RATE_LIMIT");
         throw new Error(`HTTP ${response.status}`);
       }
       if (!response.body) throw new Error("No response body");
 
-      const reader = response.body.getReader();
+      reader = response.body.getReader();
+      resetIdleTimeout();
       const decoder = new TextDecoder("utf-8");
       let buffer = "";
 
       while (true) {
         const { value, done } = await reader.read();
+        if (!isCurrent()) return;
+        if (timedOut) throw new DOMException('Stream idle timeout', 'AbortError');
         if (done) {
           requireStreamTerminal(streamDone);
           break;
         }
+        if (value.byteLength > 0) resetIdleTimeout();
 
         buffer += decoder.decode(value, { stream: true });
         const parts = buffer.split('\n\n');
@@ -341,13 +377,17 @@ export function useChat(cohort: string = 'K49') {
             }
           }
         }
+        // A terminal SSE event completes the body lifecycle even if the server
+        // leaves the connection open. The typing buffer may continue draining.
+        if (streamDone) break;
       }
     } catch (error) {
+      if (!isCurrent()) return;
       clearInterval(typingTimer);
       console.error("Fetch error:", error);
       setSystemStatus('error');
       const responseTimeMs = Date.now() - startTime;
-      const isTimeout = error instanceof Error && error.name === 'AbortError';
+      const isTimeout = timedOut || (error instanceof Error && error.name === 'AbortError');
       const isRateLimit = error instanceof Error && error.message === 'RATE_LIMIT';
       let errMsg = "Xin lỗi, đã có lỗi kết nối xảy ra.";
       if (isTimeout) errMsg = "Hệ thống AI hiện đang quá tải hoặc phản hồi chậm. Vui lòng thử lại sau nhé!";
@@ -366,7 +406,15 @@ export function useChat(cohort: string = 'K49') {
         } : m
       ));
       setIsTyping(false);
+      isTypingRef.current = false;
+      activeRequestRef.current = null;
       setProgressMessage('');
+    } finally {
+      clearTimeout(timeoutId);
+      if (reader) {
+        void reader.cancel().catch(() => {});
+        reader.releaseLock();
+      }
     }
   }, [cohort]);
 
@@ -399,8 +447,15 @@ export function useChat(cohort: string = 'K49') {
   }, []);
 
   const clearMessages = useCallback(() => {
+    const request = activeRequestRef.current;
+    activeRequestRef.current = null;
+    request?.cancel();
+    messagesRef.current = [];
+    isTypingRef.current = false;
     setMessages([]);
     setIsTyping(false);
+    setProgressMessage('');
+    setSystemStatus('normal');
     sessionStorage.removeItem('chat_messages');
   }, []);
 

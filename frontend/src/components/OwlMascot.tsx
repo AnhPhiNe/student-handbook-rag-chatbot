@@ -130,7 +130,7 @@ export const OwlMascot: React.FC<OwlMascotProps> = ({
             <path d="M24,46 Q10,56 16,72 Q26,76 30,60 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="0.8" />
           )}
           {state === 'reading' && (
-            <path d="M24,48 Q20,66 32,70 Q36,64 30,56 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="0.8" />
+            <path className="anim-reading-enter" d="M24,48 Q20,66 32,70 Q36,64 30,56 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="0.8" />
           )}
           {state === 'eureka' && (
             <path d="M24,48 Q15,58 22,68 Q30,66 30,56 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="0.8" />
@@ -143,8 +143,10 @@ export const OwlMascot: React.FC<OwlMascotProps> = ({
             <path d="M76,46 Q90,56 84,72 Q74,76 70,60 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="0.8" />
           )}
           {state === 'reading' && (
-            <g className="anim-hand-turn-page">
-              <path d="M76,52 Q76,68 64,70 Q60,62 68,54 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="1" />
+            <g className="anim-reading-enter">
+              <g className="anim-hand-turn-page">
+                <path d="M76,52 Q76,68 64,70 Q60,62 68,54 Z" fill="#1e40af" stroke="#2563eb" strokeWidth="1" />
+              </g>
             </g>
           )}
           {state === 'eureka' && (
@@ -163,7 +165,7 @@ export const OwlMascot: React.FC<OwlMascotProps> = ({
         {/* ================= PHỤ KIỆN MINH HỌA ================= */}
         {/* 1. Sổ tay khi Reading */}
         {state === 'reading' && (
-          <g>
+          <g className="anim-reading-enter">
             <polygon points="34,62 67,62 74,48 27,48" fill="url(#bookLightGrad)" className="anim-book-glow" />
             <circle cx="44" cy="54" r="1.5" fill="#bae6fd" className="anim-particle-1" />
             <circle cx="58" cy="52" r="1.2" fill="#38bdf8" className="anim-particle-2" />

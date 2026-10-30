@@ -101,6 +101,47 @@ interface AskBoxProps {
 }
 
 function AskBox({ onAsk, onLook, placeholder, large, sending, question, onQuestionChange }: AskBoxProps) {
+  const [isFocused, setIsFocused] = useState(false);
+  const hoverTimer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (hoverTimer.current !== null) window.clearTimeout(hoverTimer.current);
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (hoverTimer.current !== null) window.clearTimeout(hoverTimer.current);
+    hoverTimer.current = window.setTimeout(() => {
+      hoverTimer.current = null;
+      onLook(true);
+    }, 180);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimer.current !== null) {
+      window.clearTimeout(hoverTimer.current);
+      hoverTimer.current = null;
+    }
+    if (!isFocused) {
+      onLook(false);
+    }
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+    if (hoverTimer.current !== null) {
+      window.clearTimeout(hoverTimer.current);
+      hoverTimer.current = null;
+    }
+    onLook(true);
+  };
+
+  const handleBlur = (event: React.FocusEvent<HTMLFormElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setIsFocused(false);
+      onLook(false);
+    }
+  };
+
   return (
     <form
       className={`hp-ask${large ? ' hp-ask-lg' : ''}`}
@@ -109,10 +150,10 @@ function AskBox({ onAsk, onLook, placeholder, large, sending, question, onQuesti
         event.preventDefault();
         if (question.trim() && !sending) onAsk(question.trim());
       }}
-      onMouseEnter={() => onLook(true)}
-      onMouseLeave={() => onLook(false)}
-      onFocus={() => onLook(true)}
-      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) onLook(false); }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
     >
       <Search size={18} aria-hidden="true" />
       <input className="hp-ask-input" aria-label="Câu hỏi về Sổ tay" placeholder={placeholder}

@@ -3949,6 +3949,21 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .anim-particle-1 { animation: particle-float-1 1.4s ease-out infinite; }
 .anim-particle-2 { animation: particle-float-2 1.7s ease-out infinite 0.5s; }
 
+@keyframes reading-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.anim-reading-enter {
+  animation: reading-fade-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: 50px 70px;
+}
+
 /* Bóng đèn Eureka (State 4: Eureka 💡) */
 @keyframes bulb-glow-pulse {
   0%, 100% {

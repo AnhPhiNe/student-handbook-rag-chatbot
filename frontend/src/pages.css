@@ -14288,3 +14288,79 @@ p.tool-source > svg {
 [data-theme='dark'] .gpa-m-modal-input::placeholder {
   color: #64748b !important;
 }
+
+/* Conclusion surfaces follow verdicts, not academic grade colours. Both responsive
+   views share the desktop verdict; :has keeps the mobile navy hero in sync without
+   duplicating calculation rules. GPA classification and tuition stay neutral. */
+.gpa-page-wrapper:has(#target-gpa-result .gpa-d-result-badge.tier-success),
+.gpa-page-wrapper:has(.ct-v2-score-input):has(.gpa-d-result-header .tier-success),
+.sc-page:not(.tu-page):has(#scholarship-result .gpa-d-result-badge:is(.tier-success, .tier-info, .tier-warning)),
+.cr-page:has(#credits-result .cr-capsule-badge.safe),
+.cr-page:has(#credits-result .cr-conclusion-box.ok) {
+  --conclusion-ink: #166534;
+  --conclusion-accent: #86efac;
+  --conclusion-surface: #edf9f0;
+  --conclusion-border: #a3d9b1;
+  --conclusion-navy: #103942;
+}
+
+.gpa-page-wrapper:has(.ct-v2-score-input):has(.gpa-d-result-header .tier-warning),
+.gpa-page-wrapper:has(#target-gpa-result .gpa-d-result-badge.tier-warning),
+.cr-page:has(#credits-result .cr-capsule-badge.near):not(:has(.cr-cls-pill:last-child[aria-pressed='true'])),
+.gpa-page-wrapper:has(#target-gpa-result.status-warning),
+.gpa-page-wrapper:has(#target-gpa-result .gpa-d-result-badge.status-warning) {
+  --conclusion-ink: #854d0e;
+  --conclusion-accent: #fde68a;
+  --conclusion-surface: #fff7e6;
+  --conclusion-border: #e6c779;
+  --conclusion-navy: #303544;
+}
+
+.gpa-page-wrapper:has(#target-gpa-result .gpa-d-result-badge.tier-danger),
+.gpa-page-wrapper:has(.ct-v2-score-input):has(.gpa-d-result-header .tier-danger),
+.sc-page:not(.tu-page):has(#scholarship-result .gpa-d-result-badge.tier-danger),
+.cr-page:has(#credits-result .cr-conclusion-box.bad) {
+  --conclusion-ink: #991b1b;
+  --conclusion-accent: #fecaca;
+  --conclusion-surface: #fff0f0;
+  --conclusion-border: #e9afaf;
+  --conclusion-navy: #332b43;
+}
+
+[data-theme='dark'] .gpa-page-wrapper {
+  --conclusion-dark-surface: color-mix(in srgb, var(--conclusion-ink, #1e293b) 28%, #1e293b);
+  --conclusion-dark-border: color-mix(in srgb, var(--conclusion-accent, #475569) 42%, #1e293b);
+}
+
+/* Fill the complete conclusion card; keep all existing dimensions and subpanels. */
+.gpa-page-wrapper .gpa-d-result-card {
+  background: var(--conclusion-surface, var(--card-bg, #ffffff));
+  border-color: var(--conclusion-border, var(--border-strong, #cbd5e1));
+}
+
+[data-theme='dark'] .gpa-page-wrapper .gpa-d-result-card {
+  background: var(--conclusion-dark-surface, #1e293b);
+  border-color: var(--conclusion-dark-border, rgba(255, 255, 255, 0.1));
+}
+
+.gpa-page-wrapper .gpa-d-result-card .gpa-d-result-title {
+  color: var(--conclusion-ink, var(--text-secondary));
+}
+
+[data-theme='dark'] .gpa-page-wrapper .gpa-d-result-card .gpa-d-result-title {
+  color: var(--conclusion-accent, var(--text-secondary));
+}
+
+.gpa-page-wrapper .gpa-mobile-hero-card {
+  background: var(--conclusion-navy, #102a4a);
+  border-color: var(--conclusion-border, #1e4575);
+}
+
+[data-theme='dark'] .gpa-page-wrapper .gpa-mobile-hero-card {
+  background: var(--conclusion-navy, #0d1e35);
+  border-color: var(--conclusion-border, #173b69);
+}
+
+.gpa-page-wrapper:has(#target-gpa-result, #credits-result, #scholarship-result, .ct-v2-score-input) .gpa-mobile-hero-card :is(.gpa-m-hero-label, .gpa-m-tier-text) {
+  color: var(--conclusion-accent, #cbd5e1);
+}

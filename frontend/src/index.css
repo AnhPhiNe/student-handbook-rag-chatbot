@@ -658,6 +658,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   width: 248px;
   flex-shrink: 0;
   transition: width var(--transition-normal);
+  will-change: width;
   z-index: 80;
   position: relative;
   overflow: visible;

@@ -18,20 +18,19 @@
   overflow: hidden;
   color: #fff;
   padding: 22px 16px 74px;
+  contain: layout style;
 }
 .hp-mesh {
   position: absolute;
-  inset: -30%;
+  inset: 0;
   z-index: -1;
   background:
-    radial-gradient(34% 40% at 15% 20%, #2F6BFF, transparent 70%),
-    radial-gradient(30% 36% at 62% 12%, #9333EA, transparent 72%),
-    radial-gradient(34% 40% at 92% 70%, #E11D48, transparent 70%),
-    #0F2A55;
-  filter: blur(24px);
-  animation: hp-drift 18s ease-in-out infinite alternate;
+    radial-gradient(circle at 15% 20%, rgba(47, 107, 255, 0.5) 0%, transparent 55%),
+    radial-gradient(circle at 65% 12%, rgba(147, 51, 234, 0.45) 0%, transparent 58%),
+    radial-gradient(circle at 90% 70%, rgba(225, 29, 72, 0.38) 0%, transparent 55%),
+    linear-gradient(135deg, #0d2348 0%, #162447 60%, #091326 100%);
+  pointer-events: none;
 }
-@keyframes hp-drift { to { transform: translate(-3%, 2%) scale(1.06); } }
 
 .hp-row { display: flex; align-items: center; gap: 12px; }
 .hp-row-text { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }

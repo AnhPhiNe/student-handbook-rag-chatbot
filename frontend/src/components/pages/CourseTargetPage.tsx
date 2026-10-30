@@ -645,7 +645,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
         <div className="ct-v2-m-header">
           <div className="ct-v2-m-title">
             <Target size={20} className="gpa-m-title-icon" aria-hidden="true" />
-            <span>Mục tiêu môn học</span>
+            <h1 className="gpa-m-page-title">Mục tiêu môn học</h1>
           </div>
           <button
             type="button"
@@ -816,7 +816,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                     <span className={`ct-v2-dot seg-${index % 4}`} aria-hidden="true" />
                     <select
                       className="ct-v2-select"
-                      style={{ maxWidth: '120px', padding: '0.3rem 1.4rem 0.3rem 0.5rem', fontSize: '0.76rem' }}
+                      style={{ maxWidth: '120px', padding: '0.3rem 1.4rem 0.3rem 0.5rem' }}
                       value={component.name}
                       onChange={(e) => updateComponent(component.id, 'name', e.target.value)}
                       aria-label={`Tên cột điểm ${index + 1}`}
@@ -838,7 +838,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                         placeholder="VD: 30"
                         value={component.weight}
                         className={`ct-v2-weight-input ${weightErr ? 'input-error' : component.weight ? 'has-val' : ''}`}
-                        style={{ fontSize: '0.8rem', padding: '0 1rem 0 0.4rem' }}
+                        style={{ padding: '0 1rem 0 0.4rem' }}
                         onChange={(e) => updateComponent(component.id, 'weight', sanitizeDecimal(e.target.value))}
                         aria-label={`Trọng số cột ${index + 1} (${component.name})`}
                       />
@@ -852,7 +852,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
                       placeholder="VD: 8.5"
                       value={component.score}
                       className={`ct-v2-score-input ${scoreErr ? 'input-error' : component.score ? 'has-val' : ''}`}
-                      style={{ width: '74px', height: '34px', fontSize: '0.82rem' }}
+                      style={{ width: '74px', height: '34px' }}
                       onChange={(e) => updateComponent(component.id, 'score', sanitizeDecimal(e.target.value))}
                       aria-label={`Điểm cột ${index + 1} (${component.name})`}
                     />

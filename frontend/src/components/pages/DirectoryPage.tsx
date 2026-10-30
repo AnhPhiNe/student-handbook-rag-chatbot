@@ -68,7 +68,7 @@ function formatOffice(office: string): string {
     .replace(/\. HCM/gi, '')
     .replace(/\s+/g, ' ')
     .trim()
-    .replace(/[\.\s]+$/, '');
+    .replace(/[.\s]+$/, '');
 }
 
 interface UnitCardProps {

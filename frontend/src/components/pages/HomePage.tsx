@@ -175,50 +175,34 @@ const HANDBOOK_TIPS: WisdomTip[] = [
   {
     text: (
       <>
-        Điểm <b>D (1.0)</b> là qua môn, nhưng để tốt nghiệp loại <b>Khá</b> thì GPA tích lũy cần từ <b>2.50</b> trở lên.
+        Điểm đạt phụ thuộc <b>khóa và nhóm môn</b>. Chọn đúng bảng quy đổi khi tính GPA.
       </>
     ),
-    citation: 'Trích Điều 14 · Quy chế đào tạo tín chỉ HCMUE',
+    citation: 'Điều 10 · Quy chế đào tạo và sửa đổi theo khóa',
   },
   {
     text: (
       <>
-        Sinh viên sư phạm được hỗ trợ sinh hoạt phí <b>3,63 triệu/tháng</b> theo diện <b>Nghị định 116</b>.
+        <b>Học lại hoặc kỷ luật</b> có thể làm hạ hạng tốt nghiệp Giỏi, Xuất sắc.
       </>
     ),
-    citation: 'Trích Nghị định 116/2020/NĐ-CP',
+    citation: 'Điều 15 khoản 3 · Quy chế đào tạo',
   },
   {
     text: (
       <>
-        Tránh tích lũy <b>điểm F quá 5%</b> tổng tín chỉ để không bị <b>hạ một bậc</b> tốt nghiệp.
+        Tín chỉ tối thiểu, tối đa mỗi kỳ phụ thuộc <b>kế hoạch chuẩn của chương trình</b>.
       </>
     ),
-    citation: 'Trích Điều 27 · Quy chế xét tốt nghiệp',
+    citation: 'Điều 9 khoản 1 điểm e · Quy chế đào tạo chính quy',
   },
   {
     text: (
       <>
-        Mỗi học kỳ chính cần đăng ký <b>tối thiểu 14 tín chỉ</b> (trừ học kỳ cuối cùng của khóa học).
+        <b>Học kỳ cuối</b> có điều kiện tín chỉ riêng khi xét học bổng theo khóa.
       </>
     ),
-    citation: 'Trích Điều 8 · Đăng ký học phần',
-  },
-  {
-    text: (
-      <>
-        Xét học bổng KKHT cần học <b>tối thiểu 15 tín chỉ</b> và điểm rèn luyện đạt từ <b>Khá (70đ)</b> trở lên.
-      </>
-    ),
-    citation: 'Trích Quy định học bổng KKHT HCMUE',
-  },
-  {
-    text: (
-      <>
-        Sinh viên được <b>rút học phần</b> trong 2 tuần đầu học kỳ mà <b>không bị ghi nhận điểm F</b>.
-      </>
-    ),
-    citation: 'Trích Điều 10 · Rút bớt học phần đã đăng ký',
+    citation: 'Điều kiện học bổng KKHT · Quy chế công tác sinh viên theo khóa',
   },
 ];
 

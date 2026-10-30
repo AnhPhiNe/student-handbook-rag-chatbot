@@ -90,8 +90,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
 
   // Tab 2: Cải Thiện Môn State (mặc định 2 dòng môn học)
   const [retakes, setRetakes] = useState<RetakeDraft[]>(() => [
-    { id: 'retake-1', label: 'Môn học 1', oldGrade: 1.0, targetGrade: 4.0, credits: 3 },
-    { id: 'retake-2', label: 'Môn học 2', oldGrade: 2.0, targetGrade: 4.0, credits: 3 },
+    { id: 'retake-1', label: 'Môn học 1', oldGrade: null, targetGrade: 4.0, credits: 3 },
+    { id: 'retake-2', label: 'Môn học 2', oldGrade: null, targetGrade: 4.0, credits: 3 },
   ]);
 
   const completeRetakes = useMemo(
@@ -102,6 +102,18 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
 
   // Tab 3: Lộ Trình Ra Trường State
   const [targetGradGpaStr, setTargetGradGpaStr] = useState('3.60');
+
+  const isTargetGpaValid = targetGpaStr.trim() !== '' && Number.isFinite(Number(targetGpaStr))
+    && Number(targetGpaStr) >= 2 && Number(targetGpaStr) <= 4;
+  const isTargetGradGpaValid = targetGradGpaStr.trim() !== '' && Number.isFinite(Number(targetGradGpaStr))
+    && Number(targetGradGpaStr) >= 2 && Number(targetGradGpaStr) <= 4;
+  const targetGpaError = targetGpaStr.trim() !== '' && !isTargetGpaValid
+    ? 'GPA mục tiêu phải từ 2.00 đến 4.00.' : null;
+  const targetGradGpaError = targetGradGpaStr.trim() !== '' && !isTargetGradGpaValid
+    ? 'GPA tốt nghiệp phải từ 2.00 đến 4.00.' : null;
+  const hasTermInput = hasEnteredProfile && isTargetGpaValid;
+  const hasRoadmapInput = hasEnteredProfile && isTargetGradGpaValid;
+  const hasRetakeResult = hasEnteredProfile && currentCreditsNum > 0 && hasRetakes;
 
   // Tín chỉ còn lại tự động suy ra từ CTĐT và số TC đã tích lũy
   const remainingCredits = useMemo(() => {
@@ -115,7 +127,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
 
   // Tab 1 Calculations
   const termPlan = useMemo(() => {
-    if (!hasEnteredProfile || !targetGpaStr) {
+    if (!hasTermInput) {
       return {
         isComplete: false,
         requiredGpa: 0,
@@ -131,11 +143,11 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
       Number(targetGpaStr),
       futureCredits,
     );
-  }, [hasEnteredProfile, currentGpaNum, currentCreditsNum, targetGpaStr, futureCredits]);
+  }, [hasTermInput, currentGpaNum, currentCreditsNum, targetGpaStr, futureCredits]);
 
   const prescription = useMemo(() => {
-    return getCoursePrescription(termPlan.requiredGpa, futureCredits);
-  }, [termPlan.requiredGpa, futureCredits]);
+    return termPlan.isComplete ? getCoursePrescription(termPlan.requiredGpa, futureCredits) : null;
+  }, [termPlan.isComplete, termPlan.requiredGpa, futureCredits]);
 
   // Tab 2 Calculations
   const retakePlan = useMemo(() => {
@@ -150,11 +162,11 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
 
   // Tab 3 Calculations
   const roadmapPlan = useMemo(() => {
-    if (!hasEnteredProfile || !targetGradGpaStr) {
+    if (!hasRoadmapInput) {
       return {
         averageGpaNeeded: 0,
         termsRemaining: Math.max(1, Math.ceil(remainingCredits / 15)),
-        isFeasible: true,
+        isFeasible: false,
         milestones: [],
       };
     }
@@ -165,7 +177,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
       remainingCredits,
       totalDegreeCreditsNum,
     );
-  }, [hasEnteredProfile, currentGpaNum, currentCreditsNum, targetGradGpaStr, remainingCredits, totalDegreeCreditsNum]);
+  }, [hasRoadmapInput, currentGpaNum, currentCreditsNum, targetGradGpaStr, remainingCredits, totalDegreeCreditsNum]);
 
   const maxGradGpa =
     totalDegreeCreditsNum > 0
@@ -190,7 +202,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
       });
     }
     if (activeTab === 'retake') {
-      if (!hasRetakes) return null;
+      if (!hasRetakeResult) return null;
       return targetRetakeShareText({
         courses: completeRetakes.length,
         credits: completeRetakes.reduce((sum, r) => sum + r.credits, 0),
@@ -200,7 +212,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
         cohort,
       });
     }
-    if (!targetGradGpaStr) return null;
+    if (!hasRoadmapInput) return null;
     return targetRoadmapShareText({
       feasible: roadmapPlan.isFeasible,
       targetGpa: Number(targetGradGpaStr),
@@ -220,27 +232,27 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
       return termPlan.requiredGpa;
     }
     if (activeTab === 'retake') {
-      return hasEnteredProfile && hasRetakes ? retakePlan.newBaselineGpa : 0;
+      return hasRetakeResult ? retakePlan.newBaselineGpa : 0;
     }
     if (activeTab === 'roadmap') {
-      if (!hasEnteredProfile || !targetGradGpaStr || !roadmapPlan.isFeasible) return 0;
+      if (!hasRoadmapInput || !roadmapPlan.isFeasible) return 0;
       return roadmapPlan.averageGpaNeeded;
     }
     return 0;
-  }, [activeTab, termPlan, currentGpaNum, hasEnteredProfile, hasRetakes, retakePlan.newBaselineGpa, targetGradGpaStr, roadmapPlan]);
+  }, [activeTab, termPlan, currentGpaNum, hasRetakeResult, retakePlan.newBaselineGpa, hasRoadmapInput, roadmapPlan]);
 
   const animatedHeroScore = useAnimatedNumber(activeHeroNumber, 2);
 
   // Steppers for GPA
   const stepTargetGpa = (delta: number) => {
-    const currentVal = Number(targetGpaStr) || 3.60;
-    const nextVal = Math.min(4.0, Math.max(1.0, Math.round((currentVal + delta) * 100) / 100));
+    const currentVal = isTargetGpaValid ? Number(targetGpaStr) : 3.60;
+    const nextVal = Math.min(4.0, Math.max(2.0, Math.round((currentVal + delta) * 100) / 100));
     setTargetGpaStr(nextVal.toFixed(2));
   };
 
   const stepTargetGradGpa = (delta: number) => {
-    const currentVal = Number(targetGradGpaStr) || 3.60;
-    const nextVal = Math.min(4.0, Math.max(1.0, Math.round((currentVal + delta) * 100) / 100));
+    const currentVal = isTargetGradGpaValid ? Number(targetGradGpaStr) : 3.60;
+    const nextVal = Math.min(4.0, Math.max(2.0, Math.round((currentVal + delta) * 100) / 100));
     setTargetGradGpaStr(nextVal.toFixed(2));
   };
 
@@ -256,12 +268,12 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
     const nextIdx = retakes.length + 1;
     setRetakes((prev) => [
       ...prev,
-      { id: nextId, label: `Môn học ${nextIdx}`, oldGrade: 1.0, targetGrade: 4.0, credits: 3 },
+      { id: nextId, label: `Môn học ${nextIdx}`, oldGrade: null, targetGrade: 4.0, credits: 3 },
     ]);
   };
 
   const handleRemoveRetake = (id: string) => {
-    setRetakes((prev) => (prev.length > 1 ? prev.filter((r) => r.id !== id) : prev));
+    setRetakes((prev) => prev.filter((r) => r.id !== id));
   };
 
   const handleUpdateRetake = (id: string, field: keyof RetakeDraft, val: number | string) => {
@@ -309,7 +321,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
       isNew: true,
       id: `retake-${Date.now()}`,
       credits: '3',
-      oldGrade: 1.0,
+      oldGrade: null,
       targetGrade: 4.0,
     });
   };
@@ -345,7 +357,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
 
   const handleDeleteMobileRetake = () => {
     if (!mobileRetakeSheet) return;
-    setRetakes((prev) => (prev.length > 1 ? prev.filter((_, i) => i !== mobileRetakeSheet.index) : prev));
+    setRetakes((prev) => prev.filter((r) => r.id !== mobileRetakeSheet.id));
     setMobileRetakeSheet(null);
   };
 
@@ -356,8 +368,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
       setTargetGpaStr('3.60');
       setFutureCredits(15);
       setRetakes([
-        { id: `retake-1-${Date.now()}`, label: 'Môn học 1', oldGrade: 1.0, targetGrade: 4.0, credits: 3 },
-        { id: `retake-2-${Date.now()}`, label: 'Môn học 2', oldGrade: 2.0, targetGrade: 4.0, credits: 3 },
+        { id: `retake-1-${Date.now()}`, label: 'Môn học 1', oldGrade: null, targetGrade: 4.0, credits: 3 },
+        { id: `retake-2-${Date.now()}`, label: 'Môn học 2', oldGrade: null, targetGrade: 4.0, credits: 3 },
       ]);
       setTargetGradGpaStr('3.60');
       setMobileRetakeSheet(null);
@@ -369,7 +381,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
     ? Math.min(100, Math.max(0, (termPlan.requiredGpa / 4.0) * 100))
     : 0;
 
-  const retakeProgressPercent = hasEnteredProfile && hasRetakes
+  const retakeProgressPercent = hasRetakeResult
     ? Math.min(100, Math.max(0, (retakePlan.newBaselineGpa / 4.0) * 100))
     : 0;
 
@@ -379,7 +391,10 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
 
   // Status badges for Desktop Right Card Header
   const tab1Badge = (() => {
-    if (!hasEnteredProfile || !targetGpaStr) {
+    if (targetGpaError) {
+      return <span className="gpa-d-result-badge tier-danger">• GPA mục tiêu không hợp lệ</span>;
+    }
+    if (!termPlan.isComplete) {
       return <span className="gpa-d-result-badge unranked">• Chờ nhập liệu</span>;
     }
     if (termPlan.status === 'achieved') {
@@ -395,14 +410,17 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
   })();
 
   const tab2Badge = (() => {
-    if (!hasEnteredProfile || !hasRetakes) {
+    if (!hasRetakeResult) {
       return <span className="gpa-d-result-badge unranked">• Chờ nhập liệu</span>;
     }
     return <span className="gpa-d-result-badge tier-success">★ Cải thiện tốt</span>;
   })();
 
   const tab3Badge = (() => {
-    if (!hasEnteredProfile || !targetGradGpaStr) {
+    if (targetGradGpaError) {
+      return <span className="gpa-d-result-badge tier-danger">• GPA mục tiêu không hợp lệ</span>;
+    }
+    if (!hasRoadmapInput) {
       return <span className="gpa-d-result-badge unranked">• Chờ nhập liệu</span>;
     }
     if (!roadmapPlan.isFeasible) {
@@ -415,18 +433,38 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
   })();
 
   const targetTierLabel = useMemo(() => {
-    const val = Number(targetGpaStr) || 3.60;
+    if (!isTargetGpaValid) return null;
+    const val = Number(targetGpaStr);
     if (val >= 3.6) return 'Xuất sắc';
     if (val >= 3.2) return 'Giỏi';
-    return 'Khá';
-  }, [targetGpaStr]);
+    if (val >= 2.5) return 'Khá';
+    return 'Trung bình';
+  }, [isTargetGpaValid, targetGpaStr]);
 
   const targetGradTierLabel = useMemo(() => {
-    const val = Number(targetGradGpaStr) || 3.60;
+    if (!isTargetGradGpaValid) return null;
+    const val = Number(targetGradGpaStr);
     if (val >= 3.6) return 'Xuất sắc';
     if (val >= 3.2) return 'Giỏi';
-    return 'Khá';
-  }, [targetGradGpaStr]);
+    if (val >= 2.5) return 'Khá';
+    return 'Trung bình';
+  }, [isTargetGradGpaValid, targetGradGpaStr]);
+
+  // Shared by the desktop conclusion and the mobile navy hero.
+  const resultStatus = (() => {
+    if (activeTab === 'term') {
+      if (targetGpaError) return 'status-impossible';
+      if (!termPlan.isComplete) return 'status-empty';
+      if (termPlan.status === 'achieved') return 'status-achieved';
+      if (termPlan.status === 'impossible') return 'status-impossible';
+      return termPlan.requiredGpa >= 3.6 ? 'status-warning' : 'status-feasible';
+    }
+    if (activeTab === 'retake') return hasRetakeResult ? 'status-achieved' : 'status-empty';
+    if (targetGradGpaError) return 'status-impossible';
+    if (!hasRoadmapInput) return 'status-empty';
+    if (!roadmapPlan.isFeasible) return 'status-impossible';
+    return roadmapPlan.averageGpaNeeded >= 3.6 ? 'status-warning' : 'status-feasible';
+  })();
 
   return (
     <div className="page-container tool-page simplified gpa-page-wrapper">
@@ -629,6 +667,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                       <input
                         type="text"
                         inputMode="decimal"
+                        aria-invalid={Boolean(targetGpaError)}
+                        title={targetGpaError ?? undefined}
                         value={targetGpaStr}
                         onChange={(e) => setTargetGpaStr(sanitizeDecimal(e.target.value))}
                         className="target-gpa-val-input"
@@ -647,6 +687,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                     </button>
                   </div>
                 </div>
+
+                {targetGpaError && <p className="target-gpa-input-error" role="alert">{targetGpaError}</p>}
 
                 {/* 3 Nút mốc học lực có màu sắc ngữ nghĩa rõ ràng */}
                 <div className="target-preset-grid">
@@ -745,7 +787,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                   <tbody className="gpa-d-tbody">
                     {retakes.map((course, idx) => {
                       const rowDelta =
-                        course.oldGrade !== null && currentCreditsNum > 0
+                        course.oldGrade !== null && hasEnteredProfile && currentCreditsNum > 0
                           ? Math.round(
                               (((course.targetGrade - course.oldGrade) * course.credits) / currentCreditsNum) * 100,
                             ) / 100
@@ -837,8 +879,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                                 type="button"
                                 className="gpa-d-del-btn"
                                 onClick={() => handleRemoveRetake(course.id)}
-                                disabled={retakes.length <= 1}
-                                title={retakes.length <= 1 ? 'Cần giữ ít nhất 1 môn' : 'Xóa môn này'}
+                                title="Xóa môn này"
                                 aria-label={`Xóa Môn học ${idx + 1}`}
                               >
                                 <Trash2 size={15} />
@@ -888,6 +929,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                       <input
                         type="text"
                         inputMode="decimal"
+                        aria-invalid={Boolean(targetGradGpaError)}
+                        title={targetGradGpaError ?? undefined}
                         value={targetGradGpaStr}
                         onChange={(e) => setTargetGradGpaStr(sanitizeDecimal(e.target.value))}
                         className="target-gpa-val-input"
@@ -906,6 +949,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                     </button>
                   </div>
                 </div>
+
+                {targetGradGpaError && <p className="target-gpa-input-error" role="alert">{targetGradGpaError}</p>}
 
                 {/* 3 Nút mốc học lực có màu sắc ngữ nghĩa */}
                 <div className="target-preset-grid">
@@ -941,7 +986,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
 
         {/* CỘT PHẢI (5 Cols): THẺ KẾT QUẢ DỰ TÍNH (ĐỒNG BỘ 100% CẤU TRÚC VỚI GPAPAGE) */}
         <div className="gpa-d-sticky-col">
-          <div className="gpa-d-result-card" id="target-gpa-result">
+          <div className={`gpa-d-result-card ${resultStatus}`} id="target-gpa-result">
             {/* Header Kết Quả */}
             <div className="gpa-d-result-header">
               <span className="gpa-d-result-title">
@@ -975,10 +1020,10 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                         : animatedHeroScore.toFixed(2)
                       : '--'
                     : activeTab === 'retake'
-                      ? hasEnteredProfile && hasRetakes
+                      ? hasRetakeResult
                         ? animatedHeroScore.toFixed(2)
                         : '--'
-                      : hasEnteredProfile && targetGradGpaStr
+                      : hasRoadmapInput
                         ? roadmapPlan.isFeasible
                           ? animatedHeroScore.toFixed(2)
                           : roadmapNeededLabel
@@ -990,7 +1035,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
               {/* Viên thuốc phụ bên dưới điểm trung tâm */}
               <div className="gpa-d-gpa10-pill">
                 {activeTab === 'term' ? (
-                  hasEnteredProfile && targetGpaStr ? (
+                  hasTermInput ? (
                     <>
                       <span className="gpa-d-gpa10-label">Tích lũy mục tiêu:</span>
                       <strong className="target-pill-bold-amber">
@@ -1001,7 +1046,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                     <span className="gpa-d-gpa10-label">Nhập điểm tích lũy và mục tiêu bên trái</span>
                   )
                 ) : activeTab === 'retake' ? (
-                  hasEnteredProfile && hasRetakes ? (
+                  hasRetakeResult ? (
                     <>
                       <span className="gpa-d-gpa10-label">Tích lũy mới:</span>
                       <strong className="target-pill-bold-emerald">
@@ -1011,7 +1056,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                   ) : (
                     <span className="gpa-d-gpa10-label">Chọn điểm môn học để tính mức tăng</span>
                   )
-                ) : hasEnteredProfile && targetGradGpaStr ? (
+                ) : hasRoadmapInput ? (
                   <>
                     <span className="gpa-d-gpa10-label">Mục tiêu bằng:</span>
                     <strong className="target-pill-bold-amber">
@@ -1044,15 +1089,15 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                 </div>
 
                 <div className="gpa-d-milestone-prompt">
-                  {!hasEnteredProfile || !targetGpaStr ? (
-                    <span>💡 Nhập điểm tích lũy và mục tiêu để xem gợi ý</span>
+                  {!hasTermInput ? (
+                    <span>{targetGpaError ?? '💡 Nhập điểm tích lũy và mục tiêu để xem gợi ý'}</span>
                   ) : termPlan.status === 'impossible' ? (
                     <span>
                       ⚠️ Cần tối thiểu {termPlan.minCreditsNeeded ?? '> 20'} TC điểm A để đạt mục tiêu
                     </span>
                   ) : termPlan.status === 'achieved' ? (
                     <span>🎉 Điểm hiện tại ({format2(currentGpaNum)}) đã đạt mục tiêu này</span>
-                  ) : (
+                  ) : prescription ? (
                     <span>
                       🎯 Gợi ý ({prescription.totalCourses} môn): Cần{' '}
                       {prescription.coursesA > 0 && (
@@ -1067,7 +1112,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                         <strong style={{ color: '#475569' }}>{prescription.coursesB} môn B</strong>
                       )}
                     </span>
-                  )}
+                  ) : null}
                 </div>
               </div>
             )}
@@ -1091,7 +1136,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                 </div>
 
                 <div className="gpa-d-milestone-prompt">
-                  {hasEnteredProfile && hasRetakes ? (
+                  {hasRetakeResult ? (
                     <span>
                       🚀 Cải thiện {completeRetakes.length} môn giúp GPA tăng{' '}
                       <strong style={{ color: '#047857' }}>+{format2(retakePlan.deltaGpa)}</strong> điểm
@@ -1134,7 +1179,9 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                 </div>
 
                 <div className="gpa-d-milestone-prompt">
-                  {roadmapPlan.isFeasible ? (
+                  {!hasRoadmapInput ? (
+                    <span>{targetGradGpaError ?? '💡 Nhập điểm tích lũy và mục tiêu để xem gợi ý'}</span>
+                  ) : roadmapPlan.isFeasible ? (
                     <span>
                       🎯 Cần duy trì trung bình ~<strong>{format2(roadmapPlan.averageGpaNeeded)} GPA</strong> mỗi kỳ còn lại
                     </span>
@@ -1181,7 +1228,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                   <div className="gpa-d-stat-box">
                     <span className="gpa-d-stat-label">Mức tăng GPA</span>
                     <span className="gpa-d-stat-val" style={{ color: '#047857' }}>
-                      +{format2(retakePlan.deltaGpa)}
+                      {hasRetakeResult ? `+${format2(retakePlan.deltaGpa)}` : '--'}
                     </span>
                   </div>
                 </>
@@ -1294,7 +1341,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
 
         {/* Hero Score Card Navy */}
         <div className="gpa-mobile-hero-container">
-          <div className="gpa-mobile-hero-card">
+          <div className={`gpa-mobile-hero-card ${resultStatus}`}>
             <div className="gpa-m-hero-label">
               {activeTab === 'term'
                 ? termPlan.status === 'achieved'
@@ -1314,10 +1361,10 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                       : animatedHeroScore.toFixed(2)
                     : '--'
                   : activeTab === 'retake'
-                    ? hasEnteredProfile && hasRetakes
+                    ? hasRetakeResult
                       ? animatedHeroScore.toFixed(2)
                       : '--'
-                    : hasEnteredProfile && targetGradGpaStr
+                    : hasRoadmapInput
                       ? roadmapPlan.isFeasible
                         ? animatedHeroScore.toFixed(2)
                         : roadmapNeededLabel
@@ -1329,7 +1376,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
             {/* Viên thuốc capsule hợp nhất (Chữ màu ngọc lục bảo phẳng .gpa-m-tier-text, không dùng pill nền xanh lá cũ) */}
             <div className="gpa-m-capsule-wrap">
               {activeTab === 'term' ? (
-                hasEnteredProfile && targetGpaStr ? (
+                hasTermInput ? (
                   <div className="gpa-m-capsule">
                     <span className="gpa-m-tier-text">
                       {termPlan.status === 'achieved'
@@ -1355,7 +1402,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                   </div>
                 )
               ) : activeTab === 'retake' ? (
-                hasEnteredProfile && hasRetakes ? (
+                hasRetakeResult ? (
                   <div className="gpa-m-capsule">
                     <span className="gpa-m-tier-text">CẢI THIỆN TỐT</span>
                     <span className="gpa-m-sep">│</span>
@@ -1375,7 +1422,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                   </div>
                 )
               ) : (
-                hasEnteredProfile && targetGradGpaStr ? (
+                hasRoadmapInput ? (
                   <div className="gpa-m-capsule">
                     <span className="gpa-m-tier-text">
                       {roadmapPlan.isFeasible ? 'KHẢ THI' : 'KHÓ KHẢ THI'}
@@ -1525,6 +1572,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                     <input
                       type="text"
                       inputMode="decimal"
+                      aria-invalid={Boolean(targetGpaError)}
+                      title={targetGpaError ?? undefined}
                       value={targetGpaStr}
                       onChange={(e) => setTargetGpaStr(sanitizeDecimal(e.target.value))}
                       className="target-gpa-val-input"
@@ -1544,6 +1593,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                   </button>
                 </div>
               </div>
+
+              {targetGpaError && <p className="target-gpa-input-error" role="alert">{targetGpaError}</p>}
 
               {/* 3 nút mốc học lực có màu sắc */}
               <div className="target-preset-grid">
@@ -1695,6 +1746,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                     <input
                       type="text"
                       inputMode="decimal"
+                      aria-invalid={Boolean(targetGradGpaError)}
+                      title={targetGradGpaError ?? undefined}
                       value={targetGradGpaStr}
                       onChange={(e) => setTargetGradGpaStr(sanitizeDecimal(e.target.value))}
                       className="target-gpa-val-input"
@@ -1714,6 +1767,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                   </button>
                 </div>
               </div>
+
+              {targetGradGpaError && <p className="target-gpa-input-error" role="alert">{targetGradGpaError}</p>}
 
               {/* 3 Presets */}
               <div className="target-preset-grid">

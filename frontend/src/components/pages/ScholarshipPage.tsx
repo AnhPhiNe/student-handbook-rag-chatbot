@@ -683,7 +683,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
               </button>
               <input
                 className="stepper-input"
-                style={{ width: '40px', fontSize: '13px' }}
+                style={{ width: '40px' }}
                 value={credits}
                 onChange={(e) => setCredits(sanitizeInteger(e.target.value))}
                 aria-label="Số tín chỉ"

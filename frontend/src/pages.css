@@ -11537,6 +11537,16 @@ p.tool-source > svg {
   line-height: 1.45;
 }
 
+.cr-conclusion-box + .gpa-d-result-footer {
+  margin-top: 16px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.cr-meter-section + .cr-conclusion-box {
+  margin-top: 12px;
+}
+
 .cr-conclusion-text {
   display: inline-block;
   line-height: 1.4;

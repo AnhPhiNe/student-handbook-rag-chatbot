@@ -233,12 +233,9 @@ export function WelcomeCurtain({ onComplete }: WelcomeCurtainProps) {
             <div className="welcome-letter-header">
               <div className="welcome-school-brand">
                 <img src="/logo_hcmue.png" className="welcome-school-logo" alt="Logo HCMUE" />
-                <div>
-                  <h2 className="welcome-school-title">
-                    ĐẠI HỌC SƯ PHẠM TP. HỒ CHÍ MINH
-                  </h2>
-                  <div className="welcome-school-sub">Thư Chào Đón Tân Sinh Viên</div>
-                </div>
+                <h2 className="welcome-school-title">
+                  ĐẠI HỌC SƯ PHẠM TP. HỒ CHÍ MINH
+                </h2>
               </div>
               <span className="welcome-badge-k52">
                 Khóa 52 · 2026

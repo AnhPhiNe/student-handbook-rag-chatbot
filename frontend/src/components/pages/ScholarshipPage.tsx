@@ -33,7 +33,7 @@ const SCHOLARSHIP_YEARS: { id: SchoolYear; label: string }[] = [
   { id: '2026-2027', label: '2026–27' },
 ];
 
-function ScholarshipConditions() {
+function ScholarshipConditions({ finalSemesterMin }: { finalSemesterMin: number }) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const panelId = useId();
@@ -94,6 +94,7 @@ function ScholarshipConditions() {
             </div>
           ))}
         </div>
+        <p>Tín chỉ đăng ký: tối thiểu 15 TC. Học kỳ tốt nghiệp: tối thiểu {finalSemesterMin} TC.</p>
         <p>RL: điểm rèn luyện. Cần đồng thời đạt các ngưỡng trên, điểm xét và điều kiện tín chỉ.</p>
       </div>
     </div>
@@ -494,7 +495,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
 
             {/* Milestone Progress Bar + Gợi ý liền khối */}
             <div className="gpa-d-milestone-box">
-              <ScholarshipConditions />
+              <ScholarshipConditions finalSemesterMin={finalSemesterMin} />
               <div className="scholarship-tier-names" aria-hidden="true">
                 <span className="gpa-milestone-blue">Khá</span>
                 <span className="gpa-milestone-green">Giỏi</span>
@@ -610,7 +611,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
           </div>
         </div>
 
-        <div className="scholarship-mobile-conditions"><ScholarshipConditions /></div>
+        <div className="scholarship-mobile-conditions"><ScholarshipConditions finalSemesterMin={finalSemesterMin} /></div>
 
         {/* Gợi ý 1 dòng thông minh trên Mobile (chỉ hiển thị khi đã có kết quả tính toán) */}
         {result && (
@@ -671,8 +672,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span className="tool-step-badge">3</span>
               <div>
-                <span className="scholarship-m-credits-title">Số tín chỉ đăng ký:</span>
-                <span className="scholarship-m-credits-sub">Tối thiểu 15 TC (Kỳ cuối: ≥ {finalSemesterMin} TC)</span>
+                <span className="scholarship-m-credits-title">Tín chỉ</span>
               </div>
             </div>
             <div className="stepper-capsule" style={{ height: '36px' }}>
@@ -710,11 +710,11 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
           )}
 
           {/* Ước tính số tiền trên Mobile */}
-          <div className="scholarship-m-tuition-section">
+          <div className="scholarship-m-tuition-section" aria-label="Ước tính số tiền học bổng, tùy chọn">
+            <span className="scholarship-optional-tag">Tùy chọn</span>
             <div className="scholarship-tuition-head">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="tool-step-badge">4</span>
-                <span className="scholarship-m-tuition-title">Ước tính số tiền (tùy chọn)</span>
+                <span className="scholarship-m-tuition-title">Ước tính số tiền</span>
               </div>
               <div className="scholarship-year-selector" role="group" aria-label="Năm học">
                 {SCHOLARSHIP_YEARS.map((y) => (

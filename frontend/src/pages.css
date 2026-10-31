@@ -13839,7 +13839,7 @@ p.tool-source > svg {
 }
 
 .scholarship-m-credits-title {
-  font-size: 0.75rem;
+  font-size: 0.84rem;
   font-weight: 700;
   color: #334155;
   display: block;
@@ -13868,7 +13868,7 @@ p.tool-source > svg {
 }
 
 .scholarship-m-tuition-title {
-  font-size: 0.72rem;
+  font-size: 0.84rem;
   font-weight: 700;
   color: #334155;
 }
@@ -14635,7 +14635,7 @@ p.tool-source > svg {
 }
 
 @media (max-width: 900px) {
-  .gpa-page-wrapper :is(.target-m-field-label, .scholarship-m-field-label, .scholarship-m-credits-title, .tool-field-label, .tu-field-label) {
+  .gpa-page-wrapper :is(.target-m-field-label, .scholarship-m-field-label, .scholarship-m-credits-title, .scholarship-m-tuition-title, .tool-field-label, .tu-field-label) {
     font-size: max(0.84rem, 12px);
     font-weight: 700;
   }

@@ -183,12 +183,12 @@ export function WelcomeCurtain({ onComplete }: WelcomeCurtainProps) {
       {/* Nút Bỏ qua nhanh ở góc trên */}
       <button
         onClick={handleDismiss}
-        className="absolute top-5 right-5 z-50 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white text-xs font-medium backdrop-blur-md transition flex items-center gap-1.5 shadow-lg group focus:outline-none focus:ring-2 focus:ring-amber-400"
+        className="welcome-skip-btn"
         title="Bỏ qua hiệu ứng chào mừng (Esc)"
       >
         <span>Bỏ qua</span>
-        <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400 font-mono border border-slate-700">Esc</kbd>
-        <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+        <kbd className="welcome-skip-kbd">Esc</kbd>
+        <span>→</span>
       </button>
 
       {/* Canvas pháo hoa */}
@@ -196,14 +196,14 @@ export function WelcomeCurtain({ onComplete }: WelcomeCurtainProps) {
 
       {/* Nhịp 1: Preloader thanh vàng trên nền rèm */}
       <div className={`welcome-preloader-box ${beat !== 'preloader' ? 'hidden' : ''}`}>
-        <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-amber-500/30 backdrop-blur-md shadow-xl">
-          <img src="/logo_hcmue.png" className="w-4 h-4 object-contain" alt="Logo HCMUE" />
+        <div className="welcome-preloader-pill">
+          <img src="/logo_hcmue.png" className="welcome-preloader-logo" alt="Logo HCMUE" />
           <span className="welcome-shimmer-text">HCMUE · KHỞI TẠO SỔ TAY SINH VIÊN</span>
         </div>
         <div className="welcome-progress-track">
           <div className="welcome-progress-fill" style={{ width: progressWidth }} />
         </div>
-        <div className="text-[10.5px] text-slate-300/80 tracking-wide font-medium">
+        <div className="welcome-preloader-status">
           {preloaderStatus}
         </div>
       </div>
@@ -223,95 +223,93 @@ export function WelcomeCurtain({ onComplete }: WelcomeCurtainProps) {
             {/* Nút đóng thư nhỏ kín đáo */}
             <button
               onClick={handleDismiss}
-              className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-stone-200/50 hover:bg-stone-300/80 flex items-center justify-center text-stone-500 hover:text-stone-800 text-xs transition z-20 focus:outline-none"
+              className="welcome-close-btn"
               title="Đóng thư"
             >
               ✕
             </button>
 
             {/* Header: Logo trường chính thức & Huy hiệu Khóa 52 mạ vàng */}
-            <div className="flex items-center justify-between mb-3 border-b border-amber-900/15 pb-2.5 pr-8">
-              <div className="flex items-center gap-2">
-                <img src="/logo_hcmue.png" className="w-6 h-6 object-contain drop-shadow-xs" alt="Logo HCMUE" />
+            <div className="welcome-letter-header">
+              <div className="welcome-school-brand">
+                <img src="/logo_hcmue.png" className="welcome-school-logo" alt="Logo HCMUE" />
                 <div>
-                  <h2 className="text-[11px] font-bold tracking-wider text-amber-950 uppercase font-serif">
+                  <h2 className="welcome-school-title">
                     ĐẠI HỌC SƯ PHẠM TP. HỒ CHÍ MINH
                   </h2>
-                  <div className="text-[9px] text-amber-800/70 tracking-widest uppercase">Thư Chào Đón Tân Sinh Viên</div>
+                  <div className="welcome-school-sub">Thư Chào Đón Tân Sinh Viên</div>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-[9.5px] font-bold tracking-wide">
+              <span className="welcome-badge-k52">
                 Khóa 52 · 2026
               </span>
             </div>
 
             {/* Tiêu đề thư */}
-            <h1 className="text-lg sm:text-xl font-bold text-amber-950 welcome-font-serif tracking-tight mb-0.5 text-center">
+            <h1 className="welcome-letter-title">
               Chào Mừng Bạn Đến Với Sổ Tay Sinh Viên
             </h1>
-            <div className="text-center text-[10.5px] text-amber-900/70 italic mb-2.5">
+            <div className="welcome-letter-sub">
               (Dành cho Tân sinh viên Khóa 52 và đồng hành cùng K49 · K50 · K51)
             </div>
 
             {/* Nội dung thư tinh gọn */}
-            <div className="welcome-font-body text-[11.5px] sm:text-[12px] text-stone-800 space-y-2 leading-relaxed">
+            <div className="welcome-letter-body">
               <p>
-                Chào bạn, cánh cổng trường đã chính thức mở rộng đón bạn! Để đồng hành cùng bạn suốt những năm tháng giảng đường, mình đã phát triển <strong className="text-stone-900">Sổ Tay Sinh Viên AI</strong> với các tính năng cốt lõi:
+                Chào bạn, cánh cổng trường đã chính thức mở rộng đón bạn! Để đồng hành cùng bạn suốt những năm tháng giảng đường, mình đã phát triển <strong>Sổ Tay Sinh Viên AI</strong> với các tính năng cốt lõi:
               </p>
 
-              <ul className="space-y-1.5 pl-0.5 text-stone-800 text-[11.5px]">
-                <li className="flex items-start gap-2">
-                  <span className="text-amber-700 font-bold leading-none mt-0.5">✦</span>
+              <ul className="welcome-feature-list">
+                <li className="welcome-feature-item">
+                  <span className="welcome-feature-bullet">✦</span>
                   <div>
-                    <strong className="text-stone-900">Trợ lý Chatbot AI 24/7:</strong> Giải đáp tức thì quy chế tín chỉ, học phí NĐ 116 — trích dẫn chính xác Điều, Khoản theo đúng khóa học của bạn.
+                    <strong>Trợ lý Chatbot AI 24/7:</strong> Giải đáp tức thì quy chế tín chỉ, học phí NĐ 116 — trích dẫn chính xác Điều, Khoản theo đúng khóa học của bạn.
                   </div>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-amber-700 font-bold leading-none mt-0.5">✦</span>
+                <li className="welcome-feature-item">
+                  <span className="welcome-feature-bullet">✦</span>
                   <div>
-                    <strong className="text-stone-900">Bộ công cụ học vụ:</strong> Tự động tính điểm GPA, mục tiêu điểm thi, xét học bổng KKHT và kiểm tra hạn mức tín chỉ.
+                    <strong>Bộ công cụ học vụ:</strong> Tự động tính điểm GPA, mục tiêu điểm thi, xét học bổng KKHT và kiểm tra hạn mức tín chỉ.
                   </div>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-amber-700 font-bold leading-none mt-0.5">✦</span>
+                <li className="welcome-feature-item">
+                  <span className="welcome-feature-bullet">✦</span>
                   <div>
-                    <strong className="text-stone-900">Danh bạ thông minh:</strong> Tra cứu nhanh số máy nhánh và email của toàn bộ phòng ban, khoa viện trong trường.
+                    <strong>Danh bạ thông minh:</strong> Tra cứu nhanh số máy nhánh và email của toàn bộ phòng ban, khoa viện trong trường.
                   </div>
                 </li>
               </ul>
 
-              <p className="italic text-stone-700 pt-0.5">
+              <p className="welcome-letter-wish">
                 Chúc bạn có một hành trình đại học thật rực rỡ và nhiều kỷ niệm đẹp!
               </p>
             </div>
 
             {/* Chữ ký bút máy của Anh Phi */}
-            <div className="mt-3.5 pt-2 border-t border-amber-900/15 flex items-end justify-between">
-              <div className="text-[10px] text-stone-400 welcome-font-body italic">
+            <div className="welcome-signature-row">
+              <div className="welcome-signature-date">
                 Sài Gòn, mùa tựu trường
               </div>
-              <div className="text-right">
-                <div className="text-xl sm:text-2xl welcome-font-signature font-bold text-blue-900 tracking-wide transform -rotate-3 leading-none mb-0.5">
+              <div className="welcome-signature-block">
+                <div className="welcome-signature-name">
                   Anh Phi
                 </div>
-                <div className="text-[9.5px] font-semibold text-stone-600 uppercase tracking-wider">
+                <div className="welcome-signature-dept">
                   Khoa Công nghệ Thông tin
                 </div>
               </div>
             </div>
 
             {/* Nút Mở Sổ Tay & Khám Phá Ngay */}
-            <div className="mt-3.5">
-              <button
-                onClick={handleDismiss}
-                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 hover:from-blue-800 hover:to-indigo-800 text-amber-50 font-bold text-xs sm:text-sm shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0 border border-amber-400/30 focus:outline-none focus:ring-2 focus:ring-amber-400"
-              >
-                <span>Mở Sổ Tay & Khám Phá Ngay</span>
-                <svg className="w-3.5 h-3.5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </button>
-            </div>
+            <button
+              onClick={handleDismiss}
+              className="welcome-cta-btn"
+            >
+              <span>Mở Sổ Tay & Khám Phá Ngay</span>
+              <svg className="welcome-cta-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
 
           </div>
         </div>

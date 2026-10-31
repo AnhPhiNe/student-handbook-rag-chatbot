@@ -1,5 +1,5 @@
 import { useRef, useState, useMemo, useEffect, useId, type KeyboardEvent } from 'react';
-import { Award, Minus, Plus, MessageCircle, RotateCcw, Info } from 'lucide-react';
+import { AlertTriangle, Award, Minus, Plus, MessageCircle, RotateCcw, Info } from 'lucide-react';
 import {
   calculateScholarshipScore,
   getFinalSemesterMinCredits,
@@ -205,12 +205,12 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
       return <span className="gpa-d-result-badge tier-danger">• Chưa đạt</span>;
     }
     if (result.classification === 'Xuất sắc') {
-      return <span className="gpa-d-result-badge tier-warning">★ Đạt loại Xuất sắc</span>;
+      return <span className="gpa-d-result-badge tier-warning">Đạt loại Xuất sắc</span>;
     }
     if (result.classification === 'Giỏi') {
-      return <span className="gpa-d-result-badge tier-success">★ Đạt loại Giỏi</span>;
+      return <span className="gpa-d-result-badge tier-success">Đạt loại Giỏi</span>;
     }
-    return <span className="gpa-d-result-badge tier-info">★ Đạt loại Khá</span>;
+    return <span className="gpa-d-result-badge tier-info">Đạt loại Khá</span>;
   }, [result, gpa, conduct]);
 
   // Unified smart tip generator
@@ -218,7 +218,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (!result || gpa === null || conduct === null) {
       return (
         <span className="scholarship-smart-tip">
-          💡 Nhập GPA và điểm rèn luyện {isMobile ? 'để xem gợi ý' : 'bên trái để xem gợi ý'}
+          Nhập GPA và điểm rèn luyện {isMobile ? 'để xem gợi ý' : 'bên trái để xem gợi ý'}
         </span>
       );
     }
@@ -226,7 +226,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (isBelowMinimum) {
       return (
         <span className="scholarship-smart-tip">
-          ⚠️ Cần tối thiểu {MIN_SCHOLARSHIP_CREDITS} TC để đủ điều kiện xét học bổng
+          <AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Cần tối thiểu {MIN_SCHOLARSHIP_CREDITS} TC để đủ điều kiện xét học bổng
         </span>
       );
     }
@@ -234,7 +234,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (result.classification === 'Xuất sắc') {
       return (
         <span className="scholarship-smart-tip">
-          🎉 Bạn đã đạt mức học bổng khuyến khích cao nhất
+          Bạn đã đạt mức học bổng khuyến khích cao nhất
         </span>
       );
     }
@@ -249,7 +249,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (!result.classification) {
       return (
         <span className="scholarship-smart-tip">
-          ⚠️ Cần tối thiểu GPA ≥ 2.50 và 70 điểm RL để xét học bổng
+          <AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Cần tối thiểu GPA ≥ 2.50 và 70 điểm RL để xét học bổng
         </span>
       );
     }
@@ -260,7 +260,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (gpaGap > 0 && conductGap > 0) {
       return (
         <span className="scholarship-smart-tip">
-          🎯 Cần thêm <strong className="gpa-motivate-highlight">{gpaGap.toFixed(2)} GPA</strong> và{' '}
+          Cần thêm <strong className="gpa-motivate-highlight">{gpaGap.toFixed(2)} GPA</strong> và{' '}
           <strong className="gpa-motivate-highlight">{conductGap} điểm RL</strong> để đạt{' '}
           <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
         </span>
@@ -270,7 +270,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (conductGap > 0) {
       return (
         <span className="scholarship-smart-tip">
-          🎯 Cần thêm <strong className="gpa-motivate-highlight">{conductGap} điểm {isMobile ? 'RL' : 'rèn luyện'}</strong> để đạt{' '}
+          Cần thêm <strong className="gpa-motivate-highlight">{conductGap} điểm {isMobile ? 'RL' : 'rèn luyện'}</strong> để đạt{' '}
           <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
         </span>
       );
@@ -279,7 +279,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (gpaGap > 0) {
       return (
         <span className="scholarship-smart-tip">
-          🎯 Cần thêm <strong className="gpa-motivate-highlight">{gpaGap.toFixed(2)} GPA</strong> để đạt{' '}
+          Cần thêm <strong className="gpa-motivate-highlight">{gpaGap.toFixed(2)} GPA</strong> để đạt{' '}
           <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
         </span>
       );
@@ -289,7 +289,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (scoreGap > 0) {
       return (
         <span className="scholarship-smart-tip">
-          🎯 Cần thêm <strong className="gpa-motivate-highlight">{scoreGap.toFixed(3)} điểm xét</strong> để đạt{' '}
+          Cần thêm <strong className="gpa-motivate-highlight">{scoreGap.toFixed(3)} điểm xét</strong> để đạt{' '}
           <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
         </span>
       );
@@ -297,7 +297,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
 
     return (
       <span className="scholarship-smart-tip">
-        🎯 Phấn đấu duy trì kết quả để đạt <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
+        Phấn đấu duy trì kết quả để đạt <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
       </span>
     );
   };

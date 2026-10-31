@@ -13873,6 +13873,100 @@ p.tool-source > svg {
   color: #334155;
 }
 
+@media (max-width: 900px) {
+  .sc-page:not(.tu-page) .gpa-mobile-layout .scholarship-input-box {
+    min-height: 44px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+  }
+
+  .scholarship-m-credits-row {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .scholarship-m-credits-row .stepper-capsule {
+    height: 44px;
+    box-sizing: border-box;
+  }
+
+  .scholarship-m-credits-row .stepper-btn { width: 40px; }
+  .scholarship-m-credits-row .stepper-input { width: 40px; }
+
+  .scholarship-mobile-year-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .scholarship-mobile-year-row .scholarship-year-selector {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    flex: 1;
+    min-width: 0;
+  }
+
+  .scholarship-mobile-year-row .scholarship-year-btn {
+    min-height: 40px;
+    padding: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .scholarship-m-tuition-section .scholarship-search-input { height: 44px; }
+
+  .gpa-mobile-layout :is(.target-credit-pill-btn, .target-preset-btn, .tu-chip-btn, .cr-cls-pill) {
+    min-height: 40px;
+  }
+
+  .gpa-mobile-layout .target-credit-pills { flex-wrap: wrap; }
+
+  .gpa-mobile-layout .ct-v2-preset-btn {
+    min-height: 40px;
+    min-width: 64px;
+    font-size: 12px !important;
+  }
+
+  .gpa-mobile-layout .ct-v2-m-card-header {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .gpa-mobile-layout .ct-v2-m-card-title { text-transform: none; }
+}
+
+@media (max-width: 360px) {
+  .target-m-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .target-m-grid-3 > div:last-child { grid-column: 1 / -1; }
+  .target-m-grid-3 .target-m-field-label { min-height: 0; }
+
+  .ct-v2-m-comp-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .ct-v2-m-comp-row .ct-v2-name-cell { flex: none !important; }
+  .ct-v2-m-comp-row .ct-v2-select { max-width: none !important; width: 100%; min-height: 40px; }
+  .ct-v2-m-comp-inputs { justify-content: space-between; }
+  .ct-v2-m-comp-inputs .ct-v2-weight-box,
+  .ct-v2-m-comp-inputs .ct-v2-score-input { height: 40px !important; }
+}
+
+@media (max-width: 900px) {
+  .gpa-m-sheet .gpa-m-score-input,
+  .gpa-m-sheet-body .gpa-m-score-input {
+    height: 44px;
+    font-size: 18px;
+    padding: 6px 12px;
+    box-sizing: border-box;
+  }
+}
+
 [data-theme='dark'] .scholarship-m-tuition-title {
   color: #e2e8f0;
 }
@@ -14187,6 +14281,10 @@ p.tool-source > svg {
   display: block;
   min-height: 2.8em;
   line-height: 1.4;
+}
+
+@media (max-width: 360px) {
+  .target-m-grid-3 .target-m-field-label { min-height: 0; }
 }
 
 

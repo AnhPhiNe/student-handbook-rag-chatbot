@@ -675,11 +675,11 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                 <span className="scholarship-m-credits-title">Tín chỉ</span>
               </div>
             </div>
-            <div className="stepper-capsule" style={{ height: '36px' }}>
+            <div className="stepper-capsule" >
               <button
                 type="button"
                 className="stepper-btn"
-                style={{ width: '30px' }}
+
                 onClick={() => stepCredits(-1)}
                 aria-label="Giảm 1 tín chỉ"
               >
@@ -687,7 +687,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
               </button>
               <input
                 className="stepper-input"
-                style={{ width: '40px' }}
+
                 value={credits}
                 onChange={(e) => setCredits(sanitizeInteger(e.target.value))}
                 aria-label="Số tín chỉ"
@@ -695,7 +695,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
               <button
                 type="button"
                 className="stepper-btn"
-                style={{ width: '30px' }}
+
                 onClick={() => stepCredits(1)}
                 aria-label="Tăng 1 tín chỉ"
               >
@@ -711,11 +711,13 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
 
           {/* Ước tính số tiền trên Mobile */}
           <div className="scholarship-m-tuition-section" aria-label="Ước tính số tiền học bổng, tùy chọn">
-            <span className="scholarship-optional-tag">Tùy chọn</span>
             <div className="scholarship-tuition-head">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="scholarship-m-tuition-title">Ước tính số tiền</span>
+                <span className="scholarship-m-tuition-title">Ước tính số tiền <span className="scholarship-optional-tag">· Tùy chọn</span></span>
               </div>
+            </div>
+            <div className="scholarship-mobile-year-row">
+              <span className="scholarship-m-tuition-title">Năm học</span>
               <div className="scholarship-year-selector" role="group" aria-label="Năm học">
                 {SCHOLARSHIP_YEARS.map((y) => (
                   <button
@@ -731,6 +733,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
             </div>
             <ProgramSearch
               id={PROGRAM_INPUT_MOBILE_ID}
+              placeholder="Tìm ngành hoặc mã ngành"
               label="Ngành đào tạo"
               query={query}
               selectedProgram={selectedProgram}

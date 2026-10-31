@@ -692,7 +692,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
         {/* Thẻ 1 (Mobile): Mức Điểm Mục Tiêu */}
         <div className="ct-v2-m-card">
           <div className="ct-v2-m-card-header">
-            <span className="ct-v2-m-card-title"><span className="tool-step-badge">1</span><span>CHỌN MỨC ĐIỂM MỤC TIÊU</span></span>
+            <span className="ct-v2-m-card-title"><span className="tool-step-badge">1</span><span>Điểm mong muốn</span></span>
             <span className="ct-v2-m-card-sub">
               Mức {labelLetter} (≥ {selectedRow?.min10.toFixed(1)} hệ 10)
             </span>

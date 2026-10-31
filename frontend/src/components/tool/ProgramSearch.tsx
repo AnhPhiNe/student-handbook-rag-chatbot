@@ -6,6 +6,7 @@ interface ProgramSearchProps {
   id: string;
   label: string;
   hint?: string;
+  placeholder?: string;
   query: string;
   selectedProgram: TuitionProgram | null;
   onQueryChange: (query: string) => void;
@@ -17,6 +18,7 @@ export function ProgramSearch({
   id,
   label,
   hint,
+  placeholder = 'VD: Công nghệ thông tin hoặc 7480201',
   query,
   selectedProgram,
   onQueryChange,
@@ -61,7 +63,7 @@ export function ProgramSearch({
           autoComplete="off"
           className="scholarship-search-input"
           value={query}
-          placeholder="VD: Công nghệ thông tin hoặc 7480201"
+          placeholder={placeholder}
           aria-expanded={isOpen}
           aria-controls={listId}
           aria-autocomplete="list"

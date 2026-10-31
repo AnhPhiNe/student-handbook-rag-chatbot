@@ -1,5 +1,5 @@
-import { useRef, useState, useMemo, type KeyboardEvent } from 'react';
-import { Award, Minus, Plus, MessageCircle, RotateCcw } from 'lucide-react';
+import { useRef, useState, useMemo, useEffect, useId, type KeyboardEvent } from 'react';
+import { AlertTriangle, Award, Minus, Plus, MessageCircle, RotateCcw, Info } from 'lucide-react';
 import {
   calculateScholarshipScore,
   getFinalSemesterMinCredits,
@@ -12,7 +12,6 @@ import {
 } from '../../data/tuitionRates';
 import type { Cohort } from '../../utils/gradeScale';
 import { sanitizeDecimal, sanitizeInteger } from '../../utils/numberInput';
-import { useStudentProfile } from '../../hooks/useStudentProfile';
 import { ShareResultButton } from '../tool/ShareResultButton';
 import { scholarshipShareText } from '../../utils/shareText';
 import { ToolPageHeader } from '../tool/ToolPageHeader';
@@ -34,6 +33,74 @@ const SCHOLARSHIP_YEARS: { id: SchoolYear; label: string }[] = [
   { id: '2026-2027', label: '2026–27' },
 ];
 
+function ScholarshipConditions({ finalSemesterMin }: { finalSemesterMin: number }) {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const panelId = useId();
+
+  useEffect(() => {
+    if (!open) return;
+    const dismiss = (event: PointerEvent) => {
+      if (event.target instanceof Node && !root.current?.contains(event.target)) setOpen(false);
+    };
+    const dismissOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('pointerdown', dismiss);
+    document.addEventListener('keydown', dismissOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', dismiss);
+      document.removeEventListener('keydown', dismissOnEscape);
+    };
+  }, [open]);
+
+  return (
+    <div
+      className="scholarship-conditions"
+      ref={root}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => {
+        if (!root.current?.contains(document.activeElement)) setOpen(false);
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape') {
+          event.stopPropagation();
+          setOpen(false);
+        }
+      }}
+    >
+      <button
+        type="button"
+        className="scholarship-conditions-trigger"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onFocus={() => setOpen(true)}
+        onClick={() => setOpen(true)}
+      >
+        Điều kiện học bổng <Info size={16} aria-hidden="true" />
+      </button>
+      <div id={panelId} className="scholarship-conditions-panel" hidden={!open} role="region" aria-label="Điều kiện GPA và rèn luyện">
+        <div className="scholarship-thresholds">
+          {[...SCHOLARSHIP_RULES].reverse().map((rule) => (
+            <div className="scholarship-threshold" key={rule.label}>
+              <strong className={`scholarship-threshold-title ${rule.label === 'Khá' ? 'level-fair' : rule.label === 'Giỏi' ? 'level-good' : 'level-excellent'}`}>
+                {rule.label}
+              </strong>
+              <span>GPA ≥ {rule.minAcademicScore.toFixed(2).replace('.', ',')}</span>
+              <span>RL ≥ {rule.minConductScore}</span>
+            </div>
+          ))}
+        </div>
+        <p>Tín chỉ đăng ký: tối thiểu 15 TC. Học kỳ tốt nghiệp: tối thiểu {finalSemesterMin} TC.</p>
+        <p>RL: điểm rèn luyện. Cần đồng thời đạt các ngưỡng trên, điểm xét và điều kiện tín chỉ.</p>
+      </div>
+    </div>
+  );
+}
+
 export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
   const [academicScore, setAcademicScore] = useState('');
   const [conductScore, setConductScore] = useState('');
@@ -41,10 +108,6 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
   const [query, setQuery] = useState('');
   const [selectedProgram, setSelectedProgram] = useState<TuitionProgram | null>(null);
   const [schoolYear, setSchoolYear] = useState<SchoolYear>(DEFAULT_YEAR);
-
-  // Last semester GPA from profile for one-click fill
-  const { profile } = useStudentProfile();
-  const lastSemesterGpa = profile.lastSemesterGpa;
 
   const conductRef = useRef<HTMLInputElement | null>(null);
 
@@ -142,12 +205,12 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
       return <span className="gpa-d-result-badge tier-danger">• Chưa đạt</span>;
     }
     if (result.classification === 'Xuất sắc') {
-      return <span className="gpa-d-result-badge tier-warning">★ Đạt loại Xuất sắc</span>;
+      return <span className="gpa-d-result-badge tier-warning">Đạt loại Xuất sắc</span>;
     }
     if (result.classification === 'Giỏi') {
-      return <span className="gpa-d-result-badge tier-success">★ Đạt loại Giỏi</span>;
+      return <span className="gpa-d-result-badge tier-success">Đạt loại Giỏi</span>;
     }
-    return <span className="gpa-d-result-badge tier-info">★ Đạt loại Khá</span>;
+    return <span className="gpa-d-result-badge tier-info">Đạt loại Khá</span>;
   }, [result, gpa, conduct]);
 
   // Unified smart tip generator
@@ -155,7 +218,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (!result || gpa === null || conduct === null) {
       return (
         <span className="scholarship-smart-tip">
-          💡 Nhập GPA và điểm rèn luyện {isMobile ? 'để xem gợi ý' : 'bên trái để xem gợi ý'}
+          Nhập GPA và điểm rèn luyện {isMobile ? 'để xem gợi ý' : 'bên trái để xem gợi ý'}
         </span>
       );
     }
@@ -163,7 +226,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (isBelowMinimum) {
       return (
         <span className="scholarship-smart-tip">
-          ⚠️ Cần tối thiểu {MIN_SCHOLARSHIP_CREDITS} TC để đủ điều kiện xét học bổng
+          <AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Cần tối thiểu {MIN_SCHOLARSHIP_CREDITS} TC để đủ điều kiện xét học bổng
         </span>
       );
     }
@@ -171,7 +234,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (result.classification === 'Xuất sắc') {
       return (
         <span className="scholarship-smart-tip">
-          🎉 Bạn đã đạt mức học bổng khuyến khích cao nhất (× 1.5)
+          Bạn đã đạt mức học bổng khuyến khích cao nhất
         </span>
       );
     }
@@ -186,7 +249,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (!result.classification) {
       return (
         <span className="scholarship-smart-tip">
-          ⚠️ Cần tối thiểu GPA ≥ 2.50 và 70 điểm RL để xét học bổng
+          <AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Cần tối thiểu GPA ≥ 2.50 và 70 điểm RL để xét học bổng
         </span>
       );
     }
@@ -197,7 +260,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (gpaGap > 0 && conductGap > 0) {
       return (
         <span className="scholarship-smart-tip">
-          🎯 Cần thêm <strong className="gpa-motivate-highlight">{gpaGap.toFixed(2)} GPA</strong> và{' '}
+          Cần thêm <strong className="gpa-motivate-highlight">{gpaGap.toFixed(2)} GPA</strong> và{' '}
           <strong className="gpa-motivate-highlight">{conductGap} điểm RL</strong> để đạt{' '}
           <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
         </span>
@@ -207,7 +270,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (conductGap > 0) {
       return (
         <span className="scholarship-smart-tip">
-          🎯 Cần thêm <strong className="gpa-motivate-highlight">{conductGap} điểm {isMobile ? 'RL' : 'rèn luyện'}</strong> để đạt{' '}
+          Cần thêm <strong className="gpa-motivate-highlight">{conductGap} điểm {isMobile ? 'RL' : 'rèn luyện'}</strong> để đạt{' '}
           <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
         </span>
       );
@@ -216,7 +279,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (gpaGap > 0) {
       return (
         <span className="scholarship-smart-tip">
-          🎯 Cần thêm <strong className="gpa-motivate-highlight">{gpaGap.toFixed(2)} GPA</strong> để đạt{' '}
+          Cần thêm <strong className="gpa-motivate-highlight">{gpaGap.toFixed(2)} GPA</strong> để đạt{' '}
           <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
         </span>
       );
@@ -226,7 +289,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
     if (scoreGap > 0) {
       return (
         <span className="scholarship-smart-tip">
-          🎯 Cần thêm <strong className="gpa-motivate-highlight">{scoreGap.toFixed(3)} điểm xét</strong> để đạt{' '}
+          Cần thêm <strong className="gpa-motivate-highlight">{scoreGap.toFixed(3)} điểm xét</strong> để đạt{' '}
           <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
         </span>
       );
@@ -234,7 +297,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
 
     return (
       <span className="scholarship-smart-tip">
-        🎯 Phấn đấu duy trì kết quả để đạt <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
+        Phấn đấu duy trì kết quả để đạt <strong>{nextTier.label} (× {nextTier.multiplier})</strong>
       </span>
     );
   };
@@ -260,8 +323,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
         <div className="gpa-d-table-card">
           <div className="gpa-d-toolbar">
             <div className="gpa-d-toolbar-title">
-              <span className="gpa-d-table-heading">THÔNG TIN XÉT HỌC BỔNG</span>
-              <span className="gpa-d-table-badge">Tối thiểu 15 TC</span>
+              <span className="gpa-d-table-heading">THÔNG TIN HỌC BỔNG</span>
             </div>
             <button
               type="button"
@@ -276,25 +338,13 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
 
           <div className="scholarship-d-content">
             {/* Nhóm Điểm số chính (Phẳng hoàn toàn trên nền thẻ trắng, KHÔNG card lồng card) */}
-            <div className="scholarship-input-grid">
+            <div className="scholarship-input-grid scholarship-eligibility-grid">
               <div>
                 <div className="scholarship-input-label-row">
                   <label htmlFor="scholarship-gpa" className="scholarship-input-label">
                     <span className="tool-step-badge">1</span>
-                    <span>GPA học kỳ (Hệ 4)</span>
+                    <span>GPA học kỳ</span>
                   </label>
-                  {academicScore === '' && lastSemesterGpa && (
-                    <button
-                      type="button"
-                      className="scholarship-use-last-btn"
-                      onClick={() => {
-                        setAcademicScore(lastSemesterGpa);
-                        conductRef.current?.focus();
-                      }}
-                    >
-                      <span>↺ Lấy GPA vừa tính: <strong>{lastSemesterGpa}</strong></span>
-                    </button>
-                  )}
                 </div>
                 <div className={`scholarship-input-box ${academicError ? 'bad' : ''}`}>
                   <input
@@ -316,7 +366,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                 <div className="scholarship-input-label-row">
                   <label htmlFor="scholarship-conduct" className="scholarship-input-label">
                     <span className="tool-step-badge">2</span>
-                    <span>Điểm rèn luyện học kỳ</span>
+                    <span>Điểm rèn luyện</span>
                   </label>
                 </div>
                 <div className={`scholarship-input-box ${conductError ? 'bad' : ''}`}>
@@ -335,22 +385,10 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                 </div>
                 {conductError && <span className="scholarship-field-err">{conductError}</span>}
               </div>
-            </div>
-
-            {/* Tín chỉ đăng ký: Hàng phẳng thoáng mắt */}
-            <div className="scholarship-credits-flat-row">
-              <div>
-                <div className="scholarship-credits-label">
-                  <span className="tool-step-badge">3</span>
-                  <div>
-                    <span>Số tín chỉ đăng ký trong kỳ</span>
-                    <span className="scholarship-credits-sub" style={{ display: 'block', fontSize: '0.74rem', color: '#64748b', fontWeight: 500, marginTop: '2px' }}>
-                      Tối thiểu 15 TC (Học kỳ tốt nghiệp: {finalSemesterMin} TC)
-                    </span>
-                  </div>
-                </div>
-                
-              </div>
+              <div className="scholarship-credit-field">
+                <label className="scholarship-input-label" htmlFor="scholarship-credits">
+                  <span className="tool-step-badge">3</span><span>Tín chỉ đăng ký</span>
+                </label>
               <div className="stepper-capsule">
                 <button
                   type="button"
@@ -361,6 +399,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                   <Minus size={15} />
                 </button>
                 <input
+                  id="scholarship-credits"
                   className="stepper-input"
                   value={credits}
                   onChange={(e) => setCredits(sanitizeInteger(e.target.value))}
@@ -375,6 +414,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                   <Plus size={15} />
                 </button>
               </div>
+              </div>
             </div>
             {isBelowMinimum && (
               <p className="scholarship-credits-warn" role="status">
@@ -382,15 +422,22 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
               </p>
             )}
 
-            {/* Ước tính số tiền nhận được */}
             <div className="scholarship-tuition-section">
-              <div className="scholarship-tuition-head">
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}><span className="tool-step-badge">4</span><span className="scholarship-tuition-title">Ước tính số tiền nhận được (tùy chọn)</span></div>
-                  <span className="scholarship-tuition-sub">
-                    Chọn ngành để tính số tiền học bổng theo định mức học phí
-                  </span>
-                </div>
+              <div className="scholarship-optional-heading">
+                <span className="scholarship-tuition-title">Ước tính số tiền</span>
+                <span className="scholarship-optional-tag">· Tùy chọn</span>
+              </div>
+              <div className="scholarship-desktop-estimate-row">
+                <ProgramSearch
+                  id={PROGRAM_INPUT_ID}
+                  label="Ngành đào tạo"
+                  placeholder="Tìm ngành hoặc mã ngành"
+                  query={query}
+                  selectedProgram={selectedProgram}
+                  onQueryChange={handleQueryChange}
+                  onSelect={selectProgram}
+                  onClear={clearProgram}
+                />
                 <div className="scholarship-year-selector" role="group" aria-label="Năm học">
                   {SCHOLARSHIP_YEARS.map((y) => (
                     <button
@@ -404,15 +451,6 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                   ))}
                 </div>
               </div>
-              <ProgramSearch
-                id={PROGRAM_INPUT_ID}
-                label="Ngành đào tạo"
-                query={query}
-                selectedProgram={selectedProgram}
-                onQueryChange={handleQueryChange}
-                onSelect={selectProgram}
-                onClear={clearProgram}
-              />
             </div>
           </div>
         </div>
@@ -453,48 +491,25 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
 
             {/* Milestone Progress Bar + Gợi ý liền khối */}
             <div className="gpa-d-milestone-box">
-              <div className="gpa-d-milestone-labels">
-                <span className="gpa-milestone-blue">Khá (≥2.50 & 70đ)</span>
-                <span className="gpa-milestone-green">Giỏi (≥3.20 & 80đ)</span>
-                <span className="gpa-milestone-amber">★ Xuất sắc (≥3.60 & 90đ)</span>
+              <ScholarshipConditions finalSemesterMin={finalSemesterMin} />
+              <div className="scholarship-tier-names" aria-hidden="true">
+                <span className="gpa-milestone-blue">Khá</span>
+                <span className="gpa-milestone-green">Giỏi</span>
+                <span className="gpa-milestone-amber">Xuất sắc</span>
               </div>
-              <div className="scholarship-milestone-track">
-                <div
-                  className={`scholarship-milestone-seg seg-blue ${tierLevel >= 1 ? 'filled' : ''}`}
-                  style={{ width: '33.3%' }}
-                />
-                <div
-                  className={`scholarship-milestone-seg seg-green ${tierLevel >= 2 ? 'filled' : ''}`}
-                  style={{ width: '33.3%' }}
-                />
-                <div
-                  className={`scholarship-milestone-seg seg-amber ${tierLevel >= 3 ? 'filled' : ''}`}
-                  style={{ width: '33.4%' }}
-                />
+              <div className="scholarship-milestone-track" aria-hidden="true">
+                <div className="gpa-d-milestone-bar-fill" style={{ width: `${(tierLevel / 3) * 100}%` }} />
+                <span className="gpa-d-milestone-tick" style={{ left: '33.333%' }} />
+                <span className="gpa-d-milestone-tick" style={{ left: '66.667%' }} />
               </div>
               <div className="gpa-d-milestone-prompt scholarship-smart-prompt">
                 {renderSmartTip(false)}
               </div>
             </div>
 
-            {/* 3 Ô thống kê */}
-            <div className="gpa-d-stats-grid">
-              <div className="gpa-d-stat-box">
-                <span className="gpa-d-stat-label">Điểm xét</span>
-                <span className="gpa-d-stat-val">
-                  {result ? result.score.toFixed(3) : '--'}
-                </span>
-              </div>
-              <div className={`gpa-d-stat-box ${result?.classification ? 'passed' : ''}`}>
-                <span className="gpa-d-stat-label">Hệ số học bổng</span>
-                <span className="gpa-d-stat-val">
-                  {result?.classification
-                    ? `× ${result.multiplier === 1 ? '1.00' : result.multiplier}`
-                    : '--'}
-                </span>
-              </div>
-              <div className="gpa-d-stat-box">
-                <span className="gpa-d-stat-label">Số tiền dự kiến</span>
+            <div className="scholarship-amount-row">
+              <div className="tool-result-detail-row">
+                <span>Số tiền dự kiến</span>
                 {amount !== null ? (
                   <span
                     className="gpa-d-stat-val"
@@ -527,7 +542,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                 onClick={() => onAskChat(`Điều kiện xét học bổng khuyến khích học tập của ${cohort} là gì?`)}
               >
                 <MessageCircle size={14} aria-hidden="true" />
-                <span>Hỏi chatbot về quy chế học bổng</span>
+                <span>Hỏi về quy chế</span>
               </button>
               <ShareResultButton text={shareText} className="gpa-d-footer-link" />
             </div>
@@ -574,10 +589,6 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
               <div className="gpa-m-capsule">
                 {result ? (
                   <>
-                    <span className={`gpa-m-tier-text ${result.classification ? '' : 'tier-danger'}`}>
-                      {result.classification ? `HỆ SỐ × ${result.multiplier === 1 ? '1.00' : result.multiplier}` : 'CHƯA ĐẠT'}
-                    </span>
-                    <span className="gpa-m-sep">│</span>
                     <span className="gpa-m-stat-item">
                       Điểm xét: <strong style={{ color: '#38bdf8' }}>{result.score.toFixed(3)}</strong>
                     </span>
@@ -596,6 +607,8 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
           </div>
         </div>
 
+        <div className="scholarship-mobile-conditions"><ScholarshipConditions finalSemesterMin={finalSemesterMin} /></div>
+
         {/* Gợi ý 1 dòng thông minh trên Mobile (chỉ hiển thị khi đã có kết quả tính toán) */}
         {result && (
           <div className="scholarship-m-prompt-box">
@@ -604,21 +617,9 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
         )}
 
         {/* Thẻ nhập liệu Mobile (Phẳng hoàn toàn, không card lồng card) */}
-        <div className="scholarship-m-card">
+        <div className="scholarship-m-card scholarship-mobile-form">
           <div className="scholarship-m-card-header">
             <span className="scholarship-m-card-title">THÔNG TIN XÉT</span>
-            {academicScore === '' && lastSemesterGpa && (
-              <button
-                type="button"
-                className="scholarship-use-last-btn"
-                onClick={() => {
-                  setAcademicScore(lastSemesterGpa);
-                  conductRef.current?.focus();
-                }}
-              >
-                <span>↺ Lấy GPA vừa tính: <strong>{lastSemesterGpa}</strong></span>
-              </button>
-            )}
           </div>
 
           <div className="scholarship-input-grid">
@@ -667,15 +668,14 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span className="tool-step-badge">3</span>
               <div>
-                <span className="scholarship-m-credits-title">Số tín chỉ đăng ký:</span>
-                <span className="scholarship-m-credits-sub">Tối thiểu 15 TC (Kỳ cuối: ≥ {finalSemesterMin} TC)</span>
+                <span className="scholarship-m-credits-title">Tín chỉ</span>
               </div>
             </div>
-            <div className="stepper-capsule" style={{ height: '36px' }}>
+            <div className="stepper-capsule" >
               <button
                 type="button"
                 className="stepper-btn"
-                style={{ width: '30px' }}
+
                 onClick={() => stepCredits(-1)}
                 aria-label="Giảm 1 tín chỉ"
               >
@@ -683,7 +683,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
               </button>
               <input
                 className="stepper-input"
-                style={{ width: '40px' }}
+
                 value={credits}
                 onChange={(e) => setCredits(sanitizeInteger(e.target.value))}
                 aria-label="Số tín chỉ"
@@ -691,7 +691,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
               <button
                 type="button"
                 className="stepper-btn"
-                style={{ width: '30px' }}
+
                 onClick={() => stepCredits(1)}
                 aria-label="Tăng 1 tín chỉ"
               >
@@ -706,12 +706,14 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
           )}
 
           {/* Ước tính số tiền trên Mobile */}
-          <div className="scholarship-m-tuition-section">
+          <div className="scholarship-m-tuition-section" aria-label="Ước tính số tiền học bổng, tùy chọn">
             <div className="scholarship-tuition-head">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="tool-step-badge">4</span>
-                <span className="scholarship-m-tuition-title">Ước tính số tiền (tùy chọn)</span>
+                <span className="scholarship-m-tuition-title">Ước tính số tiền <span className="scholarship-optional-tag">· Tùy chọn</span></span>
               </div>
+            </div>
+            <div className="scholarship-mobile-year-row">
+              <span className="scholarship-m-tuition-title">Năm học</span>
               <div className="scholarship-year-selector" role="group" aria-label="Năm học">
                 {SCHOLARSHIP_YEARS.map((y) => (
                   <button
@@ -727,6 +729,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
             </div>
             <ProgramSearch
               id={PROGRAM_INPUT_MOBILE_ID}
+              placeholder="Tìm ngành hoặc mã ngành"
               label="Ngành đào tạo"
               query={query}
               selectedProgram={selectedProgram}

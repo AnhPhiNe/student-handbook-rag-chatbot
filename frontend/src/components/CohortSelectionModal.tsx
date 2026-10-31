@@ -1,3 +1,4 @@
+import { GraduationCap } from 'lucide-react';
 import type { Cohort } from '../utils/gradeScale';
 import { useAccessibleDialog } from '../hooks/useAccessibleDialog';
 
@@ -25,7 +26,7 @@ export function CohortSelectionModal({ onSelect, onDismiss }: CohortSelectionMod
         <div className="cohort-modal-header">
           {/* Fallback to simple text if logo fails or use a generic icon */}
           <div className="modal-logo-container">
-             <span className="modal-logo-icon">🎓</span>
+             <GraduationCap size={32} aria-hidden="true" />
           </div>
           <h2 id="cohort-modal-title">Chào mừng đến với Sổ tay Sinh viên</h2>
           <p>
@@ -39,7 +40,7 @@ export function CohortSelectionModal({ onSelect, onDismiss }: CohortSelectionMod
             className="cohort-option-card"
             onClick={() => onSelect('K49')}
           >
-            <div className="cohort-icon">🏛️</div>
+
             <div className="cohort-info">
               <h3>Khóa 49</h3>
               <p>Sinh viên nhập học năm 2023</p>
@@ -50,7 +51,7 @@ export function CohortSelectionModal({ onSelect, onDismiss }: CohortSelectionMod
             className="cohort-option-card"
             onClick={() => onSelect('K50')}
           >
-            <div className="cohort-icon">📚</div>
+
             <div className="cohort-info">
               <h3>Khóa 50</h3>
               <p>Sinh viên nhập học năm 2024</p>
@@ -61,7 +62,7 @@ export function CohortSelectionModal({ onSelect, onDismiss }: CohortSelectionMod
             className="cohort-option-card"
             onClick={() => onSelect('K51')}
           >
-            <div className="cohort-icon">✨</div>
+
             <div className="cohort-info">
               <h3>Khóa 51</h3>
               <p>Sinh viên nhập học năm 2025</p>
@@ -76,7 +77,7 @@ export function CohortSelectionModal({ onSelect, onDismiss }: CohortSelectionMod
         </p>
 
         <div className="cohort-modal-footer">
-          <p>💡 Bạn có thể thay đổi Khóa bất kỳ lúc nào ở góc trên bên phải màn hình.</p>
+          <p>Bạn có thể thay đổi Khóa bất kỳ lúc nào ở góc trên bên phải màn hình.</p>
         </div>
       </div>
     </div>

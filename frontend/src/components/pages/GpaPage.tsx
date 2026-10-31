@@ -411,7 +411,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
     if (!hasResult) {
       return (
         <span className="gpa-d-motivation-text">
-          💡 Nhập điểm hệ 10 ở bảng bên trái để xem dự báo học lực
+          Nhập điểm hệ 10 ở bảng bên trái để xem dự báo học lực
         </span>
       );
     }
@@ -419,7 +419,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
     if (gpa >= 3.6) {
       return (
         <span className="gpa-d-motivation-text">
-          🎉 Chúc mừng! Bạn đang đạt mức học lực <strong>Xuất sắc</strong> (≥ 3.60)
+          Bạn đạt học lực <strong>Xuất sắc</strong>
         </span>
       );
     }
@@ -427,7 +427,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
       const diff = (3.6 - gpa).toFixed(2);
       return (
         <span className="gpa-d-motivation-text">
-          🔥 Cách mức <strong className="gpa-motivate-highlight">Xuất sắc (3.60)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
+          Cách mức <strong className="gpa-motivate-highlight">Xuất sắc (3.60)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
         </span>
       );
     }
@@ -435,7 +435,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
       const diff = (3.2 - gpa).toFixed(2);
       return (
         <span className="gpa-d-motivation-text">
-          🔥 Cách mức <strong className="gpa-motivate-highlight">Giỏi (3.20)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
+          Cách mức <strong className="gpa-motivate-highlight">Giỏi (3.20)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
         </span>
       );
     }
@@ -443,14 +443,14 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
       const diff = (2.5 - gpa).toFixed(2);
       return (
         <span className="gpa-d-motivation-text">
-          🔥 Cách mức <strong className="gpa-motivate-highlight">Khá (2.50)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
+          Cách mức <strong className="gpa-motivate-highlight">Khá (2.50)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
         </span>
       );
     }
     const diff = (2.0 - gpa).toFixed(2);
     return (
       <span className="gpa-d-motivation-text">
-        🔥 Cách mức <strong className="gpa-motivate-highlight">Trung bình (2.00)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
+        Cách mức <strong className="gpa-motivate-highlight">Trung bình (2.00)</strong> còn <strong className="gpa-motivate-highlight">+{diff}</strong> điểm
       </span>
     );
   }, [hasResult, result.gpa]);
@@ -499,13 +499,14 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
           </div>
 
           {/* BẢNG 4 CỘT CÂN ĐỐI (26% | 24% | 24% | 26%) */}
-          <table className="gpa-d-table">
+          <table className="gpa-d-table gpa-d-course-table">
             <thead className="gpa-d-thead">
               <tr>
                 <th style={{ width: '26%', paddingLeft: '1.25rem' }}>Môn học</th>
-                <th style={{ width: '24%', textAlign: 'center' }}>Tín chỉ</th>
-                <th style={{ width: '24%', textAlign: 'center' }}>Điểm hệ 10</th>
-                <th style={{ width: '26%', paddingRight: '1.25rem', textAlign: 'right' }}>Quy đổi</th>
+                <th style={{ width: '22%', textAlign: 'center' }}>Tín chỉ</th>
+                <th style={{ width: '22%', textAlign: 'center' }}>Điểm hệ 10</th>
+                <th style={{ width: '24%', textAlign: 'center' }}>Quy đổi</th>
+                <th className="gpa-d-delete-cell"><span className="sr-only">Xóa môn</span></th>
               </tr>
             </thead>
             <tbody className="gpa-d-tbody">
@@ -602,9 +603,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                         {isScoreErr && <span className="gpa-d-error-tag">0 – 10 đ</span>}
                       </div>
                     </td>
-                    {/* Cột 4: QUY ĐỔI & XÓA (Căn phải) */}
-                    <td style={{ paddingRight: '1.25rem', textAlign: 'right' }}>
-                      <div className="gpa-d-convert-cluster">
+                    <td style={{ textAlign: 'center' }}>
                         {grade && !isScoreErr && !isCreditsErr ? (
                           <span className={`gpa-d-grade-badge ${getGradeBadgeClass(grade)}`}>
                             <span>{grade.letter}</span>
@@ -616,6 +615,8 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                           </span>
                         )}
 
+                    </td>
+                    <td className="gpa-d-delete-cell">
                         <button
                           type="button"
                           className="gpa-d-del-btn"
@@ -626,7 +627,6 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                         >
                           <Trash2 size={15} />
                         </button>
-                      </div>
                     </td>
                   </tr>
                 );
@@ -656,7 +656,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
               </div>
               {hasResult && academicTier ? (
                 <span className={`gpa-d-result-badge tier-${academicTier.tone}`}>
-                  ★ Học lực {academicTier.label}
+                  Học lực {academicTier.label}
                 </span>
               ) : (
                 <span className="gpa-d-result-badge unranked">
@@ -696,23 +696,18 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
             {/* Khung Thanh Tiến Độ Cột Mốc Học Lực */}
             <div className="gpa-d-milestone-box">
               <div className="gpa-d-milestone-labels">
-                <span>0.0</span>
-                <span>TB 2.0</span>
-                <span className="gpa-milestone-blue">Khá 2.5</span>
-                <span className="gpa-milestone-green">Giỏi 3.2</span>
-                <span className="gpa-milestone-amber">XS 3.6</span>
-              </div>
-
-              <div className="gpa-d-milestone-bar-wrap">
-                <div
-                  className="gpa-d-milestone-bar-fill"
-                  style={{ width: `${progressPercent}%` }}
-                />
-                <div className="gpa-d-milestone-tick" style={{ left: '50%' }} title="Trung bình (2.0)" />
-                <div className="gpa-d-milestone-tick" style={{ left: '62.5%' }} title="Khá (2.5)" />
-                <div className="gpa-d-milestone-tick" style={{ left: '80%' }} title="Giỏi (3.2)" />
-                <div className="gpa-d-milestone-tick" style={{ left: '90%' }} title="Xuất sắc (3.6)" />
-              </div>
+                  <span>0.0</span><span>TB 2.0</span>
+                  <span className="gpa-milestone-blue">Khá 2.5</span>
+                  <span className="gpa-milestone-green">Giỏi 3.2</span>
+                  <span className="gpa-milestone-amber">XS 3.6</span>
+                </div>
+                <div className="gpa-d-milestone-bar-wrap">
+                  <div className="gpa-d-milestone-bar-fill" style={{ width: `${progressPercent}%` }} />
+                  <div className="gpa-d-milestone-tick" style={{ left: '50%' }} title="Trung bình (2.0)" />
+                  <div className="gpa-d-milestone-tick" style={{ left: '62.5%' }} title="Khá (2.5)" />
+                  <div className="gpa-d-milestone-tick" style={{ left: '80%' }} title="Giỏi (3.2)" />
+                  <div className="gpa-d-milestone-tick" style={{ left: '90%' }} title="Xuất sắc (3.6)" />
+                </div>
 
               <div className="gpa-d-milestone-prompt">
                 {milestoneMotivation}
@@ -740,7 +735,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
             {/* Thanh Tính điểm xét học bổng 1 dòng duy nhất */}
             <div className="gpa-d-scholarship-prompt">
               <div className="gpa-d-scholarship-left">
-                <span>🎓</span>
+
                 <span>Đủ điều kiện xét học bổng?</span>
               </div>
               <button
@@ -802,7 +797,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
               {hasResult && academicTier ? (
                 <div className="gpa-m-capsule">
                   <span className={`gpa-m-tier-text tier-${academicTier.tone}`}>
-                    ★ {academicTier.label}
+                    {academicTier.label}
                   </span>
                   <span className="gpa-m-sep">│</span>
                   <span className="gpa-m-stat-item">
@@ -838,7 +833,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
           {hasResult && result.gpa >= 2.5 && (
             <div className="gpa-m-scholarship-banner">
               <div className="gpa-d-scholarship-left">
-                <span>🎓</span>
+
                 <span>Đủ điều kiện xét học bổng?</span>
               </div>
               <button

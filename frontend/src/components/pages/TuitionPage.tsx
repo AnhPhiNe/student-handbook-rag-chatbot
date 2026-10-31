@@ -161,7 +161,7 @@ export function TuitionPage({ onAskChat }: TuitionPageProps) {
           <GraduationCap size={18} aria-hidden="true" className="tu-nd116-icon" />
           <div>
             <div>
-              🎓 <b>Lưu ý sinh viên Sư phạm:</b> Nếu được duyệt hưởng <b>Nghị định 116</b>, bạn sẽ được Nhà nước hỗ trợ 100% học phí chính thức và 3,63 triệu đồng/tháng sinh hoạt phí (có điều kiện bồi hoàn).
+              <b>Lưu ý sinh viên Sư phạm:</b> Nếu được duyệt hưởng <b>Nghị định 116</b>, bạn sẽ được Nhà nước hỗ trợ 100% học phí chính thức và 3,63 triệu đồng/tháng sinh hoạt phí (có điều kiện bồi hoàn).
             </div>
             <button type="button" className="tu-nd116-ask" onClick={() => onAskChat(DECREE_116_QUESTION)}>
               <MessageCircle size={13} aria-hidden="true" />
@@ -232,11 +232,7 @@ export function TuitionPage({ onAskChat }: TuitionPageProps) {
               <div className="gpa-d-gpa10-pill">
                 <span className="gpa-d-gpa10-label">
                   {estimate ? (
-                    hasRetake ? (
-                      `Gồm kỳ ${plainAmount(estimate.semester)} đ + học lại ${plainAmount(estimate.extra)} đ`
-                    ) : (
-                      `Năm học ${schoolYear.replace('-20', '–')}`
-                    )
+                    `Năm học ${schoolYear.replace('-20', '–')}`
                   ) : (
                     'Chọn ngành đào tạo bên trái để tính'
                   )}
@@ -244,29 +240,31 @@ export function TuitionPage({ onAskChat }: TuitionPageProps) {
               </div>
             </div>
 
-            {/* 4 Stats Grid */}
             {estimate && (
-              <div className="tu-stats-grid">
-                <div className="tu-stat-card">
-                  <span className="tu-stat-label">Học phí cả năm</span>
-                  <span className="tu-stat-val">{formatVnd(estimate.annual)}</span>
-                </div>
-                <div className="tu-stat-card">
-                  <span className="tu-stat-label">Học lại / cải thiện</span>
-                  <span className="tu-stat-val">{formatVnd(estimate.perCredit)} / TC</span>
-                </div>
-                <div className="tu-stat-card">
-                  <span className="tu-stat-label">Tiền học lại phát sinh</span>
-                  <span className="tu-stat-val" style={{ color: hasRetake ? 'var(--brand-primary, #3b82f6)' : 'inherit' }}>
-                    {hasRetake ? `+ ${formatVnd(estimate.extra)}` : '0 đ'}
-                  </span>
-                </div>
-                <div className="tu-stat-card">
-                  <span className="tu-stat-label">Tổng học kỳ dự tính</span>
-                  <span className="tu-stat-val" style={{ color: 'var(--brand-primary, #3b82f6)' }}>
-                    {formatVnd(estimate.total)}
-                  </span>
-                </div>
+              <div className="tu-result-breakdown">
+                {hasRetake && (
+                  <div className="tool-result-detail-row">
+                    <span>Học phí kỳ chính</span>
+                    <strong>{formatVnd(estimate.semester)}</strong>
+                  </div>
+                )}
+                {hasRetake && (
+                  <div className="tool-result-detail-row">
+                    <span>Học lại / cải thiện</span>
+                    <strong>+ {formatVnd(estimate.extra)}</strong>
+                  </div>
+                )}
+                <details className="tool-result-details">
+                  <summary>Chi tiết học phí</summary>
+                  <div className="tool-result-detail-row">
+                    <span>Học phí cả năm</span>
+                    <strong>{formatVnd(estimate.annual)}</strong>
+                  </div>
+                  <div className="tool-result-detail-row">
+                    <span>Đơn giá học lại</span>
+                    <strong>{formatVnd(estimate.perCredit)} / TC</strong>
+                  </div>
+                </details>
               </div>
             )}
 
@@ -275,7 +273,7 @@ export function TuitionPage({ onAskChat }: TuitionPageProps) {
             </p>
 
             {shareText && (
-              <div className="sc-foot" style={{ marginTop: '14px' }}>
+              <div className="sc-foot tu-share-footer">
                 <ShareResultButton text={shareText} className="sc-link" />
               </div>
             )}

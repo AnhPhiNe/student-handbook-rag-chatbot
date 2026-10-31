@@ -155,7 +155,7 @@ export function ChatInput({ onSend, disabled, hasError = false, initialText, pla
       {queuedMessage && (
         <div className="queued-message-banner" style={showLimitWarning ? { backgroundColor: '#fee2e2', borderColor: '#ef4444' } : {}}>
           <div className="queued-message-text" title={queuedMessage} style={showLimitWarning ? { color: '#b91c1c' } : {}}>
-            {showLimitWarning ? '⚠️ Hàng đợi đã đầy:' : '⏳ Đang chờ gửi:'} "{queuedMessage.length > 40 ? queuedMessage.slice(0, 40) + '...' : queuedMessage}"
+            {showLimitWarning ? 'Hàng đợi đã đầy:' : 'Đang chờ gửi:'} "{queuedMessage.length > 40 ? queuedMessage.slice(0, 40) + '...' : queuedMessage}"
           </div>
           <button 
             type="button" 

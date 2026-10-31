@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { ArrowUpRight, BookOpen, Plus, RotateCcw, Target, Trash2 } from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, BookOpen, Plus, RotateCcw, Target, Trash2 } from 'lucide-react';
 import {
   getCourseGroupOptions,
   getDefaultCourseGroup,
@@ -178,18 +178,18 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
       return <span className="gpa-d-result-badge unranked">• Chờ nhập liệu</span>;
     }
     if (result.hasWeightOverflow) {
-      return <span className="gpa-d-result-badge tier-danger">⚠️ Lỗi trọng số</span>;
+      return <span className="gpa-d-result-badge tier-danger"><AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Lỗi trọng số</span>;
     }
     if (target?.status === 'achieved') {
       return <span className="gpa-d-result-badge tier-success">✓ Đã đủ điểm</span>;
     }
     if (target?.status === 'impossible') {
-      return <span className="gpa-d-result-badge tier-danger">⚠️ Không thể đạt</span>;
+      return <span className="gpa-d-result-badge tier-danger"><AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Không thể đạt</span>;
     }
     if (isHard) {
-      return <span className="gpa-d-result-badge tier-warning">⚡ Cần cố gắng</span>;
+      return <span className="gpa-d-result-badge tier-warning">Cần cố gắng</span>;
     }
-    return <span className="gpa-d-result-badge tier-success">★ Khả thi</span>;
+    return <span className="gpa-d-result-badge tier-success">Khả thi</span>;
   }, [result.isReady, result.hasWeightOverflow, target, isHard]);
 
   // Milestone Prompt for Bottom of Right Card Milestone Box
@@ -197,35 +197,35 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
     if (!result.isReady) {
       return (
         <span className="gpa-d-motivation-text">
-          💡 Nhập điểm các cột thành phần để xem điểm thi cần đạt
+          Nhập điểm các cột thành phần để xem điểm thi cần đạt
         </span>
       );
     }
     if (result.hasWeightOverflow) {
       return (
         <span className="gpa-d-motivation-text" style={{ color: '#ef4444' }}>
-          ⚠️ Tổng trọng số vượt quá 100%, vui lòng kiểm tra lại
+          <AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Tổng trọng số vượt quá 100%, vui lòng kiểm tra lại
         </span>
       );
     }
     if (passTarget?.status === 'achieved') {
       return (
         <span className="gpa-d-motivation-text">
-          🎉 Bạn đã tích lũy đủ điểm qua môn ngay cả khi thi 0 điểm
+          Bạn đã tích lũy đủ điểm qua môn ngay cả khi thi 0 điểm
         </span>
       );
     }
     if (passTarget?.status === 'possible') {
       return (
         <span className="gpa-d-motivation-text">
-          💡 Thi cuối kỳ từ <strong className="gpa-motivate-highlight">{fmt(passTarget.requiredScore ?? 0)} điểm</strong> là đủ qua môn (tổng kết điểm {passRow?.letter} ≥ {passRow?.min10.toFixed(1)})
+          Thi cuối kỳ từ <strong className="gpa-motivate-highlight">{fmt(passTarget.requiredScore ?? 0)} điểm</strong> là đủ qua môn (tổng kết điểm {passRow?.letter} ≥ {passRow?.min10.toFixed(1)})
         </span>
       );
     }
     if (passTarget?.status === 'impossible') {
       return (
         <span className="gpa-d-motivation-text" style={{ color: '#ef4444' }}>
-          ⚠️ Điểm tích lũy chưa đủ qua môn kể cả khi thi 10 điểm
+          <AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Điểm tích lũy chưa đủ qua môn kể cả khi thi 10 điểm
         </span>
       );
     }
@@ -555,10 +555,10 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
 
             {/* Khung Chọn Mức Điểm Chữ 7 Mức & Tóm Tắt */}
             <div className="gpa-d-milestone-box">
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.72rem', fontWeight: 700 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span className="tool-step-badge">2</span><span style={{ color: 'var(--text-muted, #64748B)' }}>CHỌN MỨC ĐIỂM MUỐN ĐẠT:</span></div>
+              <div className="ct-target-heading">
+                <div className="ct-target-heading-label"><span className="tool-step-badge">2</span><span>Điểm mong muốn</span></div>
                 <span style={{ color: result.isReady ? '#059669' : 'var(--text-muted, #64748B)', fontWeight: 800 }}>
-                  Khả thi tối đa: {result.isReady && bestReachable ? `Mức ${bestReachable.grade.letter}` : '—'}
+                  Tối đa: {result.isReady ? (bestReachable ? bestReachable.grade.letter : 'Chưa đạt') : '—'}
                 </span>
               </div>
 
@@ -594,26 +594,11 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               </div>
             </div>
 
-            {/* 3 Ô Thống Kê Gọn Gàng */}
-            <div className="gpa-d-stats-grid">
-              <div className="gpa-d-stat-box">
-                <span className="gpa-d-stat-label">Điểm quá trình</span>
-                <span className="gpa-d-stat-val">
-                  {result.isReady ? `${fmt(result.accumulatedScore)} đ` : '—'}
-                </span>
-              </div>
-              <div className="gpa-d-stat-box passed">
-                <span className="gpa-d-stat-label">Tỷ lệ thi CK</span>
-                <span className="gpa-d-stat-val" style={{ color: result.hasWeightOverflow ? '#ef4444' : '#059669' }}>
-                  {result.hasWeightOverflow ? '—' : `${result.remainingWeight}%`}
-                </span>
-              </div>
-              <div className="gpa-d-stat-box">
-                <span className="gpa-d-stat-label">Đạt tối đa</span>
-                <span className="gpa-d-stat-val">
-                  {result.isReady ? (bestReachable ? `Mức ${bestReachable.grade.letter}` : 'Rớt môn') : '—'}
-                </span>
-              </div>
+            <div className="ct-contribution-row">
+              <span>Điểm đã đóng góp</span>
+              <strong>
+                {result.isReady ? `${fmt(result.accumulatedScore).replace('.', ',')} / 10` : '—'}
+              </strong>
             </div>
 
             {/* Footer */}
@@ -707,7 +692,7 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
         {/* Thẻ 1 (Mobile): Mức Điểm Mục Tiêu */}
         <div className="ct-v2-m-card">
           <div className="ct-v2-m-card-header">
-            <span className="ct-v2-m-card-title"><span className="tool-step-badge">1</span><span>CHỌN MỨC ĐIỂM MỤC TIÊU</span></span>
+            <span className="ct-v2-m-card-title"><span className="tool-step-badge">1</span><span>Điểm mong muốn</span></span>
             <span className="ct-v2-m-card-sub">
               Mức {labelLetter} (≥ {selectedRow?.min10.toFixed(1)} hệ 10)
             </span>

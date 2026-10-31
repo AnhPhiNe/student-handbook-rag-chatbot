@@ -241,7 +241,7 @@ export function WelcomeCurtain({ onComplete }: WelcomeCurtainProps) {
 
             {/* Tiêu đề thư */}
             <h1 className="welcome-letter-title">
-              Chào Mừng Bạn Đến Với Sổ Tay Sinh Viên
+              Chào Mừng Bạn Đến Với HCMUE!
             </h1>
             <div className="welcome-letter-sub">
               (Dành cho Tân sinh viên K52 & Khóa 49 · 50 · 51)

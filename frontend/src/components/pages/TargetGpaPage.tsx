@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { useAnimatedNumber } from '../../hooks/useAnimatedNumber';
 import {
   TrendingUp,
+  Target,
+  GraduationCap,
   Trash2,
   RotateCcw,
   BookOpen,
@@ -496,7 +498,6 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
           <div className="gpa-d-toolbar">
             <div className="gpa-d-toolbar-title">
               <span className="gpa-d-table-heading">THIẾT LẬP MỤC TIÊU</span>
-              <span className="gpa-d-table-badge">3 chế độ</span>
             </div>
 
             <button
@@ -522,7 +523,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                 className={`target-gpa-tab-item ${activeTab === 'term' ? 'active' : ''}`}
                 onClick={() => setActiveTab('term')}
               >
-                <span>🎯</span> <span>1 học kỳ tới</span>
+                <Target size={16} aria-hidden="true" /> <span>Mục tiêu kỳ tới</span>
               </button>
               <button
                 type="button"
@@ -531,7 +532,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                 className={`target-gpa-tab-item ${activeTab === 'retake' ? 'active' : ''}`}
                 onClick={() => setActiveTab('retake')}
               >
-                <span>⚡</span> <span>Cải thiện môn</span>
+                <TrendingUp size={16} aria-hidden="true" /> <span>Học cải thiện</span>
               </button>
               <button
                 type="button"
@@ -540,7 +541,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                 className={`target-gpa-tab-item ${activeTab === 'roadmap' ? 'active' : ''}`}
                 onClick={() => setActiveTab('roadmap')}
               >
-                <span>🎓</span> <span>Lộ trình ra trường</span>
+                <GraduationCap size={16} aria-hidden="true" /> <span>Mục tiêu tốt nghiệp</span>
               </button>
             </div>
 
@@ -548,7 +549,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
             <div className="target-section-box">
               <div className="target-section-heading">
                 <span className="tool-step-badge">1</span>
-                <span>Điểm hiện tại</span>
+                <span>Kết quả tích lũy</span>
               </div>
 
               {activeTab !== 'roadmap' ? (
@@ -660,8 +661,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
               <div className="target-section-box target-plan-panel">
                 <div className="target-section-header-row">
                   <div>
-                    <div className="target-section-heading"><span className="tool-step-badge">2</span><span>Mục tiêu sau học kỳ tới</span></div>
-                    <span className="target-section-sub">GPA tích lũy mong muốn</span>
+                    <div className="target-section-heading"><span className="tool-step-badge">2</span><span>GPA tích lũy muốn đạt</span></div>
                   </div>
                   {/* Cụm nút tăng/giảm kiêm ô nhập trực tiếp [ - | 3.60 / 4.00 | + ] */}
                   <div className="target-gpa-stepper-box">
@@ -1319,8 +1319,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
             className={`target-m-tab-btn ${activeTab === 'term' ? 'active' : ''}`}
             onClick={() => setActiveTab('term')}
           >
-            <span>🎯</span>
-            <span>1 kỳ tới</span>
+            <Target size={16} aria-hidden="true" />
+            <span>Mục tiêu kỳ tới</span>
           </button>
           <button
             type="button"
@@ -1329,8 +1329,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
             className={`target-m-tab-btn ${activeTab === 'retake' ? 'active' : ''}`}
             onClick={() => setActiveTab('retake')}
           >
-            <span>⚡</span>
-            <span>Cải thiện</span>
+            <TrendingUp size={16} aria-hidden="true" />
+            <span>Học cải thiện</span>
           </button>
           <button
             type="button"
@@ -1339,8 +1339,8 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
             className={`target-m-tab-btn ${activeTab === 'roadmap' ? 'active' : ''}`}
             onClick={() => setActiveTab('roadmap')}
           >
-            <span>🎓</span>
-            <span>Ra trường</span>
+            <GraduationCap size={16} aria-hidden="true" />
+            <span>Mục tiêu tốt nghiệp</span>
           </button>
         </div>
 
@@ -1402,7 +1402,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
                 ) : (
                   <div className="gpa-m-capsule empty">
                     <span className="gpa-m-stat-item" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                      {targetGradGpaError ?? roadmapInputHint}
+                      {targetGpaError ?? 'Nhập GPA tích lũy và tín chỉ bên dưới'}
                     </span>
                   </div>
                 )
@@ -1456,7 +1456,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
         {/* THẺ 1 (Thẻ trắng riêng biệt): 1. Tích lũy hiện tại */}
         <div className="target-m-card">
           <div className="target-m-card-header">
-            <span className="target-m-card-title"><span className="tool-step-badge">1</span><span>Tích lũy hiện tại</span></span>
+            <span className="target-m-card-title"><span className="tool-step-badge">1</span><span>Kết quả tích lũy</span></span>
           </div>
 
           {activeTab !== 'roadmap' ? (
@@ -1564,7 +1564,7 @@ export function TargetGpaPage({ cohort = 'K49' }: TargetGpaPageProps) {
           {activeTab === 'term' && (
             <div className="target-m-card">
               <div className="target-m-card-header">
-                <span className="target-m-card-title"><span className="tool-step-badge">2</span><span>Mục tiêu GPA kỳ tới</span></span>
+                <span className="target-m-card-title"><span className="tool-step-badge">2</span><span>GPA tích lũy muốn đạt</span></span>
                 <div className="target-gpa-stepper-box" style={{ height: '32px' }}>
                   <button
                     type="button"

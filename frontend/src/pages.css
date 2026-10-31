@@ -14332,6 +14332,29 @@ p.tool-source > svg {
   gap: 1.25rem;
 }
 
+.target-gpa-tab-item > svg,
+.target-m-tab-btn > svg { flex-shrink: 0; }
+
+.target-gpa-tab-item {
+  min-height: 44px;
+  white-space: normal;
+}
+
+@media (max-width: 900px) {
+  .target-m-tab-btn {
+    min-width: 0;
+    min-height: 64px;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 4px;
+    white-space: normal;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .target-m-tab-btn > span { white-space: normal; }
+}
+
 .target-m-grid-3 .target-m-field-label {
   display: block;
   min-height: 2.8em;

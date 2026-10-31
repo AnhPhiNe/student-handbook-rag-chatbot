@@ -13248,11 +13248,7 @@ p.tool-source > svg {
   width: 0;
 }
 
-.scholarship-credit-note {
-  font-size: 13px;
-  color: var(--text-secondary, #64748b);
-  margin: -8px 0 0;
-}
+
 
 .scholarship-d-content .scholarship-tuition-section {
   border: 0;
@@ -13269,6 +13265,24 @@ p.tool-source > svg {
 .scholarship-d-content .scholarship-tuition-head {
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.scholarship-desktop-estimate-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+}
+
+.scholarship-desktop-estimate-row .tool-control { min-width: 0; }
+.scholarship-desktop-estimate-row .scholarship-search-input { height: 44px; }
+.scholarship-desktop-estimate-row .scholarship-year-selector { box-sizing: border-box; min-height: 44px; }
+.scholarship-desktop-estimate-row .scholarship-year-btn { min-height: 38px; min-width: 72px; font-size: 12px; }
+
+@media (min-width: 901px) and (max-width: 1150px) {
+  .gpa-desktop-layout:has(.scholarship-desktop-estimate-row) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .scholarship-optional-heading {

@@ -323,8 +323,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
         <div className="gpa-d-table-card">
           <div className="gpa-d-toolbar">
             <div className="gpa-d-toolbar-title">
-              <span className="gpa-d-table-heading">THÔNG TIN XÉT HỌC BỔNG</span>
-              <span className="gpa-d-table-badge">Tối thiểu 15 TC</span>
+              <span className="gpa-d-table-heading">THÔNG TIN HỌC BỔNG</span>
             </div>
             <button
               type="button"
@@ -417,22 +416,28 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
               </div>
               </div>
             </div>
-            <p className="scholarship-credit-note">Tối thiểu 15 TC · Học kỳ tốt nghiệp: {finalSemesterMin} TC</p>
             {isBelowMinimum && (
               <p className="scholarship-credits-warn" role="status">
                 Cần tối thiểu {MIN_SCHOLARSHIP_CREDITS} TC để đủ điều kiện xét học bổng (học kỳ tốt nghiệp: {finalSemesterMin} TC).
               </p>
             )}
 
-            {/* Ước tính số tiền nhận được */}
             <div className="scholarship-tuition-section">
-              <div className="scholarship-tuition-head">
-                <div>
-                  <div className="scholarship-optional-heading"><span className="scholarship-tuition-title">Ước tính số tiền</span><span className="scholarship-optional-tag">Tùy chọn</span></div>
-                  <span className="scholarship-tuition-sub">
-                    Chọn ngành và năm học áp dụng.
-                  </span>
-                </div>
+              <div className="scholarship-optional-heading">
+                <span className="scholarship-tuition-title">Ước tính số tiền</span>
+                <span className="scholarship-optional-tag">· Tùy chọn</span>
+              </div>
+              <div className="scholarship-desktop-estimate-row">
+                <ProgramSearch
+                  id={PROGRAM_INPUT_ID}
+                  label="Ngành đào tạo"
+                  placeholder="Tìm ngành hoặc mã ngành"
+                  query={query}
+                  selectedProgram={selectedProgram}
+                  onQueryChange={handleQueryChange}
+                  onSelect={selectProgram}
+                  onClear={clearProgram}
+                />
                 <div className="scholarship-year-selector" role="group" aria-label="Năm học">
                   {SCHOLARSHIP_YEARS.map((y) => (
                     <button
@@ -446,15 +451,6 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                   ))}
                 </div>
               </div>
-              <ProgramSearch
-                id={PROGRAM_INPUT_ID}
-                label="Ngành đào tạo"
-                query={query}
-                selectedProgram={selectedProgram}
-                onQueryChange={handleQueryChange}
-                onSelect={selectProgram}
-                onClear={clearProgram}
-              />
             </div>
           </div>
         </div>

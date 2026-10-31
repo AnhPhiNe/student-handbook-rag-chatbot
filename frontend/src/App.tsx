@@ -22,6 +22,8 @@ import { BottomTabBar } from './components/BottomTabBar';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { CohortSelectionModal } from './components/CohortSelectionModal';
+import { WelcomeCurtain } from './components/WelcomeCurtain';
+import { WELCOME_ENTRANCE_STORAGE_KEY, shouldShowWelcomeEntrance } from './utils/welcomeEntrance';
 import { CohortSheet } from './components/CohortSheet';
 import { ChatMaintenanceModal } from './components/ChatMaintenanceModal';
 import { SystemStatusBadge } from './components/SystemStatusBadge';
@@ -66,6 +68,12 @@ function App() {
   const [isCohortSheetOpen, setIsCohortSheetOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isCohortModalDismissed, setIsCohortModalDismissed] = useState(false);
+  const [hasSeenWelcome, setHasSeenWelcome] = useLocalStorage<boolean>(WELCOME_ENTRANCE_STORAGE_KEY, false);
+  const [isWelcomeActive, setIsWelcomeActive] = useState(() => shouldShowWelcomeEntrance(hasSeenWelcome));
+  const handleWelcomeComplete = () => {
+    setHasSeenWelcome(true);
+    setIsWelcomeActive(false);
+  };
   const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false);
   const contentAreaRef = useRef<HTMLDivElement>(null);
   
@@ -253,7 +261,11 @@ function App() {
             />
           )}
 
-          {!storedCohort && !isCohortModalDismissed && (
+          {isWelcomeActive && (
+            <WelcomeCurtain onComplete={handleWelcomeComplete} />
+          )}
+
+          {!isWelcomeActive && !storedCohort && !isCohortModalDismissed && (
             <CohortSelectionModal
               onSelect={setCohort}
               onDismiss={() => setIsCohortModalDismissed(true)}

@@ -79,6 +79,7 @@ exports.createHarness = function ({ mobile = false } = {}) {
       if(name.includes('features'))return {IS_CHAT_MAINTENANCE:false,SHOW_EXPERIENCE_PAGE:false};
       if(name.includes('cohortNotice'))return {shouldNotifyCohortChange:()=>false,KEPT_DATA_NOTES:{}};
       if(name.includes('recentTool'))return {readRecentTool:()=>null};
+      if(name.includes('welcomeEntrance'))return {WELCOME_ENTRANCE_STORAGE_KEY:'hcmue-welcome-entrance-seen',shouldShowWelcomeEntrance:()=>false};
       if(name.includes('gradeScale'))return {normalizeFrontendCohort:x=>x};
       if(name.endsWith('/useChat') && file.endsWith('App.tsx'))return {useChat:()=>fakeChat};
       const target=path.resolve(path.dirname(file),name);

@@ -546,7 +546,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
                 onClick={() => onAskChat(`Điều kiện xét học bổng khuyến khích học tập của ${cohort} là gì?`)}
               >
                 <MessageCircle size={14} aria-hidden="true" />
-                <span>Hỏi chatbot về quy chế học bổng</span>
+                <span>Hỏi về quy chế</span>
               </button>
               <ShareResultButton text={shareText} className="gpa-d-footer-link" />
             </div>

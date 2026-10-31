@@ -323,7 +323,7 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
                 onClick={() => onAskChat(DOWNGRADE_QUESTION)}
               >
                 <MessageCircle size={14} aria-hidden="true" />
-                <span>Hỏi chatbot về quy chế hạ bằng ↗</span>
+                <span>Hỏi về quy chế</span>
               </button>
               <ShareResultButton text={shareText} className="cr-share-link" />
             </div>

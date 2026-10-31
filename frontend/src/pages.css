@@ -11695,9 +11695,25 @@ p.tool-source > svg {
 .sc-foot { gap: 16px; flex-wrap: wrap; }
 .tool-share-btn { gap: 5px; }
 .target-gpa-footer-pill.tool-share-btn { gap: 0.5rem; }
-.gpa-d-result-footer { flex-wrap: wrap; gap: 0.35rem 0.75rem; }
+.gpa-d-result-footer { flex-wrap: wrap; gap: 8px 16px; }
 .gpa-d-result-footer .gpa-d-footer-link { white-space: nowrap; }
 .gpa-d-result-footer .gpa-d-footer-watermark { margin-left: auto; white-space: nowrap; }
+
+.gpa-page-wrapper :is(.gpa-d-result-footer, .ct-v2-m-footer-actions, .sc-foot) :is(.gpa-d-footer-link, .cr-share-link, .sc-link) {
+  min-height: 32px;
+  line-height: 1.4;
+}
+
+.gpa-page-wrapper .ct-v2-m-footer-actions {
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+@media (max-width: 900px) {
+  .gpa-page-wrapper .gpa-mobile-layout :is(.gpa-d-footer-link, .cr-share-link, .sc-link) {
+    min-height: 40px;
+  }
+}
 /* Mobile hero cards are dark in both themes */
 .tool-share-hero {
   display: inline-flex;

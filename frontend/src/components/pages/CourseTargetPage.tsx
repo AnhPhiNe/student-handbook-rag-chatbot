@@ -555,10 +555,10 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
 
             {/* Khung Chọn Mức Điểm Chữ 7 Mức & Tóm Tắt */}
             <div className="gpa-d-milestone-box">
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.72rem', fontWeight: 700 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span className="tool-step-badge">2</span><span style={{ color: 'var(--text-muted, #64748B)' }}>CHỌN MỨC ĐIỂM MUỐN ĐẠT:</span></div>
+              <div className="ct-target-heading">
+                <div className="ct-target-heading-label"><span className="tool-step-badge">2</span><span>Điểm mong muốn</span></div>
                 <span style={{ color: result.isReady ? '#059669' : 'var(--text-muted, #64748B)', fontWeight: 800 }}>
-                  Khả thi tối đa: {result.isReady && bestReachable ? `Mức ${bestReachable.grade.letter}` : '—'}
+                  Tối đa: {result.isReady ? (bestReachable ? bestReachable.grade.letter : 'Chưa đạt') : '—'}
                 </span>
               </div>
 
@@ -594,26 +594,11 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
               </div>
             </div>
 
-            {/* 3 Ô Thống Kê Gọn Gàng */}
-            <div className="gpa-d-stats-grid">
-              <div className="gpa-d-stat-box">
-                <span className="gpa-d-stat-label">Điểm quá trình</span>
-                <span className="gpa-d-stat-val">
-                  {result.isReady ? `${fmt(result.accumulatedScore)} đ` : '—'}
-                </span>
-              </div>
-              <div className="gpa-d-stat-box passed">
-                <span className="gpa-d-stat-label">Tỷ lệ thi CK</span>
-                <span className="gpa-d-stat-val" style={{ color: result.hasWeightOverflow ? '#ef4444' : '#059669' }}>
-                  {result.hasWeightOverflow ? '—' : `${result.remainingWeight}%`}
-                </span>
-              </div>
-              <div className="gpa-d-stat-box">
-                <span className="gpa-d-stat-label">Đạt tối đa</span>
-                <span className="gpa-d-stat-val">
-                  {result.isReady ? (bestReachable ? `Mức ${bestReachable.grade.letter}` : 'Rớt môn') : '—'}
-                </span>
-              </div>
+            <div className="ct-contribution-row">
+              <span>Điểm đã đóng góp</span>
+              <strong>
+                {result.isReady ? `${fmt(result.accumulatedScore).replace('.', ',')} / 10` : '—'}
+              </strong>
             </div>
 
             {/* Footer */}

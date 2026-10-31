@@ -1,5 +1,5 @@
 import { useRef, useState, useMemo, type KeyboardEvent, type ReactNode } from 'react';
-import { MessageCircle, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, MessageCircle, ShieldCheck } from 'lucide-react';
 import {
   calculateCreditThreshold,
   getDowngradeVerdict,
@@ -30,8 +30,8 @@ const STATUS_LABELS: Record<CreditThresholdStatus, string> = {
   exceeded: 'Vượt ngưỡng',
 };
 
-const CLASSIFICATIONS: { value: GraduationClassification; label: string; star?: boolean }[] = [
-  { value: 'excellent', label: 'Xuất sắc', star: true },
+const CLASSIFICATIONS: { value: GraduationClassification; label: string }[] = [
+  { value: 'excellent', label: 'Xuất sắc' },
   { value: 'good', label: 'Giỏi' },
   { value: 'fair', label: 'Khá trở xuống' },
 ];
@@ -120,19 +120,19 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
       return <span className="gpa-d-result-badge unranked">• Chờ nhập liệu</span>;
     }
     if (result.status === 'safe') {
-      return <span className="gpa-d-result-badge tier-success">★ An toàn</span>;
+      return <span className="gpa-d-result-badge tier-success">An toàn</span>;
     }
     if (result.status === 'near') {
-      return <span className="gpa-d-result-badge tier-warning">⚠️ Sát ngưỡng</span>;
+      return <span className="gpa-d-result-badge tier-warning"><AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Sát ngưỡng</span>;
     }
-    return <span className="gpa-d-result-badge tier-danger">⛔ Vượt ngưỡng</span>;
+    return <span className="gpa-d-result-badge tier-danger"><AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Vượt ngưỡng</span>;
   }, [result]);
 
   const renderConclusion = (isMobile: boolean) => {
     if (!result) {
       return (
         <span className="cr-conclusion-text">
-          💡 Nhập tổng tín chỉ toàn khóa {isMobile ? 'bên dưới' : 'bên trái'} để kiểm tra
+          Nhập tổng tín chỉ toàn khóa {isMobile ? 'bên dưới' : 'bên trái'} để kiểm tra
         </span>
       );
     }
@@ -159,7 +159,7 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
 
     return (
       <span className="cr-conclusion-text">
-        🎯 <strong>Kết luận:</strong> {textNode}
+        <strong>Kết luận:</strong> {textNode}
       </span>
     );
   };
@@ -245,7 +245,7 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
                 <span className="tool-field-label"><span className="tool-step-badge">3</span><span>Xếp loại mục tiêu (tùy chọn)</span></span>
               </div>
               <div className="cr-cls-pills" role="group" aria-label="Xếp loại tốt nghiệp dự kiến">
-                {CLASSIFICATIONS.map(({ value, label, star }) => (
+                {CLASSIFICATIONS.map(({ value, label }) => (
                   <button
                     key={value}
                     type="button"
@@ -253,7 +253,7 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
                     aria-pressed={classification === value}
                     onClick={() => toggleClassification(value)}
                   >
-                    {star ? '★ ' : ''}{label}
+                    {label}
                   </button>
                 ))}
               </div>
@@ -262,7 +262,7 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
             {/* Hộp trích dẫn quy chế đào tạo */}
             <div className="cr-rule-box">
               <p>
-                📖 <strong>Quy chế hạ bằng (Khoản 3 Điều 15):</strong> Nếu số tín chỉ từng bị điểm F vượt quá <strong>5%</strong> toàn khóa: bằng <strong>Xuất sắc</strong> sẽ hạ xuống <strong>Giỏi</strong>, bằng <strong>Giỏi</strong> hạ xuống <strong>Khá</strong>. <em>(Bằng Khá trở xuống không bị hạ bậc).</em>
+                <strong>Quy chế hạ bằng (Khoản 3 Điều 15):</strong> Nếu số tín chỉ từng bị điểm F vượt quá <strong>5%</strong> toàn khóa: bằng <strong>Xuất sắc</strong> sẽ hạ xuống <strong>Giỏi</strong>, bằng <strong>Giỏi</strong> hạ xuống <strong>Khá</strong>. <em>(Bằng Khá trở xuống không bị hạ bậc).</em>
               </p>
             </div>
           </div>
@@ -465,7 +465,7 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
                 <span className="tool-field-label"><span className="tool-step-badge">3</span><span>Xếp loại mục tiêu (tùy chọn)</span></span>
               </div>
               <div className="cr-cls-pills" role="group" aria-label="Xếp loại tốt nghiệp dự kiến">
-                {CLASSIFICATIONS.map(({ value, label, star }) => (
+                {CLASSIFICATIONS.map(({ value, label }) => (
                   <button
                     key={value}
                     type="button"
@@ -473,7 +473,7 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
                     aria-pressed={classification === value}
                     onClick={() => toggleClassification(value)}
                   >
-                    {star ? '★ ' : ''}{label}
+                    {label}
                   </button>
                 ))}
               </div>
@@ -481,7 +481,7 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
 
             <div className="cr-rule-box">
               <p>
-                📖 <strong>Quy chế hạ bằng (Khoản 3 Điều 15):</strong> Nếu số tín chỉ từng bị điểm F vượt quá <strong>5%</strong> toàn khóa: bằng <strong>Xuất sắc</strong> sẽ hạ xuống <strong>Giỏi</strong>, bằng <strong>Giỏi</strong> hạ xuống <strong>Khá</strong>. <em>(Bằng Khá trở xuống không bị hạ bậc).</em>
+                <strong>Quy chế hạ bằng (Khoản 3 Điều 15):</strong> Nếu số tín chỉ từng bị điểm F vượt quá <strong>5%</strong> toàn khóa: bằng <strong>Xuất sắc</strong> sẽ hạ xuống <strong>Giỏi</strong>, bằng <strong>Giỏi</strong> hạ xuống <strong>Khá</strong>. <em>(Bằng Khá trở xuống không bị hạ bậc).</em>
               </p>
             </div>
           </div>

@@ -244,35 +244,35 @@ function GpaReferenceDialog({
                     <tbody>
                       <tr className="tier-row-excellent">
                         <td>
-                          <strong>⭐ Xuất sắc</strong>
+                          <strong>Xuất sắc</strong>
                         </td>
                         <td>3.60 - 4.00</td>
                         <td>ĐRL &ge; 90 (Tích lũy đủ số TC theo quy định)</td>
                       </tr>
                       <tr className="tier-row-good">
                         <td>
-                          <strong>🏆 Giỏi</strong>
+                          <strong>Giỏi</strong>
                         </td>
                         <td>3.20 - 3.59</td>
                         <td>ĐRL &ge; 80 (Tích lũy đủ số TC theo quy định)</td>
                       </tr>
                       <tr className="tier-row-fair">
                         <td>
-                          <strong>📈 Khá</strong>
+                          <strong>Khá</strong>
                         </td>
                         <td>2.50 - 3.19</td>
                         <td>ĐRL &ge; 70 (Tích lũy đủ số TC theo quy định)</td>
                       </tr>
                       <tr className="tier-row-average">
                         <td>
-                          <strong>⚖️ Trung bình</strong>
+                          <strong>Trung bình</strong>
                         </td>
                         <td>2.00 - 2.49</td>
                         <td>Không đủ chuẩn xét học bổng</td>
                       </tr>
                       <tr className="tier-row-weak">
                         <td>
-                          <strong>⚠️ Yếu</strong>
+                          <strong>Yếu</strong>
                         </td>
                         <td>Dưới 2.00</td>
                         <td>

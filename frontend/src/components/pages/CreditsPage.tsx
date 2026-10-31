@@ -293,10 +293,6 @@ export function CreditsPage({ cohort, onAskChat }: CreditsPageProps) {
               <div className="gpa-d-gpa10-pill">
                 {result ? (
                   <>
-                    <span className={`cr-capsule-badge ${result.status}`}>
-                      {STATUS_LABELS[result.status].toUpperCase()}
-                    </span>
-                    <span className="gpa-d-gpa10-label" style={{ opacity: 0.4 }}>│</span>
                     <span className="gpa-d-gpa10-label">
                       Đã không đạt: <strong>{failed}</strong> / {result.maxCredits} TC
                     </span>

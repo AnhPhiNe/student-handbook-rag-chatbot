@@ -19,7 +19,7 @@ function page(totalDegreeCredits = '') {
   const render = () => harness.render('TargetGpaPage', { cohort: 'K49' });
   const result = () => find(render(), n => n.props.id === 'target-gpa-result');
   const hero = () => text(find(result(), n => n.props.className === 'gpa-d-hero-score'));
-  const roadmap = () => find(render(), n => n.props.role === 'tab' && text(n) === 'Mục tiêu tốt nghiệp').props.onClick();
+  const roadmap = () => find(render(), n => n.props.role === 'tab' && text(n) === 'Tốt nghiệp').props.onClick();
   const total = value => find(render(), n => n.props.id === 'total-degree-creds-input').props.onChange({ target: { value } });
   return { render, result, hero, roadmap, total };
 }

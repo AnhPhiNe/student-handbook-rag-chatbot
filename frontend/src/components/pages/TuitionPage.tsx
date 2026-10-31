@@ -161,7 +161,7 @@ export function TuitionPage({ onAskChat }: TuitionPageProps) {
           <GraduationCap size={18} aria-hidden="true" className="tu-nd116-icon" />
           <div>
             <div>
-              🎓 <b>Lưu ý sinh viên Sư phạm:</b> Nếu được duyệt hưởng <b>Nghị định 116</b>, bạn sẽ được Nhà nước hỗ trợ 100% học phí chính thức và 3,63 triệu đồng/tháng sinh hoạt phí (có điều kiện bồi hoàn).
+              <b>Lưu ý sinh viên Sư phạm:</b> Nếu được duyệt hưởng <b>Nghị định 116</b>, bạn sẽ được Nhà nước hỗ trợ 100% học phí chính thức và 3,63 triệu đồng/tháng sinh hoạt phí (có điều kiện bồi hoàn).
             </div>
             <button type="button" className="tu-nd116-ask" onClick={() => onAskChat(DECREE_116_QUESTION)}>
               <MessageCircle size={13} aria-hidden="true" />

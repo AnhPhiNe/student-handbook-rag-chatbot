@@ -229,7 +229,7 @@ export function WelcomeCurtain({ onComplete }: WelcomeCurtainProps) {
               ✕
             </button>
 
-            {/* Header: Logo trường chính thức & Huy hiệu Khóa 52 mạ vàng */}
+            {/* Header: Logo trường chính thức */}
             <div className="welcome-letter-header">
               <div className="welcome-school-brand">
                 <img src="/logo_hcmue.png" className="welcome-school-logo" alt="Logo HCMUE" />
@@ -237,9 +237,6 @@ export function WelcomeCurtain({ onComplete }: WelcomeCurtainProps) {
                   ĐẠI HỌC SƯ PHẠM TP. HỒ CHÍ MINH
                 </h2>
               </div>
-              <span className="welcome-badge-k52">
-                Khóa 52 · 2026
-              </span>
             </div>
 
             {/* Tiêu đề thư */}
@@ -247,7 +244,7 @@ export function WelcomeCurtain({ onComplete }: WelcomeCurtainProps) {
               Chào Mừng Bạn Đến Với Sổ Tay Sinh Viên
             </h1>
             <div className="welcome-letter-sub">
-              (Dành cho Tân sinh viên Khóa 52 và đồng hành cùng K49 · K50 · K51)
+              (Dành cho Tân sinh viên K52 & Khóa 49 · 50 · 51)
             </div>
 
             {/* Nội dung thư tinh gọn */}

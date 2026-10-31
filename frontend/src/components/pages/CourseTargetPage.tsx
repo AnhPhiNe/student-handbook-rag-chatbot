@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import { ArrowUpRight, BookOpen, Plus, RotateCcw, Target, Trash2 } from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, BookOpen, Plus, RotateCcw, Target, Trash2 } from 'lucide-react';
 import {
   getCourseGroupOptions,
   getDefaultCourseGroup,
@@ -178,18 +178,18 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
       return <span className="gpa-d-result-badge unranked">• Chờ nhập liệu</span>;
     }
     if (result.hasWeightOverflow) {
-      return <span className="gpa-d-result-badge tier-danger">⚠️ Lỗi trọng số</span>;
+      return <span className="gpa-d-result-badge tier-danger"><AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Lỗi trọng số</span>;
     }
     if (target?.status === 'achieved') {
       return <span className="gpa-d-result-badge tier-success">✓ Đã đủ điểm</span>;
     }
     if (target?.status === 'impossible') {
-      return <span className="gpa-d-result-badge tier-danger">⚠️ Không thể đạt</span>;
+      return <span className="gpa-d-result-badge tier-danger"><AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Không thể đạt</span>;
     }
     if (isHard) {
-      return <span className="gpa-d-result-badge tier-warning">⚡ Cần cố gắng</span>;
+      return <span className="gpa-d-result-badge tier-warning">Cần cố gắng</span>;
     }
-    return <span className="gpa-d-result-badge tier-success">★ Khả thi</span>;
+    return <span className="gpa-d-result-badge tier-success">Khả thi</span>;
   }, [result.isReady, result.hasWeightOverflow, target, isHard]);
 
   // Milestone Prompt for Bottom of Right Card Milestone Box
@@ -197,35 +197,35 @@ export function CourseTargetPage({ cohort }: CourseTargetPageProps) {
     if (!result.isReady) {
       return (
         <span className="gpa-d-motivation-text">
-          💡 Nhập điểm các cột thành phần để xem điểm thi cần đạt
+          Nhập điểm các cột thành phần để xem điểm thi cần đạt
         </span>
       );
     }
     if (result.hasWeightOverflow) {
       return (
         <span className="gpa-d-motivation-text" style={{ color: '#ef4444' }}>
-          ⚠️ Tổng trọng số vượt quá 100%, vui lòng kiểm tra lại
+          <AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Tổng trọng số vượt quá 100%, vui lòng kiểm tra lại
         </span>
       );
     }
     if (passTarget?.status === 'achieved') {
       return (
         <span className="gpa-d-motivation-text">
-          🎉 Bạn đã tích lũy đủ điểm qua môn ngay cả khi thi 0 điểm
+          Bạn đã tích lũy đủ điểm qua môn ngay cả khi thi 0 điểm
         </span>
       );
     }
     if (passTarget?.status === 'possible') {
       return (
         <span className="gpa-d-motivation-text">
-          💡 Thi cuối kỳ từ <strong className="gpa-motivate-highlight">{fmt(passTarget.requiredScore ?? 0)} điểm</strong> là đủ qua môn (tổng kết điểm {passRow?.letter} ≥ {passRow?.min10.toFixed(1)})
+          Thi cuối kỳ từ <strong className="gpa-motivate-highlight">{fmt(passTarget.requiredScore ?? 0)} điểm</strong> là đủ qua môn (tổng kết điểm {passRow?.letter} ≥ {passRow?.min10.toFixed(1)})
         </span>
       );
     }
     if (passTarget?.status === 'impossible') {
       return (
         <span className="gpa-d-motivation-text" style={{ color: '#ef4444' }}>
-          ⚠️ Điểm tích lũy chưa đủ qua môn kể cả khi thi 10 điểm
+          <AlertTriangle size={14} aria-hidden="true" className="tool-inline-icon" /> Điểm tích lũy chưa đủ qua môn kể cả khi thi 10 điểm
         </span>
       );
     }

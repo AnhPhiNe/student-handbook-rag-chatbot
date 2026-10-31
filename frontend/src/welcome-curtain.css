@@ -499,3 +499,139 @@
   height: 14px;
   color: #fde047;
 }
+
+
+/* ============================================================ */
+/* RESPONSIVE CHO THIẾT BỊ DI ĐỘNG (MOBILE ADAPTATION)         */
+/* ============================================================ */
+
+@media (max-width: 640px) {
+  /* Nút Bỏ qua gọn gàng trên mobile (ẩn phím Esc không có thực) */
+  .welcome-skip-btn {
+    top: 12px;
+    right: 12px;
+    padding: 5px 12px;
+    font-size: 11.5px;
+  }
+
+  .welcome-skip-kbd {
+    display: none;
+  }
+
+  /* Rèm vén cao hẳn lên 2 góc trên, không còn che khuất màn hình dọc */
+  .welcome-curtain-drape {
+    width: 65%;
+    height: 100%;
+  }
+
+  .welcome-curtain-drape.opened.welcome-drape-left {
+    transform: translate(-60%, -68%) rotate(-20deg) scale(0.85);
+    border-bottom-right-radius: 95% 50%;
+  }
+
+  .welcome-curtain-drape.opened.welcome-drape-right {
+    transform: translate(60%, -68%) rotate(20deg) scale(0.85);
+    border-bottom-left-radius: 95% 50%;
+  }
+
+  /* Preloader vừa vặn trên màn hình nhỏ */
+  .welcome-progress-track {
+    width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Bức thư ngỏ thích ứng tỷ lệ màn hình điện thoại */
+  .welcome-letter-wrapper {
+    width: 93%;
+    max-height: 94vh;
+  }
+
+  .welcome-pure-sheet {
+    padding: 16px 16px 14px 16px;
+  }
+
+  .welcome-letter-frame {
+    padding: 14px 14px 12px 14px;
+  }
+
+  .welcome-letter-header {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    padding-right: 24px;
+  }
+
+  .welcome-school-title {
+    font-size: 10px;
+  }
+
+  .welcome-school-sub {
+    font-size: 8px;
+  }
+
+  .welcome-badge-k52 {
+    font-size: 8.5px;
+    padding: 2px 7px;
+  }
+
+  .welcome-letter-title {
+    font-size: 16px;
+  }
+
+  .welcome-letter-sub {
+    font-size: 9.5px;
+    margin-bottom: 8px;
+  }
+
+  .welcome-letter-body {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .welcome-feature-list {
+    gap: 5px;
+    margin: 4px 0 6px 0;
+  }
+
+  .welcome-feature-item {
+    font-size: 10.5px;
+    line-height: 1.45;
+    gap: 6px;
+  }
+
+  /* KHẮC PHỤC DÍNH CHỮ: Tách ngày tháng và chữ ký thành 2 tầng thoáng đãng */
+  .welcome-signature-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    margin-top: 10px;
+    padding-top: 6px;
+  }
+
+  .welcome-signature-date {
+    font-size: 9px;
+    color: #a8a29e;
+    font-style: italic;
+    text-align: left;
+  }
+
+  .welcome-signature-block {
+    text-align: right;
+  }
+
+  .welcome-signature-name {
+    font-size: 22px;
+    margin-bottom: 1px;
+  }
+
+  .welcome-signature-dept {
+    font-size: 8.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .welcome-cta-btn {
+    margin-top: 10px;
+    padding: 9px 14px;
+    font-size: 12px;
+  }
+}

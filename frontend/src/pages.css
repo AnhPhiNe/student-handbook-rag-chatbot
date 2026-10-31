@@ -13874,6 +13874,21 @@ p.tool-source > svg {
 }
 
 @media (max-width: 900px) {
+  .scholarship-mobile-form {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .scholarship-mobile-form .scholarship-m-credits-row {
+    padding-top: 16px;
+    gap: 16px;
+  }
+
+  .scholarship-mobile-form .scholarship-m-tuition-section {
+    padding-top: 16px;
+    gap: 16px;
+  }
+
   .sc-page:not(.tu-page) .gpa-mobile-layout .scholarship-input-box {
     min-height: 44px;
     padding: 6px 10px;

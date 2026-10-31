@@ -621,7 +621,7 @@ export function ScholarshipPage({ cohort, onAskChat }: ScholarshipPageProps) {
         )}
 
         {/* Thẻ nhập liệu Mobile (Phẳng hoàn toàn, không card lồng card) */}
-        <div className="scholarship-m-card">
+        <div className="scholarship-m-card scholarship-mobile-form">
           <div className="scholarship-m-card-header">
             <span className="scholarship-m-card-title">THÔNG TIN XÉT</span>
           </div>

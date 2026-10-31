@@ -419,7 +419,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
     if (gpa >= 3.6) {
       return (
         <span className="gpa-d-motivation-text">
-          🎉 Chúc mừng! Bạn đang đạt mức học lực <strong>Xuất sắc</strong> (≥ 3.60)
+          🎉 Bạn đạt học lực <strong>Xuất sắc</strong>
         </span>
       );
     }
@@ -499,13 +499,14 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
           </div>
 
           {/* BẢNG 4 CỘT CÂN ĐỐI (26% | 24% | 24% | 26%) */}
-          <table className="gpa-d-table">
+          <table className="gpa-d-table gpa-d-course-table">
             <thead className="gpa-d-thead">
               <tr>
                 <th style={{ width: '26%', paddingLeft: '1.25rem' }}>Môn học</th>
-                <th style={{ width: '24%', textAlign: 'center' }}>Tín chỉ</th>
-                <th style={{ width: '24%', textAlign: 'center' }}>Điểm hệ 10</th>
-                <th style={{ width: '26%', paddingRight: '1.25rem', textAlign: 'right' }}>Quy đổi</th>
+                <th style={{ width: '22%', textAlign: 'center' }}>Tín chỉ</th>
+                <th style={{ width: '22%', textAlign: 'center' }}>Điểm hệ 10</th>
+                <th style={{ width: '24%', textAlign: 'center' }}>Quy đổi</th>
+                <th className="gpa-d-delete-cell"><span className="sr-only">Xóa môn</span></th>
               </tr>
             </thead>
             <tbody className="gpa-d-tbody">
@@ -602,9 +603,7 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                         {isScoreErr && <span className="gpa-d-error-tag">0 – 10 đ</span>}
                       </div>
                     </td>
-                    {/* Cột 4: QUY ĐỔI & XÓA (Căn phải) */}
-                    <td style={{ paddingRight: '1.25rem', textAlign: 'right' }}>
-                      <div className="gpa-d-convert-cluster">
+                    <td style={{ textAlign: 'center' }}>
                         {grade && !isScoreErr && !isCreditsErr ? (
                           <span className={`gpa-d-grade-badge ${getGradeBadgeClass(grade)}`}>
                             <span>{grade.letter}</span>
@@ -616,6 +615,8 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                           </span>
                         )}
 
+                    </td>
+                    <td className="gpa-d-delete-cell">
                         <button
                           type="button"
                           className="gpa-d-del-btn"
@@ -626,7 +627,6 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
                         >
                           <Trash2 size={15} />
                         </button>
-                      </div>
                     </td>
                   </tr>
                 );
@@ -696,23 +696,18 @@ export function GpaPage({ cohort, onNavigate }: GpaPageProps) {
             {/* Khung Thanh Tiến Độ Cột Mốc Học Lực */}
             <div className="gpa-d-milestone-box">
               <div className="gpa-d-milestone-labels">
-                <span>0.0</span>
-                <span>TB 2.0</span>
-                <span className="gpa-milestone-blue">Khá 2.5</span>
-                <span className="gpa-milestone-green">Giỏi 3.2</span>
-                <span className="gpa-milestone-amber">XS 3.6</span>
-              </div>
-
-              <div className="gpa-d-milestone-bar-wrap">
-                <div
-                  className="gpa-d-milestone-bar-fill"
-                  style={{ width: `${progressPercent}%` }}
-                />
-                <div className="gpa-d-milestone-tick" style={{ left: '50%' }} title="Trung bình (2.0)" />
-                <div className="gpa-d-milestone-tick" style={{ left: '62.5%' }} title="Khá (2.5)" />
-                <div className="gpa-d-milestone-tick" style={{ left: '80%' }} title="Giỏi (3.2)" />
-                <div className="gpa-d-milestone-tick" style={{ left: '90%' }} title="Xuất sắc (3.6)" />
-              </div>
+                  <span>0.0</span><span>TB 2.0</span>
+                  <span className="gpa-milestone-blue">Khá 2.5</span>
+                  <span className="gpa-milestone-green">Giỏi 3.2</span>
+                  <span className="gpa-milestone-amber">XS 3.6</span>
+                </div>
+                <div className="gpa-d-milestone-bar-wrap">
+                  <div className="gpa-d-milestone-bar-fill" style={{ width: `${progressPercent}%` }} />
+                  <div className="gpa-d-milestone-tick" style={{ left: '50%' }} title="Trung bình (2.0)" />
+                  <div className="gpa-d-milestone-tick" style={{ left: '62.5%' }} title="Khá (2.5)" />
+                  <div className="gpa-d-milestone-tick" style={{ left: '80%' }} title="Giỏi (3.2)" />
+                  <div className="gpa-d-milestone-tick" style={{ left: '90%' }} title="Xuất sắc (3.6)" />
+                </div>
 
               <div className="gpa-d-milestone-prompt">
                 {milestoneMotivation}
